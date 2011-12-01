@@ -55,6 +55,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -112,23 +113,23 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
     }
 
-    private static final int                         MIN_COLUMN_WIDTH = 16;
+    private static final int         MIN_COLUMN_WIDTH = 16;
 
-    protected Panel                                  panel;
+    protected Panel                  panel;
 
     //Model
-    protected M                                      model;
-    protected List<DynamicColumn<T>>                 sortableColumns  = new ArrayList<DynamicColumn<T>>();
+    protected M                      model;
+    protected List<DynamicColumn<T>> sortableColumns  = new ArrayList<DynamicColumn<T>>();
 
     // Resources
-    protected static final Constants                 constants        = GWT.create( Constants.class );
-    protected ResourcesProvider<T>                   resources;
-    protected EventBus                               eventBus;
+    protected static final Constants constants        = GWT.create( Constants.class );
+    protected ResourcesProvider<T>   resources;
+    protected EventBus               eventBus;
 
     // Column resizing
-    private AbstractDecoratedGridSidebarWidget<M, T> sidebar;
-    private ResizerInformation                       resizerInfo      = new ResizerInformation();
-    private DivElement                               resizer;
+    private ResizerInformation       resizerInfo      = new ResizerInformation();
+    private DivElement               resizer;
+    private UIObject                 parent;
 
     /**
      * Construct a "Header" for the provided DecoratedGridWidget
@@ -186,15 +187,12 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
                                        event.preventDefault();
                                        return;
                                    }
-                                   setResizerDimensions( event.getX() );
                                    resizerInfo.resizeColumnWidth = mx - resizerInfo.resizeColumnLeft;
                                    resizeColumn( resizerInfo.resizeColumn,
                                                  resizerInfo.resizeColumnWidth );
 
-                                   // Second call to set dimensions as a column resize can add (or remove) a scroll bar
-                                   // to (or from) the Decision Table and our resizer needs to be redrawn accordingly.
-                                   // Just having the call to set dimensions after the column has been resized added
-                                   // excess flicker to movement of the resizer.
+                                   // Set dimensions as a column resize can add (or remove) a scroll bar to (or from)
+                                   // the Decision Table and our resizer needs to be redrawn accordingly.
                                    setResizerDimensions( event.getX() );
                                    event.preventDefault();
                                } else {
@@ -297,12 +295,21 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     // that hides any overflow however the horizontal scrollbar
     // would be rendered inside the DIV and hence still be covered
     // by the resizer.
-    private void setResizerDimensions(int position) {
-        //TODO {manstis} resizer.getStyle().setHeight( sidebar.getOffsetHeight(),
-        resizer.getStyle().setHeight( 500,
-                                      Unit.PX );
-        resizer.getStyle().setLeft( position,
-                                    Unit.PX );
+    private void setResizerDimensions(final int position) {
+        Scheduler.get().scheduleDeferred( new Command() {
+
+            public void execute() {
+                resizer.getStyle().setHeight( parent.getElement().getClientHeight(),
+                                              Unit.PX );
+                resizer.getStyle().setLeft( position,
+                                            Unit.PX );
+            }
+            
+        });
+    }
+
+    void setSidebar(UIObject parent) {
+        this.parent = parent;
     }
 
     /**
