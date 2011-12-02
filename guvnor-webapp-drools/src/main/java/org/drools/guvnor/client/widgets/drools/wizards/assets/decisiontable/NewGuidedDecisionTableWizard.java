@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,6 +178,7 @@ public class NewGuidedDecisionTableWizard
         while ( ri.hasNext() ) {
             List<String> row = ri.next();
             dtable.getData().add( makeRow( row ) );
+            dtable.getData().get( rowIndex ).get( 0 ).setNumericValue( new BigDecimal( rowIndex + 1 ) );
             dtable.getAnalysisData().add( new Analysis() );
             rowIndex++;
         }
