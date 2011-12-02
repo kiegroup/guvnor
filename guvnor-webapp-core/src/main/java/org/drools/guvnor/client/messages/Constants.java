@@ -2568,5 +2568,7 @@ public interface Constants
     String ColumnConfigurationWorkItemInsertFact();
     
     String IncludeAdvancedOptions();
+    
+    String LogicallyInsertColon();
 
 }

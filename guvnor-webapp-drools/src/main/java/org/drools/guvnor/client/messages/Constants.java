@@ -2569,4 +2569,6 @@ public interface Constants
     
     String IncludeAdvancedOptions();
 
+    String LogicallyInsertColon();
+    
 }

@@ -158,7 +158,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         makeLimitedValueWidget();
 
         //Logical insertion
-        addAttribute( constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved(),
+        addAttribute( constants.LogicallyInsertColon(),
                       doInsertLogical() );
 
         //Hide column tick-box
@@ -322,8 +322,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions(
-                                                        FieldAccessorsAndMutators.MUTATOR,
+        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                         this.editingCol.getFactType() );
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
@@ -385,8 +384,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
-                                                                               "\\s" ); // NON-NLS
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" ); // NON-NLS
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
                 editingCol.setFactField( null );
@@ -476,8 +474,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
             }
         } );
         hp.add( cb );
-        hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants.UpdateDescription() ) );
+        hp.add( new InfoPopup( constants.LogicallyInsertANewFact(),
+                               constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 
