@@ -111,9 +111,14 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public void selectPattern(Pattern52 pattern) {
-        String type = pattern.getFactType();
+
+        //Pattern is null when programmatically deselecting an item
+        if ( pattern == null ) {
+            return;
+        }
 
         //Add Fact fields
+        String type = pattern.getFactType();
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {

@@ -370,8 +370,11 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
             // If the currently selected pattern is no longer available clear selections
             if ( !availablePatterns.contains( availablePatternsSelection ) ) {
-                setAvailableFields( new ArrayList<AvailableField>() );
+                availablePatternsWidget.getSelectionModel().setSelected( availablePatternsSelection,
+                                                                         false );
                 availablePatternsSelection = null;
+                setAvailableFields( new ArrayList<AvailableField>() );
+                availableFieldsSelections = null;
                 setChosenFields( new ArrayList<ActionSetFieldCol52>() );
                 chosenFieldsSelection = null;
                 fieldDefinition.setVisible( false );
