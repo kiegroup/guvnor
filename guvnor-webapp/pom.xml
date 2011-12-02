@@ -294,6 +294,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
+      <version>5.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -302,14 +303,17 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
+      <version>5.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-templates</artifactId>
+      <version>5.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
+      <version>5.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
