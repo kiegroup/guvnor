@@ -49,13 +49,13 @@
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 
-  <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
+  <!-- generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
     <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
-  </generate-with>  
+  </generate-wit>  
   
   <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
     <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
-  </generate-with>  
+  </generate-with-->  
   
   <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
   <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl">
