@@ -117,7 +117,11 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
         for ( Pattern52 p : dtable.getConditionPatterns() ) {
             if ( p.getBoundName() != null && !p.getBoundName().equals( "" ) ) {
-                availablePatterns.add( p );
+                if ( p.getConditions().size() > 0 ) {
+                    availablePatterns.add( p );
+                } else {
+                    patternToActionsMap.remove( p );
+                }
             }
         }
         view.setAvailablePatterns( availablePatterns );
@@ -153,6 +157,11 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     public void selectPattern(Pattern52 pattern) {
 
+        //Pattern is null when programmatically deselecting an item
+        if ( pattern == null ) {
+            return;
+        }
+
         //Add fields available
         String type = pattern.getFactType();
         String[] fieldNames = sce.getFieldCompletions( type );
@@ -179,9 +188,16 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
-        for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionSetFieldCol52 af : actions ) {
-                dtable.getActionCols().add( af );
+        for ( Map.Entry<Pattern52, List<ActionSetFieldCol52>> ps : patternToActionsMap.entrySet() ) {
+            Pattern52 p = ps.getKey();
+
+            // Patterns with no conditions don't get created
+            if ( p.getConditions().size() > 0 ) {
+                String binding = p.getBoundName();
+                for ( ActionSetFieldCol52 a : ps.getValue() ) {
+                    a.setBoundName( binding );
+                    dtable.getActionCols().add( a );
+                }
             }
         }
     }

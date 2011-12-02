@@ -506,8 +506,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
             //If the currently selected pattern is no longer available clear selections
             if ( !availablePatterns.contains( availablePatternsSelection ) ) {
-                setAvailableFields( new ArrayList<AvailableField>() );
+            	availablePatternsWidget.getSelectionModel().setSelected( availablePatternsSelection, false );
                 availablePatternsSelection = null;
+                setAvailableFields( new ArrayList<AvailableField>() );
+                availableFieldsSelections = null;
                 setChosenConditions( new ArrayList<ConditionCol52>() );
                 chosenConditionsSelection = null;
                 conditionDefinition.setVisible( false );
