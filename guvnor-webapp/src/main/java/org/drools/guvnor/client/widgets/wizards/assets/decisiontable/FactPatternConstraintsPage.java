@@ -115,21 +115,23 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public void selectPattern(Pattern52 pattern) {
-    	
-    	//Pattern is null when programmatically deselecting an item
-		if (pattern == null) {
-			return;
-		}
+
+        //Pattern is null when programmatically deselecting an item
+        if ( pattern == null ) {
+            return;
+        }
 
         //Add Fact fields
         String type = pattern.getFactType();
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldType( type,
-                                                                                          fieldName ) );
+            String fieldType = sce.getFieldType( type,
+                                                 fieldName );
+            String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,
+                                                       fieldDisplayType,
                                                        BaseSingleFieldConstraint.TYPE_LITERAL );
             availableFields.add( field );
         }
