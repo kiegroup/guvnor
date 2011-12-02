@@ -119,8 +119,7 @@ public class ActionInsertColumn extends FormStylePopup {
         HorizontalPanel vl = new HorizontalPanel();
         vl.add( valueList );
         vl.add( new InfoPopup( constants.ValueList(),
-                               constants
-                                       .ValueListsExplanation() ) );
+                               constants.ValueListsExplanation() ) );
         addAttribute( constants.optionalValueList(),
                       vl );
 
@@ -134,7 +133,7 @@ public class ActionInsertColumn extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
-        addAttribute( constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved(),
+        addAttribute( constants.LogicallyInsertColon(),
                       doInsertLogical() );
 
         addAttribute( constants.DefaultValue(),
@@ -145,22 +144,19 @@ public class ActionInsertColumn extends FormStylePopup {
             public void onClick(ClickEvent w) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants
-                            .YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants
-                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants
-                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -238,8 +234,7 @@ public class ActionInsertColumn extends FormStylePopup {
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions(
-                                                        FieldAccessorsAndMutators.MUTATOR,
+        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                         this.editingCol.getFactType() );
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
@@ -300,8 +295,7 @@ public class ActionInsertColumn extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
-                                                                               "\\s" ); // NON-NLS
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" ); // NON-NLS
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
                 editingCol.setFactField( null );
@@ -331,8 +325,7 @@ public class ActionInsertColumn extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 editingCol.setBoundName( binding.getText() );
-                editingCol.setFactType( types.getItemText( types
-                        .getSelectedIndex() ) );
+                editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
                 editingCol.setFactField( null );
                 doPatternLabel();
                 doFieldLabel();
@@ -362,9 +355,8 @@ public class ActionInsertColumn extends FormStylePopup {
             }
         } );
         hp.add( cb );
-        hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants
-                                       .UpdateDescription() ) );
+        hp.add( new InfoPopup( constants.LogicallyInsertANewFact(),
+                               constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 

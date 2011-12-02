@@ -2522,4 +2522,7 @@ public interface Constants
     String MissingExpectations();
 
     String CouldNotFindTheTypeForVariable0(String variableName);
+    
+    String LogicallyInsertColon();
+    
 }
