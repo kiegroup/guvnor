@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -122,7 +123,7 @@ public class PopupCreator {
         final FormStylePopup popup = new FormStylePopup();
         popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
-        final TextBox varName = new TextBox();
+        final TextBox varName = new BindingTextBox();
         if ( con.getFieldBinding() != null ) {
             varName.setText( con.getFieldBinding() );
         }
@@ -362,7 +363,7 @@ public class PopupCreator {
     private void doBindingEditor(final FormStylePopup popup) {
         if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.getBoundName() )) ) {
             HorizontalPanel varName = new HorizontalPanel();
-            final TextBox varTxt = new TextBox();
+            final TextBox varTxt = new BindingTextBox();
             if ( pattern.getBoundName() == null ) {
                 varTxt.setText( "" );
             } else {

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
@@ -92,7 +93,7 @@ public class FactPatternsPageViewImpl extends Composite
     VerticalPanel                           patternDefinition;
 
     @UiField
-    TextBox                                 txtBinding;
+    BindingTextBox                          txtBinding;
 
     @UiField
     HorizontalPanel                         bindingContainer;
