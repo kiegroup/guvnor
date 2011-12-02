@@ -16,20 +16,24 @@
 
 package org.drools.guvnor.server.configurations;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ApplicationPreferencesLoaderTest {
 
     @Test
+    @Ignore("This test relies upon a resource in guvnor-webapp-drools")
     public void testLoad() throws Exception {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
 
         assertNotNull( preferences );
-        assertEquals( 11,
+        assertEquals( 10,
                       preferences.size() );
         assertTrue( preferences.containsKey( "visual-ruleflow" ) );
         assertTrue( preferences.containsKey( "verifier" ) );
