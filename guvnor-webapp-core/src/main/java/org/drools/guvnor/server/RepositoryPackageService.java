@@ -491,6 +491,13 @@ public class RepositoryPackageService
 
     private JarInputStream typesForModel(List<String> res,
                                          AssetItem asset) throws IOException {
+        if ( !asset.isBinary() ) {
+            return null;
+        }
+        if ( asset.getBinaryContentAttachment() == null ) {
+            return null;
+        }
+
         JarInputStream jis;
         jis = new JarInputStream( asset.getBinaryContentAttachment() );
         JarEntry entry = null;
@@ -700,7 +707,7 @@ public class RepositoryPackageService
             }
         }
         // need this for Generated beans to work
-        allImps.add( bin.getName() + ".*" ); 
+        allImps.add( bin.getName() + ".*" );
 
         ClassTypeResolver classTypeResolver = new ClassTypeResolver( allImps,
                                                                      cl );
