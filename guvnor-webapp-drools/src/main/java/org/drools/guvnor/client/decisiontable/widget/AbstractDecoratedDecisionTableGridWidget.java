@@ -137,9 +137,9 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         columns.add( rowNumberColumn );
 
         data.addColumn( colIndex,
-                        makeColumnData( model,
-                                        rowNumberCol,
-                                        colIndex++ ),
+                        makeRowNumberColumnData( model,
+                                                 rowNumberCol,
+                                                 colIndex++ ),
                         true );
 
         // Static columns, Description
@@ -254,21 +254,24 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                 analysisColumn.isVisible() );
     }
 
-    private List<CellValue< ? extends Comparable< ? >>> makeAnalysisColumnData(GuidedDecisionTable52 model,
-                                                                               AnalysisCol52 column,
-                                                                               int colIndex) {
-        model.initAnalysisColumn();
-        int dataSize = model.getAnalysisData().size();
+    // Make a column of data representing the Row Number column for insertion into a DecoratedGridWidget
+    // We don't rely upon the values in the existing data as legacy tables co't guarantee it is sorted
+    private List<CellValue< ? extends Comparable< ? >>> makeRowNumberColumnData(GuidedDecisionTable52 model,
+                                                                                DTColumnConfig52 column,
+                                                                                int colIndex) {
+        int dataSize = model.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeNewAnalysisCellValue();
+            DTCellValue52 dcv = new DTCellValue52( iRow + 1 );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
+                                                                                               dcv );
             columnData.add( cv );
         }
         return columnData;
     }
 
-    // Make a row of data for insertion into a DecoratedGridWidget
+    // Make a column of data for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(GuidedDecisionTable52 model,
                                                                        DTColumnConfig52 column,
                                                                        int colIndex) {
@@ -280,6 +283,21 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
             DTCellValue52 dcv = row.get( colIndex );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
                                                                                                dcv );
+            columnData.add( cv );
+        }
+        return columnData;
+    }
+
+    // Make a column of data representing the Analysis column for insertion into a DecoratedGridWidget
+    private List<CellValue< ? extends Comparable< ? >>> makeAnalysisColumnData(GuidedDecisionTable52 model,
+                                                                               AnalysisCol52 column,
+                                                                               int colIndex) {
+        model.initAnalysisColumn();
+        int dataSize = model.getAnalysisData().size();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
+
+        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeNewAnalysisCellValue();
             columnData.add( cv );
         }
         return columnData;
