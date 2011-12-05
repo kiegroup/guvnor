@@ -2570,5 +2570,19 @@ public interface Constants
     String IncludeAdvancedOptions();
     
     String LogicallyInsertColon();
-
+    
+    String ChangeSets();
+    
+    String NewChangeSet();
+    
+    String NoPackageSeleced();
+    
+    String AddNewResourceElement();
+    
+    String Asset();
+    
+    String NewResource();
+    
+    String UnknownResourceFormat(String format);
+    
 }
