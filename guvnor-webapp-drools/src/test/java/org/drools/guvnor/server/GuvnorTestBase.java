@@ -55,7 +55,10 @@ public abstract class GuvnorTestBase {
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
         File mergedBeansXml = writeMergedBeansXmlFile();
+        webArchive.delete(ArchivePaths.create("WEB-INF/beans.xml"));
         webArchive.addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"));
+        webArchive.delete(ArchivePaths.create("WEB-INF/classes/META-INF/beans.xm"));
+        webArchive.addAsWebInfResource(mergedBeansXml, ArchivePaths.create("classes/META-INF/beans.xml"));
 
         File explodedWarFile = new File("target/guvnor-webapp-drools-5.4.0-SNAPSHOT");
         if (!explodedWarFile.exists()) {
@@ -103,7 +106,10 @@ public abstract class GuvnorTestBase {
 
     private static File writeMergedBeansXmlFile() {
         // TODO Workaround for https://issues.jboss.org/browse/ARQ-585
-        File productionBeansXml = new File("src/main/resources/META-INF/beans.xml");
+        File productionBeansXml = new File("src/main/webapp/WEB-INF/beans.xml");
+        if (!productionBeansXml.exists()) {
+            throw new IllegalStateException("File productionBeansXml(" + productionBeansXml + ") does not exist.");
+        }
         File mergedBeansXml = new File("target/mergedBeans.xml");
         try {
             List<String> lines = FileUtils.readLines(productionBeansXml, "UTF-8");
