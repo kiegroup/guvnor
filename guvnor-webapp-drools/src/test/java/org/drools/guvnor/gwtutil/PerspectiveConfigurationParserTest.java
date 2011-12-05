@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import org.drools.guvnor.server.util.ModuleEditorConfiguration;
@@ -31,7 +32,7 @@ public class PerspectiveConfigurationParserTest {
 
     @Test
     public void testReadConfig() throws Exception {
-        InputStream in = this.getClass().getResourceAsStream("/perspective.xml");
+        InputStream in = this.getClass().getResourceAsStream("/org/drools/guvnor/gwtutil/perspective.xml");
         PerspectiveConfigurationParser a = new PerspectiveConfigurationParser(in);
 		List<ModuleEditorConfiguration> configList = a.getModuleEditors();
 
