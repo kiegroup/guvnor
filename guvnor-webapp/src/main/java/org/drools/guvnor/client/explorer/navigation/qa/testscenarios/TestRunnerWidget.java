@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.AuditEventsImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -64,6 +65,8 @@ public class TestRunnerWidget extends Composite {
 
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
+    private static AuditEventsImages auditEventsImages = (AuditEventsImages) GWT.create( AuditEventsImages.class );
+
 
     FlexTable             results   = new FlexTable();
     VerticalPanel         layout    = new VerticalPanel();
@@ -258,14 +261,14 @@ public class TestRunnerWidget extends Composite {
                     if ( !firing ) {
                         g.setWidget( row,
                                      0,
-                                     new Image( "images/audit_events/" + lg[0] + ".gif" ) );
+                                     getEventImage(lg[0]));
                         g.setWidget( row,
                                      1,
                                      new SmallLabel( lg[1] ) );
                     } else {
                         g.setWidget( row,
                                      1,
-                                     hz( new Image( "images/audit_events/" + lg[0] + ".gif" ),
+                                     hz( getEventImage(lg[0]),
                                          new SmallLabel( lg[1] ) ) );
                     }
                     row++;
@@ -273,7 +276,7 @@ public class TestRunnerWidget extends Composite {
                     firing = true;
                     g.setWidget( row,
                                  0,
-                                 new Image( "images/audit_events/" + lg[0] + ".gif" ) );
+                                 getEventImage(lg[0]));
                     g.setWidget( row,
                                  1,
                                  new SmallLabel( "<b>" + lg[1] + "</b>" ) );
@@ -283,7 +286,7 @@ public class TestRunnerWidget extends Composite {
                 } else {
                     g.setWidget( row,
                                  0,
-                                 new Image( "images/audit_events/" + lg[0] + ".gif" ) );
+                                 getEventImage(lg[0]));
                     g.setWidget( row,
                                  1,
                                  new SmallLabel( "<font color='grey'>" + lg[1] + "</font>" ) );
@@ -292,7 +295,7 @@ public class TestRunnerWidget extends Composite {
             } else {
                 g.setWidget( row,
                              0,
-                             new Image( "images/audit_events/misc_event.gif" ) );
+                             new Image(auditEventsImages.miscEvent()));
                 g.setWidget( row,
                              1,
                              new SmallLabel( "<font color='grey'>" + lg[1] + "</font>" ) );
@@ -310,5 +313,34 @@ public class TestRunnerWidget extends Composite {
         h.add( image );
         h.add( smallLabel );
         return h;
+    }
+
+    private Image getEventImage(String eventType) {
+        int type;
+
+        try {
+            type = Integer.parseInt(eventType);
+        } catch (NumberFormatException e) {
+            return new Image(auditEventsImages.miscEvent());
+        }
+
+        switch (type) {
+        case 1:
+            return new Image(auditEventsImages.image1());
+        case 2:
+            return new Image(auditEventsImages.image2());
+        case 3:
+            return new Image(auditEventsImages.image3());
+        case 4:
+            return new Image(auditEventsImages.image4());
+        case 5:
+            return new Image(auditEventsImages.image5());
+        case 6:
+            return new Image(auditEventsImages.image6());
+        case 7:
+            return new Image(auditEventsImages.image7());
+        default:
+            return new Image(auditEventsImages.miscEvent());
+        }
     }
 }
