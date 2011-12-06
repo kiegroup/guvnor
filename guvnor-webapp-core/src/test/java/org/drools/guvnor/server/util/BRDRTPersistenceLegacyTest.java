@@ -30,7 +30,7 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.junit.After;
 import org.junit.Before;

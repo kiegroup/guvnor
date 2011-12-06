@@ -24,8 +24,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFa
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**

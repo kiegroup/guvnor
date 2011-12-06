@@ -20,7 +20,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalDec
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 import com.google.gwt.event.shared.EventBus;
 

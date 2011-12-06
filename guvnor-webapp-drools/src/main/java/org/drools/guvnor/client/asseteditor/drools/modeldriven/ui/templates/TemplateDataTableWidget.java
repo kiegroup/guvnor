@@ -28,8 +28,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;

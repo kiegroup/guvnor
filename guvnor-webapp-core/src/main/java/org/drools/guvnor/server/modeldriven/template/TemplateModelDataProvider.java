@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.modeldriven.template;
 
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 import org.drools.template.DataProvider;
 
 public class TemplateModelDataProvider implements DataProvider {

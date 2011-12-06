@@ -27,7 +27,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResize
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SortDataEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

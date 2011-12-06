@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 /**
  * An event to set the underlying Template Data in the table

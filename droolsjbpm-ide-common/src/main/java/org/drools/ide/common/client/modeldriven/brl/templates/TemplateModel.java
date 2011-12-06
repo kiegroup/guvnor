@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.brl.templates;
 
 import java.util.ArrayList;
 import java.util.HashMap;

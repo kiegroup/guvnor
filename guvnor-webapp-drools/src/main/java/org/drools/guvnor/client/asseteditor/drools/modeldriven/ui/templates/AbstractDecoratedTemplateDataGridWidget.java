@@ -29,8 +29,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
-import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Panel;

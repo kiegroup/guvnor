@@ -21,7 +21,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.Temp
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
 /**
  * An event to set the internal model for the Template Data grid

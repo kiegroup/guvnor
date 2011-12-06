@@ -17,7 +17,7 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 

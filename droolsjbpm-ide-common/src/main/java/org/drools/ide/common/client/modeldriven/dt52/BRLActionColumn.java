@@ -18,7 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt52;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 
 /**
  * 
