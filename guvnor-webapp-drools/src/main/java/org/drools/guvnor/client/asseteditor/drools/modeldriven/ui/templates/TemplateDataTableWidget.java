@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.templatedata;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import java.util.List;
 
-import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetTemplateDataEvent;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
@@ -28,8 +28,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;

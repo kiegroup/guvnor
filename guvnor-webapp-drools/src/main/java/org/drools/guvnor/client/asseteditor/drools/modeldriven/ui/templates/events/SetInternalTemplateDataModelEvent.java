@@ -13,11 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.templatedata.events;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events;
 
 import java.util.List;
 
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataColumn;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateDataColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;

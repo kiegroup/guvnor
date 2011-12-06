@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.templatedata;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
-import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetTemplateDataEvent;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 
 import com.google.gwt.event.dom.client.ScrollEvent;

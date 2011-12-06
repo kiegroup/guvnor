@@ -29,14 +29,13 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.MessageWidget;
 
-
 /**
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewer extends GuvnorEditor {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
 
     interface RuleViewerBinder
             extends
@@ -44,46 +43,47 @@ public class RuleViewer extends GuvnorEditor {
 
     }
 
-    private static RuleViewerBinder uiBinder = GWT.create( RuleViewerBinder.class );
+    private static RuleViewerBinder  uiBinder  = GWT.create( RuleViewerBinder.class );
 
     @UiField(provided = true)
-    final Widget editor;
+    final Widget                     editor;
 
     @UiField
-    MessageWidget messageWidget;
+    MessageWidget                    messageWidget;
 
-    protected RuleAsset asset;
+    protected RuleAsset              asset;
     private final RuleViewerSettings ruleViewerSettings;
-    private final ClientFactory clientFactory;
-    private final EventBus eventBus;
+    private final ClientFactory      clientFactory;
+    private final EventBus           eventBus;
 
-    private long lastSaved = System.currentTimeMillis();
+    private long                     lastSaved = System.currentTimeMillis();
 
-    public RuleViewer(
-            RuleAsset asset,
-            ClientFactory clientFactory,
-            EventBus eventBus) {
+    public RuleViewer(RuleAsset asset,
+                      ClientFactory clientFactory,
+                      EventBus eventBus) {
         this( asset,
-                clientFactory,
-                eventBus,               
-                null );
+              clientFactory,
+              eventBus,
+              null );
     }
 
     /**
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,
                       EventBus eventBus,
                       boolean historicalReadOnly) {
         this( asset,
-                clientFactory,
-                eventBus,
-                null );
+              clientFactory,
+              eventBus,
+              null );
     }
 
     /**
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,
@@ -101,12 +101,12 @@ public class RuleViewer extends GuvnorEditor {
 
         //editor = EditorLauncher.getEditorViewer( asset, this );
         editor = clientFactory.getAssetEditorFactory().getAssetEditor( asset,
-                this,
-                clientFactory,
-                eventBus);
+                                                                       this,
+                                                                       clientFactory,
+                                                                       eventBus );
 
         // for designer we need to give it more playing room
-        if (editor instanceof BusinessProcessEditor) {  
+        if ( editor instanceof BusinessProcessEditor ) {
             if ( this.ruleViewerSettings.isStandalone() ) {
                 // standalone bigger dimensions"
                 editor.setWidth( "100%" );
@@ -125,15 +125,16 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     public Widget getAssetEditor() {
-    	return editor;
+        return editor;
     }
-    
+
     @Override
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;
     }
 
-	public void showInfoMessage(String message) {
-		messageWidget.showMessage(message);
-	}
+    public void showInfoMessage(String message) {
+        messageWidget.showMessage( message );
+    }
+
 }

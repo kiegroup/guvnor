@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;

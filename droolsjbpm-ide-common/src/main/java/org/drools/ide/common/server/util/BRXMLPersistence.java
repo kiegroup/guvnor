@@ -44,6 +44,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -136,6 +137,9 @@ public class BRXMLPersistence
         //See https://issues.jboss.org/browse/GUVNOR-1115
         this.xt.aliasPackage( "org.drools.guvnor.client",
                               "org.drools.ide.common.client" );
+
+        this.xt.alias( "org.drools.ide.common.client.modeldriven.dt.TemplateModel",
+                       TemplateModel.class );
 
     }
 

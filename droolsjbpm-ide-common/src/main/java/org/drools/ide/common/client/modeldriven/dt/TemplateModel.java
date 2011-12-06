@@ -51,102 +51,6 @@ public class TemplateModel extends RuleModel
     implements
     PortableObject {
 
-    /**
-     * Template interpolation variable including data-type, Fact Type and Fact
-     * Field
-     */
-    public static class InterpolationVariable {
-
-        private String varName;
-        private String dataType;
-        private String factType;
-        private String factField;
-
-        public InterpolationVariable(String varName,
-                                     String dataType) {
-            this.varName = varName;
-            this.dataType = dataType;
-        }
-
-        public InterpolationVariable(String varName,
-                                     String dataType,
-                                     String factType,
-                                     String factField) {
-            this.varName = varName;
-            this.dataType = dataType;
-            this.factType = factType;
-            this.factField = factField;
-        }
-
-        private boolean equalOrNull(Object lhs,
-                                    Object rhs) {
-            if ( lhs == null && rhs == null ) {
-                return true;
-            }
-            if ( lhs != null && rhs == null ) {
-                return false;
-            }
-            if ( lhs == null && rhs != null ) {
-                return false;
-            }
-            return lhs.equals( rhs );
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if ( obj == null ) {
-                return false;
-            }
-            if ( !(obj instanceof InterpolationVariable) ) {
-                return false;
-            }
-            InterpolationVariable that = (InterpolationVariable) obj;
-            return equalOrNull( this.varName,
-                                that.varName ) && equalOrNull( this.dataType,
-                                                               that.dataType ) && equalOrNull( this.factType,
-                                                                                               that.factType ) && equalOrNull( this.factField,
-                                                                                                                               that.factField );
-        }
-
-        public String getDataType() {
-            return dataType;
-        }
-
-        public String getFactField() {
-            return factField;
-        }
-
-        public String getFactType() {
-            return factType;
-        }
-
-        public String getVarName() {
-            return varName;
-        }
-
-        @Override
-        public int hashCode() {
-            int hashCode = (varName == null ? 1 : varName.hashCode());
-            hashCode = hashCode + 31 * (dataType == null ? 7 : dataType.hashCode());
-            hashCode = hashCode + 31 * (factType == null ? 7 : factType.hashCode());
-            hashCode = hashCode + 31 * (factField == null ? 7 : factField.hashCode());
-            return hashCode;
-        }
-
-        public void setFactField(String factField) {
-            this.factField = factField;
-        }
-
-        public void setFactType(String factType) {
-            this.factType = factType;
-        }
-
-        public void setVarName(String varName) {
-            this.varName = varName;
-        }
-
-    }
-
     public static class RuleModelVisitor {
 
         private IFactPattern                        factPattern;
@@ -496,7 +400,7 @@ public class TemplateModel extends RuleModel
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
         InterpolationVariable[] ret = new InterpolationVariable[vars.size() - 1];
         for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
-            if ( !ID_COLUMN_NAME.equals( entry.getKey().varName ) ) {
+            if ( !ID_COLUMN_NAME.equals( entry.getKey().getVarName() ) ) {
                 ret[entry.getValue()] = entry.getKey();
             }
         }
@@ -528,7 +432,7 @@ public class TemplateModel extends RuleModel
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
         for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
             InterpolationVariable var = entry.getKey();
-            String varName = var.varName;
+            String varName = var.getVarName();
             if ( ID_COLUMN_NAME.equals( varName ) ) {
                 continue;
             }
@@ -553,7 +457,7 @@ public class TemplateModel extends RuleModel
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
         for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
             InterpolationVariable var = entry.getKey();
-            String varName = var.varName;
+            String varName = var.getVarName();
             if ( ID_COLUMN_NAME.equals( varName ) ) {
                 continue;
             }
@@ -579,8 +483,8 @@ public class TemplateModel extends RuleModel
         // Retain all columns in table that are in vars
         Set<String> requiredVars = new HashSet<String>();
         for ( InterpolationVariable var : vars.keySet() ) {
-            if ( table.containsKey( var.varName ) ) {
-                requiredVars.add( var.varName );
+            if ( table.containsKey( var.getVarName() ) ) {
+                requiredVars.add( var.getVarName() );
             }
         }
         table.keySet().retainAll( requiredVars );
@@ -591,8 +495,8 @@ public class TemplateModel extends RuleModel
             aux.add( "" );
         }
         for ( InterpolationVariable var : vars.keySet() ) {
-            if ( !requiredVars.contains( var.varName ) ) {
-                table.put( var.varName,
+            if ( !requiredVars.contains( var.getVarName() ) ) {
+                table.put( var.getVarName(),
                            new ArrayList<String>( aux ) );
             }
         }

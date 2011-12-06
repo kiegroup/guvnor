@@ -76,7 +76,7 @@ public class RuleModeller extends DirtyableComposite
 
     private DirtyableFlexTable        layout;
     private RuleModel                 model;
-    private RuleModellerConfiguration configuration           = RuleModellerConfiguration.getInstance();
+    private RuleModellerConfiguration configuration;
     private boolean                   showingOptions          = false;
     private int                       currentLayoutRow        = 0;
     private String                    packageName;
@@ -92,7 +92,7 @@ public class RuleModeller extends DirtyableComposite
 
                                                                   public void execute() {
                                                                       hasModifiedWidgets = true;
-                                                                      verifyRule(null);
+                                                                      verifyRule( null );
                                                                   }
                                                               };
 
@@ -101,7 +101,7 @@ public class RuleModeller extends DirtyableComposite
                         ClientFactory clientFactory,
                         EventBus eventBus) {
         this( asset,
-              null,
+              viewer,
               new RuleModellerWidgetFactory() );
     }
 
@@ -111,9 +111,26 @@ public class RuleModeller extends DirtyableComposite
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();
         this.packageName = asset.getMetaData().getPackageName();
-
         this.widgetFactory = widgetFactory;
+        this.configuration = RuleModellerConfiguration.getDefault();
+        doLayout();
+    }
 
+    public RuleModeller(RuleAsset asset,
+                        RuleModel model,
+                        RuleModellerConfiguration configuration,
+                        ModellerWidgetFactory widgetFactory,
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
+        this.asset = asset;
+        this.model = model;
+        this.packageName = asset.getMetaData().getPackageName();
+        this.widgetFactory = widgetFactory;
+        this.configuration = configuration;
+        doLayout();
+    }
+
+    protected void doLayout() {
         layout = new DirtyableFlexTable();
 
         initWidget();
@@ -435,7 +452,10 @@ public class RuleModeller extends DirtyableComposite
 
     protected void showActionSelector(Widget w,
                                       Integer position) {
-        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model, this, packageName, position );
+        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model,
+                                                                                     this,
+                                                                                     packageName,
+                                                                                     position );
         popup.show();
     }
 
@@ -685,7 +705,7 @@ public class RuleModeller extends DirtyableComposite
         }
 
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-        Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets(asset.getMetaData().getPackageName());
+        Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets( asset.getMetaData().getPackageName() );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 

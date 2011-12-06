@@ -16,9 +16,11 @@
 
 package org.drools.guvnor.server.util;
 
+import java.io.ByteArrayInputStream;
+
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.template.DataProvider;
@@ -26,8 +28,6 @@ import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
 
 /**
  * This class persists a {@link TemplateModel} to DRL template

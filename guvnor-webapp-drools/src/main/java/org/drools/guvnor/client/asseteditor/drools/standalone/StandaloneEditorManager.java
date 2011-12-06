@@ -84,7 +84,7 @@ public class StandaloneEditorManager {
                         LoadingPopup.close();
 
                         //Configure RuleModeller
-                        RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
+                        RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getDefault();
                         ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
                         ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
                         ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());

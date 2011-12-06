@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.templatedata;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFa
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
-import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**

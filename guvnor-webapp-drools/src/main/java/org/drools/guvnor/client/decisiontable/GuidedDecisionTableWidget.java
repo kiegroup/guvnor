@@ -41,6 +41,7 @@ import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
@@ -128,10 +129,10 @@ public class GuidedDecisionTableWidget extends Composite
         WORKITEM_INSERT_FACT_FIELD
     }
 
-    public GuidedDecisionTableWidget(RuleAsset asset,
-                                     RuleViewer viewer,
-                                     ClientFactory clientFactory,
-                                     EventBus globalEventBus) {
+    public GuidedDecisionTableWidget(final RuleAsset asset,
+                                     final RuleViewer viewer,
+                                     final ClientFactory clientFactory,
+                                     final EventBus globalEventBus) {
 
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
@@ -181,6 +182,34 @@ public class GuidedDecisionTableWidget extends Composite
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtable );
+
+        // TODO {manstis} Checking use of RuleModel
+        Button ruleModelLHS = new Button( "Rule Model LHS",
+                                          new ClickHandler() {
+                                              public void onClick(ClickEvent event) {
+                                                  RuleModel ruleModel = new RuleModel();
+                                                  BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( asset,
+                                                                                                                     ruleModel,
+                                                                                                                     clientFactory,
+                                                                                                                     eventBus );
+                                                  popup.show();
+                                              }
+                                          } );
+//        layout.add( ruleModelLHS );
+
+        // TODO {manstis} Checking use of RuleModel
+        Button ruleModelRHS = new Button( "Rule Model RHS",
+                                          new ClickHandler() {
+                                              public void onClick(ClickEvent event) {
+                                                  RuleModel ruleModel = new RuleModel();
+                                                  BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( asset,
+                                                                                                               ruleModel,
+                                                                                                               clientFactory,
+                                                                                                               eventBus );
+                                                  popup.show();
+                                              }
+                                          } );
+//        layout.add( ruleModelRHS );
 
         initWidget( layout );
     }

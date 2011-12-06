@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,31 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 /**
- * Configuration singleton class for RuleModeller. 
+ * Configuration class for Rule Modeller.
  */
 public class RuleModellerConfiguration {
-    private static RuleModellerConfiguration INSTANCE;
-    
-    private RuleModellerConfiguration(){
-        
+
+    private static RuleModellerConfiguration DEFAULT;
+
+    private boolean                          hideLHS;
+    private boolean                          hideRHS;
+    private boolean                          hideAttributes;
+
+    public RuleModellerConfiguration(boolean hideLHS,
+                                     boolean hideRHS,
+                                     boolean hideAttrbiutes) {
+        this.hideLHS = hideLHS;
+        this.hideRHS = hideRHS;
+        this.hideAttributes = hideAttrbiutes;
     }
-    
-    private boolean hideLHS;
-    private boolean hideRHS;
-    private boolean hideAttributes;
-    
-    public synchronized static RuleModellerConfiguration getInstance(){
-        if (INSTANCE == null){
-            INSTANCE = new RuleModellerConfiguration();
+
+    public synchronized static RuleModellerConfiguration getDefault() {
+        if ( DEFAULT == null ) {
+            DEFAULT = new RuleModellerConfiguration( false,
+                                                     false,
+                                                     false );
         }
-        return INSTANCE;
+        return DEFAULT;
     }
 
     public boolean isHideAttributes() {
@@ -60,5 +67,5 @@ public class RuleModellerConfiguration {
     public void setHideRHS(boolean hideRHS) {
         this.hideRHS = hideRHS;
     }
-    
+
 }

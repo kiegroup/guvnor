@@ -69,5 +69,7 @@ public interface WizardResources
         
         String wizardDTableCaption();
         
+        String scrollPanel();
+        
     }
 }

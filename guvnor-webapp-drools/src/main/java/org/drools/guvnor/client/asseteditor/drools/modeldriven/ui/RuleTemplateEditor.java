@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataTableWidget;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateDataTableWidget;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
