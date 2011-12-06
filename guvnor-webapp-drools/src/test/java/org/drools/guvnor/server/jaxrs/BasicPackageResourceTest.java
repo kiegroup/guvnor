@@ -1042,6 +1042,70 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertTrue(entriesMap.get("2").getUpdated() != null);     
     }
     
+    @Test @RunAsClient @Ignore("Verify this test once we get Arquillian working")
+    public void testGetAssetVersionsAfterUpdatingSource(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {        
+        /*
+         * check version feed
+         */        
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/versions");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+        Document<Feed> doc = abdera.getParser().parse(in);
+        Feed feed = doc.getRoot();
+        assertEquals("Version history of model1", feed.getTitle());        
+        List<Entry> entries = feed.getEntries();
+        int versionNumbers = entries.size(); 
+        connection.disconnect();
+        
+        /*
+         * update the content rule4
+         */
+        URL url2 = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
+        HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+        connection2.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection2.setDoOutput(true);
+        connection2.setRequestMethod("PUT");
+        connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
+        String newContent = "rule 'nheron' when Goo1() then end";
+        out.write(newContent);
+        out.close();
+        connection2.getInputStream();
+        assertEquals(204, connection2.getResponseCode());
+                
+        /*
+         * check version feed
+         */        
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        
+        in = connection.getInputStream();
+        assertNotNull(in);
+        doc = abdera.getParser().parse(in);
+        feed = doc.getRoot();
+        assertEquals("Version history of model1", feed.getTitle());        
+        entries = feed.getEntries();
+        assertEquals(versionNumbers +1, entries.size());     
+    }
+    
     @Test @RunAsClient
     public void testGetHistoricalAssetForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/1");

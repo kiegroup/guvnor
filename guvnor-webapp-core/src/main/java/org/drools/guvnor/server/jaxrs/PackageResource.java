@@ -658,6 +658,7 @@ public class PackageResource extends Resource {
             AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(assetName);
             asset.checkout();
             asset.updateContent(content);
+            asset.checkin("Updated asset source from REST interface");
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
