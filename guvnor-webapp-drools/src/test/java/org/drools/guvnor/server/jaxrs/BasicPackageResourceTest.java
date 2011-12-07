@@ -559,6 +559,78 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (500, conn2.getResponseCode());
     }
+    
+    //https://bugzilla.redhat.com/show_bug.cgi?id=756683
+    @Test @RunAsClient @Ignore("verify this test indeed works once we get Arquillian working")
+    public void testRenamePackageFromAtom(@ArquillianResource URL baseURL) throws Exception {
+        //create a package for testing
+        Abdera abdera = new Abdera();
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        Entry entry = abdera.newEntry();        
+        entry.setTitle("testRenamePackageFromAtom");
+        entry.setSummary("desc for testRenamePackageFromAtom");
+        
+        ClientResponse resp = client.post(new URL(baseURL, "rest/packages").toExternalForm(), entry);
+        //System.out.println(GetContent(resp.getInputStream()));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        Document<Entry> doc = resp.getDocument();
+        Entry returnedEntry = doc.getRoot();
+        assertEquals(baseURL.getPath() + "rest/packages/testRenamePackageFromAtom", returnedEntry.getBaseUri().getPath());
+        assertEquals("testCreatePackageFromAtom", returnedEntry.getTitle());
+        assertEquals("desc for testCreatePackageFromAtom", returnedEntry.getSummary());
+        
+        //Test rename package
+        Entry e = abdera.newEntry();
+        e.setTitle("testRenamePackageFromAtomNew");
+        org.apache.abdera.model.Link l = Abdera.getNewFactory().newLink();
+        l.setHref(new URL(baseURL, "rest/packages/testRenamePackageFromAtomNew").toExternalForm());
+        l.setRel("self");
+        e.addLink(l);
+        e.setSummary("renamed package testCreatePackageFromAtom");
+        e.addAuthor("Test McTesty");        
+        resp = client.put(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm(), e);
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+        assertEquals(204, resp.getStatus());
+
+        //Verify everything still works after renaming
+        URL url1 = new URL(baseURL, "rest/packages/testRenamePackageFromAtomNew");
+        HttpURLConnection conn1 = (HttpURLConnection)url1.openConnection();
+        conn1.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        conn1.setRequestMethod("GET");
+        conn1.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn1.connect();
+        //System.out.println(GetContent(conn));
+        assertEquals (200, conn1.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, conn1.getContentType());
+        
+        InputStream in = conn1.getInputStream();
+        assertNotNull(in);
+        doc = abdera.getParser().parse(in);
+        entry = doc.getRoot();
+        assertEquals(baseURL.getPath() + "rest/packages/testRenamePackageFromAtomNew", entry.getBaseUri().getPath());
+        assertEquals("testRenamePackageFromAtomNew", entry.getTitle());
+        assertTrue(entry.getPublished() != null);
+        assertEquals("renamed package testCreatePackageFromAtom", entry.getSummary());
+        
+        //Roll back changes. 
+        resp = client.delete(new URL(baseURL, "rest/packages/testRenamePackageFromAtomNew").toExternalForm());
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        //Verify the package is indeed deleted
+        URL url2 = new URL(baseURL, "rest/packages/testRenamePackageFromAtomNew");
+        HttpURLConnection conn2 = (HttpURLConnection)url2.openConnection();
+        conn2.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        conn2.setRequestMethod("GET");
+        conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn2.connect();
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals (500, conn2.getResponseCode());
+    }
 
     @Ignore @Test @RunAsClient
     public void testCreatePackageFromJson(@ArquillianResource URL baseURL) {
