@@ -81,7 +81,7 @@
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <classifier>jboss-as-5.1</classifier>
+      <classifier>jboss-eap-5.1</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

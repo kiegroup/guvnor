@@ -23,7 +23,7 @@
       <listitem>
         <para><emphasis role="bold">Download the Guvnor distribution</emphasis> from <link
         xlink:href="the download site">the download site</link>. In the download zip, there's 1 war file per app server
-        version, for example <filename>guvnor-5.2.0-jboss-as-5.1.war</filename> for JBoss AS 5.1. Use the war file best
+        version, for example <filename>guvnor-5.2.0-jboss-eap-5.1.war</filename> for JBoss EAP 5.1. Use the war file best
         suited for your app server. Essentially there's little difference between those war files: mostly it's a matter
         of excluded jars which are already available on the app server.</para>
 
@@ -61,7 +61,7 @@
         <literal>localhost</literal> on port <literal>8080</literal>, for example at <link
         xlink:href="http//localhost:8080/guvnor/">http//localhost:8080/guvnor/</link> or (if you haven't rename the war
         file) at something like <link
-        xlink:href="http//localhost:8080/guvnor-5.2.0-jboss-as-5.1/">http//localhost:8080/guvnor-5.2.0-jboss-as-5.1/</link>.</para>
+        xlink:href="http//localhost:8080/guvnor-5.2.0-jboss-eap-5.1/">http//localhost:8080/guvnor-5.2.0-jboss-eap-5.1/</link>.</para>
       </listitem>
     </orderedlist>
   </section>

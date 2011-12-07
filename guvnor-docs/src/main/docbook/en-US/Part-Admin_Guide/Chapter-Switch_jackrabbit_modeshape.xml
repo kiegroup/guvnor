@@ -13,7 +13,7 @@
    install ModeShape as a service in JBossAS-5.x. Check the ModeShape project and download and install ModeShape 'kit'
    version 2.5.0 or later. After installing the kit, you should have a
    <filename>modeshape-service.jar</filename> directory in your deploy directory. Since ModeShape 2.5.0 only
-   support deployment to JBoss-5.x, make sure to also use the guvnor-5.2.0-jboss-as-5.1.war. Now we can remove some jars
+   support deployment to JBoss-5.x, make sure to also use the guvnor-5.2.0-jboss-eap-5.1.war. Now we can remove some jars
    from the guvnor WAR that are no longer needed, and in fact will cause classloading issues if you don't
    remove them:
     </para>
