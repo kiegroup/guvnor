@@ -24,9 +24,9 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
-import org.drools.guvnor.client.moduleeditor.drools.PackageNameValidator;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -346,7 +346,7 @@ public class PackageEditorActionToolbar extends Composite {
         ok.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( !PackageNameValidator.validatePackageName( name.getText() ) ) {
+                if ( !ModuleNameValidator.validatePackageName( name.getText() ) ) {
                     Window.alert( constants.NotAValidPackageName() );
                     return;
                 }

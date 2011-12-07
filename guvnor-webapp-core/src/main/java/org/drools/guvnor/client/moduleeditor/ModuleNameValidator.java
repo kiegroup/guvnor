@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.moduleeditor.drools;
+package org.drools.guvnor.client.moduleeditor;
 
-public class PackageNameValidator {
+public class ModuleNameValidator {
     public static boolean validatePackageName(String name) {
         if (name == null) return false;
         return name.matches("^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$");

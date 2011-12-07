@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -127,7 +128,7 @@ public class NewSubPackageWizard extends FormStylePopup {
         Button create = new Button( constants.CreatePackage() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( PackageNameValidator.validatePackageName( nameBox.getText() ) ) {
+                if ( ModuleNameValidator.validatePackageName( nameBox.getText() ) ) {
                     createSubPackageAction( nameBox.getText(),
                                             descBox.getText(),
                                             parentPackage.getSelectedPackage(),

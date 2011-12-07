@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -112,7 +113,7 @@ public class NewPackageWizard extends FormStylePopup {
         Button create = new Button(constants.CreatePackage());
         create.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-                if (PackageNameValidator.validatePackageName(nameBox.getText())) {
+                if (ModuleNameValidator.validatePackageName(nameBox.getText())) {
                     createPackageAction(nameBox.getText(),
                             descBox.getText());
                     hide();

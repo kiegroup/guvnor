@@ -31,8 +31,8 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
-import org.drools.guvnor.client.moduleeditor.drools.PackageNameValidator;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -71,7 +71,7 @@ public class NewSOAServiceWizard extends FormStylePopup {
         Button create = new Button("Create SOA Service");
         create.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-                if (PackageNameValidator.validatePackageName(nameBox.getText())) {
+                if (ModuleNameValidator.validatePackageName(nameBox.getText())) {
                     createSOAServiceAction(nameBox.getText(),
                             descBox.getText());
                     hide();
