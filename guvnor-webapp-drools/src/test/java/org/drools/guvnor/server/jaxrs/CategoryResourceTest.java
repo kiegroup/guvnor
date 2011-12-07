@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.jaxrs;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.namespace.QName;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Document;
@@ -38,6 +39,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -94,6 +96,31 @@ public class CategoryResourceTest extends GuvnorTestBase {
         rule.updateCategoryList(new String[]{"Category 1", "Category 2"});
         rule.checkin( "version 1" );
         
+    }
+
+    @Test @RunAsClient
+    public void createCategory(@ArquillianResource URL baseURL) throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        ClientResponse resp = client.put(new URL(baseURL, "rest/categories/createCategory").toExternalForm(),
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+    }
+
+    @Test @RunAsClient
+    public void deleteCategory(@ArquillianResource URL baseURL) throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        ClientResponse resp = client.put(new URL(baseURL, "rest/categories/deleteCategory").toExternalForm(),
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        resp = client.delete(new URL(baseURL, "rest/categories/deleteCategory").toExternalForm());
+        assertEquals(ResponseType.SUCCESS, resp.getType());
     }
 
     @Test @RunAsClient
@@ -154,8 +181,6 @@ public class CategoryResourceTest extends GuvnorTestBase {
         //rule2 and rule3 should be in the response
         assertTrue(assetNames.contains("rule2"));
         assertTrue(assetNames.contains("rule3"));
-        
-        
     }
     
     /**
