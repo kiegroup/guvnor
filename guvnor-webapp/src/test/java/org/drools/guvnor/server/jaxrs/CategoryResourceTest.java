@@ -34,6 +34,7 @@ import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -96,6 +97,27 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
     @AfterClass
     public static void tearDown() {
     	restTestingBase.tearDownGuvnorTestBase();
+    }
+
+    @Test
+    public void createCategory() throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+
+        ClientResponse resp = client.put(generateBaseUrl() +  "/categories/createCategory",
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+    }
+
+    @Test
+    public void deleteCategory() throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+
+        ClientResponse resp = client.put(generateBaseUrl() + "/categories/deleteCategory",
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        resp = client.delete(generateBaseUrl() + "/categories/deleteCategory");
+        assertEquals(ResponseType.SUCCESS, resp.getType());
     }
 
     @Test
