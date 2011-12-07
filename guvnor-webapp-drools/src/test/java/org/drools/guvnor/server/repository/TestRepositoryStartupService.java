@@ -18,43 +18,25 @@ package org.drools.guvnor.server.repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Specializes;
-import javax.inject.Named;
-import javax.jcr.LoginException;
 import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.repository.AssetItem;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryAdministrator;
-import org.drools.repository.RulesRepositoryConfigurator;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.events.CheckinEvent;
-import org.drools.repository.events.StorageEventManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.solder.core.Veto;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
  */
-@Alternative @Specializes
-public class TestRepositoryStartupService extends RepositoryStartupService {
+@Specializes // If this bean is in the classpath, it will replace the original one
+public class TestRepositoryStartupService extends ProductionRepositoryStartupService {
 
     @Override
     public Repository getRepositoryInstance() {
@@ -72,7 +54,7 @@ public class TestRepositoryStartupService extends RepositoryStartupService {
             }
             log.info("Deleted test repositoryDir (" + repositoryDir + ").");
         }
-        // Automated tests writes in the target dir, so "mvn clean" can cleans it
+        // Automated tests writes in the target dir, so "mvn clean" cleans it
         guvnorBootstrapConfiguration.getProperties().put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
                             repositoryDir.getAbsolutePath());
         return super.getRepositoryInstance();

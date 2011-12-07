@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotSame;
 
 import javax.jcr.Repository;
 
-import org.drools.repository.JCRRepositoryConfigurator;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class RepositoryStartupServiceTest {
     @Ignore("RepositoryStartupService is a Seam managed application-wide Singleton, mocking it is not healthy to other tests.")
     public void testConfiguration() throws Exception {
 
-        RepositoryStartupService config = new RepositoryStartupService();
+        RepositoryStartupService config = new ProductionRepositoryStartupService();
         // TODO seam3upgrade
 //        config.setHomeDirectory( "qed" );
         // TODO seam3upgrade

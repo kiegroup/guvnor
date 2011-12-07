@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TODO WARNING THIS FILE IS AN EXACT DUPLICATE OF src/main/webapp/WEB-INF/beans.xml
+  It is a workaround for https://issues.jboss.org/browse/SOLDER-220
+  This file should be deleted, the WEB-INF is the correct one.
+-->
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:s="urn:java:ee"
     xmlns:weld="http://jboss.org/schema/weld/beans"
@@ -8,22 +13,6 @@
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
-
-  <!--
-    TODO WARNING THIS FILE IS AN EXACT DUPLICATE OF src/main/webapp/WEB-INF/beans.xml
-    It is a workaround for https://issues.jboss.org/browse/SOLDER-220
-    This file should be deleted, the WEB-INF is the correct one.
-  -->
-
-  <weld:scan>
-    <!-- Disable the seam-security by drools rules -->
-    <weld:exclude name="org.jboss.seam.security.permission.RuleBasedPermissionResolver"/>
-    <!-- TODO remove me when GUVNOR-1196 is fixed -->
-    <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
-    <weld:exclude name="org.drools.guvnor.client.**"/>
-  </weld:scan>
-
-  <!-- TODO Move beans.xml under WEB-INF after this issue is fixed https://issues.jboss.org/browse/SEAMCONFIG-50 -->
 
   <guvnorRepository:GuvnorBootstrapConfiguration>
     <s:modifies/>
@@ -82,5 +71,13 @@
     <!--<s:modifies/>-->
     <!--<guvnorSecurity:enableRoleBasedAuthorization>true</guvnorSecurity:enableRoleBasedAuthorization>-->
   <!--</guvnorSecurity:RoleBasedPermissionResolver>-->
+
+  <weld:scan>
+    <!-- Disable the seam-security by drools rules -->
+    <weld:exclude name="org.jboss.seam.security.permission.RuleBasedPermissionResolver"/>
+    <!-- TODO remove me when GUVNOR-1196 is fixed -->
+    <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
+    <weld:exclude name="org.drools.guvnor.client.**"/>
+  </weld:scan>
 
 </beans>

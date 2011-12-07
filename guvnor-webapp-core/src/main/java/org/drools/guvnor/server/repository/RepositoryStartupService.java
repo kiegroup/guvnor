@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,27 @@
 
 package org.drools.guvnor.server.repository;
 
-
-import org.drools.repository.*;
-
+import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.Properties;
 
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryAdministrator;
+import org.drools.repository.RulesRepositoryConfigurator;
+import org.drools.repository.RulesRepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
  */
-@ApplicationScoped
-public class RepositoryStartupService {
+public abstract class RepositoryStartupService {
 
     protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -106,11 +103,6 @@ public class RepositoryStartupService {
         configurator.shutdown();
     }
 
-    /**
-     * This will create a new Session, based on the current user.
-     *
-     * @return
-     */
     public Session newSession(String userName) {
         try {
             return configurator.login(userName);
@@ -121,11 +113,6 @@ public class RepositoryStartupService {
         }
     }
 
-    /**
-     * This will create a new Session, based on the current user.
-     *
-     * @return
-     */
     public Session newSession(String userName, String password) {
         try {
             return configurator.login(userName, password);

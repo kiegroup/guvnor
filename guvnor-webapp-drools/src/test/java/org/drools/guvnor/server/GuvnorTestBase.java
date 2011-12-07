@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.KeyStoreHelper;
+import org.drools.guvnor.server.repository.TestRepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,6 +31,7 @@ import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
@@ -54,11 +56,6 @@ public abstract class GuvnorTestBase {
                 .importBuildOutput().importTestBuildOutput()
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
-        File mergedBeansXml = writeMergedBeansXmlFile();
-        webArchive.delete(ArchivePaths.create("WEB-INF/beans.xml"));
-        webArchive.addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"));
-        webArchive.delete(ArchivePaths.create("WEB-INF/classes/META-INF/beans.xm"));
-        webArchive.addAsWebInfResource(mergedBeansXml, ArchivePaths.create("classes/META-INF/beans.xml"));
 
         File explodedWarFile = new File("target/guvnor-webapp-drools-5.4.0-SNAPSHOT");
         if (!explodedWarFile.exists()) {
@@ -66,6 +63,10 @@ public abstract class GuvnorTestBase {
                     + ") should exist, run \"mvn package\" first.");
         }
         removeExcludedFiles(webArchive, explodedWarFile);
+        File shrinkwrapParentDir = new File("target/shrinkwrap");
+        FileUtils.deleteQuietly(shrinkwrapParentDir);
+        shrinkwrapParentDir.mkdirs();
+        webArchive.as(ExplodedExporter.class).exportExploded(shrinkwrapParentDir);
         // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
@@ -101,33 +102,8 @@ public abstract class GuvnorTestBase {
         // Adding all test scope dependencies is bad because it includes arquillian and shrinkwrap
         // For now, we just add what we need... this is not scalable
         webArchive.addClasses(org.apache.commons.httpclient.Credentials.class,
-                org.apache.commons.httpclient.UsernamePasswordCredentials.class);
-    }
-
-    private static File writeMergedBeansXmlFile() {
-        // TODO Workaround for https://issues.jboss.org/browse/ARQ-585
-        File productionBeansXml = new File("src/main/webapp/WEB-INF/beans.xml");
-        if (!productionBeansXml.exists()) {
-            throw new IllegalStateException("File productionBeansXml(" + productionBeansXml + ") does not exist.");
-        }
-        File mergedBeansXml = new File("target/mergedBeans.xml");
-        try {
-            List<String> lines = FileUtils.readLines(productionBeansXml, "UTF-8");
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                if (line.contains("</beans>")) {
-                    lines.set(i,
-                            "  <alternatives>\n" +
-                            "    <class>org.drools.guvnor.server.repository.TestRepositoryStartupService</class>\n" +
-                            "  </alternatives>\n" +
-                            "</beans>");
-                }
-            }
-            FileUtils.writeLines(mergedBeansXml, "UTF-8", lines, "\n");
-        } catch (IOException e) {
-            throw new RuntimeException("Could not write mergedBeansXml (" + mergedBeansXml + ").", e);
-        }
-        return mergedBeansXml;
+                org.apache.commons.httpclient.UsernamePasswordCredentials.class,
+                TestRepositoryStartupService.class);
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
