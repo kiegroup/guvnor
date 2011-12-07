@@ -81,51 +81,15 @@ public class WorkingSetManager {
      * refreshed.
      */
     public void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
-        this.applyWorkingSets(packageName, wss, false, done);
-    }
-    
-    /**
-     * Applies the workingSets' valid facts to SCE. This method DOESN'T update the
-     * internal activeWorkingSets map.
-     * @param packageName the package name.
-     * @param wss the WorkingSet' assets list
-     * @param done the command to execute after the SCE and internal map are
-     * refreshed.
-     */
-    public void applyTemporalWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
-        this.applyWorkingSets(packageName, wss, true, done);
-    }
-    
-    
-    private void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final boolean temporal, final Command done) {
-
-        
-        Command cmd = new Command() {
-
-            public void execute() {
-                //if (!temporal){
-                    //update the map
-                    activeWorkingSets.remove(packageName);
-                    if (wss != null && !wss.isEmpty()) {
-                        activeWorkingSets.put(packageName, wss);
-                    }
-                //}
-                if (done != null) {
-                    done.execute();
-                }
-            }
-        };
 
         if (wss == null || wss.isEmpty()) {
             //if no WS, we refresh the SCE (release any filter)
-            SuggestionCompletionCache.getInstance().refreshPackage(packageName, cmd);
-            //if (!temporal){
-                //update the map
-                this.activeWorkingSets.remove(packageName);
-            //}
-            return;
+            SuggestionCompletionCache.getInstance().refreshPackage(packageName, done);
+            //remove the WS from activeWorkingSets map
+            this.activeWorkingSets.remove(packageName);
         } else {
-
+            
+            //get all the validFact from all the WSs
             final Set<String> validFacts = new HashSet<String>();
             for (RuleAsset asset : wss) {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.getContent();
@@ -133,9 +97,13 @@ public class WorkingSetManager {
                     validFacts.addAll(Arrays.asList(wsConfig.validFacts));
                 }
             }
-
+            
+            //map the relation between package and WSs
+            activeWorkingSets.put(packageName, wss);
+            
+            //apply a filter to SCE
             SuggestionCompletionCache.getInstance().applyFactFilter(packageName,
-                    new SetFactTypeFilter(validFacts), cmd);
+                    new SetFactTypeFilter(validFacts), done);
         }
 
     }
