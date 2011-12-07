@@ -101,9 +101,12 @@ public abstract class GuvnorTestBase {
     private static void addTestDependencies(WebArchive webArchive) {
         // Adding all test scope dependencies is bad because it includes arquillian and shrinkwrap
         // For now, we just add what we need... this is not scalable
-        webArchive.addClasses(org.apache.commons.httpclient.Credentials.class,
-                org.apache.commons.httpclient.UsernamePasswordCredentials.class,
-                TestRepositoryStartupService.class);
+        webArchive.addClasses(
+                // Replace the production one
+                TestRepositoryStartupService.class,
+                // Stuff we need
+                org.apache.commons.httpclient.Credentials.class,
+                org.apache.commons.httpclient.UsernamePasswordCredentials.class);
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
