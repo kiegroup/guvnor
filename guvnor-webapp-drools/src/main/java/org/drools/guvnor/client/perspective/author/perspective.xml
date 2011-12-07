@@ -23,7 +23,7 @@
     <moduleeditor>
       <class>org.drools.guvnor.client.moduleeditor.drools.PackageEditor</class>
       <format>package</format>
-      <asseteditorformats>brl,dslr,xls,gdst,template,drl,function,dsl,jar,model.drl,rf,bpmn,bpmn2,rf,enumeration,scenario,properties,xml,,workingset,springContext,wid</asseteditorformats>
+      <asseteditorformats>brl,dslr,xls,gdst,template,drl,function,dsl,jar,model.drl,rf,bpmn,bpmn2,rf,enumeration,scenario,properties,xml,,workingset,springContext,wid,changeset</asseteditorformats>
     </moduleeditor>
   </moduleeditors>
 

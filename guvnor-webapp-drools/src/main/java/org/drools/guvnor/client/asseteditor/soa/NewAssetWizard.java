@@ -186,9 +186,9 @@ public class NewAssetWizard extends FormStylePopup {
                 description.setText( constants.DSLMappingTip() );
             } else if ( AssetFormats.ENUMERATION.equals( format ) ) {
                 description.setText( constants.NewEnumDoco() );
-            } else if ( format == AssetFormats.SPRING_CONTEXT ) {
+            } else if ( AssetFormats.SPRING_CONTEXT.equals(format)) {
                 description.setText( constants.DescSpringContext() );
-            } else if ( format == AssetFormats.WORKITEM_DEFINITION ) {
+            } else if ( AssetFormats.WORKITEM_DEFINITION.equals(format)) {
                 description.setText( constants.DeskWorkItemDefinition() );
             }
         }

@@ -114,6 +114,8 @@ public class AssetFormats {
 
     public static final String SPRING_CONTEXT = "springContext";
 
+    public static final String CHANGE_SET = "changeset";
+    
     /**
      * The following group the assets together for lists, helpers etc...
      */
@@ -123,6 +125,12 @@ public class AssetFormats {
      */
     private static final String[] PACKAGE_DEPENCENCIES = new String[]{AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL, AssetFormats.WORKING_SET};
 
+    /**
+     * These define assets that can be added as a resource definition inside a change-set
+     */
+    public static final String[] CHANGE_SET_RESOURCE = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DRL, AssetFormats.DSL, AssetFormats.BPMN2_PROCESS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE, AssetFormats.CHANGE_SET};
+
+    
     /**
      * Will return true if the given asset format is a package dependency (eg a function, DSL, model etc).
      * Package dependencies are needed before the package is validated, and any rule assets are processed.
