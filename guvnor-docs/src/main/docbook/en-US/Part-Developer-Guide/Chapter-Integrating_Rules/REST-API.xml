@@ -555,6 +555,26 @@
 
           <tbody>
             <row>
+              <entry>/categories/</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>Lists all categories</entry>
+            </row>
+
+            <row>
+              <entry>/categories/{categoryPath}</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>Returns the info of a single category.</entry>
+            </row>
+
+            <row>
               <entry>/categories/{categoryPath}/assets</entry>
 
               <entry>GET</entry>
