@@ -90,10 +90,10 @@ public class ConditionPopup extends FormStylePopup {
     private InfoPopup                  fieldLabelInterpolationInfo      = getPredicateHint();
 
     public ConditionPopup(SuggestionCompletionEngine sce,
-                                final GuidedDecisionTable52 model,
-                                final ConditionColumnCommand refreshGrid,
-                                final ConditionCol52 col,
-                                final boolean isNew) {
+                          final GuidedDecisionTable52 model,
+                          final ConditionColumnCommand refreshGrid,
+                          final ConditionCol52 col,
+                          final boolean isNew) {
         this.editingPattern = model.getPattern( col );
         this.editingCol = cloneConditionColumn( col );
         this.model = model;

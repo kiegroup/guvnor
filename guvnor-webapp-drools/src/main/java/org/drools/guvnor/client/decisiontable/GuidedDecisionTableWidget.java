@@ -41,7 +41,6 @@ import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
@@ -50,6 +49,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -99,6 +100,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
 
+    private RuleAsset                   asset;
     private GuidedDecisionTable52       guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
@@ -126,7 +128,8 @@ public class GuidedDecisionTableWidget extends Composite
         RETRACT_FACT,
         WORKITEM,
         WORKITEM_UPDATE_FACT_FIELD,
-        WORKITEM_INSERT_FACT_FIELD
+        WORKITEM_INSERT_FACT_FIELD,
+        BRL_FRAGMENT
     }
 
     public GuidedDecisionTableWidget(final RuleAsset asset,
@@ -134,6 +137,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      final ClientFactory clientFactory,
                                      final EventBus globalEventBus) {
 
+        this.asset = asset;
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
         this.packageName = asset.getMetaData().getPackageName();
@@ -187,29 +191,24 @@ public class GuidedDecisionTableWidget extends Composite
         Button ruleModelLHS = new Button( "Rule Model LHS",
                                           new ClickHandler() {
                                               public void onClick(ClickEvent event) {
-                                                  RuleModel ruleModel = new RuleModel();
-                                                  BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( asset,
-                                                                                                                     ruleModel,
+                                                  BRLConditionColumn column = new BRLConditionColumn();
+                                                  GenericColumnCommand refreshGridCommand = new GenericColumnCommand() {
+
+                                                      public void execute(DTColumnConfig52 column) {
+                                                      }
+                                                  };
+                                                  BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
+                                                                                                                     guidedDecisionTable,
+                                                                                                                     refreshGridCommand,
+                                                                                                                     true,
+                                                                                                                     asset,
+                                                                                                                     column,
                                                                                                                      clientFactory,
                                                                                                                      eventBus );
                                                   popup.show();
                                               }
                                           } );
-//        layout.add( ruleModelLHS );
-
-        // TODO {manstis} Checking use of RuleModel
-        Button ruleModelRHS = new Button( "Rule Model RHS",
-                                          new ClickHandler() {
-                                              public void onClick(ClickEvent event) {
-                                                  RuleModel ruleModel = new RuleModel();
-                                                  BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( asset,
-                                                                                                               ruleModel,
-                                                                                                               clientFactory,
-                                                                                                               eventBus );
-                                                  popup.show();
-                                              }
-                                          } );
-//        layout.add( ruleModelRHS );
+        layout.add( ruleModelLHS );
 
         initWidget( layout );
     }
@@ -406,10 +405,13 @@ public class GuidedDecisionTableWidget extends Composite
                                      ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
+                            addItem( constants.BRLFragmentAction(),
+                                     ActionTypes.BRL_FRAGMENT.name() );
                         } else {
                             removeItem( ActionTypes.WORKITEM.name() );
                             removeItem( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
                             removeItem( ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
+                            removeItem( ActionTypes.BRL_FRAGMENT.name() );
                         }
                         pop.center();
                     }
@@ -453,6 +455,8 @@ public class GuidedDecisionTableWidget extends Composite
                             showWorkItemActionSet();
                         } else if ( s.equals( ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() ) ) {
                             showWorkItemActionInsert();
+                        } else if ( s.equals( ActionTypes.BRL_FRAGMENT.name() ) ) {
+                            showBRLFragmentAction();
                         }
                         pop.hide();
                     }
@@ -460,28 +464,28 @@ public class GuidedDecisionTableWidget extends Composite
                     private void showInsert() {
                         final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
                         ActionInsertFactPopup ins = new ActionInsertFactPopup( getSCE(),
-                                                                                   guidedDecisionTable,
-                                                                                   new GenericColumnCommand() {
-                                                                                       public void execute(DTColumnConfig52 column) {
-                                                                                           newActionAdded( (ActionCol52) column );
-                                                                                       }
-                                                                                   },
-                                                                                   afc,
-                                                                                   true );
+                                                                               guidedDecisionTable,
+                                                                               new GenericColumnCommand() {
+                                                                                   public void execute(DTColumnConfig52 column) {
+                                                                                       newActionAdded( (ActionCol52) column );
+                                                                                   }
+                                                                               },
+                                                                               afc,
+                                                                               true );
                         ins.show();
                     }
 
                     private void showSet() {
                         final ActionSetFieldCol52 afc = makeNewActionSetColumn();
                         ActionSetFieldPopup set = new ActionSetFieldPopup( getSCE(),
-                                                                             guidedDecisionTable,
-                                                                             new GenericColumnCommand() {
-                                                                                 public void execute(DTColumnConfig52 column) {
-                                                                                     newActionAdded( (ActionCol52) column );
-                                                                                 }
-                                                                             },
-                                                                             afc,
-                                                                             true );
+                                                                           guidedDecisionTable,
+                                                                           new GenericColumnCommand() {
+                                                                               public void execute(DTColumnConfig52 column) {
+                                                                                   newActionAdded( (ActionCol52) column );
+                                                                               }
+                                                                           },
+                                                                           afc,
+                                                                           true );
                         set.show();
                     }
 
@@ -517,14 +521,14 @@ public class GuidedDecisionTableWidget extends Composite
                     private void showWorkItemActionSet() {
                         final ActionWorkItemSetFieldCol52 awisf = makeNewActionWorkItemSetField();
                         ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( getSCE(),
-                                                                                               guidedDecisionTable,
-                                                                                               new GenericColumnCommand() {
-                                                                                                   public void execute(DTColumnConfig52 column) {
-                                                                                                       newActionAdded( (ActionCol52) column );
-                                                                                                   }
-                                                                                               },
-                                                                                               awisf,
-                                                                                               true );
+                                                                                             guidedDecisionTable,
+                                                                                             new GenericColumnCommand() {
+                                                                                                 public void execute(DTColumnConfig52 column) {
+                                                                                                     newActionAdded( (ActionCol52) column );
+                                                                                                 }
+                                                                                             },
+                                                                                             awisf,
+                                                                                             true );
                         popup.show();
                     }
 
@@ -539,6 +543,23 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                      },
                                                                                                      awiif,
                                                                                                      true );
+                        popup.show();
+                    }
+
+                    private void showBRLFragmentAction() {
+                        final BRLActionColumn column = makeNewBRLActionFragment();
+                        BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( sce,
+                                                                                     guidedDecisionTable,
+                                                                                     new GenericColumnCommand() {
+                                                                                         public void execute(DTColumnConfig52 column) {
+                                                                                             newActionAdded( (ActionCol52) column );
+                                                                                         }
+                                                                                     },
+                                                                                     true,
+                                                                                     asset,
+                                                                                     column,
+                                                                                     clientFactory,
+                                                                                     eventBus );
                         popup.show();
                     }
 
@@ -591,13 +612,18 @@ public class GuidedDecisionTableWidget extends Composite
             }
 
             private ActionWorkItemSetFieldCol52 makeNewActionWorkItemSetField() {
-                ///Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
+                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
                 return new ActionWorkItemSetFieldCol52();
             }
 
             private ActionWorkItemInsertFactCol52 makeNewActionWorkItemInsertFact() {
-                ///Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
+                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
                 return new ActionWorkItemInsertFactCol52();
+            }
+
+            private BRLActionColumn makeNewBRLActionFragment() {
+                //TODO {manstis} Limited Entry
+                return new BRLActionColumn();
             }
 
         } );

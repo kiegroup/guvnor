@@ -2571,4 +2571,6 @@ public interface Constants
     
     String LogicallyInsertColon();
 
+    String BRLFragmentAction();
+    
 }

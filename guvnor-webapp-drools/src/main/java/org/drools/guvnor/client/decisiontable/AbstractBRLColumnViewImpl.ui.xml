@@ -35,7 +35,7 @@
     <gwt:ScrollPanel ui:field="brlEditorContainer" styleName="{wizardResources.style.scrollPanel}">
       <guvnor:RuleModeller ui:field="ruleModeller"/>
     </gwt:ScrollPanel>
-    <gwt:Button text="{i18n.ApplyChanges}"></gwt:Button>
+    <gwt:Button ui:field="cmdApplyChanges" text="{i18n.ApplyChanges}" />
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

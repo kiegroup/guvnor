@@ -15,27 +15,58 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.List;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
 
 /**
  * An editor for a BRL Condition Columns
  */
-public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl {
+public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPattern> {
 
-    public BRLConditionColumnViewImpl(RuleAsset asset,
-                                      RuleModel ruleModel,
-                                      ClientFactory clientFactory,
-                                      EventBus eventBus) {
-
-        super( asset,
-               ruleModel,
+    public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
+                                      final GuidedDecisionTable52 model,
+                                      final GenericColumnCommand refreshGrid,
+                                      final boolean isNew,
+                                      final RuleAsset asset,
+                                      final BRLConditionColumn column,
+                                      final ClientFactory clientFactory,
+                                      final EventBus eventBus) {
+        super( sce,
+               model,
+               isNew,
+               asset,
+               column,
                clientFactory,
                eventBus );
+    }
+
+    protected boolean isHeaderUnique(String header) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( c.getHeader().equals( header ) ) return false;
+            }
+        }
+        return true;
+    }
+
+    public RuleModel getRuleModel(BRLColumn<IPattern> column) {
+        RuleModel ruleModel = new RuleModel();
+        List<IPattern> definition = column.getDefinition();
+        ruleModel.lhs = definition.toArray( new IPattern[definition.size()] );
+        return ruleModel;
     }
 
     public RuleModellerConfiguration getRuleModellerConfiguration() {

@@ -42,7 +42,7 @@ public class RuleModel
 
     public RuleModel() {
     }
-
+    
     /**
      * This will return a List<String> of all FactPattern bindings
      * 

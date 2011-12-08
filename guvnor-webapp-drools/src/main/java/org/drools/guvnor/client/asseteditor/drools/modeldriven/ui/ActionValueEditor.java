@@ -191,7 +191,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 public void onChange(ChangeEvent event) {
                     ListBox w = (ListBox) event.getSource();
                     value.value = "=" + w.getValue( w.getSelectedIndex() );
-                    executeOnChageCommand();
+                    executeOnChangeCommand();
                     makeDirty();
                     refresh();
                 }
@@ -212,7 +212,7 @@ public class ActionValueEditor extends DirtyableComposite {
                                                           public void valueChanged(String newText,
                                                                                    String newValue) {
                                                               value.value = newValue;
-                                                              executeOnChageCommand();
+                                                              executeOnChangeCommand();
                                                               makeDirty();
                                                           }
                                                       },
@@ -247,7 +247,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
             public void onChange(ChangeEvent event) {
                 c.value = box.getText();
-                executeOnChageCommand();
+                executeOnChangeCommand();
                 makeDirty();
             }
         } );
@@ -295,7 +295,8 @@ public class ActionValueEditor extends DirtyableComposite {
                 value.nature = FieldNature.TYPE_LITERAL;
                 value.value = "";
                 makeDirty();
-                executeOnChageCommand();
+                executeOnChangeCommand();
+                executeOnTemplateVariablesChange();
                 refresh();
                 form.hide();
             }
@@ -496,7 +497,7 @@ public class ActionValueEditor extends DirtyableComposite {
         return h;
     }
 
-    private void executeOnChageCommand() {
+    private void executeOnChangeCommand() {
         if ( this.onChangeCommand != null ) {
             this.onChangeCommand.execute();
         }
@@ -510,4 +511,9 @@ public class ActionValueEditor extends DirtyableComposite {
         this.onChangeCommand = onChangeCommand;
     }
 
+    public void executeOnTemplateVariablesChange() {
+        
+    }
+
+    
 }

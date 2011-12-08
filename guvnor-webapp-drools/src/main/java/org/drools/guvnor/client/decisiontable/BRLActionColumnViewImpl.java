@@ -15,30 +15,60 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.List;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
 
 /**
  * An editor for a BRL Action Columns
  */
-public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl {
+public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction> {
 
-    public BRLActionColumnViewImpl(RuleAsset asset,
-                                   RuleModel ruleModel,
-                                   ClientFactory clientFactory,
-                                   EventBus eventBus) {
-
-        super( asset,
-               ruleModel,
+    public BRLActionColumnViewImpl(final SuggestionCompletionEngine sce,
+                                   final GuidedDecisionTable52 model,
+                                   final GenericColumnCommand refreshGrid,
+                                   final boolean isNew,
+                                   final RuleAsset asset,
+                                   final BRLActionColumn column,
+                                   final ClientFactory clientFactory,
+                                   final EventBus eventBus) {
+        super( sce,
+               model,
+               isNew,
+               asset,
+               column,
                clientFactory,
                eventBus );
+
+        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
     }
 
-    public RuleModellerConfiguration getRuleModellerConfiguration() {
+    protected boolean isHeaderUnique(String header) {
+        for ( ActionCol52 o : model.getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
+        }
+        return true;
+    }
+
+    protected RuleModel getRuleModel(BRLColumn<IAction> column) {
+        RuleModel ruleModel = new RuleModel();
+        List<IAction> definition = column.getDefinition();
+        ruleModel.rhs = definition.toArray( new IAction[definition.size()] );
+        return ruleModel;
+    }
+
+    protected RuleModellerConfiguration getRuleModellerConfiguration() {
         return new RuleModellerConfiguration( true,
                                               false,
                                               true );

@@ -20,27 +20,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 
 /**
- * An Action column defined with a BRL fragment
+ * A Condition column defined with a BRL fragment
  */
-public class BRLActionColumn extends ActionCol52
+public class BRLConditionColumn extends ConditionCol52
     implements
-    BRLColumn<IAction> {
+    BRLColumn<IPattern> {
 
     private static final long                   serialVersionUID = 540l;
 
-    private List<IAction>                       definition       = new ArrayList<IAction>();
+    private List<IPattern>                      definition       = new ArrayList<IPattern>();
 
     private Map<InterpolationVariable, Integer> variables        = new HashMap<InterpolationVariable, Integer>();
 
-    public List<IAction> getDefinition() {
+    public List<IPattern> getDefinition() {
         return this.definition;
     }
 
-    public void setDefinition(List<IAction> definition) {
+    public void setDefinition(List<IPattern> definition) {
         this.definition = definition;
     }
 

@@ -15,6 +15,11 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
@@ -23,14 +28,22 @@ import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelVisitor;
+import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -39,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * An editor for BRL Column definitions
  */
-public abstract class AbstractBRLColumnViewImpl extends Popup
+public abstract class AbstractBRLColumnViewImpl<T> extends Popup
     implements
     RuleModelEditor,
     AbstractBRLColumnView {
@@ -57,41 +70,86 @@ public abstract class AbstractBRLColumnViewImpl extends Popup
     @UiField
     TextBox                          txtColumnHeader;
 
-    @UiField(provided = true)
+    @UiField
     CheckBox                         chkHideColumn;
 
     @UiField
     ScrollPanel                      brlEditorContainer;
 
+    @UiField
+    Button                           cmdApplyChanges;
+
     Widget                           popupContent;
 
+    @SuppressWarnings("rawtypes")
     interface AbstractBRLColumnEditorBinder
         extends
         UiBinder<Widget, AbstractBRLColumnViewImpl> {
     }
 
-    private static AbstractBRLColumnEditorBinder uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
+    private static AbstractBRLColumnEditorBinder  uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
 
-    protected final RuleModel                    ruleModel;
-    protected final ClientFactory                clientFactory;
-    protected final EventBus                     eventBus;
+    private final SuggestionCompletionEngine      sce;
+    private final DTCellValueWidgetFactory        factory;
 
-    public AbstractBRLColumnViewImpl(RuleAsset asset,
-                                     RuleModel ruleModel,
-                                     ClientFactory clientFactory,
-                                     EventBus eventBus) {
-        this.ruleModel = ruleModel;
+    protected final GuidedDecisionTable52         model;
+    protected final ClientFactory                 clientFactory;
+    protected final EventBus                      eventBus;
+    protected final boolean                       isNew;
+
+    private final BRLColumn<T>                    editingCol;
+    private final BRLColumn<T>                    originalCol;
+
+    protected final RuleModel                     ruleModel;
+    protected Map<InterpolationVariable, Integer> variables;
+
+    public AbstractBRLColumnViewImpl(final SuggestionCompletionEngine sce,
+                                     final GuidedDecisionTable52 model,
+                                     final boolean isNew,
+                                     final RuleAsset asset,
+                                     final BRLColumn<T> column,
+                                     final ClientFactory clientFactory,
+                                     final EventBus eventBus) {
+        this.model = model;
+        this.sce = sce;
+        this.isNew = isNew;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
+
+        this.originalCol = column;
+        this.editingCol = cloneBRLActionColumn( column );
+        this.variables = editingCol.getVariables();
+
+        //TODO {manstis} Limited Entry - Set-up factory for common widgets
+        factory = new DTCellValueWidgetFactory( model,
+                                                sce );
+
+        setModal( false );
+
+        this.ruleModel = getRuleModel( editingCol );
         this.ruleModeller = new RuleModeller( asset,
                                               this.ruleModel,
                                               getRuleModellerConfiguration(),
                                               new TemplateModellerWidgetFactory(),
                                               clientFactory,
-                                              eventBus );
+                                              eventBus ) {
 
-        //TODO {manstis} This needs to come from the column!
-        this.chkHideColumn = DTCellValueWidgetFactory.getHideColumnIndicator( new DTColumnConfig52() );
+            @Override
+            public void refreshWidget() {
+                variables = getDefinedVariables();
+                cmdApplyChanges.setEnabled( variables.size() > 0 );
+                super.refreshWidget();
+            }
+
+            private Map<InterpolationVariable, Integer> getDefinedVariables() {
+                Map<InterpolationVariable, Integer> variables = new HashMap<InterpolationVariable, Integer>();
+                RuleModelVisitor rmv = new RuleModelVisitor( ruleModel,
+                                                             variables );
+                rmv.visitRuleModel( ruleModel );
+                return variables;
+            }
+
+        };
 
         this.popupContent = uiBinder.createAndBindUi( this );
 
@@ -99,9 +157,14 @@ public abstract class AbstractBRLColumnViewImpl extends Popup
         setWidth( getPopupWidth() + "px" );
         this.brlEditorContainer.setHeight( (getPopupHeight() - 120) + "px" );
         this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
+        this.cmdApplyChanges.setEnabled( variables.size() > 0 );
     }
 
-    public abstract RuleModellerConfiguration getRuleModellerConfiguration();
+    protected abstract boolean isHeaderUnique(String header);
+
+    protected abstract RuleModel getRuleModel(BRLColumn<T> column);
+
+    protected abstract RuleModellerConfiguration getRuleModellerConfiguration();
 
     public RuleModeller getRuleModeller() {
         return this.ruleModeller;
@@ -140,6 +203,72 @@ public abstract class AbstractBRLColumnViewImpl extends Popup
             h = MIN_HEIGHT;
         }
         return h;
+    }
+
+    @UiHandler("txtColumnHeader")
+    void columnHanderChangeHandler(ChangeEvent event) {
+        editingCol.setHeader( txtColumnHeader.getText() );
+    }
+
+    @UiHandler("chkHideColumn")
+    void hideColumnClickHandler(ClickEvent event) {
+        editingCol.setHideColumn( chkHideColumn.getValue() );
+    }
+
+    @UiHandler("cmdApplyChanges")
+    void applyChangesClickHandler(ClickEvent event) {
+
+        //Template Keys for column definitions
+        for ( Map.Entry<InterpolationVariable, Integer> entry : variables.entrySet() ) {
+            Integer value = entry.getValue();
+            InterpolationVariable variable = entry.getKey();
+            System.out.println( value + ") " + variable.getVarName() + " = " + variable.getFactType() + "." + variable.getFactField() );
+        }
+
+        //Validation
+        if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
+            Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+            return;
+        }
+        if ( isNew ) {
+            if ( !isHeaderUnique( editingCol.getHeader() ) ) {
+                Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                return;
+            }
+
+        } else {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
+                if ( !isHeaderUnique( editingCol.getHeader() ) ) {
+                    Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    return;
+                }
+            }
+        }
+
+        // Pass new\modified column back for handling
+        //refreshGrid.execute( editingCol );
+        hide();
+    }
+
+    private BRLColumn<T> cloneBRLActionColumn(BRLColumn<T> col) {
+        //TODO {manstis} Deep copy a RuleModel object with a visitor and copy constructors - needed to be able to cancel screen
+        return col;
+    }
+
+    private List<InterpolationVariable> cloneVariables(List<InterpolationVariable> variables) {
+        List<InterpolationVariable> clone = new ArrayList<InterpolationVariable>();
+        for ( InterpolationVariable variable : variables ) {
+            clone.add( cloneVariable( variable ) );
+        }
+        return clone;
+    }
+
+    private InterpolationVariable cloneVariable(InterpolationVariable variable) {
+        InterpolationVariable clone = new InterpolationVariable( variable.getVarName(),
+                                                                 variable.getDataType(),
+                                                                 variable.getFactType(),
+                                                                 variable.getFactField() );
+        return clone;
     }
 
 }

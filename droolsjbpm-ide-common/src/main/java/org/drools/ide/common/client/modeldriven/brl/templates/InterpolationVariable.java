@@ -23,15 +23,15 @@ public class InterpolationVariable {
     private String factField;
 
     public InterpolationVariable(String varName,
-                                     String dataType) {
+                                 String dataType) {
         this.varName = varName;
         this.dataType = dataType;
     }
 
     public InterpolationVariable(String varName,
-                                     String dataType,
-                                     String factType,
-                                     String factField) {
+                                 String dataType,
+                                 String factType,
+                                 String factField) {
         this.varName = varName;
         this.dataType = dataType;
         this.factType = factType;
