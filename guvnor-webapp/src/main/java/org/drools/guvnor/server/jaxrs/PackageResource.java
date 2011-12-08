@@ -25,6 +25,7 @@ import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
@@ -220,12 +221,14 @@ public class PackageResource extends Resource {
             if (p.isBinaryUpToDate()) {
                 result = p.getCompiledPackageBytes();
             } else {
-                StringBuilder errs = new StringBuilder();
                 BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
                 if (builderResult != null) {
+                    StringBuilder errs = new StringBuilder();
                     errs.append("Unable to build package name [").append(packageName).append("]\n");
-                    StringBuilder buf = createStringBuilderFrom(builderResult);
-                    return Response.status(500).entity(buf.toString()).build();
+                    for (BuilderResultLine resultLine : builderResult.getLines()) {
+                        errs.append(resultLine.toString()).append("\n");
+                    }
+                    return Response.status(500).entity(errs.toString()).build();
                 }
                 result = repository.loadPackage(packageName).getCompiledPackageBytes();
             }
@@ -234,15 +237,6 @@ public class PackageResource extends Resource {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
         }
-    }
-
-    private StringBuilder createStringBuilderFrom(BuilderResult res) {
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < res.getLines().size(); i++) {
-            buf.append(res.getLines().get(i).toString());
-            buf.append('\n');
-        }
-        return buf;
     }
 
     @GET
