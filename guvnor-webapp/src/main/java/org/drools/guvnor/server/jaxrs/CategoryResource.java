@@ -65,22 +65,20 @@ public class CategoryResource extends Resource {
         return ret;
     }
 
-    @GET
-    @Path("{categoryPath}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Category> getCategoriesAsJAXB(@PathParam("categoryPath") String categoryPath) {
-        Collection<Category> ret = new ArrayList<Category>();
-        CategoryItem categoryItem = repository.loadCategory(categoryPath);
-        addChildrenRecursively(ret, categoryItem);
-        return ret;
-    }
-
     private void addChildrenRecursively(Collection<Category> ret, CategoryItem categoryItem) {
         List<CategoryItem> children = categoryItem.getChildTags();
         for (CategoryItem child : children) {
             ret.add(toCategory(child, uriInfo));
             addChildrenRecursively(ret, child);
         }
+    }
+
+    @GET
+    @Path("{categoryPath}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Category getCategoryAsJAXB(@PathParam("categoryPath") String categoryPath) {
+        CategoryItem categoryItem = repository.loadCategory(categoryPath);
+        return toCategory(categoryItem, uriInfo);
     }
 
     @GET
