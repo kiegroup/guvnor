@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.jaxrs.jaxb;
 
+import java.net.URI;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,6 +25,8 @@ public class Category {
 
     private String path;
 
+    private URI refLink;
+
     @XmlElement()
     public String getPath() {
         return path;
@@ -31,6 +34,15 @@ public class Category {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @XmlElement
+    public URI getRefLink() {
+        return refLink;
+    }
+
+    public void setRefLink(URI refLink) {
+        this.refLink = refLink;
     }
 
 }

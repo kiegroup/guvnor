@@ -99,6 +99,19 @@ public class CategoryResourceTest extends GuvnorTestBase {
     }
 
     @Test @RunAsClient
+    public void getCategoriesAsJAXB(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+    }
+
+    @Test @RunAsClient
     public void createCategory(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
