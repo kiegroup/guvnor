@@ -73,40 +73,60 @@
 
           <tbody>
             <row>
-              <entry>/categories/{categoryName}/assets</entry>
+              <entry>/categories/{categoryPath}/assets</entry>
 
               <entry>GET</entry>
 
               <entry>application/atom/xml</entry>
 
               <entry>Retrieves an Atom feed to all Rule assets that have the
-              category {categoryName}</entry>
+              category {categoryPath}</entry>
             </row>
 
             <row>
-              <entry>/categories/{categoryName}/assets</entry>
+              <entry>/categories/{categoryPath}/assets</entry>
 
               <entry>GET</entry>
 
               <entry>application/json and application/xml</entry>
 
               <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryName}</entry>
+              Asset that have the category {categoryPath}</entry>
             </row>
 
             <row>
-              <entry>/categories/{categoryName}/assets//page/{page}</entry>
+              <entry>/categories/{categoryPath}/assets//page/{page}</entry>
 
               <entry>GET</entry>
 
               <entry>application/json and application/xml</entry>
 
               <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryName} and retrieves page
+              Asset that have the category {categoryPath} and retrieves page
               {page} with is a numeric (1,2, 3, etc..). A page contains 10
               elements. If the list contains 20 elements then the list will
               have 2 pages. You first have to call for page 1 and then call
               for page 2</entry>
+            </row>
+
+            <row>
+              <entry>/categories/{categoryPath}</entry>
+
+              <entry>PUT</entry>
+
+              <entry>none</entry>
+
+              <entry>Creates a new category with the category path {categoryPath}.</entry>
+            </row>
+
+            <row>
+              <entry>/categories/{categoryPath}</entry>
+
+              <entry>DELETE</entry>
+
+              <entry>none</entry>
+
+              <entry>Deletes the category with the category path {categoryPath}.</entry>
             </row>
           </tbody>
         </tgroup>
