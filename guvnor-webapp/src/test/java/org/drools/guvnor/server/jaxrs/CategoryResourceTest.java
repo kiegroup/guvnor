@@ -31,6 +31,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
+import org.drools.util.codec.Base64;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -97,6 +98,17 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
     @AfterClass
     public static void tearDown() {
     	restTestingBase.tearDownGuvnorTestBase();
+    }
+
+    @Test
+    public void getCategoriesAsJAXB() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/categories");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
     }
 
     @Test

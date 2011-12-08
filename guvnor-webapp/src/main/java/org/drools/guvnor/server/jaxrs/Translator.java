@@ -50,6 +50,9 @@ public class Translator {
     public static Category toCategory(CategoryItem categoryItem, UriInfo uriInfo) {
         Category category = new Category();
         category.setPath(categoryItem.getFullPath());
+        category.setRefLink(uriInfo.getBaseUriBuilder()
+                .path("/categories/{categoryPath}")
+                .build(categoryItem.getFullPath()));
         return category;
     }
 

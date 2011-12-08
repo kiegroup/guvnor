@@ -25,6 +25,7 @@ import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
+import org.drools.repository.CategoryItem;
 import org.jboss.seam.annotations.Name;
 
 import javax.ws.rs.Consumes;
@@ -43,8 +44,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.*;
 
 /*import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -57,15 +57,42 @@ public class CategoryResource extends Resource {
     private final int pageSize = 10;
 
     @GET
-    @Path("{categoryName}/assets")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Category> getCategoriesAsJAXB() {
+        Collection<Category> ret = new ArrayList<Category>();
+        CategoryItem rootItem = repository.loadCategory("/");
+        addChildrenRecursively(ret, rootItem);
+        return ret;
+    }
+
+    @GET
+    @Path("{categoryPath}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Category> getCategoriesAsJAXB(@PathParam("categoryPath") String categoryPath) {
+        Collection<Category> ret = new ArrayList<Category>();
+        CategoryItem categoryItem = repository.loadCategory(categoryPath);
+        addChildrenRecursively(ret, categoryItem);
+        return ret;
+    }
+
+    private void addChildrenRecursively(Collection<Category> ret, CategoryItem categoryItem) {
+        List<CategoryItem> children = categoryItem.getChildTags();
+        for (CategoryItem child : children) {
+            ret.add(toCategory(child, uriInfo));
+            addChildrenRecursively(ret, child);
+        }
+    }
+
+    @GET
+    @Path("{categoryPath}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Feed getAssetsAsAtom(@PathParam("categoryName") String categoryName) {
+    public Feed getAssetsAsAtom(@PathParam("categoryPath") String categoryPath) {
         Factory factory = Abdera.getNewFactory();
         Feed f = factory.getAbdera().newFeed();
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-        f.setTitle(categoryName);
+        f.setTitle(categoryPath);
         AssetItemPageResult result = repository.findAssetsByCategory(
-                categoryName, 0, pageSize);
+                categoryPath, 0, pageSize);
         List<AssetItem> assets = result.assets;
         for (AssetItem item : assets) {
             Entry e = toAssetEntryAbdera(item, uriInfo);
@@ -75,8 +102,8 @@ public class CategoryResource extends Resource {
             Link l = factory.newLink();
             l.setRel("next-page");
             l.setHref(uriInfo.getBaseUriBuilder()
-                    .path("categories/{categoryName}/assets//page/{pageNumber}")
-                    .build(categoryName, (Integer) 1)
+                    .path("categories/{categoryPath}/assets//page/{pageNumber}")
+                    .build(categoryPath, (Integer) 1)
                     .toString());
             f.addLink(l);
         }
@@ -85,11 +112,11 @@ public class CategoryResource extends Resource {
     }
 
     @GET
-    @Path("{categoryName}/assets")
+    @Path("{categoryPath}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Asset> getAssetsAsJAXB(@PathParam("categoryName") String categoryName) {
+    public Collection<Asset> getAssetsAsJAXB(@PathParam("categoryPath") String categoryPath) {
         Collection<Asset> ret = new ArrayList<Asset>();
-        AssetItemPageResult result = repository.findAssetsByCategory(categoryName, 0, pageSize);
+        AssetItemPageResult result = repository.findAssetsByCategory(categoryPath, 0, pageSize);
         List<AssetItem> assets = result.assets;
         if (assets.size() > 0) {
             ret = new ArrayList<Asset>();
