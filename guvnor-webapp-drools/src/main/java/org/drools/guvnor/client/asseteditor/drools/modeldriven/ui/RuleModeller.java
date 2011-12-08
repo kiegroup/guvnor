@@ -82,6 +82,7 @@ public class RuleModeller extends DirtyableComposite
     private String                    packageName;
     private RuleAsset                 asset;
     private ModellerWidgetFactory     widgetFactory;
+    private EventBus                  eventBus;
 
     private List<RuleModellerWidget>  lhsWidgets              = new ArrayList<RuleModellerWidget>();
     private List<RuleModellerWidget>  rhsWidgets              = new ArrayList<RuleModellerWidget>();
@@ -102,15 +103,20 @@ public class RuleModeller extends DirtyableComposite
                         EventBus eventBus) {
         this( asset,
               viewer,
+              clientFactory,
+              eventBus,
               new RuleModellerWidgetFactory() );
     }
 
     public RuleModeller(RuleAsset asset,
                         RuleViewer viewer,
+                        ClientFactory clientFactory,
+                        EventBus eventBus,
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();
         this.packageName = asset.getMetaData().getPackageName();
+        this.eventBus = eventBus;
         this.widgetFactory = widgetFactory;
         this.configuration = RuleModellerConfiguration.getDefault();
         doLayout();
@@ -124,6 +130,7 @@ public class RuleModeller extends DirtyableComposite
                         EventBus eventBus) {
         this.asset = asset;
         this.model = model;
+        this.eventBus = eventBus;
         this.packageName = asset.getMetaData().getPackageName();
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
@@ -348,6 +355,7 @@ public class RuleModeller extends DirtyableComposite
             Boolean readOnly = this.lockRHS() ? true : null;
 
             RuleModellerWidget w = getWidgetFactory().getWidget( this,
+                                                                 eventBus,
                                                                  action,
                                                                  readOnly );
             w.addOnModifiedCommand( this.onWidgetModifiedCommand );
@@ -474,6 +482,7 @@ public class RuleModeller extends DirtyableComposite
             IPattern pattern = model.lhs[i];
 
             RuleModellerWidget w = getWidgetFactory().getWidget( this,
+                                                                 eventBus,
                                                                  pattern,
                                                                  readOnly );
             w.addOnModifiedCommand( this.onWidgetModifiedCommand );

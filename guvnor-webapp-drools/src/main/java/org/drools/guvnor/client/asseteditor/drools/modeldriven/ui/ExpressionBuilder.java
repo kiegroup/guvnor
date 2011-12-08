@@ -29,7 +29,6 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
@@ -46,6 +45,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -69,22 +69,25 @@ public class ExpressionBuilder extends RuleModellerWidget
     private static final String          METHOD_VALUE_PREFIX          = "mt";
     private final SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
     private Constants                    constants                    = ((Constants) GWT.create( Constants.class ));
-    // private FlowPanel panel = new FlowPanel();
     private HorizontalPanel              panel                        = new HorizontalPanel();
     private ExpressionFormLine           expression;
     private boolean                      readOnly;
 
     public ExpressionBuilder(RuleModeller modeller,
+                             EventBus eventBus,
                              ExpressionFormLine expression) {
         this( modeller,
+              eventBus,
               expression,
               false );
     }
 
     public ExpressionBuilder(RuleModeller modeller,
+                             EventBus eventBus,
                              ExpressionFormLine expression,
                              Boolean readOnly) {
-        super( modeller );
+        super( modeller,
+               eventBus );
         this.expression = expression;
 
         if ( readOnly == null ) {
@@ -363,10 +366,10 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                  0 );
 
             for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
-                
+
                 //You can't use "this" in a nested accessor
                 if ( !isNested || !field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                    
+
                     boolean changed = false;
                     for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
                         String method = i.next();

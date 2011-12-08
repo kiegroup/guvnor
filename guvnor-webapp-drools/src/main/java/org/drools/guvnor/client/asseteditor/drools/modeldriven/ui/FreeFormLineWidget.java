@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -47,8 +48,10 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     private boolean                readOnly;
 
     public FreeFormLineWidget(RuleModeller mod,
+                              EventBus eventBus,
                               FreeFormLine p) {
         this( mod,
+              eventBus,
               p,
               null );
     }
@@ -63,9 +66,11 @@ public class FreeFormLineWidget extends RuleModellerWidget {
      *            the readOnly attribute is calculated.
      */
     public FreeFormLineWidget(RuleModeller mod,
+                              EventBus eventBus,
                               FreeFormLine p,
                               Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.action = p;
 
         if ( readOnly == null ) {
@@ -123,7 +128,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
         Image btn;
         if ( !this.readOnly ) {
-            btn = new Image(images.edit());
+            btn = new Image( images.edit() );
             btn.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -144,7 +149,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
             } );
         } else {
-            btn=new Image(images.editDisabled());
+            btn = new Image( images.editDisabled() );
         }
 
         return btn;

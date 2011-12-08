@@ -21,27 +21,33 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 
 /**
- * A superclass for the widgets present in RuleModeller. 
+ * A superclass for the widgets present in RuleModeller.
  */
 public abstract class RuleModellerWidget extends DirtyableComposite {
 
-    private RuleModeller modeller;
+    private RuleModeller  modeller;
 
-    private boolean modified;
+    private EventBus      eventBus;
+
+    private boolean       modified;
 
     private List<Command> onModifiedCommands = new ArrayList<Command>();
 
-    public RuleModellerWidget(RuleModeller modeller) {
+    public RuleModellerWidget(RuleModeller modeller,
+                              EventBus eventBus) {
         this.modeller = modeller;
+        this.eventBus = eventBus;
     }
 
     /**
      * Dictates if the widget's state is RO or not. Sometimes RuleModeller will
-     * force this state (i.e. when lockLHS() or lockRHS()), but some other times,
-     * the widget itself is responsible to autodetect its state.
+     * force this state (i.e. when lockLHS() or lockRHS()), but some other
+     * times, the widget itself is responsible to autodetect its state.
+     * 
      * @return
      */
     public abstract boolean isReadOnly();
@@ -50,23 +56,27 @@ public abstract class RuleModellerWidget extends DirtyableComposite {
         return modeller;
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
     protected void setModified(boolean modified) {
-        if (modified){
+        if ( modified ) {
             executeOnModifiedCommands();
         }
         this.modified = modified;
     }
-    
+
     protected boolean isModified() {
         return modified;
     }
 
-    public void addOnModifiedCommand(Command command){
-        this.onModifiedCommands.add(command);
+    public void addOnModifiedCommand(Command command) {
+        this.onModifiedCommands.add( command );
     }
 
-    private void executeOnModifiedCommands(){
-        for (Command command : onModifiedCommands) {
+    private void executeOnModifiedCommands() {
+        for ( Command command : onModifiedCommands ) {
             command.execute();
         }
     }

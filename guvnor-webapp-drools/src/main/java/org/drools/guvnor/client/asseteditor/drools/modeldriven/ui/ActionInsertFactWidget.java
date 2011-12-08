@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -36,6 +37,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -61,16 +63,11 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private boolean                  readOnly;
 
     public ActionInsertFactWidget(RuleModeller mod,
-                                  ActionInsertFact set) {
-        this( mod,
-              set,
-              null );
-    }
-
-    public ActionInsertFactWidget(RuleModeller mod,
+                                  EventBus eventBus,
                                   ActionInsertFact set,
                                   Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.model = set;
         this.layout = new DirtyableFlexTable();
         this.factType = set.factType;
@@ -129,6 +126,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
+
+                        //TODO {manstis} Can we identify just Template Keys? - Signal change in Template variables
+                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( getModeller().getModel() );
+                        getEventBus().fireEvent( tvce );
                     }
                 }
             } );
@@ -149,12 +150,14 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         DropDownData enums = completions.getEnums( this.factType,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
 
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
                                                                      this.getModeller(),
+                                                                     this.getEventBus(),
                                                                      val.type,
                                                                      this.readOnly );
         actionValueEditor.setOnChangeCommand( new Command() {
@@ -226,8 +229,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             }
         } );
         /*
-         * Propose a textBox to the user
-         * to make him set a variable name 
+         * Propose a textBox to the user to make him set a variable name
          */
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();

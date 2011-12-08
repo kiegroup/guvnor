@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ErrorPopup;
@@ -38,6 +39,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -61,16 +63,11 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private boolean                  readOnly;
 
     public ActionSetFieldWidget(RuleModeller mod,
-                                ActionSetField set) {
-        this( mod,
-              set,
-              null );
-    }
-
-    public ActionSetFieldWidget(RuleModeller mod,
+                                EventBus eventBus,
                                 ActionSetField set,
                                 Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.model = set;
         this.layout = new DirtyableFlexTable();
 
@@ -143,6 +140,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
+
+                        //TODO {manstis} Can we identify just Template Keys? - Signal change in Template variables
+                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( getModeller().getModel() );
+                        getEventBus().fireEvent( tvce );
                     }
                 }
             } );
@@ -195,7 +196,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
-        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ), descFact );
+        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
+                                           descFact );
         return new ClickableLabel( sl,
                                    clk,
                                    !this.readOnly );//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
@@ -253,11 +255,13 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
 
         DropDownData enums = completions.getEnums( type,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
                                                                      this.getModeller(),
+                                                                     this.getEventBus(),
                                                                      val.type,
                                                                      this.readOnly );
         actionValueEditor.setOnChangeCommand( new Command() {

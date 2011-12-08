@@ -19,6 +19,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -34,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
@@ -43,6 +45,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -64,42 +67,51 @@ public class ActionValueEditor extends DirtyableComposite {
     private ActionFieldValue value;
     private DropDownData     enums;
     private SimplePanel      root;
-    private RuleModeller     model        = null;
+    private RuleModeller     modeller;
+    private RuleModel        model;
+    private EventBus         eventBus;
     private String           variableType = null;
     private boolean          readOnly;
     private Command          onChangeCommand;
 
     public ActionValueEditor(final ActionFieldValue val,
                              final DropDownData enums,
+                             final EventBus eventBus,
                              boolean readOnly) {
         this( val,
               enums,
               null,
+              eventBus,
               null,
               readOnly );
     }
 
     public ActionValueEditor(final ActionFieldValue val,
-                             final DropDownData enums) {
+                             final DropDownData enums,
+                             final EventBus eventBus) {
         this( val,
               enums,
+              eventBus,
               false );
     }
 
     public ActionValueEditor(final ActionFieldValue val,
                              final DropDownData enums,
-                             RuleModeller model,
+                             RuleModeller modeller,
+                             EventBus eventBus,
                              String variableType) {
         this( val,
               enums,
-              model,
+              modeller,
+              eventBus,
               variableType,
               false );
     }
 
     public ActionValueEditor(final ActionFieldValue val,
                              final DropDownData enums,
-                             RuleModeller model,
+                             RuleModeller modeller,
+                             EventBus eventBus,
                              String variableType,
                              boolean readOnly) {
 
@@ -112,7 +124,9 @@ public class ActionValueEditor extends DirtyableComposite {
         }
         this.root = new SimplePanel();
         this.value = val;
-        this.model = model;
+        this.modeller = modeller;
+        this.model = modeller.getModel();
+        this.eventBus = eventBus;
         this.variableType = variableType;
         refresh();
         initWidget( root );
@@ -307,7 +321,7 @@ public class ActionValueEditor extends DirtyableComposite {
                                     new InfoPopup( constants.Literal(),
                                                    constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
 
-        if ( model.isTemplate() ) {
+        if ( modeller.isTemplate() ) {
             Button templateButton = new Button( constants.TemplateKey() );
             templateButton.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -315,6 +329,11 @@ public class ActionValueEditor extends DirtyableComposite {
                     value.value = "";
                     makeDirty();
                     refresh();
+                    
+                    //Signal change in Template variables
+                    TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+                    eventBus.fireEvent( tvce );
+                    
                     form.hide();
                 }
             } );
@@ -369,10 +388,10 @@ public class ActionValueEditor extends DirtyableComposite {
         List<String> bindings = new ArrayList<String>();
 
         //Examine LHS Fact and Field bindings and RHS (new) Fact bindings
-        for ( String v : model.getModel().getAllVariables() ) {
+        for ( String v : modeller.getModel().getAllVariables() ) {
 
             //LHS FactPattern
-            FactPattern fp = model.getModel().getLHSBoundFact( v );
+            FactPattern fp = modeller.getModel().getLHSBoundFact( v );
             if ( fp != null ) {
                 if ( isLHSFactTypeEquivalent( v ) ) {
                     bindings.add( v );
@@ -380,7 +399,7 @@ public class ActionValueEditor extends DirtyableComposite {
             }
 
             //LHS FieldConstraint
-            FieldConstraint fc = model.getModel().getLHSBoundField( v );
+            FieldConstraint fc = modeller.getModel().getLHSBoundField( v );
             if ( fc != null ) {
                 if ( isLHSFieldTypeEquivalent( v ) ) {
                     bindings.add( v );
@@ -388,7 +407,7 @@ public class ActionValueEditor extends DirtyableComposite {
             }
 
             //RHS ActionInsertFact
-            ActionInsertFact aif = model.getModel().getRHSBoundFact( v );
+            ActionInsertFact aif = modeller.getModel().getRHSBoundFact( v );
             if ( aif != null ) {
                 if ( isRHSFieldTypeEquivalent( v ) ) {
                     bindings.add( v );
@@ -400,15 +419,15 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private boolean isLHSFactTypeEquivalent(String boundVariable) {
-        String boundFactType = model.getModel().getLHSBoundFact( boundVariable ).getFactType();
+        String boundFactType = modeller.getModel().getLHSBoundFact( boundVariable ).getFactType();
 
         //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
         if ( boundFactType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
             if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            String[] dd = this.model.getSuggestionCompletions().getEnumValues( boundFactType,
-                                                                               this.value.field );
+            String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( boundFactType,
+                                                                                  this.value.field );
             return isEnumEquivalent( dd );
         }
 
@@ -420,19 +439,19 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private boolean isLHSFieldTypeEquivalent(String boundVariable) {
-        String boundFieldType = model.getModel().getLHSBindingType( boundVariable );
+        String boundFieldType = modeller.getModel().getLHSBindingType( boundVariable );
 
         //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
         if ( boundFieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
             if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            FieldConstraint fc = this.model.getModel().getLHSBoundField( boundVariable );
+            FieldConstraint fc = this.modeller.getModel().getLHSBoundField( boundVariable );
             if ( fc instanceof SingleFieldConstraint ) {
                 String fieldName = ((SingleFieldConstraint) fc).getFieldName();
-                String parentFactTypeForBinding = this.model.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.model.getSuggestionCompletions().getEnumValues( parentFactTypeForBinding,
-                                                                                   fieldName );
+                String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+                String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( parentFactTypeForBinding,
+                                                                                      fieldName );
                 return isEnumEquivalent( dd );
             }
             return false;
@@ -446,7 +465,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private boolean isRHSFieldTypeEquivalent(String boundVariable) {
-        String boundFactType = model.getModel().getRHSBoundFact( boundVariable ).factType;
+        String boundFactType = modeller.getModel().getRHSBoundFact( boundVariable ).factType;
         if ( boundFactType == null ) {
             return false;
         }
@@ -459,8 +478,8 @@ public class ActionValueEditor extends DirtyableComposite {
             if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            String[] dd = this.model.getSuggestionCompletions().getEnumValues( boundFactType,
-                                                                               this.value.field );
+            String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( boundFactType,
+                                                                                  this.value.field );
             return isEnumEquivalent( dd );
         }
 
@@ -512,8 +531,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     public void executeOnTemplateVariablesChange() {
-        
+
     }
 
-    
 }

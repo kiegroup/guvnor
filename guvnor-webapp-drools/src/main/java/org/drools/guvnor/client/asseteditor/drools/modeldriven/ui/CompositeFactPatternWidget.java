@@ -38,6 +38,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -62,16 +63,11 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     protected boolean                          readOnly;
 
     public CompositeFactPatternWidget(RuleModeller modeller,
-                                      CompositeFactPattern pattern) {
-        this( modeller,
-              pattern,
-              null );
-    }
-
-    public CompositeFactPatternWidget(RuleModeller modeller,
+                                      EventBus eventBus,
                                       CompositeFactPattern pattern,
                                       Boolean readOnly) {
-        super( modeller );
+        super( modeller,
+               eventBus );
         this.completions = modeller.getSuggestionCompletions();
         this.pattern = pattern;
 
@@ -174,6 +170,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
             IFactPattern[] facts = pattern.getPatterns();
             for ( int i = 0; i < facts.length; i++ ) {
                 RuleModellerWidget widget = this.getModeller().getWidgetFactory().getWidget( this.getModeller(),
+                                                                                             this.getEventBus(),
                                                                                              facts[i],
                                                                                              this.readOnly );
                 widget.addOnModifiedCommand( new Command() {

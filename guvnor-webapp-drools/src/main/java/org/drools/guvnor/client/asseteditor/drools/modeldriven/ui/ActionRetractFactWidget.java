@@ -16,54 +16,53 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
-
-import com.google.gwt.user.client.ui.HorizontalPanel;
-
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+
 /**
- * This is used when you want to retract a fact. It will provide a list of
- * bound facts for you to retract.
+ * This is used when you want to retract a fact. It will provide a list of bound
+ * facts for you to retract.
  */
 public class ActionRetractFactWidget extends RuleModellerWidget {
 
     private boolean readOnly;
 
-    public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model) {
-        this(modeller, model, null);
-    }
-
-    public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model, Boolean readOnly) {
-        super(modeller);
+    public ActionRetractFactWidget(RuleModeller modeller,
+                                   EventBus eventBus,
+                                   ActionRetractFact model,
+                                   Boolean readOnly) {
+        super( modeller,
+               eventBus );
         HorizontalPanel layout = new HorizontalPanel();
-        layout.setWidth("100%");
-        layout.setStyleName("model-builderInner-Background");
+        layout.setWidth( "100%" );
+        layout.setStyleName( "model-builderInner-Background" );
 
-        if (readOnly == null) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getLHSBindingType(model.variableName));
+        if ( readOnly == null ) {
+            this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( model.variableName ) );
         } else {
             this.readOnly = readOnly;
         }
 
-        if (this.readOnly) {
-            layout.addStyleName("editor-disabled-widget");
+        if ( this.readOnly ) {
+            layout.addStyleName( "editor-disabled-widget" );
         }
 
-        String desc = modeller.getModel().getLHSBindingType(model.variableName) + " [" + model.variableName + "]";
-        layout.add(new SmallLabel(HumanReadable.getActionDisplayName("retract") + "&nbsp;<b>" + desc + "</b>"));
+        String desc = modeller.getModel().getLHSBindingType( model.variableName ) + " [" + model.variableName + "]";
+        layout.add( new SmallLabel( HumanReadable.getActionDisplayName( "retract" ) + "&nbsp;<b>" + desc + "</b>" ) );
 
         //This widget couldn't be modified.
-        this.setModified(false);
+        this.setModified( false );
 
-        initWidget(layout);
+        initWidget( layout );
     }
 
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
-
 
 }

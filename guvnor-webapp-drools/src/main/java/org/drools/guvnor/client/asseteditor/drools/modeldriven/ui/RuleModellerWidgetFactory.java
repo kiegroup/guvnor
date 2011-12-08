@@ -33,74 +33,143 @@ import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
-public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
+import com.google.gwt.event.shared.EventBus;
 
-    /* (non-Javadoc)
-     * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IAction, boolean)
+public class RuleModellerWidgetFactory
+    implements
+    ModellerWidgetFactory {
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
+     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
+     * com.google.gwt.event.shared.EventBus,
+     * org.drools.guvnor.client.modeldriven.brl.IAction, boolean )
      */
-    public RuleModellerWidget getWidget(RuleModeller ruleModeller, IAction action, Boolean readOnly){
-        if (action instanceof ActionCallMethod) {
-            return new ActionCallMethodWidget(ruleModeller, (ActionCallMethod) action, readOnly);
+    public RuleModellerWidget getWidget(RuleModeller ruleModeller,
+                                        EventBus eventBus,
+                                        IAction action,
+                                        Boolean readOnly) {
+        if ( action instanceof ActionCallMethod ) {
+            return new ActionCallMethodWidget( ruleModeller,
+                                               eventBus,
+                                               (ActionCallMethod) action,
+                                               readOnly );
         }
-        if (action instanceof ActionSetField) {
-            return new ActionSetFieldWidget(ruleModeller, (ActionSetField) action,readOnly);
+        if ( action instanceof ActionSetField ) {
+            return new ActionSetFieldWidget( ruleModeller,
+                                             eventBus,
+                                             (ActionSetField) action,
+                                             readOnly );
         }
-        if (action instanceof ActionInsertFact) {
-            return new ActionInsertFactWidget(ruleModeller, (ActionInsertFact) action, readOnly);
+        if ( action instanceof ActionInsertFact ) {
+            return new ActionInsertFactWidget( ruleModeller,
+                                               eventBus,
+                                               (ActionInsertFact) action,
+                                               readOnly );
         }
-        if (action instanceof ActionRetractFact) {
-            return new ActionRetractFactWidget(ruleModeller, (ActionRetractFact) action, readOnly);
+        if ( action instanceof ActionRetractFact ) {
+            return new ActionRetractFactWidget( ruleModeller,
+                                                eventBus,
+                                                (ActionRetractFact) action,
+                                                readOnly );
         }
-        if (action instanceof DSLSentence) {
-            RuleModellerWidget w = new DSLSentenceWidget(ruleModeller,(DSLSentence) action, readOnly);
-            w.addStyleName("model-builderInner-Background"); //NON-NLS
+        if ( action instanceof DSLSentence ) {
+            RuleModellerWidget w = new DSLSentenceWidget( ruleModeller,
+                                                          eventBus,
+                                                          (DSLSentence) action,
+                                                          readOnly );
+            w.addStyleName( "model-builderInner-Background" ); //NON-NLS
             return w;
         }
-        if (action instanceof FreeFormLine) {
-            return new FreeFormLineWidget(ruleModeller, (FreeFormLine) action, readOnly);
+        if ( action instanceof FreeFormLine ) {
+            return new FreeFormLineWidget( ruleModeller,
+                                           eventBus,
+                                           (FreeFormLine) action,
+                                           readOnly );
         }
-        if (action instanceof ActionGlobalCollectionAdd) {
-             return new GlobalCollectionAddWidget(ruleModeller, (ActionGlobalCollectionAdd) action, readOnly);
+        if ( action instanceof ActionGlobalCollectionAdd ) {
+            return new GlobalCollectionAddWidget( ruleModeller,
+                                                  eventBus,
+                                                  (ActionGlobalCollectionAdd) action,
+                                                  readOnly );
         }
-        throw new RuntimeException("I don't know what type of action is: " + action); //NON-NLS
+        throw new RuntimeException( "I don't know what type of action is: " + action ); //NON-NLS
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
+     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
+     * com.google.gwt.event.shared.EventBus,
+     * org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
      */
-    public RuleModellerWidget getWidget(RuleModeller ruleModeller, IPattern pattern, Boolean readOnly){
-        if (pattern instanceof FactPattern) {
-            return new FactPatternWidget(ruleModeller, pattern, true, readOnly);
+    public RuleModellerWidget getWidget(RuleModeller ruleModeller,
+                                        EventBus eventBus,
+                                        IPattern pattern,
+                                        Boolean readOnly) {
+        if ( pattern instanceof FactPattern ) {
+            return new FactPatternWidget( ruleModeller,
+                                          eventBus,
+                                          pattern,
+                                          true,
+                                          readOnly );
         }
-        if (pattern instanceof CompositeFactPattern) {
-            return new CompositeFactPatternWidget(ruleModeller, (CompositeFactPattern) pattern, readOnly);
+        if ( pattern instanceof CompositeFactPattern ) {
+            return new CompositeFactPatternWidget( ruleModeller,
+                                                   eventBus,
+                                                   (CompositeFactPattern) pattern,
+                                                   readOnly );
         }
-        if (pattern instanceof FromAccumulateCompositeFactPattern) {
-            return new FromAccumulateCompositeFactPatternWidget(ruleModeller, (FromAccumulateCompositeFactPattern) pattern, readOnly);
+        if ( pattern instanceof FromAccumulateCompositeFactPattern ) {
+            return new FromAccumulateCompositeFactPatternWidget( ruleModeller,
+                                                                 eventBus,
+                                                                 (FromAccumulateCompositeFactPattern) pattern,
+                                                                 readOnly );
         }
-        if (pattern instanceof FromCollectCompositeFactPattern) {
-            return new FromCollectCompositeFactPatternWidget(ruleModeller, (FromCollectCompositeFactPattern) pattern, readOnly);
+        if ( pattern instanceof FromCollectCompositeFactPattern ) {
+            return new FromCollectCompositeFactPatternWidget( ruleModeller,
+                                                              eventBus,
+                                                              (FromCollectCompositeFactPattern) pattern,
+                                                              readOnly );
         }
-        if(pattern instanceof FromEntryPointFactPattern) {
-            return new FromEntryPointFactPatternWidget(ruleModeller, (FromEntryPointFactPattern) pattern, readOnly);
+        if ( pattern instanceof FromEntryPointFactPattern ) {
+            return new FromEntryPointFactPatternWidget( ruleModeller,
+                                                        eventBus,
+                                                        (FromEntryPointFactPattern) pattern,
+                                                        readOnly );
         }
-        if (pattern instanceof FromCompositeFactPattern) {
-            return new FromCompositeFactPatternWidget(ruleModeller, (FromCompositeFactPattern) pattern, readOnly);
+        if ( pattern instanceof FromCompositeFactPattern ) {
+            return new FromCompositeFactPatternWidget( ruleModeller,
+                                                       eventBus,
+                                                       (FromCompositeFactPattern) pattern,
+                                                       readOnly );
         }
-        if (pattern instanceof DSLSentence) {
-            return new DSLSentenceWidget(ruleModeller,(DSLSentence) pattern, readOnly);
+        if ( pattern instanceof DSLSentence ) {
+            return new DSLSentenceWidget( ruleModeller,
+                                          eventBus,
+                                          (DSLSentence) pattern,
+                                          readOnly );
         }
-        if (pattern instanceof FreeFormLine) {
-            return new FreeFormLineWidget(ruleModeller, (FreeFormLine)pattern, readOnly);
+        if ( pattern instanceof FreeFormLine ) {
+            return new FreeFormLineWidget( ruleModeller,
+                                           eventBus,
+                                           (FreeFormLine) pattern,
+                                           readOnly );
         }
-        if (pattern instanceof ExpressionFormLine) {
-            return new ExpressionBuilder(ruleModeller, (ExpressionFormLine) pattern, readOnly);
+        if ( pattern instanceof ExpressionFormLine ) {
+            return new ExpressionBuilder( ruleModeller,
+                                          eventBus,
+                                          (ExpressionFormLine) pattern,
+                                          readOnly );
         }
-        throw new RuntimeException("I don't know what type of pattern is: "+pattern);
+        throw new RuntimeException( "I don't know what type of pattern is: " + pattern );
 
     }
 
-    public boolean isTemplate(){
+    public boolean isTemplate() {
         return false;
     }
 }

@@ -19,6 +19,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.DatePickerLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -45,6 +46,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -76,6 +78,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final Panel                      panel;
     private final RuleModel                  model;
     private final RuleModeller               modeller;
+    private final EventBus                   eventBus;
+
     private boolean                          isNumeric;
     private DropDownData                     dropDownData;
     private String                           fieldType;
@@ -88,6 +92,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                  String fieldName,
                                  BaseSingleFieldConstraint con,
                                  RuleModeller modeller,
+                                 EventBus eventBus,
                                  boolean readOnly) {
         this.pattern = pattern;
         this.sce = modeller.getSuggestionCompletions();
@@ -95,6 +100,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         this.panel = new SimplePanel();
         this.model = modeller.getModel();
         this.modeller = modeller;
+        this.eventBus = eventBus;
         this.readOnly = readOnly;
 
         if ( con instanceof SingleFieldConstraintEBLeftSide ) {
@@ -345,6 +351,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private Widget expressionEditor() {
         ExpressionBuilder builder = null;
         builder = new ExpressionBuilder( this.modeller,
+                                         this.eventBus,
                                          this.constraint.getExpressionValue(),
                                          this.readOnly );
 
@@ -440,6 +447,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 public void onClick(ClickEvent event) {
                     con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
                     doTypeChosen( form );
+
+                    //Signal change in Template variables
+                    TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+                    eventBus.fireEvent( tvce );
                 }
             } );
 

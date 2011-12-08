@@ -23,7 +23,8 @@ import java.util.Map;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TemplateModellerWidgetFactory;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateModellerWidgetFactory;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -55,7 +56,8 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AbstractBRLColumnViewImpl<T> extends Popup
     implements
     RuleModelEditor,
-    AbstractBRLColumnView {
+    AbstractBRLColumnView,
+    TemplateVariablesChangedEvent.Handler {
 
     protected static final Constants constants  = GWT.create( Constants.class );
 
@@ -132,24 +134,7 @@ public abstract class AbstractBRLColumnViewImpl<T> extends Popup
                                               getRuleModellerConfiguration(),
                                               new TemplateModellerWidgetFactory(),
                                               clientFactory,
-                                              eventBus ) {
-
-            @Override
-            public void refreshWidget() {
-                variables = getDefinedVariables();
-                cmdApplyChanges.setEnabled( variables.size() > 0 );
-                super.refreshWidget();
-            }
-
-            private Map<InterpolationVariable, Integer> getDefinedVariables() {
-                Map<InterpolationVariable, Integer> variables = new HashMap<InterpolationVariable, Integer>();
-                RuleModelVisitor rmv = new RuleModelVisitor( ruleModel,
-                                                             variables );
-                rmv.visitRuleModel( ruleModel );
-                return variables;
-            }
-
-        };
+                                              eventBus );
 
         this.popupContent = uiBinder.createAndBindUi( this );
 
@@ -158,6 +143,10 @@ public abstract class AbstractBRLColumnViewImpl<T> extends Popup
         this.brlEditorContainer.setHeight( (getPopupHeight() - 120) + "px" );
         this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
         this.cmdApplyChanges.setEnabled( variables.size() > 0 );
+
+        //Hook-up events
+        eventBus.addHandler( TemplateVariablesChangedEvent.TYPE,
+                             this );
     }
 
     protected abstract boolean isHeaderUnique(String header);
@@ -269,6 +258,19 @@ public abstract class AbstractBRLColumnViewImpl<T> extends Popup
                                                                  variable.getFactType(),
                                                                  variable.getFactField() );
         return clone;
+    }
+
+    public void onTemplateVariablesChanged(TemplateVariablesChangedEvent event) {
+        variables = getDefinedVariables( event.getModel() );
+        cmdApplyChanges.setEnabled( variables.size() > 0 );
+    }
+
+    private Map<InterpolationVariable, Integer> getDefinedVariables(RuleModel ruleModel) {
+        Map<InterpolationVariable, Integer> variables = new HashMap<InterpolationVariable, Integer>();
+        RuleModelVisitor rmv = new RuleModelVisitor( ruleModel,
+                                                     variables );
+        rmv.visitRuleModel( ruleModel );
+        return variables;
     }
 
 }

@@ -34,7 +34,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleTemplateEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.RuleTemplateEditor</class> 
         <format>template</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    

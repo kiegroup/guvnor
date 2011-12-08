@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -46,18 +47,21 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Connectives {
 
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
-    private static Images images    = GWT.create( Images.class );
+    private Constants          constants = ((Constants) GWT.create( Constants.class ));
+    private static Images      images    = GWT.create( Images.class );
 
-    private RuleModeller  modeller;
-    private FactPattern   pattern;
-    private Boolean       isReadOnly;
+    private final RuleModeller modeller;
+    private final EventBus     eventBus;
+    private final FactPattern  pattern;
+    private final Boolean      isReadOnly;
 
     public Connectives(RuleModeller modeller,
+                       EventBus eventBus,
                        FactPattern pattern,
                        Boolean isReadOnly) {
         this.pattern = pattern;
         this.modeller = modeller;
+        this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
     }
 
@@ -113,6 +117,7 @@ public class Connectives {
                                           fieldName,
                                           con,
                                           this.modeller,
+                                          this.eventBus,
                                           isReadOnly );
     }
 

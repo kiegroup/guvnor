@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,15 +35,19 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
     private TextBox txtEntryPoint;
 
     public FromEntryPointFactPatternWidget(RuleModeller modeller,
+                                           EventBus eventBus,
                                            FromEntryPointFactPattern pattern) {
         super( modeller,
+               eventBus,
                pattern );
     }
 
     public FromEntryPointFactPatternWidget(RuleModeller modeller,
+                                           EventBus eventBus,
                                            FromEntryPointFactPattern pattern,
                                            Boolean readOnly) {
         super( modeller,
+               eventBus,
                pattern,
                readOnly );
     }

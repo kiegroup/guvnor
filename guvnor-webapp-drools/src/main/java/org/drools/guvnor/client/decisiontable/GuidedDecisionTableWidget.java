@@ -208,7 +208,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                   popup.show();
                                               }
                                           } );
-        layout.add( ruleModelLHS );
+        //layout.add( ruleModelLHS );
 
         initWidget( layout );
     }
@@ -405,8 +405,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
-                            addItem( constants.BRLFragmentAction(),
-                                     ActionTypes.BRL_FRAGMENT.name() );
+                            //addItem( constants.BRLFragmentAction(), ActionTypes.BRL_FRAGMENT.name() );
                         } else {
                             removeItem( ActionTypes.WORKITEM.name() );
                             removeItem( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );

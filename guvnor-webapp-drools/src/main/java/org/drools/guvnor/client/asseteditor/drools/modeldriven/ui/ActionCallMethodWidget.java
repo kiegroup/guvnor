@@ -39,6 +39,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -64,16 +65,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     private boolean                  readOnly;
 
     public ActionCallMethodWidget(RuleModeller mod,
-                                  ActionCallMethod set) {
-        this( mod,
-              set,
-              null );
-    }
-
-    public ActionCallMethodWidget(RuleModeller mod,
+                                  EventBus eventBus,
                                   ActionCallMethod set,
                                   Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.model = set;
         this.layout = new DirtyableFlexTable();
 
@@ -82,18 +78,18 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         if ( completions.isGlobalVariable( set.variable ) ) {
 
-            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable(set.variable);
-            if (infos != null) {
+            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable( set.variable );
+            if ( infos != null ) {
                 this.fieldCompletionTexts = new String[infos.size()];
                 this.fieldCompletionValues = new String[infos.size()];
                 int i = 0;
-                for (MethodInfo info : infos) {
+                for ( MethodInfo info : infos ) {
                     this.fieldCompletionTexts[i] = info.getName();
                     this.fieldCompletionValues[i] = info.getNameWithParameters();
                     i++;
                 }
 
-                this.variableClass = completions.getGlobalVariable(set.variable);
+                this.variableClass = completions.getGlobalVariable( set.variable );
 
             } else {
                 this.fieldCompletionTexts = new String[0];
@@ -102,8 +98,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
 
         } else {
-            
-            FactPattern pattern = mod.getModel().getLHSBoundFact(set.variable);
+
+            FactPattern pattern = mod.getModel().getLHSBoundFact( set.variable );
             if ( pattern != null ) {
                 List<String> methodList = completions.getMethodNames( pattern.getFactType() );
                 fieldCompletionTexts = new String[methodList.size()];
@@ -116,10 +112,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 }
                 this.variableClass = pattern.getFactType();
                 this.isBoundFact = true;
-                
+
             } else {
                 /*
-                 *  if the call method is applied on a bound variable created in the rhs
+                 * if the call method is applied on a bound variable created in
+                 * the rhs
                  */
                 ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.variable );
                 if ( patternRhs != null ) {
@@ -259,15 +256,16 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         if ( completions.isGlobalVariable( this.model.variable ) ) {
             type = completions.getGlobalVariable( this.model.variable );
         } else {
-            type = this.getModeller().getModel().getLHSBindingType(this.model.variable);
+            type = this.getModeller().getModel().getLHSBindingType( this.model.variable );
             if ( type == null ) {
-                type = this.getModeller().getModel().getRHSBoundFact(this.model.variable).factType;
+                type = this.getModeller().getModel().getRHSBoundFact( this.model.variable ).factType;
             }
         }
 
         DropDownData enums = completions.getEnums( type,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
 
         return new MethodParameterValueEditor( val,
                                                enums,

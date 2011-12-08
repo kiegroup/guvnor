@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -77,9 +78,11 @@ public class FactPatternWidget extends RuleModellerWidget {
     private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
 
     public FactPatternWidget(RuleModeller mod,
+                             EventBus eventBus,
                              IPattern p,
                              boolean canBind) {
         this( mod,
+              eventBus,
               p,
               false,
               canBind,
@@ -87,10 +90,12 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     public FactPatternWidget(RuleModeller mod,
+                             EventBus eventBus,
                              IPattern p,
                              boolean isAll0WithLabel,
                              boolean canBind) {
         this( mod,
+              eventBus,
               p,
               isAll0WithLabel,
               canBind,
@@ -106,10 +111,12 @@ public class FactPatternWidget extends RuleModellerWidget {
      *            the readOnly attribute is calculated.
      */
     public FactPatternWidget(RuleModeller ruleModeller,
+                             EventBus eventBus,
                              IPattern pattern,
                              boolean canBind,
                              Boolean readOnly) {
         this( ruleModeller,
+              eventBus,
               pattern,
               false,
               canBind,
@@ -117,11 +124,13 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     public FactPatternWidget(RuleModeller mod,
+                             EventBus eventBus,
                              IPattern p,
                              boolean isAll0WithLabel,
                              boolean canBind,
                              Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.pattern = (FactPattern) p;
         this.bindable = canBind;
 
@@ -141,6 +150,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
 
         this.connectives = new Connectives( mod,
+                                            eventBus,
                                             pattern,
                                             this.readOnly );
 
@@ -679,6 +689,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                                  c.getFieldName(),
                                                                                  c,
                                                                                  this.getModeller(),
+                                                                                 this.getEventBus(),
                                                                                  this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
@@ -762,12 +773,14 @@ public class FactPatternWidget extends RuleModellerWidget {
         if ( !con.isBound() ) {
             if ( bindable && showBinding && !this.readOnly ) {
                 ab.add( new ExpressionBuilder( getModeller(),
+                                               getEventBus(),
                                                con.getExpressionLeftSide() ) );
             } else {
                 ab.add( new SmallLabel( con.getExpressionLeftSide().getText() ) );
             }
         } else {
             ab.add( new ExpressionBuilder( getModeller(),
+                                           getEventBus(),
                                            con.getExpressionLeftSide() ) );
         }
         return ab;

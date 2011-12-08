@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -27,7 +28,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateDataTableWidget;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -48,28 +50,27 @@ public class RuleTemplateEditor extends DirtyableComposite
     private RuleModeller               ruleModeller;
     private Constants                  constants = GWT.create( Constants.class );
     private SuggestionCompletionEngine sce;
-    private EventBus                   eventBus;
 
     private TemplateDataTableWidget    table;
 
-    public RuleTemplateEditor(RuleAsset a,
-                              RuleViewer v,
+    //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
+    private EventBus                   eventBus  = new SimpleEventBus();
+
+    //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
+    @SuppressWarnings("unused")
+    private EventBus                   globalEventBus;
+
+    public RuleTemplateEditor(RuleAsset asset,
+                              RuleViewer viewer,
                               ClientFactory clientFactory,
-                              EventBus eventBus) {
-        this( a );
-        this.eventBus = eventBus;
-    }
+                              EventBus globalEventBus) {
 
-    /**
-     * Constructor for a specific asset
-     * 
-     * @param asset
-     */
-    public RuleTemplateEditor(RuleAsset asset) {
-
+        this.globalEventBus = globalEventBus;
         model = (TemplateModel) asset.getContent();
         ruleModeller = new RuleModeller( asset,
                                          null,
+                                         clientFactory,
+                                         eventBus,
                                          new TemplateModellerWidgetFactory() );
 
         String packageName = asset.getMetaData().getPackageName();

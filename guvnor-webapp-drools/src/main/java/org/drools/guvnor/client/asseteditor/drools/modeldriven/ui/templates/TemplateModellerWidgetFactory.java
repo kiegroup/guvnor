@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
+
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerWidgetFactory;
 
 public class TemplateModellerWidgetFactory extends RuleModellerWidgetFactory {
 

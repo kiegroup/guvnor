@@ -33,6 +33,7 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -56,16 +57,11 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     private boolean                 readOnly;
 
     public DSLSentenceWidget(RuleModeller modeller,
-                             DSLSentence sentence) {
-        this( modeller,
-              sentence,
-              null );
-    }
-
-    public DSLSentenceWidget(RuleModeller modeller,
+                             EventBus eventBus,
                              DSLSentence sentence,
                              Boolean readOnly) {
-        super( modeller );
+        super( modeller,
+               eventBus );
         widgets = new ArrayList<Widget>();
         dropDownWidgets = new ArrayList<DSLDropDown>();
         this.sentence = sentence;
