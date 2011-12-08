@@ -63,12 +63,16 @@ public abstract class GuvnorTestBase {
                     + ") should exist, run \"mvn package\" first.");
         }
         removeExcludedFiles(webArchive, explodedWarFile);
+        // dumpArchive(webArchive);
+        return webArchive;
+    }
+
+    private static void dumpArchive(WebArchive webArchive) {
         File shrinkwrapParentDir = new File("target/shrinkwrap");
         FileUtils.deleteQuietly(shrinkwrapParentDir);
         shrinkwrapParentDir.mkdirs();
         webArchive.as(ExplodedExporter.class).exportExploded(shrinkwrapParentDir);
         // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
-        return webArchive;
     }
 
 //    @Deployment
