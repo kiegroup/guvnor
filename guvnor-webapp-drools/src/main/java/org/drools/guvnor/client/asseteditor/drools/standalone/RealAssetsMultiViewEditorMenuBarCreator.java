@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.standalone;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 
@@ -46,8 +47,8 @@ public class RealAssetsMultiViewEditorMenuBarCreator extends DefaultMultiViewEdi
     
     
     @Override
-    public MenuBar createMenuBar(final MultiViewEditor editor) {
-        MenuBar toolbar = super.createMenuBar(editor);
+    public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
+        MenuBar toolbar = super.createMenuBar(editor, eventBus);
         toolbar.addItem(constants.Cancel(),this.cancelCommand);
         return toolbar;
     }
