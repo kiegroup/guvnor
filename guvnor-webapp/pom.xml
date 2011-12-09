@@ -6,8 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
-    <version>5.3.1-SNAPSHOT</version>
-  </parent>
+    <version>5.3.1.Final</version></parent>
 
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
