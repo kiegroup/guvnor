@@ -158,7 +158,7 @@ public class MultiViewEditor extends GuvnorEditor {
             this.menuBarCreator = new DefaultMultiViewEditorMenuBarCreator();
         }
 
-        return this.menuBarCreator.createMenuBar( this );
+        return this.menuBarCreator.createMenuBar( this , eventBus);
     }
 
     private void doViews() {
@@ -311,6 +311,9 @@ public class MultiViewEditor extends GuvnorEditor {
                         if ( !closeAfter ) {
                             eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
                         }
+                        
+                        //fire after check-in event
+                        eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, MultiViewEditor.this));
                     }
                 } );
     }
