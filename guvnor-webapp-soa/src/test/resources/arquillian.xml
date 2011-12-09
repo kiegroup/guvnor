@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <engine>
+    <!-- Workaround Perm gen space issues of https://issues.jboss.org/browse/AS7-2516 -->
+    <property name="maxTestClassesBeforeRestart">1</property>
+  </engine>
+
+	<!--<container qualifier="weld" default="true">-->
+		<!--<configuration>-->
+			<!--<property name="enableConversationScope">true</property>-->
+		<!--</configuration>-->
+	<!--</container>-->
+
+  <!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also dependency arquillian-protocol-servlet -->
+  <defaultProtocol type="Servlet 3.0" />
+
+  <container qualifier="jboss7" default="true">
+    <!--<protocol type="jmx-as7">-->
+      <!--<property name="executionType">REMOTE</property>-->
+    <!--</protocol>-->
+    <configuration>
+      <!-- Keep in sync with /guvnor-webapp/pom.xml -->
+      <property name="jbossHome">target/jboss-as-7.0.2.Final/</property>
+    </configuration>
+  </container>
+
+  <!--<container qualifier="tomcat" default="true">-->
+    <!--<configuration>-->
+      <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/pom.xml &ndash;&gt;-->
+      <!--<property name="catalinaHome">target/apache-tomcat-6.0.33/</property>-->
+      <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/conf/tomcat6/tomcat-users.xml &ndash;&gt;-->
+      <!--<property name="user">admin</property>-->
+      <!--<property name="pass">admin</property>-->
+    <!--</configuration>-->
+  <!--</container>-->
+
+</arquillian>

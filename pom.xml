@@ -54,6 +54,7 @@
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
     <module>guvnor-webapp-drools</module>
+    <module>guvnor-webapp-soa</module>
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
   </modules>
