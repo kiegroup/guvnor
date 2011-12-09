@@ -13,29 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.client.modeldriven.dt52;
+package org.drools.guvnor.client.decisiontable;
 
-import java.util.List;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 
 /**
- * A column that consists of a BRL fragment
+ * Presenter and View interfaces for an editor of BRLActionColumn objects
  */
-public interface BRLColumn<T, C> {
+public interface BRLActionColumnView {
 
-    public List<T> getDefinition();
+    interface Presenter {
 
-    public void setDefinition(List<T> definition);
+        void insertColumn(BRLActionColumn column);
 
-    public List<C> getVariables();
+        void updateColumn(BRLActionColumn originalColumn,
+                          BRLActionColumn editedColumn);
 
-    public void setVariables(List<C> variables);
+    }
 
-    public boolean isHideColumn();
-
-    public void setHideColumn(boolean hideColumn);
-
-    public void setHeader(String header);
-
-    public String getHeader();
+    void setPresenter(Presenter presenter);
 
 }

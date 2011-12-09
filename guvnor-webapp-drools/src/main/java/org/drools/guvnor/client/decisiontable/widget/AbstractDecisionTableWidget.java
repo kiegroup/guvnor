@@ -56,6 +56,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -150,10 +152,34 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
-        model.getActionCols().add( modelColumn );
         addColumn( modelColumn,
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
+        model.getActionCols().add( modelColumn );
+    }
+
+    /**
+     * Add a column to the table.
+     * 
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
+    public void addColumn(BRLActionColumn modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+        //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
+        //columns added until after the data has been created. If the columns are added first a similar dilemma 
+        //exists as we can only ascertain the end index of the last column and we'd need an offset to count
+        //back from the end.
+        for ( int offset = 0; offset < modelColumn.getVariables().size(); offset++ ) {
+            BRLActionVariableColumn variable = modelColumn.getVariables().get( offset );
+            addColumn( offset,
+                       variable,
+                       cellValueFactory.makeColumnData( variable ),
+                       true );
+        }
+        model.getActionCols().add( modelColumn );
     }
 
     /**
@@ -166,10 +192,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
-        model.getAttributeCols().add( modelColumn );
         addColumn( modelColumn,
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
+        model.getAttributeCols().add( modelColumn );
     }
 
     /**
@@ -182,10 +208,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
-        model.getMetadataCols().add( modelColumn );
         addColumn( modelColumn,
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
+        model.getMetadataCols().add( modelColumn );
     }
 
     /**
@@ -198,6 +224,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void addColumn(Pattern52 pattern,
                           ConditionCol52 modelColumn) {
+        if ( pattern == null ) {
+            throw new IllegalArgumentException( "pattern cannot be null." );
+        }
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
@@ -211,6 +240,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             eventBus.fireEvent( pce );
         }
 
+        //Column needs to be added to pattern first so it can be correctly positoned
         pattern.getConditions().add( modelColumn );
         addColumn( modelColumn,
                    cellValueFactory.makeColumnData( modelColumn ),
@@ -227,6 +257,25 @@ public abstract class AbstractDecisionTableWidget extends Composite
         model.getActionCols().remove( modelColumn );
         deleteColumn( index,
                       true );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(BRLActionColumn modelColumn) {
+        //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
+        //columns added until after the data has been created. If the columns are added first a similar dilemma 
+        //exists as we can only ascertain the end index of the last column and we'd need an offset to count
+        //back from the end.
+        for ( int offset = 0; offset < modelColumn.getVariables().size(); offset++ ) {
+            BRLActionVariableColumn variable = modelColumn.getVariables().get( offset );
+            int index = model.getAllColumns().indexOf( variable );
+            deleteColumn( index - offset,
+                          true );
+        }
+        model.getActionCols().remove( modelColumn );
     }
 
     /**
@@ -726,6 +775,37 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Update a BRLActionColumn column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final BRLActionColumn origColumn,
+                             final BRLActionColumn editColumn) {
+        //TODO {manstis} implement!
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        //boolean bUpdateColumnDefinition = false;
+        //int iCol = model.getAllColumns().indexOf( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            for ( BRLActionVariableColumn variable : origColumn.getVariables() ) {
+                setColumnVisibility( variable,
+                                     !editColumn.isHideColumn() );
+            }
+        }
+
+    }
+
+    /**
      * Update a Condition column
      * 
      * @param origPattern
@@ -925,19 +1005,63 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Add column to table with optional redraw
-    private void addColumn(DTColumnConfig52 modelColumn,
+    private void addColumn(MetadataCol52 modelColumn,
                            List<DTCellValue52> columnData,
                            boolean bRedraw) {
-        int index = 0;
-        if ( modelColumn instanceof MetadataCol52 ) {
-            index = findMetadataColumnIndex();
-        } else if ( modelColumn instanceof AttributeCol52 ) {
-            index = findAttributeColumnIndex();
-        } else if ( modelColumn instanceof ConditionCol52 ) {
-            index = findConditionColumnIndex( (ConditionCol52) modelColumn );
-        } else if ( modelColumn instanceof ActionCol52 ) {
-            index = findActionColumnIndex();
-        }
+        int index = findMetadataColumnIndex();
+
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
+                                                                                 columnData,
+                                                                                 index,
+                                                                                 bRedraw );
+        eventBus.fireEvent( dce );
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(AttributeCol52 modelColumn,
+                           List<DTCellValue52> columnData,
+                           boolean bRedraw) {
+        int index = findAttributeColumnIndex();
+
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
+                                                                                 columnData,
+                                                                                 index,
+                                                                                 bRedraw );
+        eventBus.fireEvent( dce );
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(ConditionCol52 modelColumn,
+                           List<DTCellValue52> columnData,
+                           boolean bRedraw) {
+        int index = findConditionColumnIndex( modelColumn );
+
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
+                                                                                 columnData,
+                                                                                 index,
+                                                                                 bRedraw );
+        eventBus.fireEvent( dce );
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(ActionCol52 modelColumn,
+                           List<DTCellValue52> columnData,
+                           boolean bRedraw) {
+        int index = findActionColumnIndex();
+
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
+                                                                                 columnData,
+                                                                                 index,
+                                                                                 bRedraw );
+        eventBus.fireEvent( dce );
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(int offset,
+                           BRLActionVariableColumn modelColumn,
+                           List<DTCellValue52> columnData,
+                           boolean bRedraw) {
+        int index = findActionColumnIndex() + offset;
 
         InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
                                                                                  columnData,
@@ -981,7 +1105,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Find the right-most index for an Action column
     private int findActionColumnIndex() {
         int analysisColumnsSize = 1;
-        int index = model.getAllColumns().size() - analysisColumnsSize - 1;
+        int index = model.getAllColumns().size() - analysisColumnsSize;
         return index;
     }
 
@@ -1001,7 +1125,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 index = iCol;
             }
         }
-        return index;
+        return index + 1;
     }
 
     // Find the right-most index for a Condition column
@@ -1046,7 +1170,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 index = iCol;
             }
         }
-        return index;
+        return index + 1;
     }
 
     // Retrieve the data for a particular column

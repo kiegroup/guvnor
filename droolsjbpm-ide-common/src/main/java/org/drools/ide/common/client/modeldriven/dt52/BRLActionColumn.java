@@ -16,25 +16,22 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.IAction;
-import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 
 /**
  * An Action column defined with a BRL fragment
  */
 public class BRLActionColumn extends ActionCol52
     implements
-    BRLColumn<IAction> {
+    BRLColumn<IAction, BRLActionVariableColumn> {
 
-    private static final long                   serialVersionUID = 540l;
+    private static final long             serialVersionUID = 540l;
 
-    private List<IAction>                       definition       = new ArrayList<IAction>();
+    private List<IAction>                 definition       = new ArrayList<IAction>();
 
-    private Map<InterpolationVariable, Integer> variables        = new HashMap<InterpolationVariable, Integer>();
+    private List<BRLActionVariableColumn> variables        = new ArrayList<BRLActionVariableColumn>();
 
     public List<IAction> getDefinition() {
         return this.definition;
@@ -44,12 +41,28 @@ public class BRLActionColumn extends ActionCol52
         this.definition = definition;
     }
 
-    public Map<InterpolationVariable, Integer> getVariables() {
+    public List<BRLActionVariableColumn> getVariables() {
         return this.variables;
     }
 
-    public void setVariables(Map<InterpolationVariable, Integer> variables) {
+    public void setVariables(List<BRLActionVariableColumn> variables) {
         this.variables = variables;
+    }
+
+    @Override
+    public void setHeader(String header) {
+        super.setHeader( header );
+        for ( BRLActionVariableColumn variable : this.variables ) {
+            variable.setHeader( header );
+        }
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        super.setHideColumn( hideColumn );
+        for ( BRLActionVariableColumn variable : this.variables ) {
+            variable.setHideColumn( hideColumn );
+        }
     }
 
 }

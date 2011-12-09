@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -23,8 +25,10 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -34,7 +38,11 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * An editor for a BRL Condition Columns
  */
-public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPattern> {
+public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPattern, BRLConditionVariableColumn>
+    implements
+    BRLConditionColumnView {
+
+    private Presenter presenter;
 
     public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
                                       final GuidedDecisionTable52 model,
@@ -62,7 +70,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return true;
     }
 
-    public RuleModel getRuleModel(BRLColumn<IPattern> column) {
+    public RuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
         RuleModel ruleModel = new RuleModel();
         List<IPattern> definition = column.getDefinition();
         ruleModel.lhs = definition.toArray( new IPattern[definition.size()] );
@@ -73,6 +81,38 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return new RuleModellerConfiguration( false,
                                               true,
                                               true );
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    protected void doInsertColumn() {
+        presenter.insertColumn( (BRLConditionColumn) this.editingCol );
+    }
+
+    @Override
+    protected void doUpdateColumn() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected List<BRLConditionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
+
+        //Convert to columns for use in the Decision Table
+        BRLConditionVariableColumn[] variables = new BRLConditionVariableColumn[ivs.size()];
+        for ( Map.Entry<InterpolationVariable, Integer> me : ivs.entrySet() ) {
+            InterpolationVariable iv = me.getKey();
+            int index = me.getValue();
+            BRLConditionVariableColumn variable = new BRLConditionVariableColumn( iv.getVarName(),
+                                                                                  iv.getDataType(),
+                                                                                  iv.getFactType(),
+                                                                                  iv.getFactField() );
+            variable.setHeader( editingCol.getHeader() );
+            variables[index] = variable;
+        }
+        return Arrays.asList( variables );
     }
 
 }

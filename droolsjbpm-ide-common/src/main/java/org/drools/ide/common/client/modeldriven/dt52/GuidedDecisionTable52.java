@@ -150,7 +150,17 @@ public class GuidedDecisionTable52
                 columns.add( c );
             }
         }
-        columns.addAll( actionCols );
+        for ( ActionCol52 ac : this.actionCols ) {
+            if ( ac instanceof BRLActionColumn ) {
+                BRLActionColumn bac = (BRLActionColumn) ac;
+                for ( BRLActionVariableColumn variable : bac.getVariables() ) {
+                    columns.add( variable );
+                }
+
+            } else {
+                columns.add( ac );
+            }
+        }
         columns.add( analysisCol );
         return columns;
     }
@@ -216,6 +226,9 @@ public class GuidedDecisionTable52
                             sce );
         } else if ( col instanceof ActionInsertFactCol52 ) {
             return getType( (ActionInsertFactCol52) col,
+                            sce );
+        } else if ( col instanceof BRLActionVariableColumn ) {
+            return getType( (BRLActionVariableColumn) col,
                             sce );
         }
         return null;
@@ -310,8 +323,18 @@ public class GuidedDecisionTable52
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,
-                                    sce,
-                                    type ) ? type : null);
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(BRLActionVariableColumn col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( col.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( col,
+                                sce,
+                                type ) ? type : null);
         return type;
     }
 
@@ -356,6 +379,10 @@ public class GuidedDecisionTable52
                                         sce );
 
         } else if ( column instanceof ActionInsertFactCol52 ) {
+            dataType = derieveDataType( column,
+                                        sce );
+
+        } else if ( column instanceof BRLActionVariableColumn ) {
             dataType = derieveDataType( column,
                                         sce );
 
@@ -497,14 +524,16 @@ public class GuidedDecisionTable52
         } else if ( col instanceof ActionInsertFactCol52 ) {
             return getValueList( (ActionInsertFactCol52) col,
                                  sce );
+        } else if ( col instanceof BRLActionVariableColumn ) {
+            return getValueList( (BRLActionVariableColumn) col,
+                                 sce );
         }
         return new String[0];
     }
 
     private String[] getValueList(AttributeCol52 col,
                                   SuggestionCompletionEngine sce) {
-        if ( "no-loop".equals( col.getAttribute() )
-                 || "enabled".equals( col.getAttribute() ) ) {
+        if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
             return new String[]{"true", "false"};
         }
         return new String[0];
@@ -512,8 +541,7 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null
-                 && !"".equals( col.getValueList() ) ) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             Pattern52 pattern = getPattern( col );
@@ -526,8 +554,7 @@ public class GuidedDecisionTable52
     public String[] getValueList(Pattern52 pattern,
                                  ConditionCol52 col,
                                  SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null
-                 && !"".equals( col.getValueList() ) ) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( pattern.getFactType(),
@@ -538,8 +565,7 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ActionSetFieldCol52 col,
                                   SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null
-                 && !"".equals( col.getValueList() ) ) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
@@ -551,8 +577,7 @@ public class GuidedDecisionTable52
     public String[] getValueList(Pattern52 pattern,
                                  ActionSetFieldCol52 col,
                                  SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null
-                 && !"".equals( col.getValueList() ) ) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( pattern.getFactType(),
@@ -563,14 +588,20 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ActionInsertFactCol52 col,
                                   SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null
-                 && !"".equals( col.getValueList() ) ) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( col.getFactType(),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
         }
+    }
+
+    private String[] getValueList(BRLActionVariableColumn col,
+                                  SuggestionCompletionEngine sce) {
+        String[] r = sce.getEnumValues( col.getFactType(),
+                                        col.getFactField() );
+        return (r != null) ? r : new String[0];
     }
 
     public boolean isConstraintValid(DTColumnConfig52 col,
@@ -675,6 +706,17 @@ public class GuidedDecisionTable52
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+                                      col.getFactField() );
+        if ( ft != null && ft.equals( dataType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean assertDataType(BRLActionVariableColumn col,
+                                   SuggestionCompletionEngine sce,
+                                   String dataType) {
+        String ft = sce.getFieldType( col.getFactType(),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;

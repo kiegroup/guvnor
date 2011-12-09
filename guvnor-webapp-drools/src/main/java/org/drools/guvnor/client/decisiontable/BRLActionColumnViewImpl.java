@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -23,8 +25,10 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
@@ -33,11 +37,14 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * An editor for a BRL Action Columns
  */
-public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction> {
+public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, BRLActionVariableColumn>
+    implements
+    BRLActionColumnView {
+
+    private Presenter presenter;
 
     public BRLActionColumnViewImpl(final SuggestionCompletionEngine sce,
                                    final GuidedDecisionTable52 model,
-                                   final GenericColumnCommand refreshGrid,
                                    final boolean isNew,
                                    final RuleAsset asset,
                                    final BRLActionColumn column,
@@ -61,7 +68,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction> 
         return true;
     }
 
-    protected RuleModel getRuleModel(BRLColumn<IAction> column) {
+    protected RuleModel getRuleModel(BRLColumn<IAction, BRLActionVariableColumn> column) {
         RuleModel ruleModel = new RuleModel();
         List<IAction> definition = column.getDefinition();
         ruleModel.rhs = definition.toArray( new IAction[definition.size()] );
@@ -72,6 +79,41 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction> 
         return new RuleModellerConfiguration( true,
                                               false,
                                               true );
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    protected void doInsertColumn() {
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.rhs ) );
+        presenter.insertColumn( (BRLActionColumn) this.editingCol );
+    }
+
+    @Override
+    protected void doUpdateColumn() {
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.rhs ) );
+        presenter.updateColumn( (BRLActionColumn) this.originalCol,
+                                (BRLActionColumn) this.editingCol );
+    }
+
+    @Override
+    protected List<BRLActionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
+
+        //Convert to columns for use in the Decision Table
+        BRLActionVariableColumn[] variables = new BRLActionVariableColumn[ivs.size()];
+        for ( Map.Entry<InterpolationVariable, Integer> me : ivs.entrySet() ) {
+            InterpolationVariable iv = me.getKey();
+            int index = me.getValue();
+            BRLActionVariableColumn variable = new BRLActionVariableColumn( iv.getVarName(),
+                                                                            iv.getDataType(),
+                                                                            iv.getFactType(),
+                                                                            iv.getFactField() );
+            variable.setHeader( editingCol.getHeader() );
+            variables[index] = variable;
+        }
+        return Arrays.asList( variables );
     }
 
 }

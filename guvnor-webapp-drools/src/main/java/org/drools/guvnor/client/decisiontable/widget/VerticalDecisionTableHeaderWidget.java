@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -517,6 +518,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             factType = ((LimitedEntryActionRetractFactCol52) ac).getValue().getStringValue();
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
                             factType = ((ActionWorkItemCol52) ac).getWorkItemDefinition().getDisplayName();
+                        } else if ( ac instanceof BRLActionVariableColumn ) {
+                            factType = ((BRLActionVariableColumn) ac).getVarName();
                         }
 
                         tce.addClassName( resources.headerRowIntermediate() );
