@@ -185,7 +185,7 @@ public class PerspectiveFactoryGenerator extends Generator {
     private void generateGetRegisteredPerspectiveTypesMethod( SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors ) {
         sourceWriter.println( "public String[] getRegisteredPerspectiveTypes() {" );
         sourceWriter.indent();
-        sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\", \"soaservice\"};" );
+        sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\"};" );
         //sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\"};" );
         
         sourceWriter.println( "return formats;" );
@@ -224,12 +224,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "return new org.drools.guvnor.client.perspective.author.AuthorPerspective();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
-        sourceWriter.indent();
-        sourceWriter.println( "return new org.drools.guvnor.client.perspective.soa.SOAPerspective();");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
 
         sourceWriter.println( "if(\"runtime\".equals(perspectiveType)) {");
         sourceWriter.indent();        
@@ -251,13 +245,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
         sourceWriter.indent();
         sourceWriter.println( "title = constants.KnowledgeBases();");
-        sourceWriter.println( "image = images.packages();");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
-        sourceWriter.indent();
-        sourceWriter.println( "title = \"Services\";");
         sourceWriter.println( "image = images.packages();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
@@ -286,13 +273,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "image = images.packages();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
-        sourceWriter.indent();
-        sourceWriter.println( "title = \"Services\";");
-        sourceWriter.println( "image = images.chartOrganisation();");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
 
         sourceWriter.println( "title = constants.Packages();");
         sourceWriter.println( "image = images.packages();");
@@ -312,12 +292,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
-        sourceWriter.indent();
-        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenu( clientFactory, eventBus )).asWidget();");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
 
         sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
 
@@ -331,12 +305,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.indent();
     
         sourceWriter.println( "if(\"package\".equals(data.getFormat())) {");
-        sourceWriter.indent();
-        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(data.getFormat())) {");
         sourceWriter.indent();
         sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
         sourceWriter.outdent();
@@ -358,12 +326,7 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
         sourceWriter.outdent();
         sourceWriter.println( "}");
-        
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
-        sourceWriter.indent();
-        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
+
 
         sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
 
@@ -394,15 +357,12 @@ public class PerspectiveFactoryGenerator extends Generator {
     }
     
     private static String[] getRegisteredPerspectiveTypes() {
-        return new String[] {"author", "runtime", "soaservice"};                          
+        return new String[] {"author", "runtime"};                          
     }
 
     private static String getPerspectiveClassName(String perspectiveType) {
         if ("author".equals(perspectiveType)) {
             return "org.drools.guvnor.client.perspective.author.AuthorPerspective";
-        }
-        if ("soaservice".equals(perspectiveType)) {
-            return "org.drools.guvnor.client.perspective.soa.SOAPerspective";
         }
         if ("runtime".equals(perspectiveType)) {
             return "org.drools.guvnor.client.perspective.runtime.RunTimePerspective";
