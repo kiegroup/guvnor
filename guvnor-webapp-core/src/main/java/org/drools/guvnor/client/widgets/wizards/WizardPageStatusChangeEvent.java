@@ -33,14 +33,14 @@ public class WizardPageStatusChangeEvent extends GwtEvent<WizardPageStatusChange
 
     public static Type<WizardPageStatusChangeEvent.Handler> TYPE = new Type<WizardPageStatusChangeEvent.Handler>();
 
-    private final WizardPage                                source;
+    private final WizardPage                                page;
 
-    public WizardPageStatusChangeEvent(WizardPage source) {
-        this.source = source;
+    public WizardPageStatusChangeEvent(WizardPage page) {
+        this.page = page;
     }
 
-    public WizardPage getSource() {
-        return source;
+    public WizardPage getPage() {
+        return page;
     }
 
     @Override

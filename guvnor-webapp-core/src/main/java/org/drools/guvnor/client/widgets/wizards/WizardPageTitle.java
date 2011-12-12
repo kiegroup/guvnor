@@ -51,7 +51,8 @@ public class WizardPageTitle extends Composite {
 
     private static WizardPageTitleViewBinder uiBinder = GWT.create( WizardPageTitleViewBinder.class );
 
-    public WizardPageTitle(final EventBus eventBus,
+    public WizardPageTitle(final WizardContext context,
+                           final EventBus eventBus,
                            final WizardPage page) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
@@ -63,7 +64,8 @@ public class WizardPageTitle extends Composite {
 
                                      public void onClick(ClickEvent event) {
                                          WizardPageSelectedEvent wpse = new WizardPageSelectedEvent( page );
-                                         eventBus.fireEvent( wpse );
+                                         eventBus.fireEventFromSource( wpse,
+                                                                       context );
                                      }
 
                                  },

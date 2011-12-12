@@ -83,12 +83,16 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
         //Signal duplicates to other pages
         DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
 
         return arePatternBindingsUnique;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
@@ -98,7 +102,8 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
     public void signalRemovalOfPattern(Pattern52 pattern) {
         PatternRemovedEvent event = new PatternRemovedEvent( pattern );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
     }
 
     @Override

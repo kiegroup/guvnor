@@ -133,7 +133,8 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
         //Signal duplicates to other pages
         DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
 
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
@@ -148,16 +149,23 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
         //Signal Action Insert Fact Fields to other pages
         ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
-        eventBus.fireEvent( eventFactFields );
+        eventBus.fireEventFromSource( eventFactFields,
+                                      context );
 
         return arePatternBindingsUnique && areActionInsertFieldsDefined;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
     public void onActionInsertFactFieldsDefined(ActionInsertFactFieldsDefinedEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
     }
 

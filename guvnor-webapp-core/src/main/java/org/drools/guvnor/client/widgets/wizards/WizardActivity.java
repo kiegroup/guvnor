@@ -34,14 +34,18 @@ public class WizardActivity extends Activity
         WizardPageStatusChangeEvent.Handler,
         WizardPageSelectedEvent.Handler {
 
-    private WizardActivityView view;
-    private Wizard             wizard;
+    private final WizardActivityView view;
+    private final Wizard             wizard;
+    private final WizardContext      context;
 
     public WizardActivity(WizardPlace< ? > place,
                           ClientFactory clientFactory) {
 
+        //The context of this Wizard instance
+        this.context = place.getContext();
+
         //The generic view
-        view = clientFactory.getNavigationViewFactory().getWizardView();
+        view = clientFactory.getNavigationViewFactory().getWizardView( context );
 
         //The specific "page factory" for a particular Wizard
         wizard = clientFactory.getWizardFactory().getWizard( place.getContext(),
@@ -52,8 +56,7 @@ public class WizardActivity extends Activity
     public void onStatusChange(WizardPageStatusChangeEvent event) {
 
         //The event might not have been raised by a page belonging to this Wizard instance
-        WizardPage page = event.getSource();
-        if ( !wizard.getPages().contains( page ) ) {
+        if ( event.getSource() != context ) {
             return;
         }
 
@@ -69,7 +72,10 @@ public class WizardActivity extends Activity
     }
 
     public void onPageSelected(WizardPageSelectedEvent event) {
-        WizardPage page = event.getSource();
+        if ( event.getSource() != context ) {
+            return;
+        }
+        WizardPage page = event.getSelectedPage();
         int index = wizard.getPages().indexOf( page );
         view.selectPage( index );
     }

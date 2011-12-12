@@ -1573,20 +1573,80 @@ public abstract class AbstractDecisionTableWidget extends Composite
             return;
         }
 
-        ActionCol52 actionTarget = model.getActionCols().get( actionTargetIndex );
-        int actionTargetColumnIndex = model.getAllColumns().indexOf( actionTarget );
-        int actionSourceColumnIndex = model.getAllColumns().indexOf( action );
-
         //Update model
-        model.getActionCols().remove( action );
-        model.getActionCols().add( actionTargetIndex,
-                                   action );
+        if ( actionTargetIndex > actionSourceIndex ) {
 
-        //Update data and UI
-        MoveColumnsEvent mce = new MoveColumnsEvent( actionSourceColumnIndex,
-                                                     actionTargetColumnIndex,
-                                                     1 );
-        eventBus.fireEvent( mce );
+            //Move down (after)
+            ActionCol52 actionBeingMovedAfter = model.getActionCols().get( actionTargetIndex );
+            int sourceColumnIndex = -1;
+            int targetColumnIndex = -1;
+            int numberOfColumns = -1;
+
+            if ( action instanceof BRLActionColumn ) {
+                BRLActionColumn brlColumn = (BRLActionColumn) action;
+                BRLActionVariableColumn variable = brlColumn.getVariables().get( 0 );
+                sourceColumnIndex = model.getAllColumns().indexOf( variable );
+                numberOfColumns = brlColumn.getVariables().size();
+            } else {
+                sourceColumnIndex = model.getAllColumns().indexOf( action );
+                numberOfColumns = 1;
+            }
+
+            if ( actionBeingMovedAfter instanceof BRLActionColumn ) {
+                BRLActionColumn brlColumn = (BRLActionColumn) actionBeingMovedAfter;
+                BRLActionVariableColumn variable = brlColumn.getVariables().get( brlColumn.getVariables().size() - 1 );
+                targetColumnIndex = model.getAllColumns().indexOf( variable );
+            } else {
+                targetColumnIndex = model.getAllColumns().indexOf( actionBeingMovedAfter );
+            }
+
+            //Update model
+            model.getActionCols().remove( action );
+            model.getActionCols().add( actionTargetIndex,
+                                       action );
+
+            //Update data and UI
+            MoveColumnsEvent mce = new MoveColumnsEvent( sourceColumnIndex,
+                                                         targetColumnIndex,
+                                                         numberOfColumns );
+            eventBus.fireEvent( mce );
+
+        } else {
+            //Move up (before)
+            ActionCol52 actionBeingMovedBefore = model.getActionCols().get( actionTargetIndex );
+            int sourceColumnIndex = -1;
+            int targetColumnIndex = -1;
+            int numberOfColumns = -1;
+
+            if ( action instanceof BRLActionColumn ) {
+                BRLActionColumn brlColumn = (BRLActionColumn) action;
+                BRLActionVariableColumn variable = brlColumn.getVariables().get( 0 );
+                sourceColumnIndex = model.getAllColumns().indexOf( variable );
+                numberOfColumns = brlColumn.getVariables().size();
+            } else {
+                sourceColumnIndex = model.getAllColumns().indexOf( action );
+                numberOfColumns = 1;
+            }
+
+            if ( actionBeingMovedBefore instanceof BRLActionColumn ) {
+                BRLActionColumn brlColumn = (BRLActionColumn) actionBeingMovedBefore;
+                BRLActionVariableColumn variable = brlColumn.getVariables().get( 0 );
+                targetColumnIndex = model.getAllColumns().indexOf( variable );
+            } else {
+                targetColumnIndex = model.getAllColumns().indexOf( actionBeingMovedBefore );
+            }
+
+            //Update model
+            model.getActionCols().remove( action );
+            model.getActionCols().add( actionTargetIndex,
+                                       action );
+
+            //Update data and UI
+            MoveColumnsEvent mce = new MoveColumnsEvent( sourceColumnIndex,
+                                                         targetColumnIndex,
+                                                         numberOfColumns );
+            eventBus.fireEvent( mce );
+        }
     }
 
     public void onDeleteRow(DeleteRowEvent event) {

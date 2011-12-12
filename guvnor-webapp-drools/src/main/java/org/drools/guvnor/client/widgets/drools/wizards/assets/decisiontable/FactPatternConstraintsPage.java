@@ -97,16 +97,23 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
         //Signal Condition definitions to other pages
         ConditionsDefinedEvent event = new ConditionsDefinedEvent( areConditionsDefined );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
 
         return areConditionsDefined;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
     public void onConditionsDefined(ConditionsDefinedEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 

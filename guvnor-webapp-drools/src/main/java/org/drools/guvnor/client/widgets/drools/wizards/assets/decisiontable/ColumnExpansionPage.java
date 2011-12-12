@@ -101,6 +101,9 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public void onConditionsDefined(ConditionsDefinedEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 
