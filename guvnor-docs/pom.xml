@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
-    <version>5.3.1.Final</version></parent>
+    <version>5.3.2-SNAPSHOT</version></parent>
 
   <artifactId>guvnor-docs</artifactId>
   <packaging>jdocbook</packaging>
