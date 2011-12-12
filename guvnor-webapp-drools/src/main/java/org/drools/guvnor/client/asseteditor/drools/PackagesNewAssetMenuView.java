@@ -48,6 +48,8 @@ public interface PackagesNewAssetMenuView extends IsWidget {
 
         void onNewWorkitemDefinition();
 
+        void onNewFormDefinition();
+
         void onNewEnumeration();
 
         void onNewTestScenario();

@@ -97,6 +97,13 @@
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
+
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.FormEditor</class>
+        <format>formdef</format>
+        <icon>images.formDefIcon()</icon>
+        <title>constants.FormDefinition()</title>
+    </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
