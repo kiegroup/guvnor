@@ -22,15 +22,17 @@ public class BRLActionVariableColumn extends ActionCol52 {
 
     private static final long serialVersionUID = 540l;
 
-    private final String      varName;
-    private final String      dataType;
-    private final String      factType;
-    private final String      factField;
+    private String      varName;
+    private String      dataType;
+    private String      factType;
+    private String      factField;
 
+    public BRLActionVariableColumn() {}
+    
     public BRLActionVariableColumn(String varName,
-                             String dataType,
-                             String factType,
-                             String factField) {
+                                   String dataType,
+                                   String factType,
+                                   String factField) {
         this.varName = varName;
         this.dataType = dataType;
         this.factType = factType;
