@@ -141,9 +141,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                         setModified( true );
                         getModeller().refreshWidget();
 
-                        //TODO {manstis} Can we identify just Template Keys? - Signal change in Template variables
+                        //Signal possible change in Template variables
                         TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( getModeller().getModel() );
-                        getEventBus().fireEvent( tvce );
+                        getEventBus().fireEventFromSource( tvce,
+                                                           getModeller().getModel() );
                     }
                 }
             } );

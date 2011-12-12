@@ -329,11 +329,12 @@ public class ActionValueEditor extends DirtyableComposite {
                     value.value = "";
                     makeDirty();
                     refresh();
-                    
+
                     //Signal change in Template variables
                     TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-                    eventBus.fireEvent( tvce );
-                    
+                    eventBus.fireEventFromSource( tvce,
+                                                  model );
+
                     form.hide();
                 }
             } );

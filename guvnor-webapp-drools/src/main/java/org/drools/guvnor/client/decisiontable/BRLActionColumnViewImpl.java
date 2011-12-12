@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
@@ -111,9 +113,53 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
                                                                             iv.getFactType(),
                                                                             iv.getFactField() );
             variable.setHeader( editingCol.getHeader() );
+            variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
         }
         return Arrays.asList( variables );
+    }
+
+    @Override
+    protected BRLColumn<IAction, BRLActionVariableColumn> cloneBRLColumn(BRLColumn<IAction, BRLActionVariableColumn> col) {
+        BRLActionColumn clone = new BRLActionColumn();
+        clone.setHeader( col.getHeader() );
+        clone.setHideColumn( col.isHideColumn() );
+        clone.setVariables( cloneVariables( col.getVariables() ) );
+        clone.setDefinition( cloneDefinition( col.getDefinition() ) );
+        return clone;
+    }
+
+    private List<BRLActionVariableColumn> cloneVariables(List<BRLActionVariableColumn> variables) {
+        List<BRLActionVariableColumn> clone = new ArrayList<BRLActionVariableColumn>();
+        for ( BRLActionVariableColumn variable : variables ) {
+            clone.add( cloneVariable( variable ) );
+        }
+        return clone;
+    }
+
+    private BRLActionVariableColumn cloneVariable(BRLActionVariableColumn variable) {
+        BRLActionVariableColumn clone = new BRLActionVariableColumn( variable.getVarName(),
+                                                                     variable.getDataType(),
+                                                                     variable.getFactType(),
+                                                                     variable.getFactField() );
+        clone.setHeader( variable.getHeader() );
+        clone.setHideColumn( variable.isHideColumn() );
+        clone.setWidth( variable.getWidth() );
+        return clone;
+    }
+
+    private List<IAction> cloneDefinition(List<IAction> definition) {
+        RuleModelCloneVisitor visitor = new RuleModelCloneVisitor();
+        RuleModel rm = new RuleModel();
+        for ( IAction action : definition ) {
+            rm.addRhsItem( action );
+        }
+        RuleModel rmClone = visitor.visitRuleModel( rm );
+        List<IAction> clone = new ArrayList<IAction>();
+        for ( IAction action : rmClone.rhs ) {
+            clone.add( action );
+        }
+        return clone;
     }
 
 }

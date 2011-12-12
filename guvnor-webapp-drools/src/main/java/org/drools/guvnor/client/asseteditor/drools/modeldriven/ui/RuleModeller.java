@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
@@ -376,6 +377,11 @@ public class RuleModeller extends DirtyableComposite
                     if ( Window.confirm( constants.RemoveThisItem() ) ) {
                         model.removeRhsItem( idx );
                         refreshWidget();
+
+                        //Signal possible change in Template variables
+                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+                        eventBus.fireEventFromSource( tvce,
+                                                      model );
                     }
                 }
             } );
@@ -570,6 +576,11 @@ public class RuleModeller extends DirtyableComposite
                 if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
                     if ( model.removeLhsItem( idx ) ) {
                         refreshWidget();
+
+                        //Signal possible change in Template variables
+                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+                        eventBus.fireEventFromSource( tvce,
+                                                      model );
                     } else {
                         ErrorPopup.showMessage( constants.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule() );
                     }

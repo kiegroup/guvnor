@@ -18,8 +18,10 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
@@ -784,7 +786,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void updateColumn(final BRLActionColumn origColumn,
                              final BRLActionColumn editColumn) {
-        //TODO {manstis} implement!
         if ( origColumn == null ) {
             throw new IllegalArgumentException( "origColumn cannot be null" );
         }
@@ -792,16 +793,44 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        //boolean bUpdateColumnDefinition = false;
-        //int iCol = model.getAllColumns().indexOf( origColumn );
-
-        // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            for ( BRLActionVariableColumn variable : origColumn.getVariables() ) {
-                setColumnVisibility( variable,
-                                     !editColumn.isHideColumn() );
+        //Insert new columns for the edited definition, copying existing data if applicable
+        Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
+        for ( BRLActionVariableColumn variable : origColumn.getVariables() ) {
+            int iCol = model.getAllColumns().indexOf( variable );
+            StringBuilder key = new StringBuilder( variable.getDataType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+            List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
+            for ( List<DTCellValue52> row : model.getData() ) {
+                columnData.add( row.get( iCol ) );
             }
+            origColumnVariables.put( key.toString(),
+                                     columnData );
         }
+
+        int index = model.getAllColumns().indexOf( origColumn.getVariables().get( 0 ) );
+        for ( BRLActionVariableColumn variable : editColumn.getVariables() ) {
+            StringBuilder key = new StringBuilder( variable.getDataType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+            List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
+            if ( columnData == null ) {
+                columnData = cellValueFactory.makeColumnData( variable );
+            }
+
+            InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( variable,
+                                                                                     columnData,
+                                                                                     index++,
+                                                                                     true );
+            eventBus.fireEvent( dce );
+        }
+
+        //Delete columns for the original definition
+        for ( int iCol = 0; iCol < origColumn.getVariables().size(); iCol++ ) {
+            DeleteColumnEvent dce = new DeleteColumnEvent( index,
+                                                           true );
+            eventBus.fireEvent( dce );
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
 
     }
 
@@ -1292,6 +1321,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setWorkItemName( editingCol.getWorkItemName() );
         col.setWorkItemResultParameterName( editingCol.getWorkItemResultParameterName() );
         col.setParameterClassName( editingCol.getParameterClassName() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final BRLActionColumn col,
+                                     final BRLActionColumn editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setDefinition( editingCol.getDefinition() );
+        col.setVariables( editingCol.getVariables() );
     }
 
     // Copy values from one (transient) model column into another

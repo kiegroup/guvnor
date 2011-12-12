@@ -450,7 +450,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
                     //Signal change in Template variables
                     TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-                    eventBus.fireEvent( tvce );
+                    eventBus.fireEventFromSource( tvce,
+                                                  model );
                 }
             } );
 

@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,39 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
             variables[index] = variable;
         }
         return Arrays.asList( variables );
+    }
+
+    @Override
+    protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn(BRLColumn<IPattern, BRLConditionVariableColumn> col) {
+        BRLConditionColumn clone = new BRLConditionColumn();
+        clone.setHeader( col.getHeader() );
+        clone.setHideColumn( col.isHideColumn() );
+        clone.setVariables( cloneVariables( col.getVariables() ) );
+        clone.setDefinition( cloneDefinition( col.getDefinition() ) );
+        return clone;
+    }
+
+    private List<BRLConditionVariableColumn> cloneVariables(List<BRLConditionVariableColumn> variables) {
+        List<BRLConditionVariableColumn> clone = new ArrayList<BRLConditionVariableColumn>();
+        for ( BRLConditionVariableColumn variable : variables ) {
+            clone.add( cloneVariable( variable ) );
+        }
+        return clone;
+    }
+
+    private BRLConditionVariableColumn cloneVariable(BRLConditionVariableColumn variable) {
+        BRLConditionVariableColumn clone = new BRLConditionVariableColumn( variable.getVarName(),
+                                                                           variable.getDataType(),
+                                                                           variable.getFactType(),
+                                                                           variable.getFactField() );
+        clone.setHeader( variable.getHeader() );
+        clone.setHideColumn( variable.isHideColumn() );
+        clone.setWidth( variable.getWidth() );
+        return clone;
+    }
+
+    private List<IPattern> cloneDefinition(List<IPattern> definition) {
+        return new ArrayList<IPattern>();
     }
 
 }
