@@ -302,12 +302,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( p.getBoundName().equals( boundName ) ) {
-                    return p.getFactType();
-                }
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( p.getBoundName().equals( boundName ) ) {
+                return p.getFactType();
             }
         }
         return "";
@@ -325,12 +322,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( !p.isNegated() ) {
-                    facts.add( p.getBoundName() );
-                }
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( !p.isNegated() ) {
+                facts.add( p.getBoundName() );
             }
         }
 

@@ -52,7 +52,7 @@ public class GuidedDecisionTableTest {
         c1.setFactField( "name" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 c1_ = new ConditionCol52();
         Pattern52 p1_ = new Pattern52();
@@ -61,14 +61,14 @@ public class GuidedDecisionTableTest {
         c1_.setFactField( "name" );
         p1_.getChildColumns().add( c1_ );
         c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-        dt.getConditionPatterns().add( p1_ );
+        dt.getConditions().add( p1_ );
 
         ConditionCol52 c1__ = new ConditionCol52();
         c1__.setFactField( "sex" );
         p1_.getChildColumns().add( c1__ );
         c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         c1__.setValueList( "Male,Female" );
-        dt.getConditionPatterns().add( p1_ );
+        dt.getConditions().add( p1_ );
 
         ConditionCol52 c1___ = new ConditionCol52();
         Pattern52 p1__ = new Pattern52();
@@ -78,7 +78,7 @@ public class GuidedDecisionTableTest {
         c1___.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1___.setValueList( "one,two,three" );
         p1__.getChildColumns().add( c1___ );
-        dt.getConditionPatterns().add( p1__ );
+        dt.getConditions().add( p1__ );
 
         ConditionCol52 c2 = new ConditionCol52();
         Pattern52 p2 = new Pattern52();
@@ -87,7 +87,7 @@ public class GuidedDecisionTableTest {
         c2.setFactField( "nothing" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "c1" );
@@ -274,7 +274,7 @@ public class GuidedDecisionTableTest {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 c1_ = new ConditionCol52();
         Pattern52 p1_ = new Pattern52();
@@ -284,7 +284,7 @@ public class GuidedDecisionTableTest {
         c1_.setOperator( "==" );
         c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1_.getChildColumns().add( c1_ );
-        dt.getConditionPatterns().add( p1_ );
+        dt.getConditions().add( p1_ );
 
         ConditionCol52 c2 = new ConditionCol52();
         Pattern52 p2 = new Pattern52();
@@ -293,7 +293,7 @@ public class GuidedDecisionTableTest {
         c2.setFactField( "age" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
@@ -420,7 +420,7 @@ public class GuidedDecisionTableTest {
         conditionColAge2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColAge2 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
@@ -490,7 +490,7 @@ public class GuidedDecisionTableTest {
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 c2 = new ConditionCol52();
         Pattern52 p2 = new Pattern52();
@@ -499,7 +499,7 @@ public class GuidedDecisionTableTest {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "a,b,c" );
         p2.getChildColumns().add( c2 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.putDataEnumList( "Driver.name",
@@ -544,7 +544,7 @@ public class GuidedDecisionTableTest {
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 c2 = new ConditionCol52();
         Pattern52 p2 = new Pattern52();
@@ -553,7 +553,7 @@ public class GuidedDecisionTableTest {
         c2.setFactField( "age" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ConditionCol52 c3 = new ConditionCol52();
         Pattern52 p3 = new Pattern52();
@@ -562,7 +562,7 @@ public class GuidedDecisionTableTest {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dt.getConditionPatterns().add( p3 );
+        dt.getConditions().add( p3 );
 
         ConditionCol52 c4 = new ConditionCol52();
         Pattern52 p4 = new Pattern52();
@@ -572,7 +572,7 @@ public class GuidedDecisionTableTest {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c4 );
-        dt.getConditionPatterns().add( p4 );
+        dt.getConditions().add( p4 );
 
         ConditionCol52 c5 = new ConditionCol52();
         Pattern52 p5 = new Pattern52();
@@ -580,7 +580,7 @@ public class GuidedDecisionTableTest {
         p5.setFactType( "Driver" );
         c5.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
         p5.getChildColumns().add( c5 );
-        dt.getConditionPatterns().add( p5 );
+        dt.getConditions().add( p5 );
 
         ConditionCol52 c6 = new ConditionCol52();
         Pattern52 p6 = new Pattern52();
@@ -588,7 +588,7 @@ public class GuidedDecisionTableTest {
         p6.setFactType( "Driver" );
         c6.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         p6.getChildColumns().add( c6 );
-        dt.getConditionPatterns().add( p6 );
+        dt.getConditions().add( p6 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -649,7 +649,7 @@ public class GuidedDecisionTableTest {
         c1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         c1.setValueList( "age>10,age>20,age>30" );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -698,7 +698,7 @@ public class GuidedDecisionTableTest {
         c1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         c1.setValueList( "getAge()>10,getAge()>20,getAge()>30" );
         p1.getChildColumns().add( c1 );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 

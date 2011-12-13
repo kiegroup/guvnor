@@ -23,7 +23,6 @@ import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.PatternRemovedEvent;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -65,15 +64,8 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         view.setPresenter( this );
 
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
+        view.setChosenPatterns( new ArrayList<Pattern52>() );
         view.setAvailableFactTypes( availableTypes );
-
-        List<Pattern52> chosenTypes = new ArrayList<Pattern52>();
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                chosenTypes.add( (Pattern52) cc );
-            }
-        }
-        view.setChosenPatterns( chosenTypes );
 
         content.setWidget( view );
     }
@@ -113,24 +105,21 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public void setConditionPatterns(List<Pattern52> patterns) {
-        dtable.getConditionPatterns().clear();
-        dtable.getConditionPatterns().addAll( patterns );
+        dtable.getConditions().clear();
+        dtable.getConditions().addAll( patterns );
     }
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
         //Ensure every Pattern is bound
         int fi = 1;
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( !getValidator().isPatternValid( p ) ) {
-                    String binding = NEW_FACT_PREFIX + (fi++);
+        for ( Pattern52 p : dtable.getPatterns() ) {
+            if ( !getValidator().isPatternValid( p ) ) {
+                String binding = NEW_FACT_PREFIX + (fi++);
+                p.setBoundName( binding );
+                while ( !getValidator().isPatternBindingUnique( p ) ) {
+                    binding = NEW_FACT_PREFIX + (fi++);
                     p.setBoundName( binding );
-                    while ( !getValidator().isPatternBindingUnique( p ) ) {
-                        binding = NEW_FACT_PREFIX + (fi++);
-                        p.setBoundName( binding );
-                    }
                 }
             }
         }

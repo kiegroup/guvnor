@@ -1238,22 +1238,19 @@ public class GuidedDecisionTableWidget extends Composite
             simpleClassName = simpleClassName.substring( simpleClassName.lastIndexOf( "." ) + 1 );
         }
         Set<String> bindings = new HashSet<String>();
-        for ( CompositeColumn< ? > cc : this.guidedDecisionTable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( className == null || p.getFactType().equals( simpleClassName ) ) {
-                    String binding = p.getBoundName();
-                    if ( !(binding == null || "".equals( binding )) ) {
-                        bindings.add( binding );
-                    }
+        for ( Pattern52 p : this.guidedDecisionTable.getPatterns() ) {
+            if ( className == null || p.getFactType().equals( simpleClassName ) ) {
+                String binding = p.getBoundName();
+                if ( !(binding == null || "".equals( binding )) ) {
+                    bindings.add( binding );
                 }
-                for ( ConditionCol52 c : p.getChildColumns() ) {
-                    if ( c.isBound() ) {
-                        String fieldDataType = sce.getFieldClassName( p.getFactType(),
-                                                                      c.getFactField() );
-                        if ( fieldDataType.equals( className ) ) {
-                            bindings.add( c.getBinding() );
-                        }
+            }
+            for ( ConditionCol52 c : p.getChildColumns() ) {
+                if ( c.isBound() ) {
+                    String fieldDataType = sce.getFieldClassName( p.getFactType(),
+                                                                  c.getFactField() );
+                    if ( fieldDataType.equals( className ) ) {
+                        bindings.add( c.getBinding() );
                     }
                 }
             }

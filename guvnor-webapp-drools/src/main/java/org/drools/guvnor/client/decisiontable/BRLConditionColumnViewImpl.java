@@ -62,7 +62,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     protected boolean isHeaderUnique(String header) {
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
             for ( int iChild = 0; iChild < cc.getChildColumns().size(); iChild++ ) {
                 if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) return false;
             }

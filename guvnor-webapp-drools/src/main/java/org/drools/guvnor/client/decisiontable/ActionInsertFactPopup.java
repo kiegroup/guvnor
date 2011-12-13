@@ -447,14 +447,11 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( p.getBoundName().equals( binding ) ) return false;
-                for ( ConditionCol52 c : p.getChildColumns() ) {
-                    if ( c.isBound() ) {
-                        if ( c.getBinding().equals( binding ) ) return false;
-                    }
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( p.getBoundName().equals( binding ) ) return false;
+            for ( ConditionCol52 c : p.getChildColumns() ) {
+                if ( c.isBound() ) {
+                    if ( c.getBinding().equals( binding ) ) return false;
                 }
             }
         }

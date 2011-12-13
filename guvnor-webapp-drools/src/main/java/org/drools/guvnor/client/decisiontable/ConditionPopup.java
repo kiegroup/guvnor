@@ -104,7 +104,7 @@ public class ConditionPopup extends FormStylePopup {
         factory = new DTCellValueWidgetFactory( model,
                                                 sce );
 
-        validator = new Validator( model.getConditionPatterns() );
+        validator = new Validator( model.getConditions() );
 
         setTitle( constants.ConditionColumnConfiguration() );
         setModal( false );
@@ -429,14 +429,11 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( p.getBoundName().equals( binding ) ) return false;
-                for ( ConditionCol52 c : p.getChildColumns() ) {
-                    if ( c.isBound() ) {
-                        if ( c.getBinding().equals( binding ) ) return false;
-                    }
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( p.getBoundName().equals( binding ) ) return false;
+            for ( ConditionCol52 c : p.getChildColumns() ) {
+                if ( c.isBound() ) {
+                    if ( c.getBinding().equals( binding ) ) return false;
                 }
             }
         }
@@ -505,19 +502,15 @@ public class ConditionPopup extends FormStylePopup {
     private ListBox loadPatterns() {
         Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
-        for ( int i = 0; i < model.getConditionPatterns().size(); i++ ) {
-            CompositeColumn< ? > cc = model.getConditionPatterns().get( i );
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( !vars.contains( p.getBoundName() ) ) {
-                    patterns.addItem( (p.isNegated() ? constants.negatedPattern() + " " : "")
-                                              + p.getFactType()
-                                              + " [" + p.getBoundName() + "]",
-                                      p.getFactType()
-                                              + " " + p.getBoundName()
-                                              + " " + p.isNegated() );
-                    vars.add( p.getBoundName() );
-                }
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( !vars.contains( p.getBoundName() ) ) {
+                patterns.addItem( (p.isNegated() ? constants.negatedPattern() + " " : "")
+                                          + p.getFactType()
+                                          + " [" + p.getBoundName() + "]",
+                                  p.getFactType()
+                                          + " " + p.getBoundName()
+                                          + " " + p.isNegated() );
+                vars.add( p.getBoundName() );
             }
         }
 
@@ -563,7 +556,7 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
             for ( int iChild = 0; iChild < cc.getChildColumns().size(); iChild++ ) {
                 if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) return false;
             }

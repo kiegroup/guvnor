@@ -30,7 +30,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.even
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -123,18 +122,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
-        List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                if ( p.getChildColumns().size() > 0 ) {
-                    availablePatterns.add( p );
-                } else {
-                    patternToActionsMap.remove( p );
-                }
-            }
-        }
-        view.setAvailablePatterns( availablePatterns );
+        view.setAvailablePatterns( dtable.getPatterns() );
     }
 
     public boolean isComplete() {

@@ -29,7 +29,6 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -64,7 +63,7 @@ public class DecisionTableAnalyzerTest {
         disapproved.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(disapproved);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -136,7 +135,7 @@ public class DecisionTableAnalyzerTest {
         ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(ageMaximum);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -214,7 +213,7 @@ public class DecisionTableAnalyzerTest {
         nameIn.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(nameIn);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -300,7 +299,7 @@ public class DecisionTableAnalyzerTest {
         dateOfBirthMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(dateOfBirthMaximum);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -378,7 +377,7 @@ public class DecisionTableAnalyzerTest {
         ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(ageMaximum);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -465,7 +464,7 @@ public class DecisionTableAnalyzerTest {
         pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(pensioner);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -530,7 +529,7 @@ public class DecisionTableAnalyzerTest {
         ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(ageMaximum);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -613,7 +612,7 @@ public class DecisionTableAnalyzerTest {
         approved.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(approved);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -716,7 +715,7 @@ public class DecisionTableAnalyzerTest {
         pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(pensioner);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");
@@ -784,7 +783,7 @@ public class DecisionTableAnalyzerTest {
         ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(ageMaximum);
 
-        dt.getConditionPatterns().add(driverPattern);
+        dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
         message.setFactField("message");

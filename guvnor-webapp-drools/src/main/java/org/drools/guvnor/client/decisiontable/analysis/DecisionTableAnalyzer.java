@@ -48,35 +48,29 @@ public class DecisionTableAnalyzer {
         List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
         for ( List<DTCellValue52> row : data ) {
             RowDetector rowDetector = new RowDetector( row.get( 0 ).getNumericValue().longValue() - 1 );
-
-            for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
-                
-                if ( cc instanceof Pattern52 ) {
-                    Pattern52 pattern = (Pattern52) cc;
-                    
-                    List<ConditionCol52> conditions = pattern.getChildColumns();
-                    for ( ConditionCol52 conditionCol : conditions ) {
-                        int columnIndex = model.getAllColumns().indexOf( conditionCol );
-                        DTCellValue52 visibleCellValue = row.get( columnIndex );
-                        DTCellValue52 realCellValue;
-                        boolean cellIsNotBlank;
-                        if ( conditionCol instanceof LimitedEntryCol ) {
-                            realCellValue = ((LimitedEntryCol) conditionCol).getValue();
-                            cellIsNotBlank = visibleCellValue.getBooleanValue();
-                        } else {
-                            realCellValue = visibleCellValue;
-                            cellIsNotBlank = visibleCellValue.hasValue();
-                        }
-                        // Blank cells are ignored
-                        if ( cellIsNotBlank ) {
-                            FieldDetector fieldDetector = buildDetector( model,
-                                                                         conditionCol,
-                                                                         realCellValue );
-                            String factField = conditionCol.getFactField();
-                            rowDetector.putOrMergeFieldDetector( pattern,
-                                                                 factField,
-                                                                 fieldDetector );
-                        }
+            for ( Pattern52 pattern : model.getPatterns() ) {
+                List<ConditionCol52> conditions = pattern.getChildColumns();
+                for ( ConditionCol52 conditionCol : conditions ) {
+                    int columnIndex = model.getAllColumns().indexOf( conditionCol );
+                    DTCellValue52 visibleCellValue = row.get( columnIndex );
+                    DTCellValue52 realCellValue;
+                    boolean cellIsNotBlank;
+                    if ( conditionCol instanceof LimitedEntryCol ) {
+                        realCellValue = ((LimitedEntryCol) conditionCol).getValue();
+                        cellIsNotBlank = visibleCellValue.getBooleanValue();
+                    } else {
+                        realCellValue = visibleCellValue;
+                        cellIsNotBlank = visibleCellValue.hasValue();
+                    }
+                    // Blank cells are ignored
+                    if ( cellIsNotBlank ) {
+                        FieldDetector fieldDetector = buildDetector( model,
+                                                                     conditionCol,
+                                                                     realCellValue );
+                        String factField = conditionCol.getFactField();
+                        rowDetector.putOrMergeFieldDetector( pattern,
+                                                             factField,
+                                                             fieldDetector );
                     }
                 }
             }

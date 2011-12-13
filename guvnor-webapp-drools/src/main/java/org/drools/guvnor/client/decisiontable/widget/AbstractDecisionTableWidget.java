@@ -236,11 +236,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Add pattern if it does not already exist
-        if ( !model.getConditionPatterns().contains( pattern ) ) {
-            model.getConditionPatterns().add( pattern );
+        if ( !model.getConditions().contains( pattern ) ) {
+            model.getConditions().add( pattern );
 
             //Signal patterns changed event
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -319,10 +319,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Remove pattern if it contains zero conditions
         if ( pattern.getChildColumns().size() == 0 ) {
-            model.getConditionPatterns().remove( pattern );
+            model.getConditions().remove( pattern );
 
             //Signal patterns changed event to Decision Table Widget
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -391,7 +391,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.cellValueFactory.setModel( model );
 
         //Ensure field data-type is set (field did not exist before 5.2)
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
             if ( cc instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) cc;
                 for ( ConditionCol52 col : p.getChildColumns() ) {
@@ -869,11 +869,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Add pattern to model, if applicable
-        if ( !model.getConditionPatterns().contains( editPattern ) ) {
-            model.getConditionPatterns().add( editPattern );
+        if ( !model.getConditions().contains( editPattern ) ) {
+            model.getConditions().add( editPattern );
 
             //Signal patterns changed event
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -910,10 +910,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
             // Delete old column
             origPattern.getChildColumns().remove( origColumn );
             if ( origPattern.getChildColumns().size() == 0 ) {
-                model.getConditionPatterns().remove( origPattern );
+                model.getConditions().remove( origPattern );
 
                 //Signal patterns changed event to Decision Table Widget
-                PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+                PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
                 eventBus.fireEvent( pce );
             }
             deleteColumn( origColumnIndex,
@@ -1464,12 +1464,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                             int patternTargetIndex) {
 
         //Sanity check
-        if ( patternTargetIndex < 0 || patternTargetIndex > model.getConditionPatterns().size() - 1 ) {
+        if ( patternTargetIndex < 0 || patternTargetIndex > model.getConditions().size() - 1 ) {
             throw new IndexOutOfBoundsException();
         }
 
         //If target index is the Patterns current position exit
-        int patternSourceIndex = model.getConditionPatterns().indexOf( pattern );
+        int patternSourceIndex = model.getConditions().indexOf( pattern );
         if ( patternSourceIndex == patternTargetIndex ) {
             return;
         }
@@ -1478,7 +1478,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( patternTargetIndex > patternSourceIndex ) {
 
             //Move down (after)
-            CompositeColumn< ? > patternBeingMovedAfter = model.getConditionPatterns().get( patternTargetIndex );
+            CompositeColumn< ? > patternBeingMovedAfter = model.getConditions().get( patternTargetIndex );
             int sourceColumnIndex = model.getAllColumns().indexOf( pattern.getChildColumns().get( 0 ) );
             int targetColumnIndex = model.getAllColumns().indexOf( patternBeingMovedAfter.getChildColumns().get( patternBeingMovedAfter.getChildColumns().size() - 1 ) );
             int numberOfColumns = pattern.getChildColumns().size();
@@ -1496,7 +1496,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         } else {
             //Move up (before)
-            CompositeColumn< ? > patternBeingMovedBefore = model.getConditionPatterns().get( patternTargetIndex );
+            CompositeColumn< ? > patternBeingMovedBefore = model.getConditions().get( patternTargetIndex );
             int sourceColumnIndex = model.getAllColumns().indexOf( pattern.getChildColumns().get( 0 ) );
             int targetColumnIndex = model.getAllColumns().indexOf( patternBeingMovedBefore.getChildColumns().get( 0 ) );
             int numberOfColumns = pattern.getChildColumns().size();

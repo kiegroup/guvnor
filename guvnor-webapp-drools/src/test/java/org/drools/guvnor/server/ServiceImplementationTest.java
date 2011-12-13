@@ -1221,7 +1221,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         col.setOperator("==");
         p1.getChildColumns().add(col);
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 ac = new ActionSetFieldCol52();
         ac.setBoundName( "p" );

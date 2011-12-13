@@ -92,10 +92,8 @@ public class RowExpander {
     }
 
     private void addConditionColumns() {
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                addColumn( (Pattern52) cc );
-            }
+        for ( Pattern52 p : dtable.getPatterns() ) {
+            addColumn( p );
         }
     }
 

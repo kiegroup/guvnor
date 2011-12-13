@@ -16,6 +16,7 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -101,14 +102,19 @@ public class GuidedDecisionTable52
         return attributeCols;
     }
 
-    public List<Pattern52> getConditionPatterns() {
+    /**
+     * Return an immutable list of Pattern columns
+     * 
+     * @return
+     */
+    public List<Pattern52> getPatterns() {
         List<Pattern52> patterns = new ArrayList<Pattern52>();
         for ( CompositeColumn< ? > cc : conditionPatterns ) {
             if ( cc instanceof Pattern52 ) {
                 patterns.add( (Pattern52) cc );
             }
         }
-        return patterns;
+        return Collections.unmodifiableList( patterns );
     }
 
     public List<CompositeColumn< ? extends BaseColumn>> getConditions() {
@@ -166,18 +172,6 @@ public class GuidedDecisionTable52
                 columns.add( bc );
             }
         }
-        for ( ActionCol52 ac : this.actionCols ) {
-            if ( ac instanceof BRLActionColumn ) {
-                BRLActionColumn bac = (BRLActionColumn) ac;
-                for ( BRLActionVariableColumn variable : bac.getChildColumns() ) {
-                    columns.add( variable );
-                }
-
-            } else {
-                columns.add( ac );
-            }
-        }
-
         for ( ActionCol52 ac : this.actionCols ) {
             if ( ac instanceof BRLActionColumn ) {
                 BRLActionColumn bac = (BRLActionColumn) ac;

@@ -69,7 +69,7 @@ public class PatternDragHandler
         if ( endIndex == startIndex ) {
             return;
         }
-        CompositeColumn<?> column = dtableModel.getConditionPatterns().get( startIndex );
+        CompositeColumn<?> column = dtableModel.getConditions().get( startIndex );
         dtableWidget.movePattern( column,
                                   endIndex );
     }

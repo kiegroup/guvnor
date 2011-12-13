@@ -51,7 +51,6 @@ import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -107,7 +106,7 @@ public class GuidedDTDRLPersistenceTest {
         con3.setOperator( "==" );
         p1.getChildColumns().add( con3 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
@@ -119,7 +118,7 @@ public class GuidedDTDRLPersistenceTest {
         con4.setFactField( "(not needed)" );
         p2.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -284,7 +283,7 @@ public class GuidedDTDRLPersistenceTest {
         con4.setFactField( "(not needed)" );
         p1.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -356,7 +355,7 @@ public class GuidedDTDRLPersistenceTest {
         con3.setOperator( "==" );
         p1.getChildColumns().add( con3 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
@@ -368,7 +367,7 @@ public class GuidedDTDRLPersistenceTest {
         con4.setFactField( "this.hasSomething($param)" );
         p2.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -1273,7 +1272,7 @@ public class GuidedDTDRLPersistenceTest {
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
@@ -1453,7 +1452,7 @@ public class GuidedDTDRLPersistenceTest {
         ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
@@ -1498,7 +1497,7 @@ public class GuidedDTDRLPersistenceTest {
         c.setDefaultValue( "cheddar" );
         c.setOperator( "==" );
         p1.getChildColumns().add( c );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         //With provided value
         String[][] data = new String[][]{
@@ -1587,7 +1586,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         // This is a hack consistent with how the Expanded Form decision table 
         // works. I wouldn't be too surprised if this changes at some time, but 
@@ -1625,7 +1624,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1662,7 +1661,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1720,7 +1719,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1770,7 +1769,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryActionInsertFactCol52 asf1 = new LimitedEntryActionInsertFactCol52();
         asf1.setFactType( "Smurf" );
@@ -1819,7 +1818,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 cc1 = new ConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1868,7 +1867,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 cc1 = new ConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1917,7 +1916,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1966,7 +1965,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );

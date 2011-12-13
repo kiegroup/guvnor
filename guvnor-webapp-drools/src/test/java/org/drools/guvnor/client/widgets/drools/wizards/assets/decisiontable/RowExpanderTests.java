@@ -82,7 +82,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -93,7 +93,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -104,7 +104,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -115,7 +115,7 @@ public class RowExpanderTests {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c4 );
-        dtable.getConditionPatterns().add( p4 );
+        dtable.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
@@ -132,7 +132,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 8,
+        assertEquals( 9,
                       columns.size() );
         assertEquals( 1,
                       columns.get( 0 ).values.size() );
@@ -150,6 +150,8 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 8 ).values.size() );
 
         RowIterator ri = re.iterator();
         assertFalse( ri.hasNext() );
@@ -196,7 +198,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -208,7 +210,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -220,7 +222,7 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -232,7 +234,7 @@ public class RowExpanderTests {
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c4.setValueList( "c4a,c4b" );
         p4.getChildColumns().add( c4 );
-        dtable.getConditionPatterns().add( p4 );
+        dtable.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
@@ -251,7 +253,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 8,
+        assertEquals( 9,
                       columns.size() );
 
         assertEquals( 1,
@@ -270,6 +272,8 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 8 ).values.size() );
 
         assertEquals( "c1a",
                       columns.get( 2 ).values.get( 0 ) );
@@ -294,6 +298,8 @@ public class RowExpanderTests {
         assertNull( columns.get( 6 ).values.get( 0 ) );
 
         assertNull( columns.get( 7 ).values.get( 0 ) );
+
+        assertNull( columns.get( 8 ).values.get( 0 ) );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -332,7 +338,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -343,7 +349,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -354,7 +360,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -365,7 +371,7 @@ public class RowExpanderTests {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c4 );
-        dtable.getConditionPatterns().add( p4 );
+        dtable.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
@@ -382,7 +388,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 8,
+        assertEquals( 9,
                       columns.size() );
 
         assertEquals( 1,
@@ -401,6 +407,8 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 8 ).values.size() );
 
         assertEquals( "f1a",
                       columns.get( 2 ).values.get( 0 ) );
@@ -425,6 +433,8 @@ public class RowExpanderTests {
         assertNull( columns.get( 6 ).values.get( 0 ) );
 
         assertNull( columns.get( 7 ).values.get( 0 ) );
+
+        assertNull( columns.get( 8 ).values.get( 0 ) );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -459,13 +469,13 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 3,
+        assertEquals( 4,
                       columns.size() );
 
         assertNull( columns.get( 0 ).getCurrentValue() );
@@ -512,12 +522,12 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -573,7 +583,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -585,12 +595,12 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 4,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -665,7 +675,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -677,7 +687,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -688,12 +698,12 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -776,7 +786,7 @@ public class RowExpanderTests {
         c1.setValueList( "c1a,c1b" );
         c1.setDefaultValue( "c1default" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -789,7 +799,7 @@ public class RowExpanderTests {
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( "c2default" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -801,12 +811,12 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setDefaultValue( "c3default" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -892,7 +902,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -904,7 +914,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -916,7 +926,7 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
@@ -927,7 +937,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c3,
                             false );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -971,7 +981,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -983,7 +993,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -995,7 +1005,7 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
@@ -1004,7 +1014,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1069,7 +1079,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1081,7 +1091,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1093,14 +1103,14 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1183,7 +1193,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditionPatterns().add( p1 );
+        dtable.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1196,7 +1206,7 @@ public class RowExpanderTests {
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( "c2default" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditionPatterns().add( p2 );
+        dtable.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1208,14 +1218,14 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditionPatterns().add( p3 );
+        dtable.getConditions().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
                                           sce );
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 5,
+        assertEquals( 6,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();

@@ -66,7 +66,7 @@ public class NewGuidedDecisionTableWizard
                context,
                presenter );
 
-        Validator validator = new Validator( dtable.getConditionPatterns() );
+        Validator validator = new Validator( dtable.getConditions() );
         this.summaryPage = new SummaryPage( context,
                                             dtable,
                                             eventBus,

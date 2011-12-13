@@ -78,7 +78,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
 
     private List<ConditionCol52> findAvailableColumnsToExpand() {
         List<ConditionCol52> availableColumns = new ArrayList<ConditionCol52>();
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
+        for ( CompositeColumn< ? > cc : dtable.getPatterns() ) {
             if ( cc instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) cc;
                 for ( ConditionCol52 c : p.getChildColumns() ) {

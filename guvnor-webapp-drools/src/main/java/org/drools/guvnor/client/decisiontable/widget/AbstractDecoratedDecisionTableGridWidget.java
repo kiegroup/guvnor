@@ -199,7 +199,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         }
 
         // Initialise CellTable's Condition columns
-        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
             if ( cc instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) cc;
                 for ( ConditionCol52 col : p.getChildColumns() ) {

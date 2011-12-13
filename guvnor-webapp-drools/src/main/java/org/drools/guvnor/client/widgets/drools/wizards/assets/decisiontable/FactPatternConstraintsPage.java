@@ -25,7 +25,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardCont
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -80,27 +79,18 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
-        List<Pattern52> patterns = new ArrayList<Pattern52>();
-        for ( CompositeColumn< ? > cc : this.dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                patterns.add( (Pattern52) cc );
-            }
-        }
-        view.setAvailablePatterns( patterns );
+        view.setAvailablePatterns( this.dtable.getPatterns() );
     }
 
     public boolean isComplete() {
 
         //Have all patterns conditions been defined?
         boolean areConditionsDefined = true;
-        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                for ( ConditionCol52 c : p.getChildColumns() ) {
-                    if ( !getValidator().isConditionValid( c ) ) {
-                        areConditionsDefined = false;
-                        break;
-                    }
+        for ( Pattern52 p : dtable.getPatterns() ) {
+            for ( ConditionCol52 c : p.getChildColumns() ) {
+                if ( !getValidator().isConditionValid( c ) ) {
+                    areConditionsDefined = false;
+                    break;
                 }
             }
         }

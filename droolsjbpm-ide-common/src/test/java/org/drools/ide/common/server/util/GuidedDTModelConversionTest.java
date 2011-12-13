@@ -148,7 +148,7 @@ public class GuidedDTModelConversionTest {
                       tsdt.getAttributeCols().get( 0 ).getDefaultValue() );
 
         assertEquals( 2,
-                      tsdt.getConditionPatterns().size() );
+                      tsdt.getConditions().size() );
 
         assertEquals( "f1",
                       tsdt.getConditionPattern( "f1" ).getBoundName() );
@@ -356,7 +356,7 @@ public class GuidedDTModelConversionTest {
                       tsdt.getAttributeCols().get( 0 ).getDefaultValue() );
 
         assertEquals( 2,
-                      tsdt.getConditionPatterns().size() );
+                      tsdt.getConditions().size() );
 
         assertEquals( "f1",
                       tsdt.getConditionPattern( "f1" ).getBoundName() );

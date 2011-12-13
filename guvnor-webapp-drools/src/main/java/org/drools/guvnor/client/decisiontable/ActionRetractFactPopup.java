@@ -147,16 +147,13 @@ public class ActionRetractFactPopup extends FormStylePopup {
     private ListBox loadBoundFacts(String binding) {
         ListBox listBox = new ListBox();
         listBox.addItem( constants.Choose() );
-        for ( int index = 0; index < model.getConditionPatterns().size(); index++ ) {
-            CompositeColumn< ? > cc = model.getConditionPatterns().get( index );
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                String boundName = p.getBoundName();
-                if ( !"".equals( boundName ) ) {
-                    listBox.addItem( boundName );
-                    if ( boundName.equals( binding ) ) {
-                        listBox.setSelectedIndex( index + 1 );
-                    }
+        for ( int index = 0; index < model.getPatterns().size(); index++ ) {
+            Pattern52 p = model.getPatterns().get( index );
+            String boundName = p.getBoundName();
+            if ( !"".equals( boundName ) ) {
+                listBox.addItem( boundName );
+                if ( boundName.equals( binding ) ) {
+                    listBox.setSelectedIndex( index + 1 );
                 }
             }
         }

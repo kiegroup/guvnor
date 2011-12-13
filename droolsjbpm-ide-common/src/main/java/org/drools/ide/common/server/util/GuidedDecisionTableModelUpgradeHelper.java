@@ -101,7 +101,7 @@ public class GuidedDecisionTableModelUpgradeHelper
             p.getChildColumns().add( makeNewColumn( c ) );
         }
         for ( Pattern52 p : patterns.values() ) {
-            newDTModel.getConditionPatterns().add( p );
+            newDTModel.getConditions().add( p );
         }
 
         //Action columns have a discrete data-type. No conversion action required.

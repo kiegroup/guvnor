@@ -197,7 +197,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         //Drop down of possible patterns
         PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus );
-        pudd.setPatterns( model.getConditionPatterns() );
+        pudd.setPatterns( model.getPatterns() );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );
     }
