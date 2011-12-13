@@ -39,6 +39,9 @@ public class StandaloneEditorInvocationParameters implements Serializable {
     private boolean hideAttributes;
     private String clientName;
 
+    public StandaloneEditorInvocationParameters() {
+    }
+
     public RuleAsset[] getAssetsToBeEdited() {
         return assetsToBeEdited;
     }

@@ -381,7 +381,7 @@ public class PackageEditorActionToolbar extends Composite {
                         refreshCommand.execute();
                         LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
-                        SuggestionCompletionCache.getInstance().refreshPackage( packageConfigData.getName(),
+                        SuggestionCompletionCache.getInstance().loadPackage( packageConfigData.getName(),
                                 new Command() {
                                     public void execute() {
                                         if ( refresh != null ) {

@@ -45,6 +45,11 @@ public class SuggestionCompletionCache {
     private static SuggestionCompletionCache INSTANCE = null;
 
     Map<String, SuggestionCompletionEngine> cache = new HashMap<String, SuggestionCompletionEngine>();
+    
+    /**
+     * Fact Type Filter per package. A package can only have 1 filter at a time. 
+     */
+    Map<String, FactTypeFilter> filters = new HashMap<String, FactTypeFilter>();
     private final Constants constants;
     private EventBus eventBus;
 
@@ -82,10 +87,19 @@ public class SuggestionCompletionCache {
     }
 
 
-    public void loadPackage(final String packageName, final Command done) {
+    /**
+     * Refresh SCE for a specific package removing any filter and retrieving
+     * the last version of it.
+     * @param packageName
+     * @param done 
+     */
+    public void refreshPackage(final String packageName, final Command done) {
 
         LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
-
+        
+        //removes any existing filter
+        this.filters.remove(packageName);
+        
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );
@@ -99,21 +113,37 @@ public class SuggestionCompletionCache {
             }
         });
     }
-
+    
     /**
-     * Removed the package from the cache, causing it to be loaded the next time.
+     * Gets the last version of SCE for a package and then applies any pre-existing
+     * filter to it.
+     * @param packageName
+     * @param done 
      */
-    public void refreshPackage(String packageName, Command done) {
-        //No need to remove sce from cache as this makes sce temporarily unavailable during the 
-        //period between removing sce and putting it back.
-/*        SuggestionCompletionEngine sce = cache.get(packageName);
-        if (sce != null) {
-            sce.setFactTypeFilter(null);
-            cache.remove( packageName );
-        }*/
-        loadPackage( packageName, done );
-    }
+    public void loadPackage(final String packageName, final Command done) {
+        
+        //get any pre-existing filter for this package
+        final FactTypeFilter filter = this.filters.get(packageName);
+        
+        //refresh the package
+        this.refreshPackage(packageName, new Command() {
 
+            public void execute() {
+
+                //applies any pre-existing filter.
+                if (filter != null){
+                    //set the filter again
+                    filters.put(packageName, filter);
+                    getEngineFromCache(packageName).setFactTypeFilter(filter);
+                }
+                
+                if (done != null){
+                    done.execute();
+                }
+            }
+        });
+    }
+    
     /**
      * Reloads a package and then applies the given filter.
      * @param packageName the package name.
@@ -121,12 +151,13 @@ public class SuggestionCompletionCache {
      * @param done the command to be executed after the filter is applied.
      */
     public void applyFactFilter(final String packageName, final FactTypeFilter filter, final Command done) {
-        this.refreshPackage(packageName, new Command() {
-            public void execute() {
-                getEngineFromCache(packageName).setFactTypeFilter(filter);
-                done.execute();
-            }
-        });
+        
+        //set the filter
+        this.filters.put(packageName, filter);
+        
+        //apply it
+        this.loadPackage(packageName, done);
+        
     }
         
     private void setRefreshHandler() {
@@ -134,7 +165,7 @@ public class SuggestionCompletionCache {
                 new RefreshModuleDataModelEvent.Handler() {
                     public void onRefreshModuleDataModel(
                     		RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
-                        refreshPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
+                        loadPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
                     }
                 });
     }

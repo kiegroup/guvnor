@@ -572,7 +572,7 @@ public class NewAssetWizard extends FormStylePopup {
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( format ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
+            SuggestionCompletionCache.getInstance().loadPackage( importedPackageSelector.getSelectedPackage(),
                                                                     new Command() {
                                                                         public void execute() {
                                                                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
