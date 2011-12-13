@@ -101,6 +101,9 @@ public interface Images
     @Source("images/ruleflow_small.gif")
     ImageResource ruleflowSmall();
 
+    @Source("images/form_def_icon.png")
+    ImageResource formDefIcon();
+    
     @Source("images/new_enumeration.gif")
     ImageResource newEnumeration();
 
