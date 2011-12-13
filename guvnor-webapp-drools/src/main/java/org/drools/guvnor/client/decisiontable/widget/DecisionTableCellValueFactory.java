@@ -148,7 +148,12 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     @Override
     public DTCellValue52 makeModelCellValue(BaseColumn column) {
         DTDataTypes52 dataType = getDataType( column );
-        DTCellValue52 dcv = new DTCellValue52( column.getDefaultValue() );
+        DTCellValue52 dcv = null;
+        if ( column instanceof LimitedEntryCol ) {
+            dcv = new DTCellValue52( Boolean.FALSE );
+        } else {
+            dcv = new DTCellValue52( column.getDefaultValue() );
+        }
         assertDTCellValue( dataType,
                            dcv );
         return dcv;

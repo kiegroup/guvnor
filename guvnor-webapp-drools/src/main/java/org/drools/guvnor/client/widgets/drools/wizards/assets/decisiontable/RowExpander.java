@@ -27,9 +27,9 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
@@ -47,7 +47,7 @@ public class RowExpander {
     private GuidedDecisionTable52         dtable;
     private SuggestionCompletionEngine    sce;
 
-    private static final String[]         EMPTY_VALUES    = new String[0];
+    private static final String[]         EMPTY_VALUE     = new String[0];
 
     /**
      * Constructor
@@ -73,7 +73,7 @@ public class RowExpander {
 
     private void addRowNumberColumn() {
         ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUES,
+                                            EMPTY_VALUE,
                                             null );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getRowNumberCol(),
@@ -83,7 +83,7 @@ public class RowExpander {
 
     private void addRowDescriptionColumn() {
         ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUES,
+                                            EMPTY_VALUE,
                                             null );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getDescriptionCol(),
@@ -111,7 +111,7 @@ public class RowExpander {
 
     private void addAnalysisColumn() {
         ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUES,
+                                            EMPTY_VALUE,
                                             null );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getAnalysisCol(),
@@ -156,8 +156,8 @@ public class RowExpander {
 
     private void addColumn(ActionSetFieldCol52 a) {
         ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUES,
-                                            a.getDefaultValue() );
+                                            EMPTY_VALUE,
+                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : Boolean.FALSE.toString() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( a,
                                   cv );
@@ -166,8 +166,8 @@ public class RowExpander {
 
     private void addColumn(ActionInsertFactCol52 a) {
         ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUES,
-                                            a.getDefaultValue() );
+                                            EMPTY_VALUE,
+                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : Boolean.FALSE.toString() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( a,
                                   cv );
