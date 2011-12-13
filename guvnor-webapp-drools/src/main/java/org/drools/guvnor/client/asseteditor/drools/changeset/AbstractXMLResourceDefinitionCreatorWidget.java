@@ -20,6 +20,8 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 /**
  *
  */
-public abstract class AbstractXMLResourceDefinitionCreatorWidget extends DirtyableComposite implements XMLResourceDefinitionCreator {
-    
+public abstract class AbstractXMLResourceDefinitionCreatorWidget extends DirtyableComposite
+    implements
+    XMLResourceDefinitionCreator {
+
 }

@@ -16,17 +16,18 @@
 package org.drools.guvnor.client.asseteditor.drools.changeset;
 
 /**
- * Defines the interface of XMLReourceDefinitionCreator like:
- * <resource type="DRL" name="someName" description="some Descr" source="..."/>
+ * Defines the interface of XMLReourceDefinitionCreator like: <resource
+ * type="DRL" name="someName" description="some Descr" source="..."/>
  */
 public interface XMLResourceDefinitionCreator {
-    
-    public String resourceXMLElementTemplate= "<resource {name} {description} source='{source}' type='{type}' />";
-    
+
+    public String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
+
     /**
      * Return an xml <resource> element.
+     * 
      * @return an xml <resource> element
      */
     void getResourceElement(ResourceElementReadyCommand resourceElementReadyCommand);
-   
+
 }

@@ -16,12 +16,14 @@
 package org.drools.guvnor.client.asseteditor.drools.changeset;
 
 /**
- * The creation of a new <resource> element (unfortunately) is not always 
- * synchronous (see {@link CreateAssetResourceWidget#getResourceElement(ResourceElementReadyCommand)}
+ * The creation of a new <resource> element (unfortunately) is not always
+ * synchronous (see
+ * {@link CreateAssetResourceWidget#getResourceElement(ResourceElementReadyCommand)}
  * This command is used to be notified when the <resource> element is ready to
- * be used.  
+ * be used.
  */
 public interface ResourceElementReadyCommand {
     void onSuccess(String resource);
+
     void onFailure(Throwable cause);
 }

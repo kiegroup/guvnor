@@ -34,184 +34,199 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
 /**
- * Widget in charge of create the XML representation of a <Resource> to be
- * added to a change-set
+ * Widget in charge of create the XML representation of a <Resource> to be added
+ * to a change-set
  */
-public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCreatorWidget{
-    
-    private Constants constants = GWT.create(Constants.class);
-    private boolean globalArea;
-    
-    
+public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCreatorWidget {
+
+    private Constants           constants = GWT.create( Constants.class );
+    private boolean             globalArea;
+
     //Services
     private PackageServiceAsync packageService;
-    
+
     //Package Info
-    private String packageUUID;
-    
+    private String              packageUUID;
+
     //UI Elements
-    
+
     // UI
     interface CreatePackageResourceWidgetBinder
         extends
         UiBinder<Widget, CreatePackageResourceWidget> {
     }
-    
-    private static CreatePackageResourceWidgetBinder uiBinder  = GWT.create( CreatePackageResourceWidgetBinder.class );
-    
+
+    private static CreatePackageResourceWidgetBinder uiBinder = GWT.create( CreatePackageResourceWidgetBinder.class );
+
     @UiField
-    protected TextBox txtName;
-    
+    protected TextBox                                txtName;
+
     @UiField
-    protected TextBox txtDescription;
-    
+    protected TextBox                                txtDescription;
+
     @UiField
-    protected Tree packageTree;
-    
-    public CreatePackageResourceWidget(String packageUUID, String packageName, ClientFactory clientFactory){
-        
-        this.initWidget(uiBinder.createAndBindUi(this));
-        
-        this.globalArea = packageName.equals("globalArea"); 
-        
+    protected Tree                                   packageTree;
+
+    public CreatePackageResourceWidget(String packageUUID,
+                                       String packageName,
+                                       ClientFactory clientFactory) {
+
+        this.initWidget( uiBinder.createAndBindUi( this ) );
+
+        this.globalArea = packageName.equals( "globalArea" );
+
         this.packageService = clientFactory.getPackageService();
 
         //store data
         this.packageUUID = packageUUID;
 
         this.initializePackageTree();
-        
+
     }
 
-    private void initializePackageTree(){
-        
+    private void initializePackageTree() {
+
         //if we are in globalArea, then we need to add all pakcages
         //including globalArea
-        
-        
-        if (this.globalArea){
+
+        if ( this.globalArea ) {
             //Global Area Data
-            this.packageService.loadGlobalPackage(new AsyncCallback<PackageConfigData>()   {
+            this.packageService.loadGlobalPackage( new AsyncCallback<PackageConfigData>() {
 
                 public void onFailure(Throwable caught) {
-                    ErrorPopup.showMessage("Error listing Global Area information!");
+                    ErrorPopup.showMessage( "Error listing Global Area information!" );
                 }
 
                 public void onSuccess(PackageConfigData result) {
-                    populatePackageTree(result, null);
+                    populatePackageTree( result,
+                                         null );
                 }
-            });
-            
+            } );
+
             //Packages Data
-            this.packageService.listPackages(new AsyncCallback<PackageConfigData[]>()    {
+            this.packageService.listPackages( new AsyncCallback<PackageConfigData[]>() {
 
                 public void onFailure(Throwable caught) {
-                    ErrorPopup.showMessage("Error listing package information!");
+                    ErrorPopup.showMessage( "Error listing package information!" );
                 }
 
                 public void onSuccess(PackageConfigData[] result) {
-                    for (int i = 0; i < result.length; i++) {
+                    for ( int i = 0; i < result.length; i++ ) {
                         final PackageConfigData packageConfigData = result[i];
-                        populatePackageTree(packageConfigData, null);
+                        populatePackageTree( packageConfigData,
+                                             null );
                     }
                 }
-            });
-        }else{
-            this.packageService.loadPackageConfig(this.packageUUID, new AsyncCallback<PackageConfigData>()    {
+            } );
+        } else {
+            this.packageService.loadPackageConfig( this.packageUUID,
+                                                   new AsyncCallback<PackageConfigData>() {
 
-                public void onFailure(Throwable caught) {
-                    ErrorPopup.showMessage("Error listing package information!");
-                }
+                                                       public void onFailure(Throwable caught) {
+                                                           ErrorPopup.showMessage( "Error listing package information!" );
+                                                       }
 
-                public void onSuccess(PackageConfigData result) {
-                    populatePackageTree(result, null);
-                }
-                
-            });
+                                                       public void onSuccess(PackageConfigData result) {
+                                                           populatePackageTree( result,
+                                                                                null );
+                                                       }
+
+                                                   } );
         }
-        
-        this.packageTree.setStyleName("category-explorer-Tree"); //NON-NLS
+
+        this.packageTree.setStyleName( "category-explorer-Tree" ); //NON-NLS
 
     }
-    
-    private void populatePackageTree(final PackageConfigData packageConfigData, final TreeItem rootItem) {
-        
-        final TreeItem packageItem = new TreeItem(packageConfigData.getName());
 
-        packageItem.addItem(createTreeItem("LATEST", PackageBuilderWidget.getDownloadLink(packageConfigData)));
+    private void populatePackageTree(final PackageConfigData packageConfigData,
+                                     final TreeItem rootItem) {
 
-        this.packageService.listSnapshots(packageConfigData.getName(), new AsyncCallback<SnapshotInfo[]>()    {
+        final TreeItem packageItem = new TreeItem( packageConfigData.getName() );
 
-            public void onFailure(Throwable caught) {
-                ErrorPopup.showMessage("Error listing snapshots information!");
-            }
+        packageItem.addItem( createTreeItem( "LATEST",
+                                             PackageBuilderWidget.getDownloadLink( packageConfigData ) ) );
 
-            public void onSuccess(SnapshotInfo[] result) {
-                for (int j = 0; j < result.length; j++) {
-                    final SnapshotInfo snapshotInfo = result[j];
-                    RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(), new AsyncCallback<PackageConfigData>()    {
+        this.packageService.listSnapshots( packageConfigData.getName(),
+                                           new AsyncCallback<SnapshotInfo[]>() {
 
-                        public void onFailure(Throwable caught) {
-                            ErrorPopup.showMessage("Error listing snapshots information!");
-                        }
+                                               public void onFailure(Throwable caught) {
+                                                   ErrorPopup.showMessage( "Error listing snapshots information!" );
+                                               }
 
-                        public void onSuccess(PackageConfigData result) {
-                            packageItem.addItem(createTreeItem(snapshotInfo.getName(), PackageBuilderWidget.getDownloadLink(result)));
-                        }
-                    });
+                                               public void onSuccess(SnapshotInfo[] result) {
+                                                   for ( int j = 0; j < result.length; j++ ) {
+                                                       final SnapshotInfo snapshotInfo = result[j];
+                                                       RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(),
+                                                                                                                       new AsyncCallback<PackageConfigData>() {
 
-                }
-            }
-        });
+                                                                                                                           public void onFailure(Throwable caught) {
+                                                                                                                               ErrorPopup.showMessage( "Error listing snapshots information!" );
+                                                                                                                           }
+
+                                                                                                                           public void onSuccess(PackageConfigData result) {
+                                                                                                                               packageItem.addItem( createTreeItem( snapshotInfo.getName(),
+                                                                                                                                                                    PackageBuilderWidget.getDownloadLink( result ) ) );
+                                                                                                                           }
+                                                                                                                       } );
+
+                                                   }
+                                               }
+                                           } );
 
         //if no rootItem, then add the node directly to the tree
-        if (rootItem == null){
-            this.packageTree.addItem(packageItem);
-        } else{
-            rootItem.addItem(packageItem);
+        if ( rootItem == null ) {
+            this.packageTree.addItem( packageItem );
+        } else {
+            rootItem.addItem( packageItem );
         }
-        
+
     }
-    
-    private TreeItem createTreeItem(String label, String link){
-        TreeItem treeItem = new TreeItem(new RadioButton("pkgResourceGroup",label));
-        treeItem.setUserObject(link);
-        
+
+    private TreeItem createTreeItem(String label,
+                                    String link) {
+        TreeItem treeItem = new TreeItem( new RadioButton( "pkgResourceGroup",
+                                                           label ) );
+        treeItem.setUserObject( link );
+
         return treeItem;
     }
 
-    public void getResourceElement(final ResourceElementReadyCommand resourceElementReadyCommand){
-        try{
-        //source is mandatory!
-        TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
-        if (selectedPackageItem == null || selectedPackageItem.getChildCount() != 0){
-            throw new IllegalStateException(constants.NoPackageSeleced());
-        }
+    public void getResourceElement(final ResourceElementReadyCommand resourceElementReadyCommand) {
+        try {
+            //source is mandatory!
+            TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
+            if ( selectedPackageItem == null || selectedPackageItem.getChildCount() != 0 ) {
+                throw new IllegalStateException( constants.NoPackageSeleced() );
+            }
 
-        String result = resourceXMLElementTemplate;
-        
-        String nameString = "";
-        if (!this.txtName.getText().isEmpty()){
-            nameString = "name=\""+this.txtName.getText().trim()+"\"";
-        }
-        result = result.replace("{name}", nameString);
-        
-        String descriptionString = "";
-        if (!this.txtDescription.getText().isEmpty()){
-            descriptionString = "description=\""+this.txtDescription.getText().trim()+"\"";
-        }
-        result = result.replace("{description}", descriptionString);
-        
-        result = result.replace("{type}", "PKG");
-        
-        String source = (String)selectedPackageItem.getUserObject();
-        result = result.replace("{source}", source);
-        
-        resourceElementReadyCommand.onSuccess(result);
-        
-        } catch (Throwable t){
-            resourceElementReadyCommand.onFailure(t);
+            String result = resourceXMLElementTemplate;
+
+            String nameString = "";
+            if ( !this.txtName.getText().isEmpty() ) {
+                nameString = "name=\"" + this.txtName.getText().trim() + "\"";
+            }
+            result = result.replace( "{name}",
+                                     nameString );
+
+            String descriptionString = "";
+            if ( !this.txtDescription.getText().isEmpty() ) {
+                descriptionString = "description=\"" + this.txtDescription.getText().trim() + "\"";
+            }
+            result = result.replace( "{description}",
+                                     descriptionString );
+
+            result = result.replace( "{type}",
+                                     "PKG" );
+
+            String source = (String) selectedPackageItem.getUserObject();
+            result = result.replace( "{source}",
+                                     source );
+
+            resourceElementReadyCommand.onSuccess( result );
+
+        } catch ( Throwable t ) {
+            resourceElementReadyCommand.onFailure( t );
         }
     }
-    
+
 }

@@ -1,6 +1,5 @@
 /*
-/*
- * Copyright 2005 JBoss Inc
+ * Copyright 2011 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,48 +44,54 @@ import org.drools.guvnor.client.rpc.RuleContentText;
  */
 public class ChangeSetEditor extends DirtyableComposite
         implements
-        EditorWidget, SaveEventListener {
+        EditorWidget,
+    SaveEventListener {
 
     // UI
     interface ChangeSetEditorBinder
             extends
             UiBinder<Widget, ChangeSetEditor> {
     }
-    private static ChangeSetEditorBinder uiBinder = GWT.create(ChangeSetEditorBinder.class);
+
+    private static ChangeSetEditorBinder uiBinder  = GWT.create( ChangeSetEditorBinder.class );
     @UiField
-    protected TextArea editorArea;
+    protected TextArea                   editorArea;
     @UiField
-    protected Button btnAssetResource;
+    protected Button                     btnAssetResource;
     @UiField
-    protected Button btnPackageResource;
+    protected Button                     btnPackageResource;
     @UiField
-    protected HorizontalPanel pnlURL;
-    
-    
-    private ClientFactory clientFactory;
-    final private RuleContentText data;
-    final private String assetPackageName;
-    final private String assetPackageUUID;
-    final private String assetName;
-    private final int visibleLines;
-    private Constants constants = GWT.create(Constants.class);
+    protected HorizontalPanel            pnlURL;
+
+    private ClientFactory                clientFactory;
+    final private RuleContentText        data;
+    final private String                 assetPackageName;
+    final private String                 assetPackageUUID;
+    final private String                 assetName;
+    private final int                    visibleLines;
+    private Constants                    constants = GWT.create( Constants.class );
 
     public ChangeSetEditor(RuleAsset a,
-            RuleViewer v,
-            ClientFactory clientFactory,
-            EventBus eventBus) {
-        this(a, clientFactory);
+                           RuleViewer v,
+                           ClientFactory clientFactory,
+                           EventBus eventBus) {
+        this( a,
+              clientFactory );
     }
 
-    public ChangeSetEditor(RuleAsset a, ClientFactory clientFactory) {
-        this(a, clientFactory, -1);
+    public ChangeSetEditor(RuleAsset a,
+                           ClientFactory clientFactory) {
+        this( a,
+              clientFactory,
+              -1 );
     }
 
-    public ChangeSetEditor(RuleAsset asset, ClientFactory clientFactory,
-            int visibleLines) {
+    public ChangeSetEditor(RuleAsset asset,
+                           ClientFactory clientFactory,
+                           int visibleLines) {
 
-        this.initWidget(uiBinder.createAndBindUi(this));
-        
+        this.initWidget( uiBinder.createAndBindUi( this ) );
+
         this.clientFactory = clientFactory;
 
         assetPackageUUID = asset.getMetaData().getPackageUUID();
@@ -95,7 +100,7 @@ public class ChangeSetEditor extends DirtyableComposite
 
         data = (RuleContentText) asset.getContent();
 
-        if (data.content == null) {
+        if ( data.content == null ) {
             data.content = "Empty!";
         }
 
@@ -106,62 +111,65 @@ public class ChangeSetEditor extends DirtyableComposite
 
     private void customizeUIElements() {
 
-        pnlURL.add(this.createChangeSetLink());
+        pnlURL.add( this.createChangeSetLink() );
 
-        editorArea.setStyleName("default-text-Area"); //NON-NLS
-        editorArea.setVisibleLines((visibleLines == -1) ? 25 : visibleLines);
-        editorArea.setText(data.content);
-        editorArea.getElement().setAttribute("spellcheck",
-                "false"); //NON-NLS
+        editorArea.setStyleName( "default-text-Area" ); //NON-NLS
+        editorArea.setVisibleLines( (visibleLines == -1) ? 25 : visibleLines );
+        editorArea.setText( data.content );
+        editorArea.getElement().setAttribute( "spellcheck",
+                                              "false" ); //NON-NLS
 
-        editorArea.addChangeHandler(new ChangeHandler() {
+        editorArea.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
                 data.content = editorArea.getText();
                 makeDirty();
             }
-        });
+        } );
 
-        editorArea.addKeyDownHandler(new KeyDownHandler() {
+        editorArea.addKeyDownHandler( new KeyDownHandler() {
 
             public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
                     event.preventDefault();
                     event.stopPropagation();
                     int pos = editorArea.getCursorPos();
-                    insertText("\t", false);
-                    editorArea.setCursorPos(pos + 1);
+                    insertText( "\t",
+                                false );
+                    editorArea.setCursorPos( pos + 1 );
                     editorArea.cancelKey();
-                    editorArea.setFocus(true);
+                    editorArea.setFocus( true );
                 }
             }
-        });
+        } );
 
     }
 
-    void insertText(String ins, boolean isSpecialPaste) {
+    void insertText(String ins,
+                    boolean isSpecialPaste) {
 
-        editorArea.setFocus(true);
+        editorArea.setFocus( true );
 
         int i = editorArea.getCursorPos();
-        String left = editorArea.getText().substring(0,
-                i);
-        String right = editorArea.getText().substring(i,
-                editorArea.getText().length());
+        String left = editorArea.getText().substring( 0,
+                                                      i );
+        String right = editorArea.getText().substring( i,
+                                                       editorArea.getText().length() );
         int cursorPosition = left.toCharArray().length;
-        if (isSpecialPaste) {
-            int p = ins.indexOf("|");
-            if (p > -1) {
+        if ( isSpecialPaste ) {
+            int p = ins.indexOf( "|" );
+            if ( p > -1 ) {
                 cursorPosition += p;
-                ins = ins.replaceAll("\\|", "");
+                ins = ins.replaceAll( "\\|",
+                                      "" );
             }
 
         }
 
-        editorArea.setText(left + ins + right);
+        editorArea.setText( left + ins + right );
         this.data.content = editorArea.getText();
 
-        editorArea.setCursorPos(cursorPosition);
+        editorArea.setCursorPos( cursorPosition );
     }
 
     public void onSave() {
@@ -174,39 +182,44 @@ public class ChangeSetEditor extends DirtyableComposite
 
     @UiHandler("btnPackageResource")
     public void addNewPackageResource(ClickEvent e) {
-        addNewResource(new CreatePackageResourceWidget(assetPackageUUID, assetPackageName, clientFactory));
+        addNewResource( new CreatePackageResourceWidget( assetPackageUUID,
+                                                         assetPackageName,
+                                                         clientFactory ) );
     }
 
     @UiHandler("btnAssetResource")
     public void addNewAssetResource(ClickEvent e) {
-        addNewResource(new CreateAssetResourceWidget(assetPackageUUID, assetPackageName, clientFactory));
+        addNewResource( new CreateAssetResourceWidget( assetPackageUUID,
+                                                       assetPackageName,
+                                                       clientFactory ) );
     }
 
     private void addNewResource(final AbstractXMLResourceDefinitionCreatorWidget editor) {
 
-        final NewResourcePopup popup = new NewResourcePopup(editor.asWidget());
+        final NewResourcePopup popup = new NewResourcePopup( editor.asWidget() );
 
-        popup.addOkButtonClickHandler(new ClickHandler() {
+        popup.addOkButtonClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                try{
-                    editor.getResourceElement(new ResourceElementReadyCommand() {
+                try {
+                    editor.getResourceElement( new ResourceElementReadyCommand() {
 
                         public void onSuccess(String resource) {
-                            insertText(resource, false);
+                            insertText( resource,
+                                        false );
                         }
 
                         public void onFailure(Throwable cause) {
-                            ErrorPopup.showMessage(cause.getMessage());
+                            ErrorPopup.showMessage( cause.getMessage() );
                         }
-                    });
-                    
-                } catch (Exception e){
-                    ErrorPopup.showMessage(e.getMessage());
+                    } );
+
+                } catch ( Exception e ) {
+                    ErrorPopup.showMessage( e.getMessage() );
                 }
                 popup.hide();
             }
-        });
+        } );
         popup.show();
     }
 
@@ -218,44 +231,44 @@ public class ChangeSetEditor extends DirtyableComposite
         url += this.assetName;
         url += "/source";
 
-        return new HTML(this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>");
+        return new HTML( this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>" );
     }
 
     protected static String getRESTBaseURL() {
         String url = GWT.getModuleBaseURL();
-        return url.replaceFirst("org.drools.guvnor.GuvnorDrools",
-                "rest");
+        return url.replaceFirst( "org.drools.guvnor.GuvnorDrools",
+                                 "rest" );
     }
 }
 
 class NewResourcePopup extends FormStylePopup {
-    
-    private Constants constants = GWT.create(Constants.class);
-    
-    public Button ok = new Button(constants.OK());
-    public Button cancel = new Button(constants.Cancel());
-    
+
+    private Constants constants = GWT.create( Constants.class );
+
+    public Button     ok        = new Button( constants.OK() );
+    public Button     cancel    = new Button( constants.Cancel() );
+
     public NewResourcePopup(Widget content) {
-        setTitle(constants.NewResource());
+        setTitle( constants.NewResource() );
 
         HorizontalPanel hor = new HorizontalPanel();
-        hor.add(ok);
-        hor.add(cancel);
+        hor.add( ok );
+        hor.add( cancel );
 
-        addRow(content);
-        addRow(hor);
+        addRow( content );
+        addRow( hor );
 
-        cancel.addClickHandler(new ClickHandler() {
+        cancel.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 hide();
             }
-        });
-        
+        } );
+
     }
-    
-    public void addOkButtonClickHandler(ClickHandler okClickHandler){
-        ok.addClickHandler(okClickHandler);
+
+    public void addOkButtonClickHandler(ClickHandler okClickHandler) {
+        ok.addClickHandler( okClickHandler );
     }
-    
+
 }
