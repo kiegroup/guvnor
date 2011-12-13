@@ -15,17 +15,25 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import java.util.List;
-
 /**
- * A column that consists of a BRL fragment
+ * A base column
  */
-public interface BRLColumn<T, C extends BaseColumn>
-    extends
-    CompositeColumn<C> {
+public interface BaseColumn {
 
-    public List<T> getDefinition();
+    public String getHeader();
 
-    public void setDefinition(List<T> definition);
+    public void setHeader(String header);
+
+    public boolean isHideColumn();
+
+    public void setHideColumn(boolean hideColumn);
+
+    public int getWidth();
+
+    public void setWidth(int width);
+
+    public String getDefaultValue();
+
+    public void setDefaultValue(String defaultValue);
 
 }

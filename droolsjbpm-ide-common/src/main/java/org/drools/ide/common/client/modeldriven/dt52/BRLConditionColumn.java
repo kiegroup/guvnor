@@ -31,7 +31,7 @@ public class BRLConditionColumn extends ConditionCol52
 
     private List<IPattern>                   definition       = new ArrayList<IPattern>();
 
-    private List<BRLConditionVariableColumn> variables        = new ArrayList<BRLConditionVariableColumn>();
+    private List<BRLConditionVariableColumn> childColumns     = new ArrayList<BRLConditionVariableColumn>();
 
     public List<IPattern> getDefinition() {
         return this.definition;
@@ -41,18 +41,18 @@ public class BRLConditionColumn extends ConditionCol52
         this.definition = definition;
     }
 
-    public List<BRLConditionVariableColumn> getVariables() {
-        return this.variables;
+    public List<BRLConditionVariableColumn> getChildColumns() {
+        return this.childColumns;
     }
 
-    public void setVariables(List<BRLConditionVariableColumn> variables) {
-        this.variables = variables;
+    public void setChildColumns(List<BRLConditionVariableColumn> childColumns) {
+        this.childColumns = childColumns;
     }
 
     @Override
     public void setHeader(String header) {
         super.setHeader( header );
-        for ( BRLConditionVariableColumn variable : this.variables ) {
+        for ( BRLConditionVariableColumn variable : this.childColumns ) {
             variable.setHeader( header );
         }
     }
@@ -60,7 +60,7 @@ public class BRLConditionColumn extends ConditionCol52
     @Override
     public void setHideColumn(boolean hideColumn) {
         super.setHideColumn( hideColumn );
-        for ( BRLConditionVariableColumn variable : this.variables ) {
+        for ( BRLConditionVariableColumn variable : this.childColumns ) {
             variable.setHideColumn( hideColumn );
         }
     }

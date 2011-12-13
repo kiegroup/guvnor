@@ -161,52 +161,52 @@ public class GuidedDTModelConversionTest {
                       tsdt.getConditionPattern( "f2" ).getFactType() );
 
         assertEquals( 3,
-                      tsdt.getConditionPattern( "f1" ).getConditions().size() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().size() );
 
         assertEquals( 1,
-                      tsdt.getConditionPattern( "f2" ).getConditions().size() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().size() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getConstraintValueType() );
         assertEquals( "age",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactField() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ) ).getFactType() );
         assertEquals( "Driver f1 age",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getHeader() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getOperator() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getConstraintValueType() );
         assertEquals( "name",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactField() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ) ).getFactType() );
         assertEquals( "Driver f1 name",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getHeader() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getOperator() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 2 ).getConstraintValueType() );
         assertEquals( "rating",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getFactField() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 2 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getChildColumns().get( 2 ) ).getFactType() );
         assertEquals( "Driver rating",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getHeader() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 2 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getOperator() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 2 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getConstraintValueType() );
         assertEquals( "(not needed)",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactField() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ) ).getFactType() );
         assertEquals( "Driver 2 pimp",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getHeader() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getHeader() );
 
         assertEquals( 4,
                       tsdt.getActionCols().size() );
@@ -369,54 +369,54 @@ public class GuidedDTModelConversionTest {
                       tsdt.getConditionPattern( "f2" ).getFactType() );
 
         assertEquals( 2,
-                      tsdt.getConditionPattern( "f1" ).getConditions().size() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().size() );
 
         assertEquals( 2,
-                      tsdt.getConditionPattern( "f2" ).getConditions().size() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().size() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getConstraintValueType() );
         assertEquals( "age",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactField() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ) ).getFactType() );
         assertEquals( "Driver f1 age",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getHeader() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getOperator() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 0 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getConstraintValueType() );
         assertEquals( "rating",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactField() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ) ).getFactType() );
         assertEquals( "Driver rating",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getHeader() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getOperator() );
+                      tsdt.getConditionPattern( "f1" ).getChildColumns().get( 1 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getConstraintValueType() );
         assertEquals( "name",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactField() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getFactField() );
         assertEquals( "Person",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ) ).getFactType() );
         assertEquals( "Person f2 name",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getHeader() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getHeader() );
         assertEquals( "==",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getOperator() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 0 ).getOperator() );
 
         assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getConstraintValueType() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 1 ).getConstraintValueType() );
         assertEquals( "(not needed)",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getFactField() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 1 ).getFactField() );
         assertEquals( "Person",
-                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ) ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getChildColumns().get( 1 ) ).getFactType() );
         assertEquals( "Person f2 not needed",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getHeader() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 1 ).getHeader() );
         assertEquals( null,
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getOperator() );
+                      tsdt.getConditionPattern( "f2" ).getChildColumns().get( 1 ).getOperator() );
 
         assertEquals( 4,
                       tsdt.getActionCols().size() );

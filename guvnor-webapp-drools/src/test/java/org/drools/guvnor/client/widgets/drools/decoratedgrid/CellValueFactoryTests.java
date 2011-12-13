@@ -107,7 +107,7 @@ public class CellValueFactoryTests {
         c1.setFactField( "name" );
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dt.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -118,7 +118,7 @@ public class CellValueFactoryTests {
         c2.setFactField( "age" );
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dt.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -129,7 +129,7 @@ public class CellValueFactoryTests {
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dt.getConditionPatterns().add( p3 );
 
         Pattern52 p4 = new Pattern52();
@@ -140,7 +140,7 @@ public class CellValueFactoryTests {
         c4.setFactField( "approved" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p4.getConditions().add( c4 );
+        p4.getChildColumns().add( c4 );
         dt.getConditionPatterns().add( p4 );
 
         a1 = new ActionSetFieldCol52();

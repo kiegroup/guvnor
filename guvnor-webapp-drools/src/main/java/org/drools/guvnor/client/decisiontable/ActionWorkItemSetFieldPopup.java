@@ -33,6 +33,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
@@ -339,9 +340,12 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( p.getBoundName().equals( boundName ) ) {
-                return p.getFactType();
+        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                if ( p.getBoundName().equals( boundName ) ) {
+                    return p.getFactType();
+                }
             }
         }
         return "";
@@ -359,9 +363,12 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( !p.isNegated() ) {
-                facts.add( p.getBoundName() );
+        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                if ( !p.isNegated() ) {
+                    facts.add( p.getBoundName() );
+                }
             }
         }
 

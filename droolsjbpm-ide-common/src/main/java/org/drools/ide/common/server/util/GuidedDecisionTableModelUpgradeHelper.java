@@ -98,7 +98,7 @@ public class GuidedDecisionTableModelUpgradeHelper
             if ( p.getFactType() != null && !p.getFactType().equals( c.factType ) ) {
                 throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
             }
-            p.getConditions().add( makeNewColumn( c ) );
+            p.getChildColumns().add( makeNewColumn( c ) );
         }
         for ( Pattern52 p : patterns.values() ) {
             newDTModel.getConditionPatterns().add( p );

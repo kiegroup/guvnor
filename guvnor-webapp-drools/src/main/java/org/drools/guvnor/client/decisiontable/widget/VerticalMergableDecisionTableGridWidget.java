@@ -19,7 +19,7 @@ import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisi
 import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalMergableGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -28,9 +28,9 @@ import com.google.gwt.event.shared.EventBus;
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,
  * columns and rows as rows. Supports merging of cells between rows.
  */
-public class VerticalMergableDecisionTableGridWidget extends AbstractVerticalMergableGridWidget<GuidedDecisionTable52, DTColumnConfig52> {
+public class VerticalMergableDecisionTableGridWidget extends AbstractVerticalMergableGridWidget<GuidedDecisionTable52, BaseColumn> {
 
-    public VerticalMergableDecisionTableGridWidget(ResourcesProvider<DTColumnConfig52> resources,
+    public VerticalMergableDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                    DecisionTableCellValueFactory cellValueFactory,
                                                    EventBus eventBus) {
         super( resources,

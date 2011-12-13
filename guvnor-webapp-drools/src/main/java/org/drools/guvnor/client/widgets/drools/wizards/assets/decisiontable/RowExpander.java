@@ -26,8 +26,9 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
@@ -41,12 +42,12 @@ import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
  */
 public class RowExpander {
 
-    private Map<DTColumnConfig52, ColumnValues> expandedColumns = new IdentityHashMap<DTColumnConfig52, ColumnValues>();
-    private List<ColumnValues>                  columns;
-    private GuidedDecisionTable52               dtable;
-    private SuggestionCompletionEngine          sce;
+    private Map<BaseColumn, ColumnValues> expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
+    private List<ColumnValues>            columns;
+    private GuidedDecisionTable52         dtable;
+    private SuggestionCompletionEngine    sce;
 
-    private static final String[]               EMPTY_VALUES    = new String[0];
+    private static final String[]         EMPTY_VALUES    = new String[0];
 
     /**
      * Constructor
@@ -91,8 +92,10 @@ public class RowExpander {
     }
 
     private void addConditionColumns() {
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            addColumn( p );
+        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                addColumn( (Pattern52) cc );
+            }
         }
     }
 
@@ -119,7 +122,7 @@ public class RowExpander {
     }
 
     private void addColumn(Pattern52 p) {
-        for ( ConditionCol52 c : p.getConditions() ) {
+        for ( ConditionCol52 c : p.getChildColumns() ) {
             addColumn( c );
         }
     }
@@ -193,7 +196,7 @@ public class RowExpander {
      * @param column
      * @param expand
      */
-    void setExpandColumn(DTColumnConfig52 column,
+    void setExpandColumn(BaseColumn column,
                          boolean expandColumn) {
         ColumnValues cv = this.expandedColumns.get( column );
         if ( cv == null ) {

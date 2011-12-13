@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -391,11 +392,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( p.getBoundName().equals( binding ) ) return false;
-            for ( ConditionCol52 c : p.getConditions() ) {
-                if ( c.isBound() ) {
-                    if ( c.getBinding().equals( binding ) ) return false;
+        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                if ( p.getBoundName().equals( binding ) ) return false;
+                for ( ConditionCol52 c : p.getChildColumns() ) {
+                    if ( c.isBound() ) {
+                        if ( c.getBinding().equals( binding ) ) return false;
+                    }
                 }
             }
         }

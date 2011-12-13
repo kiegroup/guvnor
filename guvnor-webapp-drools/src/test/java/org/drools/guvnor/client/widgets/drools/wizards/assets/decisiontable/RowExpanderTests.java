@@ -81,7 +81,7 @@ public class RowExpanderTests {
         c1.setFactField( "name" );
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -92,7 +92,7 @@ public class RowExpanderTests {
         c2.setFactField( "age" );
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -103,7 +103,7 @@ public class RowExpanderTests {
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         Pattern52 p4 = new Pattern52();
@@ -114,7 +114,7 @@ public class RowExpanderTests {
         c4.setFactField( "approved" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p4.getConditions().add( c4 );
+        p4.getChildColumns().add( c4 );
         dtable.getConditionPatterns().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
@@ -195,7 +195,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -207,7 +207,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -219,7 +219,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         Pattern52 p4 = new Pattern52();
@@ -231,7 +231,7 @@ public class RowExpanderTests {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c4.setValueList( "c4a,c4b" );
-        p4.getConditions().add( c4 );
+        p4.getChildColumns().add( c4 );
         dtable.getConditionPatterns().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
@@ -331,7 +331,7 @@ public class RowExpanderTests {
         c1.setFactField( "name" );
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -342,7 +342,7 @@ public class RowExpanderTests {
         c2.setFactField( "age" );
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -353,7 +353,7 @@ public class RowExpanderTests {
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         Pattern52 p4 = new Pattern52();
@@ -364,7 +364,7 @@ public class RowExpanderTests {
         c4.setFactField( "approved" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p4.getConditions().add( c4 );
+        p4.getChildColumns().add( c4 );
         dtable.getConditionPatterns().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
@@ -458,7 +458,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         RowExpander re = new RowExpander( dtable,
@@ -511,7 +511,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         RowExpander re = new RowExpander( dtable,
@@ -572,7 +572,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -584,7 +584,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         RowExpander re = new RowExpander( dtable,
@@ -664,7 +664,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -676,7 +676,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -687,7 +687,7 @@ public class RowExpanderTests {
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
@@ -775,7 +775,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         c1.setDefaultValue( "c1default" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -788,7 +788,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( "c2default" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -800,7 +800,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setDefaultValue( "c3default" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
@@ -891,7 +891,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -903,7 +903,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -915,7 +915,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
@@ -970,7 +970,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -982,7 +982,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -994,7 +994,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
@@ -1068,7 +1068,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -1080,7 +1080,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -1092,7 +1092,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,
@@ -1182,7 +1182,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        p1.getConditions().add( c1 );
+        p1.getChildColumns().add( c1 );
         dtable.getConditionPatterns().add( p1 );
 
         Pattern52 p2 = new Pattern52();
@@ -1195,7 +1195,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( "c2default" );
-        p2.getConditions().add( c2 );
+        p2.getChildColumns().add( c2 );
         dtable.getConditionPatterns().add( p2 );
 
         Pattern52 p3 = new Pattern52();
@@ -1207,7 +1207,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
-        p3.getConditions().add( c3 );
+        p3.getChildColumns().add( c3 );
         dtable.getConditionPatterns().add( p3 );
 
         RowExpander re = new RowExpander( dtable,

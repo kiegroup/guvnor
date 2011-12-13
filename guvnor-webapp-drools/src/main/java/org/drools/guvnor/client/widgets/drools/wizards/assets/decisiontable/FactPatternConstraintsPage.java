@@ -25,6 +25,7 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardCont
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -79,18 +80,27 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
-        view.setAvailablePatterns( dtable.getConditionPatterns() );
+        List<Pattern52> patterns = new ArrayList<Pattern52>();
+        for ( CompositeColumn< ? > cc : this.dtable.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                patterns.add( (Pattern52) cc );
+            }
+        }
+        view.setAvailablePatterns( patterns );
     }
 
     public boolean isComplete() {
 
         //Have all patterns conditions been defined?
         boolean areConditionsDefined = true;
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            for ( ConditionCol52 c : p.getConditions() ) {
-                if ( !getValidator().isConditionValid( c ) ) {
-                    areConditionsDefined = false;
-                    break;
+        for ( CompositeColumn< ? > cc : dtable.getConditionPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                for ( ConditionCol52 c : p.getChildColumns() ) {
+                    if ( !getValidator().isConditionValid( c ) ) {
+                        areConditionsDefined = false;
+                        break;
+                    }
                 }
             }
         }
@@ -130,30 +140,30 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
             String fieldType = sce.getFieldType( type,
-                                                 fieldName );
+                                                     fieldName );
             String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
-                                                       fieldType,
-                                                       fieldDisplayType,
-                                                       BaseSingleFieldConstraint.TYPE_LITERAL );
+                                                           fieldType,
+                                                           fieldDisplayType,
+                                                           BaseSingleFieldConstraint.TYPE_LITERAL );
             availableFields.add( field );
         }
 
         //Add predicates
         if ( dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             AvailableField field = new AvailableField( constants.DecisionTableWizardPredicate(),
-                                                       BaseSingleFieldConstraint.TYPE_PREDICATE );
+                                                           BaseSingleFieldConstraint.TYPE_PREDICATE );
             availableFields.add( field );
         }
 
         view.setAvailableFields( availableFields );
-        view.setChosenConditions( pattern.getConditions() );
+        view.setChosenConditions( pattern.getChildColumns() );
     }
 
     public void setChosenConditions(Pattern52 pattern,
                                     List<ConditionCol52> conditions) {
-        pattern.getConditions().clear();
-        pattern.getConditions().addAll( conditions );
+        pattern.getChildColumns().clear();
+        pattern.getChildColumns().addAll( conditions );
     }
 
     public String[] getOperatorCompletions(Pattern52 selectedPattern,

@@ -16,8 +16,8 @@
 package org.drools.guvnor.client.decisiontable;
 
 import org.drools.guvnor.client.decisiontable.widget.AbstractDecisionTableWidget;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -69,8 +69,8 @@ public class PatternDragHandler
         if ( endIndex == startIndex ) {
             return;
         }
-        Pattern52 pattern = dtableModel.getConditionPatterns().get( startIndex );
-        dtableWidget.movePattern( pattern,
+        CompositeColumn<?> column = dtableModel.getConditionPatterns().get( startIndex );
+        dtableWidget.movePattern( column,
                                   endIndex );
     }
 

@@ -35,7 +35,7 @@ public class ConditionPatternCell extends PatternCell {
         if ( !validator.isPatternBindingUnique( p ) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }
-        for ( ConditionCol52 c : p.getConditions() ) {
+        for ( ConditionCol52 c : p.getChildColumns() ) {
             if ( !validator.isConditionValid( c ) ) {
                 return WizardResources.INSTANCE.style().wizardDTableValidationError();
             }

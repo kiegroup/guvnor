@@ -503,7 +503,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 chosenConditions.add( index - 1,
                                       c );
                 setChosenConditions( chosenConditions );
-                availablePatternsSelection.setConditions( chosenConditions );
+                availablePatternsSelection.setChildColumns( chosenConditions );
             }
 
         } );
@@ -515,7 +515,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 chosenConditions.add( index + 1,
                                       c );
                 setChosenConditions( chosenConditions );
-                availablePatternsSelection.setConditions( chosenConditions );
+                availablePatternsSelection.setChildColumns( chosenConditions );
             }
 
         } );
@@ -609,7 +609,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             chosenConditions.add( makeNewConditionColumn( f ) );
         }
         setChosenConditions( chosenConditions );
-        availablePatternsSelection.setConditions( chosenConditions );
+        availablePatternsSelection.setChildColumns( chosenConditions );
         presenter.stateChanged();
     }
 
@@ -638,7 +638,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         }
         chosenConditionsSelections.clear();
         setChosenConditions( chosenConditions );
-        availablePatternsSelection.setConditions( chosenConditions );
+        availablePatternsSelection.setChildColumns( chosenConditions );
         presenter.stateChanged();
 
         txtColumnHeader.setText( "" );

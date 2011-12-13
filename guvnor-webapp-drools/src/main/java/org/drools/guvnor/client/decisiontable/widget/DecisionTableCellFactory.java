@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -47,7 +48,7 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
-public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig52> {
+public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
     private static String[]       DIALECTS = {"java", "mvel"};
 
@@ -88,7 +89,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            The Decision Table model column
      * @return A Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(DTColumnConfig52 column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(BaseColumn column) {
 
         //This is the cell that will be used to edit values; its type can differ to the "fieldType" 
         //of the underlying model. For example a "Guvnor-enum" requires a drop-down list of potential 

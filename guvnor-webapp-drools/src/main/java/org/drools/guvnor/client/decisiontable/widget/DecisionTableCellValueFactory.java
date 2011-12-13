@@ -31,9 +31,9 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
@@ -42,7 +42,7 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 /**
  * A Factory to create CellValues applicable to given columns.
  */
-public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig52, DTCellValue52> {
+public class DecisionTableCellValueFactory extends AbstractCellValueFactory<BaseColumn, DTCellValue52> {
 
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
@@ -76,8 +76,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      */
     public List<DTCellValue52> makeRowData() {
         List<DTCellValue52> data = new ArrayList<DTCellValue52>();
-        List<DTColumnConfig52> columns = model.getAllColumns();
-        for ( DTColumnConfig52 column : columns ) {
+        List<BaseColumn> columns = model.getAllColumns();
+        for ( BaseColumn column : columns ) {
             DTCellValue52 cell = makeModelCellValue( column );
             data.add( cell );
         }
@@ -92,8 +92,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     @Override
     public DynamicDataRow makeUIRowData() {
         DynamicDataRow data = new DynamicDataRow();
-        List<DTColumnConfig52> columns = model.getAllColumns();
-        for ( DTColumnConfig52 column : columns ) {
+        List<BaseColumn> columns = model.getAllColumns();
+        for ( BaseColumn column : columns ) {
             DTCellValue52 dcv = makeModelCellValue( column );
             DTDataTypes52 dataType = getDataType( column );
             assertDTCellValue( dataType,
@@ -111,7 +111,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * 
      * @return
      */
-    public List<DTCellValue52> makeColumnData(DTColumnConfig52 column) {
+    public List<DTCellValue52> makeColumnData(BaseColumn column) {
         List<DTCellValue52> data = new ArrayList<DTCellValue52>();
         for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
             DTCellValue52 cell = makeModelCellValue( column );
@@ -127,7 +127,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @param columnData
      * @return
      */
-    public List<CellValue< ? extends Comparable< ? >>> convertColumnData(DTColumnConfig52 column,
+    public List<CellValue< ? extends Comparable< ? >>> convertColumnData(BaseColumn column,
                                                                          List<DTCellValue52> columnData) {
         List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
@@ -146,7 +146,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @return
      */
     @Override
-    public DTCellValue52 makeModelCellValue(DTColumnConfig52 column) {
+    public DTCellValue52 makeModelCellValue(BaseColumn column) {
         DTDataTypes52 dataType = getDataType( column );
         DTCellValue52 dcv = new DTCellValue52( column.getDefaultValue() );
         assertDTCellValue( dataType,
@@ -161,7 +161,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @return
      */
     @Override
-    public CellValue< ? extends Comparable< ? >> convertModelCellValue(DTColumnConfig52 column,
+    public CellValue< ? extends Comparable< ? >> convertModelCellValue(BaseColumn column,
                                                                        DTCellValue52 dcv) {
         DTDataTypes52 dataType = getDataType( column );
         assertDTCellValue( dataType,
@@ -208,7 +208,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     // Get the Data Type corresponding to a given column
-    protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
+    protected DTDataTypes52 getDataType(BaseColumn column) {
 
         //Limited Entry are simply boolean
         if ( column instanceof LimitedEntryCol ) {
@@ -304,7 +304,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            UI CellValue to convert into Model CellValue
      * @return
      */
-    public DTCellValue52 convertToModelCell(DTColumnConfig52 column,
+    public DTCellValue52 convertToModelCell(BaseColumn column,
                                             CellValue< ? > cell) {
         DTDataTypes52 dt = getDataType( column );
         DTCellValue52 dtCell = null;

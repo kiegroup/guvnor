@@ -20,26 +20,26 @@ import java.util.List;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 /**
  * An event to set the internal model for a Guided Decision Table
  */
-public class SetInternalDecisionTableModelEvent extends SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> {
+public class SetInternalDecisionTableModelEvent extends SetInternalModelEvent<GuidedDecisionTable52, BaseColumn> {
 
-    public static Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, DTColumnConfig52>> TYPE = new Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, DTColumnConfig52>>();
+    public static Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>> TYPE = new Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>>();
 
     public SetInternalDecisionTableModelEvent(GuidedDecisionTable52 model,
                                               DynamicData data,
-                                              List<DynamicColumn<DTColumnConfig52>> columns) {
+                                              List<DynamicColumn<BaseColumn>> columns) {
         super( model,
                data,
                columns );
     }
 
     @Override
-    public Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, DTColumnConfig52>> getAssociatedType() {
+    public Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>> getAssociatedType() {
         return TYPE;
     }
 

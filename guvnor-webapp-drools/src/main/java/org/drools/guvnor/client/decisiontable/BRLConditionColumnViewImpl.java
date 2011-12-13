@@ -30,9 +30,8 @@ import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVaria
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -63,9 +62,9 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     protected boolean isHeaderUnique(String header) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            for ( ConditionCol52 c : p.getConditions() ) {
-                if ( c.getHeader().equals( header ) ) return false;
+        for ( CompositeColumn< ? > cc : model.getConditionPatterns() ) {
+            for ( int iChild = 0; iChild < cc.getChildColumns().size(); iChild++ ) {
+                if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) return false;
             }
         }
         return true;
@@ -121,7 +120,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         BRLConditionColumn clone = new BRLConditionColumn();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
-        clone.setVariables( cloneVariables( col.getVariables() ) );
+        clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
     }

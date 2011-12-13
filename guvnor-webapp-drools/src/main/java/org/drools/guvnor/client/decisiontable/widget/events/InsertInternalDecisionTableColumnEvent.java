@@ -20,14 +20,14 @@ import java.util.List;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 
 /**
  * An event to insert a column in the table
  */
-public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumnEvent<DTColumnConfig52> {
+public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumnEvent<BaseColumn> {
 
-    public InsertInternalDecisionTableColumnEvent(DynamicColumn<DTColumnConfig52> column,
+    public InsertInternalDecisionTableColumnEvent(DynamicColumn<BaseColumn> column,
                                                   int index,
                                                   boolean redraw,
                                                   List<CellValue< ? extends Comparable< ? >>> data) {
@@ -37,10 +37,10 @@ public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumn
                data );
     }
 
-    public static Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>> TYPE = new Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>>();
+    public static Type<InsertInternalColumnEvent.Handler<BaseColumn>> TYPE = new Type<InsertInternalColumnEvent.Handler<BaseColumn>>();
 
     @Override
-    public Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>> getAssociatedType() {
+    public Type<InsertInternalColumnEvent.Handler<BaseColumn>> getAssociatedType() {
         return TYPE;
     }
 

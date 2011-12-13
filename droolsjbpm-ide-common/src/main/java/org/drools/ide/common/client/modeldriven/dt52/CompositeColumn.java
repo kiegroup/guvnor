@@ -18,14 +18,14 @@ package org.drools.ide.common.client.modeldriven.dt52;
 import java.util.List;
 
 /**
- * A column that consists of a BRL fragment
+ * A column composed of other columns
  */
-public interface BRLColumn<T, C extends BaseColumn>
+public interface CompositeColumn<C extends BaseColumn>
     extends
-    CompositeColumn<C> {
+    BaseColumn {
 
-    public List<T> getDefinition();
+    public List<C> getChildColumns();
 
-    public void setDefinition(List<T> definition);
+    public void setChildColumns(List<C> columns);
 
 }

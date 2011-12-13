@@ -124,7 +124,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
         BRLActionColumn clone = new BRLActionColumn();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
-        clone.setVariables( cloneVariables( col.getVariables() ) );
+        clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
     }
