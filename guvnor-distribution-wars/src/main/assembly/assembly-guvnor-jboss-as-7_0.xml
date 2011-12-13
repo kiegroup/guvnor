@@ -19,25 +19,24 @@
       <unpack>true</unpack>
       <unpackOptions>
         <excludes>
-
-          <!-- Weld and transitive dependency excludes, it's bundled in the AS -->
-          <exclude>WEB-INF/lib/cdi-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/persistence-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/javax.inject-*.jar</exclude>
-          <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
+          <!-- TODO in JBoss 7.1 it will be allowed to include weld too -->
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
-          <exclude>WEB-INF/lib/guava-*.jar</exclude>
-          <!-- TODO exclude slf4j? -->
-          <exclude>WEB-INF/lib/cal10n-*.jar</exclude>
-          <exclude>WEB-INF/lib/jboss-interceptor-*.jar</exclude>
-          <exclude>WEB-INF/lib/jboss-interceptors-api_1.1_spec-*.jar</exclude>
-          <exclude>WEB-INF/lib/javassist-3.12.0.GA.jar</exclude>
-          
-          <exclude>WEB-INF/lib/ejb-api-*.jar</exclude>
-          
-          <!-- Start workaround for GUVNOR-1160: MalformedParameterizedTypeException when deploying -->
-          <exclude>WEB-INF/lib/jta-*.jar</exclude>
-          <exclude>WEB-INF/lib/jsf-api-*.jar</exclude>
+
+          <!--&lt;!&ndash; Weld transitive dependency excludes, it's bundled in the AS &ndash;&gt;-->
+          <!--<exclude>WEB-INF/lib/cdi-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/persistence-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/javax.inject-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/guava-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/cal10n-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jboss-interceptor-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jboss-interceptors-api_1.1_spec-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/ejb-api-*.jar</exclude>-->
+
+          <!--&lt;!&ndash; Start workaround for GUVNOR-1160: MalformedParameterizedTypeException when deploying &ndash;&gt;-->
+          <!--<exclude>WEB-INF/lib/javassist-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jta-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jsf-api-*.jar</exclude>-->
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
