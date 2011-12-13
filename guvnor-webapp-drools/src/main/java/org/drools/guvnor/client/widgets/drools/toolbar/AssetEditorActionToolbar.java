@@ -559,7 +559,7 @@ public class AssetEditorActionToolbar extends Composite {
     public void flushSuggestionCompletionCache(final String packageName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
+            SuggestionCompletionCache.getInstance().loadPackage( packageName,
                     new Command() {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
