@@ -29,7 +29,7 @@ public class SelectorManagerTest {
 
     @Test
     public void testSelectorMangerConfig() {
-        SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -40,7 +40,7 @@ public class SelectorManagerTest {
         assertTrue(sm.getSelector( "selector2" ) instanceof RuleBasedSelector);
 
         RuleBasedSelector sel = (RuleBasedSelector) sm.getSelector( "selector2" );
-        assertEquals("/TestSelector.drl", sel.ruleFile);
+        assertEquals("TestSelector.drl", sel.ruleFile);
 
         assertFalse(sel.evalRules( new DummyClass() ));
         assertTrue(sel.evalRules( new Allow() ));
@@ -54,8 +54,7 @@ public class SelectorManagerTest {
         AssetSelector nil = sm.getSelector( null );
         assertTrue(nil.isAssetAllowed( null ));
 
-
-        sm = new SelectorManager("/emptyselectors.properties");
+        sm = new SelectorManager("emptyselectors.properties");
 
         assertNull(sm.getSelector( "XX" ));
         assertNotNull(sm.getSelector( null ));
@@ -63,13 +62,12 @@ public class SelectorManagerTest {
         nil = sm.getSelector( " " );
         assertTrue(nil.isAssetAllowed( null ));
 
-
         assertSame( SelectorManager.getInstance(), SelectorManager.getInstance());
     }
 
     @Test
     public void testGetBuiltInSelector() {
-        SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -78,7 +76,7 @@ public class SelectorManagerTest {
     
     @Test
     public void testGetCustomSelectors() {
-        SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -87,7 +85,7 @@ public class SelectorManagerTest {
     
     @Test
     public void testBadConfig() throws Exception {
-        SelectorManager sm = new SelectorManager("/badselectors.properties");
+        SelectorManager sm = new SelectorManager("badselectors.properties");
         assertNotNull(sm);
     }
 
