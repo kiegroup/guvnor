@@ -18,12 +18,6 @@
   <properties>
     <weld.version>1.1.4.Final</weld.version>
     <seam.version>3.1.0.CR1</seam.version>
-    <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
-    <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
-    <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
-    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml &ndash;&gt;-->
-    <!--<managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>-->
-    <!--<managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home>-->
   </properties>
 
   <build>
@@ -36,50 +30,6 @@
         <directory>src/main/resources</directory>
       </resource>      
     </resources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <!-- Download JBoss AS and unpack it to have it available during tests -->
-            <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
-            <id>unpack</id>
-            <phase>process-test-classes</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.jboss.as</groupId>
-                  <artifactId>jboss-as-dist</artifactId>
-                  <version>${managed-appserver.jboss7.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <!-- Overwrite the surefire plugin to run after instead of before the package phase -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <dependencyManagement>
@@ -92,13 +42,6 @@
         <!--<version>${seam.version}</version>-->
         <!--<scope>import</scope>-->
       <!--</dependency>-->
-      <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <type>pom</type>
-        <version>1.0.0.CR5</version>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -233,140 +176,6 @@
       <!--<artifactId>seam-rest</artifactId>-->
       <!--<version>${seam.version}</version>-->
     <!--</dependency>-->
-
-    <!-- Arquillian (testing for weld) -->
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.junit</groupId>-->
-      <!--<artifactId>arquillian-junit-standalone</artifactId>-->
-      <!--<version>1.0.0.CR2</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-api</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM to use the MavenImporter -->
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM to use the MavenImporter -->
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM to use the MavenImporter -->
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
-      <groupId>org.jboss.arquillian.protocol</groupId>
-      <artifactId>arquillian-protocol-servlet</artifactId>
-      <scope>test</scope>
-    </dependency>
-    
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>-->
-      <!--<version>1.0.0.CR2</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>&lt;!&ndash; Workaround for https://issues.jboss.org/browse/ARQ-328 &ndash;&gt;-->
-        <!--<groupId>org.jboss.ejb3</groupId>-->
-        <!--<artifactId>jboss-ejb3-api</artifactId>-->
-        <!--<version>3.1.0</version>-->
-        <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>&lt;!&ndash; Workaround for https://issues.jboss.org/browse/ARQ-328 &ndash;&gt;-->
-        <!--<groupId>javax.validation</groupId>-->
-        <!--<artifactId>validation-api</artifactId>-->
-        <!--<version>1.0.0.GA</version>-->
-        <!--<scope>test</scope>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-jetty-embedded-6.1</artifactId>-->
-      <!--<version>1.0.0.CR1</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.mortbay.jetty</groupId>-->
-      <!--<artifactId>jetty</artifactId>-->
-      <!--<version>6.1.12</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--&lt;!&ndash; plus and naming requires for using JNDI &ndash;&gt;-->
-    <!--<dependency>-->
-      <!--<groupId>org.mortbay.jetty</groupId>-->
-      <!--<artifactId>jetty-plus</artifactId>-->
-      <!--<version>6.1.12</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.mortbay.jetty</groupId>-->
-      <!--<artifactId>jetty-naming</artifactId>-->
-      <!--<version>6.1.12</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-
-    
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-jetty-embedded-7</artifactId>-->
-      <!--<version>1.0.0.CR1</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-tomcat-embedded-6</artifactId>-->
-      <!--<version>1.0.0.Final-SNAPSHOT</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.tomcat</groupId>-->
-      <!--<artifactId>catalina</artifactId>-->
-      <!--<version>6.0.32</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-       <!--<groupId>org.apache.tomcat</groupId>-->
-       <!--<artifactId>coyote</artifactId>-->
-      <!--<version>6.0.32</version>-->
-       <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-       <!--<groupId>org.apache.tomcat</groupId>-->
-       <!--<artifactId>jasper</artifactId>-->
-      <!--<version>6.0.32</version>-->
-       <!--<scope>test</scope>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-tomcat-managed-6</artifactId>-->
-      <!--<version>1.0.0.CR2</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.as</groupId>-->
-      <!--<artifactId>jboss-as-arquillian-container-embedded</artifactId>-->
-      <!--<version>7.0.0.Beta3</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-container-managed</artifactId>
-      <version>${managed-appserver.jboss7.version}</version>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>javax.ejb</groupId>
