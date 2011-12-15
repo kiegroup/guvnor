@@ -30,6 +30,7 @@ import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
@@ -300,17 +301,17 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     }
 
     static String getVersionFeed(PackageConfigData conf) {
-        String hurl = getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
+        String hurl = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
     String getPackageSourceURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
-            url = getRESTBaseURL() + "packages/" + conf.getName() +
+            url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +
                     "/versions/" + conf.getVersionNumber() + "/source";
         } else {
-            url = getRESTBaseURL() + "packages/" + conf.getName() + "/source";
+            url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() + "/source";
         }
         return url;
     }
@@ -318,18 +319,12 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     String getPackageBinaryURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
-            url = getRESTBaseURL() + "packages/" + conf.getName() +
+            url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +
                     "/versions/" + conf.getVersionNumber() + "/binary";
         } else {
-            url = getRESTBaseURL() + "packages/" + conf.getName() + "/binary";
+            url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() + "/binary";
         }
         return url;
-    }
-
-    static String getRESTBaseURL() {
-        String url = GWT.getModuleBaseURL();
-        return url.replaceFirst( "org.drools.guvnor.Guvnor",
-                "rest" );
     }
 
     /*

@@ -431,19 +431,12 @@ public class MetaDataWidget extends Composite {
 
     static String getVersionFeed(Artifact artifact) {
         if ( artifact instanceof PackageConfigData ) {
-            String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
+            String hurl = RESTUtil.getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().getPackageName()
+            String hurl = RESTUtil.getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().getPackageName()
                     + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }
     }
-
-    static String getRESTBaseURL() {
-        String url = GWT.getModuleBaseURL();
-        return url.replaceFirst( "org.drools.guvnor.Guvnor",
-                "rest" );
-    }
-
 }
