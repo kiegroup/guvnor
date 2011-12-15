@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 /**
@@ -301,7 +302,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
     }
 
     private String getDownloadLink(String assetName) {
-        String url = ChangeSetEditor.getRESTBaseURL();
+        String url = RESTUtil.getRESTBaseURL();
         url += "packages/";
         url += this.lstPackage.getItemText( this.lstPackage.getSelectedIndex() );
         url += "/assets/";
