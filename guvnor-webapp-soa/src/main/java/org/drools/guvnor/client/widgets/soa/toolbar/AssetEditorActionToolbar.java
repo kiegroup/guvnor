@@ -664,7 +664,7 @@ public class AssetEditorActionToolbar extends Composite {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                                closeAndReopen( data );
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -697,7 +697,7 @@ public class AssetEditorActionToolbar extends Composite {
                             //flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             //flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                            closeAndReopen( asset.getUuid() );
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
 
                         @Override
@@ -706,12 +706,6 @@ public class AssetEditorActionToolbar extends Composite {
                         }
                     } );
         }
-    }
-
-    private void closeAndReopen(String newAssetUUID) {
-        close();
-
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 
     private void completedCopying(String name,

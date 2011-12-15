@@ -43,20 +43,7 @@ public abstract class MultiActivityManagerTestBase {
         eventBus = setUpEventBus();
         tabbedPanel = mock(TabbedPanel.class);
 
-        ClientFactory clientFactory = mock(ClientFactory.class);
-
-        when(
-                clientFactory.getActivityMapper()
-        ).thenReturn(
-                activityMapper
-        );
-        when(
-                clientFactory.getPlaceHistoryMapper()
-        ).thenReturn(
-                placeHistoryMapper
-        );
-
-        multiActivityManager = new MultiActivityManager(clientFactory, eventBus);
+        multiActivityManager = new MultiActivityManager(eventBus, activityMapper);
     }
 
     protected EventBus setUpEventBus() {
