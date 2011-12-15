@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -42,7 +41,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
@@ -56,7 +54,6 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.StatePageRequest;
@@ -1222,9 +1219,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         col.setFieldType(SuggestionCompletionEngine.TYPE_STRING);
         col.setFactField("hair");
         col.setOperator("==");
-        p1.getConditions().add(col);
+        p1.getChildColumns().add(col);
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 ac = new ActionSetFieldCol52();
         ac.setBoundName( "p" );

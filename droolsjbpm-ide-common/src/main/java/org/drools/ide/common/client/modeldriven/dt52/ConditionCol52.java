@@ -32,9 +32,6 @@ public class ConditionCol52 extends DTColumnConfig52
 
     private static final long   serialVersionUID = 510l;
 
-    // What is displayed at the top
-    private String              header;
-
     // The type of the value that is in the cell, eg if it is a formula, or
     // literal value etc. The valid types are from ISingleFieldConstraint:
     // TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
@@ -60,14 +57,6 @@ public class ConditionCol52 extends DTColumnConfig52
 
     //Binding for the field
     private String              binding;
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
-
-    public String getHeader() {
-        return header;
-    }
 
     public void setConstraintValueType(int constraintValueType) {
         this.constraintValueType = constraintValueType;

@@ -55,8 +55,8 @@ public class GuidedDTXMLPersistenceTest {
 
         Pattern52 p = new Pattern52();
         ConditionCol52 c = new ConditionCol52();
-        p.getConditions().add( c );
-        dt.getConditionPatterns().add( p );
+        p.getChildColumns().add( c );
+        dt.getConditions().add( p );
 
         dt.setData( upgrader.makeDataLists( new String[][]{new String[]{"1", "hola"}} ) );
         dt.setTableName( "blah" );
@@ -82,9 +82,9 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( 2,
                       dt_.getActionCols().size() );
         assertEquals( 1,
-                      dt_.getConditionPatterns().size() );
+                      dt_.getConditions().size() );
         assertEquals( 1,
-                      dt_.getConditionPatterns().get( 0 ).getConditions().size() );
+                      dt_.getConditions().get( 0 ).getChildColumns().size() );
 
     }
 
@@ -102,9 +102,9 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( 2,
                       dt_.getActionCols().size() );
         assertEquals( 1,
-                      dt_.getConditionPatterns().size() );
+                      dt_.getConditions().size() );
         assertEquals( 1,
-                      dt_.getConditionPatterns().get( 0 ).getConditions().size() );
+                      dt_.getConditions().get( 0 ).getChildColumns().size() );
 
         assertTrue( dt_.getActionCols().get( 1 ) instanceof ActionSetFieldCol52 );
         ActionSetFieldCol52 asf = (ActionSetFieldCol52) dt_.getActionCols().get( 1 );

@@ -20,22 +20,12 @@ import java.util.List;
 /**
  * A column that consists of a BRL fragment
  */
-public interface BRLColumn<T, C> {
+public interface BRLColumn<T, C extends BaseColumn>
+    extends
+    CompositeColumn<C> {
 
     public List<T> getDefinition();
 
     public void setDefinition(List<T> definition);
-
-    public List<C> getVariables();
-
-    public void setVariables(List<C> variables);
-
-    public boolean isHideColumn();
-
-    public void setHideColumn(boolean hideColumn);
-
-    public void setHeader(String header);
-
-    public String getHeader();
 
 }

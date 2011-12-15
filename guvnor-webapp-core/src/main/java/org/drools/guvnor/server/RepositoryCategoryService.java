@@ -25,7 +25,6 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.repository.RulesRepository;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,8 +37,6 @@ import org.jboss.seam.security.annotations.LoggedIn;
 public class RepositoryCategoryService
     implements
     CategoryService {
-    @Inject
-    private RulesRepository              repository;
 
     private static final long            serialVersionUID             = 12365;
 

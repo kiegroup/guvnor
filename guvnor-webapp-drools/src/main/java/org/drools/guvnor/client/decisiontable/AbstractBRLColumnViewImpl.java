@@ -33,6 +33,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * An editor for BRL Column definitions
  */
-public abstract class AbstractBRLColumnViewImpl<T, C> extends Popup
+public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends Popup
     implements
     RuleModelEditor,
     TemplateVariablesChangedEvent.Handler {
@@ -142,7 +143,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C> extends Popup
         this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
-        this.cmdApplyChanges.setEnabled( editingCol.getVariables().size() > 0 );
+        this.cmdApplyChanges.setEnabled( editingCol.getChildColumns().size() > 0 );
     }
 
     @Override
@@ -268,8 +269,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C> extends Popup
         rmv.visitRuleModel( ruleModel );
 
         //Update column and UI
-        editingCol.setVariables( convertInterpolationVariables( ivs ) );
-        cmdApplyChanges.setEnabled( editingCol.getVariables().size() > 0 );
+        editingCol.setChildColumns( convertInterpolationVariables( ivs ) );
+        cmdApplyChanges.setEnabled( editingCol.getChildColumns().size() > 0 );
     }
 
 }

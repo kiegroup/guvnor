@@ -20,7 +20,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalDec
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -28,13 +28,13 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * A "sidebar" for a vertical Decision Table
  */
-public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<GuidedDecisionTable52, DTColumnConfig52> {
+public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<GuidedDecisionTable52, BaseColumn> {
 
     /**
      * Construct a "sidebar" for a vertical Decision Table
      */
-    public VerticalDecisionTableSidebarWidget(ResourcesProvider<DTColumnConfig52> resources,
-                                                           EventBus eventBus) {
+    public VerticalDecisionTableSidebarWidget(ResourcesProvider<BaseColumn> resources,
+                                              EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
                eventBus );
@@ -44,7 +44,7 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
                              this );
     }
 
-    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> event) {
+    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, BaseColumn> event) {
         this.data = event.getData();
         this.rowMapper = new RowMapper( this.data );
         this.redraw();

@@ -21,7 +21,7 @@
       <!--<property name="executionType">REMOTE</property>-->
     <!--</protocol>-->
     <configuration>
-      <!-- Keep in sync with /guvnor-webapp/pom.xml -->
+      <!-- Keep in sync with /guvnor-webapp-drools/pom.xml -->
       <property name="jbossHome">target/jboss-as-7.0.2.Final/</property>
     </configuration>
   </container>

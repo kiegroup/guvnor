@@ -28,6 +28,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -301,7 +302,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
+        for ( Pattern52 p : model.getPatterns() ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p.getFactType();
             }
@@ -321,7 +322,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getConditionPatterns() ) {
+        for ( Pattern52 p : model.getPatterns() ) {
             if ( !p.isNegated() ) {
                 facts.add( p.getBoundName() );
             }

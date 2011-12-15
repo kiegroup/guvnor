@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -77,18 +78,21 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
 
     private List<ConditionCol52> findAvailableColumnsToExpand() {
         List<ConditionCol52> availableColumns = new ArrayList<ConditionCol52>();
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            for ( ConditionCol52 c : p.getConditions() ) {
-                switch ( dtable.getTableFormat() ) {
-                    case EXTENDED_ENTRY :
-                        String[] values = dtable.getValueList( c,
-                                                               sce );
-                        if ( values != null && values.length > 1 ) {
+        for ( CompositeColumn< ? > cc : dtable.getPatterns() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                for ( ConditionCol52 c : p.getChildColumns() ) {
+                    switch ( dtable.getTableFormat() ) {
+                        case EXTENDED_ENTRY :
+                            String[] values = dtable.getValueList( c,
+                                                                   sce );
+                            if ( values != null && values.length > 1 ) {
+                                availableColumns.add( c );
+                            }
+                            break;
+                        case LIMITED_ENTRY :
                             availableColumns.add( c );
-                        }
-                        break;
-                    case LIMITED_ENTRY :
-                        availableColumns.add( c );
+                    }
                 }
             }
         }

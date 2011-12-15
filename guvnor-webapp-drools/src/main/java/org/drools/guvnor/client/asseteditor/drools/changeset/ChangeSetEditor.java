@@ -38,6 +38,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.client.widgets.RESTUtil;
 
 /**
  * This is the default Change Set editor widget - more to come later.
@@ -224,7 +225,7 @@ public class ChangeSetEditor extends DirtyableComposite
     }
 
     private Widget createChangeSetLink() {
-        String url = ChangeSetEditor.getRESTBaseURL();
+        String url = RESTUtil.getRESTBaseURL();
         url += "packages/";
         url += this.assetPackageName;
         url += "/assets/";
@@ -234,11 +235,6 @@ public class ChangeSetEditor extends DirtyableComposite
         return new HTML( this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>" );
     }
 
-    protected static String getRESTBaseURL() {
-        String url = GWT.getModuleBaseURL();
-        return url.replaceFirst( "org.drools.guvnor.GuvnorDrools",
-                                 "rest" );
-    }
 }
 
 class NewResourcePopup extends FormStylePopup {

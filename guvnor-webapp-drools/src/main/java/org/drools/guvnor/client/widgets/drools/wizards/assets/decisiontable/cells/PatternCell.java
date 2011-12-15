@@ -49,19 +49,19 @@ public class PatternCell extends AbstractCell<Pattern52> {
 
     @Override
     public void render(Context context,
-                       Pattern52 value,
+                       Pattern52 pattern,
                        SafeHtmlBuilder sb) {
-        String binding = value.getBoundName();
+        String binding = pattern.getBoundName();
         StringBuilder b = new StringBuilder();
         if ( binding == null || "".equals( binding ) ) {
-            b.append( value.getFactType() );
+            b.append( pattern.getFactType() );
         } else {
-            b.append( value.getBoundName() );
+            b.append( pattern.getBoundName() );
             b.append( " : " );
-            b.append( value.getFactType() );
+            b.append( pattern.getFactType() );
         }
-        sb.append( TEMPLATE.text( getCssStyleName( value ),
-                                  b.toString() ) );
+        sb.append( TEMPLATE.text( getCssStyleName( pattern ),
+                                      b.toString() ) );
     }
 
     protected String getCssStyleName(Pattern52 p) {

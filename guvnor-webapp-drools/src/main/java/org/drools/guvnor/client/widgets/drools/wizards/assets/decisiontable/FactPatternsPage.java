@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,13 +62,10 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
             return;
         }
         view.setPresenter( this );
-        view.setDecisionTable( dtable );
 
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
+        view.setChosenPatterns( new ArrayList<Pattern52>() );
         view.setAvailableFactTypes( availableTypes );
-
-        List<Pattern52> chosenTypes = dtable.getConditionPatterns();
-        view.setChosenPatterns( chosenTypes );
 
         content.setWidget( view );
     }
@@ -106,11 +104,16 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
                                       context );
     }
 
+    public void setConditionPatterns(List<Pattern52> patterns) {
+        dtable.getConditions().clear();
+        dtable.getConditions().addAll( patterns );
+    }
+
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
         //Ensure every Pattern is bound
         int fi = 1;
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
+        for ( Pattern52 p : dtable.getPatterns() ) {
             if ( !getValidator().isPatternValid( p ) ) {
                 String binding = NEW_FACT_PREFIX + (fi++);
                 p.setBoundName( binding );

@@ -31,7 +31,7 @@ public class BRLActionColumn extends ActionCol52
 
     private List<IAction>                 definition       = new ArrayList<IAction>();
 
-    private List<BRLActionVariableColumn> variables        = new ArrayList<BRLActionVariableColumn>();
+    private List<BRLActionVariableColumn> childColumns     = new ArrayList<BRLActionVariableColumn>();
 
     public List<IAction> getDefinition() {
         return this.definition;
@@ -41,18 +41,18 @@ public class BRLActionColumn extends ActionCol52
         this.definition = definition;
     }
 
-    public List<BRLActionVariableColumn> getVariables() {
-        return this.variables;
+    public List<BRLActionVariableColumn> getChildColumns() {
+        return this.childColumns;
     }
 
-    public void setVariables(List<BRLActionVariableColumn> variables) {
-        this.variables = variables;
+    public void setChildColumns(List<BRLActionVariableColumn> childColumns) {
+        this.childColumns = childColumns;
     }
 
     @Override
     public void setHeader(String header) {
         super.setHeader( header );
-        for ( BRLActionVariableColumn variable : this.variables ) {
+        for ( BRLActionVariableColumn variable : this.childColumns ) {
             variable.setHeader( header );
         }
     }
@@ -60,7 +60,7 @@ public class BRLActionColumn extends ActionCol52
     @Override
     public void setHideColumn(boolean hideColumn) {
         super.setHideColumn( hideColumn );
-        for ( BRLActionVariableColumn variable : this.variables ) {
+        for ( BRLActionVariableColumn variable : this.childColumns ) {
             variable.setHideColumn( hideColumn );
         }
     }

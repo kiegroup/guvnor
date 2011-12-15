@@ -70,7 +70,7 @@ public class ConditionDragHandler
         if ( endIndex == startIndex ) {
             return;
         }
-        ConditionCol52 conditionBeingMoved = pattern.getConditions().get( startIndex );
+        ConditionCol52 conditionBeingMoved = pattern.getChildColumns().get( startIndex );
         dtableWidget.moveCondition( pattern,
                                     conditionBeingMoved,
                                     endIndex );

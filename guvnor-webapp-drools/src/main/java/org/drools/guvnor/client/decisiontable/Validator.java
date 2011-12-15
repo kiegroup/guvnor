@@ -25,6 +25,8 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -34,16 +36,16 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
  */
 public class Validator {
 
-    private List<Pattern52>                                                 patternsConditions;
+    private List<CompositeColumn< ? extends BaseColumn>>                    patternsConditions;
     private List<Pattern52>                                                 patternsActions;
     private Map<Pattern52, List<ActionSetFieldCol52>>                       patternToActionSetFieldsMap;
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
     public Validator() {
-        this( new ArrayList<Pattern52>() );
+        this( new ArrayList<CompositeColumn< ? extends BaseColumn>>() );
     }
 
-    public Validator(List<Pattern52> patterns) {
+    public Validator(List<CompositeColumn< ? extends BaseColumn>> patterns) {
         this.patternsConditions = patterns;
         this.patternsActions = new ArrayList<Pattern52>();
     }
@@ -62,16 +64,19 @@ public class Validator {
 
         //Store Patterns by their binding
         Map<String, List<Pattern52>> bindings = new HashMap<String, List<Pattern52>>();
-        for ( Pattern52 p : patternsConditions ) {
-            String binding = p.getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                List<Pattern52> ps = bindings.get( binding );
-                if ( ps == null ) {
-                    ps = new ArrayList<Pattern52>();
-                    bindings.put( binding,
-                                  ps );
+        for ( CompositeColumn< ? extends BaseColumn> cc : patternsConditions ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                String binding = p.getBoundName();
+                if ( binding != null && !binding.equals( "" ) ) {
+                    List<Pattern52> ps = bindings.get( binding );
+                    if ( ps == null ) {
+                        ps = new ArrayList<Pattern52>();
+                        bindings.put( binding,
+                                      ps );
+                    }
+                    ps.add( p );
                 }
-                ps.add( p );
             }
         }
         for ( Pattern52 p : patternsActions ) {
@@ -102,10 +107,13 @@ public class Validator {
         if ( binding == null || binding.equals( "" ) ) {
             return true;
         }
-        for ( Pattern52 p : patternsConditions ) {
-            if ( p != pattern ) {
-                if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
-                    return false;
+        for ( CompositeColumn< ? extends BaseColumn> cc : patternsConditions ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                if ( p != pattern ) {
+                    if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
+                        return false;
+                    }
                 }
             }
         }

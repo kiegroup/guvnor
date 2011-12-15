@@ -391,9 +391,9 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
+        for ( Pattern52 p : model.getPatterns() ) {
             if ( p.getBoundName().equals( binding ) ) return false;
-            for ( ConditionCol52 c : p.getConditions() ) {
+            for ( ConditionCol52 c : p.getChildColumns() ) {
                 if ( c.isBound() ) {
                     if ( c.getBinding().equals( binding ) ) return false;
                 }
