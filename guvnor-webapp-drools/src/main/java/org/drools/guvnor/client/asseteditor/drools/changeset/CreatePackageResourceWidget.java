@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -202,14 +203,14 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
             String result = resourceXMLElementTemplate;
 
             String nameString = "";
-            if ( !this.txtName.getText().isEmpty() ) {
+            if ( !StringUtils.isEmpty(this.txtName.getText())) {
                 nameString = "name=\"" + this.txtName.getText().trim() + "\"";
             }
             result = result.replace( "{name}",
                                      nameString );
 
             String descriptionString = "";
-            if ( !this.txtDescription.getText().isEmpty() ) {
+            if ( !StringUtils.isEmpty(this.txtDescription.getText()) ) {
                 descriptionString = "description=\"" + this.txtDescription.getText().trim() + "\"";
             }
             result = result.replace( "{description}",
