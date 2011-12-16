@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -128,29 +129,34 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 cell = makeBooleanCell();
             }
 
+        } else if ( column instanceof BRLConditionVariableColumn ) {
+            cell = derieveCellFromCondition( (BRLConditionVariableColumn) column );
+            
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveCellFromCondition( (ConditionCol52) column );
 
         } else if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+            //Before ActionSetFieldCol52 as this is a sub-class
+            cell = makeBooleanCell();
+
+        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
+            //Before ActionInsertFactCol52 as this is a sub-class
             cell = makeBooleanCell();
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveCellFromAction( (ActionSetFieldCol52) column );
 
-        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
-            cell = makeBooleanCell();
-
         } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveCellFromAction( (ActionInsertFactCol52) column );
-
-        } else if ( column instanceof BRLActionVariableColumn ) {
-            cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
         } else if ( column instanceof ActionRetractFactCol52 ) {
             cell = derieveCellFromAction( (ActionRetractFactCol52) column );
 
         } else if ( column instanceof ActionWorkItemCol52 ) {
             cell = makeBooleanCell();
+
+        } else if ( column instanceof BRLActionVariableColumn ) {
+            cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
         } else if ( column instanceof AnalysisCol52 ) {
             cell = makeRowAnalysisCell();

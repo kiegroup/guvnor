@@ -546,7 +546,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget newColumn() {
         AddButton addButton = new AddButton();
         addButton.setText( constants.NewColumn() );
-        addButton.setTitle( "Add a new column" );
+        addButton.setTitle( constants.AddNewColumn() );
 
         addButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
@@ -557,10 +557,10 @@ public class GuidedDecisionTableWidget extends Composite
                 final ListBox choice = new ListBox();
                 choice.setVisibleItemCount( NewColumnTypes.values().length );
 
-                choice.addItem( "Add Metadata\\Attributes",
+                choice.addItem( constants.AddNewMetadataOrAttributeColumn(),
                                 NewColumnTypes.METADATA_ATTRIBUTE.name() );
                 choice.addItem( SECTION_SEPARATOR );
-                choice.addItem( "Add a simple condition",
+                choice.addItem( constants.AddNewConditionSimpleColumn(),
                                 NewColumnTypes.CONDITION_SIMPLE.name() );
                 choice.addItem( SECTION_SEPARATOR );
                 choice.addItem( constants.SetTheValueOfAField(),
@@ -578,7 +578,7 @@ public class GuidedDecisionTableWidget extends Composite
                     public void onClick(ClickEvent event) {
                         if ( chkIncludeAdvancedOptions.getValue() ) {
                             addItem( 3,
-                                     "Add a Condition column using a BRL fragment",
+                                     constants.AddNewConditionBRLFragment(),
                                      NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
                             addItem( constants.WorkItemAction(),
                                      NewColumnTypes.ACTION_WORKITEM.name() );
@@ -586,7 +586,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
-                            addItem( constants.BRLFragmentAction(),
+                            addItem( constants.AddNewActionBRLFragment(),
                                      NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
                             removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
@@ -633,7 +633,7 @@ public class GuidedDecisionTableWidget extends Composite
                 } );
 
                 //OK button to create column
-                final Button ok = new Button( "OK" );
+                final Button ok = new Button( constants.OK() );
                 ok.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
                         String s = choice.getValue( choice.getSelectedIndex() );
@@ -884,7 +884,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                 } );
 
-                pop.addAttribute( constants.TypeOfActionColumn(),
+                pop.setTitle( constants.AddNewColumn() );
+                pop.addAttribute( constants.TypeOfColumn(),
                                   choice );
                 pop.addAttribute( "",
                                   chkIncludeAdvancedOptions );

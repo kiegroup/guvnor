@@ -240,6 +240,9 @@ public class GuidedDecisionTable52
         } else if ( col instanceof AttributeCol52 ) {
             return getType( (AttributeCol52) col,
                             sce );
+        } else if ( col instanceof BRLConditionVariableColumn ) {
+            return getType( (BRLConditionVariableColumn) col,
+                            sce );
         } else if ( col instanceof ConditionCol52 ) {
             return getType( (ConditionCol52) col,
                             sce );
@@ -351,6 +354,16 @@ public class GuidedDecisionTable52
     }
 
     private String getType(BRLActionVariableColumn col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( col.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(BRLConditionVariableColumn col,
                            SuggestionCompletionEngine sce) {
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
@@ -537,6 +550,9 @@ public class GuidedDecisionTable52
         if ( col instanceof AttributeCol52 ) {
             return getValueList( (AttributeCol52) col,
                                  sce );
+        } else if ( col instanceof BRLConditionVariableColumn ) {
+            return getValueList( (BRLConditionVariableColumn) col,
+                                 sce );
         } else if ( col instanceof ConditionCol52 ) {
             return getValueList( (ConditionCol52) col,
                                  sce );
@@ -620,6 +636,13 @@ public class GuidedDecisionTable52
     }
 
     private String[] getValueList(BRLActionVariableColumn col,
+                                  SuggestionCompletionEngine sce) {
+        String[] r = sce.getEnumValues( col.getFactType(),
+                                        col.getFactField() );
+        return (r != null) ? r : new String[0];
+    }
+
+    private String[] getValueList(BRLConditionVariableColumn col,
                                   SuggestionCompletionEngine sce) {
         String[] r = sce.getEnumValues( col.getFactType(),
                                         col.getFactField() );
@@ -727,10 +750,10 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    private boolean assertDataType(ActionSetFieldCol52 col,
+    private boolean assertDataType(BRLConditionVariableColumn col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-        String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+        String ft = sce.getFieldType( col.getFactType(),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;
@@ -738,10 +761,10 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    private boolean assertDataType(BRLActionVariableColumn col,
+    private boolean assertDataType(ActionSetFieldCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-        String ft = sce.getFieldType( col.getFactType(),
+        String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;
@@ -762,6 +785,17 @@ public class GuidedDecisionTable52
     }
 
     private boolean assertDataType(ActionInsertFactCol52 col,
+                                   SuggestionCompletionEngine sce,
+                                   String dataType) {
+        String ft = sce.getFieldType( col.getFactType(),
+                                      col.getFactField() );
+        if ( ft != null && ft.equals( dataType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean assertDataType(BRLActionVariableColumn col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         String ft = sce.getFieldType( col.getFactType(),

@@ -50,7 +50,6 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
-import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;

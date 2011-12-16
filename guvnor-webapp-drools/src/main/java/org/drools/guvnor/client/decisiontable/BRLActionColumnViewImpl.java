@@ -60,8 +60,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
                clientFactory,
                eventBus );
 
-        //TODO {manstis} Need a caption
-        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
+        setTitle( constants.ActionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique(String header) {

@@ -2571,8 +2571,6 @@ public interface Constants
     
     String LogicallyInsertColon();
 
-    String BRLFragmentAction();
-    
     String ChangeSets();
     
     String NewChangeSet();
@@ -2586,5 +2584,21 @@ public interface Constants
     String NewResource();
     
     String UnknownResourceFormat(String format);
+    
+    String AddNewColumn();
+    
+    String AddNewMetadataOrAttributeColumn();
+    
+    String AddNewConditionSimpleColumn();
+    
+    String AddNewConditionBRLFragment();
+    
+    String AddNewActionBRLFragment();
+    
+    String TypeOfColumn();
+
+    String ConditionBRLFragmentConfiguration();
+    
+    String ActionBRLFragmentConfiguration();
     
 }

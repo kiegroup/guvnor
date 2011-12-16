@@ -22,37 +22,28 @@ public class BRLConditionVariableColumn extends ConditionCol52 {
 
     private static final long serialVersionUID = 540l;
 
-    private String      varName;
-    private String      dataType;
-    private String      factType;
-    private String      factField;
+    private String            varName;
+    private String            factType;
 
-    public BRLConditionVariableColumn() {}
-    
+    public BRLConditionVariableColumn() {
+    }
+
     public BRLConditionVariableColumn(String varName,
-                                      String dataType,
+                                      String fieldType,
                                       String factType,
                                       String factField) {
         this.varName = varName;
-        this.dataType = dataType;
         this.factType = factType;
-        this.factField = factField;
+        super.setFactField( factField );
+        super.setFieldType( fieldType );
     }
 
     public String getVarName() {
         return varName;
     }
 
-    public String getDataType() {
-        return dataType;
-    }
-
     public String getFactType() {
         return factType;
-    }
-
-    public String getFactField() {
-        return factField;
     }
 
 }

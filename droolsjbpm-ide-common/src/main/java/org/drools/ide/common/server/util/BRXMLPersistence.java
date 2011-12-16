@@ -57,9 +57,9 @@ public class BRXMLPersistence
     implements
     BRLPersistence {
 
-    private XStream                     xt;
-    private RuleModelUpgradeHelper      upgrader = new RuleModelUpgradeHelper();
-    private static final BRLPersistence INSTANCE = new BRXMLPersistence();
+    private XStream                             xt;
+    private static final RuleModelUpgradeHelper UPGRADER = new RuleModelUpgradeHelper();
+    private static final BRLPersistence         INSTANCE = new BRXMLPersistence();
 
     protected BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
@@ -137,7 +137,7 @@ public class BRXMLPersistence
         //See https://issues.jboss.org/browse/GUVNOR-1115
         this.xt.aliasPackage( "org.drools.guvnor.client",
                               "org.drools.ide.common.client" );
-        
+
         this.xt.alias( "org.drools.guvnor.client.modeldriven.dt.TemplateModel",
                        TemplateModel.class );
 
@@ -170,7 +170,7 @@ public class BRXMLPersistence
         RuleModel rm = (RuleModel) this.xt.fromXML( xml );
 
         //Upgrade model changes to legacy artifacts
-        upgrader.upgrade( rm );
+        UPGRADER.upgrade( rm );
 
         return rm;
     }

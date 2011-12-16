@@ -74,8 +74,6 @@ public class BRDRLPersistence
 
     private static final String          WORKITEM_PREFIX         = "wi";
 
-    private static final String          WORKITEM_HANDLER_PREFIX = "wih";
-
     private static final BRLPersistence  INSTANCE                = new BRDRLPersistence();
 
     //Keep a record of all variable bindings for Actions that depend on them
@@ -924,7 +922,6 @@ public class BRDRLPersistence
 
         public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
             String wiName = action.getWorkDefinition().getName();
-            String wiHandlerName = WORKITEM_HANDLER_PREFIX + wiName;
             String wiImplName = WORKITEM_PREFIX + wiName;
 
             instantiatedWorkItems.add( wiName );

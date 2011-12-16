@@ -27,7 +27,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
-import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
@@ -60,8 +59,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                clientFactory,
                eventBus );
 
-        //TODO {manstis} Need a caption
-        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
+        setTitle( constants.ConditionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique(String header) {
@@ -141,7 +139,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     private BRLConditionVariableColumn cloneVariable(BRLConditionVariableColumn variable) {
         BRLConditionVariableColumn clone = new BRLConditionVariableColumn( variable.getVarName(),
-                                                                           variable.getDataType(),
+                                                                           variable.getFieldType(),
                                                                            variable.getFactType(),
                                                                            variable.getFactField() );
         clone.setHeader( variable.getHeader() );

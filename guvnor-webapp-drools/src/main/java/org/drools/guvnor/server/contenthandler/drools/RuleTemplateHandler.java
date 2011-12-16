@@ -17,7 +17,7 @@
 package org.drools.guvnor.server.contenthandler.drools;
 
 import org.drools.guvnor.server.util.BRDRTPersistence;
-import org.drools.guvnor.server.util.BRDRTXMLPersistence;
+import org.drools.ide.common.server.util.BRDRTXMLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 
 public class RuleTemplateHandler extends BRLContentHandler {
