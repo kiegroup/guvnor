@@ -339,7 +339,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
+        for ( Pattern52 p : model.getPatterns() ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p.getFactType();
             }
@@ -359,7 +359,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getConditionPatterns() ) {
+        for ( Pattern52 p : model.getPatterns() ) {
             if ( !p.isNegated() ) {
                 facts.add( p.getBoundName() );
             }

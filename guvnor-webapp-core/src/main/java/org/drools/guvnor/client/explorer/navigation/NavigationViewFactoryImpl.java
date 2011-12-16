@@ -16,12 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorActivityView;
 import org.drools.guvnor.client.explorer.ModuleEditorActivityViewImpl;
@@ -64,22 +58,29 @@ import org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
+import org.drools.guvnor.client.widgets.wizards.WizardContext;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 public class NavigationViewFactoryImpl
     implements
     NavigationViewFactory {
 
-    private static Constants                constants = GWT.create( Constants.class );
-    private static Images                   images    = GWT.create( Images.class );
+    private static Constants        constants = GWT.create( Constants.class );
+    private static Images           images    = GWT.create( Images.class );
 
-    private final ClientFactory             clientFactory;
-    private final EventBus                  eventBus;
+    private final ClientFactory     clientFactory;
+    private final EventBus          eventBus;
 
-    private NavigationPanelView             navigationPanelView;
-    private ModulesTreeViewImpl             modulesTreeView;
-    private BrowseTreeViewImpl              browseTreeView;
-    private ModulesTreeItemViewImpl         modulesTreeItemView;
-    protected PerspectivesPanelView     perspectivesPanelView;
+    private NavigationPanelView     navigationPanelView;
+    private ModulesTreeViewImpl     modulesTreeView;
+    private BrowseTreeViewImpl      browseTreeView;
+    private ModulesTreeItemViewImpl modulesTreeItemView;
+    protected PerspectivesPanelView perspectivesPanelView;
 
     public NavigationViewFactoryImpl(ClientFactory clientFactory,
                                      EventBus eventBus) {
@@ -117,11 +118,11 @@ public class NavigationViewFactoryImpl
     }
 
     public IsWidget getModulesHeaderView(String perspectiveType) {
-        return clientFactory.getPerspectiveFactory().getModulesHeaderView(perspectiveType);
+        return clientFactory.getPerspectiveFactory().getModulesHeaderView( perspectiveType );
     }
 
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {
-        return clientFactory.getPerspectiveFactory().getModulesTreeRootNodeHeader(perspectiveType);
+        return clientFactory.getPerspectiveFactory().getModulesTreeRootNodeHeader( perspectiveType );
     }
 
     public ModulesTreeItemView getModulesTreeItemView() {
@@ -144,7 +145,9 @@ public class NavigationViewFactoryImpl
     }
 
     public Widget getModulesNewAssetMenu(String perspectiveType) {
-        return clientFactory.getPerspectiveFactory().getModulesNewAssetMenu(perspectiveType, clientFactory, eventBus);
+        return clientFactory.getPerspectiveFactory().getModulesNewAssetMenu( perspectiveType,
+                                                                             clientFactory,
+                                                                             eventBus );
     }
 
     public SettingsHeaderView getSettingsHeaderView() {
@@ -179,10 +182,11 @@ public class NavigationViewFactoryImpl
         return new TasksTreeViewImpl();
     }
 
-    public WizardActivityView getWizardView() {
-        return new WizardActivityViewImpl( eventBus );
+    public WizardActivityView getWizardView(WizardContext context) {
+        return new WizardActivityViewImpl( context,
+                                           eventBus );
     }
-    
+
     public ModuleEditorActivityView getModuleEditorActivityView() {
         return new ModuleEditorActivityViewImpl();
     }
@@ -190,7 +194,7 @@ public class NavigationViewFactoryImpl
     public AssetViewerActivityView getAssetViewerActivityView() {
         return new AssetViewerActivityViewImpl();
     }
-    
+
     public PerspectivesPanelView getPerspectivesPanelView() {
         if ( perspectivesPanelView == null ) {
             perspectivesPanelView = new PerspectivesPanelViewImpl( clientFactory,

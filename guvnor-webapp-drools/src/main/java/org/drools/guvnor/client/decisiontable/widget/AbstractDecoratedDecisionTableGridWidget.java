@@ -36,9 +36,10 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEven
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -51,24 +52,24 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * A Decorated Grid for Decision Tables
  */
-public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52, DTCellValue52>
+public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, BaseColumn, DTCellValue52>
     implements
     DeleteColumnEvent.Handler,
-    InsertColumnEvent.Handler<DTColumnConfig52, DTCellValue52> {
+    InsertColumnEvent.Handler<BaseColumn, DTCellValue52> {
 
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
     protected final DecisionTableCellValueFactory cellValueFactory;
 
-    public AbstractDecoratedDecisionTableGridWidget(ResourcesProvider<DTColumnConfig52> resources,
+    public AbstractDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
                                                     EventBus eventBus,
                                                     Panel mainPanel,
                                                     Panel bodyPanel,
-                                                    AbstractMergableGridWidget<GuidedDecisionTable52, DTColumnConfig52> gridWidget,
-                                                    AbstractDecoratedGridHeaderWidget<GuidedDecisionTable52, DTColumnConfig52> headerWidget,
-                                                    AbstractDecoratedGridSidebarWidget<GuidedDecisionTable52, DTColumnConfig52> sidebarWidget) {
+                                                    AbstractMergableGridWidget<GuidedDecisionTable52, BaseColumn> gridWidget,
+                                                    AbstractDecoratedGridHeaderWidget<GuidedDecisionTable52, BaseColumn> headerWidget,
+                                                    AbstractDecoratedGridSidebarWidget<GuidedDecisionTable52, BaseColumn> sidebarWidget) {
         super( resources,
                eventBus,
                mainPanel,
@@ -99,7 +100,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         GuidedDecisionTable52 model = event.getModel();
 
         DynamicData data = new DynamicData();
-        List<DynamicColumn<DTColumnConfig52>> columns = new ArrayList<DynamicColumn<DTColumnConfig52>>();
+        List<DynamicColumn<BaseColumn>> columns = new ArrayList<DynamicColumn<BaseColumn>>();
         setupInternalModel( model,
                             columns,
                             data );
@@ -112,7 +113,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
     }
 
     private void setupInternalModel(GuidedDecisionTable52 model,
-                                    List<DynamicColumn<DTColumnConfig52>> columns,
+                                    List<DynamicColumn<BaseColumn>> columns,
                                     DynamicData data) {
 
         int colIndex = 0;
@@ -126,13 +127,13 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         }
 
         // Static columns, Row#
-        DTColumnConfig52 rowNumberCol = model.getRowNumberCol();
-        DynamicColumn<DTColumnConfig52> rowNumberColumn = new DynamicColumn<DTColumnConfig52>( rowNumberCol,
-                                                                                               cellFactory.getCell( rowNumberCol ),
-                                                                                               colIndex,
-                                                                                               true,
-                                                                                               false,
-                                                                                               eventBus );
+        BaseColumn rowNumberCol = model.getRowNumberCol();
+        DynamicColumn<BaseColumn> rowNumberColumn = new DynamicColumn<BaseColumn>( rowNumberCol,
+                                                                                   cellFactory.getCell( rowNumberCol ),
+                                                                                   colIndex,
+                                                                                   true,
+                                                                                   false,
+                                                                                   eventBus );
         rowNumberColumn.setWidth( 24 );
         columns.add( rowNumberColumn );
 
@@ -143,11 +144,11 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                         true );
 
         // Static columns, Description
-        DTColumnConfig52 descriptionCol = model.getDescriptionCol();
-        DynamicColumn<DTColumnConfig52> descriptionColumn = new DynamicColumn<DTColumnConfig52>( descriptionCol,
-                                                                                                 cellFactory.getCell( descriptionCol ),
-                                                                                                 colIndex,
-                                                                                                 eventBus );
+        BaseColumn descriptionCol = model.getDescriptionCol();
+        DynamicColumn<BaseColumn> descriptionColumn = new DynamicColumn<BaseColumn>( descriptionCol,
+                                                                                     cellFactory.getCell( descriptionCol ),
+                                                                                     colIndex,
+                                                                                     eventBus );
         columnWidth = descriptionCol.getWidth();
         descriptionColumn.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
         columns.add( descriptionColumn );
@@ -160,10 +161,10 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         // Initialise CellTable's Metadata columns
         for ( MetadataCol52 col : model.getMetadataCols() ) {
-            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
-                                                                                          cellFactory.getCell( col ),
-                                                                                          colIndex,
-                                                                                          eventBus );
+            DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
+                                                                              cellFactory.getCell( col ),
+                                                                              colIndex,
+                                                                              eventBus );
             columnWidth = col.getWidth();
             col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
             column.setVisible( !col.isHideColumn() );
@@ -178,10 +179,10 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         // Initialise CellTable's Attribute columns
         for ( AttributeCol52 col : model.getAttributeCols() ) {
-            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
-                                                                                          cellFactory.getCell( col ),
-                                                                                          colIndex,
-                                                                                          eventBus );
+            DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
+                                                                              cellFactory.getCell( col ),
+                                                                              colIndex,
+                                                                              eventBus );
             columnWidth = col.getWidth();
             col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
             column.setVisible( !col.isHideColumn() );
@@ -198,31 +199,34 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         }
 
         // Initialise CellTable's Condition columns
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            for ( ConditionCol52 col : p.getConditions() ) {
-                DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
-                                                                                              cellFactory.getCell( col ),
-                                                                                              colIndex,
-                                                                                              eventBus );
-                columnWidth = col.getWidth();
-                col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
-                column.setVisible( !col.isHideColumn() );
-                columns.add( column );
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                for ( ConditionCol52 col : p.getChildColumns() ) {
+                    DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
+                                                                                      cellFactory.getCell( col ),
+                                                                                      colIndex,
+                                                                                      eventBus );
+                    columnWidth = col.getWidth();
+                    col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setVisible( !col.isHideColumn() );
+                    columns.add( column );
 
-                data.addColumn( colIndex,
-                                makeColumnData( model,
-                                                col,
-                                                colIndex++ ),
+                    data.addColumn( colIndex,
+                                    makeColumnData( model,
+                                                    col,
+                                                    colIndex++ ),
                                                 column.isVisible() );
+                }
             }
         }
 
         // Initialise CellTable's Action columns
         for ( ActionCol52 col : model.getActionCols() ) {
-            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
-                                                                                          cellFactory.getCell( col ),
-                                                                                          colIndex,
-                                                                                          eventBus );
+            DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
+                                                                              cellFactory.getCell( col ),
+                                                                              colIndex,
+                                                                              eventBus );
             columnWidth = col.getWidth();
             col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
             column.setVisible( !col.isHideColumn() );
@@ -237,12 +241,12 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         }
 
         AnalysisCol52 analysisCol = model.getAnalysisCol();
-        DynamicColumn<DTColumnConfig52> analysisColumn = new DynamicColumn<DTColumnConfig52>( analysisCol,
-                                                                                              cellFactory.getCell( analysisCol ),
-                                                                                              colIndex,
-                                                                                              true,
-                                                                                              false,
-                                                                                              eventBus );
+        DynamicColumn<BaseColumn> analysisColumn = new DynamicColumn<BaseColumn>( analysisCol,
+                                                                                  cellFactory.getCell( analysisCol ),
+                                                                                  colIndex,
+                                                                                  true,
+                                                                                  false,
+                                                                                  eventBus );
         analysisColumn.setVisible( !analysisCol.isHideColumn() );
         analysisColumn.setWidth( 200 );
         columns.add( analysisColumn );
@@ -257,7 +261,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
     // Make a column of data representing the Row Number column for insertion into a DecoratedGridWidget
     // We don't rely upon the values in the existing data as legacy tables co't guarantee it is sorted
     private List<CellValue< ? extends Comparable< ? >>> makeRowNumberColumnData(GuidedDecisionTable52 model,
-                                                                                DTColumnConfig52 column,
+                                                                                BaseColumn column,
                                                                                 int colIndex) {
         int dataSize = model.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
@@ -273,7 +277,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
     // Make a column of data for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(GuidedDecisionTable52 model,
-                                                                       DTColumnConfig52 column,
+                                                                       BaseColumn column,
                                                                        int colIndex) {
         int dataSize = model.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
@@ -303,10 +307,10 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         return columnData;
     }
 
-    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52, DTCellValue52> event) {
-        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( event.getColumn(),
-                                                                                      cellFactory.getCell( event.getColumn() ),
-                                                                                      eventBus );
+    public void onInsertColumn(InsertColumnEvent<BaseColumn, DTCellValue52> event) {
+        DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( event.getColumn(),
+                                                                          cellFactory.getCell( event.getColumn() ),
+                                                                          eventBus );
         column.setVisible( !event.getColumn().isHideColumn() );
         List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.convertColumnData( event.getColumn(),
                                                                                                event.getColumnData() );

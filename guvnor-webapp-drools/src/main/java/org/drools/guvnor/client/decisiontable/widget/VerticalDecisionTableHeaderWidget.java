@@ -37,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -79,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Header for a Vertical Decision Table
  */
-public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHeaderWidget<GuidedDecisionTable52, DTColumnConfig52> {
+public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHeaderWidget<GuidedDecisionTable52, BaseColumn> {
 
     private static final String         DATE_FORMAT                 = ApplicationPreferences.getDroolsDateFormat();
 
@@ -102,10 +103,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
          */
         private class HeaderSorter extends FocusPanel {
 
-            private final HorizontalPanel                 hp = new HorizontalPanel();
-            private final DynamicColumn<DTColumnConfig52> col;
+            private final HorizontalPanel           hp = new HorizontalPanel();
+            private final DynamicColumn<BaseColumn> col;
 
-            private HeaderSorter(final DynamicColumn<DTColumnConfig52> col) {
+            private HeaderSorter(final DynamicColumn<BaseColumn> col) {
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
@@ -271,15 +272,15 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         }
 
         // Child Widgets used in this Widget
-        private List<HeaderSorter>                    sorters              = new ArrayList<HeaderSorter>();
-        private HeaderSplitter                        splitter             = new HeaderSplitter();
+        private List<HeaderSorter>              sorters              = new ArrayList<HeaderSorter>();
+        private HeaderSplitter                  splitter             = new HeaderSplitter();
 
         // UI Components
-        private Element[]                             rowHeaders           = new Element[5];
+        private Element[]                       rowHeaders           = new Element[5];
 
-        private List<DynamicColumn<DTColumnConfig52>> visibleCols          = new ArrayList<DynamicColumn<DTColumnConfig52>>();
-        private List<DynamicColumn<DTColumnConfig52>> visibleConditionCols = new ArrayList<DynamicColumn<DTColumnConfig52>>();
-        private List<DynamicColumn<DTColumnConfig52>> visibleActionCols    = new ArrayList<DynamicColumn<DTColumnConfig52>>();
+        private List<DynamicColumn<BaseColumn>> visibleCols          = new ArrayList<DynamicColumn<BaseColumn>>();
+        private List<DynamicColumn<BaseColumn>> visibleConditionCols = new ArrayList<DynamicColumn<BaseColumn>>();
+        private List<DynamicColumn<BaseColumn>> visibleActionCols    = new ArrayList<DynamicColumn<BaseColumn>>();
 
         // Constructor
         private HeaderWidget() {
@@ -306,10 +307,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         }
 
         // Populate a default header element
-        private void populateTableCellElement(DynamicColumn<DTColumnConfig52> col,
+        private void populateTableCellElement(DynamicColumn<BaseColumn> col,
                                               Element tce) {
 
-            DTColumnConfig52 modelCol = col.getModelColumn();
+            BaseColumn modelCol = col.getModelColumn();
             if ( modelCol instanceof RowNumberCol52 ) {
                 tce.appendChild( makeLabel( "#",
                                             col.getWidth(),
@@ -385,10 +386,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             multiRowColumnOffset = -1;
             multiRowColumnActionsOffset = -1;
             for ( int iCol = 0; iCol < sortableColumns.size(); iCol++ ) {
-                DynamicColumn<DTColumnConfig52> col = sortableColumns.get( iCol );
+                DynamicColumn<BaseColumn> col = sortableColumns.get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
-                    DTColumnConfig52 modelCol = col.getModelColumn();
+                    BaseColumn modelCol = col.getModelColumn();
                     if ( modelCol instanceof ConditionCol52 ) {
                         if ( multiRowColumnOffset == -1 ) {
                             multiRowColumnOffset = iCol;
@@ -422,7 +423,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             switch ( iRow ) {
                 case 0 :
                     // General row, all visible cells included
-                    for ( DynamicColumn<DTColumnConfig52> col : sortableColumns ) {
+                    for ( DynamicColumn<BaseColumn> col : sortableColumns ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
                             tce.addClassName( resources.headerText() );
@@ -449,7 +450,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 case 2 :
                     // Condition FactType, merged between identical
                     for ( int iCol = 0; iCol < visibleConditionCols.size(); iCol++ ) {
-                        DynamicColumn<DTColumnConfig52> col = visibleConditionCols.get( iCol );
+                        DynamicColumn<BaseColumn> col = visibleConditionCols.get( iCol );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
                         Pattern52 ccPattern = model.getPattern( cc );
 
@@ -463,7 +464,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                         int colSpan = 1;
                         int width = col.getWidth();
                         while ( iCol + colSpan < visibleConditionCols.size() ) {
-                            DynamicColumn<DTColumnConfig52> mergeCol = visibleConditionCols.get( iCol + colSpan );
+                            DynamicColumn<BaseColumn> mergeCol = visibleConditionCols.get( iCol + colSpan );
                             ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
                             Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
@@ -498,7 +499,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                     //Action FactType
                     for ( int iCol = 0; iCol < visibleActionCols.size(); iCol++ ) {
-                        DynamicColumn<DTColumnConfig52> col = visibleActionCols.get( iCol );
+                        DynamicColumn<BaseColumn> col = visibleActionCols.get( iCol );
                         ActionCol52 ac = (ActionCol52) col.getModelColumn();
 
                         tce = DOM.createTD();
@@ -538,7 +539,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                 case 3 :
                     // Condition Fact Fields
-                    for ( DynamicColumn<DTColumnConfig52> col : visibleConditionCols ) {
+                    for ( DynamicColumn<BaseColumn> col : visibleConditionCols ) {
                         tce = DOM.createTD();
                         tce.addClassName( resources.headerText() );
                         tce.addClassName( resources.headerRowIntermediate() );
@@ -565,7 +566,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                     }
 
                     // Action Fact Fields
-                    for ( DynamicColumn<DTColumnConfig52> col : visibleActionCols ) {
+                    for ( DynamicColumn<BaseColumn> col : visibleActionCols ) {
                         tce = DOM.createTD();
                         tce.addClassName( resources.headerText() );
                         tce.addClassName( resources.headerRowIntermediate() );
@@ -606,10 +607,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                 case 4 :
                     // Sorters
-                    for ( DynamicColumn<DTColumnConfig52> col : sortableColumns ) {
+                    for ( DynamicColumn<BaseColumn> col : sortableColumns ) {
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
-                            final DynamicColumn<DTColumnConfig52> sortableColumn = col;
+                            final DynamicColumn<BaseColumn> sortableColumn = col;
                             shp.addClickHandler( new ClickHandler() {
 
                                 public void onClick(ClickEvent event) {
@@ -670,7 +671,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
      * @param resources
      * @param eventBus
      */
-    public VerticalDecisionTableHeaderWidget(final ResourcesProvider<DTColumnConfig52> resources,
+    public VerticalDecisionTableHeaderWidget(final ResourcesProvider<BaseColumn> resources,
                                              final EventBus eventBus) {
         super( resources,
                eventBus );
@@ -756,7 +757,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
     }
 
     // Resize the inner DIV in each table cell
-    protected void resizeColumn(DynamicColumn<DTColumnConfig52> resizeColumn,
+    protected void resizeColumn(DynamicColumn<BaseColumn> resizeColumn,
                                 int resizeColumnWidth) {
 
         DivElement div;
@@ -784,7 +785,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         if ( multiRowColumnOffset != -1 ) {
             colOffsetIndex = resizeColumnIndex - multiRowColumnOffset;
             if ( colOffsetIndex >= 0 && !(resizeColumn.getModelColumn() instanceof AnalysisCol52) ) {
-                DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
+                DynamicColumn<BaseColumn> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[3].getChild( colOffsetIndex ).<TableCellElement> cast();
                 div = tce.getFirstChild().<DivElement> cast();
                 div.getStyle().setWidth( col.getWidth(),
@@ -795,7 +796,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         // Row 2 (Fact Types) - Condition Columns
         int iColColumn = 0;
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
-            DynamicColumn<DTColumnConfig52> col = widget.visibleConditionCols.get( iCol );
+            DynamicColumn<BaseColumn> col = widget.visibleConditionCols.get( iCol );
             ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
             Pattern52 ccPattern = model.getPattern( cc );
 
@@ -803,7 +804,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             int colSpan = 1;
             int width = col.getWidth();
             while ( iCol + colSpan < widget.visibleConditionCols.size() ) {
-                DynamicColumn<DTColumnConfig52> mergeCol = widget.visibleConditionCols.get( iCol + colSpan );
+                DynamicColumn<BaseColumn> mergeCol = widget.visibleConditionCols.get( iCol + colSpan );
                 ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
                 Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
@@ -834,7 +835,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             colOffsetIndex = resizeColumnIndex - multiRowColumnActionsOffset;
             if ( colOffsetIndex >= 0 && !(resizeColumn.getModelColumn() instanceof AnalysisCol52) ) {
                 colOffsetIndex = colOffsetIndex + iColColumn;
-                DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
+                DynamicColumn<BaseColumn> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[2].getChild( colOffsetIndex ).<TableCellElement> cast();
                 div = tce.getFirstChild().<DivElement> cast();
                 div.getStyle().setWidth( col.getWidth(),
@@ -848,11 +849,11 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         eventBus.fireEvent( cre );
     }
 
-    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> event) {
+    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, BaseColumn> event) {
         this.sortableColumns.clear();
         this.model = event.getModel();
-        List<DynamicColumn<DTColumnConfig52>> columns = event.getColumns();
-        for ( DynamicColumn<DTColumnConfig52> column : columns ) {
+        List<DynamicColumn<BaseColumn>> columns = event.getColumns();
+        for ( DynamicColumn<BaseColumn> column : columns ) {
             sortableColumns.add( column );
         }
         redraw();

@@ -48,31 +48,26 @@ public class AssetTemplateCreator {
         } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
 
         } else if ( format.equals( AssetFormats.SPRING_CONTEXT ) ) {
-            try {
+            asset.updateContent(getTemplateFromFile("spring-context-sample.xml"));
+        } else if ( format.equals( AssetFormats.WORKITEM_DEFINITION ) ) {
+            asset.updateContent(getTemplateFromFile("workitem-definition-sample.xml"));
+        } else if ( format.equals( AssetFormats.CHANGE_SET) ) {
+            asset.updateContent(getTemplateFromFile("change-set-sample.xml"));
+        }
+    }
+    
+    private String getTemplateFromFile(String fileName){
+        try {
                 ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( "spring-context-sample.xml" ) );
+                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( fileName ) );
                 IOUtils.copy( inContent,
                               outContent );
 
-                asset.updateContent( outContent.toString() );
+                return outContent.toString();
             } catch ( IOException ex ) {
                 log.error( "Error reading spring-context-sample.xml",
                            ex );
-                throw new IllegalArgumentException( "Error reading spring-context-sample.xml" );
+                throw new IllegalArgumentException( "Error "+fileName,ex );
             }
-        } else if ( format.equals( AssetFormats.WORKITEM_DEFINITION ) ) {
-            try {
-                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( "workitem-definition-sample.xml" ) );
-                IOUtils.copy( inContent,
-                              outContent );
-
-                asset.updateContent( outContent.toString() );
-            } catch ( IOException ex ) {
-                log.error( "Error reading workitem-definition-sample.xml",
-                           ex );
-                throw new IllegalArgumentException( "Error reading workitem-definition-sample.xml" );
-            }
-        }
     }
 }

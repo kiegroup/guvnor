@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,8 @@ import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVaria
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -46,7 +46,6 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
                                       final GuidedDecisionTable52 model,
-                                      final GenericColumnCommand refreshGrid,
                                       final boolean isNew,
                                       final RuleAsset asset,
                                       final BRLConditionColumn column,
@@ -59,12 +58,14 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                column,
                clientFactory,
                eventBus );
+
+        setTitle( constants.ConditionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique(String header) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            for ( ConditionCol52 c : p.getConditions() ) {
-                if ( c.getHeader().equals( header ) ) return false;
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
+            for ( int iChild = 0; iChild < cc.getChildColumns().size(); iChild++ ) {
+                if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) return false;
             }
         }
         return true;
@@ -89,12 +90,15 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     @Override
     protected void doInsertColumn() {
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
         presenter.insertColumn( (BRLConditionColumn) this.editingCol );
     }
 
     @Override
     protected void doUpdateColumn() {
-        // TODO Auto-generated method stub
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
+        presenter.updateColumn( (BRLConditionColumn) this.originalCol,
+                                (BRLConditionColumn) this.editingCol );
     }
 
     @Override
@@ -113,6 +117,39 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
             variables[index] = variable;
         }
         return Arrays.asList( variables );
+    }
+
+    @Override
+    protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn(BRLColumn<IPattern, BRLConditionVariableColumn> col) {
+        BRLConditionColumn clone = new BRLConditionColumn();
+        clone.setHeader( col.getHeader() );
+        clone.setHideColumn( col.isHideColumn() );
+        clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
+        clone.setDefinition( cloneDefinition( col.getDefinition() ) );
+        return clone;
+    }
+
+    private List<BRLConditionVariableColumn> cloneVariables(List<BRLConditionVariableColumn> variables) {
+        List<BRLConditionVariableColumn> clone = new ArrayList<BRLConditionVariableColumn>();
+        for ( BRLConditionVariableColumn variable : variables ) {
+            clone.add( cloneVariable( variable ) );
+        }
+        return clone;
+    }
+
+    private BRLConditionVariableColumn cloneVariable(BRLConditionVariableColumn variable) {
+        BRLConditionVariableColumn clone = new BRLConditionVariableColumn( variable.getVarName(),
+                                                                           variable.getFieldType(),
+                                                                           variable.getFactType(),
+                                                                           variable.getFactField() );
+        clone.setHeader( variable.getHeader() );
+        clone.setHideColumn( variable.isHideColumn() );
+        clone.setWidth( variable.getWidth() );
+        return clone;
+    }
+
+    private List<IPattern> cloneDefinition(List<IPattern> definition) {
+        return new ArrayList<IPattern>();
     }
 
 }

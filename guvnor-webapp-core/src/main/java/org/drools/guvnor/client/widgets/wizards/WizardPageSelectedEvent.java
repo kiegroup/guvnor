@@ -32,14 +32,14 @@ public class WizardPageSelectedEvent extends GwtEvent<WizardPageSelectedEvent.Ha
 
     public static Type<WizardPageSelectedEvent.Handler> TYPE = new Type<WizardPageSelectedEvent.Handler>();
 
-    private final WizardPage                            source;
+    private final WizardPage                            selectedPage;
 
-    public WizardPageSelectedEvent(WizardPage source) {
-        this.source = source;
+    public WizardPageSelectedEvent(WizardPage selectedPage) {
+        this.selectedPage = selectedPage;
     }
 
-    public WizardPage getSource() {
-        return source;
+    public WizardPage getSelectedPage() {
+        return selectedPage;
     }
 
     @Override

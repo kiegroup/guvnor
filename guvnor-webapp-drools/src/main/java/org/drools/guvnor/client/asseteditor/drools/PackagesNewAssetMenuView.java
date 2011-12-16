@@ -27,6 +27,8 @@ public interface PackagesNewAssetMenuView extends IsWidget {
         void onNewModule();
 
         void onNewSpringContext();
+        
+        void onNewChangeSet();
 
         void onNewWorkingSet();
 

@@ -36,6 +36,8 @@ import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -47,7 +49,7 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
-public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig52> {
+public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
     private static String[]       DIALECTS = {"java", "mvel"};
 
@@ -88,7 +90,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            The Decision Table model column
      * @return A Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(DTColumnConfig52 column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(BaseColumn column) {
 
         //This is the cell that will be used to edit values; its type can differ to the "fieldType" 
         //of the underlying model. For example a "Guvnor-enum" requires a drop-down list of potential 
@@ -127,29 +129,34 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeBooleanCell();
             }
 
+        } else if ( column instanceof BRLConditionVariableColumn ) {
+            cell = derieveCellFromCondition( (BRLConditionVariableColumn) column );
+            
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveCellFromCondition( (ConditionCol52) column );
 
         } else if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+            //Before ActionSetFieldCol52 as this is a sub-class
+            cell = makeBooleanCell();
+
+        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
+            //Before ActionInsertFactCol52 as this is a sub-class
             cell = makeBooleanCell();
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveCellFromAction( (ActionSetFieldCol52) column );
 
-        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
-            cell = makeBooleanCell();
-
         } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveCellFromAction( (ActionInsertFactCol52) column );
-
-        } else if ( column instanceof BRLActionVariableColumn ) {
-            cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
         } else if ( column instanceof ActionRetractFactCol52 ) {
             cell = derieveCellFromAction( (ActionRetractFactCol52) column );
 
         } else if ( column instanceof ActionWorkItemCol52 ) {
             cell = makeBooleanCell();
+
+        } else if ( column instanceof BRLActionVariableColumn ) {
+            cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
         } else if ( column instanceof AnalysisCol52 ) {
             cell = makeRowAnalysisCell();
@@ -196,7 +203,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
         //Drop down of possible patterns
         PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus );
-        pudd.setPatterns( model.getConditionPatterns() );
+        pudd.setPatterns( model.getPatterns() );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );
     }

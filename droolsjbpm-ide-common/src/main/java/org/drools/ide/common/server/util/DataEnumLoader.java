@@ -64,7 +64,10 @@ public class DataEnumLoader {
             addError("The expression is not a map, it is a " + mvelData.getClass().getName());
             return Collections.emptyMap();
         }
+        
+        @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) mvelData;
+        
         Map<String, String[]> newMap = new HashMap<String, String[]>();
         for (Map.Entry<String, Object> entry: map.entrySet()) {
             String key = entry.getKey();

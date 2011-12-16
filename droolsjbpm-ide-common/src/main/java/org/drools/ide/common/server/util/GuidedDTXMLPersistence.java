@@ -38,9 +38,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
 
-    private XStream                               xt;
-    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
-    private static GuidedDTXMLPersistence         INSTANCE = new GuidedDTXMLPersistence();
+    private XStream                                            xt;
+    private static final GuidedDecisionTableModelUpgradeHelper UPGRADER = new GuidedDecisionTableModelUpgradeHelper();
+    private static final GuidedDTXMLPersistence                INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
@@ -102,7 +102,7 @@ public class GuidedDTXMLPersistence {
         GuidedDecisionTable52 newDTModel;
         if ( model instanceof GuidedDecisionTable ) {
             GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
-            newDTModel = upgrader.upgrade( legacyDTModel );
+            newDTModel = UPGRADER.upgrade( legacyDTModel );
         } else {
             newDTModel = (GuidedDecisionTable52) model;
         }

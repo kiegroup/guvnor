@@ -29,7 +29,7 @@ public class WorkingSetResourceSerializationTest{
 
     @Test
     public void testUnmarshalling() throws Exception{
-        InputStream workingSetResource = WorkingSetResourceSerializationTest.class.getResourceAsStream("/org/drools/guvnor/server/contenthandler/serializedWorkingSet.xml");
+        InputStream workingSetResource = WorkingSetResourceSerializationTest.class.getResourceAsStream("serializedWorkingSet.xml");
 
         WorkingSetHandler wsh = new WorkingSetHandler();
         

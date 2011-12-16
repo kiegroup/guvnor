@@ -76,6 +76,13 @@
         <title>constants.Model()</title>    
     </asseteditor>
     
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.changeset.ChangeSetEditor</class> 
+        <format>changeset</format>
+        <icon>images.enumeration()</icon>
+        <title>constants.ChangeSets()</title>    
+    </asseteditor>  
+    
     <!-- jBPM editor group   -->
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 

@@ -19,6 +19,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public class DTColumnConfig52
     implements
+    BaseColumn,
     PortableObject {
 
     private static final long serialVersionUID = 510l;
@@ -31,6 +32,9 @@ public class DTColumnConfig52
 
     //Column width
     private int               width            = -1;
+
+    // The header to be displayed.
+    private String            header;
 
     public String getDefaultValue() {
         return defaultValue;
@@ -54,6 +58,14 @@ public class DTColumnConfig52
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public String getHeader() {
+        return header;
     }
 
 }

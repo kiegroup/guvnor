@@ -47,9 +47,10 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -89,23 +90,23 @@ public class GuidedDTDRLPersistenceTest {
         con.setFactField( "age" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        p1.getConditions().add( con );
+        p1.getChildColumns().add( con );
 
         ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "==" );
-        p1.getConditions().add( con2 );
+        p1.getChildColumns().add( con2 );
 
         ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        p1.getConditions().add( con3 );
+        p1.getChildColumns().add( con3 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
@@ -115,9 +116,9 @@ public class GuidedDTDRLPersistenceTest {
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "(not needed)" );
-        p2.getConditions().add( con4 );
+        p2.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -143,7 +144,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( set2 );
 
         dt.setData( upgrader.makeDataLists( new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2" },
+                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2"},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", null}
         } ) );
 
@@ -164,7 +165,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", ""};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<AttributeCol52> attributeCols = new ArrayList<AttributeCol52>();
@@ -260,29 +261,29 @@ public class GuidedDTDRLPersistenceTest {
         con.setFactField( "age" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        p1.getConditions().add( con );
+        p1.getChildColumns().add( con );
 
         ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "in" );
-        p1.getConditions().add( con2 );
+        p1.getChildColumns().add( con2 );
 
         ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        p1.getConditions().add( con3 );
+        p1.getChildColumns().add( con3 );
 
         ConditionCol52 con4 = new ConditionCol52();
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "(not needed)" );
-        p1.getConditions().add( con4 );
+        p1.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -338,23 +339,23 @@ public class GuidedDTDRLPersistenceTest {
         con.setFactField( "age" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        p1.getConditions().add( con );
+        p1.getChildColumns().add( con );
 
         ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "==" );
-        p1.getConditions().add( con2 );
+        p1.getChildColumns().add( con2 );
 
         ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        p1.getConditions().add( con3 );
+        p1.getChildColumns().add( con3 );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
@@ -364,9 +365,9 @@ public class GuidedDTDRLPersistenceTest {
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "this.hasSomething($param)" );
-        p2.getConditions().add( con4 );
+        p2.getChildColumns().add( con4 );
 
-        dt.getConditionPatterns().add( p2 );
+        dt.getConditions().add( p2 );
 
         ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
@@ -392,7 +393,7 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( set2 );
 
         dt.setData( upgrader.makeDataLists( new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", "f2" },
+                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", "f2"},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", null}
         } ) );
 
@@ -417,8 +418,8 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
@@ -432,19 +433,19 @@ public class GuidedDTDRLPersistenceTest {
         col.setFactField( "name" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
-        p1.getConditions().add( col2 );
+        p1.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         ConditionCol52 col3 = new ConditionCol52();
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        p1.getConditions().add( col3 );
+        p1.getChildColumns().add( col3 );
         allColumns.add( col3 );
 
         Pattern52 p2 = new Pattern52();
@@ -456,7 +457,7 @@ public class GuidedDTDRLPersistenceTest {
         col4.setFactField( "type" );
         col4.setOperator( "==" );
         col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getConditions().add( col4 );
+        p2.getChildColumns().add( col4 );
         allColumns.add( col4 );
 
         RuleModel rm = new RuleModel();
@@ -531,8 +532,8 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
 
@@ -546,7 +547,7 @@ public class GuidedDTDRLPersistenceTest {
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setOperator( "==" );
         col.setBinding( "$name" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         ConditionCol52 col2 = new ConditionCol52();
@@ -554,13 +555,13 @@ public class GuidedDTDRLPersistenceTest {
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
         col2.setBinding( "$name" );
-        p1.getConditions().add( col2 );
+        p1.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         ConditionCol52 col3 = new ConditionCol52();
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
         col3.setBinding( "$name" );
-        p1.getConditions().add( col3 );
+        p1.getChildColumns().add( col3 );
         allColumns.add( col3 );
 
         RuleModel rm = new RuleModel();
@@ -582,7 +583,7 @@ public class GuidedDTDRLPersistenceTest {
         FactPattern person = (FactPattern) rm.lhs[0];
         assertEquals( 3,
                       person.constraintList.constraints.length );
-        
+
         SingleFieldConstraint cons = (SingleFieldConstraint) person.constraintList.constraints[0];
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       cons.getConstraintValueType() );
@@ -592,7 +593,8 @@ public class GuidedDTDRLPersistenceTest {
                       cons.getOperator() );
         assertEquals( "mike",
                       cons.getValue() );
-        assertEquals("$name", cons.getFieldBinding());
+        assertEquals( "$name",
+                      cons.getFieldBinding() );
 
         cons = (SingleFieldConstraint) person.constraintList.constraints[1];
         assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
@@ -603,14 +605,14 @@ public class GuidedDTDRLPersistenceTest {
                       cons.getOperator() );
         assertEquals( "33 + 1",
                       cons.getValue() );
-        assertNull(cons.getFieldBinding());
+        assertNull( cons.getFieldBinding() );
 
         cons = (SingleFieldConstraint) person.constraintList.constraints[2];
         assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
                       cons.getConstraintValueType() );
         assertEquals( "age > 6",
                       cons.getValue() );
-        assertNull(cons.getFieldBinding());
+        assertNull( cons.getFieldBinding() );
 
     }
 
@@ -621,8 +623,8 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
@@ -637,19 +639,19 @@ public class GuidedDTDRLPersistenceTest {
         col.setFactField( "name" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
-        p1.getConditions().add( col2 );
+        p1.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         ConditionCol52 col3 = new ConditionCol52();
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        p1.getConditions().add( col3 );
+        p1.getChildColumns().add( col3 );
         allColumns.add( col3 );
 
         Pattern52 p2 = new Pattern52();
@@ -661,7 +663,7 @@ public class GuidedDTDRLPersistenceTest {
         col4.setFactField( "type" );
         col4.setOperator( "==" );
         col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getConditions().add( col4 );
+        p2.getChildColumns().add( col4 );
         allColumns.add( col4 );
 
         RuleModel rm = new RuleModel();
@@ -758,8 +760,8 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[1] = row[1];
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
 
@@ -773,7 +775,7 @@ public class GuidedDTDRLPersistenceTest {
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         Pattern52 p2 = new Pattern52();
@@ -786,7 +788,7 @@ public class GuidedDTDRLPersistenceTest {
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
         col2.setOperator( "!=" );
-        p2.getConditions().add( col2 );
+        p2.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
@@ -854,8 +856,8 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
 
@@ -869,7 +871,7 @@ public class GuidedDTDRLPersistenceTest {
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         Pattern52 p2 = new Pattern52();
@@ -882,7 +884,7 @@ public class GuidedDTDRLPersistenceTest {
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         col2.setOperator( "!=" );
-        p2.getConditions().add( col2 );
+        p2.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
@@ -971,8 +973,8 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
 
@@ -986,7 +988,7 @@ public class GuidedDTDRLPersistenceTest {
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         Pattern52 p2 = new Pattern52();
@@ -999,7 +1001,7 @@ public class GuidedDTDRLPersistenceTest {
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         col2.setOperator( "!=" );
-        p2.getConditions().add( col2 );
+        p2.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
@@ -1088,8 +1090,8 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
 
@@ -1103,7 +1105,7 @@ public class GuidedDTDRLPersistenceTest {
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col.setOperator( "==" );
-        p1.getConditions().add( col );
+        p1.getChildColumns().add( col );
         allColumns.add( col );
 
         Pattern52 p2 = new Pattern52();
@@ -1116,7 +1118,7 @@ public class GuidedDTDRLPersistenceTest {
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col2.setOperator( "!=" );
-        p2.getConditions().add( col2 );
+        p2.getChildColumns().add( col2 );
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
@@ -1191,7 +1193,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "bar", ""};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<MetadataCol52> metadataCols = new ArrayList<MetadataCol52>();
@@ -1268,9 +1270,9 @@ public class GuidedDTDRLPersistenceTest {
 
         ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p1.getConditions().add( c );
+        p1.getChildColumns().add( c );
 
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
@@ -1306,8 +1308,8 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
+        List<CompositeColumn< ? >> allPatterns = new ArrayList<CompositeColumn< ? >>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
@@ -1321,7 +1323,7 @@ public class GuidedDTDRLPersistenceTest {
         col1.setFactField( "age" );
         col1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col1.setOperator( "" );
-        p1.getConditions().add( col1 );
+        p1.getChildColumns().add( col1 );
         allColumns.add( col1 );
 
         RuleModel rm = new RuleModel();
@@ -1342,7 +1344,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
@@ -1449,8 +1451,8 @@ public class GuidedDTDRLPersistenceTest {
 
         ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p1.getConditions().add( c );
-        dt.getConditionPatterns().add( p1 );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
 
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
@@ -1494,8 +1496,8 @@ public class GuidedDTDRLPersistenceTest {
         c.setFactField( "favouriteCheese" );
         c.setDefaultValue( "cheddar" );
         c.setOperator( "==" );
-        p1.getConditions().add( c );
-        dt.getConditionPatterns().add( p1 );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
 
         //With provided value
         String[][] data = new String[][]{
@@ -1584,7 +1586,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         // This is a hack consistent with how the Expanded Form decision table 
         // works. I wouldn't be too surprised if this changes at some time, but 
@@ -1593,7 +1595,7 @@ public class GuidedDTDRLPersistenceTest {
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc1.setValue( new DTCellValue52( "y" ) );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true},
@@ -1622,7 +1624,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1630,7 +1632,7 @@ public class GuidedDTDRLPersistenceTest {
         cc1.setFactField( "name" );
         cc1.setOperator( "==" );
         cc1.setValue( new DTCellValue52( "Pupa" ) );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true},
@@ -1659,7 +1661,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1667,7 +1669,7 @@ public class GuidedDTDRLPersistenceTest {
         cc1.setFactField( "name" );
         cc1.setOperator( "==" );
         cc1.setValue( new DTCellValue52( "Pupa" ) );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1675,7 +1677,7 @@ public class GuidedDTDRLPersistenceTest {
         cc2.setFactField( "name" );
         cc2.setOperator( "==" );
         cc2.setValue( new DTCellValue52( "Smurfette" ) );
-        p1.getConditions().add( cc2 );
+        p1.getChildColumns().add( cc2 );
 
         LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
         cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1683,7 +1685,7 @@ public class GuidedDTDRLPersistenceTest {
         cc3.setFactField( "colour" );
         cc3.setOperator( "==" );
         cc3.setValue( new DTCellValue52( "Blue" ) );
-        p1.getConditions().add( cc3 );
+        p1.getChildColumns().add( cc3 );
 
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true, false, true},
@@ -1717,7 +1719,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1725,7 +1727,7 @@ public class GuidedDTDRLPersistenceTest {
         cc1.setFactField( "isSmurf" );
         cc1.setOperator( "==" );
         cc1.setValue( new DTCellValue52( "true" ) );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         LimitedEntryActionSetFieldCol52 asf1 = new LimitedEntryActionSetFieldCol52();
         asf1.setBoundName( "p1" );
@@ -1767,7 +1769,7 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryActionInsertFactCol52 asf1 = new LimitedEntryActionInsertFactCol52();
         asf1.setFactType( "Smurf" );
@@ -1806,7 +1808,7 @@ public class GuidedDTDRLPersistenceTest {
                                   index + 1 );
         assertFalse( indexRule2 > -1 );
     }
-    
+
     @Test
     public void testLHSIsNullOperator() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
@@ -1816,29 +1818,29 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 cc1 = new ConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         cc1.setFactField( "name" );
         cc1.setOperator( "== null" );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         ConditionCol52 cc2 = new ConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cc2.setFactField( "age" );
         cc2.setOperator( "== null" );
-        p1.getConditions().add( cc2 );
+        p1.getChildColumns().add( cc2 );
 
         ConditionCol52 cc3 = new ConditionCol52();
         cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         cc3.setFactField( "dateOfBirth" );
         cc3.setOperator( "== null" );
-        p1.getConditions().add( cc3 );
-        
+        p1.getChildColumns().add( cc3 );
+
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true, true, true},
                                                            new Object[]{2l, "desc", false, false, false}
@@ -1865,28 +1867,28 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         ConditionCol52 cc1 = new ConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         cc1.setFactField( "name" );
         cc1.setOperator( "!= null" );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         ConditionCol52 cc2 = new ConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cc2.setFactField( "age" );
         cc2.setOperator( "!= null" );
-        p1.getConditions().add( cc2 );
+        p1.getChildColumns().add( cc2 );
 
         ConditionCol52 cc3 = new ConditionCol52();
         cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         cc3.setFactField( "dateOfBirth" );
         cc3.setOperator( "!= null" );
-        p1.getConditions().add( cc3 );
+        p1.getChildColumns().add( cc3 );
 
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true, true, true},
@@ -1914,29 +1916,29 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         cc1.setFactField( "name" );
         cc1.setOperator( "== null" );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cc2.setFactField( "age" );
         cc2.setOperator( "== null" );
-        p1.getConditions().add( cc2 );
+        p1.getChildColumns().add( cc2 );
 
         LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
         cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         cc3.setFactField( "dateOfBirth" );
         cc3.setOperator( "== null" );
-        p1.getConditions().add( cc3 );
-        
+        p1.getChildColumns().add( cc3 );
+
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true, true, true},
                                                            new Object[]{2l, "desc", false, false, false}
@@ -1963,28 +1965,28 @@ public class GuidedDTDRLPersistenceTest {
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Smurf" );
-        dt.getConditionPatterns().add( p1 );
+        dt.getConditions().add( p1 );
 
         LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
         cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         cc1.setFactField( "name" );
         cc1.setOperator( "!= null" );
-        p1.getConditions().add( cc1 );
+        p1.getChildColumns().add( cc1 );
 
         LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cc2.setFactField( "age" );
         cc2.setOperator( "!= null" );
-        p1.getConditions().add( cc2 );
+        p1.getChildColumns().add( cc2 );
 
         LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
         cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         cc3.setFactField( "dateOfBirth" );
         cc3.setOperator( "!= null" );
-        p1.getConditions().add( cc3 );
+        p1.getChildColumns().add( cc3 );
 
         dt.setData( upgrader.makeDataLists( new Object[][]{
                                                            new Object[]{1l, "desc", true, true, true},
@@ -2008,7 +2010,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "true"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -2087,7 +2089,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "true"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -2179,7 +2181,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "true", "true", "true", "true", "true"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -2346,14 +2348,14 @@ public class GuidedDTDRLPersistenceTest {
                       wifv4.getWorkItemParameterClassName() );
 
     }
-    
+
     @Test
     //Test only Actions set to "true" are correctly converted to RuleModel
     public void testRHSActionWorkItemSetFields2() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
-        String[] row = new String[]{"1", "desc", "true", "true", "false" };
+        String[] row = new String[]{"1", "desc", "true", "true", "false"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -2450,7 +2452,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "true", "true", "true", "true", "true"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -2624,7 +2626,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "true", "true", "false"};
 
-        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         allColumns.add( new RowNumberCol52() );
         allColumns.add( new DescriptionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();

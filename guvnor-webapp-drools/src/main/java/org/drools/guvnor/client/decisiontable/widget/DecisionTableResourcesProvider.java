@@ -18,18 +18,18 @@ package org.drools.guvnor.client.decisiontable.widget;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
- * 
+ * A class to provide different resources for Decision Tables
  */
 public class DecisionTableResourcesProvider
     implements
-    ResourcesProvider<DTColumnConfig52> {
+    ResourcesProvider<BaseColumn> {
 
     protected static final DecisionTableResources resources = GWT.create( DecisionTableResources.class );
 
@@ -61,7 +61,7 @@ public class DecisionTableResourcesProvider
         return resources.style().borderWidthThick();
     }
 
-    public String cellTableColumn(DTColumnConfig52 column) {
+    public String cellTableColumn(BaseColumn column) {
         if ( column instanceof ConditionCol52 ) {
             return resources.style().conditionColumn();
         } else if ( column instanceof ActionCol52 ) {

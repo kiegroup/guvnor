@@ -15,10 +15,7 @@
  */
 package org.drools.ide.common.server.util;
 
-import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
-import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 /**

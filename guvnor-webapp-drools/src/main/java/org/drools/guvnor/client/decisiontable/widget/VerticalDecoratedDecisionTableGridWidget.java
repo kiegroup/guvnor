@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedDecisionTableGridWidget {
 
-    public VerticalDecoratedDecisionTableGridWidget(ResourcesProvider<DTColumnConfig52> resources,
+    public VerticalDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
                                                     EventBus eventBus) {

@@ -32,9 +32,9 @@ import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -66,7 +66,7 @@ public class NewGuidedDecisionTableWizard
                context,
                presenter );
 
-        Validator validator = new Validator( dtable.getConditionPatterns() );
+        Validator validator = new Validator( dtable.getConditions() );
         this.summaryPage = new SummaryPage( context,
                                             dtable,
                                             eventBus,
@@ -161,7 +161,7 @@ public class NewGuidedDecisionTableWizard
                                           sce );
 
         //Mark columns on which we are to expand (default is to include)
-        for ( DTColumnConfig52 c : dtable.getAllColumns() ) {
+        for ( BaseColumn c : dtable.getAllColumns() ) {
             re.setExpandColumn( c,
                                 false );
         }

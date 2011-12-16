@@ -81,10 +81,6 @@ public class RuleViewer extends GuvnorEditor {
               null );
     }
 
-    /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
-     */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,
                       EventBus eventBus,
@@ -99,7 +95,6 @@ public class RuleViewer extends GuvnorEditor {
             this.ruleViewerSettings = ruleViewerSettings;
         }
 
-        //editor = EditorLauncher.getEditorViewer( asset, this );
         editor = clientFactory.getAssetEditorFactory().getAssetEditor( asset,
                                                                        this,
                                                                        clientFactory,

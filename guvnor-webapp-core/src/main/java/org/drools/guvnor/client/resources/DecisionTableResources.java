@@ -80,6 +80,8 @@ public interface DecisionTableResources
         
         String patternSectionHeader();
 
+        String patternConditionSectionHeader();
+        
         String columnLabelHidden();
         
     };

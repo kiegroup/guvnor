@@ -175,7 +175,7 @@
               <entry>none</entry>
 
               <entry>Returns the metadata of the package {packageName} as a
-              Package element (see UML representatin below).</entry>
+              Package element (see UML representation below).</entry>
             </row>
 
             <row>

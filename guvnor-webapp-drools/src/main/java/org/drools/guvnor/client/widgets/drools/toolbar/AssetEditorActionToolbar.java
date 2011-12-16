@@ -559,7 +559,7 @@ public class AssetEditorActionToolbar extends Composite {
     public void flushSuggestionCompletionCache(final String packageName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
+            SuggestionCompletionCache.getInstance().loadPackage( packageName,
                     new Command() {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
@@ -673,7 +673,7 @@ public class AssetEditorActionToolbar extends Composite {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                                closeAndReopen( data );
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -706,7 +706,7 @@ public class AssetEditorActionToolbar extends Composite {
                             flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                            closeAndReopen( asset.getUuid() );
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
 
                         @Override
@@ -715,12 +715,6 @@ public class AssetEditorActionToolbar extends Composite {
                         }
                     } );
         }
-    }
-
-    private void closeAndReopen(String newAssetUUID) {
-        close();
-
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 
     private void completedCopying(String name,
@@ -738,7 +732,7 @@ public class AssetEditorActionToolbar extends Composite {
                             RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
                         String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
                         if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
-                            closeAndReopen(asset.getUuid());                                
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
                     
                     }

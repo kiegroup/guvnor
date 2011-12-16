@@ -28,7 +28,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.cells.PatternCell;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.cell.client.TextCell;
@@ -63,8 +62,6 @@ public class FactPatternsPageViewImpl extends Composite
     private Presenter                       presenter;
 
     private Validator                       validator;
-
-    private GuidedDecisionTable52           dtable;
 
     private Set<String>                     availableTypesSelections;
     private MinimumWidthCellList<String>    availableTypesWidget;
@@ -217,7 +214,6 @@ public class FactPatternsPageViewImpl extends Composite
     }
 
     private void validateBinding() {
-        //        if ( validator.isPatternBindingUnique( chosenPatternSelection ) && validator.isPatternValid( chosenPatternSelection ) ) {
         if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
@@ -293,7 +289,7 @@ public class FactPatternsPageViewImpl extends Composite
                 chosenPatterns.add( index - 1,
                                     p );
                 setChosenPatterns( chosenPatterns );
-                dtable.setConditionPatterns( chosenPatterns );
+                presenter.setConditionPatterns( chosenPatterns );
             }
 
         } );
@@ -305,14 +301,10 @@ public class FactPatternsPageViewImpl extends Composite
                 chosenPatterns.add( index + 1,
                                     p );
                 setChosenPatterns( chosenPatterns );
-                dtable.setConditionPatterns( chosenPatterns );
+                presenter.setConditionPatterns( chosenPatterns );
             }
 
         } );
-    }
-
-    public void setDecisionTable(GuidedDecisionTable52 dtable) {
-        this.dtable = dtable;
     }
 
     public void setAvailableFactTypes(List<String> types) {
@@ -348,22 +340,22 @@ public class FactPatternsPageViewImpl extends Composite
             chosenPatterns.add( pattern );
         }
         setChosenPatterns( chosenPatterns );
-        dtable.setConditionPatterns( chosenPatterns );
+        presenter.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick(ClickEvent event) {
-        for ( Pattern52 p : chosenPatternSelections ) {
-            chosenPatterns.remove( p );
+        for ( Pattern52 pattern : chosenPatternSelections ) {
+            chosenPatterns.remove( pattern );
 
             //Raise an Event so ActionSetFieldPage can synchronise Patterns
-            presenter.signalRemovalOfPattern( p );
+            presenter.signalRemovalOfPattern( pattern );
         }
 
         chosenPatternSelections.clear();
         setChosenPatterns( chosenPatterns );
-        dtable.setConditionPatterns( chosenPatterns );
+        presenter.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
 
         txtBinding.setText( "" );

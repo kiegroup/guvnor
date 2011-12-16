@@ -5,7 +5,7 @@
   <engine>
     <!-- Workaround Perm gen space issues of https://issues.jboss.org/browse/AS7-2516 -->
     <property name="maxTestClassesBeforeRestart">1</property>
-  </engine>
+ </engine>
 
 	<!--<container qualifier="weld" default="true">-->
 		<!--<configuration>-->
@@ -21,9 +21,13 @@
       <!--<property name="executionType">REMOTE</property>-->
     <!--</protocol>-->
     <configuration>
-      <!-- Keep in sync with /guvnor-webapp/pom.xml -->
+      <!-- Keep in sync with /guvnor-webapp-drools/pom.xml -->
       <property name="jbossHome">target/jboss-as-7.0.2.Final/</property>
-    </configuration>
+
+      <!-- How-to debug an arquillian managed test -->
+      <!-- In Arquillian 1.0.0.CR6 this will work from the run config: -Darq.container.qualifier.configuration.javaVmArguments="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y" -->
+      <!--<property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</property>-->
+     </configuration>
   </container>
 
   <!--<container qualifier="tomcat" default="true">-->

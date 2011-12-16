@@ -194,9 +194,9 @@ public class NewAssetWizard extends FormStylePopup {
                 description.setText( constants.DSLMappingTip() );
             } else if ( AssetFormats.ENUMERATION.equals( format ) ) {
                 description.setText( constants.NewEnumDoco() );
-            } else if ( format == AssetFormats.SPRING_CONTEXT ) {
+            } else if ( AssetFormats.SPRING_CONTEXT.equals(format)) {
                 description.setText( constants.DescSpringContext() );
-            } else if ( format == AssetFormats.WORKITEM_DEFINITION ) {
+            } else if ( AssetFormats.WORKITEM_DEFINITION.equals(format)) {
                 description.setText( constants.DeskWorkItemDefinition() );
             }
         }
@@ -572,7 +572,7 @@ public class NewAssetWizard extends FormStylePopup {
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( format ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
+            SuggestionCompletionCache.getInstance().loadPackage( importedPackageSelector.getSelectedPackage(),
                                                                     new Command() {
                                                                         public void execute() {
                                                                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 

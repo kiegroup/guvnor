@@ -69,8 +69,8 @@ public abstract class AbstractClientFactoryImpl
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager( this,
-                                         eventBus );
+        return new MultiActivityManager(
+                eventBus, this.getActivityMapper());
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {

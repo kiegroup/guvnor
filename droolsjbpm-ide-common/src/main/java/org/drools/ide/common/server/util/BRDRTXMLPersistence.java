@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.util;
+package org.drools.ide.common.server.util;
 
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
-import org.drools.ide.common.server.util.BRLPersistence;
-import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
- * This class persists the template rule model to XML and back.
- *
- * This is the 'brl' xml format (Business Rule Language).
+ * This class persists the template rule model to XML and back. This is the
+ * 'brl' xml format (Business Rule Language).
  */
 public class BRDRTXMLPersistence extends BRXMLPersistence {
 
-    private static final BRLPersistence INSTANCE = new BRDRTXMLPersistence();
+    private static final BRLPersistence             INSTANCE = new BRDRTXMLPersistence();
+    private static final TemplateModelUpgradeHelper UPGRADER = new TemplateModelUpgradeHelper();
 
     private BRDRTXMLPersistence() {
         super();
@@ -41,13 +39,17 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     @Override
     public String marshal(RuleModel model) {
         ((TemplateModel) model).putInSync();
-        return super.marshal(model);
+        return super.marshal( model );
     }
 
     @Override
     public TemplateModel unmarshal(String xml) {
-        TemplateModel model = (TemplateModel) super.unmarshal(xml);
+        TemplateModel model = (TemplateModel) super.unmarshal( xml );
         model.putInSync();
+
+        //Upgrade model changes to legacy artifacts
+        UPGRADER.upgrade( model );
+
         return model;
     }
 

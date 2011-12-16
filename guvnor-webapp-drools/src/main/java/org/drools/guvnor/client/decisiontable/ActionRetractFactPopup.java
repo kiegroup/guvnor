@@ -19,6 +19,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
@@ -146,8 +147,8 @@ public class ActionRetractFactPopup extends FormStylePopup {
     private ListBox loadBoundFacts(String binding) {
         ListBox listBox = new ListBox();
         listBox.addItem( constants.Choose() );
-        for ( int index = 0; index < model.getConditionPatterns().size(); index++ ) {
-            Pattern52 p = model.getConditionPatterns().get( index );
+        for ( int index = 0; index < model.getPatterns().size(); index++ ) {
+            Pattern52 p = model.getPatterns().get( index );
             String boundName = p.getBoundName();
             if ( !"".equals( boundName ) ) {
                 listBox.addItem( boundName );

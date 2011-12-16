@@ -198,6 +198,10 @@
 	width: 400px;
 }
 
+.patternConditionSectionHeader {
+	margin-left: 16px;
+}
+
 .columnLabelHidden {
 	font-style: italic;
 	color: grey;

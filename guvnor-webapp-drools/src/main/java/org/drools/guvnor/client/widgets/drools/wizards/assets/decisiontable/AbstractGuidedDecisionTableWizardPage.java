@@ -77,7 +77,8 @@ public abstract class AbstractGuidedDecisionTableWizardPage
      */
     public void stateChanged() {
         WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
     }
 
     /**

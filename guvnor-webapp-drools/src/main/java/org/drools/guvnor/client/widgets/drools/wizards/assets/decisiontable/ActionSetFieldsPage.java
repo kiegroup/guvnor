@@ -85,6 +85,9 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     //See comments about use of IdentityHashMap in instance member declaration section
     public void onPatternRemoved(PatternRemovedEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         patternToActionsMap.remove( event.getPattern() );
     }
 
@@ -119,15 +122,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
-        List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            if ( p.getConditions().size() > 0 ) {
-                availablePatterns.add( p );
-            } else {
-                patternToActionsMap.remove( p );
-            }
-        }
-        view.setAvailablePatterns( availablePatterns );
+        view.setAvailablePatterns( dtable.getPatterns() );
     }
 
     public boolean isComplete() {
@@ -145,16 +140,23 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
         //Signal Action Set Fields definitions to other pages
         ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
-        eventBus.fireEvent( event );
+        eventBus.fireEventFromSource( event,
+                                      context );
 
         return areActionSetFieldsDefined;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
     public void onActionSetFieldsDefined(ActionSetFieldsDefinedEvent event) {
+        if ( event.getSource() != context ) {
+            return;
+        }
         view.setAreActionSetFieldsDefined( event.getAreActionSetFieldsDefined() );
     }
 
@@ -198,7 +200,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             Pattern52 p = ps.getKey();
 
             //Patterns with no conditions don't get created
-            if ( p.getConditions().size() > 0 ) {
+            if ( p.getChildColumns().size() > 0 ) {
                 String binding = p.getBoundName();
                 for ( ActionSetFieldCol52 a : ps.getValue() ) {
                     a.setBoundName( binding );

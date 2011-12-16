@@ -72,6 +72,7 @@ public class WizardActivityViewImpl extends Popup
     private int                          pageNumberTotal;
 
     private WizardActivityView.Presenter presenter;
+    private WizardContext                context;
     private EventBus                     eventBus;
 
     interface WizardActivityViewImplBinder
@@ -83,7 +84,9 @@ public class WizardActivityViewImpl extends Popup
 
     private static Constants                    constants = GWT.create( Constants.class );
 
-    public WizardActivityViewImpl(EventBus eventBus) {
+    public WizardActivityViewImpl(WizardContext context,
+                                  EventBus eventBus) {
+        this.context = context;
         this.eventBus = eventBus;
         content = uiBinder.createAndBindUi( this );
     }
@@ -100,7 +103,8 @@ public class WizardActivityViewImpl extends Popup
     public void setPageTitles(List<WizardPage> pages) {
         this.pageNumberTotal = pages.size() - 1;
         for ( WizardPage page : pages ) {
-            WizardPageTitle wpt = new WizardPageTitle( eventBus,
+            WizardPageTitle wpt = new WizardPageTitle( context,
+                                                       eventBus,
                                                        page );
             pageTitleWidgets.add( wpt );
             sideBar.add( wpt );

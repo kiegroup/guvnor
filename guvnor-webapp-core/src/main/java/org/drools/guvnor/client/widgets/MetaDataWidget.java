@@ -26,6 +26,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
@@ -157,10 +158,10 @@ public class MetaDataWidget extends Composite {
                             data.subject = val;
                         }
                     },
-                            constants.AShortDescriptionOfTheSubjectMatter() ) );
+                            constants.AShortDescriptionOfTheSubjectMatter()));
 
-            addAttribute( constants.TypeMetaData(),
-                    editableText( new FieldBinding() {
+            addAttribute(constants.TypeMetaData(),
+                    editableText(new FieldBinding() {
                         public String getValue() {
                             return data.type;
                         }
@@ -170,10 +171,10 @@ public class MetaDataWidget extends Composite {
                         }
 
                     },
-                            constants.TypeTip() ) );
+                            constants.TypeTip()));
 
-            addAttribute( constants.ExternalLinkMetaData(),
-                    editableText( new FieldBinding() {
+            addAttribute(constants.ExternalLinkMetaData(),
+                    editableText(new FieldBinding() {
                         public String getValue() {
                             return data.externalRelation;
                         }
@@ -183,10 +184,10 @@ public class MetaDataWidget extends Composite {
                         }
 
                     },
-                            constants.ExternalLinkTip() ) );
+                            constants.ExternalLinkTip()));
 
-            addAttribute( constants.SourceMetaData(),
-                    editableText( new FieldBinding() {
+            addAttribute(constants.SourceMetaData(),
+                    editableText(new FieldBinding() {
                         public String getValue() {
                             return data.externalSource;
                         }
@@ -196,9 +197,9 @@ public class MetaDataWidget extends Composite {
                         }
 
                     },
-                            constants.SourceMetaDataTip() ) );
+                            constants.SourceMetaDataTip()));
 
-            endSection( true );
+            endSection(true);
         }
 
         startSection(constants.VersionHistory());
@@ -212,35 +213,35 @@ public class MetaDataWidget extends Composite {
         });
         addAttribute(constants.VersionFeed(), image);
 
-        addAttribute( constants.CurrentVersionNumber(),
-                getVersionNumberLabel() );
+        addAttribute(constants.CurrentVersionNumber(),
+                getVersionNumberLabel());
 
-        if ( !readOnly ) {
-            addRow( new VersionBrowser( clientFactory,
+        if (!readOnly) {
+            addRow(new VersionBrowser(clientFactory,
                     eventBus,
                     this.uuid,
-                    !(artifact instanceof RuleAsset) ) );
+                    !(artifact instanceof RuleAsset)));
         }
 
-        endSection( true );
+        endSection(true);
     }
 
     private void addRow(Widget widget) {
-        this.currentSection.addRow( widget );
+        this.currentSection.addRow(widget);
     }
 
     private void addAttribute(String string,
-                              Widget widget) {
-        this.currentSection.addAttribute( string,
-                widget );
+            Widget widget) {
+        this.currentSection.addAttribute(string,
+                widget);
     }
 
     private void endSection(boolean collapsed) {
-        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
-        advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setOpen( !collapsed );
-        advancedDisclosure.setContent( this.currentSection );
-        layout.add( advancedDisclosure );
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel(currentSectionName);
+        advancedDisclosure.setWidth("100%");
+        advancedDisclosure.setOpen(!collapsed);
+        advancedDisclosure.setContent(this.currentSection);
+        layout.add(advancedDisclosure);
     }
 
     private void startSection(String name) {
@@ -249,123 +250,118 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget packageEditor(final String packageName) {
-        if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
-            return readOnlyText( packageName );
+        if (this.readOnly || !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW)) {
+            return readOnlyText(packageName);
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
-            horiz.setStyleName( "metadata-Widget" ); //NON-NLS
-            horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new ImageButton( images.edit() );
-            editPackage.addClickHandler( new ClickHandler() {
+            horiz.setStyleName("metadata-Widget"); //NON-NLS
+            horiz.add(readOnlyText(packageName));
+            Image editPackage = new ImageButton(images.edit());
+            editPackage.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    showEditPackage( packageName,
-                            w );
+                    showEditPackage(packageName,
+                            w);
                 }
-            } );
-            horiz.add( editPackage );
+            });
+            horiz.add(editPackage);
             return horiz;
         }
     }
 
     private void showEditPackage(final String pkg,
-                                 ClickEvent source) {
-        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
-                constants.MoveThisItemToAnotherPackage() );
-        pop.addAttribute( constants.CurrentPackage(),
-                new Label( pkg ) );
+            ClickEvent source) {
+        final FormStylePopup pop = new FormStylePopup(images.packageLarge(),
+                constants.MoveThisItemToAnotherPackage());
+        pop.addAttribute(constants.CurrentPackage(),
+                new Label(pkg));
         final RulePackageSelector sel = new RulePackageSelector();
-        pop.addAttribute( constants.NewPackage(),
-                sel );
-        Button ok = new Button( constants.ChangePackage() );
-        pop.addAttribute( "",
-                ok );
-        ok.addClickHandler( new ClickHandler() {
+        pop.addAttribute(constants.NewPackage(),
+                sel);
+        Button ok = new Button(constants.ChangePackage());
+        pop.addAttribute("",
+                ok);
+        ok.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent w) {
-                if ( sel.getSelectedPackage().equals( pkg ) ) {
-                    Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
+                if (sel.getSelectedPackage().equals(pkg)) {
+                    Window.alert(constants.YouNeedToPickADifferentPackageToMoveThisTo());
                     return;
                 }
-                RepositoryServiceFactory.getAssetService().changeAssetPackage( uuid,
+                RepositoryServiceFactory.getAssetService().changeAssetPackage(uuid,
                         sel.getSelectedPackage(),
-                        constants.MovedFromPackage( pkg ),
+                        constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
-                                //Refresh wont work here. We have to close and reopen
-                                //otherwise SuggestionEngine may not be initialized for
-                                //the target package.
-                                closeAndReopen( uuid );
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(uuid));
                                 pop.hide();
                             }
 
-                        } );
+                        });
 
             }
 
-        } );
+        });
 
         pop.show();
     }
 
-    private void closeAndReopen(String newAssetUUID) {
-        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( uuid ) ) );
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
+    private void close() {
+        eventBus.fireEvent(new ClosePlaceEvent(new AssetEditorPlace(uuid)));
     }
 
     private Widget getVersionNumberLabel() {
-        if ( artifact.getVersionNumber() == 0 ) {
-            return new SmallLabel( constants.NotCheckedInYet() );
+        if (artifact.getVersionNumber() == 0) {
+            return new SmallLabel(constants.NotCheckedInYet());
         } else {
-            return readOnlyText( Long.toString( artifact.getVersionNumber() ) );
+            return readOnlyText(Long.toString(artifact.getVersionNumber()));
         }
     }
 
     private Widget readOnlyDate(Date lastModifiedDate) {
-        if ( lastModifiedDate == null ) {
+        if (lastModifiedDate == null) {
             return null;
         } else {
-            return new SmallLabel( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModifiedDate ) );
+            return new SmallLabel(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(lastModifiedDate));
         }
     }
 
     private Label readOnlyText(String text) {
-        SmallLabel lbl = new SmallLabel( text );
-        lbl.setWidth( "100%" );
+        SmallLabel lbl = new SmallLabel(text);
+        lbl.setWidth("100%");
         return lbl;
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor( ((RuleAsset) this.artifact).getMetaData(),
-                this.readOnly );
+        ed = new AssetCategoryEditor(((RuleAsset) this.artifact).getMetaData(),
+                this.readOnly);
         return ed;
     }
 
     /**
      * This binds a field, and returns a check box editor for it.
-     *
-     * @param bind    Interface to bind to.
+     * @param bind Interface to bind to.
      * @param toolTip tool tip.
      * @return
      */
     private Widget editableBoolean(final FieldBooleanBinding bind,
-                                   String toolTip) {
-        if ( !readOnly ) {
+            String toolTip) {
+        if (!readOnly) {
             final CheckBox box = new CheckBox();
-            box.setTitle( toolTip );
-            box.setValue( bind.getValue() );
+            box.setTitle(toolTip);
+            box.setValue(bind.getValue());
             ClickHandler listener = new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     boolean b = box.getValue();
-                    bind.setValue( b );
+                    bind.setValue(b);
                 }
             };
-            box.addClickHandler( listener );
+            box.addClickHandler(listener);
             return box;
         } else {
             final CheckBox box = new CheckBox();
 
-            box.setValue( bind.getValue() );
-            box.setEnabled( false );
+            box.setValue(bind.getValue());
+            box.setEnabled(false);
 
             return box;
         }

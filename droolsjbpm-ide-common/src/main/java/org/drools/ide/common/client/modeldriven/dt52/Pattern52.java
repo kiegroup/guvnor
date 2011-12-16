@@ -28,6 +28,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 public class Pattern52
     implements
     PortableObject,
+    CompositeColumn<ConditionCol52>,
     HasCEPWindow {
 
     // The type of the fact - class - eg Driver, Person, Cheese etc.
@@ -77,11 +78,11 @@ public class Pattern52
         this.isNegated = negated;
     }
 
-    public List<ConditionCol52> getConditions() {
+    public List<ConditionCol52> getChildColumns() {
         return this.conditions;
     }
 
-    public void setConditions(List<ConditionCol52> conditions) {
+    public void setChildColumns(List<ConditionCol52> conditions) {
         this.conditions = conditions;
     }
 
@@ -102,6 +103,38 @@ public class Pattern52
 
     public void setEntryPointName(String entryPointName) {
         this.entryPointName = entryPointName;
+    }
+
+    public String getHeader() {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public void setHeader(String header) {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public boolean isHideColumn() {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public void setHideColumn(boolean hideColumn) {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public int getWidth() {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public void setWidth(int width) {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public String getDefaultValue() {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        throw new UnsupportedOperationException( "Operation only supported by child columns" );
     }
 
 }

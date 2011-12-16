@@ -40,7 +40,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected static final Constants     constants              = GWT.create( Constants.class );
 
-    protected String                     SECTION_SEPARATOR      = "..................";
+    protected static final String        SECTION_SEPARATOR      = "..................";
 
     protected int                        MIN_WIDTH              = 500;
     protected int                        MIN_HEIGHT             = 200;
@@ -87,9 +87,10 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
             if ( cmd != null ) {
                 cmd.execute();
                 ruleModeller.refreshWidget();
-                
+
                 //new Pattern was added, we need to re-verify the rule
-                ruleModeller.verifyRule(null, true);
+                ruleModeller.verifyRule( null,
+                                         true );
             }
         }
     }
