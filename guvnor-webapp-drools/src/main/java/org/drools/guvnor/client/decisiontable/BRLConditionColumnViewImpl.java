@@ -27,6 +27,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
@@ -46,7 +47,6 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
                                       final GuidedDecisionTable52 model,
-                                      final GenericColumnCommand refreshGrid,
                                       final boolean isNew,
                                       final RuleAsset asset,
                                       final BRLConditionColumn column,
@@ -59,6 +59,9 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                column,
                clientFactory,
                eventBus );
+
+        //TODO {manstis} Need a caption
+        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
     }
 
     protected boolean isHeaderUnique(String header) {
@@ -89,12 +92,15 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     @Override
     protected void doInsertColumn() {
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
         presenter.insertColumn( (BRLConditionColumn) this.editingCol );
     }
 
     @Override
     protected void doUpdateColumn() {
-        // TODO Auto-generated method stub
+        this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
+        presenter.updateColumn( (BRLConditionColumn) this.originalCol,
+                                (BRLConditionColumn) this.editingCol );
     }
 
     @Override

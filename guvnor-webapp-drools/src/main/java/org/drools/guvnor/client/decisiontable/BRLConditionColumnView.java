@@ -26,6 +26,9 @@ public interface BRLConditionColumnView {
 
         void insertColumn(BRLConditionColumn column);
 
+        void updateColumn(BRLConditionColumn originalColumn,
+                          BRLConditionColumn editedColumn);
+
     }
 
     void setPresenter(Presenter presenter);

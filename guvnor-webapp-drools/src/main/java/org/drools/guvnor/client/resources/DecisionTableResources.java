@@ -79,6 +79,8 @@ public interface DecisionTableResources
         String templateColumn();
         
         String patternSectionHeader();
+        
+        String patternConditionSectionHeader();
 
         String columnLabelHidden();
         

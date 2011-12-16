@@ -50,6 +50,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -127,151 +128,63 @@ public class GuidedDTDRLPersistence {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( ActionCol52 c : actionCols ) {
 
-            //TODO {manstis} Needs special care and attention
             if ( c instanceof BRLActionColumn ) {
-                continue;
-            }
+                doAction( allColumns,
+                          (BRLActionColumn) c,
+                          actions,
+                          row,
+                          rm );
 
-            int index = allColumns.indexOf( c );
-
-            DTCellValue52 dcv = row.get( index );
-            String cell = "";
-
-            if ( c instanceof LimitedEntryCol ) {
-                if ( dcv.getBooleanValue() == true ) {
-                    LimitedEntryCol lec = (LimitedEntryCol) c;
-                    cell = GuidedDTDRLUtilities.convertDTCellValueToString( lec.getValue() );
-                }
             } else {
-                cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
-            }
 
-            if ( !validCell( cell ) ) {
-                cell = c.getDefaultValue();
-            }
+                int index = allColumns.indexOf( c );
+                DTCellValue52 dcv = row.get( index );
+                String cell = "";
 
-            if ( validCell( cell ) ) {
-                if ( c instanceof ActionWorkItemInsertFactCol52 ) {
-                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
-                        ActionWorkItemInsertFactCol52 ac = (ActionWorkItemInsertFactCol52) c;
-                        LabelledAction a = findByLabelledAction( actions,
-                                                                 ac.getBoundName() );
-                        if ( a == null ) {
-                            a = new LabelledAction();
-                            a.boundName = ac.getBoundName();
-                            if ( !ac.isInsertLogical() ) {
-                                ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
-                                ins.setBoundName( ac.getBoundName() );
-                                a.action = ins;
-                            } else {
-                                ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
-                                ins.setBoundName( ac.getBoundName() );
-                                a.action = ins;
-                            }
-                            actions.add( a );
-                        }
-                        ActionInsertFact ins = (ActionInsertFact) a.action;
-                        ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( ac.getFactField(),
-                                                                                     ac.getType(),
-                                                                                     ac.getWorkItemName(),
-                                                                                     ac.getWorkItemResultParameterName(),
-                                                                                     ac.getParameterClassName() );
-                        ins.addFieldValue( val );
+                if ( c instanceof LimitedEntryCol ) {
+                    if ( dcv.getBooleanValue() == true ) {
+                        LimitedEntryCol lec = (LimitedEntryCol) c;
+                        cell = GuidedDTDRLUtilities.convertDTCellValueToString( lec.getValue() );
                     }
+                } else {
+                    cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
+                }
 
-                } else if ( c instanceof ActionInsertFactCol52 ) {
-                    ActionInsertFactCol52 ac = (ActionInsertFactCol52) c;
-                    LabelledAction a = findByLabelledAction( actions,
-                                                             ac.getBoundName() );
-                    if ( a == null ) {
-                        a = new LabelledAction();
-                        a.boundName = ac.getBoundName();
-                        if ( !ac.isInsertLogical() ) {
-                            ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
-                            ins.setBoundName( ac.getBoundName() );
-                            a.action = ins;
-                        } else {
-                            ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
-                            ins.setBoundName( ac.getBoundName() );
-                            a.action = ins;
-                        }
-                        actions.add( a );
-                    }
-                    ActionInsertFact ins = (ActionInsertFact) a.action;
-                    ActionFieldValue val = new ActionFieldValue( ac.getFactField(),
-                                                                 cell,
-                                                                 ac.getType() );
-                    ins.addFieldValue( val );
+                if ( !validCell( cell ) ) {
+                    cell = c.getDefaultValue();
+                }
 
-                } else if ( c instanceof ActionWorkItemSetFieldCol52 ) {
-                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
-                        ActionWorkItemSetFieldCol52 sf = (ActionWorkItemSetFieldCol52) c;
-                        LabelledAction a = findByLabelledAction( actions,
-                                                                 sf.getBoundName() );
-                        if ( a == null ) {
-                            a = new LabelledAction();
-                            a.boundName = sf.getBoundName();
-                            if ( !sf.isUpdate() ) {
-                                a.action = new ActionSetField( sf.getBoundName() );
-                            } else {
-                                a.action = new ActionUpdateField( sf.getBoundName() );
-                            }
-                            actions.add( a );
-                        } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
-                            // lets swap it out for an update as the user has asked for it.
-                            ActionSetField old = (ActionSetField) a.action;
-                            ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
-                            update.fieldValues = old.fieldValues;
-                            a.action = update;
-                        }
-                        ActionSetField asf = (ActionSetField) a.action;
-                        ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( sf.getFactField(),
-                                                                                     sf.getType(),
-                                                                                     sf.getWorkItemName(),
-                                                                                     sf.getWorkItemResultParameterName(),
-                                                                                     sf.getParameterClassName() );
-                        asf.addFieldValue( val );
-                    }
+                if ( validCell( cell ) ) {
+                    if ( c instanceof ActionWorkItemInsertFactCol52 ) {
+                        doAction( actions,
+                                  (ActionWorkItemInsertFactCol52) c,
+                                  cell );
 
-                } else if ( c instanceof ActionSetFieldCol52 ) {
-                    ActionSetFieldCol52 sf = (ActionSetFieldCol52) c;
-                    LabelledAction a = findByLabelledAction( actions,
-                                                             sf.getBoundName() );
-                    if ( a == null ) {
-                        a = new LabelledAction();
-                        a.boundName = sf.getBoundName();
-                        if ( !sf.isUpdate() ) {
-                            a.action = new ActionSetField( sf.getBoundName() );
-                        } else {
-                            a.action = new ActionUpdateField( sf.getBoundName() );
-                        }
-                        actions.add( a );
-                    } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
-                        // lets swap it out for an update as the user has asked for it.
-                        ActionSetField old = (ActionSetField) a.action;
-                        ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
-                        update.fieldValues = old.fieldValues;
-                        a.action = update;
-                    }
-                    ActionSetField asf = (ActionSetField) a.action;
-                    ActionFieldValue val = new ActionFieldValue( sf.getFactField(),
-                                                                 cell,
-                                                                 sf.getType() );
-                    asf.addFieldValue( val );
+                    } else if ( c instanceof ActionInsertFactCol52 ) {
+                        doAction( actions,
+                                  (ActionInsertFactCol52) c,
+                                  cell );
 
-                } else if ( c instanceof ActionRetractFactCol52 ) {
-                    LabelledAction a = new LabelledAction();
-                    a.action = new ActionRetractFact( cell );
-                    a.boundName = cell;
-                    actions.add( a );
-                } else if ( c instanceof ActionWorkItemCol52 ) {
-                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
-                        ActionExecuteWorkItem aewi = new ActionExecuteWorkItem();
-                        aewi.setWorkDefinition( ((ActionWorkItemCol52) c).getWorkItemDefinition() );
-                        LabelledAction a = new LabelledAction();
-                        a.action = aewi;
-                        a.boundName = ((ActionWorkItemCol52) c).getWorkItemDefinition().getName();
-                        actions.add( a );
+                    } else if ( c instanceof ActionWorkItemSetFieldCol52 ) {
+                        doAction( actions,
+                                  (ActionWorkItemSetFieldCol52) c,
+                                  cell );
+
+                    } else if ( c instanceof ActionSetFieldCol52 ) {
+                        doAction( actions,
+                                  (ActionSetFieldCol52) c,
+                                  cell );
+
+                    } else if ( c instanceof ActionRetractFactCol52 ) {
+                        doAction( actions,
+                                  (ActionRetractFactCol52) c,
+                                  cell );
+
+                    } else if ( c instanceof ActionWorkItemCol52 ) {
+                        doAction( actions,
+                                  (ActionWorkItemCol52) c,
+                                  cell );
+
                     }
                 }
             }
@@ -280,6 +193,157 @@ public class GuidedDTDRLPersistence {
         rm.rhs = new IAction[actions.size()];
         for ( int i = 0; i < rm.rhs.length; i++ ) {
             rm.rhs[i] = actions.get( i ).action;
+        }
+    }
+
+    private void doAction(List<BaseColumn> allColumns,
+                          BRLActionColumn column,
+                          List<LabelledAction> actions,
+                          List<DTCellValue52> row,
+                          RuleModel rm) {
+        //TODO {manstis} Need to ensure every key has a value and substitute keys for values
+        for ( IAction action : column.getDefinition() ) {
+            LabelledAction la = new LabelledAction();
+            la.action = action;
+            actions.add( la );
+        }
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionWorkItemInsertFactCol52 ac,
+                          String cell) {
+        if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+            LabelledAction a = findByLabelledAction( actions,
+                                                     ac.getBoundName() );
+            if ( a == null ) {
+                a = new LabelledAction();
+                a.boundName = ac.getBoundName();
+                if ( !ac.isInsertLogical() ) {
+                    ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
+                    ins.setBoundName( ac.getBoundName() );
+                    a.action = ins;
+                } else {
+                    ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
+                    ins.setBoundName( ac.getBoundName() );
+                    a.action = ins;
+                }
+                actions.add( a );
+            }
+            ActionInsertFact ins = (ActionInsertFact) a.action;
+            ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( ac.getFactField(),
+                                                                         ac.getType(),
+                                                                         ac.getWorkItemName(),
+                                                                         ac.getWorkItemResultParameterName(),
+                                                                         ac.getParameterClassName() );
+            ins.addFieldValue( val );
+        }
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionInsertFactCol52 ac,
+                          String cell) {
+        LabelledAction a = findByLabelledAction( actions,
+                                                 ac.getBoundName() );
+        if ( a == null ) {
+            a = new LabelledAction();
+            a.boundName = ac.getBoundName();
+            if ( !ac.isInsertLogical() ) {
+                ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
+                ins.setBoundName( ac.getBoundName() );
+                a.action = ins;
+            } else {
+                ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
+                ins.setBoundName( ac.getBoundName() );
+                a.action = ins;
+            }
+            actions.add( a );
+        }
+        ActionInsertFact ins = (ActionInsertFact) a.action;
+        ActionFieldValue val = new ActionFieldValue( ac.getFactField(),
+                                                     cell,
+                                                     ac.getType() );
+        ins.addFieldValue( val );
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionWorkItemSetFieldCol52 sf,
+                          String cell) {
+        if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+            LabelledAction a = findByLabelledAction( actions,
+                                                     sf.getBoundName() );
+            if ( a == null ) {
+                a = new LabelledAction();
+                a.boundName = sf.getBoundName();
+                if ( !sf.isUpdate() ) {
+                    a.action = new ActionSetField( sf.getBoundName() );
+                } else {
+                    a.action = new ActionUpdateField( sf.getBoundName() );
+                }
+                actions.add( a );
+            } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+                // lets swap it out for an update as the user has asked for it.
+                ActionSetField old = (ActionSetField) a.action;
+                ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
+                update.fieldValues = old.fieldValues;
+                a.action = update;
+            }
+            ActionSetField asf = (ActionSetField) a.action;
+            ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( sf.getFactField(),
+                                                                         sf.getType(),
+                                                                         sf.getWorkItemName(),
+                                                                         sf.getWorkItemResultParameterName(),
+                                                                         sf.getParameterClassName() );
+            asf.addFieldValue( val );
+        }
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionSetFieldCol52 sf,
+                          String cell) {
+        LabelledAction a = findByLabelledAction( actions,
+                                                 sf.getBoundName() );
+        if ( a == null ) {
+            a = new LabelledAction();
+            a.boundName = sf.getBoundName();
+            if ( !sf.isUpdate() ) {
+                a.action = new ActionSetField( sf.getBoundName() );
+            } else {
+                a.action = new ActionUpdateField( sf.getBoundName() );
+            }
+            actions.add( a );
+        } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+            // lets swap it out for an update as the user has asked for it.
+            ActionSetField old = (ActionSetField) a.action;
+            ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
+            update.fieldValues = old.fieldValues;
+            a.action = update;
+        }
+        ActionSetField asf = (ActionSetField) a.action;
+        ActionFieldValue val = new ActionFieldValue( sf.getFactField(),
+                                                     cell,
+                                                     sf.getType() );
+        asf.addFieldValue( val );
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionRetractFactCol52 rf,
+                          String cell) {
+        LabelledAction a = new LabelledAction();
+        a.action = new ActionRetractFact( cell );
+        a.boundName = cell;
+        actions.add( a );
+    }
+
+    private void doAction(List<LabelledAction> actions,
+                          ActionWorkItemCol52 wi,
+                          String cell) {
+        if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+            ActionExecuteWorkItem aewi = new ActionExecuteWorkItem();
+            aewi.setWorkDefinition( wi.getWorkItemDefinition() );
+            LabelledAction a = new LabelledAction();
+            a.action = aewi;
+            a.boundName = wi.getWorkItemDefinition().getName();
+            actions.add( a );
         }
     }
 

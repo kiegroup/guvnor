@@ -40,7 +40,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
@@ -97,10 +96,11 @@ public class GuidedDecisionTableWidget extends Composite
         SaveEventListener,
         EditorWidget,
         IBindingProvider,
-        BRLActionColumnView.Presenter {
+        BRLActionColumnView.Presenter,
+        BRLConditionColumnView.Presenter {
 
-    private Constants                   constants = GWT.create( Constants.class );
-    private static Images               images    = GWT.create( Images.class );
+    private Constants                   constants         = GWT.create( Constants.class );
+    private static Images               images            = GWT.create( Images.class );
 
     private RuleAsset                   asset;
     private GuidedDecisionTable52       guidedDecisionTable;
@@ -116,7 +116,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalDecisionTableWidget dtable;
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
-    private EventBus                    eventBus  = new SimpleEventBus();
+    private EventBus                    eventBus          = new SimpleEventBus();
 
     //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
     @SuppressWarnings("unused")
@@ -124,17 +124,24 @@ public class GuidedDecisionTableWidget extends Composite
 
     private ClientFactory               clientFactory;
 
-    private enum ActionTypes {
-        UPDATE_FACT_FIELD,
-        INSERT_FACT_FIELD,
-        RETRACT_FACT,
-        WORKITEM,
-        WORKITEM_UPDATE_FACT_FIELD,
-        WORKITEM_INSERT_FACT_FIELD,
-        BRL_FRAGMENT
+    private static String               SECTION_SEPARATOR = "..................";
+
+    private enum NewColumnTypes {
+        METADATA_ATTRIBUTE,
+        CONDITION_SIMPLE,
+        CONDITION_BRL_FRAGMENT,
+        ACTION_UPDATE_FACT_FIELD,
+        ACTION_INSERT_FACT_FIELD,
+        ACTION_RETRACT_FACT,
+        ACTION_WORKITEM,
+        ACTION_WORKITEM_UPDATE_FACT_FIELD,
+        ACTION_WORKITEM_INSERT_FACT_FIELD,
+        ACTION_BRL_FRAGMENT
     }
 
-    private final BRLActionColumnView.Presenter BRL_ACTION_PRESENTER = this;
+    private final BRLActionColumnView.Presenter    BRL_ACTION_PRESENTER    = this;
+
+    private final BRLConditionColumnView.Presenter BRL_CONDITION_PRESENTER = this;
 
     public GuidedDecisionTableWidget(final RuleAsset asset,
                                      final RuleViewer viewer,
@@ -189,30 +196,8 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
+        layout.add( newColumn() );
         layout.add( dtable );
-
-        // TODO {manstis} Checking use of RuleModel
-        Button ruleModelLHS = new Button( "Rule Model LHS",
-                                          new ClickHandler() {
-                                              public void onClick(ClickEvent event) {
-                                                  BRLConditionColumn column = new BRLConditionColumn();
-                                                  GenericColumnCommand refreshGridCommand = new GenericColumnCommand() {
-
-                                                      public void execute(DTColumnConfig52 column) {
-                                                      }
-                                                  };
-                                                  BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
-                                                                                                                     guidedDecisionTable,
-                                                                                                                     refreshGridCommand,
-                                                                                                                     true,
-                                                                                                                     asset,
-                                                                                                                     column,
-                                                                                                                     clientFactory,
-                                                                                                                     eventBus );
-                                                  popup.show();
-                                              }
-                                          } );
-        //layout.add( ruleModelLHS );
 
         initWidget( layout );
     }
@@ -262,7 +247,6 @@ public class GuidedDecisionTableWidget extends Composite
             }
 
         }
-        actionsConfigWidget.add( newAction() );
         setupColumnsNote();
     }
 
@@ -425,259 +409,6 @@ public class GuidedDecisionTableWidget extends Composite
         throw new IllegalArgumentException( "Unrecognised Action column definition." );
     }
 
-    private Widget newAction() {
-        AddButton addButton = new AddButton();
-        addButton.setText( constants.NewColumn() );
-        addButton.setTitle( constants.CreateANewActionColumn() );
-
-        addButton.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                final FormStylePopup pop = new FormStylePopup();
-                pop.setModal( false );
-
-                //List of basic Action types
-                final ListBox choice = new ListBox();
-                choice.addItem( constants.SetTheValueOfAField(),
-                                ActionTypes.UPDATE_FACT_FIELD.name() );
-                choice.addItem( constants.SetTheValueOfAFieldOnANewFact(),
-                                ActionTypes.INSERT_FACT_FIELD.name() );
-                choice.addItem( constants.RetractAnExistingFact(),
-                                ActionTypes.RETRACT_FACT.name() );
-
-                //Checkbox to include Advanced Action types
-                final CheckBox chkIncludeAdvancedOptions = new CheckBox( SafeHtmlUtils.fromString( constants.IncludeAdvancedOptions() ) );
-                chkIncludeAdvancedOptions.setValue( false );
-                chkIncludeAdvancedOptions.addClickHandler( new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-                        if ( chkIncludeAdvancedOptions.getValue() ) {
-                            addItem( constants.WorkItemAction(),
-                                     ActionTypes.WORKITEM.name() );
-                            addItem( constants.WorkItemActionSetField(),
-                                     ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
-                            addItem( constants.WorkItemActionInsertFact(),
-                                     ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
-                            //TODO {manstis} addItem( constants.BRLFragmentAction(), ActionTypes.BRL_FRAGMENT.name() );
-                        } else {
-                            removeItem( ActionTypes.WORKITEM.name() );
-                            removeItem( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
-                            removeItem( ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
-                            removeItem( ActionTypes.BRL_FRAGMENT.name() );
-                        }
-                        pop.center();
-                    }
-
-                    private void addItem(String item,
-                                         String value) {
-                        for ( int index = 0; index < choice.getItemCount(); index++ ) {
-                            if ( choice.getValue( index ).equals( value ) ) {
-                                return;
-                            }
-                        }
-                        choice.addItem( item,
-                                        value );
-                    }
-
-                    private void removeItem(String value) {
-                        for ( int index = 0; index < choice.getItemCount(); index++ ) {
-                            if ( choice.getValue( index ).equals( value ) ) {
-                                choice.removeItem( index );
-                                break;
-                            }
-                        }
-                    }
-
-                } );
-
-                //OK button to create column
-                Button ok = new Button( "OK" );
-                ok.addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent w) {
-                        String s = choice.getValue( choice.getSelectedIndex() );
-                        if ( s.equals( ActionTypes.UPDATE_FACT_FIELD.name() ) ) {
-                            showSet();
-                        } else if ( s.equals( ActionTypes.INSERT_FACT_FIELD.name() ) ) {
-                            showInsert();
-                        } else if ( s.equals( ActionTypes.RETRACT_FACT.name() ) ) {
-                            showRetract();
-                        } else if ( s.equals( ActionTypes.WORKITEM.name() ) ) {
-                            showWorkItemAction();
-                        } else if ( s.equals( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() ) ) {
-                            showWorkItemActionSet();
-                        } else if ( s.equals( ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() ) ) {
-                            showWorkItemActionInsert();
-                        } else if ( s.equals( ActionTypes.BRL_FRAGMENT.name() ) ) {
-                            showBRLFragmentAction();
-                        }
-                        pop.hide();
-                    }
-
-                    private void showInsert() {
-                        final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
-                        ActionInsertFactPopup ins = new ActionInsertFactPopup( getSCE(),
-                                                                               guidedDecisionTable,
-                                                                               new GenericColumnCommand() {
-                                                                                   public void execute(DTColumnConfig52 column) {
-                                                                                       newActionAdded( (ActionCol52) column );
-                                                                                   }
-                                                                               },
-                                                                               afc,
-                                                                               true );
-                        ins.show();
-                    }
-
-                    private void showSet() {
-                        final ActionSetFieldCol52 afc = makeNewActionSetColumn();
-                        ActionSetFieldPopup set = new ActionSetFieldPopup( getSCE(),
-                                                                           guidedDecisionTable,
-                                                                           new GenericColumnCommand() {
-                                                                               public void execute(DTColumnConfig52 column) {
-                                                                                   newActionAdded( (ActionCol52) column );
-                                                                               }
-                                                                           },
-                                                                           afc,
-                                                                           true );
-                        set.show();
-                    }
-
-                    private void showRetract() {
-                        final ActionRetractFactCol52 arf = makeNewActionRetractFact();
-                        ActionRetractFactPopup popup = new ActionRetractFactPopup( guidedDecisionTable,
-                                                                                   new GenericColumnCommand() {
-                                                                                       public void execute(DTColumnConfig52 column) {
-                                                                                           newActionAdded( (ActionCol52) column );
-                                                                                       }
-                                                                                   },
-                                                                                   arf,
-                                                                                   true );
-                        popup.show();
-                    }
-
-                    private void showWorkItemAction() {
-                        final ActionWorkItemCol52 awi = makeNewActionWorkItem();
-                        ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
-                                                                             packageUUID,
-                                                                             guidedDecisionTable,
-                                                                             GuidedDecisionTableWidget.this,
-                                                                             new GenericColumnCommand() {
-                                                                                 public void execute(DTColumnConfig52 column) {
-                                                                                     newActionAdded( (ActionCol52) column );
-                                                                                 }
-                                                                             },
-                                                                             awi,
-                                                                             true );
-                        popup.show();
-                    }
-
-                    private void showWorkItemActionSet() {
-                        final ActionWorkItemSetFieldCol52 awisf = makeNewActionWorkItemSetField();
-                        ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( getSCE(),
-                                                                                             guidedDecisionTable,
-                                                                                             new GenericColumnCommand() {
-                                                                                                 public void execute(DTColumnConfig52 column) {
-                                                                                                     newActionAdded( (ActionCol52) column );
-                                                                                                 }
-                                                                                             },
-                                                                                             awisf,
-                                                                                             true );
-                        popup.show();
-                    }
-
-                    private void showWorkItemActionInsert() {
-                        final ActionWorkItemInsertFactCol52 awiif = makeNewActionWorkItemInsertFact();
-                        ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup( getSCE(),
-                                                                                                     guidedDecisionTable,
-                                                                                                     new GenericColumnCommand() {
-                                                                                                         public void execute(DTColumnConfig52 column) {
-                                                                                                             newActionAdded( (ActionCol52) column );
-                                                                                                         }
-                                                                                                     },
-                                                                                                     awiif,
-                                                                                                     true );
-                        popup.show();
-                    }
-
-                    private void showBRLFragmentAction() {
-                        final BRLActionColumn column = makeNewBRLActionFragment();
-                        BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( sce,
-                                                                                     guidedDecisionTable,
-                                                                                     true,
-                                                                                     asset,
-                                                                                     column,
-                                                                                     clientFactory,
-                                                                                     eventBus );
-                        popup.setPresenter( BRL_ACTION_PRESENTER );
-                        popup.show();
-                    }
-
-                    private void newActionAdded(ActionCol52 column) {
-                        dtable.addColumn( column );
-                        refreshActionsWidget();
-                    }
-                } );
-                pop.addAttribute( constants.TypeOfActionColumn(),
-                                  choice );
-                pop.addAttribute( "",
-                                  chkIncludeAdvancedOptions );
-                pop.addAttribute( "",
-                                  ok );
-                pop.show();
-            }
-
-            private ActionInsertFactCol52 makeNewActionInsertColumn() {
-                switch ( guidedDecisionTable.getTableFormat() ) {
-                    case LIMITED_ENTRY :
-                        return new LimitedEntryActionInsertFactCol52();
-                    default :
-                        return new ActionInsertFactCol52();
-                }
-            }
-
-            private ActionSetFieldCol52 makeNewActionSetColumn() {
-                switch ( guidedDecisionTable.getTableFormat() ) {
-                    case LIMITED_ENTRY :
-                        return new LimitedEntryActionSetFieldCol52();
-                    default :
-                        return new ActionSetFieldCol52();
-                }
-            }
-
-            private ActionRetractFactCol52 makeNewActionRetractFact() {
-                switch ( guidedDecisionTable.getTableFormat() ) {
-                    case LIMITED_ENTRY :
-                        LimitedEntryActionRetractFactCol52 ler = new LimitedEntryActionRetractFactCol52();
-                        ler.setValue( new DTCellValue52( "" ) );
-                        return ler;
-                    default :
-                        return new ActionRetractFactCol52();
-                }
-            }
-
-            private ActionWorkItemCol52 makeNewActionWorkItem() {
-                //WorkItems are defined within the column and always boolean (i.e. Limited Entry) in the table
-                return new ActionWorkItemCol52();
-            }
-
-            private ActionWorkItemSetFieldCol52 makeNewActionWorkItemSetField() {
-                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
-                return new ActionWorkItemSetFieldCol52();
-            }
-
-            private ActionWorkItemInsertFactCol52 makeNewActionWorkItemInsertFact() {
-                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
-                return new ActionWorkItemInsertFactCol52();
-            }
-
-            private BRLActionColumn makeNewBRLActionFragment() {
-                //TODO {manstis} Limited Entry
-                return new BRLActionColumn();
-            }
-
-        } );
-
-        return addButton;
-    }
-
     private Widget removeAction(final ActionCol52 c) {
         if ( c instanceof BRLActionColumn ) {
             return new ImageButton( images.deleteItemSmall(),
@@ -740,13 +471,12 @@ public class GuidedDecisionTableWidget extends Composite
         for ( CompositeColumn< ? > column : columns ) {
             if ( column instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) column;
-
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
+                patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
                 Label patternLabel = makePatternLabel( p );
                 patternHeaderPanel.add( patternLabel );
-                patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
                 patternPanel.add( patternHeaderPanel );
                 patternsPanel.add( patternPanel );
 
@@ -771,6 +501,7 @@ public class GuidedDecisionTableWidget extends Composite
                 boolean bAreConditionsDraggable = conditions.size() > 1;
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     HorizontalPanel hp = new HorizontalPanel();
+                    hp.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternConditionSectionHeader() );
                     hp.add( removeCondition( c ) );
                     hp.add( editCondition( p,
                                            c ) );
@@ -787,11 +518,447 @@ public class GuidedDecisionTableWidget extends Composite
                     patternsDragController.makeDraggable( patternPanel,
                                                           patternLabel );
                 }
+
+            } else if ( column instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) column;
+
+                HorizontalPanel patternHeaderPanel = new HorizontalPanel();
+                patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
+                HorizontalPanel patternPanel = new HorizontalPanel();
+                patternPanel.add( removeCondition( brl ) );
+                patternPanel.add( editCondition( brl ) );
+                Label patternLabel = makePatternLabel( brl );
+                patternPanel.add( patternLabel );
+                patternHeaderPanel.add( patternPanel );
+                patternsPanel.add( patternHeaderPanel );
+
+                if ( arePatternsDraggable ) {
+                    patternsDragController.makeDraggable( patternHeaderPanel,
+                                                          patternLabel );
+                }
+
             }
 
         }
-        conditionsConfigWidget.add( newCondition() );
         setupColumnsNote();
+    }
+
+    private Widget newColumn() {
+        AddButton addButton = new AddButton();
+        addButton.setText( constants.NewColumn() );
+        addButton.setTitle( "Add a new column" );
+
+        addButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                final FormStylePopup pop = new FormStylePopup();
+                pop.setModal( false );
+
+                //List of basic column types
+                final ListBox choice = new ListBox();
+                choice.setVisibleItemCount( NewColumnTypes.values().length );
+
+                choice.addItem( "Add Metadata\\Attributes",
+                                NewColumnTypes.METADATA_ATTRIBUTE.name() );
+                choice.addItem( SECTION_SEPARATOR );
+                choice.addItem( "Add a simple condition",
+                                NewColumnTypes.CONDITION_SIMPLE.name() );
+                choice.addItem( SECTION_SEPARATOR );
+                choice.addItem( constants.SetTheValueOfAField(),
+                                NewColumnTypes.ACTION_UPDATE_FACT_FIELD.name() );
+                choice.addItem( constants.SetTheValueOfAFieldOnANewFact(),
+                                NewColumnTypes.ACTION_INSERT_FACT_FIELD.name() );
+                choice.addItem( constants.RetractAnExistingFact(),
+                                NewColumnTypes.ACTION_RETRACT_FACT.name() );
+
+                //Checkbox to include Advanced Action types
+                final CheckBox chkIncludeAdvancedOptions = new CheckBox( SafeHtmlUtils.fromString( constants.IncludeAdvancedOptions() ) );
+                chkIncludeAdvancedOptions.setValue( false );
+                chkIncludeAdvancedOptions.addClickHandler( new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+                        if ( chkIncludeAdvancedOptions.getValue() ) {
+                            addItem( 3,
+                                     "Add a Condition column using a BRL fragment",
+                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
+                            addItem( constants.WorkItemAction(),
+                                     NewColumnTypes.ACTION_WORKITEM.name() );
+                            addItem( constants.WorkItemActionSetField(),
+                                     NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
+                            addItem( constants.WorkItemActionInsertFact(),
+                                     NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
+                            addItem( constants.BRLFragmentAction(),
+                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
+                        } else {
+                            removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
+                            removeItem( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
+                            removeItem( NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
+                            removeItem( NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
+                        }
+                        pop.center();
+                    }
+
+                    private void addItem(int index,
+                                         String item,
+                                         String value) {
+                        for ( int itemIndex = 0; itemIndex < choice.getItemCount(); itemIndex++ ) {
+                            if ( choice.getValue( itemIndex ).equals( value ) ) {
+                                return;
+                            }
+                        }
+                        choice.insertItem( item,
+                                           value,
+                                           index );
+                    }
+
+                    private void addItem(String item,
+                                         String value) {
+                        for ( int itemIndex = 0; itemIndex < choice.getItemCount(); itemIndex++ ) {
+                            if ( choice.getValue( itemIndex ).equals( value ) ) {
+                                return;
+                            }
+                        }
+                        choice.addItem( item,
+                                        value );
+                    }
+
+                    private void removeItem(String value) {
+                        for ( int itemIndex = 0; itemIndex < choice.getItemCount(); itemIndex++ ) {
+                            if ( choice.getValue( itemIndex ).equals( value ) ) {
+                                choice.removeItem( itemIndex );
+                                break;
+                            }
+                        }
+                    }
+
+                } );
+
+                //OK button to create column
+                final Button ok = new Button( "OK" );
+                ok.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent w) {
+                        String s = choice.getValue( choice.getSelectedIndex() );
+                        if ( s.equals( NewColumnTypes.METADATA_ATTRIBUTE.name() ) ) {
+                            showMetaDataAndAttribute();
+                        } else if ( s.equals( NewColumnTypes.CONDITION_SIMPLE.name() ) ) {
+                            showConditionSimple();
+                        } else if ( s.equals( NewColumnTypes.CONDITION_BRL_FRAGMENT.name() ) ) {
+                            showConditionBRLFragment();
+                        } else if ( s.equals( NewColumnTypes.ACTION_UPDATE_FACT_FIELD.name() ) ) {
+                            showActionSet();
+                        } else if ( s.equals( NewColumnTypes.ACTION_INSERT_FACT_FIELD.name() ) ) {
+                            showActionInsert();
+                        } else if ( s.equals( NewColumnTypes.ACTION_RETRACT_FACT.name() ) ) {
+                            showActionRetract();
+                        } else if ( s.equals( NewColumnTypes.ACTION_WORKITEM.name() ) ) {
+                            showActionWorkItemAction();
+                        } else if ( s.equals( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() ) ) {
+                            showActionWorkItemActionSet();
+                        } else if ( s.equals( NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() ) ) {
+                            showActionWorkItemActionInsert();
+                        } else if ( s.equals( NewColumnTypes.ACTION_BRL_FRAGMENT.name() ) ) {
+                            showActionBRLFragment();
+                        }
+                        pop.hide();
+                    }
+
+                    private void showMetaDataAndAttribute() {
+                        // show choice of attributes
+                        final FormStylePopup pop = new FormStylePopup( images.config(),
+                                                                       constants.AddAnOptionToTheRule() );
+                        final ListBox list = RuleAttributeWidget.getAttributeList();
+
+                        //This attribute is only used for Decision Tables
+                        list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
+
+                        // Remove any attributes already added
+                        for ( AttributeCol52 col : guidedDecisionTable.getAttributeCols() ) {
+                            for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
+                                if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
+                                    list.removeItem( iItem );
+                                    break;
+                                }
+                            }
+                        }
+
+                        final Image addbutton = new ImageButton( images.newItem() );
+                        final TextBox box = new TextBox();
+                        box.setVisibleLength( 15 );
+
+                        list.setSelectedIndex( 0 );
+
+                        list.addChangeHandler( new ChangeHandler() {
+                            public void onChange(ChangeEvent event) {
+                                AttributeCol52 attr = new AttributeCol52();
+                                attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
+                                dtable.addColumn( attr );
+                                refreshAttributeWidget();
+                                pop.hide();
+                            }
+                        } );
+
+                        addbutton.setTitle( constants.AddMetadataToTheRule() );
+
+                        addbutton.addClickHandler( new ClickHandler() {
+                            public void onClick(ClickEvent w) {
+
+                                String metadata = box.getText();
+                                if ( !isUnique( metadata ) ) {
+                                    Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                    return;
+                                }
+                                MetadataCol52 met = new MetadataCol52();
+                                met.setHideColumn( true );
+                                met.setMetadata( metadata );
+                                dtable.addColumn( met );
+                                refreshAttributeWidget();
+                                pop.hide();
+                            }
+
+                            private boolean isUnique(String metadata) {
+                                for ( MetadataCol52 mc : guidedDecisionTable.getMetadataCols() ) {
+                                    if ( metadata.equals( mc.getMetadata() ) ) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+
+                        } );
+                        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+                        horiz.add( box );
+                        horiz.add( addbutton );
+
+                        pop.addAttribute( constants.Metadata1(),
+                                          horiz );
+                        pop.addAttribute( constants.Attribute(),
+                                          list );
+                        pop.show();
+                    }
+
+                    private void showConditionSimple() {
+                        final ConditionCol52 column = makeNewConditionColumn();
+                        ConditionPopup dialog = new ConditionPopup( getSCE(),
+                                                                    guidedDecisionTable,
+                                                                    new ConditionColumnCommand() {
+                                                                        public void execute(Pattern52 pattern,
+                                                                                            ConditionCol52 column) {
+
+                                                                            //Update UI
+                                                                            dtable.addColumn( pattern,
+                                                                                              column );
+                                                                            refreshConditionsWidget();
+                                                                        }
+                                                                    },
+                                                                    column,
+                                                                    true );
+                        dialog.show();
+                    }
+
+                    private void showConditionBRLFragment() {
+                        final BRLConditionColumn column = makeNewConditionBRLFragment();
+                        BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
+                                                                                           guidedDecisionTable,
+                                                                                           true,
+                                                                                           asset,
+                                                                                           column,
+                                                                                           clientFactory,
+                                                                                           eventBus );
+                        popup.setPresenter( BRL_CONDITION_PRESENTER );
+                        popup.show();
+                    }
+
+                    private void showActionInsert() {
+                        final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
+                        ActionInsertFactPopup ins = new ActionInsertFactPopup( getSCE(),
+                                                                               guidedDecisionTable,
+                                                                               new GenericColumnCommand() {
+                                                                                   public void execute(DTColumnConfig52 column) {
+                                                                                       newActionAdded( (ActionCol52) column );
+                                                                                   }
+                                                                               },
+                                                                               afc,
+                                                                               true );
+                        ins.show();
+                    }
+
+                    private void showActionSet() {
+                        final ActionSetFieldCol52 afc = makeNewActionSetColumn();
+                        ActionSetFieldPopup set = new ActionSetFieldPopup( getSCE(),
+                                                                           guidedDecisionTable,
+                                                                           new GenericColumnCommand() {
+                                                                               public void execute(DTColumnConfig52 column) {
+                                                                                   newActionAdded( (ActionCol52) column );
+                                                                               }
+                                                                           },
+                                                                           afc,
+                                                                           true );
+                        set.show();
+                    }
+
+                    private void showActionRetract() {
+                        final ActionRetractFactCol52 arf = makeNewActionRetractFact();
+                        ActionRetractFactPopup popup = new ActionRetractFactPopup( guidedDecisionTable,
+                                                                                   new GenericColumnCommand() {
+                                                                                       public void execute(DTColumnConfig52 column) {
+                                                                                           newActionAdded( (ActionCol52) column );
+                                                                                       }
+                                                                                   },
+                                                                                   arf,
+                                                                                   true );
+                        popup.show();
+                    }
+
+                    private void showActionWorkItemAction() {
+                        final ActionWorkItemCol52 awi = makeNewActionWorkItem();
+                        ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
+                                                                             packageUUID,
+                                                                             guidedDecisionTable,
+                                                                             GuidedDecisionTableWidget.this,
+                                                                             new GenericColumnCommand() {
+                                                                                 public void execute(DTColumnConfig52 column) {
+                                                                                     newActionAdded( (ActionCol52) column );
+                                                                                 }
+                                                                             },
+                                                                             awi,
+                                                                             true );
+                        popup.show();
+                    }
+
+                    private void showActionWorkItemActionSet() {
+                        final ActionWorkItemSetFieldCol52 awisf = makeNewActionWorkItemSetField();
+                        ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( getSCE(),
+                                                                                             guidedDecisionTable,
+                                                                                             new GenericColumnCommand() {
+                                                                                                 public void execute(DTColumnConfig52 column) {
+                                                                                                     newActionAdded( (ActionCol52) column );
+                                                                                                 }
+                                                                                             },
+                                                                                             awisf,
+                                                                                             true );
+                        popup.show();
+                    }
+
+                    private void showActionWorkItemActionInsert() {
+                        final ActionWorkItemInsertFactCol52 awiif = makeNewActionWorkItemInsertFact();
+                        ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup( getSCE(),
+                                                                                                     guidedDecisionTable,
+                                                                                                     new GenericColumnCommand() {
+                                                                                                         public void execute(DTColumnConfig52 column) {
+                                                                                                             newActionAdded( (ActionCol52) column );
+                                                                                                         }
+                                                                                                     },
+                                                                                                     awiif,
+                                                                                                     true );
+                        popup.show();
+                    }
+
+                    private void showActionBRLFragment() {
+                        final BRLActionColumn column = makeNewActionBRLFragment();
+                        BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( sce,
+                                                                                     guidedDecisionTable,
+                                                                                     true,
+                                                                                     asset,
+                                                                                     column,
+                                                                                     clientFactory,
+                                                                                     eventBus );
+                        popup.setPresenter( BRL_ACTION_PRESENTER );
+                        popup.show();
+                    }
+
+                    private void newActionAdded(ActionCol52 column) {
+                        dtable.addColumn( column );
+                        refreshActionsWidget();
+                    }
+                } );
+
+                //If a separator is clicked disable OK button
+                choice.addClickHandler( new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+                        int itemIndex = choice.getSelectedIndex();
+                        if ( itemIndex < 0 ) {
+                            return;
+                        }
+                        ok.setEnabled( !choice.getValue( itemIndex ).equals( SECTION_SEPARATOR ) );
+                    }
+
+                } );
+
+                pop.addAttribute( constants.TypeOfActionColumn(),
+                                  choice );
+                pop.addAttribute( "",
+                                  chkIncludeAdvancedOptions );
+                pop.addAttribute( "",
+                                  ok );
+                pop.show();
+            }
+
+            private ConditionCol52 makeNewConditionColumn() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryConditionCol52();
+                    default :
+                        return new ConditionCol52();
+                }
+            }
+
+            private ActionInsertFactCol52 makeNewActionInsertColumn() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryActionInsertFactCol52();
+                    default :
+                        return new ActionInsertFactCol52();
+                }
+            }
+
+            private ActionSetFieldCol52 makeNewActionSetColumn() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryActionSetFieldCol52();
+                    default :
+                        return new ActionSetFieldCol52();
+                }
+            }
+
+            private ActionRetractFactCol52 makeNewActionRetractFact() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        LimitedEntryActionRetractFactCol52 ler = new LimitedEntryActionRetractFactCol52();
+                        ler.setValue( new DTCellValue52( "" ) );
+                        return ler;
+                    default :
+                        return new ActionRetractFactCol52();
+                }
+            }
+
+            private ActionWorkItemCol52 makeNewActionWorkItem() {
+                //WorkItems are defined within the column and always boolean (i.e. Limited Entry) in the table
+                return new ActionWorkItemCol52();
+            }
+
+            private ActionWorkItemSetFieldCol52 makeNewActionWorkItemSetField() {
+                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
+                return new ActionWorkItemSetFieldCol52();
+            }
+
+            private ActionWorkItemInsertFactCol52 makeNewActionWorkItemInsertFact() {
+                //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
+                return new ActionWorkItemInsertFactCol52();
+            }
+
+            private BRLActionColumn makeNewActionBRLFragment() {
+                //TODO {manstis} Limited Entry
+                return new BRLActionColumn();
+            }
+
+            private BRLConditionColumn makeNewConditionBRLFragment() {
+                //TODO {manstis} Limited Entry
+                return new BRLConditionColumn();
+            }
+
+        } );
+
+        return addButton;
     }
 
     private SmallLabel makeColumnLabel(ConditionCol52 cc) {
@@ -818,41 +985,10 @@ public class GuidedDecisionTableWidget extends Composite
         return new Label( sb.toString() );
     }
 
-    private Widget newCondition() {
-        final ConditionCol52 newCol = makeNewConditionColumn();
-        newCol.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        AddButton addButton = new AddButton();
-        addButton.setText( constants.NewColumn() );
-        addButton.setTitle( constants.AddANewConditionColumn() );
-        addButton.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                ConditionPopup dialog = new ConditionPopup( getSCE(),
-                                                            guidedDecisionTable,
-                                                            new ConditionColumnCommand() {
-                                                                public void execute(Pattern52 pattern,
-                                                                                    ConditionCol52 column) {
-
-                                                                    //Update UI
-                                                                    dtable.addColumn( pattern,
-                                                                                      column );
-                                                                    refreshConditionsWidget();
-                                                                }
-                                                            },
-                                                            newCol,
-                                                            true );
-                dialog.show();
-            }
-        } );
-        return addButton;
-    }
-
-    private ConditionCol52 makeNewConditionColumn() {
-        switch ( guidedDecisionTable.getTableFormat() ) {
-            case LIMITED_ENTRY :
-                return new LimitedEntryConditionCol52();
-            default :
-                return new ConditionCol52();
-        }
+    private Label makePatternLabel(BRLConditionColumn brl) {
+        StringBuilder sb = new StringBuilder();
+        sb.append( brl.getHeader() );
+        return new Label( sb.toString() );
     }
 
     private Widget editCondition(final Pattern52 origPattern,
@@ -882,6 +1018,24 @@ public class GuidedDecisionTableWidget extends Composite
                                 } );
     }
 
+    private Widget editCondition(final BRLConditionColumn origCol) {
+        return new ImageButton( images.edit(),
+                                constants.EditThisColumnsConfiguration(),
+                                new ClickHandler() {
+                                    public void onClick(ClickEvent w) {
+                                        BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
+                                                                                                           guidedDecisionTable,
+                                                                                                           false,
+                                                                                                           asset,
+                                                                                                           origCol,
+                                                                                                           clientFactory,
+                                                                                                           eventBus );
+                                        popup.setPresenter( BRL_CONDITION_PRESENTER );
+                                        popup.show();
+                                    }
+                                } );
+    }
+
     private SuggestionCompletionEngine getSCE() {
         if ( sce == null ) {
             this.sce = SuggestionCompletionCache.getInstance()
@@ -890,27 +1044,40 @@ public class GuidedDecisionTableWidget extends Composite
         return sce;
     }
 
-    private Widget removeCondition(final ConditionCol52 origCol) {
-        Image del = new ImageButton( images.deleteItemSmall(),
-                                     constants.RemoveThisConditionColumn(),
-                                     new ClickHandler() {
-                                         public void onClick(ClickEvent w) {
-                                             if ( !canConditionBeDeleted( origCol ) ) {
-                                                 Window.alert( constants.UnableToDeleteConditionColumn( origCol.getHeader() ) );
-                                                 return;
-                                             }
+    private Widget removeCondition(final ConditionCol52 c) {
+        if ( c instanceof BRLConditionColumn ) {
+            return new ImageButton( images.deleteItemSmall(),
+                                    constants.RemoveThisConditionColumn(),
+                                    new ClickHandler() {
+                                        public void onClick(ClickEvent w) {
+                                            if ( !canConditionBeDeleted( c ) ) {
+                                                Window.alert( constants.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                return;
+                                            }
+                                            String cm = constants.DeleteConditionColumnWarning( c.getHeader() );
+                                            if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                                dtable.deleteColumn( (BRLConditionColumn) c );
+                                                refreshConditionsWidget();
+                                            }
+                                        }
+                                    } );
 
-                                             String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
-                                             if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
-
-                                                 //Update UI
-                                                 dtable.deleteColumn( origCol );
-                                                 refreshConditionsWidget();
-                                             }
-                                         }
-                                     } );
-
-        return del;
+        }
+        return new ImageButton( images.deleteItemSmall(),
+                                constants.RemoveThisConditionColumn(),
+                                new ClickHandler() {
+                                    public void onClick(ClickEvent w) {
+                                        if ( !canConditionBeDeleted( c ) ) {
+                                            Window.alert( constants.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                            return;
+                                        }
+                                        String cm = constants.DeleteConditionColumnWarning( c.getHeader() );
+                                        if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                            dtable.deleteColumn( c );
+                                            refreshConditionsWidget();
+                                        }
+                                    }
+                                } );
     }
 
     private Widget getAttributes() {
@@ -921,7 +1088,6 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshAttributeWidget() {
         this.attributeConfigWidget.clear();
-        attributeConfigWidget.add( newAttr() );
         if ( guidedDecisionTable.getMetadataCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1058,92 +1224,6 @@ public class GuidedDecisionTableWidget extends Composite
         }
     }
 
-    private Widget newAttr() {
-        ImageButton but = new ImageButton( images.newItem(),
-                                           constants.AddANewAttributeMetadata(),
-                                           new ClickHandler() {
-                                               public void onClick(ClickEvent w) {
-
-                                                   // show choice of attributes
-                                                   final FormStylePopup pop = new FormStylePopup( images.config(),
-                                                                                                  constants.AddAnOptionToTheRule() );
-                                                   final ListBox list = RuleAttributeWidget.getAttributeList();
-
-                                                   //This attribute is only used for Decision Tables
-                                                   list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
-
-                                                   // Remove any attributes already added
-                                                   for ( AttributeCol52 col : guidedDecisionTable.getAttributeCols() ) {
-                                                       for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
-                                                           if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
-                                                               list.removeItem( iItem );
-                                                               break;
-                                                           }
-                                                       }
-                                                   }
-
-                                                   final Image addbutton = new ImageButton( images.newItem() );
-                                                   final TextBox box = new TextBox();
-                                                   box.setVisibleLength( 15 );
-
-                                                   list.setSelectedIndex( 0 );
-
-                                                   list.addChangeHandler( new ChangeHandler() {
-                                                       public void onChange(ChangeEvent event) {
-                                                           AttributeCol52 attr = new AttributeCol52();
-                                                           attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
-                                                           dtable.addColumn( attr );
-                                                           refreshAttributeWidget();
-                                                           pop.hide();
-                                                       }
-                                                   } );
-
-                                                   addbutton.setTitle( constants.AddMetadataToTheRule() );
-
-                                                   addbutton.addClickHandler( new ClickHandler() {
-                                                       public void onClick(ClickEvent w) {
-
-                                                           String metadata = box.getText();
-                                                           if ( !isUnique( metadata ) ) {
-                                                               Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                                                               return;
-                                                           }
-                                                           MetadataCol52 met = new MetadataCol52();
-                                                           met.setHideColumn( true );
-                                                           met.setMetadata( metadata );
-                                                           dtable.addColumn( met );
-                                                           refreshAttributeWidget();
-                                                           pop.hide();
-                                                       }
-
-                                                       private boolean isUnique(String metadata) {
-                                                           for ( MetadataCol52 mc : guidedDecisionTable.getMetadataCols() ) {
-                                                               if ( metadata.equals( mc.getMetadata() ) ) {
-                                                                   return false;
-                                                               }
-                                                           }
-                                                           return true;
-                                                       }
-
-                                                   } );
-                                                   DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-                                                   horiz.add( box );
-                                                   horiz.add( addbutton );
-
-                                                   pop.addAttribute( constants.Metadata1(),
-                                                                     horiz );
-                                                   pop.addAttribute( constants.Attribute(),
-                                                                     list );
-                                                   pop.show();
-                                               }
-
-                                           } );
-        HorizontalPanel h = new HorizontalPanel();
-        h.add( new SmallLabel( constants.AddAttributeMetadata() ) );
-        h.add( but );
-        return h;
-    }
-
     private Widget removeAttr(final AttributeCol52 at) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisAttribute(),
@@ -1268,6 +1348,18 @@ public class GuidedDecisionTableWidget extends Composite
         dtable.updateColumn( originalColumn,
                              editedColumn );
         refreshActionsWidget();
+    }
+
+    public void insertColumn(BRLConditionColumn column) {
+        dtable.addColumn( column );
+        refreshConditionsWidget();
+    }
+
+    public void updateColumn(BRLConditionColumn originalColumn,
+                             BRLConditionColumn editedColumn) {
+        //        dtable.updateColumn( originalColumn,
+        //                             editedColumn );
+        refreshConditionsWidget();
     }
 
     public void onSave() {
