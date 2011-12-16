@@ -176,6 +176,8 @@ public class GuidedDecisionTableWidget extends Composite
         config.setWidth( "100%" );
         disclosurePanel.add( config );
 
+        config.add( newColumn() );
+
         DecoratedDisclosurePanel conditions = new DecoratedDisclosurePanel( constants.ConditionColumns() );
         conditions.setOpen( false );
         conditions.setWidth( "75%" );
@@ -196,7 +198,6 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
-        layout.add( newColumn() );
         layout.add( dtable );
 
         initWidget( layout );

@@ -92,7 +92,10 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
     private static AbstractBRLColumnEditorBinder uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
 
+    //TODO {manstis} For Limited Entry
+    @SuppressWarnings("unused")
     private final SuggestionCompletionEngine     sce;
+    @SuppressWarnings("unused")
     private final DTCellValueWidgetFactory       factory;
 
     protected final GuidedDecisionTable52        model;
@@ -187,12 +190,12 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     }
 
     /**
-     * Width of pop-up, 1/4 of the client width or MIN_WIDTH
+     * Width of pop-up, 75% of the client width or MIN_WIDTH
      * 
      * @return
      */
     private int getPopupWidth() {
-        int w = Window.getClientWidth() / 4;
+        int w = (int) (Window.getClientWidth() * 0.75);
         if ( w < MIN_WIDTH ) {
             w = MIN_WIDTH;
         }
@@ -200,12 +203,12 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     }
 
     /**
-     * Height of pop-up, 1/2 of the client height or MIN_HEIGHT
+     * Height of pop-up, 75% of the client height or MIN_HEIGHT
      * 
      * @return
      */
     protected int getPopupHeight() {
-        int h = Window.getClientHeight() / 2;
+        int h = (int) (Window.getClientHeight() * 0.75);
         if ( h < MIN_HEIGHT ) {
             h = MIN_HEIGHT;
         }
