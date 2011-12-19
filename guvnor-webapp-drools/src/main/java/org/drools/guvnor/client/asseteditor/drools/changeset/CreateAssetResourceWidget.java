@@ -27,8 +27,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -246,7 +244,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
                                                       String partialResult = resourceXMLElementTemplate;
 
                                                       String nameString = "";
-                                                      if ( !StringUtils.isEmpty(txtName.getText())) {
+                                                      if ( txtName.getText().length() != 0 ) {
                                                           if ( selectedRowUUIDs.length == 1 ) {
                                                               nameString = "name=\"" + txtName.getText().trim() + "\"";
                                                           } else {
@@ -258,7 +256,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
                                                                                              nameString );
 
                                                       String descriptionString = "";
-                                                      if ( !StringUtils.isEmpty(txtDescription.getText()) ) {
+                                                      if ( txtDescription.getText().length() != 0 ) {
                                                           descriptionString = "description=\"" + txtDescription.getText().trim() + "\"";
                                                       }
                                                       partialResult = partialResult.replace( "{description}",
