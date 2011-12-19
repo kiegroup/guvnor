@@ -12,7 +12,7 @@
   <artifactId>guvnor-webapp-soa</artifactId>
   <packaging>war</packaging>
 
-  <name>GuvnorSOA web application</name>
+  <name>Guvnor web application SOA</name>
   <description>The web application to create, edit and deploy SOA Service Repository</description>
 
   <properties>

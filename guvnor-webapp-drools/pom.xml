@@ -12,7 +12,7 @@
   <artifactId>guvnor-webapp-drools</artifactId>
   <packaging>war</packaging>
 
-  <name>Guvnor web application</name>
+  <name>Guvnor web application Drools</name>
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
   <properties>
