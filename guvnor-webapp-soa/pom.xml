@@ -196,7 +196,7 @@
       <id>fullProfile</id>
       <activation>
         <property>
-          <name>full</name>
+          <name>ngsoafull</name>
         </property>
       </activation>
       <build>

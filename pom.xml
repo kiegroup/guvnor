@@ -73,6 +73,29 @@
         <module>guvnor-distribution</module>
       </modules>
     </profile>
+    <profile>
+      <id>ngsoa</id>
+      <activation>
+        <property>
+          <name>ngsoa</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-webapp-soa</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ngsoafull</id>
+      <activation>
+        <property>
+          <name>ngsoafull</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-webapp-soa</module>
+        <module>guvnorsoa-distribution-wars</module>
+      </modules>
+    </profile>   
   </profiles>
 
 </project>
