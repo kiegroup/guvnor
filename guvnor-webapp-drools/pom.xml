@@ -351,7 +351,7 @@
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
         <type>pom</type>
-        <version>1.0.0.CR5</version>
+        <version>1.0.0.CR7</version>
         <scope>import</scope>
       </dependency>
     </dependencies>
@@ -385,19 +385,19 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR5 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR5 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR5 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
