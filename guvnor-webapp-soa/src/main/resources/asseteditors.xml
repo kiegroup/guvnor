@@ -5,15 +5,6 @@
 	they will be grouped together and displayed as one node on the package tree. -->
 	
     <!--  business rules group   -->   
-
-    
-    <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
-        <format>dsl</format>
-        <icon>images.dsl()</icon>
-        <title>constants.DSLConfigurations()</title>    
-    </asseteditor>
-    
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.POJOModelUploadWidget</class> 
         <format>jar</format>

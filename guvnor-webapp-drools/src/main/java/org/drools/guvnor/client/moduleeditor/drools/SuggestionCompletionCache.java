@@ -40,8 +40,7 @@ import com.google.gwt.user.client.Command;
  * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
  */
-public class SuggestionCompletionCache {
-
+public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Handler {
     private static SuggestionCompletionCache INSTANCE = null;
 
     Map<String, SuggestionCompletionEngine> cache = new HashMap<String, SuggestionCompletionEngine>();
@@ -72,11 +71,14 @@ public class SuggestionCompletionCache {
         constants = cs;
     }
     
-    public void setEventBus(final EventBus eventBus) {
-    	this.eventBus = eventBus;    	
-    	setRefreshHandler();
+    public void setEventBus(final EventBus eventBus) {   
+        eventBus.addHandler(RefreshModuleDataModelEvent.TYPE, this);
     }
-
+    
+    public void onRefreshModuleDataModel(RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
+        loadPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
+    }
+    
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
         SuggestionCompletionEngine eng = cache.get( packageName );
         if (eng == null) {
@@ -159,14 +161,5 @@ public class SuggestionCompletionCache {
         this.loadPackage(packageName, done);
         
     }
-        
-    private void setRefreshHandler() {
-        eventBus.addHandler(RefreshModuleDataModelEvent.TYPE,
-                new RefreshModuleDataModelEvent.Handler() {
-                    public void onRefreshModuleDataModel(
-                    		RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
-                        loadPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
-                    }
-                });
-    }
+
 }

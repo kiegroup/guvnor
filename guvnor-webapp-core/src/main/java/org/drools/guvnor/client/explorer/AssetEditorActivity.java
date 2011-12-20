@@ -77,11 +77,11 @@ public class AssetEditorActivity extends Activity {
         return new GenericCallback<RuleAsset>() {
             public void onSuccess(final RuleAsset ruleAsset) {
             	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.packageName,
-                        createCommandForSuggestCompletionCache( loading,
+            	        createOnRefreshModuleDataModelCompletion( loading,
                                 ruleAsset )));
             }
 
-            private Command createCommandForSuggestCompletionCache(final boolean[] loading,
+            private Command createOnRefreshModuleDataModelCompletion(final boolean[] loading,
                                                                    final RuleAsset ruleAsset) {
                 return new Command() {
                     public void execute() {
