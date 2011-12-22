@@ -37,12 +37,13 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testMailbox() throws Exception {
+        // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
         AssetItem asset = rulesRepository.loadDefaultPackage().addAsset( "testMailbox",
                                                               "" );
 
         UserInbox mailman = new UserInbox( rulesRepository,
-                                           "mailman" );
+                                           GuvnorBootstrapConfiguration.MAILMAN_USERNAME_DEFAULT );
         assertEquals(0,
                 mailman.loadIncoming().size());
 
@@ -113,6 +114,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testOneToMany() throws Exception {
+        // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
         String sender = rulesRepository.getSession().getUserID();
         AssetItem asset = rulesRepository.loadDefaultPackage().addAsset( "testMailboxOneToMany",

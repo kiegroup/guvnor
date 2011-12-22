@@ -46,7 +46,7 @@ public class MailboxService {
     private static final LoggingHelper log  = LoggingHelper.getLogger( MailboxService.class );
 
     private ExecutorService executor = null;
-    private String mailmanUsername = null;
+    private volatile String mailmanUsername = null;
 
     @Inject
     private RepositoryStartupService repositoryStartupService;
@@ -57,11 +57,14 @@ public class MailboxService {
     /**
      * Should be the for the "mailman" user.
      */
-    private RulesRepository mailmanRulesRepository;
+    private volatile RulesRepository mailmanRulesRepository;
 
     @PostConstruct
     public void setup() {
         mailmanUsername = guvnorBootstrapConfiguration.extractMailmanUsername();
+        if (mailmanUsername == null || mailmanUsername.length() == 0) {
+            throw new IllegalStateException("The mailmanUsername (" + mailmanUsername + ") cannot be empty.");
+        }
         String mailmanPassword = guvnorBootstrapConfiguration.extractMailmanPassword();
         mailmanRulesRepository = new RulesRepository(repositoryStartupService.newSession(mailmanUsername, mailmanPassword));
         executor = Executors.newSingleThreadExecutor();
@@ -122,28 +125,26 @@ public class MailboxService {
 
     /** Process any waiting messages */
     void processOutgoing()  {
-        if (mailmanRulesRepository != null) {
-            UserInbox mailman = new UserInbox(mailmanRulesRepository, mailmanUsername);
-            final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
-            log.debug("Outgoing messages size " + es.size());
-            //wipe out inbox for mailman here...
-            UserInfo.eachUser(this.mailmanRulesRepository, new UserInfo.Command() {
-                public void process(final String toUser) {
-                    log.debug("Processing any inbound messages for " + toUser);
-                    if (toUser.equals(mailmanUsername)) return;
-                    UserInbox inbox = new UserInbox(mailmanRulesRepository, toUser);
-                    Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
-                    for (UserInfo.InboxEntry e : es) {
-                        //the user who edited the item wont receive a message in inbox.
-                        if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
-                            inbox.addToIncoming(e.assetUUID, e.note, e.from);
-                        }
+        UserInbox mailman = new UserInbox(mailmanRulesRepository, mailmanUsername);
+        final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
+        log.debug("Outgoing messages size " + es.size());
+        //wipe out inbox for mailman here...
+        UserInfo.eachUser(this.mailmanRulesRepository, new UserInfo.Command() {
+            public void process(final String toUser) {
+                log.debug("Processing any inbound messages for " + toUser);
+                if (toUser.equals(mailmanUsername)) return;
+                UserInbox inbox = new UserInbox(mailmanRulesRepository, toUser);
+                Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
+                for (UserInfo.InboxEntry e : es) {
+                    //the user who edited the item wont receive a message in inbox.
+                    if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
+                        inbox.addToIncoming(e.assetUUID, e.note, e.from);
                     }
                 }
-            });
-            mailman.clearIncoming();
-            mailmanRulesRepository.save();
-        }
+            }
+        });
+        mailman.clearIncoming();
+        mailmanRulesRepository.save();
     }
 
     private Set<String> makeSetOf(List<InboxEntry> inboxEntries) {
@@ -164,14 +165,12 @@ public class MailboxService {
         final String from = item.getRulesRepository().getSession().getUserID();
         executor.execute(new Runnable() {
             public void run() {
-                if (mailmanRulesRepository !=null) {
-                    // write the message to the admins outbox
-                    UserInbox inbox = new UserInbox(mailmanRulesRepository, mailmanUsername);
-                    inbox.addToIncoming(id, name, from);
-                    processOutgoing();
+                // write the message to the admins outbox
+                UserInbox inbox = new UserInbox(mailmanRulesRepository, mailmanUsername);
+                inbox.addToIncoming(id, name, from);
+                processOutgoing();
 
-                    mailmanRulesRepository.save();
-                }
+                mailmanRulesRepository.save();
             }
         });
     }

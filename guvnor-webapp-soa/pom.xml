@@ -12,12 +12,12 @@
   <artifactId>guvnor-webapp-soa</artifactId>
   <packaging>war</packaging>
 
-  <name>GuvnorSOA web application</name>
+  <name>Guvnor web application SOA</name>
   <description>The web application to create, edit and deploy SOA Service Repository</description>
 
   <properties>
     <!-- Keep in sync with /guvnor-webapp-soa/src/test/resources/arquillian.xml -->
-    <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
+    <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
     <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
     <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-soa/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>-->
@@ -148,7 +148,7 @@
                 <artifactItem>
                   <groupId>org.jboss.as</groupId>
                   <artifactId>jboss-as-dist</artifactId>
-                  <version>${managed-appserver.jboss7.version}</version>
+                  <version>${appserver.jboss7.version}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -196,7 +196,7 @@
       <id>fullProfile</id>
       <activation>
         <property>
-          <name>full</name>
+          <name>ngsoafull</name>
         </property>
       </activation>
       <build>

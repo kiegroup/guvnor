@@ -36,7 +36,7 @@ public class GuvnorBootstrapConfiguration {
     private static final String ADMIN_PASSWORD_DEFAULT = "password";
     private static final String ADMIN_PASSWORD_PROPERTY = "org.drools.repository.admin.password";
 
-    private static final String MAILMAN_USERNAME_DEFAULT = "mailman";
+    public static final String MAILMAN_USERNAME_DEFAULT = "mailman";
     private static final String MAILMAN_USERNAME_PROPERTY = "org.drools.repository.mailman.username";
     private static final String MAILMAN_PASSWORD_DEFAULT = "password";
     private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";

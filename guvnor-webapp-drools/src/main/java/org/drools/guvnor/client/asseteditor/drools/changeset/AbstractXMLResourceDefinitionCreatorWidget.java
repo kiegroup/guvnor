@@ -23,18 +23,4 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 public abstract class AbstractXMLResourceDefinitionCreatorWidget extends DirtyableComposite
     implements
     XMLResourceDefinitionCreator {
-
-	public static boolean isEmpty(final CharSequence str) {
-        if ( str == null || str.length() == 0 ) {
-            return true;
-        }
-        
-        for ( int i = 0, length = str.length(); i < length; i++ ){
-            if ( str.charAt( i ) != ' ' )  {
-                return false;
-            }
-        }
-        
-        return true;
-    }
 }

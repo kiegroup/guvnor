@@ -19,6 +19,7 @@ package org.drools.guvnor.client;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleDataModelImpl;
 import org.drools.guvnor.client.explorer.soa.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DecisionTableResources;
@@ -139,7 +140,7 @@ public class GuvnorSOAEntryPoint
      */
     private void createMain() {
         EventBus eventBus = new SimpleEventBus();
-        //SuggestionCompletionCache.getInstance().setEventBus(eventBus);
+        RefreshModuleDataModelImpl.getInstance().setEventBus(eventBus);
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
         appController = new AppController(clientFactory,eventBus);
 

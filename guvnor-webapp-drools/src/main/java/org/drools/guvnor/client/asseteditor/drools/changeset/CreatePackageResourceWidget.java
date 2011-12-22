@@ -202,14 +202,14 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
             String result = resourceXMLElementTemplate;
 
             String nameString = "";
-            if ( !isEmpty(this.txtName.getText())) {
+            if ( this.txtName.getText().length() != 0 ) {
                 nameString = "name=\"" + this.txtName.getText().trim() + "\"";
             }
             result = result.replace( "{name}",
                                      nameString );
 
             String descriptionString = "";
-            if ( !isEmpty(this.txtDescription.getText()) ) {
+            if ( this.txtDescription.getText().length() != 0 ) {
                 descriptionString = "description=\"" + this.txtDescription.getText().trim() + "\"";
             }
             result = result.replace( "{description}",
