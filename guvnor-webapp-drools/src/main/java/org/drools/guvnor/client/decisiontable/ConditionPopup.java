@@ -474,10 +474,18 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private void doPatternLabel() {
-        if ( this.editingPattern.getFactType() != null ) {
-            this.patternLabel.setText( (this.editingPattern.isNegated() ? constants.negatedPattern() + " " : "")
-                                       + this.editingPattern.getFactType() + " ["
-                                       + this.editingPattern.getBoundName() + "]" );
+        if ( editingPattern.getFactType() != null ) {
+            StringBuilder patternLabel = new StringBuilder();
+            String factType = editingPattern.getFactType();
+            String boundName = editingPattern.getBoundName();
+            if ( factType != null && factType.length() > 0 ) {
+                if ( editingPattern.isNegated() ) {
+                    patternLabel.append( constants.negatedPattern() ).append( " " ).append( factType );
+                } else {
+                    patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
+                }
+            }
+            this.patternLabel.setText( patternLabel.toString() );
         }
         doFieldLabel();
         doOperatorLabel();
@@ -672,6 +680,14 @@ public class ConditionPopup extends FormStylePopup {
 
         //Patterns can be negated, i.e. "not Pattern(...)"
         final CheckBox chkNegated = new CheckBox();
+        chkNegated.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                boolean isPatternNegated = chkNegated.getValue();
+                binding.setEnabled( !isPatternNegated );
+            }
+
+        } );
         pop.addAttribute( constants.negatePattern(),
                           chkNegated );
 
@@ -679,24 +695,27 @@ public class ConditionPopup extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
 
+                boolean isPatternNegated = chkNegated.getValue();
                 String ft = types.getItemText( types.getSelectedIndex() );
-                String fn = binding.getText();
-                if ( fn.equals( "" ) ) {
-                    Window.alert( constants.PleaseEnterANameForFact() );
-                    return;
-                } else if ( fn.equals( ft ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
-                    return;
-                } else if ( !isBindingUnique( fn ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
-                    return;
+                String fn = isPatternNegated ? "" : binding.getText();
+                if ( !isPatternNegated ) {
+                    if ( fn.equals( "" ) ) {
+                        Window.alert( constants.PleaseEnterANameForFact() );
+                        return;
+                    } else if ( fn.equals( ft ) ) {
+                        Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                        return;
+                    } else if ( !isBindingUnique( fn ) ) {
+                        Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                        return;
+                    }
                 }
 
                 //Create new pattern
                 editingPattern = new Pattern52();
                 editingPattern.setFactType( ft );
                 editingPattern.setBoundName( fn );
-                editingPattern.setNegated( chkNegated.getValue() );
+                editingPattern.setNegated( isPatternNegated );
 
                 //Clear Field and Operator when pattern changes
                 editingCol.setFactField( null );

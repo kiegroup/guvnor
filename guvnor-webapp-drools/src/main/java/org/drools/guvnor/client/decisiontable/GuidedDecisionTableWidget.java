@@ -578,17 +578,17 @@ public class GuidedDecisionTableWidget extends Composite
 
                     public void onClick(ClickEvent event) {
                         if ( chkIncludeAdvancedOptions.getValue() ) {
-//                            addItem( 3,
-//                                     constants.AddNewConditionBRLFragment(),
-//                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
+                            //                            addItem( 3,
+                            //                                     constants.AddNewConditionBRLFragment(),
+                            //                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
                             addItem( constants.WorkItemAction(),
                                      NewColumnTypes.ACTION_WORKITEM.name() );
                             addItem( constants.WorkItemActionSetField(),
                                      NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
-//                            addItem( constants.AddNewActionBRLFragment(),
-//                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
+                            //                            addItem( constants.AddNewActionBRLFragment(),
+                            //                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
                             removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
@@ -978,13 +978,17 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Label makePatternLabel(Pattern52 p) {
-        StringBuilder sb = new StringBuilder();
-        if ( p.getBoundName() != null && !p.getBoundName().equals( "" ) ) {
-            sb.append( p.getBoundName() );
-            sb.append( " : " );
+        StringBuilder patternLabel = new StringBuilder();
+        String factType = p.getFactType();
+        String boundName = p.getBoundName();
+        if ( factType != null && factType.length() > 0 ) {
+            if ( p.isNegated() ) {
+                patternLabel.append( constants.negatedPattern() ).append( " " ).append( factType );
+            } else {
+                patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
+            }
         }
-        sb.append( p.getFactType() );
-        return new Label( sb.toString() );
+        return new Label( patternLabel.toString() );
     }
 
     private Label makePatternLabel(BRLConditionColumn brl) {
