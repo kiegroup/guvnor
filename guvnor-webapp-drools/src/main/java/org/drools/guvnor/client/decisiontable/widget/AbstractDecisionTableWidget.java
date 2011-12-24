@@ -198,13 +198,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
+
         //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
         //columns added until after the data has been created. If the columns are added first a similar dilemma 
         //exists as we can only ascertain the end index of the last column and we'd need an offset to count
         //back from the end.
         for ( int offset = 0; offset < modelColumn.getChildColumns().size(); offset++ ) {
             BRLConditionVariableColumn variable = modelColumn.getChildColumns().get( offset );
-            addColumn( offset,
+            addColumn( offset + 1,
                        variable,
                        cellValueFactory.makeColumnData( variable ),
                        true );
@@ -270,7 +271,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             eventBus.fireEvent( pce );
         }
 
-        //Column needs to be added to pattern first so it can be correctly positoned
+        //Column needs to be added to pattern first so it can be correctly positioned
         pattern.getChildColumns().add( modelColumn );
         addColumn( modelColumn,
                    cellValueFactory.makeColumnData( modelColumn ),
@@ -885,6 +886,64 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Update a BRLConditionColumn column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final BRLConditionColumn origColumn,
+                             final BRLConditionColumn editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        //Insert new columns for the edited definition, copying existing data if applicable
+        Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
+        for ( BRLConditionVariableColumn variable : origColumn.getChildColumns() ) {
+            int iCol = model.getAllColumns().indexOf( variable );
+            StringBuilder key = new StringBuilder( variable.getFactType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFieldType() );
+            List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
+            for ( List<DTCellValue52> row : model.getData() ) {
+                columnData.add( row.get( iCol ) );
+            }
+            origColumnVariables.put( key.toString(),
+                                     columnData );
+        }
+
+        int index = model.getAllColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
+        for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
+            StringBuilder key = new StringBuilder( variable.getFactType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFieldType() );
+            List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
+            if ( columnData == null ) {
+                columnData = cellValueFactory.makeColumnData( variable );
+            }
+
+            InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( variable,
+                                                                                     columnData,
+                                                                                     index++,
+                                                                                     true );
+            eventBus.fireEvent( dce );
+        }
+
+        //Delete columns for the original definition
+        for ( int iCol = 0; iCol < origColumn.getChildColumns().size(); iCol++ ) {
+            DeleteColumnEvent dce = new DeleteColumnEvent( index,
+                                                           true );
+            eventBus.fireEvent( dce );
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+    }
+
+    /**
      * Update a Condition column
      * 
      * @param origPattern
@@ -1149,7 +1208,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                            BRLConditionVariableColumn modelColumn,
                            List<DTCellValue52> columnData,
                            boolean bRedraw) {
-        int index = findActionColumnIndex() + offset;
+        int index = findConditionColumnIndex( modelColumn ) + offset;
         InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
                                                                                  columnData,
                                                                                  index,
@@ -1407,6 +1466,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final BRLConditionColumn col,
+                                     final BRLConditionColumn editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setDefinition( editingCol.getDefinition() );
+        col.setChildColumns( editingCol.getChildColumns() );
     }
 
     //Remove Otherwise state from column cells

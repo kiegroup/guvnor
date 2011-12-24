@@ -1363,8 +1363,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     public void updateColumn(BRLConditionColumn originalColumn,
                              BRLConditionColumn editedColumn) {
-        //        dtable.updateColumn( originalColumn,
-        //                             editedColumn );
+        dtable.updateColumn( originalColumn,
+                             editedColumn );
         refreshConditionsWidget();
     }
 
