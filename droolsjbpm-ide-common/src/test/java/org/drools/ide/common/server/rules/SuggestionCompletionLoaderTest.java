@@ -681,4 +681,50 @@ public class SuggestionCompletionLoaderTest {
         return -1;
     }
 
+    @Test
+    public void testReadOnlyFieldWithAnnotation() throws Exception {
+        // GUVNOR-1792
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        String header = "";
+        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+
+        header += "declare ReadOnlyFact\n";
+        header += "@role( event )\n";
+        header += "end\n";
+
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( header,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "name" ) );
+    }
+
+    @Test
+    public void testReadOnlyFieldWithAnnotationAndField() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        String header = "";
+        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+
+        header += "declare ReadOnlyFact\n";
+        header += "@role( event )\n";
+        header += "age: Integer\n";
+        header += "end\n";
+
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( header,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "name" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "age" ) );
+    }
 }
