@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetectorKey;
+import org.drools.guvnor.client.decisiontable.analysis.action.InsertFactActionDetectorKey;
 import org.drools.guvnor.client.decisiontable.analysis.action.SetFieldColActionDetectorKey;
 import org.drools.guvnor.client.decisiontable.analysis.action.UnrecognizedActionDetectorKey;
 import org.drools.guvnor.client.decisiontable.analysis.condition.BooleanConditionDetector;
@@ -33,6 +34,7 @@ import org.drools.guvnor.client.decisiontable.analysis.condition.StringCondition
 import org.drools.guvnor.client.decisiontable.analysis.condition.UnrecognizedConditionDetector;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -149,6 +151,8 @@ public class DecisionTableAnalyzer {
         ActionDetectorKey key;
         if (actionCol instanceof ActionSetFieldCol52) {
             key = new SetFieldColActionDetectorKey((ActionSetFieldCol52) actionCol);
+        } else if (actionCol instanceof ActionInsertFactCol52) {
+            key = new InsertFactActionDetectorKey((ActionInsertFactCol52) actionCol);
         } else {
             key = new UnrecognizedActionDetectorKey(actionCol);
         }

@@ -16,15 +16,17 @@
 
 package org.drools.guvnor.client.decisiontable.analysis.action;
 
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 
-public class SetFieldColActionDetectorKey extends ActionDetectorKey {
+public class InsertFactActionDetectorKey extends ActionDetectorKey {
 
+    private String factType;
     private String boundName;
     private String factField;
 
-    public SetFieldColActionDetectorKey(ActionSetFieldCol52 actionCol) {
+    public InsertFactActionDetectorKey(ActionInsertFactCol52 actionCol) {
         super(actionCol);
+        this.factType = actionCol.getFactType();
         this.boundName = actionCol.getBoundName();
         this.factField = actionCol.getFactField();
     }
@@ -33,9 +35,9 @@ public class SetFieldColActionDetectorKey extends ActionDetectorKey {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SetFieldColActionDetectorKey) {
-            SetFieldColActionDetectorKey other = (SetFieldColActionDetectorKey) o;
-            return boundName.equals(other.boundName) && factField.equals(other.factField);
+        } else if (o instanceof InsertFactActionDetectorKey) {
+            InsertFactActionDetectorKey other = (InsertFactActionDetectorKey) o;
+            return factType.equals(other.factType) && boundName.equals(other.boundName) && factField.equals(other.factField);
         } else {
             return false;
         }
@@ -43,7 +45,7 @@ public class SetFieldColActionDetectorKey extends ActionDetectorKey {
 
     @Override
     public int hashCode() {
-        return boundName.hashCode() * 37 + factField.hashCode();
+        return (factType.hashCode() * 37 + boundName.hashCode()) * 37 + factField.hashCode();
     }
 
 }
