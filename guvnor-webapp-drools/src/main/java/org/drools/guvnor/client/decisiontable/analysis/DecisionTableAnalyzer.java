@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetectorKey;
+import org.drools.guvnor.client.decisiontable.analysis.action.SetFieldColActionDetectorKey;
+import org.drools.guvnor.client.decisiontable.analysis.action.UnrecognizedActionDetectorKey;
 import org.drools.guvnor.client.decisiontable.analysis.condition.BooleanConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.DateConditionDetector;
@@ -30,6 +33,7 @@ import org.drools.guvnor.client.decisiontable.analysis.condition.StringCondition
 import org.drools.guvnor.client.decisiontable.analysis.condition.UnrecognizedConditionDetector;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -85,11 +89,11 @@ public class DecisionTableAnalyzer {
                     realCellValue = visibleCellValue;
                     cellIsNotBlank = visibleCellValue.hasValue();
                 }
-//                // Blank cells are ignored
-//                if ( cellIsNotBlank ) {
-//                    ActionDetector actionDetector = buildActionDetector(model, actionCol, realCellValue);
-//                    rowDetector
-//                }
+                // Blank cells are ignored
+                if ( cellIsNotBlank ) {
+                    ActionDetector actionDetector = buildActionDetector(model, actionCol, realCellValue);
+                    rowDetector.putOrMergeActionDetector(actionDetector);
+                }
             }
             rowDetectorList.add( rowDetector );
         }
@@ -138,40 +142,17 @@ public class DecisionTableAnalyzer {
         return newDetector;
     }
 
-//    @SuppressWarnings("rawtypes")
-//    private ActionDetector buildActionDetector(GuidedDecisionTable52 model,
-//            ActionCol52 actionCol,
-//            DTCellValue52 realCellValue) {
-//        String type = model.getType( actionCol,
-//                                     sce );
-//        // Retrieve "Guvnor" enums
-//        String[] allValueList = model.getValueList( actionCol,
-//                                                    sce );
-//        ActionDetector newDetector;
-//        if ( allValueList.length != 0 ) {
-//            // Guvnor enum
-//            newDetector = new EnumConditionDetector( Arrays.asList( allValueList ),
-//                                                 realCellValue.getStringValue(),
-//                                                 operator );
-//        } else if ( type == null ) {
-//            // type null means the field is free-format
-//            newDetector = new UnrecognizedConditionDetector( operator );
-//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-//            newDetector = new StringConditionDetector( realCellValue.getStringValue(),
-//                                                   operator );
-//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-//            newDetector = new NumericConditionDetector( realCellValue.getNumericValue(),
-//                                                    operator );
-//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-//            newDetector = new BooleanConditionDetector( realCellValue.getBooleanValue(),
-//                                                    operator );
-//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-//            newDetector = new DateConditionDetector( realCellValue.getDateValue(),
-//                                                 operator );
-//        } else {
-//            newDetector = new UnrecognizedConditionDetector();
-//        }
-//        return newDetector;
-//    }
+    @SuppressWarnings("rawtypes")
+    private ActionDetector buildActionDetector(GuidedDecisionTable52 model,
+            ActionCol52 actionCol,
+            DTCellValue52 realCellValue) {
+        ActionDetectorKey key;
+        if (actionCol instanceof ActionSetFieldCol52) {
+            key = new SetFieldColActionDetectorKey((ActionSetFieldCol52) actionCol);
+        } else {
+            key = new UnrecognizedActionDetectorKey(actionCol);
+        }
+        return new ActionDetector(key, realCellValue);
+    }
 
 }

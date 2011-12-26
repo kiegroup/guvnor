@@ -16,26 +16,51 @@
 
 package org.drools.guvnor.client.decisiontable.analysis.action;
 
-public abstract class ActionDetector<T extends ActionDetector> {
+import java.util.HashSet;
+import java.util.Set;
 
-    protected boolean hasUnrecognizedAction = false;
-    protected boolean impossibleMatch = false;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
-    protected ActionDetector() {
+public class ActionDetector {
+
+    protected ActionDetectorKey key;
+
+    protected Set<DTCellValue52> valueSet = null;
+
+    protected boolean duplicated = false;
+
+    public ActionDetector(ActionDetectorKey key, DTCellValue52 value) {
+        this.key = key;
+        valueSet = new HashSet<DTCellValue52>(2);
+        valueSet.add(value);
     }
 
-    protected ActionDetector(T a, T b) {
-        hasUnrecognizedAction = a.hasUnrecognizedAction() || b.hasUnrecognizedAction;
+    protected ActionDetector(ActionDetector a, ActionDetector b) {
+        if (!a.key.equals(b.key)) {
+            throw new IllegalArgumentException("The ActionDetectorKey of a and b are not equal.");
+        }
+        key = a.key;
+        valueSet = new HashSet<DTCellValue52>(a.valueSet);
+        duplicated = a.duplicated || b.duplicated;
+        for (DTCellValue52 bValue : b.valueSet) {
+            duplicated = duplicated || !valueSet.add(bValue);
+        }
     }
 
-    public boolean hasUnrecognizedAction() {
-        return hasUnrecognizedAction;
+    public ActionDetectorKey getKey() {
+        return key;
     }
 
-    public boolean isImpossibleMatch() {
-        return impossibleMatch;
+    public boolean isDuplicated() {
+        return duplicated;
     }
 
-    public abstract T merge(T other);
+    public boolean isMultipleValuesForOneAction() {
+        return valueSet.size() > 1;
+    }
+
+    public ActionDetector merge(ActionDetector other) {
+        return new ActionDetector(this, other);
+    }
 
 }

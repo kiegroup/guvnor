@@ -66,6 +66,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -138,6 +139,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -216,6 +218,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -302,6 +305,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -380,6 +384,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -467,6 +472,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -532,6 +538,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -615,6 +622,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -718,6 +726,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 
@@ -761,7 +770,7 @@ public class DecisionTableAnalyzerTest {
     }
 
 
-    @Test @Ignore("TODO fix GUVNOR-1677 duplication")
+    @Test
     public void testDuplicatedMatchNumeric() throws ParseException {
         SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
 
@@ -786,6 +795,7 @@ public class DecisionTableAnalyzerTest {
         dt.getConditions().add(driverPattern);
 
         ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setBoundName("m");
         message.setFactField("message");
         dt.getActionCols().add(message);
 

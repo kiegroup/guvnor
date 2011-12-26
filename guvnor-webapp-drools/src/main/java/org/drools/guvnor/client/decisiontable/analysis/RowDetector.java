@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetectorKey;
 import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetectorKey;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
@@ -31,6 +33,9 @@ public class RowDetector {
 
     private Map<ConditionDetectorKey, ConditionDetector> conditionDetectorMap
             = new LinkedHashMap<ConditionDetectorKey, ConditionDetector>();
+
+    private Map<ActionDetectorKey, ActionDetector> actionDetectorMap
+            = new LinkedHashMap<ActionDetectorKey, ActionDetector>();
 
     public RowDetector(long rowIndex) {
         this.rowIndex = rowIndex;
@@ -56,9 +61,26 @@ public class RowDetector {
         conditionDetectorMap.put(key, mergedConditionDetector);
     }
 
+    public ActionDetector getActionDetector(ActionDetectorKey key) {
+        return actionDetectorMap.get(key);
+    }
+
+    public void putOrMergeActionDetector(ActionDetector actionDetector) {
+        ActionDetectorKey key = actionDetector.getKey();
+        ActionDetector originalActionDetector = actionDetectorMap.get(key);
+        ActionDetector mergedActionDetector;
+        if (originalActionDetector == null) {
+            mergedActionDetector = actionDetector;
+        } else {
+            mergedActionDetector = originalActionDetector.merge(actionDetector);
+        }
+        actionDetectorMap.put(key, mergedActionDetector);
+    }
+
     public Analysis buildAnalysis(List<RowDetector> rowDetectorList) {
         Analysis analysis = new Analysis();
         detectImpossibleMatch(analysis);
+        detectMultipleValuesForOneAction(analysis);
         for (RowDetector otherRowDetector : rowDetectorList) {
             if (this != otherRowDetector) {
                 detectConflict(analysis, otherRowDetector);
@@ -77,9 +99,19 @@ public class RowDetector {
         }
     }
 
+    private void detectMultipleValuesForOneAction(Analysis analysis) {
+        for (Map.Entry<ActionDetectorKey, ActionDetector> entry : actionDetectorMap.entrySet()) {
+            ActionDetectorKey key = entry.getKey();
+            ActionDetector actionDetector = entry.getValue();
+            if (actionDetector.isMultipleValuesForOneAction()) {
+                analysis.addMultipleValuesForOneAction("Multiple values for one action.");
+            }
+        }
+    }
+
     private void detectConflict(Analysis analysis, RowDetector otherRowDetector) {
-        boolean overlapping = true;
-        boolean hasUnrecognized = false;
+        boolean overlappingCondition = true;
+        boolean hasUnrecognizedCondition = false;
         for (Map.Entry<ConditionDetectorKey, ConditionDetector> entry : conditionDetectorMap.entrySet()) {
             ConditionDetectorKey key = entry.getKey();
             ConditionDetector conditionDetector = entry.getValue();
@@ -89,23 +121,47 @@ public class RowDetector {
                 ConditionDetector mergedConditionDetector = conditionDetector.merge(otherConditionDetector);
                 if (mergedConditionDetector.isImpossibleMatch()) {
                     // If 1 field is in both and not overlapping then the entire 2 rows are not overlapping
-                    overlapping = false;
+                    overlappingCondition = false;
                 }
                 if (mergedConditionDetector.hasUnrecognizedConstraint()) {
                     // If 1 field is in both and unrecognized, then the 2 rows might not be overlapping
-                    hasUnrecognized = true;
+                    hasUnrecognizedCondition = true;
                 }
             }
         }
-        if (overlapping) {
-            if (!hasUnrecognized) {
+        if (overlappingCondition) {
+            boolean multipleValuesForOneAction = false;
+            boolean duplicatedAction = false;
 
-
-
-                analysis.addConflictingMatch("Conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
-            } else {
-                System.out.println("Possible conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+            for (Map.Entry<ActionDetectorKey, ActionDetector> entry : actionDetectorMap.entrySet()) {
+                ActionDetectorKey key = entry.getKey();
+                ActionDetector actionDetector = entry.getValue();
+                ActionDetector otherActionDetector = otherRowDetector.getActionDetector(key);
+                // If 1 field is in both
+                if (otherActionDetector != null) {
+                    ActionDetector mergedActionDetector = actionDetector.merge(otherActionDetector);
+                    if (mergedActionDetector.isMultipleValuesForOneAction()) {
+                        multipleValuesForOneAction = true;
+                    }
+                    if (mergedActionDetector.isDuplicated()) {
+                        duplicatedAction = true;
+                    }
+                }
             }
+            if (multipleValuesForOneAction) {
+                if (!hasUnrecognizedCondition) {
+                    analysis.addConflictingMatch("Conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+                } else {
+                    System.out.println("Possible conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+                }
+            } else if (duplicatedAction) {
+                if (!hasUnrecognizedCondition) {
+                    analysis.addDuplicatedMatch("Duplicated match with row " + (otherRowDetector.getRowIndex() + 1));
+                } else {
+                    System.out.println("Possible duplicated match with row " + (otherRowDetector.getRowIndex() + 1));
+                }
+            }
+            // else they do different actions
         }
     }
 
