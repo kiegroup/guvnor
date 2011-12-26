@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -44,8 +45,7 @@ public class DecisionTableAnalyzer {
         for ( List<DTCellValue52> row : data ) {
             RowDetector rowDetector = new RowDetector( row.get( 0 ).getNumericValue().longValue() - 1 );
             for ( Pattern52 pattern : model.getPatterns() ) {
-                List<ConditionCol52> conditions = pattern.getChildColumns();
-                for ( ConditionCol52 conditionCol : conditions ) {
+                for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
                     int columnIndex = model.getAllColumns().indexOf( conditionCol );
                     DTCellValue52 visibleCellValue = row.get( columnIndex );
                     DTCellValue52 realCellValue;
@@ -69,6 +69,11 @@ public class DecisionTableAnalyzer {
                     }
                 }
             }
+//            for (ActionCol52 actionCol : model.getActionCols()) {
+//
+//
+//                rowDetector
+//            }
             rowDetectorList.add( rowDetector );
         }
         for ( RowDetector rowDetector : rowDetectorList ) {

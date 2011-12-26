@@ -95,6 +95,7 @@ public class RowDetector {
                 String factField = subEntry.getKey();
                 FieldDetector fieldDetector = subEntry.getValue();
                 FieldDetector otherFieldDetector = otherRowDetector.getFieldDetector(pattern, factField);
+                // If 1 field is in both
                 if (otherFieldDetector != null) {
                     FieldDetector mergedFieldDetector = fieldDetector.merge(otherFieldDetector);
                     if (mergedFieldDetector.isImpossibleMatch()) {
@@ -102,7 +103,7 @@ public class RowDetector {
                         overlapping = false;
                     }
                     if (mergedFieldDetector.hasUnrecognizedConstraint()) {
-                        // If 1 field is in both and unrecognized, they might or might not be overlapping
+                        // If 1 field is in both and unrecognized, then the 2 rows might not be overlapping
                         hasUnrecognized = true;
                     }
                 }
