@@ -483,14 +483,17 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                         // Make cell
                         iCol = iCol + colSpan - 1;
-                        StringBuilder label = new StringBuilder();
+                        StringBuilder patternLabel = new StringBuilder();
                         String factType = ccPattern.getFactType();
+                        String boundName = ccPattern.getBoundName();
                         if ( factType != null && factType.length() > 0 ) {
-                            label.append( (ccPattern.isNegated() ? constants.negatedPattern() + " " : "") );
-                            label.append( ccPattern.getFactType() );
-                            label.append( " [" + ccPattern.getBoundName() + "]" );
+                            if ( ccPattern.isNegated() ) {
+                                patternLabel.append( constants.negatedPattern() ).append( " " ).append( factType );
+                            } else {
+                                patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
+                            }
                         }
-                        tce.appendChild( makeLabel( label.toString(),
+                        tce.appendChild( makeLabel( patternLabel.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                         tce.<TableCellElement> cast().setColSpan( colSpan );

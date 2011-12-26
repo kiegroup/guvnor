@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,8 +111,20 @@ public class SuggestionCompletionEngineBuilder {
      */
     public void addFieldsForType(final String type,
                                  final String[] fields) {
-        this.fieldsForType.put( type,
-                                fields );
+        String[] oldFields = this.fieldsForType.get(type);
+        if ( oldFields != null ) {
+            List<String> mergedFields = new ArrayList<String>(Arrays.asList(oldFields));
+            for ( String field : fields ) {
+                if (!mergedFields.contains(field)) {
+                    mergedFields.add(field);
+                }
+            }
+            this.fieldsForType.put( type,
+                    mergedFields.toArray(new String[mergedFields.size()]) );
+        } else {
+            this.fieldsForType.put( type,
+                                    fields );
+        }
     }
 
     /**

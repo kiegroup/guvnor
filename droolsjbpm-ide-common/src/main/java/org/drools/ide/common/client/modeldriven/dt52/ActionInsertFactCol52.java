@@ -43,7 +43,7 @@ public class ActionInsertFactCol52 extends ActionCol52 {
     private String type;
 
     /**
-     * An optional comman separated list of values.
+     * An optional comma separated list of values.
      */
     private String valueList;
 

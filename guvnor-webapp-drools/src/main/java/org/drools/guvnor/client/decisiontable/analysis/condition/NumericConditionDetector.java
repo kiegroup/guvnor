@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
+public class NumericConditionDetector extends ConditionDetector<NumericConditionDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
-    // private List<Date> allowedValueList = null;
-    private Date from = null;
+    // private List<BigDecimal> allowedValueList = null;
+    private BigDecimal from = null;
     private boolean fromInclusive;
-    private Date to = null;
+    private BigDecimal to = null;
     private boolean toInclusive;
-    private List<Date> disallowedList = new ArrayList<Date>(1);
+    private List<BigDecimal> disallowedList = new ArrayList<BigDecimal>(1);
 
-    public DateFieldDetector(Date value, String operator) {
+    public NumericConditionDetector(Pattern52 pattern, String factField, BigDecimal value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;
@@ -56,7 +59,7 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
         }
     }
 
-    public DateFieldDetector(DateFieldDetector a, DateFieldDetector b) {
+    public NumericConditionDetector(NumericConditionDetector a, NumericConditionDetector b) {
         super(a, b);
         if (b.from == null) {
             from = a.from;
@@ -103,8 +106,8 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
     }
 
     private void optimizeNotList() {
-        for (Iterator<Date> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
-            Date notValue =  notIt.next();
+        for (Iterator<BigDecimal> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
+            BigDecimal notValue =  notIt.next();
             if (from != null) {
                 int comparison = notValue.compareTo(from);
                 if (comparison <= 0) {
@@ -135,8 +138,8 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
         }
     }
 
-    public DateFieldDetector merge(DateFieldDetector other) {
-        return new DateFieldDetector(this, other);
+    public NumericConditionDetector merge(NumericConditionDetector other) {
+        return new NumericConditionDetector(this, other);
     }
 
 }
