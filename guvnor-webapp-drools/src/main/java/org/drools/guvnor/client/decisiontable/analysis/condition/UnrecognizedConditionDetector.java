@@ -16,9 +16,12 @@
 
 package org.drools.guvnor.client.decisiontable.analysis.condition;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class UnrecognizedConditionDetector extends ConditionDetector<UnrecognizedConditionDetector> {
 
-    public UnrecognizedConditionDetector(String operator) {
+    public UnrecognizedConditionDetector(Pattern52 pattern, String factField, String operator) {
+        super(pattern, factField);
         hasUnrecognizedConstraint = true;
     }
 

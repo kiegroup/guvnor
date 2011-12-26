@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class DateConditionDetector extends ConditionDetector<DateConditionDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
@@ -31,7 +33,8 @@ public class DateConditionDetector extends ConditionDetector<DateConditionDetect
     private boolean toInclusive;
     private List<Date> disallowedList = new ArrayList<Date>(1);
 
-    public DateConditionDetector(Date value, String operator) {
+    public DateConditionDetector(Pattern52 pattern, String factField, Date value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;

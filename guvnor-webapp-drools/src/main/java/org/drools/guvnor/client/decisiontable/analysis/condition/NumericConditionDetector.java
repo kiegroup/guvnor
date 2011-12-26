@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class NumericConditionDetector extends ConditionDetector<NumericConditionDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
@@ -31,7 +33,8 @@ public class NumericConditionDetector extends ConditionDetector<NumericCondition
     private boolean toInclusive;
     private List<BigDecimal> disallowedList = new ArrayList<BigDecimal>(1);
 
-    public NumericConditionDetector(BigDecimal value, String operator) {
+    public NumericConditionDetector(Pattern52 pattern, String factField, BigDecimal value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;

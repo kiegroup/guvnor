@@ -19,11 +19,14 @@ package org.drools.guvnor.client.decisiontable.analysis.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class EnumConditionDetector extends ConditionDetector<EnumConditionDetector> {
 
     private final List<String> allowedValueList = new ArrayList<String>();
 
-    public EnumConditionDetector(List<String> allValueList, String value, String operator) {
+    public EnumConditionDetector(Pattern52 pattern, String factField, List<String> allValueList, String value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             if (allValueList.contains(value)) {
                 allowedValueList.add(value);

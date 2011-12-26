@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class StringConditionDetector extends ConditionDetector<StringConditionDetector> {
 
     private List<String> allowedValueList = null;
     private List<String> disallowedList = new ArrayList<String>(1);
 
-    public StringConditionDetector(String value, String operator) {
+    public StringConditionDetector(Pattern52 pattern, String factField, String value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             allowedValueList = new ArrayList<String>(1);
             allowedValueList.add(value);

@@ -16,11 +16,14 @@
 
 package org.drools.guvnor.client.decisiontable.analysis.condition;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public class BooleanConditionDetector extends ConditionDetector<BooleanConditionDetector> {
 
     public Boolean value = null;
 
-    public BooleanConditionDetector(Boolean value, String operator) {
+    public BooleanConditionDetector(Pattern52 pattern, String factField, Boolean value, String operator) {
+        super(pattern, factField);
         if (operator.equals("==")) {
             this.value = value;
         } else if (operator.equals("!=")) {

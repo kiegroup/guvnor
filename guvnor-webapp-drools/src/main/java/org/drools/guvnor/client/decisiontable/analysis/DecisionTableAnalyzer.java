@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.analysis.action.ActionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.BooleanConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.DateConditionDetector;
@@ -28,6 +29,7 @@ import org.drools.guvnor.client.decisiontable.analysis.condition.NumericConditio
 import org.drools.guvnor.client.decisiontable.analysis.condition.StringConditionDetector;
 import org.drools.guvnor.client.decisiontable.analysis.condition.UnrecognizedConditionDetector;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -65,20 +67,30 @@ public class DecisionTableAnalyzer {
                     // Blank cells are ignored
                     if ( cellIsNotBlank ) {
                         ConditionDetector conditionDetector = buildConditionDetector(model,
-                                conditionCol,
+                                pattern, conditionCol,
                                 realCellValue);
-                        String factField = conditionCol.getFactField();
-                        rowDetector.putOrMergeConditionDetector(pattern,
-                                factField,
-                                conditionDetector);
+                        rowDetector.putOrMergeConditionDetector(conditionDetector);
                     }
                 }
             }
-//            for (ActionCol52 actionCol : model.getActionCols()) {
-//
-//
-//                rowDetector
-//            }
+            for (ActionCol52 actionCol : model.getActionCols()) {
+                int columnIndex = model.getAllColumns().indexOf( actionCol );
+                DTCellValue52 visibleCellValue = row.get( columnIndex );
+                DTCellValue52 realCellValue;
+                boolean cellIsNotBlank;
+                if ( actionCol instanceof LimitedEntryCol ) {
+                    realCellValue = ((LimitedEntryCol) actionCol).getValue();
+                    cellIsNotBlank = visibleCellValue.getBooleanValue();
+                } else {
+                    realCellValue = visibleCellValue;
+                    cellIsNotBlank = visibleCellValue.hasValue();
+                }
+//                // Blank cells are ignored
+//                if ( cellIsNotBlank ) {
+//                    ActionDetector actionDetector = buildActionDetector(model, actionCol, realCellValue);
+//                    rowDetector
+//                }
+            }
             rowDetectorList.add( rowDetector );
         }
         for ( RowDetector rowDetector : rowDetectorList ) {
@@ -89,8 +101,9 @@ public class DecisionTableAnalyzer {
 
     @SuppressWarnings("rawtypes")
     private ConditionDetector buildConditionDetector(GuidedDecisionTable52 model,
-            ConditionCol52 conditionCol,
+            Pattern52 pattern, ConditionCol52 conditionCol,
             DTCellValue52 realCellValue) {
+        String factField = conditionCol.getFactField();
         String operator = conditionCol.getOperator();
         String type = model.getType( conditionCol,
                                      sce );
@@ -100,28 +113,65 @@ public class DecisionTableAnalyzer {
         ConditionDetector newDetector;
         if ( allValueList.length != 0 ) {
             // Guvnor enum
-            newDetector = new EnumConditionDetector( Arrays.asList( allValueList ),
-                                                 realCellValue.getStringValue(),
-                                                 operator );
+            newDetector = new EnumConditionDetector( pattern, factField, Arrays.asList( allValueList ),
+                    realCellValue.getStringValue(), operator );
         } else if ( type == null ) {
             // type null means the field is free-format
-            newDetector = new UnrecognizedConditionDetector( operator );
+            newDetector = new UnrecognizedConditionDetector( pattern, factField,
+                    operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            newDetector = new StringConditionDetector( realCellValue.getStringValue(),
-                                                   operator );
+            newDetector = new StringConditionDetector( pattern, factField,
+                    realCellValue.getStringValue(), operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            newDetector = new NumericConditionDetector( realCellValue.getNumericValue(),
-                                                    operator );
+            newDetector = new NumericConditionDetector( pattern, factField,
+                    realCellValue.getNumericValue(), operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            newDetector = new BooleanConditionDetector( realCellValue.getBooleanValue(),
-                                                    operator );
+            newDetector = new BooleanConditionDetector( pattern, factField,
+                    realCellValue.getBooleanValue(), operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            newDetector = new DateConditionDetector( realCellValue.getDateValue(),
-                                                 operator );
+            newDetector = new DateConditionDetector( pattern, factField,
+                    realCellValue.getDateValue(), operator );
         } else {
-            newDetector = new UnrecognizedConditionDetector( operator );
+            newDetector = new UnrecognizedConditionDetector( pattern, factField,
+                    operator );
         }
         return newDetector;
     }
+
+//    @SuppressWarnings("rawtypes")
+//    private ActionDetector buildActionDetector(GuidedDecisionTable52 model,
+//            ActionCol52 actionCol,
+//            DTCellValue52 realCellValue) {
+//        String type = model.getType( actionCol,
+//                                     sce );
+//        // Retrieve "Guvnor" enums
+//        String[] allValueList = model.getValueList( actionCol,
+//                                                    sce );
+//        ActionDetector newDetector;
+//        if ( allValueList.length != 0 ) {
+//            // Guvnor enum
+//            newDetector = new EnumConditionDetector( Arrays.asList( allValueList ),
+//                                                 realCellValue.getStringValue(),
+//                                                 operator );
+//        } else if ( type == null ) {
+//            // type null means the field is free-format
+//            newDetector = new UnrecognizedConditionDetector( operator );
+//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+//            newDetector = new StringConditionDetector( realCellValue.getStringValue(),
+//                                                   operator );
+//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+//            newDetector = new NumericConditionDetector( realCellValue.getNumericValue(),
+//                                                    operator );
+//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+//            newDetector = new BooleanConditionDetector( realCellValue.getBooleanValue(),
+//                                                    operator );
+//        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+//            newDetector = new DateConditionDetector( realCellValue.getDateValue(),
+//                                                 operator );
+//        } else {
+//            newDetector = new UnrecognizedConditionDetector();
+//        }
+//        return newDetector;
+//    }
 
 }

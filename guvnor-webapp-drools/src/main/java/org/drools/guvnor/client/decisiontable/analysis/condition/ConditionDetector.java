@@ -16,16 +16,37 @@
 
 package org.drools.guvnor.client.decisiontable.analysis.condition;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 public abstract class ConditionDetector<T extends ConditionDetector> {
+
+    protected ConditionDetectorKey key;
 
     protected boolean hasUnrecognizedConstraint = false;
     protected boolean impossibleMatch = false;
 
-    protected ConditionDetector() {
+    protected ConditionDetector(Pattern52 pattern, String factField) {
+        this.key = new ConditionDetectorKey(pattern, factField);
     }
 
     protected ConditionDetector(T a, T b) {
+        if (!a.getKey().equals(b.getKey())) {
+            throw new IllegalArgumentException("The ConditionDetectorKey of a and b are not equal.");
+        }
+        this.key = a.getKey();
         hasUnrecognizedConstraint = a.hasUnrecognizedConstraint() || b.hasUnrecognizedConstraint;
+    }
+
+    public ConditionDetectorKey getKey() {
+        return key;
+    }
+
+    public Pattern52 getPattern() {
+        return key.getPattern();
+    }
+
+    public String getFactField() {
+        return key.getFactField();
     }
 
     public boolean hasUnrecognizedConstraint() {
