@@ -38,11 +38,6 @@ public class DecisionTableAnalyzer {
     }
 
     public List<Analysis> analyze(GuidedDecisionTable52 model) {
-        return detectImpossibleMatches( model );
-    }
-
-    @SuppressWarnings("rawtypes")
-    private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 model) {
         List<List<DTCellValue52>> data = model.getData();
         List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
         List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
