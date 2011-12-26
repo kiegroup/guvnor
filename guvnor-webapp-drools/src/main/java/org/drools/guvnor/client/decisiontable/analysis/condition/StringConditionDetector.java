@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
+public class StringConditionDetector extends ConditionDetector<StringConditionDetector> {
 
     private List<String> allowedValueList = null;
     private List<String> disallowedList = new ArrayList<String>(1);
 
-    public StringFieldDetector(String value, String operator) {
+    public StringConditionDetector(String value, String operator) {
         if (operator.equals("==")) {
             allowedValueList = new ArrayList<String>(1);
             allowedValueList.add(value);
@@ -41,7 +40,7 @@ public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
         }
     }
 
-    public StringFieldDetector(StringFieldDetector a, StringFieldDetector b) {
+    public StringConditionDetector(StringConditionDetector a, StringConditionDetector b) {
         super(a, b);
         if (b.allowedValueList == null) {
             allowedValueList = a.allowedValueList;
@@ -70,8 +69,8 @@ public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
         }
     }
 
-    public StringFieldDetector merge(StringFieldDetector other) {
-        return new StringFieldDetector(this, other);
+    public StringConditionDetector merge(StringConditionDetector other) {
+        return new StringConditionDetector(this, other);
     }
 
 }

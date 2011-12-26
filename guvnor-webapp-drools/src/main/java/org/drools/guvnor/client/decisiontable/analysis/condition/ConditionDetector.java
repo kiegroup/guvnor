@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
-public abstract class FieldDetector<T extends FieldDetector> {
+public abstract class ConditionDetector<T extends ConditionDetector> {
 
     protected boolean hasUnrecognizedConstraint = false;
     protected boolean impossibleMatch = false;
 
-    protected FieldDetector() {
+    protected ConditionDetector() {
     }
 
-    protected FieldDetector(T a, T b) {
+    protected ConditionDetector(T a, T b) {
         hasUnrecognizedConstraint = a.hasUnrecognizedConstraint() || b.hasUnrecognizedConstraint;
     }
 

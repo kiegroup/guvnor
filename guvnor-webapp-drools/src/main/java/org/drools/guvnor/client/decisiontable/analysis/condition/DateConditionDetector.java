@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
+public class DateConditionDetector extends ConditionDetector<DateConditionDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
     // private List<Date> allowedValueList = null;
@@ -31,7 +31,7 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
     private boolean toInclusive;
     private List<Date> disallowedList = new ArrayList<Date>(1);
 
-    public DateFieldDetector(Date value, String operator) {
+    public DateConditionDetector(Date value, String operator) {
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;
@@ -56,7 +56,7 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
         }
     }
 
-    public DateFieldDetector(DateFieldDetector a, DateFieldDetector b) {
+    public DateConditionDetector(DateConditionDetector a, DateConditionDetector b) {
         super(a, b);
         if (b.from == null) {
             from = a.from;
@@ -135,8 +135,8 @@ public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
         }
     }
 
-    public DateFieldDetector merge(DateFieldDetector other) {
-        return new DateFieldDetector(this, other);
+    public DateConditionDetector merge(DateConditionDetector other) {
+        return new DateConditionDetector(this, other);
     }
 
 }

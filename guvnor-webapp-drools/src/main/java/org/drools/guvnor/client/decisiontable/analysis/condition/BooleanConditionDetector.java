@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
-public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
+public class BooleanConditionDetector extends ConditionDetector<BooleanConditionDetector> {
 
     public Boolean value = null;
 
-    public BooleanFieldDetector(Boolean value, String operator) {
+    public BooleanConditionDetector(Boolean value, String operator) {
         if (operator.equals("==")) {
             this.value = value;
         } else if (operator.equals("!=")) {
@@ -30,7 +30,7 @@ public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
         }
     }
 
-    public BooleanFieldDetector(BooleanFieldDetector a, BooleanFieldDetector b) {
+    public BooleanConditionDetector(BooleanConditionDetector a, BooleanConditionDetector b) {
         super(a, b);
         if (b.value == null) {
             value = a.value;
@@ -44,8 +44,8 @@ public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
         }
     }
 
-    public BooleanFieldDetector merge(BooleanFieldDetector other) {
-        return new BooleanFieldDetector(this, other);
+    public BooleanConditionDetector merge(BooleanConditionDetector other) {
+        return new BooleanConditionDetector(this, other);
     }
 
 }

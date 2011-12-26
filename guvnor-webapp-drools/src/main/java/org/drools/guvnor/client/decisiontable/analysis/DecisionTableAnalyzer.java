@@ -20,10 +20,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.analysis.condition.BooleanConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.DateConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.EnumConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.NumericConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.StringConditionDetector;
+import org.drools.guvnor.client.decisiontable.analysis.condition.UnrecognizedConditionDetector;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -59,13 +64,13 @@ public class DecisionTableAnalyzer {
                     }
                     // Blank cells are ignored
                     if ( cellIsNotBlank ) {
-                        FieldDetector fieldDetector = buildDetector( model,
-                                                                     conditionCol,
-                                                                     realCellValue );
+                        ConditionDetector conditionDetector = buildConditionDetector(model,
+                                conditionCol,
+                                realCellValue);
                         String factField = conditionCol.getFactField();
-                        rowDetector.putOrMergeFieldDetector( pattern,
-                                                             factField,
-                                                             fieldDetector );
+                        rowDetector.putOrMergeConditionDetector(pattern,
+                                factField,
+                                conditionDetector);
                     }
                 }
             }
@@ -83,38 +88,38 @@ public class DecisionTableAnalyzer {
     }
 
     @SuppressWarnings("rawtypes")
-    private FieldDetector buildDetector(GuidedDecisionTable52 model,
-                                        ConditionCol52 conditionCol,
-                                        DTCellValue52 realCellValue) {
+    private ConditionDetector buildConditionDetector(GuidedDecisionTable52 model,
+            ConditionCol52 conditionCol,
+            DTCellValue52 realCellValue) {
         String operator = conditionCol.getOperator();
         String type = model.getType( conditionCol,
                                      sce );
         // Retrieve "Guvnor" enums
         String[] allValueList = model.getValueList( conditionCol,
                                                     sce );
-        FieldDetector newDetector;
+        ConditionDetector newDetector;
         if ( allValueList.length != 0 ) {
             // Guvnor enum
-            newDetector = new EnumFieldDetector( Arrays.asList( allValueList ),
+            newDetector = new EnumConditionDetector( Arrays.asList( allValueList ),
                                                  realCellValue.getStringValue(),
                                                  operator );
         } else if ( type == null ) {
             // type null means the field is free-format
-            newDetector = new UnrecognizedFieldDetector( operator );
+            newDetector = new UnrecognizedConditionDetector( operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            newDetector = new StringFieldDetector( realCellValue.getStringValue(),
+            newDetector = new StringConditionDetector( realCellValue.getStringValue(),
                                                    operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            newDetector = new NumericFieldDetector( realCellValue.getNumericValue(),
+            newDetector = new NumericConditionDetector( realCellValue.getNumericValue(),
                                                     operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            newDetector = new BooleanFieldDetector( realCellValue.getBooleanValue(),
+            newDetector = new BooleanConditionDetector( realCellValue.getBooleanValue(),
                                                     operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            newDetector = new DateFieldDetector( realCellValue.getDateValue(),
+            newDetector = new DateConditionDetector( realCellValue.getDateValue(),
                                                  operator );
         } else {
-            newDetector = new UnrecognizedFieldDetector( operator );
+            newDetector = new UnrecognizedConditionDetector( operator );
         }
         return newDetector;
     }

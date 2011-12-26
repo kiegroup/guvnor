@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
-public class UnrecognizedFieldDetector extends FieldDetector<UnrecognizedFieldDetector> {
+public class UnrecognizedConditionDetector extends ConditionDetector<UnrecognizedConditionDetector> {
 
-    public UnrecognizedFieldDetector(String operator) {
+    public UnrecognizedConditionDetector(String operator) {
         hasUnrecognizedConstraint = true;
     }
 
-    public UnrecognizedFieldDetector(UnrecognizedFieldDetector a, UnrecognizedFieldDetector b) {
+    public UnrecognizedConditionDetector(UnrecognizedConditionDetector a, UnrecognizedConditionDetector b) {
         super(a, b);
     }
 
-    public void mergeImpl(UnrecognizedFieldDetector other) {
+    public void mergeImpl(UnrecognizedConditionDetector other) {
         // Do nothing
     }
 
-    public UnrecognizedFieldDetector merge(UnrecognizedFieldDetector other) {
-        return new UnrecognizedFieldDetector(this, other);
+    public UnrecognizedConditionDetector merge(UnrecognizedConditionDetector other) {
+        return new UnrecognizedConditionDetector(this, other);
     }
 
 }

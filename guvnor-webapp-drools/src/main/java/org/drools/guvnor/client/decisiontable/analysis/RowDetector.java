@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.analysis.condition.ConditionDetector;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -27,8 +28,8 @@ public class RowDetector {
 
     private long rowIndex;
 
-    private Map<Pattern52, Map<String, FieldDetector>> fieldDetectorMap
-            = new LinkedHashMap<Pattern52, Map<String, FieldDetector>>();
+    private Map<Pattern52, Map<String, ConditionDetector>> conditionDetectorMap
+            = new LinkedHashMap<Pattern52, Map<String, ConditionDetector>>();
 
     public RowDetector(long rowIndex) {
         this.rowIndex = rowIndex;
@@ -38,28 +39,28 @@ public class RowDetector {
         return rowIndex;
     }
 
-    public FieldDetector getFieldDetector(Pattern52 pattern, String factField) {
-        Map<String, FieldDetector> subMap = fieldDetectorMap.get(pattern);
+    public ConditionDetector getConditionDetector(Pattern52 pattern, String factField) {
+        Map<String, ConditionDetector> subMap = conditionDetectorMap.get(pattern);
         if (subMap == null) {
             return null;
         }
         return subMap.get(factField);
     }
 
-    public void putOrMergeFieldDetector(Pattern52 pattern, String factField, FieldDetector fieldDetector) {
-        Map<String, FieldDetector> subMap = fieldDetectorMap.get(pattern);
+    public void putOrMergeConditionDetector(Pattern52 pattern, String factField, ConditionDetector conditionDetector) {
+        Map<String, ConditionDetector> subMap = conditionDetectorMap.get(pattern);
         if (subMap == null) {
-            subMap = new LinkedHashMap<String, FieldDetector>();
-            fieldDetectorMap.put(pattern, subMap);
+            subMap = new LinkedHashMap<String, ConditionDetector>();
+            conditionDetectorMap.put(pattern, subMap);
         }
-        FieldDetector originalFieldDetector = subMap.get(factField);
-        FieldDetector mergedFieldDetector;
-        if (originalFieldDetector == null) {
-            mergedFieldDetector = fieldDetector;
+        ConditionDetector originalConditionDetector = subMap.get(factField);
+        ConditionDetector mergedConditionDetector;
+        if (originalConditionDetector == null) {
+            mergedConditionDetector = conditionDetector;
         } else {
-            mergedFieldDetector = originalFieldDetector.merge(fieldDetector);
+            mergedConditionDetector = originalConditionDetector.merge(conditionDetector);
         }
-        subMap.put(factField, mergedFieldDetector);
+        subMap.put(factField, mergedConditionDetector);
     }
 
     public Analysis buildAnalysis(List<RowDetector> rowDetectorList) {
@@ -74,12 +75,12 @@ public class RowDetector {
     }
 
     private void detectImpossibleMatch(Analysis analysis) {
-        for (Map.Entry<Pattern52, Map<String, FieldDetector>> entry : fieldDetectorMap.entrySet()) {
+        for (Map.Entry<Pattern52, Map<String, ConditionDetector>> entry : conditionDetectorMap.entrySet()) {
             Pattern52 pattern = entry.getKey();
-            for (Map.Entry<String, FieldDetector> subEntry : entry.getValue().entrySet()) {
+            for (Map.Entry<String, ConditionDetector> subEntry : entry.getValue().entrySet()) {
                 String factField = subEntry.getKey();
-                FieldDetector fieldDetector = subEntry.getValue();
-                if (fieldDetector.isImpossibleMatch()) {
+                ConditionDetector conditionDetector = subEntry.getValue();
+                if (conditionDetector.isImpossibleMatch()) {
                     analysis.addImpossibleMatch("Impossible match on " + factField);
                 }
             }
@@ -89,20 +90,20 @@ public class RowDetector {
     private void detectConflict(Analysis analysis, RowDetector otherRowDetector) {
         boolean overlapping = true;
         boolean hasUnrecognized = false;
-        for (Map.Entry<Pattern52, Map<String, FieldDetector>> entry : fieldDetectorMap.entrySet()) {
+        for (Map.Entry<Pattern52, Map<String, ConditionDetector>> entry : conditionDetectorMap.entrySet()) {
             Pattern52 pattern = entry.getKey();
-            for (Map.Entry<String, FieldDetector> subEntry : entry.getValue().entrySet()) {
+            for (Map.Entry<String, ConditionDetector> subEntry : entry.getValue().entrySet()) {
                 String factField = subEntry.getKey();
-                FieldDetector fieldDetector = subEntry.getValue();
-                FieldDetector otherFieldDetector = otherRowDetector.getFieldDetector(pattern, factField);
+                ConditionDetector conditionDetector = subEntry.getValue();
+                ConditionDetector otherConditionDetector = otherRowDetector.getConditionDetector(pattern, factField);
                 // If 1 field is in both
-                if (otherFieldDetector != null) {
-                    FieldDetector mergedFieldDetector = fieldDetector.merge(otherFieldDetector);
-                    if (mergedFieldDetector.isImpossibleMatch()) {
+                if (otherConditionDetector != null) {
+                    ConditionDetector mergedConditionDetector = conditionDetector.merge(otherConditionDetector);
+                    if (mergedConditionDetector.isImpossibleMatch()) {
                         // If 1 field is in both and not overlapping then the entire 2 rows are not overlapping
                         overlapping = false;
                     }
-                    if (mergedFieldDetector.hasUnrecognizedConstraint()) {
+                    if (mergedConditionDetector.hasUnrecognizedConstraint()) {
                         // If 1 field is in both and unrecognized, then the 2 rows might not be overlapping
                         hasUnrecognized = true;
                     }

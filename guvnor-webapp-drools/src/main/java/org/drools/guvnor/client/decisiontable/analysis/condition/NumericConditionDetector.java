@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
+public class NumericConditionDetector extends ConditionDetector<NumericConditionDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
     // private List<BigDecimal> allowedValueList = null;
@@ -31,7 +31,7 @@ public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
     private boolean toInclusive;
     private List<BigDecimal> disallowedList = new ArrayList<BigDecimal>(1);
 
-    public NumericFieldDetector(BigDecimal value, String operator) {
+    public NumericConditionDetector(BigDecimal value, String operator) {
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;
@@ -56,7 +56,7 @@ public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
         }
     }
 
-    public NumericFieldDetector(NumericFieldDetector a, NumericFieldDetector b) {
+    public NumericConditionDetector(NumericConditionDetector a, NumericConditionDetector b) {
         super(a, b);
         if (b.from == null) {
             from = a.from;
@@ -135,8 +135,8 @@ public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
         }
     }
 
-    public NumericFieldDetector merge(NumericFieldDetector other) {
-        return new NumericFieldDetector(this, other);
+    public NumericConditionDetector merge(NumericConditionDetector other) {
+        return new NumericConditionDetector(this, other);
     }
 
 }

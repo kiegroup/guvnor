@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.decisiontable.analysis;
+package org.drools.guvnor.client.decisiontable.analysis.condition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumFieldDetector extends FieldDetector<EnumFieldDetector> {
+public class EnumConditionDetector extends ConditionDetector<EnumConditionDetector> {
 
     private final List<String> allowedValueList = new ArrayList<String>();
 
-    public EnumFieldDetector(List<String> allValueList, String value, String operator) {
+    public EnumConditionDetector(List<String> allValueList, String value, String operator) {
         if (operator.equals("==")) {
             if (allValueList.contains(value)) {
                 allowedValueList.add(value);
@@ -49,7 +49,7 @@ public class EnumFieldDetector extends FieldDetector<EnumFieldDetector> {
         }
     }
 
-    public EnumFieldDetector(EnumFieldDetector a, EnumFieldDetector b) {
+    public EnumConditionDetector(EnumConditionDetector a, EnumConditionDetector b) {
         super(a, b);
         allowedValueList.addAll(a.allowedValueList);
         allowedValueList.retainAll(b.allowedValueList);
@@ -62,8 +62,8 @@ public class EnumFieldDetector extends FieldDetector<EnumFieldDetector> {
         }
     }
 
-    public EnumFieldDetector merge(EnumFieldDetector other) {
-        return new EnumFieldDetector(this, other);
+    public EnumConditionDetector merge(EnumConditionDetector other) {
+        return new EnumConditionDetector(this, other);
     }
 
 }
