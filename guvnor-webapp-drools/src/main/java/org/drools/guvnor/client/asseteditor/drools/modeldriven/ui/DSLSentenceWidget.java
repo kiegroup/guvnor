@@ -365,9 +365,10 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     class FieldEditor extends DirtyableComposite implements DSLVariableEditor {
 
-        private TextBox   box;
-        private String    oldValue  = "";
-        private String    regex     = "";
+        private TextBox             box;
+        private String              oldValue  = "";
+        private DSLVariableValue    oldVariableValue;
+        private String              regex     = "";
         private Constants constants = ((Constants) GWT.create( Constants.class ));
 
         public FieldEditor() {
@@ -403,6 +404,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
         
         public void setValue(DSLVariableValue value) {
+            this.oldVariableValue = value;
             box.setText( value.getValue() );
         }
 
@@ -411,6 +413,11 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public DSLVariableValue getSelectedValue() {
+            //if oldVariableValue was of type DSLComplexVariableValue, then return a
+            //copy of it with only the 'value' part modified
+            if (oldVariableValue instanceof DSLComplexVariableValue){
+                return new DSLComplexVariableValue(((DSLComplexVariableValue)oldVariableValue).getId(),box.getText());
+            }
             return new DSLVariableValue(box.getText());
         }
 
