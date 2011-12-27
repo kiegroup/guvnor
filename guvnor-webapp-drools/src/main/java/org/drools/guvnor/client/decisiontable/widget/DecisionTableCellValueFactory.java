@@ -77,7 +77,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     public List<DTCellValue52> makeRowData() {
         List<DTCellValue52> data = new ArrayList<DTCellValue52>();
         List<BaseColumn> columns = model.getAllColumns();
-        for ( BaseColumn column : columns ) {
+        //Use allColumns.size() - 1 to exclude the Analysis column that is not stored in the general grid data
+        for ( int iCol = 0; iCol < columns.size() - 1; iCol++ ) {
+            BaseColumn column = columns.get( iCol );
             DTCellValue52 cell = makeModelCellValue( column );
             data.add( cell );
         }

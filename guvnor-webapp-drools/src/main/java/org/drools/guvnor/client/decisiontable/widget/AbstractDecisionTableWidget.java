@@ -1556,12 +1556,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     public void analyze() {
+        model.getAnalysisData().clear();
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( sce );
         List<Analysis> analysisData = analyzer.analyze( model );
-        showAnalysis( analysisData );
+        model.getAnalysisData().addAll( analysisData );
+        showAnalysis();
     }
 
-    private void showAnalysis(List<Analysis> analysisData) {
+    private void showAnalysis() {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
 
@@ -1778,6 +1780,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     public void onDeleteRow(DeleteRowEvent event) {
         model.getData().remove( event.getIndex() );
+        model.getAnalysisData().remove( event.getIndex() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -1791,6 +1794,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<DTCellValue52> data = cellValueFactory.makeRowData();
         model.getData().add( event.getIndex(),
                              data );
+        model.getAnalysisData().add( event.getIndex(),
+                                     new Analysis() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -1803,6 +1808,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     public void onAppendRow(AppendRowEvent event) {
         List<DTCellValue52> data = cellValueFactory.makeRowData();
         model.getData().add( data );
+        model.getAnalysisData().add( new Analysis() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
