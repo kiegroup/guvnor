@@ -39,7 +39,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.junit.Test;
 
 public class RepositoryCategoryServiceTest extends GuvnorTestBase {
@@ -70,7 +70,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testAddCategories() throws Exception {
-        rulesRepository.createPackage("testAddCategoriesPackage",
+        rulesRepository.createModule("testAddCategoriesPackage",
                 "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testAddCategoriesCat1",
@@ -247,7 +247,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         RuntimeException failingException = null;
         try {
             //Create assets for test
-            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
+            ModuleItem pkg = rulesRepository.createModule( "testLoadRuleListForCategoriesWithAnalystPermission",
             "" );
 
             AssetItem asset = pkg
@@ -364,7 +364,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         RuntimeException failingException = null;
         try {
             //Create asset for test
-            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
+            ModuleItem pkg = rulesRepository.createModule( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
             "" );
 
             AssetItem asset = pkg

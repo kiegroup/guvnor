@@ -16,20 +16,20 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 public class PackageConfigDataFactory {
-    public static PackageConfigData createPackageConfigDataWithDependencies(PackageItem item) {
+    public static PackageConfigData createPackageConfigDataWithDependencies(ModuleItem item) {
         PackageConfigData data = create(item);
         data.setDependencies(item.getDependencies());
         return data;
     }
 
-    public static PackageConfigData createPackageConfigDataWithOutDependencies(PackageItem item) {
+    public static PackageConfigData createPackageConfigDataWithOutDependencies(ModuleItem item) {
         return create(item);
     }
 
-    private static PackageConfigData create(PackageItem item) {
+    private static PackageConfigData create(ModuleItem item) {
         PackageConfigData data = new PackageConfigData();
         data.setUuid(item.getUUID());
         data.setHeader(DroolsHeader.getDroolsHeader(item));

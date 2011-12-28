@@ -32,7 +32,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         System.out.println( "create package" );
-        PackageItem pkg = repo.createPackage( "testScenarioRun",
+        ModuleItem pkg = repo.createModule( "testScenarioRun",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import org.drools.Person\n global org.drools.Cheese cheese\n",
                                                   pkg );
@@ -156,7 +156,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
+        ModuleItem pkg = repo.createModule( "testScenarioRunWithGeneratedBeans",
                                               "" );
         DroolsHeader.updateDroolsHeader( "declare GenBean\n name: String \n age: int \nend\n",
                                                   pkg );
@@ -214,7 +214,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
+        ModuleItem pkg = repo.createModule( "testScenarioRunBulkWithDeclaredFacts",
                                               "" );
         DroolsHeader.updateDroolsHeader( "declare Wang \n age: Integer \n name: String \n end",
                                                   pkg );
@@ -327,7 +327,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testRunScenarioWithJar",
+        ModuleItem pkg = repo.createModule( "testRunScenarioWithJar",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
@@ -400,7 +400,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testRunScenarioWithJarThatHasSourceFiles",
+        ModuleItem pkg = repo.createModule( "testRunScenarioWithJarThatHasSourceFiles",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
@@ -464,7 +464,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     public void testRunPackageScenarios() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
+        ModuleItem pkg = repo.createModule( "testScenarioRunBulk",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );

@@ -27,13 +27,13 @@ import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
 
 public class SpringContextContentHandler extends PlainTextContentHandler implements IHasCustomValidator {
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
+    public void retrieveAssetContent(RuleAsset asset, ModuleItem pkg, AssetItem item)
             throws SerializationException {
         if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();

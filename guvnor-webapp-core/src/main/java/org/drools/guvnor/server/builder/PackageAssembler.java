@@ -22,7 +22,7 @@ import org.drools.guvnor.server.selector.BuiltInSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.rule.Package;
 
 import java.util.Iterator;
@@ -39,12 +39,12 @@ public class PackageAssembler extends PackageAssemblerBase {
     private final PackageAssemblerConfiguration configuration;
     private AssetSelector selector;
 
-    public PackageAssembler(PackageItem packageItem) {
+    public PackageAssembler(ModuleItem packageItem) {
         this(packageItem,
                 new PackageAssemblerConfiguration());
     }
 
-    public PackageAssembler(PackageItem packageItem,
+    public PackageAssembler(ModuleItem packageItem,
                             PackageAssemblerConfiguration packageAssemblerConfiguration) {
         super(packageItem);
         configuration = packageAssemblerConfiguration;

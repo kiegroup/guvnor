@@ -25,7 +25,7 @@ import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,7 +44,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         super(classLoader);
     }
 
-    public SuggestionCompletionEngine getSuggestionEngine(PackageItem packageItem,
+    public SuggestionCompletionEngine getSuggestionEngine(ModuleItem packageItem,
                                                           String droolsHeader) {
 
         StringBuilder buf = new StringBuilder();
@@ -66,13 +66,13 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
                 getDataEnums(packageItem));
     }
 
-    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
+    public SuggestionCompletionEngine getSuggestionEngine(ModuleItem pkg) {
         return getSuggestionEngine(pkg,
                 DroolsHeader.getDroolsHeader(pkg));
     }
 
     @SuppressWarnings("rawtypes")
-    private List<String> getDataEnums(PackageItem pkg) {
+    private List<String> getDataEnums(ModuleItem pkg) {
         Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
         List<String> list = new ArrayList<String>();
         while (it.hasNext()) {
@@ -82,7 +82,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         return list;
     }
 
-    private List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg) {
+    private List<DSLTokenizedMappingFile> getDSLMappingFiles(ModuleItem pkg) {
         return DSLLoader.loadDSLMappingFiles(pkg,
                 new BRMSPackageBuilder.DSLErrorEvent() {
 

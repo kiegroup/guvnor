@@ -31,7 +31,7 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.Before;
@@ -287,7 +287,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Test
     public void testScenariosAndChangeSet() throws Exception {
 
-        rulesRepository.createPackage("testScenariosURL",
+        rulesRepository.createModule("testScenariosURL",
                 "");
         repositoryPackageService.createPackageSnapshot("testScenariosURL",
                 "SNAP1",
@@ -339,7 +339,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Test
     public void testPNG() throws Exception {
         
-        PackageItem pkg = rulesRepository.createPackage( "testPNGPackage",
+        ModuleItem pkg = rulesRepository.createModule( "testPNGPackage",
                                               "" );
         AssetItem asset = pkg.addAsset( "myprocess",
                                         "" );

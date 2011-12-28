@@ -29,7 +29,7 @@ public class AssetItemFilter extends AbstractFilter<AssetItem> {
     @Override
     protected boolean checkPermission(AssetItem assetItem,
                                       String action) {
-        return identity.hasPermission( new PackageUUIDType( assetItem.getPackage().getUUID() ),
+        return identity.hasPermission( new PackageUUIDType( assetItem.getModule().getUUID() ),
                                                   action );
     }
 

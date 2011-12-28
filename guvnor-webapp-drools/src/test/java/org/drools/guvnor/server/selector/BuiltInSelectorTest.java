@@ -29,8 +29,8 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
 
     @Test
     public void testBuiltInSelector() throws Exception {
-        rulesRepository.loadDefaultPackage();
-        rulesRepository.createPackage( "testBuiltInSelectorPackage",
+        rulesRepository.loadDefaultModule();
+        rulesRepository.createModule( "testBuiltInSelectorPackage",
                                                  "woot" );
         rulesRepository.createState( "Dev" );
         rulesRepository.createState( "QA" );

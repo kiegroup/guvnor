@@ -17,7 +17,7 @@
 package org.drools.guvnor.server.builder;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class AssemblyErrorLogger {
         errors.add(err);
     }
 
-    public void addError(PackageItem packageItem, String errorReport) {
+    public void addError(ModuleItem packageItem, String errorReport) {
         errors.add(new ContentAssemblyError(
                 errorReport, packageItem.getFormat(), packageItem.getName(), packageItem.getUUID(), true, false));
     }

@@ -18,7 +18,7 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.VersionedAssetItemIterator;
 
 import java.util.Iterator;
@@ -31,11 +31,11 @@ import java.util.List;
  */
 abstract class AssemblerBase {
 
-    protected final PackageItem packageItem;
+    protected final ModuleItem packageItem;
     protected BRMSPackageBuilder builder;
     protected final AssemblyErrorLogger errorLogger = new AssemblyErrorLogger();
 
-    protected AssemblerBase(PackageItem packageItem) {
+    protected AssemblerBase(ModuleItem packageItem) {
         this.packageItem = packageItem;
 
         createBuilder();

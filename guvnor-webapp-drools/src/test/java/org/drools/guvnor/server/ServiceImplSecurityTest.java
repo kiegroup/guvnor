@@ -35,7 +35,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.jboss.seam.security.AuthorizationException;
 import org.junit.After;
 import org.junit.Before;
@@ -71,7 +71,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetAnalyst() throws Exception {
-        rulesRepository.createPackage( "testLoadRuleAssetAnalyst",
+        rulesRepository.createModule( "testLoadRuleAssetAnalyst",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadRuleAssetAnalystCat1",
@@ -131,7 +131,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            "testLoadRuleAssetPackageReadonlyPack1",
                                            AssetFormats.DRL );
 
-        rulesRepository.createPackage("testLoadRuleAssetPackageReadonlyPack2",
+        rulesRepository.createModule("testLoadRuleAssetPackageReadonlyPack2",
                 "desc");
 
         String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetPackageReadonlyRule2",
@@ -166,7 +166,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetNoCategory() throws Exception {
-        rulesRepository.createPackage( "testLoadRuleAssetNoCategoryPack1",
+        rulesRepository.createModule( "testLoadRuleAssetNoCategoryPack1",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadRuleAssetNoCategoryCat1",
@@ -190,7 +190,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
-        PackageItem packageItem = rulesRepository.createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
+        ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                                                            "desc" );
         String packageName = packageItem.getName();
         @SuppressWarnings("unused")
@@ -227,7 +227,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
-        PackageItem packageItem = rulesRepository.createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
+        ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetNoCategoryAnalystPack1",
                                                                            "desc" );
         @SuppressWarnings("unused")
         String packageUuid = packageItem.getUUID();
@@ -277,7 +277,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
-        PackageItem packageItem = rulesRepository.createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
+        ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                            "desc" );
         @SuppressWarnings("unused")
         String packageUuid = packageItem.getUUID();
@@ -324,7 +324,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
 
 
-        PackageItem packageItem = rulesRepository.createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
+        ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                                                                            "desc" );
         @SuppressWarnings("unused")
         String packageUuid = packageItem.getUUID();
@@ -366,7 +366,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
-        PackageItem packageItem = rulesRepository.createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
+        ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                                                                            "desc" );
         String packageUuid = packageItem.getUUID();
         repositoryCategoryService.createCategory("",
@@ -405,7 +405,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        rulesRepository.createPackage( "testSecurityCreateNewRule",
+        rulesRepository.createModule( "testSecurityCreateNewRule",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testSecurityCreateNewRule",
@@ -543,7 +543,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            AssetFormats.DRL );
 
         String package4Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack4";
-        rulesRepository.createPackage(package4Name,
+        rulesRepository.createModule(package4Name,
                 "desc");
         @SuppressWarnings("unused")
         String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
@@ -579,7 +579,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack7";
         String category7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat7";
-        PackageItem packageItem7 = rulesRepository.createPackage( package7Name,
+        ModuleItem packageItem7 = rulesRepository.createModule( package7Name,
                                                                             "desc" );
         @SuppressWarnings("unused")
         String packageItem7UUID = packageItem7.getUUID();
@@ -595,7 +595,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack8";
         String category8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat8";
-        PackageItem packageItem8 = rulesRepository.createPackage( package8Name,
+        ModuleItem packageItem8 = rulesRepository.createModule( package8Name,
                                                                             "desc" );
         @SuppressWarnings("unused")
         String packageItem8UUID = packageItem8.getUUID();
@@ -652,7 +652,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack5";
         String category5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat5";
-        PackageItem packageItem5 = rulesRepository.createPackage( package5Name,
+        ModuleItem packageItem5 = rulesRepository.createModule( package5Name,
                                                                             "desc" );
         @SuppressWarnings("unused")
         String packageItem5UUID = packageItem5.getUUID();
@@ -668,7 +668,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack6";
         String category6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat6";
-        PackageItem packageItem6 = rulesRepository.createPackage( package6Name,
+        ModuleItem packageItem6 = rulesRepository.createModule( package6Name,
                                                                             "desc" );
         @SuppressWarnings("unused")
         String packageItem6UUID = packageItem6.getUUID();
@@ -721,7 +721,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack9";
         String category9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat9";
-        PackageItem packageItem9 = rulesRepository.createPackage( package9Name,
+        ModuleItem packageItem9 = rulesRepository.createModule( package9Name,
                                                                             "desc" );
         @SuppressWarnings("unused")
         String packageItem9UUID = packageItem9.getUUID();
@@ -737,7 +737,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
         String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
-        PackageItem packageItem10 = rulesRepository.createPackage( package10Name,
+        ModuleItem packageItem10 = rulesRepository.createModule( package10Name,
                                                                              "desc" );
         @SuppressWarnings("unused")
         String packageItem10UUID = packageItem10.getUUID();
@@ -790,7 +790,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack11";
         String category11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat11";
-        PackageItem packageItem11 = rulesRepository.createPackage( package11Name,
+        ModuleItem packageItem11 = rulesRepository.createModule( package11Name,
                                                                              "desc" );
         @SuppressWarnings("unused")
         String packageItem11UUID = packageItem11.getUUID();
@@ -806,7 +806,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
         String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
-        PackageItem packageItem12 = rulesRepository.createPackage( package12Name,
+        ModuleItem packageItem12 = rulesRepository.createModule( package12Name,
                                                                              "desc" );
         @SuppressWarnings("unused")
         String packageItem12UUID = packageItem12.getUUID();
@@ -905,9 +905,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
         String category1Name = "testListPackagesPackageAdminAndAnalystCat1";
         @SuppressWarnings("unused")
-        String package1UUID = (rulesRepository.createPackage( package1Name,
+        String package1UUID = (rulesRepository.createModule( package1Name,
                                                                         "desc" )).getUUID();
-        rulesRepository.createPackage(package2Name,
+        rulesRepository.createModule(package2Name,
                 "desc");
         repositoryCategoryService.createCategory("",
                 category1Name,
@@ -958,7 +958,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String category1Name = "testLoadChildCategoriesCat1";
         String category2Name = "testLoadChildCategoriesCat2";
 
-        rulesRepository.createPackage( package1Name,
+        rulesRepository.createModule( package1Name,
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   category1Name,
@@ -1001,7 +1001,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String package1Name = "testloadRuleListForCategoriesPackageReadonlyPack1";
         String category1Name = "testloadRuleListForCategoriesPackageReadonlyCat1";
 
-        rulesRepository.createPackage( package1Name,
+        rulesRepository.createModule( package1Name,
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   category1Name,
@@ -1014,7 +1014,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 AssetFormats.DRL);
 
         String package2Name = "testloadRuleListForCategoriesPackageReadonlyPack2";
-        rulesRepository.createPackage( package2Name,
+        rulesRepository.createModule( package2Name,
                                                  "desc" );
 
         serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyRule2",
@@ -1024,7 +1024,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 AssetFormats.DRL);
 
         String package3Name = "testloadRuleListForCategoriesPackageReadonlyPack3";
-        rulesRepository.createPackage( package3Name,
+        rulesRepository.createModule( package3Name,
                                                  "desc" );
 
         serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyRule3",
@@ -1062,7 +1062,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String package1Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack1";
         String category1Name = "testloadRuleListForCategoriesPackageReadonlyPositiveCat1";
 
-        rulesRepository.createPackage( package1Name,
+        rulesRepository.createModule( package1Name,
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   category1Name,
@@ -1075,7 +1075,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 AssetFormats.DRL);
 
         String package2Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack2";
-        rulesRepository.createPackage( package2Name,
+        rulesRepository.createModule( package2Name,
                                                  "desc" );
 
         serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyPositiveRule2",
@@ -1085,7 +1085,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 AssetFormats.DRL);
 
         String package3Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack3";
-        rulesRepository.createPackage( package3Name,
+        rulesRepository.createModule( package3Name,
                                                  "desc" );
 
         serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyPositiveRule3",

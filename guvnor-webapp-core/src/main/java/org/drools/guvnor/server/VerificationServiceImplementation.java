@@ -39,7 +39,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.verification.TemporalBRLAssetVerifier;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
@@ -65,7 +65,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
-                rulesRepository.loadPackageByUUID(packageUUID)
+                rulesRepository.loadModuleByUUID(packageUUID)
         ).verify();
 
         defaultVerifier.flushKnowledgeSession();
@@ -144,7 +144,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     
     private TemporalBRLAssetVerifier getTemporalBRLAssetVerifier(VerifierConfiguration verifierConfiguration, RuleAsset ruleAsset) throws SerializationException {
         
-        PackageItem pkg = repositoryAssetService.getRulesRepository().loadPackage(ruleAsset.getMetaData().packageName);
+        ModuleItem pkg = repositoryAssetService.getRulesRepository().loadModule(ruleAsset.getMetaData().packageName);
         
         return new TemporalBRLAssetVerifier(
                 VerifierBuilderFactory.newVerifierBuilder().newVerifier(verifierConfiguration),

@@ -19,11 +19,11 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 public class SuggestionCompletionEngineLoaderInitializer {
 
-    protected SuggestionCompletionEngine loadFor(final PackageItem packageItem) {
+    protected SuggestionCompletionEngine loadFor(final ModuleItem packageItem) {
         SuggestionCompletionEngine result = null;
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {

@@ -195,7 +195,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         if ( content != null && !content.equals( "" ) ) {
             RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getBytes() ) );
             if ( process != null ) {
-                String packageName = item.getPackageName();
+                String packageName = item.getModuleName();
                 String originalPackageName = process.getPackageName();
                 if ( !packageName.equals( originalPackageName ) ) {
                     process.setPackageName( packageName );

@@ -137,7 +137,7 @@ public class RuleFlowHandler extends ContentHandler
             RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getBytes() ) );
 
             if ( process != null ) {
-                String packageName = item.getPackageName();
+                String packageName = item.getModuleName();
                 String originalPackageName = process.getPackageName();
 
                 if ( !packageName.equals( originalPackageName ) ) {

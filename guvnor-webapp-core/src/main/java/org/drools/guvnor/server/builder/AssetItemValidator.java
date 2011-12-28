@@ -21,7 +21,7 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import java.util.Iterator;
 
@@ -39,13 +39,13 @@ public class AssetItemValidator {
         if (handler instanceof IHasCustomValidator) {
             return ((IHasCustomValidator) handler).validateAsset(assetItemUnderValidation);
         } else {
-            return new BuilderValidator(assetItemUnderValidation.getPackage()).validate();
+            return new BuilderValidator(assetItemUnderValidation.getModule()).validate();
         }
     }
 
     private class BuilderValidator extends PackageAssemblerBase {
 
-        public BuilderValidator(PackageItem packageItem) {
+        public BuilderValidator(ModuleItem packageItem) {
             super(packageItem);
         }
 

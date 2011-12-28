@@ -30,7 +30,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.util.codec.Base64;
@@ -70,7 +70,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
         
         //create a new package
-        PackageItem pkg = rulesRepository.createPackage( "categoriesPackage1",
+        ModuleItem pkg = rulesRepository.createModule( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
         //Create rule1 with 'category 1'
         AssetItem rule = pkg.addAsset( "rule1",

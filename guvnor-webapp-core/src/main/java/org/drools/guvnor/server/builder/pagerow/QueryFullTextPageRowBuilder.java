@@ -70,7 +70,7 @@ public class QueryFullTextPageRowBuilder
     private boolean checkPackagePermissionHelper(RepositoryFilter filter,
                                                  AssetItem item,
                                                  String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
+        return filter.accept( getConfigDataHelper( item.getModule().getUUID() ),
                               roleType );
     }
 

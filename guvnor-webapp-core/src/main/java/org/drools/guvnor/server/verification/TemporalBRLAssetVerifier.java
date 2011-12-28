@@ -11,7 +11,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.io.ResourceFactory;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
@@ -21,7 +21,7 @@ public class TemporalBRLAssetVerifier extends VerifierRunner {
     private final RuleAsset ruleAsset;
     private final Verifier verifier;
 
-    public TemporalBRLAssetVerifier(Verifier verifier, RuleAsset ruleAsset, PackageItem packageItem) {
+    public TemporalBRLAssetVerifier(Verifier verifier, RuleAsset ruleAsset, ModuleItem packageItem) {
         super(verifier, packageItem);
         
         if (!ruleAsset.getFormat().equals(AssetFormats.BUSINESS_RULE)){

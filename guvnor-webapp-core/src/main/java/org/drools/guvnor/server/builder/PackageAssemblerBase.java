@@ -29,7 +29,7 @@ import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 
 /**
@@ -39,7 +39,7 @@ import org.drools.repository.RulesRepositoryException;
  */
 abstract class PackageAssemblerBase extends AssemblerBase {
 
-    protected PackageAssemblerBase(PackageItem packageItem) {
+    protected PackageAssemblerBase(ModuleItem packageItem) {
         super( packageItem );
     }
 

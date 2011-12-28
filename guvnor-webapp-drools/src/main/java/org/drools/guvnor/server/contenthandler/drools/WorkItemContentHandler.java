@@ -29,14 +29,14 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
 import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
 public class WorkItemContentHandler extends PlainTextContentHandler implements
         IHasCustomValidator {
     
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+    public void retrieveAssetContent(RuleAsset asset, ModuleItem pkg,
             AssetItem item) throws SerializationException {
         if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();

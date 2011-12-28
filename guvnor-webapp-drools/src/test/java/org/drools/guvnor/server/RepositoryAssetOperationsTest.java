@@ -36,7 +36,7 @@ import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -220,8 +220,8 @@ public class RepositoryAssetOperationsTest {
                                                                   null,
                                                                   1,
                                                                   2 );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
         when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) )
@@ -246,8 +246,8 @@ public class RepositoryAssetOperationsTest {
                                                                   null,
                                                                   1,
                                                                   10 );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) )
                 .thenReturn( packageItem );
 
         AssetItem a1 = mock( AssetItem.class );
@@ -283,8 +283,8 @@ public class RepositoryAssetOperationsTest {
                                                                   false,
                                                                   1,
                                                                   10 );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) )
                 .thenReturn( packageItem );
 
         AssetItem a1 = mock( AssetItem.class );
@@ -343,8 +343,8 @@ public class RepositoryAssetOperationsTest {
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
         when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) ).thenReturn( assetItemIterator );
@@ -365,8 +365,8 @@ public class RepositoryAssetOperationsTest {
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
         AssetItem a1 = mock( AssetItem.class );
         when( a1.getFormat() ).thenReturn( "formatInList" );
@@ -393,8 +393,8 @@ public class RepositoryAssetOperationsTest {
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   null,
                                                                   false );
-        PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
         AssetItem a1 = mock( AssetItem.class );
         when( a1.getFormat() ).thenReturn( "formatNotInList" );

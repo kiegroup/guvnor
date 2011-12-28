@@ -138,7 +138,7 @@ public class ScalabilityTest extends RepositoryTestCase {
             String ruleName = "rule_" + i + "_" + System.currentTimeMillis();
             System.out.println( "ADDING rule: " + ruleName );
 
-            AssetItem item = repo.loadDefaultPackage().addAsset( ruleName,
+            AssetItem item = repo.loadDefaultModule().addAsset( ruleName,
                                                                  "Foo(bar == " + i + ")panic(" + i + ");" );
             item.addCategory( cat );
             list.add( item );

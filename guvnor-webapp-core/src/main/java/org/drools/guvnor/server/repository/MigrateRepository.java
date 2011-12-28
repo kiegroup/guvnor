@@ -77,17 +77,17 @@ public class MigrateRepository {
     public static void migrateRuleflows(RulesRepository repo) throws RepositoryException {
         log.debug("AUTO MIGRATION: Performing drools ruleflow migration...");
 
-        PackageIterator pkgs = repo.listPackages();
+        ModuleIterator pkgs = repo.listModules();
         boolean performed = false;
         while (pkgs.hasNext()) {
             performed = true;
-            PackageItem pkg = pkgs.next();
+            ModuleItem pkg = pkgs.next();
             migrateRuleflows(pkg);
 
-            String[] snaps = repo.listPackageSnapshots(pkg.getName());
+            String[] snaps = repo.listModuleSnapshots(pkg.getName());
             if (snaps != null) {
                 for (String snap1 : snaps) {
-                    PackageItem snap = repo.loadPackageSnapshot(pkg.getName(), snap1);
+                    ModuleItem snap = repo.loadModuleSnapshot(pkg.getName(), snap1);
                     migrateRuleflows(snap);
                 }
             }
@@ -114,7 +114,7 @@ public class MigrateRepository {
      *
      * @param pkg **********************************************************************
      */
-    private static void migrateRuleflows(PackageItem pkg) {
+    private static void migrateRuleflows(ModuleItem pkg) {
         String portRuleFlow = System.getProperty("drools.ruleflow.port", "false");
         if (portRuleFlow.equalsIgnoreCase("true")) {
             AssetItemIterator it = listAssetsByFormatIncludingArchived(pkg,
@@ -157,7 +157,7 @@ public class MigrateRepository {
      *         archived assets.
      *         **********************************************************************
      */
-    private static AssetItemIterator listAssetsByFormatIncludingArchived(PackageItem pkg,
+    private static AssetItemIterator listAssetsByFormatIncludingArchived(ModuleItem pkg,
                                                                          String[] formats) {
         if (formats.length == 1) {
             return pkg.queryAssets("drools:format='" + formats[0] + "'", true);

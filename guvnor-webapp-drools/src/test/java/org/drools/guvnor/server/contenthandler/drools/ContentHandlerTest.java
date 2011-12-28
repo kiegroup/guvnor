@@ -38,7 +38,7 @@ import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset( "testValidatingEnum",
                                         "" );
         asset.updateFormat( AssetFormats.ENUMERATION );
@@ -106,7 +106,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset( "testEmptyDT",
                                         "" );
         asset.updateFormat( AssetFormats.DECISION_TABLE_GUIDED );

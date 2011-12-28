@@ -80,15 +80,15 @@ public class RulesRepository {
     private static final Logger log = LoggerFactory.getLogger(RulesRepository.class);
 
     /**
-     * The name of the rulepackage area of the repository
+     * The name of the module area of the repository
      */
-    public final static String RULE_PACKAGE_AREA = "drools:package_area";
-    public final static String RULE_GLOBAL_AREA = "globalArea";
+    public final static String MODULE_AREA = "drools:package_area";
+    public final static String GLOBAL_AREA = "globalArea";
 
     /**
-     * The name of the rulepackage area of the repository
+     * The name of the module snapshot area of the repository
      */
-    public final static String PACKAGE_SNAPSHOT_AREA = "drools:packagesnapshot_area";
+    public final static String MODULE_SNAPSHOT_AREA = "drools:packagesnapshot_area";
 
     /**
      * The name of the tag area of the repository
@@ -384,26 +384,26 @@ public class RulesRepository {
      * @return the UUID of the new asset.
      */
     public String copyAsset(String uuidSource,
-                            String destinationPackage,
+                            String destinationModule,
                             String destinationName) {
         try {
             AssetItem source = loadAssetByUUID(uuidSource);
             String sourcePath = source.getNode().getPath();
             String safeDestinationName = NodeUtils.makeJSR170ComplaintName(destinationName);
-            String destPath = this.getAreaNode(RULE_PACKAGE_AREA).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + safeDestinationName;
+            String destPath = this.getAreaNode(MODULE_AREA).getPath() + "/" + destinationModule + "/" + ModuleItem.ASSET_FOLDER_NAME + "/" + safeDestinationName;
             this.session.getWorkspace().copy(sourcePath,
                     destPath);
-            AssetItem dest = loadPackage(destinationPackage).loadAsset(safeDestinationName);
+            AssetItem dest = loadModule(destinationModule).loadAsset(safeDestinationName);
             //            if (dest.getContent() != null ) {
             //                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
             //            }
 
-            dest.updateStringProperty(destinationPackage,
-                    AssetItem.PACKAGE_NAME_PROPERTY);
+            dest.updateStringProperty(destinationModule,
+                    AssetItem.MODULE_NAME_PROPERTY);
             dest.node.setProperty(AssetItem.VERSION_NUMBER_PROPERTY_NAME,
                     0);
             dest.updateTitle(destinationName);
-            dest.checkin("Copied from " + source.getPackageName() + "/" + source.getName());
+            dest.checkin("Copied from " + source.getModuleName() + "/" + source.getName());
             return dest.getUUID();
         } catch (RepositoryException e) {
             log.error("Unable to copy asset.",
@@ -413,31 +413,31 @@ public class RulesRepository {
     }
 
     /**
-     * Loads a RulePackage for the specified package name. Will throw an
-     * exception if the specified rule package does not exist.
+     * Loads a Module for the specified module name. Will throw an
+     * exception if the specified module does not exist.
      *
-     * @param name the name of the package to load
-     * @return a RulePackageItem object
+     * @param name the name of the module to load
+     * @return a ModuleItem object
      */
-    public PackageItem loadPackage(String name) throws RulesRepositoryException {
+    public ModuleItem loadModule(String name) throws RulesRepositoryException {
         try {
-            Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
-            Node rulePackageNode = folderNode.getNode(name);
+            Node folderNode = this.getAreaNode(MODULE_AREA);
+            Node moduleNode = folderNode.getNode(name);
 
-            return new PackageItem(this,
-                    rulePackageNode);
+            return new ModuleItem(this,
+                    moduleNode);
         } catch (RepositoryException e) {
             //the Global package should always exist. In case it is not (eg, when
             //an old db was imported to repo), we create it.
-            if (RULE_GLOBAL_AREA.equals(name)) {
+            if (GLOBAL_AREA.equals(name)) {
                 log.info("Creating Global area as it does not exist yet.");
-                return createPackage(RULE_GLOBAL_AREA,
+                return createModule(GLOBAL_AREA,
                         "the global area that holds sharable assets");
             } else {
-                log.error("Unable to load a rule package. ",
+                log.error("Unable to load a module. ",
                         e);
                 throw new RulesRepositoryException(
-                        "Unable to load a rule package. ",
+                        "Unable to load a module. ",
                         e);
             }
 
@@ -445,44 +445,44 @@ public class RulesRepository {
     }
 
     /**
-     * Loads a RulePackage for the specified package name and version. Will
-     * throw an exception if the specified rule package does not exist.
+     * Loads a Module for the specified module name and version. Will
+     * throw an exception if the specified module does not exist.
      *
-     * @param name          the name of the package to load
+     * @param name          the name of the module to load
      * @param versionNumber
-     * @return a RulePackageItem object
+     * @return a ModuleItem object
      */
-    public PackageItem loadPackage(String name,
+    public ModuleItem loadModule(String name,
                                    long versionNumber) throws RulesRepositoryException {
         try {
-            Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
-            Node rulePackageNode = folderNode.getNode(name);
+            Node folderNode = this.getAreaNode(MODULE_AREA);
+            Node moduleNode = folderNode.getNode(name);
 
-            PackageItem item = new PackageItem(this,
-                    rulePackageNode);
+            ModuleItem item = new ModuleItem(this,
+                    moduleNode);
 
-            PackageHistoryIterator it = item.getHistory();
+            ModuleHistoryIterator it = item.getHistory();
 
             while (it.hasNext()) {
-                PackageItem historical = it.next();
+                ModuleItem historical = it.next();
                 if (historical.getVersionNumber() == versionNumber) {
                     return historical;
                 }
             }
             throw new RulesRepositoryException(
-                    "Unable to load a rule package with version: " + versionNumber);
+                    "Unable to load a module with version: " + versionNumber);
         } catch (RepositoryException e) {
             //the Global package should always exist. In case it is not (eg, when
             //an old db was imported to repo), we create it.
-            if (RULE_GLOBAL_AREA.equals(name)) {
+            if (GLOBAL_AREA.equals(name)) {
                 log.info("Creating Global area as it does not exist yet.");
-                return createPackage(RULE_GLOBAL_AREA,
+                return createModule(GLOBAL_AREA,
                         "the global area that holds sharable assets");
             } else {
-                log.error("Unable to load a rule package. ",
+                log.error("Unable to load a module. ",
                         e);
                 throw new RulesRepositoryException(
-                        "Unable to load a rule package. ",
+                        "Unable to load a module. ",
                         e);
             }
         }
@@ -504,10 +504,10 @@ public class RulesRepository {
     }
 
     /**
-     * This returns true if the repository contains the specified package name.
+     * This returns true if the repository contains the specified module name.
      */
-    public boolean containsPackage(String name) {
-        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+    public boolean containsModule(String name) {
+        Node folderNode = this.getAreaNode(MODULE_AREA);
         try {
             return folderNode.hasNode(name);
         } catch (RepositoryException e) {
@@ -516,10 +516,10 @@ public class RulesRepository {
     }
 
     /**
-     * Check if package is archived.
+     * Check if module is archived.
      */
-    public boolean isPackageArchived(String name) {
-        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+    public boolean isModuleArchived(String name) {
+        Node folderNode = this.getAreaNode(MODULE_AREA);
         try {
             Node node = folderNode.getNode(name);
 
@@ -529,14 +529,14 @@ public class RulesRepository {
         }
     }
 
-    public boolean containsSnapshot(String packageName,
+    public boolean containsSnapshot(String moduleName,
                                     String snapshotName) {
         try {
-            Node areaNode = this.getAreaNode(PACKAGE_SNAPSHOT_AREA);
-            if (!areaNode.hasNode(packageName)) {
+            Node areaNode = this.getAreaNode(MODULE_SNAPSHOT_AREA);
+            if (!areaNode.hasNode(moduleName)) {
                 return false;
             }
-            Node n = areaNode.getNode(packageName);
+            Node n = areaNode.getNode(moduleName);
             return n.hasNode(snapshotName);
         } catch (RepositoryException e) {
             log.error(e.getMessage(),
@@ -545,11 +545,11 @@ public class RulesRepository {
         }
     }
 
-    public PackageItem loadPackageSnapshot(String packageName,
+    public ModuleItem loadModuleSnapshot(String moduleName,
                                            String snapshotName) {
         try {
-            Node n = this.getAreaNode(PACKAGE_SNAPSHOT_AREA).getNode(packageName).getNode(snapshotName);
-            return new PackageItem(this,
+            Node n = this.getAreaNode(MODULE_SNAPSHOT_AREA).getNode(moduleName).getNode(snapshotName);
+            return new ModuleItem(this,
                     n);
         } catch (RepositoryException e) {
             log.error(e.getMessage(),
@@ -559,16 +559,16 @@ public class RulesRepository {
     }
 
     /**
-     * This will copy the package to the snapshot area. Creating a copy for
+     * This will copy the module to the snapshot area. Creating a copy for
      * deployment, etc.
      */
-    public void createPackageSnapshot(String packageName,
+    public void createModuleSnapshot(String moduleName,
                                       String snapshotName) {
-        log.debug("Creating snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        log.debug("Creating snapshot for [" + moduleName + "] called [" + snapshotName + "]");
         try {
-            Node snaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA);
+            Node snaps = this.getAreaNode(MODULE_SNAPSHOT_AREA);
 
-            String nodePath = NodeUtils.makeJSR170ComplaintName(packageName);
+            String nodePath = NodeUtils.makeJSR170ComplaintName(moduleName);
             if (!snaps.hasNode(nodePath)) {
                 snaps.addNode(nodePath,
                         "nt:folder");
@@ -576,10 +576,10 @@ public class RulesRepository {
             }
 
             String newName = snaps.getNode(nodePath).getPath() + "/" + snapshotName;
-            Node rulePackageNode = this.getAreaNode(RULE_PACKAGE_AREA).getNode(packageName);
+            Node moduleNode = this.getAreaNode(MODULE_AREA).getNode(moduleName);
 
             long start = System.currentTimeMillis();
-            this.session.getWorkspace().copy(rulePackageNode.getPath(),
+            this.session.getWorkspace().copy(moduleNode.getPath(),
                     newName);
             log.debug("Time taken for snap: " + (System.currentTimeMillis() - start));
 
@@ -593,20 +593,20 @@ public class RulesRepository {
     /**
      * This will remove the specified snapshot.
      */
-    public void removePackageSnapshot(String packageName,
+    public void removeModuleSnapshot(String moduleName,
                                       String snapshotName) {
-        log.debug("Removing snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        log.debug("Removing snapshot for [" + moduleName + "] called [" + snapshotName + "]");
         try {
-            Node snaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA);
+            Node snaps = this.getAreaNode(MODULE_SNAPSHOT_AREA);
 
-            if (!snaps.hasNode(packageName)) {
-                throw new RulesRepositoryException("The package " + packageName + " does not have any snapshots.");
+            if (!snaps.hasNode(moduleName)) {
+                throw new RulesRepositoryException("The module " + moduleName + " does not have any snapshots.");
             }
 
-            Node pkgSnaps = snaps.getNode(packageName);
+            Node moduleSnaps = snaps.getNode(moduleName);
 
-            if (pkgSnaps.hasNode(snapshotName)) {
-                pkgSnaps.getNode(snapshotName).remove();
+            if (moduleSnaps.hasNode(snapshotName)) {
+                moduleSnaps.getNode(snapshotName).remove();
             }
 
             save();
@@ -621,25 +621,25 @@ public class RulesRepository {
      * Copies a snapshot to the new location/label. If one exists at that
      * location, it will be replaced.
      *
-     * @param packageName  The name of the package.
+     * @param moduleName  The name of the module.
      * @param snapshotName The label of the source snapshot
      * @param newName      The new label. The old one is left intact.
      */
-    public void copyPackageSnapshot(String packageName,
+    public void copyModuleSnapshot(String moduleName,
                                     String snapshotName,
                                     String newName) {
-        log.debug("Creating snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        log.debug("Creating snapshot for [" + moduleName + "] called [" + snapshotName + "]");
         try {
 
-            Node pkgSnaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA).getNode(packageName);
+            Node moduleSnaps = this.getAreaNode(MODULE_SNAPSHOT_AREA).getNode(moduleName);
 
-            Node sourceNode = pkgSnaps.getNode(snapshotName);
-            if (pkgSnaps.hasNode(newName)) {
-                pkgSnaps.getNode(newName).remove();
+            Node sourceNode = moduleSnaps.getNode(snapshotName);
+            if (moduleSnaps.hasNode(newName)) {
+                moduleSnaps.getNode(newName).remove();
                 this.session.save();
             }
 
-            String destinationPath = pkgSnaps.getPath() + "/" + newName;
+            String destinationPath = moduleSnaps.getPath() + "/" + newName;
 
             this.session.getWorkspace().copy(sourceNode.getPath(),
                     destinationPath);
@@ -651,16 +651,16 @@ public class RulesRepository {
     }
 
     /**
-     * This will return or create the default package for rules that have no
+     * This will return or create the default module for assets that have no
      * home yet.
      */
-    public PackageItem loadDefaultPackage() throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+    public ModuleItem loadDefaultModule() throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(MODULE_AREA);
         try {
             if (folderNode.hasNode(DEFAULT_PACKAGE)) {
-                return loadPackage(DEFAULT_PACKAGE);
+                return loadModule(DEFAULT_PACKAGE);
             } else {
-                return createPackage(DEFAULT_PACKAGE,
+                return createModule(DEFAULT_PACKAGE,
                         "");
             }
         } catch (RepositoryException e) {
@@ -670,67 +670,67 @@ public class RulesRepository {
     }
 
     /**
-     * This will return the global area for rules that can be shared.
+     * This will return the global area for assets that can be shared.
      */
-    public PackageItem loadGlobalArea() throws RulesRepositoryException {
-        return loadPackage(RULE_GLOBAL_AREA);
+    public ModuleItem loadGlobalArea() throws RulesRepositoryException {
+        return loadModule(GLOBAL_AREA);
     }
 
     /**
-     * Similar to above. Loads a RulePackage for the specified uuid.
+     * Similar to above. Loads a ModuleItem for the specified uuid.
      *
-     * @param uuid the uuid of the package to load
-     * @return a RulePackageItem object
+     * @param uuid the uuid of the module to load
+     * @return a ModuleItem object
      * @throws RulesRepositoryException
      */
-    public PackageItem loadPackageByUUID(String uuid) throws RulesRepositoryException {
+    public ModuleItem loadModuleByUUID(String uuid) throws RulesRepositoryException {
         try {
-            Node rulePackageNode = this.session.getNodeByIdentifier(uuid);
-            return new PackageItem(this,
-                    rulePackageNode);
+            Node moduleNode = this.session.getNodeByIdentifier(uuid);
+            return new ModuleItem(this,
+                    moduleNode);
         } catch (Exception e) {
-            log.error("Unable to load a rule package by UUID. ",
+            log.error("Unable to load a module by UUID. ",
                     e);
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             } else {
-                throw new RulesRepositoryException("Unable to load a rule package. ",
+                throw new RulesRepositoryException("Unable to load a module. ",
                         e);
             }
         }
     }
 
     /**
-     * Similar to above. Loads a RulePackage or an AssetItem for the specified
+     * Similar to above. Loads a ModuleItem or an AssetItem for the specified
      * uuid.
      *
-     * @param uuid the uuid of the package or asset to load
+     * @param uuid the uuid of the module or asset to load
      * @return a VersionableItem object
      * @throws RulesRepositoryException
      */
     public VersionableItem loadItemByUUID(String uuid)
             throws RulesRepositoryException {
         try {
-            Node rulePackageNode = this.session.getNodeByIdentifier(uuid);
-            if (rulePackageNode.getPrimaryNodeType().getName()
-                    .equals(PackageItem.RULE_PACKAGE_TYPE_NAME)) {
-                return new PackageItem(this,
-                        rulePackageNode);
-            } else if (rulePackageNode.getPrimaryNodeType().getName()
-                    .equals(AssetItem.RULE_NODE_TYPE_NAME)) {
+            Node moduleNode = this.session.getNodeByIdentifier(uuid);
+            if (moduleNode.getPrimaryNodeType().getName()
+                    .equals(ModuleItem.MODULE_TYPE_NAME)) {
+                return new ModuleItem(this,
+                        moduleNode);
+            } else if (moduleNode.getPrimaryNodeType().getName()
+                    .equals(AssetItem.ASSET_NODE_TYPE_NAME)) {
                 return new AssetItem(this,
-                        rulePackageNode);
+                        moduleNode);
             }
             throw new RulesRepositoryException(
-                    "Unable to load a rule package. ");
+                    "Unable to load a module. ");
         } catch (Exception e) {
-            log.error("Unable to load a rule package by UUID. ",
+            log.error("Unable to load a module by UUID. ",
                     e);
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             } else {
                 throw new RulesRepositoryException(
-                        "Unable to load a rule package. ",
+                        "Unable to load a module. ",
                         e);
             }
         }
@@ -759,20 +759,20 @@ public class RulesRepository {
     }
 
     /**
-     * Loads a rule by its UUID (generally the fastest way to load something).
+     * Loads an asset by its UUID (generally the fastest way to load something).
      */
     public AssetItem loadAssetByUUID(String uuid) {
         try {
-            Node rulePackageNode = this.session.getNodeByIdentifier(uuid);
+            Node moduleNode = this.session.getNodeByIdentifier(uuid);
             return new AssetItem(this,
-                    rulePackageNode);
+                    moduleNode);
         } catch (ItemNotFoundException e) {
             log.warn(e.getMessage(),
                     e);
             throw new RulesRepositoryException("That item does not exist.");
         } catch (RepositoryException e) {
 
-            log.error("Unable to load a rule asset by UUID.",
+            log.error("Unable to load an asset by UUID.",
                     e);
             throw new RulesRepositoryException(e);
         }
@@ -780,95 +780,95 @@ public class RulesRepository {
     }
 
     /**
-     * Adds a package to the repository.
+     * Adds a module to the repository.
      *
      * @param name        what to name the node added
      * @param description what description to use for the node
-     * @return a PackageItem, encapsulating the created node
+     * @return a ModuleItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createPackage(String name,
+    public ModuleItem createModule(String name,
                                      String description) throws RulesRepositoryException {
-        //REVISIT: As we are moving towards a generic repository, create a module that is default to drools_package format
+        //TODO: As we are moving towards a generic repository, create a module that is default to drools_package format
         //may not be correct.
-        return createPackage(name,
+        return createModule(name,
                 description,
-                PackageItem.PACKAGE_FORMAT,
+                ModuleItem.MODULE_FORMAT,
                 null);
     }
 
     /**
-     * Adds a package to the repository.
+     * Adds a module to the repository.
      *
      * @param name        what to name the node added
      * @param description what description to use for the node
      * @param format      module format.
-     * @return a PackageItem, encapsulating the created node
+     * @return a ModuleItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createPackage(String name,
+    public ModuleItem createModule(String name,
                                      String description,
                                      String format) throws RulesRepositoryException {
-        return createPackage(name,
+        return createModule(name,
                 description,
                 format,
                 null);
     }
 
     /**
-     * Adds a package to the repository.
+     * Adds a module to the repository.
      *
      * @param name        what to name the node added
      * @param description what description to use for the node
      * @param format      module format.
      * @param workspace   the initial workspaces that this module belongs to.
-     * @return a PackageItem, encapsulating the created node
+     * @return a ModuleItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createPackage(String name,
+    public ModuleItem createModule(String name,
                                      String description,
                                      String format,
                                      String[] workspace) throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+        Node folderNode = this.getAreaNode(MODULE_AREA);
 
         try {
             // create the node - see section 6.7.22.6 of the spec
             String nodePath = NodeUtils.makeJSR170ComplaintName(name);
-            Node rulePackageNode = folderNode.addNode(nodePath,
-                    PackageItem.RULE_PACKAGE_TYPE_NAME);
+            Node moduleNode = folderNode.addNode(nodePath,
+                    ModuleItem.MODULE_TYPE_NAME);
 
-            rulePackageNode.addNode(PackageItem.ASSET_FOLDER_NAME,
+            moduleNode.addNode(ModuleItem.ASSET_FOLDER_NAME,
                     "drools:versionableAssetFolder");
 
-            rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME,
+            moduleNode.setProperty(ModuleItem.TITLE_PROPERTY_NAME,
                     name);
 
-            rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+            moduleNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
                     description);
-            rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
+            moduleNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
                     format);
-            rulePackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME,
+            moduleNode.setProperty(ModuleItem.CREATOR_PROPERTY_NAME,
                     this.session.getUserID());
-            rulePackageNode.setProperty(PackageItem.WORKSPACE_PROPERTY_NAME,
+            moduleNode.setProperty(ModuleItem.WORKSPACE_PROPERTY_NAME,
                     workspace);
 
-            rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME,
+            moduleNode.setProperty(ModuleItem.LAST_MODIFIED_PROPERTY_NAME,
                     Calendar.getInstance());
 
-            PackageItem item = new PackageItem(this,
-                    rulePackageNode);
+            ModuleItem item = new ModuleItem(this,
+                    moduleNode);
             item.checkin("Initial");
 
             if (StorageEventManager.hasSaveEvent()) {
-                StorageEventManager.getSaveEvent().onPackageCreate(item);
+                StorageEventManager.getSaveEvent().onModuleCreate(item);
             }
 
             return item;
         } catch (ItemExistsException e) {
-            throw new RulesRepositoryException("A package name must be unique.",
+            throw new RulesRepositoryException("A module name must be unique.",
                     e);
         } catch (RepositoryException e) {
-            log.error("Error when creating a new rule package",
+            log.error("Error when creating a new module",
                     e);
             throw new RulesRepositoryException(e);
         }
@@ -876,22 +876,22 @@ public class RulesRepository {
     }
 
     /**
-     * Adds a Sub package to the repository.
+     * Adds a Sub module to the repository.
      *
      * @param name          what to name the node added
      * @param description   what description to use for the node
-     * @param parentPackage parent node under which this new package will be created
+     * @param parentModule parent node under which this new package will be created
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createSubPackage(String name,
+    public ModuleItem createSubModule(String name,
                                         String description,
-                                        String parentPackage)
+                                        String parentModule)
             throws RulesRepositoryException {
 
         try {
-            PackageItem pkg = loadPackage(parentPackage);
-            PackageItem subPkg = pkg.createSubPackage(name);
+            ModuleItem parentModuleItem = loadModule(parentModule);
+            ModuleItem subModuleItem = parentModuleItem.createSubModule(name);
 
             // create the node - see section 6.7.22.6 of the spec
             //            Node rulePackageNode = subPkg.node; // folderNode.addNode( name,
@@ -908,18 +908,18 @@ public class RulesRepository {
             //            Calendar lastModified = Calendar.getInstance();
             //            rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
 
-            subPkg.checkin("Initial");
+            subModuleItem.checkin("Initial");
 
             if (StorageEventManager.hasSaveEvent()) {
-                StorageEventManager.getSaveEvent().onPackageCreate(subPkg);
+                StorageEventManager.getSaveEvent().onModuleCreate(subModuleItem);
             }
 
-            return subPkg;
+            return subModuleItem;
         } catch (ItemExistsException e) {
-            throw new RulesRepositoryException("A package name must be unique.",
+            throw new RulesRepositoryException("A module name must be unique.",
                     e);
         } catch (RepositoryException e) {
-            log.error("Error when creating a new rule package",
+            log.error("Error when creating a new module",
                     e);
             throw new RulesRepositoryException(e);
         }
@@ -1091,7 +1091,7 @@ public class RulesRepository {
     /**
      * This will retrieve a list of RuleItem objects - that are allocated to the
      * provided category. Only the latest versions of each RuleItem will be
-     * returned (you will have to delve into the rules deepest darkest history
+     * returned (you will have to delve into the assets deepest darkest history
      * yourself... mahahahaha).
      */
     public AssetItemPageResult findAssetsByCategory(String categoryTag,
@@ -1108,7 +1108,7 @@ public class RulesRepository {
     /**
      * This will retrieve a list of RuleItem objects - that are allocated to the
      * provided category. Only the latest versions of each RuleItem will be
-     * returned (you will have to delve into the rules deepest darkest history
+     * returned (you will have to delve into the assets deepest darkest history
      * yourself... mahahahaha).
      * <p/>
      * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1
@@ -1190,7 +1190,7 @@ public class RulesRepository {
 
             Property ruleLink = (Property) it.next();
             Node parentNode = ruleLink.getParent();
-            if (isNotSnapshot(parentNode) && parentNode.getPrimaryNodeType().getName().equals(AssetItem.RULE_NODE_TYPE_NAME)) {
+            if (isNotSnapshot(parentNode) && parentNode.getPrimaryNodeType().getName().equals(AssetItem.ASSET_NODE_TYPE_NAME)) {
                 if (seekArchivedAsset || !parentNode.getProperty(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
                     AssetItem ai = new AssetItem(this,
                             parentNode);
@@ -1229,7 +1229,7 @@ public class RulesRepository {
                 numRowsToReturn);
     }
 
-    public void exportRulesRepositoryToStream(OutputStream output) {
+    public void exportRepositoryToStream(OutputStream output) {
         try {
             session.refresh(false);
             session.exportSystemView("/" + RULES_REPOSITORY_NAME,
@@ -1244,7 +1244,8 @@ public class RulesRepository {
 
     }
 
-    public byte[] exportPackageFromRepository(String packageName) throws IOException,
+    //TODO: This does not work.
+    public byte[] exportModuleFromRepository(String moduleName) throws IOException,
             PathNotFoundException,
             RepositoryException {
 
@@ -1252,18 +1253,18 @@ public class RulesRepository {
         ZipOutputStream zout = new ZipOutputStream(bout);
 
         zout.putNextEntry(new ZipEntry("repository_export.xml"));
-        zout.write(dumpPackageFromRepositoryXml(packageName));
+        zout.write(dumpModuleFromRepositoryXml(moduleName));
         zout.closeEntry();
         zout.finish();
         return bout.toByteArray();
     }
 
-    public byte[] dumpPackageFromRepositoryXml(String packageName) throws PathNotFoundException,
+    public byte[] dumpModuleFromRepositoryXml(String moduleName) throws PathNotFoundException,
             IOException,
             RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         session.refresh(false);
-        session.exportSystemView("/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/" + packageName,
+        session.exportSystemView("/" + RULES_REPOSITORY_NAME + "/" + MODULE_AREA + "/" + moduleName,
                 byteOut,
                 false,
                 false);
@@ -1288,7 +1289,7 @@ public class RulesRepository {
     }
 
     /**
-     * Clean and import the rules repository. Will run any needed migrations as
+     * Clean and import the repository. Will run any needed migrations as
      * well.
      */
     public void importRulesRepositoryFromStream(InputStream instream) {
@@ -1324,13 +1325,13 @@ public class RulesRepository {
                                           boolean importAsNew) {
         try {
             if (importAsNew) {
-                this.session.getWorkspace().importXML("/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/",
+                this.session.getWorkspace().importXML("/" + RULES_REPOSITORY_NAME + "/" + MODULE_AREA + "/",
                         new ByteArrayInputStream(byteArray),
                         ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
 
             } else {
 
-                this.session.getWorkspace().importXML("/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/",
+                this.session.getWorkspace().importXML("/" + RULES_REPOSITORY_NAME + "/" + MODULE_AREA + "/",
                         new ByteArrayInputStream(byteArray),
                         ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
             }
@@ -1356,25 +1357,25 @@ public class RulesRepository {
      * @throws RepositoryException
      */
     boolean isNotSnapshot(Node parentNode) throws RepositoryException {
-        return parentNode.getPath().indexOf(PACKAGE_SNAPSHOT_AREA) == -1;
+        return parentNode.getPath().indexOf(MODULE_SNAPSHOT_AREA) == -1;
     }
 
     /**
      * @return an Iterator which will provide RulePackageItem's. This will show
-     *         ALL the packages, only returning latest versions, by default.
+     *         aLL the modules, only returning latest versions, by default.
      */
-    public PackageIterator listPackages() {
-        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+    public ModuleIterator listModules() {
+        Node folderNode = this.getAreaNode(MODULE_AREA);
 
         try {
             synchronized (RulesRepository.class) {
                 if (!folderNode.hasNode(DEFAULT_PACKAGE)) {
-                    createPackage(DEFAULT_PACKAGE,
+                    createModule(DEFAULT_PACKAGE,
                             "The default rule package");
-                    folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+                    folderNode = this.getAreaNode(MODULE_AREA);
                 }
             }
-            return new PackageIterator(this,
+            return new ModuleIterator(this,
                     folderNode.getNodes());
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
@@ -1411,29 +1412,29 @@ public class RulesRepository {
     }
 
     /**
-     * This moves a rule asset from one package to another, preserving history
+     * This moves an asset from one module to another, preserving history
      * etc etc.
      *
-     * @param newPackage  The destination package.
-     * @param uuid        The UUID of the rule
+     * @param newModule  The destination module.
+     * @param uuid        The UUID of the asset
      * @param explanation The reason (which will be added as the checkin message).
      */
-    public void moveRuleItemPackage(String newPackage,
+    public void moveRuleItemModule(String newModule,
                                     String uuid,
                                     String explanation) {
         try {
             AssetItem item = loadAssetByUUID(uuid);
 
             String sourcePath = item.node.getPath();
-            String destPath = loadPackage(newPackage).node.getPath() + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + item.getName();
+            String destPath = loadModule(newModule).node.getPath() + "/" + ModuleItem.ASSET_FOLDER_NAME + "/" + item.getName();
 
             this.session.move(sourcePath,
                     destPath);
             this.session.save();
 
             item.checkout();
-            item.node.setProperty(AssetItem.PACKAGE_NAME_PROPERTY,
-                    newPackage);
+            item.node.setProperty(AssetItem.MODULE_NAME_PROPERTY,
+                    newModule);
 
             item.checkin(explanation);
 
@@ -1510,32 +1511,32 @@ public class RulesRepository {
     }
 
     /**
-     * This will rename a package and apply the change immediately.
+     * This will rename a module and apply the change immediately.
      *
-     * @return the UUID of the package
+     * @return the UUID of the module
      */
-    public String renamePackage(String uuid,
-                                String newPackageName) {
+    public String renameModule(String uuid,
+                                String newModuleName) {
         try {
-            PackageItem itemOriginal = loadPackageByUUID(uuid);
-            log.info("Renaming package: " + itemOriginal.getNode().getPath() + " to " + newPackageName);
+            ModuleItem itemOriginal = loadModuleByUUID(uuid);
+            log.info("Renaming module: " + itemOriginal.getNode().getPath() + " to " + newModuleName);
             Node node = itemOriginal.getNode();
             String sourcePath = node.getPath();
-            String destPath = node.getParent().getPath() + "/" + newPackageName;
+            String destPath = node.getParent().getPath() + "/" + newModuleName;
             this.session.move(sourcePath,
                     destPath);
 
             this.session.save();
 
-            itemOriginal.updateTitle(newPackageName);
-            itemOriginal.checkin("Renamed package " + itemOriginal.getName());
+            itemOriginal.updateTitle(newModuleName);
+            itemOriginal.checkin("Renamed module " + itemOriginal.getName());
 
-            PackageItem newPkg = loadPackage(newPackageName);
+            ModuleItem newModuleItem = loadModule(newModuleName);
 
-            for (Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
+            for (Iterator iter = newModuleItem.getAssets(); iter.hasNext(); ) {
                 AssetItem as = (AssetItem) iter.next();
-                as.updateStringProperty(newPackageName,
-                        AssetItem.PACKAGE_NAME_PROPERTY);
+                as.updateStringProperty(newModuleName,
+                        AssetItem.MODULE_NAME_PROPERTY);
             }
 
             save();
@@ -1549,16 +1550,16 @@ public class RulesRepository {
     }
 
     /**
-     * Return a list of the snapshots available for the given package name.
+     * Return a list of the snapshots available for the given module name.
      */
-    public String[] listPackageSnapshots(String packageName) {
-        Node snaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA);
+    public String[] listModuleSnapshots(String moduleName) {
+        Node snaps = this.getAreaNode(MODULE_SNAPSHOT_AREA);
         try {
-            if (!snaps.hasNode(packageName)) {
+            if (!snaps.hasNode(moduleName)) {
                 return new String[0];
             } else {
                 List<String> result = new ArrayList<String>();
-                NodeIterator it = snaps.getNode(packageName).getNodes();
+                NodeIterator it = snaps.getNode(moduleName).getNodes();
                 while (it.hasNext()) {
                     Node element = (Node) it.next();
                     result.add(element.getName());
@@ -1574,8 +1575,8 @@ public class RulesRepository {
         try {
 
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ").append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" FROM ").append(AssetItem.RULE_NODE_TYPE_NAME)
-                    .append(" WHERE ").append(" jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'")
+            stringBuilder.append("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ").append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" FROM ").append(AssetItem.ASSET_NODE_TYPE_NAME)
+                    .append(" WHERE ").append(" jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(MODULE_AREA).append("/%'")
                     .append(" AND ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'true'");
 
             //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
@@ -1625,7 +1626,7 @@ public class RulesRepository {
             sb.append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG);
             sb.append(" ");
             sb.append("FROM ");
-            sb.append(AssetItem.RULE_NODE_TYPE_NAME);
+            sb.append(AssetItem.ASSET_NODE_TYPE_NAME);
             sb.append(" ");
             sb.append("WHERE ");
             if (isCaseSensitive) {
@@ -1645,7 +1646,7 @@ public class RulesRepository {
             sb.append("AND jcr:path LIKE '/");
             sb.append(RULES_REPOSITORY_NAME);
             sb.append("/");
-            sb.append(RULE_PACKAGE_AREA);
+            sb.append(MODULE_AREA);
             sb.append("/%'");
 
             if (!seekArchived) {
@@ -1677,7 +1678,7 @@ public class RulesRepository {
                                            boolean seekArchived) {
         try {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("/jcr:root/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("//element(*, ").append(AssetItem.RULE_NODE_TYPE_NAME).append(")");
+            stringBuilder.append("/jcr:root/").append(RULES_REPOSITORY_NAME).append("/").append(MODULE_AREA).append("//element(*, ").append(AssetItem.ASSET_NODE_TYPE_NAME).append(")");
             if (seekArchived) {
                 stringBuilder.append("[jcr:contains(., '" + qry + "')]");
             } else {
@@ -1713,8 +1714,8 @@ public class RulesRepository {
             StringBuilder sql = new StringBuilder("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ")
                     .append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ")
                     .append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG)
-                    .append(" FROM ").append(AssetItem.RULE_NODE_TYPE_NAME);
-            sql.append(" WHERE jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'");
+                    .append(" FROM ").append(AssetItem.ASSET_NODE_TYPE_NAME);
+            sql.append(" WHERE jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(MODULE_AREA).append("/%'");
             for (Map.Entry<String, String[]> en : params.entrySet()) {
                 String fld = en.getKey();
                 String[] options = en.getValue();
@@ -1830,31 +1831,31 @@ public class RulesRepository {
     /**
      * Copy a package to the target name.
      */
-    public String copyPackage(String sourcePackageName,
-                              String destPackageName) {
-        PackageItem source = loadPackage(sourcePackageName);
+    public String copyModule(String sourceModuleName,
+                              String destModuleName) {
+        ModuleItem source = loadModule(sourceModuleName);
 
 
         try {
-            String destPath = source.getNode().getParent().getPath() + "/" + destPackageName;
-            if (this.getAreaNode(RULE_PACKAGE_AREA).hasNode(destPackageName)) {
+            String destPath = source.getNode().getParent().getPath() + "/" + destModuleName;
+            if (this.getAreaNode(MODULE_AREA).hasNode(destModuleName)) {
                 throw new RulesRepositoryException("Destination already exists.");
             }
             this.session.getWorkspace().copy(source.getNode().getPath(),
                     destPath);
 
-            PackageItem newPkg = loadPackage(destPackageName);
-            newPkg.updateTitle(destPackageName);
+            ModuleItem newModuleItem = loadModule(destModuleName);
+            newModuleItem.updateTitle(destModuleName);
 
-            for (Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
+            for (Iterator iter = newModuleItem.getAssets(); iter.hasNext(); ) {
                 AssetItem as = (AssetItem) iter.next();
-                as.updateStringProperty(destPackageName,
-                        AssetItem.PACKAGE_NAME_PROPERTY);
+                as.updateStringProperty(destModuleName,
+                        AssetItem.MODULE_NAME_PROPERTY);
             }
 
             save();
 
-            return newPkg.getUUID();
+            return newModuleItem.getUUID();
         } catch (RepositoryException e) {
             log.error(e.getMessage(),
                     e);

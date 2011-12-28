@@ -22,7 +22,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import java.util.Iterator;
 
@@ -30,7 +30,7 @@ public class PackageDRLAssembler extends AssemblerBase {
 
     private StringBuilder src;
 
-    public PackageDRLAssembler(PackageItem packageItem) {
+    public PackageDRLAssembler(ModuleItem packageItem) {
         super(packageItem);
     }
 

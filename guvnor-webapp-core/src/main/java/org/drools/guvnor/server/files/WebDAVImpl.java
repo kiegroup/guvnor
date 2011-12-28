@@ -24,7 +24,7 @@ import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.jboss.seam.security.Identity;
@@ -81,13 +81,13 @@ public class WebDAVImpl
             if (path.length > 2) {
                 throw new UnsupportedOperationException("Can't nest packages.");
             }
-            if (rulesRepository.containsPackage(path[1])) {
-                PackageItem pkg = loadPackageFromRepository(
+            if (rulesRepository.containsModule(path[1])) {
+                ModuleItem pkg = loadPackageFromRepository(
                         path[1]);
                 pkg.archiveItem(false);
                 pkg.checkin("<restored by webdav>");
             } else {
-                rulesRepository.createPackage(path[1],
+                rulesRepository.createModule(path[1],
                         "<from webdav>");
             }
         } else {
@@ -106,7 +106,7 @@ public class WebDAVImpl
                 throw new UnsupportedOperationException("Can't do nested packages.");
             }
             String[] resource = AssetItem.getAssetNameFromFileName(path[2]);
-            PackageItem packageItem = loadPackageFromRepository(
+            ModuleItem packageItem = loadPackageFromRepository(
                     path[1]);
 
             //for mac OSX, ignore these resource fork files
@@ -125,7 +125,7 @@ public class WebDAVImpl
             }
         } else if (isGlobalAreas(path)) {
             String[] resource = AssetItem.getAssetNameFromFileName(path[1]);
-            PackageItem packageItem = loadGlobalAreaFromRepository();
+            ModuleItem packageItem = loadGlobalAreaFromRepository();
 
             //for mac OSX, ignore these resource fork files
             if (path[1].startsWith("._")) {
@@ -175,7 +175,7 @@ public class WebDAVImpl
                         result);
             } else if (isPermission(path,
                     2)) {
-                return rulesRepository.listPackageSnapshots(path[1]);
+                return rulesRepository.listModuleSnapshots(path[1]);
             } else if (isPermission(path,
                     3)) {
                 handleReadOnlySnapshotPackages(rulesRepository,
@@ -231,7 +231,7 @@ public class WebDAVImpl
     private void handleReadOnlyPackages(RulesRepository repository,
                                         String[] path,
                                         List<String> result) {
-        PackageItem pkg = loadPackageFromRepository(
+        ModuleItem pkg = loadPackageFromRepository(
                 path[1]);
         Iterator<AssetItem> it = pkg.getAssets();
         while (it.hasNext()) {
@@ -250,9 +250,9 @@ public class WebDAVImpl
 
     private void listPackages(RulesRepository repository,
                               List<String> result) {
-        Iterator<PackageItem> it = repository.listPackages();
+        Iterator<ModuleItem> it = repository.listModules();
         while (it.hasNext()) {
-            PackageItem pkg = it.next();
+            ModuleItem pkg = it.next();
             String packageName = pkg.getName();
             if (!pkg.isArchived() && checkPackagePermission(packageName,
                     RoleType.PACKAGE_READONLY.getName())) {
@@ -303,7 +303,7 @@ public class WebDAVImpl
 
     private Date getCreationDateForPackage(RulesRepository repository,
                                            String[] path) {
-        PackageItem packageItem = loadPackageFromRepository(
+        ModuleItem packageItem = loadPackageFromRepository(
                 path[1]);
         if (path.length == 2) {
             return packageItem.getCreatedDate().getTime();
@@ -314,7 +314,7 @@ public class WebDAVImpl
 
     private Date getCreationTimeForGlobalAreaPackage(RulesRepository repository,
                                                      String[] path) {
-        PackageItem packageItem = loadGlobalAreaFromRepository();
+        ModuleItem packageItem = loadGlobalAreaFromRepository();
         if (path.length == 2) {
             return packageItem.getCreatedDate().getTime();
         }
@@ -353,7 +353,7 @@ public class WebDAVImpl
             return loadPackageSnapshotFromRepository(
                     path).getLastModified().getTime();
         } else if (path.length == 4) {
-            PackageItem pkg = loadPackageSnapshotFromRepository(
+            ModuleItem pkg = loadPackageSnapshotFromRepository(
                     path);
             return getLastModifiedFromPackageAssetItem(pkg,
                     path[3]);
@@ -363,7 +363,7 @@ public class WebDAVImpl
 
     private Date getLastModifiedForPackage(RulesRepository repository,
                                            String[] path) {
-        PackageItem pkg = loadPackageFromRepository(
+        ModuleItem pkg = loadPackageFromRepository(
                 path[1]);
         if (path.length == 2) {
             return pkg.getLastModified().getTime();
@@ -375,7 +375,7 @@ public class WebDAVImpl
 
     private Date getLastModifiedForGlobalAreaPackage(RulesRepository repository,
                                                      String[] path) {
-        PackageItem pkg = loadGlobalAreaFromRepository();
+        ModuleItem pkg = loadGlobalAreaFromRepository();
         if (path.length == 2) {
             return pkg.getLastModified().getTime();
         }
@@ -384,7 +384,7 @@ public class WebDAVImpl
 
     }
 
-    private Date getLastModifiedFromPackageAssetItem(PackageItem packageItem,
+    private Date getLastModifiedFromPackageAssetItem(ModuleItem packageItem,
                                                      String path) {
         return loadAssetItemFromPackageItem(packageItem,
                 path).getLastModified().getTime();
@@ -448,7 +448,7 @@ public class WebDAVImpl
                             path),
                     0);
         } else if (path.length == 4) {
-            PackageItem pkg = loadPackageSnapshotFromRepository(
+            ModuleItem pkg = loadPackageSnapshotFromRepository(
                     path);
             AssetItem asset;
             try {
@@ -468,7 +468,7 @@ public class WebDAVImpl
     private StoredObject getStoredObjectForReadOnlyPackages(String uri,
                                                             RulesRepository repository,
                                                             String[] path) {
-        PackageItem packageItem = loadPackageFromRepository(
+        ModuleItem packageItem = loadPackageFromRepository(
                 path[1]);
         if (path.length == 2) {
             return createStoredObject(uri,
@@ -600,11 +600,11 @@ public class WebDAVImpl
         }
 
         if (path.length == 2) {
-            return rulesRepository.containsPackage(path[1]);
+            return rulesRepository.containsModule(path[1]);
         }
 
         if (path.length == 3 && isSnaphosts(path)) {
-            return rulesRepository.containsPackage(path[1]);
+            return rulesRepository.containsModule(path[1]);
         }
         return false;
     }
@@ -619,9 +619,9 @@ public class WebDAVImpl
             return false;
         }
 
-        if (rulesRepository.containsPackage(path[1])) {
+        if (rulesRepository.containsModule(path[1])) {
             if (isPackages(path)) {
-                PackageItem pkg = loadPackageFromRepository(
+                ModuleItem pkg = loadPackageFromRepository(
                         path[1]);
                 if (path[2].startsWith("._")) {
                     return osxDoubleData.containsKey(uri);
@@ -655,7 +655,7 @@ public class WebDAVImpl
             return true;
         }
 
-        if (path.length == 1 || !rulesRepository.containsPackage(path[1])) {
+        if (path.length == 1 || !rulesRepository.containsModule(path[1])) {
             return false;
         }
 
@@ -682,7 +682,7 @@ public class WebDAVImpl
     private boolean handleSnapshotsInternalObjectExists(RulesRepository repository,
                                                         String[] path) {
         if (path.length == 2) {
-            return repository.containsPackage(path[1]);
+            return repository.containsModule(path[1]);
         }
 
         if (path.length == 3) {
@@ -702,11 +702,11 @@ public class WebDAVImpl
                                                        RulesRepository repository,
                                                        String[] path) {
         if (path.length == 2) {
-            PackageItem pkg = loadPackageFromRepository(
+            ModuleItem pkg = loadPackageFromRepository(
                     path[1]);
             return !pkg.isArchived();
         }
-        PackageItem pkg = loadPackageFromRepository(
+        ModuleItem pkg = loadPackageFromRepository(
                 path[1]);
         if (path[2].startsWith("._")) {
             return WebDAVImpl.osxDoubleData.containsKey(uri);
@@ -722,7 +722,7 @@ public class WebDAVImpl
             throw new IllegalArgumentException();
         }
         if (isPackages(path) && checkPackagePermissionIfDeveloper(path)) {
-            PackageItem packageItem = loadPackageFromRepository(
+            ModuleItem packageItem = loadPackageFromRepository(
                     path[1]);
             if (path.length == 3) {
                 //delete asset
@@ -910,7 +910,7 @@ public class WebDAVImpl
                 path[1]);
     }
 
-    private AssetItem loadAssetItemFromPackageItem(PackageItem pkg,
+    private AssetItem loadAssetItemFromPackageItem(ModuleItem pkg,
                                                    String path) {
         return pkg.loadAsset(AssetItem.getAssetNameFromFileName(path)[0]);
     }
@@ -921,16 +921,16 @@ public class WebDAVImpl
                 path).containsAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
     }
 
-    private PackageItem loadPackageFromRepository(String path) {
-        return rulesRepository.loadPackage(path);
+    private ModuleItem loadPackageFromRepository(String path) {
+        return rulesRepository.loadModule(path);
     }
 
-    private PackageItem loadPackageSnapshotFromRepository(String[] path) {
-        return rulesRepository.loadPackageSnapshot(path[1],
+    private ModuleItem loadPackageSnapshotFromRepository(String[] path) {
+        return rulesRepository.loadModuleSnapshot(path[1],
                 path[2]);
     }
 
-    private PackageItem loadGlobalAreaFromRepository() {
+    private ModuleItem loadGlobalAreaFromRepository() {
         return rulesRepository.loadGlobalArea();
     }
 

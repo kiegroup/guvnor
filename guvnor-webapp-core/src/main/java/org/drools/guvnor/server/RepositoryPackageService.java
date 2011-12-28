@@ -66,7 +66,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -153,10 +153,10 @@ public class RepositoryPackageService
     @WebRemote
     @LoggedIn
     public void rebuildPackages() throws SerializationException {
-        Iterator<PackageItem> pkit = rulesRepository.listPackages();
+        Iterator<ModuleItem> pkit = rulesRepository.listModules();
         StringBuilder errs = new StringBuilder();
         while ( pkit.hasNext() ) {
-            PackageItem pkg = pkit.next();
+            ModuleItem pkg = pkit.next();
             try {
                 BuilderResult builderResult = this.buildPackage( pkg.getUUID(),
                                                                  true );
@@ -275,7 +275,7 @@ public class RepositoryPackageService
     @WebRemote
     @LoggedIn
     public PackageConfigData loadPackageConfig(String uuid) {
-        PackageItem packageItem = rulesRepository.loadPackageByUUID( uuid );
+        ModuleItem packageItem = rulesRepository.loadModuleByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
         // package uudi.
         // we have to figure out the package name.
@@ -383,12 +383,12 @@ public class RepositoryPackageService
     public void rebuildSnapshots() throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
 
-        Iterator<PackageItem> pkit = rulesRepository.listPackages();
+        Iterator<ModuleItem> pkit = rulesRepository.listModules();
         while ( pkit.hasNext() ) {
-            PackageItem pkg = pkit.next();
-            String[] snaps = rulesRepository.listPackageSnapshots( pkg.getName() );
+            ModuleItem pkg = pkit.next();
+            String[] snaps = rulesRepository.listModuleSnapshots( pkg.getName() );
             for ( String snapName : snaps ) {
-                PackageItem snap = rulesRepository.loadPackageSnapshot( pkg.getName(),
+                ModuleItem snap = rulesRepository.loadModuleSnapshot( pkg.getName(),
                                                                         snapName );
                 BuilderResult builderResult = this.buildPackage( snap.getUUID(),
                                                                  true );
@@ -406,10 +406,10 @@ public class RepositoryPackageService
     public SnapshotInfo[] listSnapshots(String packageName) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
 
-        String[] snaps = rulesRepository.listPackageSnapshots( packageName );
+        String[] snaps = rulesRepository.listModuleSnapshots( packageName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
         for ( int i = 0; i < snaps.length; i++ ) {
-            PackageItem packageItem = rulesRepository.loadPackageSnapshot( packageName,
+            ModuleItem packageItem = rulesRepository.loadModuleSnapshot( packageName,
                                                                            snaps[i] );
             snapshotInfos[i] = packageItemToSnapshotItem( snaps[i],
                                                           packageItem );
@@ -424,13 +424,13 @@ public class RepositoryPackageService
 
         return packageItemToSnapshotItem(
                                           snapshotName,
-                                          rulesRepository.loadPackageSnapshot(
+                                          rulesRepository.loadModuleSnapshot(
                                                                                packageName,
                                                                                snapshotName ) );
     }
 
     private SnapshotInfo packageItemToSnapshotItem(String snapshotName,
-                                                   PackageItem packageItem) {
+                                                   ModuleItem packageItem) {
         SnapshotInfo snapshotInfo = new SnapshotInfo();
         snapshotInfo.setComment( packageItem.getCheckinComment() );
         snapshotInfo.setName( snapshotName );
@@ -443,7 +443,7 @@ public class RepositoryPackageService
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid( packageUUID );
 
-        PackageItem pkg = this.rulesRepository.loadPackageByUUID( packageUUID );
+        ModuleItem pkg = this.rulesRepository.loadModuleByUUID( packageUUID );
         List<String> res = new ArrayList<String>();
         AssetItemIterator it = pkg.listAssetsByFormat( AssetFormats.MODEL,
                                                        AssetFormats.DRL_MODEL );
@@ -479,13 +479,13 @@ public class RepositoryPackageService
     @LoggedIn
     public void updateDependency(String uuid,
                                  String dependencyPath) {
-        PackageItem item = rulesRepository.loadPackageByUUID( uuid );
+        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
         item.updateDependency( dependencyPath );
         item.checkin( "Update dependency" );
     }
 
     public String[] getDependencies(String uuid) {
-        PackageItem item = rulesRepository.loadPackageByUUID( uuid );
+        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
         return item.getDependencies();
     }
 
@@ -572,7 +572,7 @@ public class RepositoryPackageService
     private SingleScenarioResult runScenario(String packageName,
                                              Scenario scenario,
                                              RuleCoverageListener coverage) throws SerializationException {
-        PackageItem item = this.rulesRepository.loadPackage( packageName );
+        ModuleItem item = this.rulesRepository.loadModule( packageName );
         SingleScenarioResult result = null;
         // nasty classloader needed to make sure we use the same tree the whole
         // time.
@@ -610,7 +610,7 @@ public class RepositoryPackageService
     /*
      * Set the Rule base in a cache
      */
-    private RuleBase loadCacheRuleBase(PackageItem packageItem) throws DetailedSerializationException {
+    private RuleBase loadCacheRuleBase(ModuleItem packageItem) throws DetailedSerializationException {
         RuleBase rb = null;
         if ( packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( packageItem.getUUID() ) ) {
             rb = RuleBaseCache.getInstance().get( packageItem.getUUID() );
@@ -641,7 +641,7 @@ public class RepositoryPackageService
         return rb;
     }
 
-    private RuleBase loadRuleBase(PackageItem item,
+    private RuleBase loadRuleBase(ModuleItem item,
                                   ClassLoader cl) throws DetailedSerializationException {
         try {
             return deserKnowledgebase( item,
@@ -680,7 +680,7 @@ public class RepositoryPackageService
         }
     }
 
-    private RuleBase deserKnowledgebase(PackageItem item,
+    private RuleBase deserKnowledgebase(ModuleItem item,
                                         ClassLoader classloader) throws IOException,
                                                                 ClassNotFoundException {
         RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
@@ -691,7 +691,7 @@ public class RepositoryPackageService
     }
 
     private SingleScenarioResult runScenario(Scenario scenario,
-                                             PackageItem item,
+                                             ModuleItem item,
                                              ClassLoader cl,
                                              RuleBase rulebase,
                                              RuleCoverageListener coverage) throws DetailedSerializationException {
@@ -766,11 +766,11 @@ public class RepositoryPackageService
     @LoggedIn
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        PackageItem item = rulesRepository.loadPackageByUUID( packageUUID );
+        ModuleItem item = rulesRepository.loadModuleByUUID( packageUUID );
         return runScenariosInPackage( item );
     }
 
-    public BulkTestRunResult runScenariosInPackage(PackageItem packageItem) throws DetailedSerializationException,
+    public BulkTestRunResult runScenariosInPackage(ModuleItem packageItem) throws DetailedSerializationException,
                                                                            SerializationException {
         ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader classloader = null;

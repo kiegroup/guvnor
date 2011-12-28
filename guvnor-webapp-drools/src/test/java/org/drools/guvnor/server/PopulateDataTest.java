@@ -35,7 +35,7 @@ import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -69,7 +69,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
         createPermissions();
 
-        PackageItem pkg = rulesRepository.loadPackage("com.billasurf.manufacturing.plant");
+        ModuleItem pkg = rulesRepository.loadModule("com.billasurf.manufacturing.plant");
         repositoryPackageService.buildPackage( pkg.getUUID(),
                                                true );
     }
@@ -110,7 +110,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         assertEquals(item.getBinaryContentAttachmentFileName(),
                 "billasurf.jar");
 
-        PackageItem pkg = rulesRepository.loadPackage( "com.billasurf.manufacturing.plant" );
+        ModuleItem pkg = rulesRepository.loadModule( "com.billasurf.manufacturing.plant" );
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
                 pkg);
         pkg.checkin( "added imports" );

@@ -26,16 +26,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class PackageItemTest extends RepositoryTestCase {
+public class ModuleItemTest extends RepositoryTestCase {
 
-    private PackageItem loadGlobalArea() {
+    private ModuleItem loadGlobalArea() {
         return getRepo().loadGlobalArea();
     }
 
     @Test
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
+        ModuleItem item = repo.createModule( "testListPackages1", "lalalala" );
 
         assertNotNull(item.getCreator());
 
@@ -43,11 +43,11 @@ public class PackageItemTest extends RepositoryTestCase {
         assertEquals("goo", item.getStringProperty( "whee" ));
         assertFalse(item.getCreator().equals( "" ));
 
-        List list = iteratorToList( repo.listPackages() );
+        List list = iteratorToList( repo.listModules() );
         int prevSize = list.size();
-        repo.createPackage( "testListPackages2", "abc" );
+        repo.createModule( "testListPackages2", "abc" );
 
-        list = iteratorToList( repo.listPackages() );
+        list = iteratorToList( repo.listModules() );
 
         assertEquals(prevSize + 1, list.size());
     }
@@ -56,7 +56,7 @@ public class PackageItemTest extends RepositoryTestCase {
     @Ignore("JackRabbit errors about node type for property {}testing. Probably repository changes have broken test.")
     public void testAddPackageProperties() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
+        ModuleItem item = repo.createModule( "testListPackages1", "lalalala" );
 
         assertNotNull(item.getCreator());
 
@@ -73,11 +73,11 @@ public class PackageItemTest extends RepositoryTestCase {
         //assertEquals(testProp[0], );
         assertFalse(item.getCreator().equals( "" ));
 
-        List list = iteratorToList( repo.listPackages() );
+        List list = iteratorToList( repo.listModules() );
         int prevSize = list.size();
-        repo.createPackage( "testListPackages2", "abc" );
+        repo.createModule( "testListPackages2", "abc" );
 
-        list = iteratorToList( repo.listPackages() );
+        list = iteratorToList( repo.listModules() );
 
         assertEquals(prevSize + 1, list.size());
     }
@@ -85,7 +85,7 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testPackageRemove() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem p = repo.createPackage("removeMe", "");
+        ModuleItem p = repo.createModule("removeMe", "");
         AssetItem a = p.addAsset("Whee", "");
         a.updateContent("yeah");
         a.checkin("la");
@@ -93,16 +93,16 @@ public class PackageItemTest extends RepositoryTestCase {
         repo.save();
 
 
-        PackageItem pkgNested = p.createSubPackage("NestedGoodness");
+        ModuleItem pkgNested = p.createSubModule("NestedGoodness");
         assertNotNull(pkgNested);
 
-        int n = iteratorToList(repo.listPackages()).size();
+        int n = iteratorToList(repo.listModules()).size();
 
-        p = repo.loadPackage("removeMe");
+        p = repo.loadModule("removeMe");
         p.remove();
         repo.save();
 
-        int n_ = iteratorToList(repo.listPackages()).size();
+        int n_ = iteratorToList(repo.listModules()).size();
         assertEquals(n - 1, n_);
     }
 
@@ -111,15 +111,15 @@ public class PackageItemTest extends RepositoryTestCase {
         RulesRepository repo = getRepo();
 
         //calls constructor
-        PackageItem rulePackageItem1 = repo.createPackage("testRulePackage", "desc");
+        ModuleItem rulePackageItem1 = repo.createModule("testRulePackage", "desc");
         assertNotNull(rulePackageItem1);
         assertEquals("testRulePackage", rulePackageItem1.getName());
 
-        Iterator it = getRepo().listPackages();
+        Iterator it = getRepo().listModules();
         assertTrue(it.hasNext());
 
         while (it.hasNext()) {
-            PackageItem pack = (PackageItem) it.next();
+            ModuleItem pack = (ModuleItem) it.next();
             if (pack.getName().equals( "testRulePackage" )) {
                 return;
             }
@@ -134,7 +134,7 @@ public class PackageItemTest extends RepositoryTestCase {
     public void testPackageCopy() throws Exception {
         RulesRepository repo = getRepo();
 
-        PackageItem pkg = repo.createPackage( "testPackageCopy", "this is something" );
+        ModuleItem pkg = repo.createModule( "testPackageCopy", "this is something" );
 
         AssetItem it1 = pkg.addAsset( "testPackageCopy1", "la" );
         AssetItem it2 = pkg.addAsset( "testPackageCopy2", "la" );
@@ -151,7 +151,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
         repo.getSession().getWorkspace().copy( pkg.getNode().getPath(), pkg.getNode().getPath() + "_");
 
-        PackageItem pkg2 = repo.loadPackage( "testPackageCopy_" );
+        ModuleItem pkg2 = repo.loadModule( "testPackageCopy_" );
         assertNotNull(pkg2);
 
         assertEquals(2, iteratorToList( pkg2.getAssets() ).size() );
@@ -167,7 +167,7 @@ public class PackageItemTest extends RepositoryTestCase {
     public void testPackageSnapshot() throws Exception {
         RulesRepository repo = getRepo();
 
-        PackageItem pkg = repo.createPackage( "testPackageSnapshot", "this is something" );
+        ModuleItem pkg = repo.createModule( "testPackageSnapshot", "this is something" );
         assertFalse(pkg.isSnapshot());
 
 
@@ -186,15 +186,15 @@ public class PackageItemTest extends RepositoryTestCase {
         assertFalse( ver1 == 0 );
 
         assertEquals(2, iteratorToList(pkg.listAssetsByFormat( new String[] {"drl"} )).size());
-        repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        repo.createModuleSnapshot( "testPackageSnapshot", "PROD 2.0" );
 
         //just check we can load it all via UUID as well...
-        PackageItem pkgLoaded = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        ModuleItem pkgLoaded = repo.loadModuleSnapshot( "testPackageSnapshot", "PROD 2.0" );
         assertTrue(pkgLoaded.isSnapshot());
         assertEquals("PROD 2.0", pkgLoaded.getSnapshotName());
         assertEquals("testPackageSnapshot", pkgLoaded.getName());
 
-        PackageItem _pkgLoaded = repo.loadPackageByUUID( pkgLoaded.getUUID() );
+        ModuleItem _pkgLoaded = repo.loadModuleByUUID( pkgLoaded.getUUID() );
         assertNotNull(_pkgLoaded);
         assertEquals(pkgLoaded.getCreatedDate(), _pkgLoaded.getCreatedDate());
         assertEquals(pkgLoaded.getName(), _pkgLoaded.getName());
@@ -214,7 +214,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
 
 
-        PackageItem pkg2 = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        ModuleItem pkg2 = repo.loadModuleSnapshot( "testPackageSnapshot", "PROD 2.0" );
         assertNotNull(pkg2);
         List snapAssets = iteratorToList( pkg2.getAssets() );
         assertEquals(2, snapAssets.size());
@@ -233,40 +233,40 @@ public class PackageItemTest extends RepositoryTestCase {
         assertEquals(2, iteratorToList(pkg2.listAssetsByFormat( new String[] {"drl"} )).size());
 
         //now check we can list the snappies
-        String[] res = repo.listPackageSnapshots("testPackageSnapshot");
+        String[] res = repo.listModuleSnapshots("testPackageSnapshot");
 
         assertEquals(1, res.length);
         assertEquals("PROD 2.0", res[0]);
 
-        res = repo.listPackageSnapshots( "does not exist" );
+        res = repo.listModuleSnapshots( "does not exist" );
         assertEquals(0, res.length);
 
-        repo.removePackageSnapshot( "testPackageSnapshot", "XX" );
+        repo.removeModuleSnapshot( "testPackageSnapshot", "XX" );
         //does nothing... but should not barf...
         try {
-            repo.removePackageSnapshot( "NOTHING SENSIBLE", "XX" );
+            repo.removeModuleSnapshot( "NOTHING SENSIBLE", "XX" );
             fail("should not be able to remove this.");
         } catch (RulesRepositoryException e) {
             assertNotNull(e.getMessage());
         }
 
-        repo.removePackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        repo.removeModuleSnapshot( "testPackageSnapshot", "PROD 2.0" );
         repo.save();
 
-        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        res = repo.listModuleSnapshots( "testPackageSnapshot" );
         assertEquals(0, res.length);
 
-        repo.createPackageSnapshot( "testPackageSnapshot", "BOO" );
-        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        repo.createModuleSnapshot( "testPackageSnapshot", "BOO" );
+        res = repo.listModuleSnapshots( "testPackageSnapshot" );
         assertEquals(1, res.length);
-        repo.copyPackageSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
-        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        repo.copyModuleSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
+        res = repo.listModuleSnapshots( "testPackageSnapshot" );
         assertEquals(2, res.length);
 
 
 
-        repo.copyPackageSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
-        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        repo.copyModuleSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
+        res = repo.listModuleSnapshots( "testPackageSnapshot" );
         assertEquals(2, res.length);
 
 
@@ -277,17 +277,17 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testLoadRulePackageItem() {
 
-        PackageItem rulePackageItem = getRepo().createPackage("testLoadRuleRuleItem", "desc");
+        ModuleItem rulePackageItem = getRepo().createModule("testLoadRuleRuleItem", "desc");
 
-        rulePackageItem = getRepo().loadPackage("testLoadRuleRuleItem");
+        rulePackageItem = getRepo().loadModule("testLoadRuleRuleItem");
         assertNotNull(rulePackageItem);
         assertEquals("testLoadRuleRuleItem", rulePackageItem.getName());
 
         assertEquals("desc", rulePackageItem.getDescription());
-        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem.getFormat());
+        assertEquals(ModuleItem.MODULE_FORMAT, rulePackageItem.getFormat());
         // try loading rule package that was not created
         try {
-            rulePackageItem = getRepo().loadPackage("anotherRuleRuleItem");
+            rulePackageItem = getRepo().loadModule("anotherRuleRuleItem");
             fail("Exception not thrown loading rule package that was not created.");
         } catch (RulesRepositoryException e) {
             // that is OK!
@@ -300,7 +300,7 @@ public class PackageItemTest extends RepositoryTestCase {
      */
     @Test
     public void testPackageRuleVersionExtraction() throws Exception {
-        PackageItem pack = getRepo().createPackage( "package extractor", "foo" );
+        ModuleItem pack = getRepo().createModule( "package extractor", "foo" );
 
         AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
         rule1.checkin( "version0" );
@@ -313,7 +313,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
         getRepo().save();
 
-        pack = getRepo().loadPackage( "package extractor" );
+        pack = getRepo().loadModule( "package extractor" );
         List rules = iteratorToList( pack.getAssets() );
         assertEquals(3, rules.size());
 
@@ -324,7 +324,7 @@ public class PackageItemTest extends RepositoryTestCase {
         rule1.updateState( "foobar" );
         rule1.checkin( "yeah" );
 
-        pack = getRepo().loadPackage( "package extractor" );
+        pack = getRepo().loadModule( "package extractor" );
 
         rules = iteratorToList( pack.getAssetsWithStatus(state) );
 
@@ -363,7 +363,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testIgnoreState() throws Exception {
-        PackageItem pack = getRepo().createPackage( "package testIgnoreState", "foo" );
+        ModuleItem pack = getRepo().createModule( "package testIgnoreState", "foo" );
 
         getRepo().createState( "x" );
         AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
@@ -391,11 +391,11 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testDuplicatePackageName() throws Exception {
-        PackageItem pack = getRepo().createPackage( "dupePackageTest", "testing for dupe" );
+        ModuleItem pack = getRepo().createModule( "dupePackageTest", "testing for dupe" );
         assertNotNull(pack.getName());
 
         try {
-            getRepo().createPackage( "dupePackageTest", "this should fail" );
+            getRepo().createModule( "dupePackageTest", "this should fail" );
             fail("Should not be able to add a package of the same name.");
         } catch (RulesRepositoryException e) {
             assertNotNull(e.getMessage());
@@ -404,11 +404,11 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testPackageInstanceWrongNodeType() throws Exception {
-        PackageItem pack = getRepo().loadDefaultPackage();
+        ModuleItem pack = getRepo().loadDefaultModule();
         AssetItem rule = pack.addAsset( "packageInstanceWrongNodeType", "" );
 
         try {
-            new PackageItem(this.getRepo(), rule.getNode());
+            new ModuleItem(this.getRepo(), rule.getNode());
             fail("Can't create a package from a rule node.");
         } catch (RulesRepositoryException e) {
             assertNotNull(e.getMessage());
@@ -418,19 +418,19 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testLoadRulePackageItemByUUID() throws Exception {
 
-        PackageItem rulePackageItem = getRepo().createPackage("testLoadRuleRuleItemByUUID", "desc");
+        ModuleItem rulePackageItem = getRepo().createModule("testLoadRuleRuleItemByUUID", "desc");
 
         String uuid = null;
             uuid = rulePackageItem.getNode().getUUID();
 
 
-        rulePackageItem = getRepo().loadPackageByUUID(uuid);
+        rulePackageItem = getRepo().loadModuleByUUID(uuid);
         assertNotNull(rulePackageItem);
         assertEquals("testLoadRuleRuleItemByUUID", rulePackageItem.getName());
 
         // try loading rule package that was not created
         try {
-            rulePackageItem = getRepo().loadPackageByUUID("01010101-0101-0101-0101-010101010101");
+            rulePackageItem = getRepo().loadModuleByUUID("01010101-0101-0101-0101-010101010101");
             fail("Exception not thrown loading rule package that was not created.");
         } catch (RulesRepositoryException e) {
             // that is OK!
@@ -440,7 +440,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testAddAssetTrailingWhitespace() {
-        PackageItem pkg = getRepo().createPackage("testAddAssetTrailingWhitespace","desc");
+        ModuleItem pkg = getRepo().createModule("testAddAssetTrailingWhitespace","desc");
         pkg.addAsset("wee ", "");
 
         assertNotNull(pkg.loadAsset("wee"));
@@ -448,7 +448,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testAddRuleRuleItem() {
-            PackageItem rulePackageItem1 = getRepo().createPackage("testAddRuleRuleItem","desc");
+            ModuleItem rulePackageItem1 = getRepo().createModule("testAddRuleRuleItem","desc");
 
 
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testAddRuleRuleItem", "test description");
@@ -485,7 +485,7 @@ public class PackageItemTest extends RepositoryTestCase {
         ruleItem1.updateContent( "test content" );
         ruleItem1.checkin( "updated the rule content" );
         
-        PackageItem rulePackageItem2 = getRepo().createPackage("testAddRuleItemFromGlobalArea1","desc");
+        ModuleItem rulePackageItem2 = getRepo().createModule("testAddRuleItemFromGlobalArea1","desc");
         AssetItem linkedRuleItem1 = rulePackageItem2.addAssetImportedFromGlobalArea(ruleItem1.getName());
         linkedRuleItem1.updateContent( "test content for linked" );
         linkedRuleItem1.checkin( "updated the rule content for linked" );
@@ -515,7 +515,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testGetRules() {
-        PackageItem rulePackageItem1 = getRepo().createPackage("testGetRules", "desc");
+        ModuleItem rulePackageItem1 = getRepo().createModule("testGetRules", "desc");
 
         assertFalse(rulePackageItem1.containsAsset("goober"));
 
@@ -549,7 +549,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testToString() {
-        PackageItem rulePackageItem1 = getRepo().createPackage("testToStringPackage", "desc");
+        ModuleItem rulePackageItem1 = getRepo().createModule("testToStringPackage", "desc");
 
         AssetItem ruleItem1 = rulePackageItem1.addAsset("testToStringPackage", "test lhs content" );
         ruleItem1.updateContent( "test lhs content" );
@@ -559,7 +559,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testRemoveRule() {
-        PackageItem rulePackageItem1 = getRepo().createPackage("testRemoveRule", "desc");
+        ModuleItem rulePackageItem1 = getRepo().createModule("testRemoveRule", "desc");
 
         AssetItem ruleItem1 = rulePackageItem1.addAsset("testRemoveRule", "test lhs content" );
         ruleItem1.updateContent( "test lhs content" );
@@ -595,7 +595,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testSearchByFormat() throws Exception {
-        PackageItem pkg = getRepo().createPackage( "searchByFormat", "" );
+        ModuleItem pkg = getRepo().createModule( "searchByFormat", "" );
         getRepo().save();
 
 
@@ -645,7 +645,7 @@ public class PackageItemTest extends RepositoryTestCase {
         assertEquals(1, list.size());
         assertTrue(list.get( 0 ) instanceof AssetItem);
         
-        PackageItem pkg2 = getRepo().createPackage( "testSearchSharedAssetByFormat", "" );
+        ModuleItem pkg2 = getRepo().createModule( "testSearchSharedAssetByFormat", "" );
         getRepo().save();
         AssetItem linkedItem = pkg2.addAssetImportedFromGlobalArea(item.getName());
 
@@ -673,7 +673,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testListArchivedAssets() throws Exception {
-        PackageItem pkg = getRepo().createPackage( "org.drools.archivedtest", "" );
+        ModuleItem pkg = getRepo().createModule( "org.drools.archivedtest", "" );
         getRepo().save();
 
 
@@ -712,7 +712,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testExcludeAssetTypes() throws Exception {
-        PackageItem pkg = getRepo().createPackage( "testExcludeAssetTypes", "" );
+        ModuleItem pkg = getRepo().createModule( "testExcludeAssetTypes", "" );
         getRepo().save();
 
 
@@ -744,7 +744,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testSortHistoryByVersionNumber() {
-        PackageItem item = new PackageItem();
+        ModuleItem item = new ModuleItem();
         List l = new ArrayList();
 
         AssetItem i1 = new MockAssetItem(42);
@@ -762,23 +762,23 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testMiscProperties() {
-        PackageItem item = getRepo().createPackage( "testHeader", "ya" );
+        ModuleItem item = getRepo().createModule( "testHeader", "ya" );
 
         updateHeader( "new header", item );
         item.updateExternalURI( "boo" );
         getRepo().save();
         assertEquals("new header", getHeader(item));
-        item = getRepo().loadPackage("testHeader");
+        item = getRepo().loadModule("testHeader");
         assertEquals("new header", getHeader(item));
         assertEquals("boo", item.getExternalURI());
     }
 
     @Test
     public void testGetFormatAndUpToDate() {
-        PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat",
+        ModuleItem rulePackageItem1 = getRepo().createModule("testGetFormat",
                 "woot");
         assertNotNull(rulePackageItem1);
-        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
+        assertEquals(ModuleItem.MODULE_FORMAT, rulePackageItem1.getFormat());
         assertFalse(rulePackageItem1.isBinaryUpToDate());
         rulePackageItem1.updateBinaryUpToDate(true);
         assertTrue(rulePackageItem1.isBinaryUpToDate());
@@ -788,19 +788,19 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testFormatOtherThanDroolsPackage() {
-        PackageItem rulePackageItem1 = getRepo().createPackage(
+        ModuleItem rulePackageItem1 = getRepo().createModule(
                 "testFormatOtherThanDroolsPackage", "woot");
         assertNotNull(rulePackageItem1);
         // PACKAGE_FORMAT is the default module format
-        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
+        assertEquals(ModuleItem.MODULE_FORMAT, rulePackageItem1.getFormat());
         rulePackageItem1.updateFormat("soaservice");
 
-        PackageItem item = getRepo().loadPackage(
+        ModuleItem item = getRepo().loadModule(
                 "testFormatOtherThanDroolsPackage");
         assertEquals("soaservice", item.getFormat());
     }
     
-    public static void updateHeader(String h, PackageItem pkg) {
+    public static void updateHeader(String h, ModuleItem pkg) {
         pkg.checkout();
         AssetItem as = null;
         if (pkg.containsAsset("drools")) {
@@ -812,7 +812,7 @@ public class PackageItemTest extends RepositoryTestCase {
         //as.checkin("");
     }
 
-    public static String getHeader(PackageItem pkg) {
+    public static String getHeader(ModuleItem pkg) {
         if (pkg.containsAsset("drools")) {
             return pkg.loadAsset("drools").getContent();
         } else {
@@ -822,7 +822,7 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testPackageCheckinConfig() {
-        PackageItem item = getRepo().createPackage( "testPackageCheckinConfig", "description" );
+        ModuleItem item = getRepo().createModule( "testPackageCheckinConfig", "description" );
 
         AssetItem rule = item.addAsset( "testPackageCheckinConfig", "w" );
         rule.checkin( "goo" );
@@ -841,7 +841,7 @@ public class PackageItemTest extends RepositoryTestCase {
         AssetItem rule_ = getRepo().loadAssetByUUID( rule.getUUID() );
         assertEquals(rule.getVersionNumber(), rule_.getVersionNumber());
 
-        item = getRepo().loadPackage( "testPackageCheckinConfig");
+        item = getRepo().loadModule( "testPackageCheckinConfig");
         long v = item.getVersionNumber();
         item.updateCheckinComment( "x" );
         getRepo().save();
@@ -852,10 +852,10 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test 
     public void testPackageWorkspaceProperty() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem item = repo.createPackage( "testPackageWorkspaceProperty1", "lalalala" );
+        ModuleItem item = repo.createModule( "testPackageWorkspaceProperty1", "lalalala" );
         getRepo().save();
         
-        String[] workspaces = repo.loadPackage(item.getName()).getWorkspaces();
+        String[] workspaces = repo.loadModule(item.getName()).getWorkspaces();
 
         item.removeWorkspace("workspace1");
         
@@ -881,7 +881,7 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testDependencies() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem item = repo.createPackage("testDependencies", "lalalala");
+        ModuleItem item = repo.createModule("testDependencies", "lalalala");
         getRepo().save();
 
         String[] dependencies = item.getDependencies();
@@ -921,7 +921,7 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testDependenciesWithHistoricalVersion() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem item = repo.createPackage("testDependenciesWithHistoricalVersion", "lalalala");
+        ModuleItem item = repo.createModule("testDependenciesWithHistoricalVersion", "lalalala");
         getRepo().save();
 
         String[] dependencies = item.getDependencies();
@@ -937,7 +937,7 @@ public class PackageItemTest extends RepositoryTestCase {
         
         item.checkout();
         item.checkin("v1");
-        PackageItem historicalPackage = getRepo().loadPackage("testDependenciesWithHistoricalVersion", 2);
+        ModuleItem historicalPackage = getRepo().loadModule("testDependenciesWithHistoricalVersion", 2);
         dependencies = historicalPackage.getDependencies();
         assertEquals(1, dependencies.length);
         //testDependenciesWithHistoricalVersionAsset1's version is 1 because it was forced to be 
@@ -948,7 +948,7 @@ public class PackageItemTest extends RepositoryTestCase {
         
         item.checkout();
         item.checkin("v2");
-        historicalPackage = getRepo().loadPackage("testDependenciesWithHistoricalVersion", 3);
+        historicalPackage = getRepo().loadModule("testDependenciesWithHistoricalVersion", 3);
         dependencies = historicalPackage.getDependencies();
         assertEquals(1, dependencies.length);
         //testDependenciesWithHistoricalVersionAsset1's version is 1 because it was forced to be 
@@ -961,7 +961,7 @@ public class PackageItemTest extends RepositoryTestCase {
     @Test
     public void testListAssetsByFormatForHistoricalPackage() throws Exception {
     	//Package version 1(Initial version)
-        PackageItem pkg = getRepo().createPackage( "testListAssetsByFormatForHistoricalPackage", "" );
+        ModuleItem pkg = getRepo().createModule( "testListAssetsByFormatForHistoricalPackage", "" );
         getRepo().save();
 
         AssetItem item = pkg.addAsset( "testVersionedAssetItemIteratorAsset1", "" );
@@ -995,7 +995,7 @@ public class PackageItemTest extends RepositoryTestCase {
         
         
         //Verify package Latest version         
-        pkg = getRepo().loadPackage("testListAssetsByFormatForHistoricalPackage");
+        pkg = getRepo().loadModule("testListAssetsByFormatForHistoricalPackage");
         String[] dependencies = pkg.getDependencies();
         assertEquals(dependencies.length, 3);
 
@@ -1028,7 +1028,7 @@ public class PackageItemTest extends RepositoryTestCase {
  
         
         //Verify historical package version 2
-        PackageItem historicalPackage = getRepo().loadPackage("testListAssetsByFormatForHistoricalPackage", 2);
+        ModuleItem historicalPackage = getRepo().loadModule("testListAssetsByFormatForHistoricalPackage", 2);
 /*        PackageHistoryIterator historyIterator = pkg.getHistory();
         PackageItem historicalPackage = null;
         while ( historyIterator.hasNext() ) {

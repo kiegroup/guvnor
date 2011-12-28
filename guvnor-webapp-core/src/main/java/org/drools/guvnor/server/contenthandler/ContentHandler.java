@@ -117,7 +117,7 @@ public abstract class ContentHandler {
             catName = cats.get(0).getName();
         }
         //get all Category Rules for Package
-        HashMap<String, String> categoryRules = asset.getPackage().getCategoryRules();
+        HashMap<String, String> categoryRules = asset.getModule().getCategoryRules();
 
         String newParent = currentParent;
         if (null != categoryRules && null != catName) {

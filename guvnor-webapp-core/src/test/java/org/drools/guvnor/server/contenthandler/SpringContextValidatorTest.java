@@ -31,7 +31,7 @@ import org.drools.guvnor.server.MockAssetItemIterator;
 import org.drools.guvnor.server.builder.AssetItemValidator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.mockito.Matchers;
 
 public class SpringContextValidatorTest {
 
-    private PackageItem packageItem;
+    private ModuleItem packageItem;
     private AssetItem   unsavedAssetItem;
     private AssetItem   savedAssetItem;
 
@@ -96,20 +96,20 @@ public class SpringContextValidatorTest {
     }
 
     private void setUpPackageItem() {
-        packageItem = mock( PackageItem.class );
+        packageItem = mock( ModuleItem.class );
         when( packageItem.getName() ).thenReturn( "mock" );
     }
 
     private void setUpUnsavedAssetItem() {
         unsavedAssetItem = mock( AssetItem.class );
-        when( unsavedAssetItem.getPackage() ).thenReturn( packageItem );
+        when( unsavedAssetItem.getModule() ).thenReturn( packageItem );
         when( unsavedAssetItem.getContent() ).thenReturn( "" );
         when( unsavedAssetItem.getUUID() ).thenReturn( "mock" );
     }
 
     private void setUpSavedAssetItem() {
         savedAssetItem = mock( AssetItem.class );
-        when( savedAssetItem.getPackage() ).thenReturn( packageItem );
+        when( savedAssetItem.getModule() ).thenReturn( packageItem );
         when( savedAssetItem.getContent() ).thenReturn( "" );
         when( savedAssetItem.getUUID() ).thenReturn( "mock" );
     }

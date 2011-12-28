@@ -34,7 +34,7 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -165,7 +165,7 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset( "testDeclaredTypeStore",
                                         "" );
         asset.updateFormat( "model.drl" );

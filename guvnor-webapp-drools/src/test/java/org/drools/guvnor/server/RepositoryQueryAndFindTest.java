@@ -42,7 +42,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.type.DateFormatsImpl;
 import org.junit.Test;
 
@@ -201,7 +201,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermission.asset1",
@@ -439,7 +439,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermission.asset1",
@@ -538,7 +538,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsPackageDescription";
-        PackageItem pkg = rulesRepository.createPackage( packageName,
+        ModuleItem pkg = rulesRepository.createModule( packageName,
                                                          packageDescription );
 
         AssetItem[] assets = new AssetItem[3];
@@ -625,7 +625,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermission.testMetaDataSearchAsset1",
@@ -765,7 +765,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRootPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRootPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRoot.testMetaDataSearchAsset1",
@@ -877,7 +877,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataFullResultsPackageDescription";
-        PackageItem pkg = rulesRepository.createPackage( packageName,
+        ModuleItem pkg = rulesRepository.createModule( packageName,
                                                          packageDescription );
 
         AssetItem[] assets = new AssetItem[3];
@@ -933,7 +933,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPagePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPagePagedResultsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription,
                                                                  "package" );
 
@@ -997,7 +997,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageFullResultsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription,
                                                                  "package" );
 
@@ -1044,7 +1044,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageUnregisteredAssetFormatsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageUnregisteredAssetFormatsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription );
 
         AssetItem as;

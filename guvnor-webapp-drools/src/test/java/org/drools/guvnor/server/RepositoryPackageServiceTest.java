@@ -59,7 +59,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
@@ -198,7 +198,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testPackageBinaryUpdatedResetWhenDeletingAnAsset() throws Exception {
 
-        PackageItem packageItem = rulesRepository.createPackage( "testPackageBinaryUpdatedResetWhenDeletingAnAsset",
+        ModuleItem packageItem = rulesRepository.createModule( "testPackageBinaryUpdatedResetWhenDeletingAnAsset",
                                                                                             "" );
 
         AssetItem assetItem = packageItem.addAsset( "temp",
@@ -210,7 +210,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         serviceImplementation.deleteUncheckedRule( assetItem.getUUID() );
 
-        PackageItem reloadedPackage = rulesRepository.loadPackage( packageItem.getName() );
+        ModuleItem reloadedPackage = rulesRepository.loadModule( packageItem.getName() );
 
         assertEquals( packageItem.getName(),
                       reloadedPackage.getName() );
@@ -222,7 +222,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testGetHistoryPackageBinary",
+        ModuleItem pkg = repo.createModule( "testGetHistoryPackageBinary",
                                               "" );
         assertFalse( pkg.isBinaryUpToDate() );
         DroolsHeader.updateDroolsHeader( "import org.drools.Person",
@@ -239,7 +239,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         pkg.checkout();
         pkg.checkin( "version1" );
         //Verify history package binary.
-        PackageItem p = repo.loadPackage( "testGetHistoryPackageBinary",
+        ModuleItem p = repo.loadModule( "testGetHistoryPackageBinary",
                                           2 );
         assertEquals( "version1",
                       p.getCheckinComment() );
@@ -255,7 +255,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testDependencyHistoryPackage() throws Exception {
         //Package version 1
-        PackageItem pkg = rulesRepository.createPackage( "testDependencyHistoryPackage",
+        ModuleItem pkg = rulesRepository.createModule( "testDependencyHistoryPackage",
                                                                    "" );
 
         AssetItem func = pkg.addAsset( "func",
@@ -282,14 +282,14 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         pkg.checkin( "package version 4" );
 
         //Verify the latest version
-        PackageItem item = rulesRepository.loadPackage( "testDependencyHistoryPackage" );
+        ModuleItem item = rulesRepository.loadModule( "testDependencyHistoryPackage" );
         assertEquals( "package version 4",
                       item.getCheckinComment() );
         assertEquals( "func?version=1",
                       item.getDependencies()[0] );
 
         //Verify version 2
-        item = rulesRepository.loadPackage( "testDependencyHistoryPackage",
+        item = rulesRepository.loadModule( "testDependencyHistoryPackage",
                                                       2 );
         assertEquals( "package version 2",
                       item.getCheckinComment() );
@@ -297,7 +297,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                       item.getDependencies()[0] );
 
         //Verify version 3
-        item = rulesRepository.loadPackage( "testDependencyHistoryPackage",
+        item = rulesRepository.loadModule( "testDependencyHistoryPackage",
                                                       3 );
         assertEquals( "package version 3",
                       item.getCheckinComment() );
@@ -435,17 +435,17 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // get rid of other snapshot crap
-        Iterator< ? > pkit = repo.listPackages();
+        Iterator< ? > pkit = repo.listModules();
         while ( pkit.hasNext() ) {
-            PackageItem pkg = (PackageItem) pkit.next();
-            String[] snaps = repo.listPackageSnapshots( pkg.getName() );
+            ModuleItem pkg = (ModuleItem) pkit.next();
+            String[] snaps = repo.listModuleSnapshots( pkg.getName() );
             for ( String snapName : snaps ) {
-                repo.removePackageSnapshot( pkg.getName(),
+                repo.removeModuleSnapshot( pkg.getName(),
                                             snapName );
             }
         }
 
-        final PackageItem pkg = repo.createPackage( "testSnapshotRebuild",
+        final ModuleItem pkg = repo.createModule( "testSnapshotRebuild",
                                                     "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -466,7 +466,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                         false,
                                                         "" );
 
-        PackageItem snap = repo.loadPackageSnapshot( "testSnapshotRebuild",
+        ModuleItem snap = repo.loadModuleSnapshot( "testSnapshotRebuild",
                                                      "SNAP" );
         long snapTime = snap.getLastModified().getTimeInMillis();
 
@@ -474,7 +474,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.rebuildSnapshots();
 
-        PackageItem snap_ = repo.loadPackageSnapshot( "testSnapshotRebuild",
+        ModuleItem snap_ = repo.loadModuleSnapshot( "testSnapshotRebuild",
                                                       "SNAP" );
         long newTime = snap_.getLastModified().getTimeInMillis();
 
@@ -503,7 +503,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        final PackageItem pkg = repo.createPackage( "testPackageRebuild",
+        final ModuleItem pkg = repo.createModule( "testPackageRebuild",
                                                     "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -540,7 +540,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   "testExportPackageCat2",
                                                   "desc" );
-        PackageItem p = rulesRepository.createPackage( "testExportPackage",
+        ModuleItem p = rulesRepository.createModule( "testExportPackage",
                                                                  "" );
 
         String uuid1 = serviceImplementation.createNewRule( "testExportPackageAsset1",
@@ -579,7 +579,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "this is a new package",
                                                               "package" );
 
-        PackageItem item = rulesRepository.loadPackage( "testCreateArchivedPackage" );
+        ModuleItem item = rulesRepository.loadModule( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
 
@@ -611,7 +611,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "package" );
         assertNotNull( uuid );
 
-        PackageItem item = rulesRepository.loadPackage( "testCreatePackage" );
+        ModuleItem item = rulesRepository.loadModule( "testCreatePackage" );
         assertNotNull( item );
         assertEquals( "this is a new package",
                       item.getDescription() );
@@ -641,7 +641,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadPackageConfig() throws Exception {
-        PackageItem it = rulesRepository.loadDefaultPackage();
+        ModuleItem it = rulesRepository.loadDefaultModule();
         String uuid = it.getUUID();
         it.updateCoverage("xyz");
         it.updateExternalURI( "ext" );
@@ -671,7 +671,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                         "TEST SNAP 2.0",
                                                         false,
                                                         "ya" );
-        PackageItem loaded = rulesRepository.loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
+        ModuleItem loaded = rulesRepository.loadModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                             "TEST SNAP 2.0" );
 
         data = repositoryPackageService.loadPackageConfig( loaded.getUUID() );
@@ -689,7 +689,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "a desc",
                                                               "package" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
-        PackageItem it = rulesRepository.loadPackageByUUID( uuid );
+        ModuleItem it = rulesRepository.loadModuleByUUID( uuid );
         data.setArchived(true);
 
         AssetItem rule1 = it.addAsset( "rule_1",
@@ -702,7 +702,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = rulesRepository.loadPackage(data.getName());
+        it = rulesRepository.loadModule(data.getName());
         assertTrue( data.isArchived() );
         assertTrue(it.loadAsset("drools").isArchived());
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -711,7 +711,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = rulesRepository.loadPackage( data.getName() );
+        it = rulesRepository.loadModule( data.getName() );
         assertFalse( data.isArchived() );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
         assertTrue(it.loadAsset("rule_1").isArchived());
@@ -720,7 +720,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = rulesRepository.loadPackage( data.getName() );
+        it = rulesRepository.loadModule( data.getName() );
         assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -786,7 +786,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testRemovePackage() throws Exception {
         int n = repositoryPackageService.listPackages().length;
-        PackageItem p = rulesRepository.createPackage( "testRemovePackage",
+        ModuleItem p = rulesRepository.createModule( "testRemovePackage",
                                                                  "" );
         assertNotNull( repositoryPackageService.loadPackageConfig( p.getUUID() ) );
 
@@ -1071,7 +1071,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageCompile",
+        ModuleItem pkg = repo.createModule( "testBinaryPackageCompile",
                                               "" );
         DroolsHeader.updateDroolsHeader( "global java.util.List ls \n import org.drools.Person",
                                                   pkg );
@@ -1086,7 +1086,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                                       true );
         assertFalse( result.hasLines() );
 
-        pkg = repo.loadPackage( "testBinaryPackageCompile" );
+        pkg = repo.loadModule( "testBinaryPackageCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1131,7 +1131,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( rule1.getUUID(),
                       result.getLines().get( 0 ).getUuid() );
 
-        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
+        pkg = repo.loadModuleSnapshot( "testBinaryPackageCompile",
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                         true );
@@ -1150,7 +1150,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL",
+        ModuleItem pkg = repo.createModule( "testBinaryPackageCompileBRL",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
@@ -1190,7 +1190,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         }
         assertFalse( result.hasLines() );
 
-        pkg = repo.loadPackage( "testBinaryPackageCompileBRL" );
+        pkg = repo.loadModule( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         // Here is where we write it out is needed... set to true if needed for
@@ -1245,7 +1245,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( rule2.getUUID(),
                       result.getLines().get( 0 ).getUuid() );
 
-        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
+        pkg = repo.loadModuleSnapshot( "testBinaryPackageCompileBRL",
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                         true );
@@ -1297,7 +1297,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     public void testPackageSource() throws Exception {
         RulesRepository repo = rulesRepository;
         // create our package
-        PackageItem pkg = repo.createPackage( "testPackageSource",
+        ModuleItem pkg = repo.createModule( "testPackageSource",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import org.goo.Ber",
                                                   pkg );

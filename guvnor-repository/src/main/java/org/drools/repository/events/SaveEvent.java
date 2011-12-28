@@ -17,7 +17,7 @@
 package org.drools.repository.events;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 /**
  * This will be called as content is saved to the repository - you can hook in and also store content in an external store.
@@ -40,8 +40,8 @@ public interface SaveEvent {
 
 
     /**
-     * Called once, when a package is created.
+     * Called once, when a module is created.
      */
-    public void onPackageCreate(PackageItem item);
+    public void onModuleCreate(ModuleItem item);
 
 }

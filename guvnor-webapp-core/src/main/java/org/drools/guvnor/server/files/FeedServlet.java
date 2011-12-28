@@ -25,7 +25,7 @@ import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
@@ -95,8 +95,8 @@ public class FeedServlet extends RepositoryServlet {
                                   HttpServletResponse response) throws IOException {
         String assetName = request.getParameter("assetName");
         String packageName = request.getParameter("package");
-        AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(assetName);
-        checkPackageReadPermission(asset.getPackageName());
+        AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
+        checkPackageReadPermission(asset.getModuleName());
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         entries.add(new AtomFeed.AtomEntry(request,
@@ -154,7 +154,7 @@ public class FeedServlet extends RepositoryServlet {
         String packageName = request.getParameter("name");
         checkPackageReadPermission(packageName);
 
-        PackageItem pkg = rulesRepository.loadPackage(packageName);
+        ModuleItem pkg = rulesRepository.loadModule(packageName);
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         Iterator<AssetItem> it = pkg.getAssets();

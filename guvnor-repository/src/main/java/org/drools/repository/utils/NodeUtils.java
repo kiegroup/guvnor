@@ -19,7 +19,7 @@ import org.drools.repository.RulesRepositoryException;
  */
 
 /**
- * Utilities relating to a PackageItem.
+ * Utilities relating to a ModuleItem.
  */
 public class NodeUtils {
 

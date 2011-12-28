@@ -87,7 +87,7 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
@@ -117,7 +117,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
         //this should trigger the fact that the first user edited something
-        AssetItem as = rulesRepository.loadDefaultPackage().addAsset( "testLoadInbox",
+        AssetItem as = rulesRepository.loadDefaultModule().addAsset( "testLoadInbox",
                                                                                 "" );
         as.checkin( "" );
         RuleAsset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
@@ -139,7 +139,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //Now, the second user comes along, makes a change...
         RulesRepository repo2 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
-        AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        AssetItem as2 = repo2.loadDefaultModule().loadAsset( "testLoadInbox" );
         as2.updateContent( "hey" );
         as2.checkin( "here we go again !" );
 
@@ -170,7 +170,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //ok lets create a third user...
         RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
-        AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        AssetItem as3 = repo3.loadDefaultModule().loadAsset( "testLoadInbox" );
         as3.updateContent( "hey22" );
         as3.checkin( "here we go again 22!" );
 
@@ -202,8 +202,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testDeleteUnversionedRule() throws Exception {
 
-        rulesRepository.loadDefaultPackage();
-        rulesRepository.createPackage("anotherPackage",
+        rulesRepository.loadDefaultModule();
+        rulesRepository.createModule("anotherPackage",
                 "woot");
 
         CategoryItem cat = rulesRepository.loadCategory("/");
@@ -247,8 +247,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // RulesRepository(SessionHelper.getSession()));
 
 
-        rulesRepository.loadDefaultPackage();
-        rulesRepository.createPackage("another",
+        rulesRepository.loadDefaultModule();
+        rulesRepository.createModule("another",
                 "woot");
 
         CategoryItem cat = rulesRepository.loadCategory("/");
@@ -300,7 +300,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         cat.addCategory("testAttemptDupeRule",
                 "yeah");
 
-        rulesRepository.createPackage("dupes",
+        rulesRepository.createModule("dupes",
                 "yeah");
 
         serviceImplementation.createNewRule("testAttemptDupeRule",
@@ -321,7 +321,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        rulesRepository.createPackage("testCreateNewRule",
+        rulesRepository.createModule("testCreateNewRule",
                 "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRule",
@@ -342,7 +342,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRuleUsingConfiguration() throws Exception {
-        rulesRepository.createPackage( "testCreateNewRuleUsingConfiguration",
+        rulesRepository.createModule( "testCreateNewRuleUsingConfiguration",
                                        "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRuleUsingConfiguration",
@@ -366,7 +366,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewGuidedDecisionTableUsingConfiguration() throws Exception {
-        rulesRepository.createPackage( "testCreateNewGuidedDecisionTableUsingConfiguration",
+        rulesRepository.createModule( "testCreateNewGuidedDecisionTableUsingConfiguration",
                                        "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewGuidedDecisionTableUsingConfiguration",
@@ -400,7 +400,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
-        rulesRepository.createPackage("testCreateNewRuleContainsApostropheContainsApostrophe",
+        rulesRepository.createModule("testCreateNewRuleContainsApostropheContainsApostrophe",
                 "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRuleContainsApostropheContainsApostrophe",
@@ -438,7 +438,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         cat.addCategory( "testRuleTableLoad",
                          "yeah" );
 
-        rulesRepository.createPackage("testRuleTableLoad",
+        rulesRepository.createModule("testRuleTableLoad",
                 "yeah");
         serviceImplementation.createNewRule("testRuleTableLoad",
                 "ya",
@@ -485,7 +485,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         UserInbox ib = new UserInbox( rulesRepository );
         ib.clearAll();
-        rulesRepository.createPackage("testTrackRecentOpenedChanged",
+        rulesRepository.createModule("testTrackRecentOpenedChanged",
                 "desc");
         repositoryCategoryService.createCategory("",
                 "testTrackRecentOpenedChanged",
@@ -838,7 +838,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testSearchMetaData() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage("testMetaDataSearch",
+        ModuleItem pkg = rulesRepository.createModule("testMetaDataSearch",
                 "");
 
         AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset",
@@ -946,7 +946,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadSuggestionCompletionEngine() throws Exception {
         // create our package
-        PackageItem pkg = rulesRepository.createPackage( "testSILoadSCE",
+        ModuleItem pkg = rulesRepository.createModule( "testSILoadSCE",
                                               "" );
 
         AssetItem model = pkg.addAsset("MyModel",
@@ -984,7 +984,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testDiscussion() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeature",
+        ModuleItem pkg = rulesRepository.createModule( "testDiscussionFeature",
                                               "" );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -1047,7 +1047,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testSuggestionCompletionLoading() throws Exception {
         // create our package
-        PackageItem pkg = rulesRepository.createPackage( "testSISuggestionCompletionLoading",
+        ModuleItem pkg = rulesRepository.createModule( "testSISuggestionCompletionLoading",
                                               "" );
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);
@@ -1063,7 +1063,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testRuleNameList() throws Exception {
         // create our package
-        PackageItem pkg = rulesRepository.createPackage( "testRuleNameList",
+        ModuleItem pkg = rulesRepository.createModule( "testRuleNameList",
                                               "" );
         DroolsHeader.updateDroolsHeader("import org.goo.Ber",
                 pkg);
@@ -1104,7 +1104,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testBinaryUpToDate() throws Exception {
         // create our package
-        PackageItem pkg = rulesRepository.createPackage( "testBinaryPackageUpToDate",
+        ModuleItem pkg = rulesRepository.createModule( "testBinaryPackageUpToDate",
                                               "" );
         assertFalse(pkg.isBinaryUpToDate());
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
@@ -1124,7 +1124,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                                        true );
         assertFalse( results.hasLines() );
 
-        pkg = rulesRepository.loadPackage( "testBinaryPackageUpToDate" );
+        pkg = rulesRepository.loadModule( "testBinaryPackageUpToDate" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1159,7 +1159,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testListFactTypesAvailableInPackage() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testAvailableTypes",
+        ModuleItem pkg = rulesRepository.createModule( "testAvailableTypes",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
@@ -1197,7 +1197,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                 "decisiontables",
                 "");
 
-        PackageItem pkg = rulesRepository.createPackage( "testGuidedDTCompile",
+        ModuleItem pkg = rulesRepository.createModule( "testGuidedDTCompile",
                                               "" );
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);
@@ -1245,7 +1245,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                                        true );
         assertFalse( results.hasLines() );
 
-        pkg = rulesRepository.loadPackage( "testGuidedDTCompile" );
+        pkg = rulesRepository.loadModule( "testGuidedDTCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1565,7 +1565,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         @SuppressWarnings("unused")
         RuleAsset asset;
         String uuid;
-        rulesRepository.createPackage("testLoadInboxPackage",
+        rulesRepository.createModule("testLoadInboxPackage",
                 "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
                 "testLoadInboxPagedResultsCategory",
@@ -1625,7 +1625,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         @SuppressWarnings("unused")
         RuleAsset asset;
         String uuid;
-        rulesRepository.createPackage("testLoadInboxFullResults",
+        rulesRepository.createModule("testLoadInboxFullResults",
                 "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
                 "testLoadInboxFullResultsCategory",
@@ -1714,7 +1714,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //NOTE: Have not figured out the reason, but if we dont create a random package here, 
         //we will get an InvalidItemStateException during impl.installSampleRepository()
-        rulesRepository.createPackage("testHistoryAfterReImportSampleRepository",
+        rulesRepository.createModule("testHistoryAfterReImportSampleRepository",
                 "desc");
 
         TableDataResult result = repositoryAssetService.loadItemHistory( uuid );

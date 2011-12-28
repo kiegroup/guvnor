@@ -54,14 +54,14 @@ public class AssetItemTest extends RepositoryTestCase {
 
             String packName = getDefaultPackage().getName();
 
-            assertEquals(packName, ruleItem1.getPackageName());
+            assertEquals(packName, ruleItem1.getModuleName());
 
             assertNotNull(ruleItem1.getUUID());
 
         //try constructing with node of wrong type
         try {
 
-            PackageItem pitem = getRepo().loadDefaultPackage();
+            ModuleItem pitem = getRepo().loadDefaultModule();
             new AssetItem(getRepo(), pitem.getNode());
             fail("Exception not thrown for node of wrong type");
         }
@@ -76,7 +76,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetContentLength() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset("testGetContentLength", "");
         assertEquals(0, asset.getContentLength());
         asset.updateContent("boo");
@@ -95,9 +95,9 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetPackageItem() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem def = repo.loadDefaultPackage();
-        AssetItem asset = repo.loadDefaultPackage().addAsset("testPackageItem", "test content");
-        PackageItem pkg = asset.getPackage();
+        ModuleItem def = repo.loadDefaultModule();
+        AssetItem asset = repo.loadDefaultModule().addAsset("testPackageItem", "test content");
+        ModuleItem pkg = asset.getModule();
         assertEquals(def.getName(), pkg.getName());
         assertEquals(def.getUUID(), pkg.getUUID());
 
@@ -106,8 +106,8 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testUpdateStringProperty() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem def = repo.loadDefaultPackage();
-        AssetItem asset = repo.loadDefaultPackage().addAsset("testUpdateStringProperty", "test content");
+        ModuleItem def = repo.loadDefaultModule();
+        AssetItem asset = repo.loadDefaultModule().addAsset("testUpdateStringProperty", "test content");
         asset.updateContent("new content");
         asset.checkin("");
         Calendar lm = asset.getLastModified();
@@ -138,16 +138,16 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetPackageItemHistorical() throws Exception {
         RulesRepository repo = getRepo();
-        PackageItem pkg = repo.createPackage("testGetPackageItemHistorical", "");
+        ModuleItem pkg = repo.createModule("testGetPackageItemHistorical", "");
         AssetItem asset = pkg.addAsset("whee", "");
         asset.checkin("");
-        assertNotNull(asset.getPackage());
+        assertNotNull(asset.getModule());
 
-        repo.createPackageSnapshot(pkg.getName(), "SNAP");
+        repo.createModuleSnapshot(pkg.getName(), "SNAP");
 
-        PackageItem pkg_ = repo.loadPackageSnapshot(pkg.getName(), "SNAP");
+        ModuleItem pkg_ = repo.loadModuleSnapshot(pkg.getName(), "SNAP");
         AssetItem asset_ = pkg_.loadAsset("whee");
-        PackageItem pkg__ = asset_.getPackage();
+        ModuleItem pkg__ = asset_.getModule();
         assertTrue(pkg__.isSnapshot());
         assertTrue(pkg_.isSnapshot());
         assertFalse(pkg.isSnapshot());
@@ -157,16 +157,16 @@ public class AssetItemTest extends RepositoryTestCase {
         asset.checkin("new");
 
         asset = pkg.loadAsset("whee");
-        assertNotNull(asset.getPackage());
+        assertNotNull(asset.getModule());
 
         AssetHistoryIterator it = asset.getHistory();
         while(it.hasNext()) {
             AssetItem as = it.next();
             if (as.getVersionNumber() > 0) {
                 System.err.println(as.getVersionNumber());
-                System.err.println(as.getPackageName());
-                assertNotNull(as.getPackage());
-                assertEquals(pkg.getName(), as.getPackage().getName());
+                System.err.println(as.getModuleName());
+                assertNotNull(as.getModule());
+                assertEquals(pkg.getName(), as.getModule().getName());
             }
         }
     }
@@ -220,7 +220,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetContent() {
 
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetContent", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetContent", "test content");
             ruleItem1.updateContent( "test content" );
             ruleItem1.updateFormat("drl");
 
@@ -283,7 +283,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testCategoriesPagination() {
-            PackageItem pkg = getRepo().createPackage("testPagination", "");
+            ModuleItem pkg = getRepo().createModule("testPagination", "");
             getRepo().loadCategory( "/" ).addCategory( "testPagedTag", "description" );
 
             AssetItem a = pkg.addAsset("testPage1", "test content");
@@ -394,13 +394,13 @@ public class AssetItemTest extends RepositoryTestCase {
         getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset", "la" );
         getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset2", "la" );
 
-        AssetItem item = getRepo().loadDefaultPackage().addAsset( "testUpdateCategoriesOnAsset", "huhuhu" );
+        AssetItem item = getRepo().loadDefaultModule().addAsset( "testUpdateCategoriesOnAsset", "huhuhu" );
         String[] cats = new String[] {"testUpdateCategoriesOnAsset", "testUpdateCategoriesOnAsset2"};
         item.updateCategoryList( cats );
 
         item.checkin( "aaa" );
 
-        item = getRepo().loadDefaultPackage().loadAsset( "testUpdateCategoriesOnAsset" );
+        item = getRepo().loadDefaultModule().loadAsset( "testUpdateCategoriesOnAsset" );
         assertEquals(2, item.getCategories().size());
 
         for ( Iterator iter = item.getCategories().iterator(); iter.hasNext(); ) {
@@ -579,7 +579,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetDateExpired() {
         try {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetDateExpired", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetDateExpired", "test content");
 
             //it should be initialized to null
             assertTrue(ruleItem1.getDateExpired() == null);
@@ -603,7 +603,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetDescription", "");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetDescription", "");
             ruleItem1.checkin( "version0" );
 
             //it should be "" to begin with
@@ -640,7 +640,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetPrecedingVersionAndRestore() throws Exception {
             getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetPrecedingVersion", "descr");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetPrecedingVersion", "descr");
             ruleItem1.checkin( "version0" );
             assertTrue(ruleItem1.getPrecedingVersion() == null);
 
@@ -681,7 +681,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
             assertEquals("test content", predecessorRuleItem.getContent());
 
-            assertEquals(RulesRepository.DEFAULT_PACKAGE, predecessorRuleItem.getPackageName());
+            assertEquals(RulesRepository.DEFAULT_PACKAGE, predecessorRuleItem.getModuleName());
 
             ruleItem1.updateContent("newer lhs");
             ruleItem1.checkin( "another" );
@@ -701,7 +701,7 @@ public class AssetItemTest extends RepositoryTestCase {
             getRepo().restoreHistoricalAsset( toRestore, ruleItem1, "cause I want to"  );
 
 
-            AssetItem restored = getRepo().loadDefaultPackage().loadAsset( "testGetPrecedingVersion" );
+            AssetItem restored = getRepo().loadDefaultModule().loadAsset( "testGetPrecedingVersion" );
 
             //assertEquals( predecessorRuleItem.getCheckinComment(), restored.getCheckinComment());
             assertEquals(predecessorRuleItem.getDescription(), restored.getDescription());
@@ -712,7 +712,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testGetSucceedingVersion() {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetSucceedingVersion", "test description");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetSucceedingVersion", "test description");
             ruleItem1.checkin( "version0" );
 
             assertEquals(1, ruleItem1.getVersionNumber());
@@ -735,7 +735,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetSuccessorVersionsIterator() {
         try {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetSuccessorVersionsIterator", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetSuccessorVersionsIterator", "test content");
             ruleItem1.checkin( "version0" );
 
             Iterator iterator = ruleItem1.getSuccessorVersionsIterator();
@@ -777,7 +777,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testGetPredecessorVersionsIterator() {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetPredecessorVersionsIterator", "test description");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetPredecessorVersionsIterator", "test description");
             ruleItem1.checkin( "version0" );
 
             Iterator iterator = ruleItem1.getPredecessorVersionsIterator();
@@ -821,7 +821,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testHistoryIterator() throws Exception {
-        AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testHistoryIterator", "test description");
+        AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testHistoryIterator", "test description");
         ruleItem1.checkin( "version0" );
 
         ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
@@ -841,7 +841,7 @@ public class AssetItemTest extends RepositoryTestCase {
     
     @Test
     public void testGetAssetItemWithSpecifiedVersion() throws Exception {
-        AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetAssetItemWithSpecifiedVersion", "test description");
+        AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetAssetItemWithSpecifiedVersion", "test description");
         ruleItem1.checkin( "version0" );
 
         ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
@@ -852,29 +852,29 @@ public class AssetItemTest extends RepositoryTestCase {
         ruleItem1.updateContent( "ya" );
         ruleItem1.checkin( "version2" );
 
-        AssetItem assetItemVersion1 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 1);
+        AssetItem assetItemVersion1 = getRepo().loadDefaultModule().loadAsset("testGetAssetItemWithSpecifiedVersion", 1);
         assertEquals("", assetItemVersion1.getContent());
         assertEquals(1, assetItemVersion1.getVersionNumber());
         
-        AssetItem assetItemVersion2 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 2);
+        AssetItem assetItemVersion2 = getRepo().loadDefaultModule().loadAsset("testGetAssetItemWithSpecifiedVersion", 2);
         assertEquals("wo", assetItemVersion2.getContent());
         assertEquals(2, assetItemVersion2.getVersionNumber());
         
-        AssetItem assetItemVersion3 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 3);
+        AssetItem assetItemVersion3 = getRepo().loadDefaultModule().loadAsset("testGetAssetItemWithSpecifiedVersion", 3);
         assertEquals("ya", assetItemVersion3.getContent());
         assertEquals(3, assetItemVersion3.getVersionNumber());
     }
     
     @Test
     public void testGetTitle() {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetTitle", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetTitle", "test content");
 
             assertEquals("testGetTitle", ruleItem1.getTitle());
     }
 
     @Test
     public void testDublinCoreProperties() {
-        PackageItem pkg = getRepo().createPackage( "testDublinCore", "wa" );
+        ModuleItem pkg = getRepo().createModule( "testDublinCore", "wa" );
 
         AssetItem ruleItem = pkg.addAsset( "testDublinCoreProperties", "yeah yeah yeah" );
         ruleItem.updateCoverage( "b" );
@@ -882,7 +882,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
         ruleItem.checkin( "woo" );
 
-        pkg = getRepo().loadPackage( "testDublinCore" );
+        pkg = getRepo().loadModule( "testDublinCore" );
         ruleItem = (AssetItem) pkg.getAssets().next();
 
         assertEquals("b", ruleItem.getCoverage());
@@ -894,7 +894,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testGetFormat() throws Exception {
-            AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetFormat", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultModule().addAsset("testGetFormat", "test content");
             ruleItem1.updateContent( "la" );
             assertEquals(AssetItem.DEFAULT_CONTENT_FORMAT, ruleItem1.getFormat());
 
@@ -907,7 +907,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testAnonymousProperties() {
-        AssetItem item = getRepo().loadDefaultPackage().addAsset( "anonymousproperty", "lalalalala" );
+        AssetItem item = getRepo().loadDefaultModule().addAsset( "anonymousproperty", "lalalalala" );
         item.updateUserProperty( "fooBar", "value");
         assertEquals("value", item.getUserProperty("fooBar"));
 
@@ -927,7 +927,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testBinaryAsset() throws Exception {
-        AssetItem item = getRepo().loadDefaultPackage().addAsset( "testBinaryAsset", "yeah" );
+        AssetItem item = getRepo().loadDefaultModule().addAsset( "testBinaryAsset", "yeah" );
         String data = "abc 123";
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
         item.updateBinaryContentAttachment( in );
@@ -944,7 +944,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
 
 
-        item = getRepo().loadDefaultPackage().loadAsset( "testBinaryAsset" );
+        item = getRepo().loadDefaultModule().loadAsset( "testBinaryAsset" );
         InputStream in2 = item.getBinaryContentAttachment();
         assertNotNull(in2);
 

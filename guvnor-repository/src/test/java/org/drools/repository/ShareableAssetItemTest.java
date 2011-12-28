@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class ShareableAssetItemTest extends RepositoryTestCase {
 
-    private PackageItem loadGlobalArea() {
+    private ModuleItem loadGlobalArea() {
         return getRepo().loadGlobalArea();
     }
 
@@ -69,10 +69,10 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertTrue(now.before(linkedRuleItem.getCreatedDate()));
 
         // Test package name
-        assertEquals("globalArea", ruleItem.getPackageName());
+        assertEquals("globalArea", ruleItem.getModuleName());
         // NOTE: For the asset that links to the shared asset, its package name is always "globalArea".
-        assertEquals("globalArea", linkedRuleItem.getPackageName());
-        assertEquals(loadGlobalArea().getUUID(), ruleItem.getPackage().getUUID());
+        assertEquals("globalArea", linkedRuleItem.getModuleName());
+        assertEquals(loadGlobalArea().getUUID(), ruleItem.getModule().getUUID());
 
         // REVISIT: getPackage mess.
         // assertEquals(loadGlobalArea().getUUID(), linkedRuleItem.getPackage().getUUID());
@@ -236,18 +236,18 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
 
         // Test package snapshot
         String name = getDefaultPackage().getName();
-        getRepo().createPackageSnapshot(getDefaultPackage().getName(), "SNAP");
+        getRepo().createModuleSnapshot(getDefaultPackage().getName(), "SNAP");
 
-        PackageItem pkgSnap = getRepo().loadPackageSnapshot(getDefaultPackage().getName(), "SNAP");
+        ModuleItem pkgSnap = getRepo().loadModuleSnapshot(getDefaultPackage().getName(), "SNAP");
         AssetItem assetSnap = pkgSnap.loadAsset("testGetPackageItemHistoricalForShareableAsset");
-        PackageItem pkgSnap1 = assetSnap.getPackage();
+        ModuleItem pkgSnap1 = assetSnap.getModule();
         assertTrue(pkgSnap1.isSnapshot());
         assertTrue(pkgSnap.isSnapshot());
         assertFalse(getDefaultPackage().isSnapshot());
         assertEquals(getDefaultPackage().getName(), pkgSnap1.getName());
 
         AssetItem linkedAsset1 = getDefaultPackage().loadAsset("testGetPackageItemHistoricalForShareableAsset");
-        PackageItem linkedPkg = linkedAsset1.getPackage();
+        ModuleItem linkedPkg = linkedAsset1.getModule();
         assertFalse(linkedPkg.isSnapshot());
         assertFalse(getDefaultPackage().isSnapshot());
         assertEquals(getDefaultPackage().getName(), linkedPkg.getName());
@@ -258,7 +258,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         linkedAsset.checkin("new");
 
         linkedAsset = getDefaultPackage().loadAsset("testGetPackageItemHistoricalForShareableAsset");
-        assertNotNull(linkedAsset.getPackage());
+        assertNotNull(linkedAsset.getModule());
 
         AssetHistoryIterator linkedIt = linkedAsset.getHistory();
         assertEquals(4, iteratorToList(linkedIt).size());
@@ -279,7 +279,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
     @Test
     public void testGetContentForShareableAsset() {
         AssetItem asset = getRepo().loadGlobalArea().addAsset("testGetContentForShareableAsset", "test content");
-        AssetItem linkedAsset = getRepo().loadDefaultPackage().addAssetImportedFromGlobalArea(asset.getName());
+        AssetItem linkedAsset = getRepo().loadDefaultModule().addAssetImportedFromGlobalArea(asset.getName());
 
         linkedAsset.updateContent("test content");
         linkedAsset.updateFormat("drl");
@@ -302,7 +302,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
     @Test
     public void testUpdateContentForShareableAsset() throws Exception {
         AssetItem asset = getRepo().loadGlobalArea().addAsset("testUpdateContentForShareableAsset", "test content");
-        AssetItem linkedAsset = getRepo().loadDefaultPackage().addAssetImportedFromGlobalArea(asset.getName());
+        AssetItem linkedAsset = getRepo().loadDefaultModule().addAssetImportedFromGlobalArea(asset.getName());
 
         assertFalse(asset.getCreator().equals(""));
         assertFalse(linkedAsset.getCreator().equals(""));
@@ -582,7 +582,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
 
         assertEquals("test content", predecessorRuleItem.getContent());
 
-        assertEquals(getRepo().loadGlobalArea().getName(), predecessorRuleItem.getPackageName());
+        assertEquals(getRepo().loadGlobalArea().getName(), predecessorRuleItem.getModuleName());
 
         linkedAsset.updateContent("newer lhs");
         linkedAsset.checkin("another");
@@ -601,7 +601,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
 
         getRepo().restoreHistoricalAsset(toRestore, linkedAsset, "cause I want to");
 
-        AssetItem restored = getRepo().loadDefaultPackage().loadAsset("testGetPrecedingVersionAndRestoreForShareableAsset");
+        AssetItem restored = getRepo().loadDefaultModule().loadAsset("testGetPrecedingVersionAndRestoreForShareableAsset");
 
         // assertEquals( predecessorRuleItem.getCheckinComment(),
         // restored.getCheckinComment());

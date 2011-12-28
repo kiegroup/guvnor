@@ -103,7 +103,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepository.DateQuery;
@@ -187,12 +187,12 @@ public class ServiceImplementation
                                 String[] selectedModules,
                                 String[] unselectedModules) {
         for ( String moduleName : selectedModules ) {
-            PackageItem module = rulesRepository.loadPackage( moduleName );
+            ModuleItem module = rulesRepository.loadModule( moduleName );
             module.addWorkspace( workspace );
             module.checkin( "Add workspace" );
         }
         for ( String moduleName : unselectedModules ) {
-            PackageItem module = rulesRepository.loadPackage( moduleName );
+            ModuleItem module = rulesRepository.loadModule( moduleName );
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
         }
@@ -216,7 +216,7 @@ public class ServiceImplementation
 
         try {
 
-            PackageItem pkg = rulesRepository.loadPackage( initialPackage );
+            ModuleItem pkg = rulesRepository.loadModule( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName,
                                             description,
                                             initialCategory,
@@ -310,7 +310,7 @@ public class ServiceImplementation
         log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
-            PackageItem packageItem = rulesRepository.loadPackage( initialPackage );
+            ModuleItem packageItem = rulesRepository.loadModule( initialPackage );
             AssetItem asset = packageItem.addAssetImportedFromGlobalArea( sharedAssetName );
             rulesRepository.save();
 
@@ -334,7 +334,7 @@ public class ServiceImplementation
 
         AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
 
-        PackageItem packageItem = asset.getPackage();
+        ModuleItem packageItem = asset.getModule();
         packageItem.updateBinaryUpToDate( false );
 
         asset.remove();
@@ -441,7 +441,7 @@ public class ServiceImplementation
     private boolean checkPackagePermissionHelper(RepositoryFilter filter,
                                                  AssetItem item,
                                                  String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
+        return filter.accept( getConfigDataHelper( item.getModule().getUUID() ),
                               roleType );
     }
 
@@ -516,7 +516,7 @@ public class ServiceImplementation
         //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
-            PackageItem packageItem = rulesRepository.loadPackage( packageName );
+            ModuleItem packageItem = rulesRepository.loadModule( packageName );
             suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor( packageItem );
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
@@ -534,15 +534,15 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
-        return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
+        return repositoryPackageOperations.listRulesInPackage( RulesRepository.GLOBAL_AREA );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
-        return repositoryPackageOperations.listImagesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
+        return repositoryPackageOperations.listImagesInPackage( RulesRepository.GLOBAL_AREA );
     }
 
     /**
@@ -1133,7 +1133,7 @@ public class ServiceImplementation
 
         try {
 
-            PackageItem pkg = rulesRepository.loadPackage( packageName );
+            ModuleItem pkg = rulesRepository.loadModule( packageName );
             return pkg.containsAsset( assetName );
 
         } catch ( RulesRepositoryException e ) {

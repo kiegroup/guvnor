@@ -27,15 +27,15 @@ import javax.jcr.version.VersionIterator;
  * A lazy iterator for walking back through history.
  * Wraps the version iterator from JCR and allows skipping.
  */
-public class PackageHistoryIterator
+public class ModuleHistoryIterator
     implements
-    Iterator<PackageItem> {
+    Iterator<ModuleItem> {
 
     private Node head;
     private VersionIterator versionIterator;
     private RulesRepository repo;
 
-    public PackageHistoryIterator(RulesRepository repo, Node head) {
+    public ModuleHistoryIterator(RulesRepository repo, Node head) {
         this.head = head;
         this.repo = repo;
         try {
@@ -49,8 +49,8 @@ public class PackageHistoryIterator
         return versionIterator.hasNext();
     }
 
-    public PackageItem next() {
-        return new PackageItem(this.repo, (Version) versionIterator.next());
+    public ModuleItem next() {
+        return new ModuleItem(this.repo, (Version) versionIterator.next());
 
     }
 

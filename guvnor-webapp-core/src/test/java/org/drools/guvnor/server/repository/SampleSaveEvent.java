@@ -22,7 +22,7 @@ import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.events.SaveEvent;
 
 import java.util.ArrayList;
@@ -106,6 +106,6 @@ class SampleSaveEvent
     public void onAssetDelete(AssetItem item) {
     }
 
-    public void onPackageCreate(PackageItem item) {
+    public void onModuleCreate(ModuleItem item) {
     }
 }

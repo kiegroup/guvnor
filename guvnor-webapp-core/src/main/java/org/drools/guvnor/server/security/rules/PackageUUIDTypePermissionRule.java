@@ -40,7 +40,7 @@ public class PackageUUIDTypePermissionRule
         String targetName;
         String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
         try {
-            targetName = rulesRepository.loadPackageByUUID( targetUUID ).getName();
+            targetName = rulesRepository.loadModuleByUUID( targetUUID ).getName();
         } catch ( RulesRepositoryException e ) {
             return false;
         }

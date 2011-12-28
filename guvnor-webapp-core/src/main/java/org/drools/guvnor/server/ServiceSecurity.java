@@ -141,7 +141,7 @@ public class ServiceSecurity {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new PackageUUIDType(asset.getPackage().getUUID()),
+            identity.checkPermission(new PackageUUIDType(asset.getModule().getUUID()),
                     RoleType.PACKAGE_DEVELOPER.getName());
         } catch (RuntimeException e) {
             if (asset.getCategories().size() == 0) {

@@ -40,7 +40,7 @@ import org.drools.guvnor.client.common.Snapshot;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -52,7 +52,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testAttachFile() throws Exception {
 
-        AssetItem item = rulesRepository.loadDefaultPackage().addAsset( "testUploadFile",
+        AssetItem item = rulesRepository.loadDefaultModule().addAsset( "testUploadFile",
                                                              "description" );
         item.updateFormat("drl");
         FormData upload = new FormData();
@@ -62,7 +62,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         fileManagerService.attachFile(upload);
 
-        AssetItem item2 = rulesRepository.loadDefaultPackage().loadAsset( "testUploadFile" );
+        AssetItem item2 = rulesRepository.loadDefaultModule().loadAsset( "testUploadFile" );
         byte[] data = item2.getBinaryContentAsBytes();
 
         assertNotNull( data );
@@ -75,7 +75,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testAttachModel() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage( "testAttachModelImports",
+        ModuleItem pkg = rulesRepository.createModule( "testAttachModelImports",
                                               "heh" );
         AssetItem asset = pkg.addAsset( "MyModel",
                                         "" );
@@ -93,7 +93,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
 
-        pkg = rulesRepository.loadPackage( "testAttachModelImports" );
+        pkg = rulesRepository.loadModule( "testAttachModelImports" );
 
         assertFalse(pkg.isBinaryUpToDate());
         assertNotNull( DroolsHeader.getDroolsHeader( pkg ) );
@@ -107,7 +107,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.attachFileToAsset(asset.getUUID(),
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
-        pkg = rulesRepository.loadPackage( "testAttachModelImports" );
+        pkg = rulesRepository.loadModule( "testAttachModelImports" );
         assertEquals( "goo wee\nimport com.billasurf.Board\nimport com.billasurf.Person\n",
                       DroolsHeader.getDroolsHeader( pkg ) );
 
@@ -116,7 +116,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testGetFilebyUUID() throws Exception {
 
-        AssetItem item = rulesRepository.loadDefaultPackage().addAsset( "testGetFilebyUUID",
+        AssetItem item = rulesRepository.loadDefaultModule().addAsset( "testGetFilebyUUID",
                                                              "description" );
         item.updateFormat("drl");
         rulesRepository.save();
@@ -143,7 +143,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
-        PackageItem pkg = rulesRepository.createPackage( "testGetBinaryPackageServlet",
+        ModuleItem pkg = rulesRepository.createModule( "testGetBinaryPackageServlet",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -239,7 +239,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 null);
 
-        PackageItem pkg = rulesRepository.loadPackage("testImportArchivedPackage");
+        ModuleItem pkg = rulesRepository.loadModule("testImportArchivedPackage");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
@@ -247,7 +247,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         pkg.archiveItem( true );
         rulesRepository.save();
 
-        pkg = rulesRepository.loadPackage("testImportArchivedPackage");
+        pkg = rulesRepository.loadModule("testImportArchivedPackage");
         assertNotNull( pkg );
         assertTrue( pkg.isArchived() );
 
@@ -256,7 +256,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in2,
                 null);
 
-        pkg = rulesRepository.loadPackage("testImportArchivedPackage");
+        pkg = rulesRepository.loadModule("testImportArchivedPackage");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
@@ -269,7 +269,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 null);
 
-        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        ModuleItem pkg = rulesRepository.loadModule("testClassicDRLImport");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -306,7 +306,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 null);
 
-        pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        pkg = rulesRepository.loadModule("testClassicDRLImport");
         assertNotNull( pkg );
 
         // it should not overwrite this.
@@ -321,14 +321,14 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         // now we will import a change, check that it appears. a change to the
         // "ola" rule
-        AssetItem assetOriginal = rulesRepository.loadPackage("testClassicDRLImport").loadAsset( "ola" );
+        AssetItem assetOriginal = rulesRepository.loadModule("testClassicDRLImport").loadAsset( "ola" );
         long ver = assetOriginal.getVersionNumber();
 
         drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when CHANGED\n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
         fileManagerService.importClassicDRL(in,
                 null);
-        pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        pkg = rulesRepository.loadModule("testClassicDRLImport");
         AssetItem asset = pkg.loadAsset( "ola" );
 
         assertTrue( asset.getContent().indexOf( "CHANGED" ) > 0 );
@@ -354,7 +354,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 "testDRLImportWithoutPackageName");
 
-        PackageItem pkg = rulesRepository.loadPackage("testDRLImportWithoutPackageName");
+        ModuleItem pkg = rulesRepository.loadModule("testDRLImportWithoutPackageName");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -396,7 +396,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 "testDRLImportOverrideExistingPackageName");
 
-        PackageItem pkg = rulesRepository.loadPackage("testDRLImportOverrideExistingPackageName");
+        ModuleItem pkg = rulesRepository.loadModule("testDRLImportOverrideExistingPackageName");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -436,7 +436,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in,
                 null);
 
-        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImportWithDSL");
+        ModuleItem pkg = rulesRepository.loadModule("testClassicDRLImportWithDSL");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -475,7 +475,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     //purpose of this test is to detect memory leak?)
     public void testHeadOOME() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage( "testHeadOOME",
+        ModuleItem pkg = rulesRepository.createModule( "testHeadOOME",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -504,7 +504,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
 
-        PackageItem pkg = rulesRepository.loadPackage( nm );
+        ModuleItem pkg = rulesRepository.loadModule( nm );
         pkg.updateDescription(System.currentTimeMillis() + "");
         pkg.checkin("a change");
         rulesRepository.logout();

@@ -27,7 +27,7 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.util.IO;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
 
     @Test
     public void testVerifierCauseTrace() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage("testVerifierCauseTrace",
+        ModuleItem pkg = rulesRepository.createModule("testVerifierCauseTrace",
                 "");
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );
@@ -57,7 +57,7 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
 
     @Test
     public void testVerifier() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage("testVerifier",
+        ModuleItem pkg = rulesRepository.createModule("testVerifier",
                 "");
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );

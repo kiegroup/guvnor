@@ -25,7 +25,7 @@ import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.util.ChainedProperties;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
@@ -63,7 +63,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         this(getPackageBuilderConfiguration(properties, classLoader));
     }
 
-    public BRMSPackageBuilder(PackageItem packageItem) {
+    public BRMSPackageBuilder(ModuleItem packageItem) {
         this(getPackageBuilderConfiguration(getProperties(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION),
                 packageItem.getName()),
                 new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL)).buildClassLoader()));

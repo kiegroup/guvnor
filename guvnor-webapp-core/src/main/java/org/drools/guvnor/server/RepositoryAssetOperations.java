@@ -150,7 +150,7 @@ public class RepositoryAssetOperations {
                 repoAsset);
 
         if (!asset.getFormat().equals(AssetFormats.TEST_SCENARIO) || asset.getFormat().equals(AssetFormats.ENUMERATION)) {
-            PackageItem pkg = repoAsset.getPackage();
+            ModuleItem pkg = repoAsset.getModule();
             pkg.updateBinaryUpToDate(false);
             RuleBaseCache.getInstance().remove(pkg.getUUID());
         }
@@ -274,7 +274,7 @@ public class RepositoryAssetOperations {
         row.values = new String[5];
         row.values[0] = archived.getName();
         row.values[1] = archived.getFormat();
-        row.values[2] = archived.getPackageName();
+        row.values[2] = archived.getModuleName();
         row.values[3] = archived.getLastContributor();
         row.values[4] = Long.toString(archived.getLastModified().getTime()
                 .getTime());
@@ -333,7 +333,7 @@ public class RepositoryAssetOperations {
                                          int numRows,
                                          String tableConfig) {
         long start = System.currentTimeMillis();
-        PackageItem pkg = rulesRepository.loadPackageByUUID(packageUuid);
+        ModuleItem pkg = rulesRepository.loadModuleByUUID(packageUuid);
         AssetItemIterator it;
         if (formats.length > 0) {
             it = pkg.listAssetsByFormat(formats);
@@ -415,7 +415,7 @@ public class RepositoryAssetOperations {
         while (assetItemIterator.hasNext()) {
             AssetItem assetItem = assetItemIterator.next();
             PackageConfigData data = new PackageConfigData();
-            data.setUuid(assetItem.getPackage().getUUID());
+            data.setUuid(assetItem.getModule().getUUID());
             if (filter.accept(data,
                     RoleType.PACKAGE_READONLY.getName())) {
                 resultList.add(assetItem);
@@ -436,7 +436,7 @@ public class RepositoryAssetOperations {
         if (handler.isRuleAsset()) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            PackageItem packageItem = rulesRepository.loadPackage(asset.getMetaData().getPackageName());
+            ModuleItem packageItem = rulesRepository.loadModule(asset.getMetaData().getPackageName());
             builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(packageItem));
             if (asset.getMetaData().isBinary()) {
                 AssetItem item = rulesRepository.loadAssetByUUID(
@@ -578,8 +578,8 @@ public class RepositoryAssetOperations {
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData((VersionableItem) item);
 
-        meta.setPackageName(item.getPackageName());
-        meta.setPackageUUID(item.getPackage().getUUID());
+        meta.setPackageName(item.getModuleName());
+        meta.setPackageUUID(item.getModule().getUUID());
         meta.setBinary(item.isBinary());
 
         List<CategoryItem> categories = item.getCategories();
@@ -666,7 +666,7 @@ public class RepositoryAssetOperations {
     }
     
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
-        PackageItem packageItem = rulesRepository.loadPackageByUUID( request.getPackageUuid() );
+        ModuleItem packageItem = rulesRepository.loadModuleByUUID( request.getPackageUuid() );
 
         AssetItemIterator iterator;
         if ( request.getFormatInList() != null ) {

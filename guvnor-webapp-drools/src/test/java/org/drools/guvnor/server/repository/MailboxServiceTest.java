@@ -39,7 +39,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
     public void testMailbox() throws Exception {
         // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
-        AssetItem asset = rulesRepository.loadDefaultPackage().addAsset( "testMailbox",
+        AssetItem asset = rulesRepository.loadDefaultModule().addAsset( "testMailbox",
                                                               "" );
 
         UserInbox mailman = new UserInbox( rulesRepository,
@@ -80,7 +80,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
         assertEquals( 0,
                       mailman.loadIncoming().size() );
 
-        AssetItem ass2 = rulesRepository.loadDefaultPackage().addAsset( "testMailbox2",
+        AssetItem ass2 = rulesRepository.loadDefaultModule().addAsset( "testMailbox2",
                                                              "XX" );
 
         ib2.addToRecentEdited( ass2.getUUID(),
@@ -117,7 +117,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
         // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
         String sender = rulesRepository.getSession().getUserID();
-        AssetItem asset = rulesRepository.loadDefaultPackage().addAsset( "testMailboxOneToMany",
+        AssetItem asset = rulesRepository.loadDefaultModule().addAsset( "testMailboxOneToMany",
                                                               "" );
         UserInbox ib1 = new UserInbox( rulesRepository,
                                        sender );

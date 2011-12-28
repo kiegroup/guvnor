@@ -33,7 +33,7 @@ import org.drools.ide.common.client.modeldriven.brl.*;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -61,7 +61,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     @Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
-        PackageItem pkg = rulesRepository.createPackage("testBuilderPackageConfig",
+        ModuleItem pkg = rulesRepository.createModule("testBuilderPackageConfig",
                 "x");
         DroolsHeader.updateDroolsHeader("import java.util.List",
                 pkg);
@@ -157,7 +157,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testLoadConfProperties() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testLoadConfProperties",
+        ModuleItem pkg = repo.createModule("testLoadConfProperties",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -200,7 +200,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem packageItem = repo.createPackage("testPackageWithRuleFlow",
+        ModuleItem packageItem = repo.createModule("testPackageWithRuleFlow",
                 "");
         AssetItem model = packageItem.addAsset("model",
                 "qed");
@@ -265,7 +265,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypes1",
+        ModuleItem pkg = repo.createModule("testSimplePackageWithDeclaredTypes1",
                 "");
         AssetItem rule1 = pkg.addAsset("rule_1",
                 "");
@@ -283,7 +283,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypes2",
+        ModuleItem pkg = repo.createModule("testSimplePackageWithDeclaredTypes2",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -320,7 +320,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testSimplePackageAttributes() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testSimplePackageAttributes",
+        ModuleItem pkg = repo.createModule("testSimplePackageAttributes",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap\nno-loop true\nagenda-group \"albums\"\ndialect \"java\"\n",
@@ -366,7 +366,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
+        ModuleItem pkg = repo.createModule("testSimplePackageWithDeclaredTypesUsingDependency",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -420,7 +420,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testSimplePackageBuildNoErrors",
+        ModuleItem pkg = repo.createModule("testSimplePackageBuildNoErrors",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -465,7 +465,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                 bin.getRules().length);
 
         //now create a snapshot
-        repo.createPackageSnapshot(pkg.getName(),
+        repo.createModuleSnapshot(pkg.getName(),
                 "SNAP_1");
 
         //and screw up the the non snapshot one
@@ -476,7 +476,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertTrue(asm.hasErrors());
 
         //check the snapshot is kosher
-        pkg = repo.loadPackageSnapshot(pkg.getName(),
+        pkg = repo.loadModuleSnapshot(pkg.getName(),
                 "SNAP_1");
         asm = new PackageAssembler(pkg);
         asm.compile();
@@ -488,7 +488,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testIgnoreArchivedItems() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testIgnoreArchivedItems",
+        ModuleItem pkg = repo.createModule("testIgnoreArchivedItems",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -537,7 +537,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //first, setup the package correctly:
-        PackageItem pkg = repo.createPackage("testErrorsInRuleAsset",
+        ModuleItem pkg = repo.createModule("testErrorsInRuleAsset",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -577,7 +577,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     public void testEventingExample() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage("testEventingExample",
+        ModuleItem pkg = repo.createModule("testEventingExample",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -613,7 +613,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //first, setup the package correctly:
-        PackageItem pkg = repo.createPackage("testRuleAndDSLAndFunction",
+        ModuleItem pkg = repo.createModule("testRuleAndDSLAndFunction",
                 "");
         AssetItem model = pkg.addAsset("model",
                 "qed");
@@ -680,7 +680,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //first, setup the package correctly:
-        PackageItem pkg = repo.createPackage("testSkipDisabledPackageStuff",
+        ModuleItem pkg = repo.createModule("testSkipDisabledPackageStuff",
                 "");
         repo.save();
 
@@ -710,7 +710,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //first, setup the package correctly:
-        PackageItem pkg = repo.createPackage("testXLSDecisionTable",
+        ModuleItem pkg = repo.createModule("testXLSDecisionTable",
                 "");
 
         DroolsHeader.updateDroolsHeader("import org.acme.insurance.Policy\n import org.acme.insurance.Driver",
@@ -768,7 +768,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //create our package
-        PackageItem pkg = repo.createPackage("testBRLWithDSLMixedIn",
+        ModuleItem pkg = repo.createModule("testBRLWithDSLMixedIn",
                 "");
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);
@@ -830,7 +830,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ruleNODSL.updateContent(BRXMLPersistence.getInstance().marshal(model));
         ruleNODSL.checkin("");
 
-        pkg = repo.loadPackage("testBRLWithDSLMixedIn");
+        pkg = repo.loadModule("testBRLWithDSLMixedIn");
         PackageAssembler asm = new PackageAssembler(pkg);
         asm.compile();
         assertFalse(asm.hasErrors());
@@ -845,7 +845,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         //create our package
-        PackageItem pkg = repo.createPackage("testCustomSelector",
+        ModuleItem pkg = repo.createModule("testCustomSelector",
                 "");
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);
@@ -932,7 +932,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         "yeah" );     
         
         //create our package
-        PackageItem pkg = repo.createPackage("testBuiltInSelector",
+        ModuleItem pkg = repo.createModule("testBuiltInSelector",
                 "");
         DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);

@@ -20,8 +20,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
-import org.drools.repository.PackageIterator;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +41,17 @@ public class MigrateDroolsPackage {
 
     public void migrate(RulesRepository repo) throws RepositoryException {
         log.info("AUTO MIGRATION: Performing drools.package migration...");
-        PackageIterator pkgs = repo.listPackages();
+        ModuleIterator pkgs = repo.listModules();
         boolean performed = false;
         while(pkgs.hasNext()) {
             performed = true;
-            PackageItem pkg = (PackageItem) pkgs.next();
+            ModuleItem pkg = (ModuleItem) pkgs.next();
             migratePackage(pkg);
 
-            String[] snaps = repo.listPackageSnapshots(pkg.getName());
+            String[] snaps = repo.listModuleSnapshots(pkg.getName());
             if (snaps != null) {
                 for (int i = 0; i < snaps.length; i++) {
-                    PackageItem snap = repo.loadPackageSnapshot(pkg.getName(), snaps[i]);
+                    ModuleItem snap = repo.loadModuleSnapshot(pkg.getName(), snaps[i]);
                     migratePackage(snap);
                 }
             }
@@ -66,11 +66,11 @@ public class MigrateDroolsPackage {
         }
     }
 
-    private void migratePackage(PackageItem pkg) {
+    private void migratePackage(ModuleItem pkg) {
         if (!pkg.containsAsset("drools")) {
             AssetItem asset = pkg.addAsset("drools", "");
             asset.updateFormat("package");
-            asset.updateContent(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
+            asset.updateContent(pkg.getStringProperty(ModuleItem.HEADER_PROPERTY_NAME));
             asset.checkin("");
         }
     }

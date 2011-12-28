@@ -133,7 +133,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
+        AssetItem asset = repo.loadDefaultModule().addAsset( "testIncomingMarkedRead",
                                                               "" );
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
@@ -220,7 +220,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
-        AssetItem asset = repo.loadDefaultPackage().addAsset( "InBoxTestHelper",
+        AssetItem asset = repo.loadDefaultModule().addAsset( "InBoxTestHelper",
                                                               "hey" );
         UserInbox.recordOpeningEvent( asset );
 
@@ -245,7 +245,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
+        AssetItem asset = repo.loadDefaultModule().addAsset( "testIncomingMarkedRead",
                                                               "" );
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
