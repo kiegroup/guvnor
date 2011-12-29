@@ -81,6 +81,22 @@ public class CategoryResource extends Resource {
         CategoryItem categoryItem = rulesRepository.loadCategory(categoryPath);
         return toCategory(categoryItem, uriInfo);
     }
+    
+    @GET
+    @Path("{categoryPath:.+}/children")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Category> getCategoryChildrenAsJAXB(@PathParam("categoryPath") String categoryPath) {
+        //get the requested category
+        CategoryItem categoryItem = rulesRepository.loadCategory(categoryPath);
+        
+        //get its children and add them into a List
+        Collection<Category> ret = new ArrayList<Category>();
+        List<CategoryItem> children = categoryItem.getChildTags();
+        for (CategoryItem child : children) {
+            ret.add(toCategory(child, uriInfo));
+        }
+        return ret;
+    }
 
     @GET
     @Path("{categoryPath:.+}/assets")

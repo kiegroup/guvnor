@@ -187,6 +187,71 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
     }
     
+    @Test @RunAsClient
+    public void getCategoryChildrenAsJAXB(@ArquillianResource URL baseURL) throws Exception {
+        //get children of 'Category 1'
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201/children").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        Document<Feed> document = resp.getDocument();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertEquals(2, categories.size());
+        assertTrue(categories.containsKey("Category 1/Category 1.1"));
+        assertTrue(categories.containsKey("Category 1/Category 1.2"));
+        
+        //get children of 'Category 1.1'
+        client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/children").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        document = resp.getDocument();
+
+        outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertEquals(1, categories.size());
+        assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
+        
+        //get children of 'Category 2'
+        client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        resp = client.get(new URL(baseURL, "rest/categories/Category%202/children").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        document = resp.getDocument();
+
+        outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertTrue(categories.isEmpty());
+        
     }
 
     @Test @RunAsClient
