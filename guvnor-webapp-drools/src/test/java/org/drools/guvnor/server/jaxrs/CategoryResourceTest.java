@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.server.jaxrs;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.namespace.QName;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Document;
@@ -28,11 +27,8 @@ import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.abdera.Abdera;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -40,15 +36,28 @@ import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 //import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.drools.guvnor.server.jaxrs.jaxb.Category;
 
 import static org.junit.Assert.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class CategoryResourceTest extends GuvnorTestBase {
 
@@ -67,6 +76,9 @@ public class CategoryResourceTest extends GuvnorTestBase {
         //Create 2 categories
         repositoryCategoryService.createCategory(null, "Category 1", "Category 1");
         repositoryCategoryService.createCategory(null, "Category 2", "Category 2");
+        repositoryCategoryService.createCategory("Category 1", "Category 1.1", "Category 1.1");
+        repositoryCategoryService.createCategory("Category 1", "Category 1.2", "Category 1.2");
+        repositoryCategoryService.createCategory("Category 1/Category 1.1", "Category 1.1.1", "Category 1.1.1");
         
         
         //create a new package
@@ -100,15 +112,81 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void getCategoriesAsJAXB(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
-        connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+        //list all categories
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        ClientResponse resp = client.get(new URL(baseURL, "rest/categories").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        Document<Feed> document = resp.getDocument();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertEquals(5, categories.size());
+        assertTrue(categories.containsKey("Category 1"));
+        assertTrue(categories.containsKey("Category 2"));
+        assertTrue(categories.containsKey("Category 1/Category 1.1"));
+        assertTrue(categories.containsKey("Category 1/Category 1.2"));
+        assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
+        
+    }
+    
+    @Test @RunAsClient
+    public void getCategoryAsJAXB(@ArquillianResource URL baseURL) throws Exception {
+        //get 'Category 1'
+        AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        Document<Feed> document = resp.getDocument();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertEquals(1, categories.size());
+        
+        Category category = categories.values().iterator().next();
+        assertEquals("Category 1", category.getPath());
+        
+        //get 'Category 1/Category 1.1/Category 1.1.1'
+        client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+
+        resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/Category%201.1.1").toExternalForm());
+        
+        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        
+        document = resp.getDocument();
+
+        outputStream = new ByteArrayOutputStream();
+        document.writeTo(outputStream);
+        outputStream.close();
+        
+        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        
+        assertEquals(1, categories.size());
+        category = categories.values().iterator().next();
+        
+        assertEquals("Category 1/Category 1.1/Category 1.1.1", category.getPath());
+        
+    }
+    
     }
 
     @Test @RunAsClient
@@ -381,6 +459,67 @@ public class CategoryResourceTest extends GuvnorTestBase {
         categoriesExtension.addSimpleExtension(new QName("", "value"), categories.get(0));
         
         return processEntry;
+    }
+    
+    public Map<String, Category> fromXMLToCategoriesMap(String xml) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            
+            final List<String> errors = new ArrayList<String>();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            
+            builder.setErrorHandler(new ErrorHandler() {
+
+                public void warning(SAXParseException exception) throws SAXException {
+                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.WARNING, "Warning parsing categories from Guvnor", exception);
+                }
+
+                public void error(SAXParseException exception) throws SAXException {
+                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, "Error parsing categories from Guvnor", exception);
+                    errors.add(exception.getMessage());
+                }
+
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, "Error parsing categories from Guvnor", exception);
+                    errors.add(exception.getMessage());
+                }
+            });
+            
+            org.w3c.dom.Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+            
+            if (!errors.isEmpty()){
+                throw new IllegalStateException("Error parsing categories from guvnor. Check the log for errors' details.");
+            }
+
+            Map<String, Category> categories = new HashMap<String, Category>();
+            
+            //convert all catergories and add them to the list
+            NodeList categoriesList = doc.getElementsByTagName("category");
+            for (int i = 0; i < categoriesList.getLength(); i++) {
+                Element element = (Element) categoriesList.item(i);
+                
+                NodeList paths = element.getElementsByTagName("path");
+                if (paths.getLength() != 1){
+                    throw new IllegalStateException("Malfromed category. Expected 1 <path> tag, but found "+paths.getLength());
+                }
+                
+                String path = paths.item(0).getTextContent();
+                
+                Category category = new Category();
+                category.setPath(path);
+                
+                categories.put(path, category);
+            }
+            
+            return categories;
+        } catch (SAXException ex) {
+            throw new RuntimeException("Error parsing categories' xml",ex);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error parsing categories' xml",ex);
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException("Error parsing categories' xml",ex);
+        }
     }
 
 }
