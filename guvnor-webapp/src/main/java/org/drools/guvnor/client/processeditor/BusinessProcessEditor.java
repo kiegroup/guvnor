@@ -28,6 +28,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
@@ -54,17 +55,7 @@ public class BusinessProcessEditor extends DirtyableComposite
     }
 
     private void initWidgets() {
-        String name;
-
-        /**
-         EditorLauncher.HOSTED_MODE = Boolean.TRUE; // HACK to set it to HOSTED MODE
-         if ( EditorLauncher.HOSTED_MODE.booleanValue() ) {
-             name = "http://localhost:8080/designer/editor";
-         } else {
-             name = "/designer/editor";
-         } **/
-
-        name = "/"+ApplicationPreferences.getDesignerContext()+"/editor/?uuid=" + modelUUID + "&profile="+ApplicationPreferences.getDesignerProfile();
+        String name = "/"+ApplicationPreferences.getDesignerContext()+"/editor/?uuid=" + modelUUID + "&profile="+ApplicationPreferences.getDesignerProfile();
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain",
                                          Document.get().getDomain() );
@@ -76,23 +67,41 @@ public class BusinessProcessEditor extends DirtyableComposite
     }
 
     private final native String callSave(Document frameDoc) /*-{
-                                                            return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
-                                                            }-*/;
+    	return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
+    }-*/;
     
     private final native String callPreprocessingData(Document frameDoc) /*-{
         return frameDoc.defaultView.ORYX.PREPROCESSING;
     }-*/;
-
+    
+    private final native String callCheckParsingErrors(Document frameDoc) /*-{
+    	return frameDoc.defaultView.ORYX.EDITOR.checkParsingErrors();
+	}-*/;
+    
+    private final native void callShowParsingErrors(Document frameDoc) /*-{
+		frameDoc.defaultView.ORYX.EDITOR.showParsingErrors();
+	}-*/;
+    
+    public boolean hasErrors() {
+    	String errors = callCheckParsingErrors( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+    	if(errors != null && errors.equals("false")) {
+    		return false;
+    	} else {
+    		callShowParsingErrors( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+    		return true;
+    	}
+    }
+    
     public void onSave() {
         try {
-            String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
-            String p = callPreprocessingData( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
-            if ( asset.getContent() == null ) {
-                asset.setContent( new RuleFlowContentModel() );
-            }
-            ((RuleFlowContentModel) asset.getContent()).setXml( null );
-            ((RuleFlowContentModel) asset.getContent()).setJson( s );
-            ((RuleFlowContentModel) asset.getContent()).setPreprocessingdata(p);
+        	String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+        	String p = callPreprocessingData( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+        	if ( asset.getContent() == null ) {
+        		asset.setContent( new RuleFlowContentModel() );
+        		}
+        	((RuleFlowContentModel) asset.getContent()).setXml( null );
+        	((RuleFlowContentModel) asset.getContent()).setJson( s );
+        	((RuleFlowContentModel) asset.getContent()).setPreprocessingdata(p);
         } catch ( Exception e ) {
             GWT.log( "JSNI method callSave() threw an exception:",
                      e );

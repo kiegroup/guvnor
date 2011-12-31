@@ -38,6 +38,7 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -234,6 +235,11 @@ public class RuleViewer extends GuvnorEditor {
             } );
             toolbar.setViewSourceCommand( new Command() {
                 public void execute() {
+                	if( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) { 
+                    	if ( ((BusinessProcessEditor) editor).hasErrors()) {
+                    		return;
+                    	}
+                	}
                     onSave();
                     LoadingPopup.showMessage( constants.CalculatingSource() );
                     RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
@@ -318,6 +324,12 @@ public class RuleViewer extends GuvnorEditor {
                     doCheckinConfirm( closeAfter );
                 }
             } );
+        } else if( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) { 
+        	if ( ((BusinessProcessEditor) editor).hasErrors()) {
+        		return;
+        	} else {
+        		doCheckinConfirm( closeAfter );
+        	}
         } else {
             doCheckinConfirm( closeAfter );
         }

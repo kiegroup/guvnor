@@ -74,5 +74,4 @@ public class RuleFlowContentModel
     public void setPreprocessingdata(String preprocessingdata) {
         this.preprocessingdata = preprocessingdata;
     }
-
 }
