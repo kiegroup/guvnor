@@ -16,12 +16,12 @@
 
 package org.drools.ide.common.modeldriven;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.ide.common.client.modeldriven.brl.DSLComplexVariableValue;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
 
 public class DSLSentenceTest {
 
@@ -74,8 +74,7 @@ public class DSLSentenceTest {
     public void testInterpolate1() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "{something} here" );
-        sen.getValues().set( 0,
-                             "word" );
+        sen.getValues().set( 0, new DSLVariableValue("word"));
         assertEquals( "word here",
                       sen.interpolate() );
     }
@@ -84,8 +83,7 @@ public class DSLSentenceTest {
     public void testInterpolate2() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "a {here}" );
-        sen.getValues().set( 0,
-                             "word" );
+        sen.getValues().set( 0, new DSLVariableValue("word"));
         assertEquals( "a word",
                       sen.interpolate() );
     }
@@ -94,10 +92,8 @@ public class DSLSentenceTest {
     public void testInterpolate3() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "a {here} and {here}" );
-        sen.getValues().set( 0,
-                             "word" );
-        sen.getValues().set( 1,
-                             "word" );
+        sen.getValues().set( 0, new DSLVariableValue("word"));
+        sen.getValues().set( 1, new DSLVariableValue("word") );
         assertEquals( "a word and word",
                       sen.interpolate() );
     }
@@ -106,8 +102,7 @@ public class DSLSentenceTest {
     public void testEnumSentenceContainingRegEx() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "When a person exists with social security number \"{chooseSSN:\\d{3}-\\d{2}-\\d{4}}\"" );
-        sen.getValues().set( 0,
-                             "333-22-4444" );
+        sen.getValues().set( 0, new DSLVariableValue("333-22-4444"));
         assertEquals( "When a person exists with social security number \"333-22-4444\"",
                       sen.interpolate() );
     }
@@ -116,8 +111,7 @@ public class DSLSentenceTest {
     public void testEnumSentenceWithBoolean() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "When a person is alive {alive:BOOLEAN:checked}" );
-        sen.getValues().set( 0,
-                             "true" );
+        sen.getValues().set( 0, new DSLVariableValue("true" ));
         assertEquals( "When a person is alive true",
                       sen.interpolate() );
     }
@@ -126,8 +120,7 @@ public class DSLSentenceTest {
     public void testEnumSentenceWithEnumeration() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "When a person is \"{rating:ENUM:Person.gender}\"" );
-        sen.getValues().set( 0,
-                             "Male" );
+        sen.getValues().set( 0, new DSLVariableValue("Male"));
         assertEquals( "When a person is \"Male\"",
                       sen.interpolate() );
     }
@@ -136,9 +129,18 @@ public class DSLSentenceTest {
     public void testEnumSentenceWithDate() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "When a person was born on \"{dob:DATE:default}\"" );
-        sen.getValues().set( 0,
-                             "31-Dec-1999" );
+        sen.getValues().set( 0, new DSLVariableValue("31-Dec-1999"));
         assertEquals( "When a person was born on \"31-Dec-1999\"",
+                      sen.interpolate() );
+    }
+    
+    @Test
+    public void testDSLComplexVariableValueInterpolation() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "a {here} and {here}" );
+        sen.getValues().set( 0, new DSLComplexVariableValue("123","word"));
+        sen.getValues().set( 1, new DSLComplexVariableValue("some-other-value","word") );
+        assertEquals( "a word and word",
                       sen.interpolate() );
     }
 
