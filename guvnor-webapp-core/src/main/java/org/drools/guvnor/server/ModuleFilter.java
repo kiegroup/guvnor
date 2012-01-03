@@ -16,20 +16,20 @@
 
 package org.drools.guvnor.server;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.server.security.ModuleUUIDType;
 import org.jboss.seam.security.Identity;
 
-public class PackageFilter extends AbstractFilter<PackageConfigData> {
+public class ModuleFilter extends AbstractFilter<Module> {
 
-    public PackageFilter(Identity identity) {
-        super( PackageConfigData.class, identity );
+    public ModuleFilter(Identity identity) {
+        super( Module.class, identity );
     }
 
     @Override
-    protected boolean checkPermission(final PackageConfigData packageConfigData,
+    protected boolean checkPermission(final Module module,
                                       final String action) {
-        return identity.hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
+        return identity.hasPermission( new ModuleUUIDType( module.getUuid() ),
                                                   action );
     }
 

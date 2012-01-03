@@ -19,72 +19,72 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-public interface PackageService
+public interface ModuleService
         extends
         RemoteService {
 
     /**
-     * This returns a list of packages where rules may be added. Only the UUID
+     * This returns a list of modules where assets may be added. Only the UUID
      * and the name need to be populated.
      */
-    public PackageConfigData[] listPackages();
+    public Module[] listModules();
 
     /**
-     * This returns a list of packages where rules may be added. Only the UUID
+     * This returns a list of modules where assets may be added. Only the UUID
      * and the name need to be populated.
      */
-    public PackageConfigData[] listPackages(String workspace);
+    public Module[] listModules(String workspace);
 
     /**
-     * This returns a list of archived packages.
+     * This returns a list of archived modules.
      */
-    public PackageConfigData[] listArchivedPackages();
+    public Module[] listArchivedModules();
 
     /**
-     * This returns the global packages.
+     * This returns the global module.
      */
-    public PackageConfigData loadGlobalPackage();
+    public Module loadGlobalModule();
 
     public SnapshotInfo loadSnapshotInfo(String packageName, String snapshotName);
 
     /**
-     * This creates a package of the given name, and checks it in.
+     * This creates a module of the given name, and checks it in.
      *
      * @return UUID of the created item.
      */
-    public String createPackage(String name,
+    public String createModule(String name,
                                 String description,
                                 String format) throws SerializationException;
 
     /**
-     * This creates a package of the given name, and checks it in.
+     * This creates a module of the given name, and checks it in.
      *
      * @return UUID of the created item.
      */
-    public String createSubPackage(String name,
+    public String createSubModule(String name,
                                    String description,
                                    String parentPackage) throws SerializationException;
 
     /**
-     * Loads a package by its uuid.
+     * Loads a module by its uuid.
      *
      * @return Well, its pretty obvious if you think about it for a minute.
      *         Really.
      */
-    public PackageConfigData loadPackageConfig(String uuid);
+    public Module loadModule(String uuid);
 
     /**
-     * Validate package configuration
+     * Validate module configuration
      *
      * @return A ValidatedReponse, with any errors to be reported. No payload is
      *         in the response. If there are any errors, the user should be
      *         given the option to review them, and correct them if needed (but
      *         a save will not be prevented this way - as its not an exception).
      */
-    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException;
+    public ValidatedResponse validateModule(Module data) throws SerializationException;
 
     /**
-     * Saves the package config data in place (does not create a new version of
+     * Saves the module in place (does not create a new version of
      * anything).
      *
      * @return A ValidatedReponse, with any errors to be reported. No payload is
@@ -92,19 +92,19 @@ public interface PackageService
      *         given the option to review them, and correct them if needed (but
      *         a save will not be prevented this way - as its not an exception).
      */
-    public void savePackage(PackageConfigData data) throws SerializationException;
+    public void saveModule(Module data) throws SerializationException;
 
     /**
-     * Create a package snapshot for deployment.
+     * Create a module snapshot for deployment.
      *
-     * @param packageName     THe name of the package to copy.
+     * @param moduleName     THe name of the module to copy.
      * @param snapshotName    The name of the snapshot. Has to be unique unless existing one
      *                        is to be replaced.
      * @param replaceExisting Replace the existing one (must be true to replace an existing
      *                        snapshot of the same name).
      * @param comment         A comment to be added to the copied one.
      */
-    public void createPackageSnapshot(String packageName,
+    public void createModuleSnapshot(String moduleName,
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment);
@@ -112,13 +112,13 @@ public interface PackageService
     /**
      * This alters an existing snapshot, it can be used to copy or delete it.
      *
-     * @param packageName     The package name that we are dealing with.
+     * @param moduleName     The module name that we are dealing with.
      * @param snapshotName    The snapshot name (this must exist)
      * @param delete          true if the snapshotName is to be removed.
      * @param newSnapshotName The name of the target snapshot that the contents will be
      *                        copied to.
      */
-    public void copyOrRemoveSnapshot(String packageName,
+    public void copyOrRemoveSnapshot(String moduleName,
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException;
@@ -156,25 +156,25 @@ public interface PackageService
     public String buildPackageSource(String packageUUID) throws SerializationException;
 
     /**
-     * Copy the package (everything).
+     * Copy the module (everything).
      *
-     * @param sourcePackageName
-     * @param destPackageName
+     * @param sourceModuleName
+     * @param destModuleName
      */
-    public String copyPackage(String sourcePackageName,
-                              String destPackageName) throws SerializationException;
+    public String copyModule(String sourceModuleName,
+                              String destModuleName) throws SerializationException;
 
     /**
-     * Permanently remove a package (delete it).
+     * Permanently remove a module (delete it).
      *
-     * @param uuid of the package.
+     * @param uuid of the module.
      */
-    public void removePackage(String uuid);
+    public void removeModule(String uuid);
 
     /**
-     * Rename a package.
+     * Rename a module.
      */
-    public String renamePackage(String uuid,
+    public String renameModule(String uuid,
                                 String newName);
 
     /**
@@ -199,18 +199,18 @@ public interface PackageService
     public String[] listRulesInPackage(String packageName) throws SerializationException;
 
     /**
-     * This will list the images available in a package. This has an upper limit
+     * This will list the images available in a module. This has an upper limit
      * of what it will return (it just doesn't make sense to show a list of 20K
      * items !).
      */
-    public String[] listImagesInPackage(String packageName) throws SerializationException;
+    public String[] listImagesInModule(String packageName) throws SerializationException;
 
     /**
-     * This will load a list of snapshots for the given package. Snapshots are
-     * created by taking a labelled copy of a package, at a point in time, for
+     * This will load a list of snapshots for the given module. Snapshots are
+     * created by taking a labelled copy of a module, at a point in time, for
      * instance for deployment.
      */
-    public SnapshotInfo[] listSnapshots(String packageName);
+    public SnapshotInfo[] listSnapshots(String moduleName);
 
     /**
      * List the fact types (class names) in the scope of a given package. This
@@ -231,7 +231,7 @@ public interface PackageService
      *
      * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonRequest)}
      */
-    public SnapshotDiffs compareSnapshots(String packageName,
+    public SnapshotDiffs compareSnapshots(String moduleName,
                                           String firstSnapshotName,
                                           String secondSnapshotName);
 

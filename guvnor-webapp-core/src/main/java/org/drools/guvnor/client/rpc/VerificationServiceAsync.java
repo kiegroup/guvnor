@@ -20,11 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface VerificationServiceAsync {
     
-    void verifyAsset(org.drools.guvnor.client.rpc.RuleAsset asset,
+    void verifyAsset(org.drools.guvnor.client.rpc.Asset asset,
                      java.util.Set<String> sactiveWorkingSets,
                      AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
 
-    void verifyAssetWithoutVerifiersRules(org.drools.guvnor.client.rpc.RuleAsset asset,
+    void verifyAssetWithoutVerifiersRules(org.drools.guvnor.client.rpc.Asset asset,
                                           java.util.Set<WorkingSetConfigData> activeWorkingSets,
                                           AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
 

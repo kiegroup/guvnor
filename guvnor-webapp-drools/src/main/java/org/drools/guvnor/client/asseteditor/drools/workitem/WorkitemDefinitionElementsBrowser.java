@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -137,16 +137,16 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
         mainPanel.add(imagesList);
 
         // Global Area Images
-        RepositoryServiceFactory.getPackageService().loadGlobalPackage(
-                new AsyncCallback<PackageConfigData>() {
+        RepositoryServiceFactory.getPackageService().loadGlobalModule(
+                new AsyncCallback<Module>() {
                     public void onFailure(Throwable caught) {
                         ErrorPopup
                                 .showMessage("Error listing Global Area information!");
                     }
-                    public void onSuccess(PackageConfigData result) {
-                        final PackageConfigData presults = result;
+                    public void onSuccess(Module result) {
+                        final Module presults = result;
                         
-                        RepositoryServiceFactory.getPackageService().listImagesInPackage(
+                        RepositoryServiceFactory.getPackageService().listImagesInModule(
                                 result.getName(), new AsyncCallback<String[]>() {
 
                                     public void onFailure(Throwable caught) {
@@ -165,18 +165,18 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
                 });
 
         // Images in Packages
-        RepositoryServiceFactory.getPackageService().listPackages(
-                new AsyncCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listModules(
+                new AsyncCallback<Module[]>() {
 
                     public void onFailure(Throwable caught) {
                         ErrorPopup
                                 .showMessage("Error listing images information!");
                     }
-                    public void onSuccess(PackageConfigData[] result) {
+                    public void onSuccess(Module[] result) {
                         for (int i = 0; i < result.length; i++) {
-                            final PackageConfigData packageConfigData = result[i];
+                            final Module packageConfigData = result[i];
                             
-                            RepositoryServiceFactory.getPackageService().listImagesInPackage(
+                            RepositoryServiceFactory.getPackageService().listImagesInModule(
                                     packageConfigData.getName(), new AsyncCallback<String[]>() {
 
                                         public void onFailure(Throwable caught) {

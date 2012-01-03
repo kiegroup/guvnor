@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 /**
  * A flat representation of PackageConfigData, i.e. not child folders
@@ -23,11 +23,11 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 public class PackageFlatView extends PackageView {
 
     protected void doAddPackage(String name,
-                                PackageConfigData conf) {
+                                Module conf) {
         root.add( name,
                   conf );
         addSubPackages( name,
-                        conf.getSubPackages() );
+                        conf.getSubModules() );
     }
 
 }

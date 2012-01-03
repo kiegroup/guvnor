@@ -44,9 +44,9 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageService;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -84,9 +84,9 @@ import org.jboss.seam.security.annotations.LoggedIn;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 @Named("org.drools.guvnor.client.rpc.PackageService")
-public class RepositoryPackageService
+public class RepositoryModuleService
         implements
-        PackageService {
+        ModuleService {
     @Inject
     private RulesRepository             rulesRepository;
 
@@ -101,7 +101,7 @@ public class RepositoryPackageService
     private Identity                    identity;
 
     @Inject
-    private RepositoryPackageOperations repositoryPackageOperations;
+    private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
     private RepositoryAssetOperations   repositoryAssetOperations;
@@ -110,22 +110,22 @@ public class RepositoryPackageService
     private ServiceImplementation       serviceImplementation;
 
     /**
-     * Role-based Authorization check: This method only returns packages that
+     * Role-based Authorization check: This method only returns modules that
      * the user has permission to access. User has permission to access the
-     * particular package when: The user has a package.readonly role or higher
-     * (i.e., package.admin, package.developer) to this package.
+     * particular module when: The user has a package.readonly role or higher
+     * (i.e., package.admin, package.developer) to this module.
      */
     @WebRemote
     @LoggedIn
-    public PackageConfigData[] listPackages() {
-        return listPackages( null );
+    public Module[] listModules() {
+        return listModules( null );
     }
 
     @WebRemote
     @LoggedIn
-    public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter( identity );
-        return repositoryPackageOperations.listPackages(
+    public Module[] listModules(String workspace) {
+        RepositoryFilter pf = new ModuleFilter( identity );
+        return repositoryModuleOperations.listModules(
                                                          false,
                                                          workspace,
                                                          pf );
@@ -133,21 +133,21 @@ public class RepositoryPackageService
 
     @WebRemote
     @LoggedIn
-    public PackageConfigData[] listArchivedPackages() {
-        return listArchivedPackages( null );
+    public Module[] listArchivedModules() {
+        return listArchivedModules( null );
     }
 
     @WebRemote
     @LoggedIn
-    public PackageConfigData[] listArchivedPackages(String workspace) {
-        return repositoryPackageOperations.listPackages(
+    public Module[] listArchivedModules(String workspace) {
+        return repositoryModuleOperations.listModules(
                                                          true,
                                                          workspace,
-                                                         new PackageFilter( identity ) );
+                                                         new ModuleFilter( identity ) );
     }
 
-    public PackageConfigData loadGlobalPackage() {
-        return repositoryPackageOperations.loadGlobalPackage();
+    public Module loadGlobalModule() {
+        return repositoryModuleOperations.loadGlobalModule();
     }
 
     @WebRemote
@@ -186,65 +186,65 @@ public class RepositoryPackageService
     @LoggedIn
     public String buildPackageSource(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        return repositoryPackageOperations.buildPackageSource( packageUUID );
+        return repositoryModuleOperations.buildPackageSource( packageUUID );
     }
 
     @WebRemote
-    public String copyPackage(String sourcePackageName,
-                              String destPackageName) throws SerializationException {
+    public String copyModule(String sourceModuleName,
+                              String destModuleName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.copyPackage( sourcePackageName,
-                                                        destPackageName );
+        return repositoryModuleOperations.copyModules( sourceModuleName,
+                                                        destModuleName );
     }
 
     @WebRemote
     @LoggedIn
-    public void removePackage(String uuid) {
+    public void removeModule(String uuid) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
-        repositoryPackageOperations.removePackage( uuid );
+        repositoryModuleOperations.removeModule( uuid );
     }
 
     @WebRemote
     @LoggedIn
-    public String renamePackage(String uuid,
+    public String renameModule(String uuid,
                                 String newName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
 
-        return repositoryPackageOperations.renamePackage( uuid,
+        return repositoryModuleOperations.renameModule( uuid,
                                                           newName );
     }
 
     @WebRemote
     @LoggedIn
-    public byte[] exportPackages(String packageName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
-        return repositoryPackageOperations.exportPackages( packageName );
+    public byte[] exportModules(String moduleName) {
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        return repositoryModuleOperations.exportModules( moduleName );
     }
 
     @WebRemote
     @LoggedIn
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
-        repositoryPackageOperations.importPackages( byteArray,
+        repositoryModuleOperations.importPackages( byteArray,
                                                     importAsNew );
     }
 
     @WebRemote
-    public String createPackage(String name,
+    public String createModule(String name,
                                 String description,
                                 String format) throws RulesRepositoryException {
-        return repositoryPackageOperations.createPackage( name,
+        return repositoryModuleOperations.createModule( name,
                                                           description,
                                                           format );
     }
 
     @WebRemote
-    public String createPackage(String name,
+    public String createModule(String name,
                                 String description,
                                 String format,
                                 String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.createPackage( name,
+        return repositoryModuleOperations.createModule( name,
                                                           description,
                                                           format,
                                                           workspace );
@@ -263,38 +263,38 @@ public class RepositoryPackageService
      * return createPackage( name, description, new String[]{} ); }
      */
     @WebRemote
-    public String createSubPackage(String name,
+    public String createSubModule(String name,
                                    String description,
                                    String parentNode) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.createSubPackage( name,
+        return repositoryModuleOperations.createSubModule( name,
                                                              description,
                                                              parentNode );
     }
 
     @WebRemote
     @LoggedIn
-    public PackageConfigData loadPackageConfig(String uuid) {
-        ModuleItem packageItem = rulesRepository.loadModuleByUUID( uuid );
+    public Module loadModule(String uuid) {
+        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
-        // package uudi.
-        // we have to figure out the package name.
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageItem.getName() );
-        return repositoryPackageOperations.loadPackageConfig( packageItem );
+        // module uudi.
+        // we have to figure out the module name.
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleItem.getName() );
+        return repositoryModuleOperations.loadModule( moduleItem );
     }
 
     @WebRemote
     @LoggedIn
-    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
+    public ValidatedResponse validateModule(Module data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
-        return repositoryPackageOperations.validatePackageConfiguration( data );
+        return repositoryModuleOperations.validateModule( data );
     }
 
     @WebRemote
     @LoggedIn
-    public void savePackage(PackageConfigData data) throws SerializationException {
+    public void saveModule(Module data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
-        repositoryPackageOperations.savePackage( data );
+        repositoryModuleOperations.saveModule( data );
     }
 
     @WebRemote
@@ -326,7 +326,7 @@ public class RepositoryPackageService
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        return repositoryPackageOperations.buildPackage( packageUUID,
+        return repositoryModuleOperations.buildPackage( packageUUID,
                                                          force,
                                                          buildMode,
                                                          statusOperator,
@@ -340,12 +340,12 @@ public class RepositoryPackageService
 
     @WebRemote
     @LoggedIn
-    public void createPackageSnapshot(String packageName,
+    public void createModuleSnapshot(String moduleName,
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
-        repositoryPackageOperations.createPackageSnapshot( packageName,
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        repositoryModuleOperations.createModuleSnapshot( moduleName,
                                                            snapshotName,
                                                            replaceExisting,
                                                            comment );
@@ -354,12 +354,12 @@ public class RepositoryPackageService
 
     @WebRemote
     @LoggedIn
-    public void copyOrRemoveSnapshot(String packageName,
+    public void copyOrRemoveSnapshot(String moduleName,
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
-        repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        repositoryModuleOperations.copyOrRemoveSnapshot( moduleName,
                                                           snapshotName,
                                                           delete,
                                                           newSnapshotName );
@@ -369,14 +369,14 @@ public class RepositoryPackageService
     @LoggedIn
     public String[] listRulesInPackage(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
-        return repositoryPackageOperations.listRulesInPackage( packageName );
+        return repositoryModuleOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
     @LoggedIn
-    public String[] listImagesInPackage(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
-        return repositoryPackageOperations.listImagesInPackage( packageName );
+    public String[] listImagesInModule(String moduleName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleName );
+        return repositoryModuleOperations.listImagesInModule( moduleName );
     }
 
     @WebRemote
@@ -403,16 +403,16 @@ public class RepositoryPackageService
 
     @WebRemote
     @LoggedIn
-    public SnapshotInfo[] listSnapshots(String packageName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
+    public SnapshotInfo[] listSnapshots(String moduleName) {
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
 
-        String[] snaps = rulesRepository.listModuleSnapshots( packageName );
+        String[] snaps = rulesRepository.listModuleSnapshots( moduleName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
         for ( int i = 0; i < snaps.length; i++ ) {
-            ModuleItem packageItem = rulesRepository.loadModuleSnapshot( packageName,
+            ModuleItem moduleItem = rulesRepository.loadModuleSnapshot( moduleName,
                                                                            snaps[i] );
-            snapshotInfos[i] = packageItemToSnapshotItem( snaps[i],
-                                                          packageItem );
+            snapshotInfos[i] = moduleItemToSnapshotItem( snaps[i],
+                                                          moduleItem );
         }
         return snapshotInfos;
     }
@@ -422,14 +422,14 @@ public class RepositoryPackageService
                                          String snapshotName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
 
-        return packageItemToSnapshotItem(
+        return moduleItemToSnapshotItem(
                                           snapshotName,
                                           rulesRepository.loadModuleSnapshot(
                                                                                packageName,
                                                                                snapshotName ) );
     }
 
-    private SnapshotInfo packageItemToSnapshotItem(String snapshotName,
+    private SnapshotInfo moduleItemToSnapshotItem(String snapshotName,
                                                    ModuleItem packageItem) {
         SnapshotInfo snapshotInfo = new SnapshotInfo();
         snapshotInfo.setComment( packageItem.getCheckinComment() );
@@ -538,10 +538,10 @@ public class RepositoryPackageService
      * @deprecated in favour of
      *             {@link #compareSnapshots(SnapshotComparisonPageRequest)}
      */
-    public SnapshotDiffs compareSnapshots(String packageName,
+    public SnapshotDiffs compareSnapshots(String moduleName,
                                           String firstSnapshotName,
                                           String secondSnapshotName) {
-        return repositoryPackageOperations.compareSnapshots( packageName,
+        return repositoryModuleOperations.compareSnapshots( moduleName,
                                                              firstSnapshotName,
                                                              secondSnapshotName );
     }
@@ -554,7 +554,7 @@ public class RepositoryPackageService
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        return repositoryPackageOperations.compareSnapshots( request );
+        return repositoryModuleOperations.compareSnapshots( request );
     }
 
     @WebRemote
@@ -626,7 +626,7 @@ public class RepositoryPackageService
                 RuleBaseCache.getInstance().put( packageItem.getUUID(),
                                                  rb );
             } else {
-                BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
+                BuilderResult result = repositoryModuleOperations.buildPackage( packageItem,
                                                                                  false );
                 if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( packageItem,
@@ -656,7 +656,7 @@ public class RepositoryPackageService
                        e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult res = repositoryPackageOperations.buildPackage( item,
+                BuilderResult res = repositoryModuleOperations.buildPackage( item,
                                                                               true );
                 if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
@@ -794,7 +794,7 @@ public class RepositoryPackageService
                                                      loadRuleBase( packageItem,
                                                                    classloader ) );
                 } else {
-                    BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
+                    BuilderResult result = repositoryModuleOperations.buildPackage( packageItem,
                                                                                      false );
                     if ( result == null || result.getLines().size() == 0 ) {
                         RuleBaseCache.getInstance().put( packageItem.getUUID(),
@@ -819,7 +819,7 @@ public class RepositoryPackageService
             while ( it.hasNext() ) {
                 AssetItem as = it.next();
                 if ( !as.getDisabled() ) {
-                    RuleAsset asset = repositoryAssetOperations.loadAsset( as );
+                    Asset asset = repositoryAssetOperations.loadAsset( as );
                     Scenario sc = (Scenario) asset.getContent();
                     runScenario( packageItem.getName(),
                                  sc,

@@ -360,7 +360,7 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
             }

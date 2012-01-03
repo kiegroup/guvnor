@@ -21,8 +21,8 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItem;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -34,7 +34,7 @@ public class GlobalAreaTreeItemTest {
     private GlobalAreaTreeItemView view;
     private GlobalAreaTreeItem presenter;
     private NavigationViewFactory navigationViewFactory;
-    private PackageServiceAsync packageService;
+    private ModuleServiceAsync packageService;
 
     @Before
     public void setUp() throws Exception {
@@ -52,9 +52,9 @@ public class GlobalAreaTreeItemTest {
                 view
         );
 
-        packageService = mock( PackageServiceAsync.class );
+        packageService = mock( ModuleServiceAsync.class );
         when(
-                clientFactory.getPackageService()
+                clientFactory.getModuleService()
         ).thenReturn(
                 packageService
         );
@@ -66,6 +66,6 @@ public class GlobalAreaTreeItemTest {
     public void testSetUp() throws Exception {
         verify( navigationViewFactory ).getGlobalAreaTreeItemView();
         verify( view ).setPresenter( presenter );
-        verify( packageService ).loadGlobalPackage( Matchers.<AsyncCallback<PackageConfigData>>any() );
+        verify( packageService ).loadGlobalModule( Matchers.<AsyncCallback<Module>>any() );
     }
 }

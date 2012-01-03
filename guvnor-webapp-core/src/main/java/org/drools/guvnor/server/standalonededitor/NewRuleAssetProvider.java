@@ -18,7 +18,7 @@ package org.drools.guvnor.server.standalonededitor;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -46,14 +46,14 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
         this.repositoryAssetService = repositoryAssetService;
     }
 
-    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
+    public Asset[] getRuleAssets() throws DetailedSerializationException {
         try {
             //creates a new empty asset with the given name and format in the
             //given package.
             String ruleUUID = serviceImplementation.createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
-            RuleAsset newRule = repositoryAssetService.loadRuleAsset(ruleUUID);
+            Asset newRule = repositoryAssetService.loadRuleAsset(ruleUUID);
 
-            return new RuleAsset[]{newRule};
+            return new Asset[]{newRule};
         } catch (SerializationException ex) {
             throw new DetailedSerializationException("Error creating rule asset", ex.getMessage());
         }

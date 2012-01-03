@@ -43,7 +43,7 @@ import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -52,7 +52,7 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -152,7 +152,7 @@ public class ServiceImplementation
     private RepositoryAssetService      repositoryAssetService;
 
     @Inject
-    private RepositoryPackageOperations repositoryPackageOperations;
+    private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
     private Backchannel                 backchannel;
@@ -289,7 +289,7 @@ public class ServiceImplementation
 
         //Set the Table Format and check-in
         //TODO Is it possible to alter the content and save without checking-in?
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
         GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
         content.setTableFormat( configuration.getTableFormat() );
         asset.setCheckinComment( "Table Format automatically set to [" + configuration.getTableFormat().toString() + "]" );
@@ -419,7 +419,7 @@ public class ServiceImplementation
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
-        RepositoryFilter packageFilter = new PackageFilter( identity );
+        RepositoryFilter packageFilter = new ModuleFilter( identity );
         RepositoryFilter categoryFilter = new CategoryFilter( identity );
 
         while ( it.hasNext() ) {
@@ -445,8 +445,8 @@ public class ServiceImplementation
                               roleType );
     }
 
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
+    private Module getConfigDataHelper(String uuidStr) {
+        Module data = new Module();
         data.setUuid( uuidStr );
         return data;
     }
@@ -535,14 +535,14 @@ public class ServiceImplementation
     @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
-        return repositoryPackageOperations.listRulesInPackage( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listRulesInPackage( RulesRepository.GLOBAL_AREA );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
-        return repositoryPackageOperations.listImagesInPackage( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listImagesInModule( RulesRepository.GLOBAL_AREA );
     }
 
     /**
@@ -1121,23 +1121,23 @@ public class ServiceImplementation
      * Check whether an asset exists in a package
      * 
      * @param assetName
-     * @param packageName
-     * @return True if the asset already exists in the package
+     * @param moduleName
+     * @return True if the asset already exists in the module
      * @throws SerializationException
      */
     @WebRemote
     @LoggedIn
-    public boolean doesAssetExistInPackage(String assetName,
-                                           String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
+    public boolean doesAssetExistInModule(String assetName,
+                                           String moduleName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
 
         try {
 
-            ModuleItem pkg = rulesRepository.loadModule( packageName );
-            return pkg.containsAsset( assetName );
+            ModuleItem moduleItem = rulesRepository.loadModule( moduleName );
+            return moduleItem.containsAsset( assetName );
 
         } catch ( RulesRepositoryException e ) {
-            log.error( "An error occurred checking if asset [" + assetName + "] exists in package [" + packageName + "]: ",
+            log.error( "An error occurred checking if asset [" + assetName + "] exists in module [" + moduleName + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
         }

@@ -27,7 +27,7 @@ public class RepositoryServiceFactory {
 
     private static RepositoryServiceAsync SERVICE;
     private static AssetServiceAsync      ASSET_SERVICE;
-    private static PackageServiceAsync    PACKAGE_SERVICE;
+    private static ModuleServiceAsync    PACKAGE_SERVICE;
     private static CategoryServiceAsync   CATEGORY_SERVICE;
 
     public static RepositoryServiceAsync getService() {
@@ -46,7 +46,7 @@ public class RepositoryServiceFactory {
 
     }
 
-    public static PackageServiceAsync getPackageService() {
+    public static ModuleServiceAsync getPackageService() {
         if ( PACKAGE_SERVICE == null ) {
             loadPackageService();
         }
@@ -98,9 +98,9 @@ public class RepositoryServiceFactory {
         return assetServiceAsync;
     }
 
-    private static PackageServiceAsync getRealPackageService() {
+    private static ModuleServiceAsync getRealPackageService() {
         // define the service you want to call
-        PackageServiceAsync packageServiceAsync = (PackageServiceAsync) GWT.create( PackageService.class );
+        ModuleServiceAsync packageServiceAsync = (ModuleServiceAsync) GWT.create( ModuleService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) packageServiceAsync;
 
         String endpointURL = GWT.getModuleBaseURL() + "guvnorService";

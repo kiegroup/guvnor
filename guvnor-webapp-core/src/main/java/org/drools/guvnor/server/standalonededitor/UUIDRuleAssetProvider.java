@@ -17,7 +17,7 @@ package org.drools.guvnor.server.standalonededitor;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 
@@ -37,10 +37,10 @@ public class UUIDRuleAssetProvider
         this.repositoryAssetService = repositoryAssetService;
     }
 
-    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
+    public Asset[] getRuleAssets() throws DetailedSerializationException {
         try {
 
-            RuleAsset[] assets = new RuleAsset[assetsUUIDs.length];
+            Asset[] assets = new Asset[assetsUUIDs.length];
 
             for (int i = 0; i < assetsUUIDs.length; i++) {
                 String uuid = assetsUUIDs[i];

@@ -25,7 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -54,13 +54,13 @@ public class PackageHeaderWidget extends Composite {
     private Constants         constants            = GWT.create( Constants.class );
     private static Images     images               = GWT.create( Images.class );
 
-    private PackageConfigData conf;
+    private Module conf;
     private SimplePanel       layout;
     private ListBox           importList;
     private ListBox           globalList;
     private boolean           isHistoricalReadOnly = false;
 
-    public PackageHeaderWidget(PackageConfigData conf,
+    public PackageHeaderWidget(Module conf,
                                boolean isHistoricalReadOnly) {
         this.conf = conf;
         this.isHistoricalReadOnly = isHistoricalReadOnly;

@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.gwtutil;
 
-import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.ModuleService;
 
 public class RepositoryPackageServiceInterfaceGenerator {
 
@@ -24,7 +24,7 @@ public class RepositoryPackageServiceInterfaceGenerator {
     }
 
     public static void generate() {
-        ServiceInterfaceGenerator.generate( PackageService.class,
+        ServiceInterfaceGenerator.generate( ModuleService.class,
                                             "getPackageService()" );
     }
 }

@@ -36,7 +36,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -102,7 +102,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants         = GWT.create( Constants.class );
     private static Images               images            = GWT.create( Images.class );
 
-    private RuleAsset                   asset;
+    private Asset                   asset;
     private GuidedDecisionTable52       guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
@@ -143,7 +143,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private final BRLConditionColumnView.Presenter BRL_CONDITION_PRESENTER = this;
 
-    public GuidedDecisionTableWidget(final RuleAsset asset,
+    public GuidedDecisionTableWidget(final Asset asset,
                                      final RuleViewer viewer,
                                      final ClientFactory clientFactory,
                                      final EventBus globalEventBus) {

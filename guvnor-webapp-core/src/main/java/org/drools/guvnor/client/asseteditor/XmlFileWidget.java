@@ -23,7 +23,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
 public class XmlFileWidget extends AssetAttachmentFileWidget
@@ -33,7 +33,7 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
     private TextArea text;
     final private RuleContentText data;
 
-    public XmlFileWidget( final RuleAsset asset,
+    public XmlFileWidget( final Asset asset,
                           final RuleViewer viewer,
                           ClientFactory clientFactory,
                           EventBus eventBus) {

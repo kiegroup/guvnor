@@ -2,7 +2,7 @@ package org.drools.guvnor.server.verification;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.builder.ResourceType;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
@@ -18,13 +18,13 @@ import java.util.Set;
 
 public class VerifierConfigurationFactory {
 
-    public static VerifierConfiguration getDefaultConfigurationWithWorkingSetConstraints(RuleAsset[] workingSets) throws SerializationException {
+    public static VerifierConfiguration getDefaultConfigurationWithWorkingSetConstraints(Asset[] workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
                 new DefaultVerifierConfiguration());
     }
 
-    public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(RuleAsset[] workingSets) throws SerializationException {
+    public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(Asset[] workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
                 new VerifierConfigurationImpl());
@@ -49,11 +49,11 @@ public class VerifierConfigurationFactory {
         return configuration;
     }
 
-    private static List<String> getConstraintRulesFromWorkingSets(RuleAsset[] workingSets) {
+    private static List<String> getConstraintRulesFromWorkingSets(Asset[] workingSets) {
         List<String> constraintRules = new LinkedList<String>();
 
         if (workingSets != null) {
-            for (RuleAsset workingSet : workingSets) {
+            for (Asset workingSet : workingSets) {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
                 if (wsConfig.constraints != null) {
                     for (ConstraintConfiguration config : wsConfig.constraints) {

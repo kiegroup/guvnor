@@ -33,7 +33,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.VersionChooser;
 import org.drools.guvnor.client.widgets.query.OpenItemCommand;
@@ -49,14 +49,14 @@ public class DependencyWidget extends Composite {
 
     private DependenciesPagedTable table;
 
-    private PackageConfigData conf;
+    private Module conf;
     private boolean isHistoricalReadOnly = false;
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
     public DependencyWidget(ClientFactory clientFactory,
                             EventBus eventBus,
-                            final PackageConfigData conf,
+                            final Module conf,
                             boolean isHistoricalReadOnly) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;

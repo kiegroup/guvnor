@@ -17,7 +17,7 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -136,7 +136,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
                                                 pkg.getName(),
                                                 AssetFormats.TEST_SCENARIO );
 
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( scenarioId );
+        Asset asset = repositoryAssetService.loadRuleAsset( scenarioId );
         assertNotNull( asset.getContent() );
         assertTrue( asset.getContent() instanceof Scenario );
 

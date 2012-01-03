@@ -19,7 +19,7 @@ package org.drools.guvnor.server.files;
 import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.ModuleNameType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
@@ -190,7 +190,7 @@ public class FeedServlet extends RepositoryServlet {
     }
 
     void checkPackageReadPermission(String packageName) {
-        identity.checkPermission(new PackageNameType(packageName),
+        identity.checkPermission(new ModuleNameType(packageName),
                 RoleType.PACKAGE_READONLY.getName());
     }
 

@@ -18,8 +18,8 @@ package org.drools.guvnor.client.perspective;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -32,13 +32,13 @@ public interface PerspectiveFactory {
     public String[] getRegisteredModuleEditorFormats(String perspectiveType);
     public String[] getRegisteredPerspectiveTypes();
 
-    public AbstractModuleEditor getModuleEditor(PackageConfigData module, ClientFactory clientFactory, EventBus eventBus, boolean isHistoryReadOnly, Command refreshCommand);
+    public AbstractModuleEditor getModuleEditor(Module module, ClientFactory clientFactory, EventBus eventBus, boolean isHistoryReadOnly, Command refreshCommand);
     public IsWidget getModulesHeaderView(String perspectiveType);
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType);
     public Widget getModulesNewAssetMenu(String perspectiveType, ClientFactory clientFactory, EventBus eventBus);
-    public Widget getModuleEditorActionToolbar(PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand);
+    public Widget getModuleEditorActionToolbar(Module data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand);
     
-    public Widget getAssetEditorActionToolbar(String perspectiveType, RuleAsset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly);    
+    public Widget getAssetEditorActionToolbar(String perspectiveType, Asset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly);    
     
     public Perspective getPerspective(String perspectiveType);
  }

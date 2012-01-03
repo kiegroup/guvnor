@@ -28,7 +28,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
@@ -289,7 +289,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
         rulesRepository.createModule("testScenariosURL",
                 "");
-        repositoryPackageService.createPackageSnapshot("testScenariosURL",
+        repositoryPackageService.createModuleSnapshot("testScenariosURL",
                 "SNAP1",
                 false,
                 "");

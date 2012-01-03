@@ -12,7 +12,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
 
@@ -36,7 +36,7 @@ public class StandaloneEditorManager {
     private Constants constants = GWT.create(Constants.class);
     private MultiViewEditor editor;
     private StandaloneEditorServiceAsync standaloneEditorService = GWT.create(StandaloneEditorService.class);
-    private RuleAsset[] assets;
+    private Asset[] assets;
     private final EventBus eventBus;
 
     public StandaloneEditorManager(ClientFactory clientFactory, EventBus eventBus) {
@@ -144,7 +144,7 @@ public class StandaloneEditorManager {
                 
                 
                 //Apply working set configurations
-                Set<RuleAsset> workingSetAssets = new HashSet<RuleAsset>();
+                Set<Asset> workingSetAssets = new HashSet<Asset>();
                 if (parameters.getActiveTemporalWorkingSets() != null && parameters.getActiveTemporalWorkingSets().length > 0){
                     workingSetAssets.addAll(Arrays.asList(parameters.getActiveTemporalWorkingSets()));
                 }

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.Scheduler;
@@ -59,9 +59,9 @@ public class RulePackageSelector extends Composite {
     }
 
     private void loadPackageList() {
-        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
 
-            public void onSuccess(PackageConfigData[] list) {
+            public void onSuccess(Module[] list) {
                 for ( int i = 0; i < list.length; i++ ) {
                     packageList.addItem( list[i].getName(),
                                          list[i].getUuid() );

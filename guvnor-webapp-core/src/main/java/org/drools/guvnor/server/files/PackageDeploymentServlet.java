@@ -22,7 +22,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
@@ -61,7 +61,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private ServiceImplementation serviceImplementation;
 
     @Inject
-    private RepositoryPackageService repositoryPackageService;
+    private RepositoryModuleService repositoryPackageService;
 
     @Inject
     private FileManagerService fileManagerService;

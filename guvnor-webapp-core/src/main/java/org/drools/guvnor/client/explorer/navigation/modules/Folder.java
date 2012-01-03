@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 /**
  * A logical folder containing PackageConfigData
@@ -26,11 +26,11 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 public class Folder {
 
     private String            name;
-    private PackageConfigData conf;
+    private Module conf;
     private List<Folder>      children = new ArrayList<Folder>();
 
     Folder add(String f,
-                      PackageConfigData conf) {
+                      Module conf) {
         Folder n = new Folder();
         n.name = f;
         n.conf = conf;
@@ -51,7 +51,7 @@ public class Folder {
         return this.children;
     }
     
-    public PackageConfigData getPackageConfigData() {
+    public Module getPackageConfigData() {
         return this.conf;
     }
     

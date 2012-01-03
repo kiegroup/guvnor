@@ -36,7 +36,7 @@ import org.drools.guvnor.client.resources.Images;
 //import org.drools.guvnor.client.rpc.AnalysisReport;
 //import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 //import org.drools.guvnor.client.rpc.VerificationService;
 //import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -121,14 +121,14 @@ public class AssetEditorActionToolbar extends Composite {
     MenuItem sourceMenu;
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
-    protected RuleAsset asset;
+    protected Asset asset;
     final Widget editor;
     private final EventBus eventBus;
     private final ClientFactory clientFactory;
     private Command afterCheckinEvent;
     private boolean readOnly;
     
-    public AssetEditorActionToolbar(RuleAsset asset, 
+    public AssetEditorActionToolbar(Asset asset, 
                          final Widget editor,
                          ClientFactory clientFactory,
                          EventBus eventBus,

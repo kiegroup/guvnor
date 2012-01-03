@@ -47,17 +47,17 @@ import java.util.*;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
 /**
- * Handles operations for packages
+ * Handles operations for modules
  */
 @ApplicationScoped
-public class RepositoryPackageOperations {
+public class RepositoryModuleOperations {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryPackageOperations.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryModuleOperations.class );
 
     /**
-     * Maximum number of rules to display in "list rules in package" method
+     * Maximum number of assets to display in "list assets in module" method
      */
-    private static final int MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
+    private static final int MAX_ASSETS_TO_SHOW_IN_MODULE_LIST = 5000;
 
     @Inject
     private RulesRepository rulesRepository;
@@ -71,42 +71,42 @@ public class RepositoryPackageOperations {
         this.rulesRepository = repository;
     }
 
-    protected PackageConfigData[] listPackages(boolean archive,
+    protected Module[] listModules(boolean archive,
                                                String workspace,
                                                RepositoryFilter filter) {
-        List<PackageConfigData> result = new ArrayList<PackageConfigData>();
-        ModuleIterator pkgs = rulesRepository.listModules();
-        handleIteratePackages( archive,
+        List<Module> result = new ArrayList<Module>();
+        ModuleIterator modules = rulesRepository.listModules();
+        handleIterateModules( archive,
                 workspace,
                 filter,
                 result,
-                pkgs );
+                modules );
 
-        sortPackages( result );
-        return result.toArray( new PackageConfigData[result.size()] );
+        sortModules( result );
+        return result.toArray( new Module[result.size()] );
     }
 
-    private void handleIteratePackages(boolean archive,
+    private void handleIterateModules(boolean archive,
                                        String workspace,
                                        RepositoryFilter filter,
-                                       List<PackageConfigData> result,
-                                       ModuleIterator pkgs) {
-        pkgs.setArchivedIterator( archive );
-        while (pkgs.hasNext()) {
-            ModuleItem packageItem = pkgs.next();
+                                       List<Module> result,
+                                       ModuleIterator modules) {
+        modules.setArchivedIterator( archive );
+        while (modules.hasNext()) {
+            ModuleItem packageItem = modules.next();
 
-            PackageConfigData data = new PackageConfigData();
+            Module data = new Module();
             data.setUuid( packageItem.getUUID() );
             data.setName( packageItem.getName() );
             data.setArchived( packageItem.isArchived() );
             data.setWorkspaces( packageItem.getWorkspaces() );
-            handleIsPackagesListed( archive,
+            handleIsModuleListed( archive,
                     workspace,
                     filter,
                     result,
                     data );
 
-            data.subPackages = listSubPackages( packageItem,
+            data.subModules = listSubModules( packageItem,
                     archive,
                     null,
                     filter );
@@ -114,39 +114,39 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private PackageConfigData[] listSubPackages(ModuleItem parentPkg,
+    private Module[] listSubModules(ModuleItem parentModule,
                                                 boolean archive,
                                                 String workspace,
                                                 RepositoryFilter filter) {
-        List<PackageConfigData> children = new LinkedList<PackageConfigData>();
+        List<Module> children = new LinkedList<Module>();
 
-        handleIteratePackages( archive,
+        handleIterateModules( archive,
                 workspace,
                 filter,
                 children,
-                parentPkg.listSubModules() );
+                parentModule.listSubModules() );
 
-        sortPackages( children );
-        return children.toArray( new PackageConfigData[children.size()] );
+        sortModules( children );
+        return children.toArray( new Module[children.size()] );
     }
 
-    void sortPackages(List<PackageConfigData> result) {
+    void sortModules(List<Module> result) {
         Collections.sort( result,
-                new Comparator<PackageConfigData>() {
+                new Comparator<Module>() {
 
-                    public int compare(final PackageConfigData d1,
-                                       final PackageConfigData d2) {
+                    public int compare(final Module d1,
+                                       final Module d2) {
                         return d1.getName().compareTo( d2.getName() );
                     }
 
                 } );
     }
 
-    private void handleIsPackagesListed(boolean archive,
+    private void handleIsModuleListed(boolean archive,
                                         String workspace,
                                         RepositoryFilter filter,
-                                        List<PackageConfigData> result,
-                                        PackageConfigData data) {
+                                        List<Module> result,
+                                        Module data) {
         if ( !archive && (filter == null || filter.accept( data,
                 RoleType.PACKAGE_READONLY.getName() )) && (workspace == null || isWorkspace( workspace,
                 data.getWorkspaces() )) ) {
@@ -169,10 +169,10 @@ public class RepositoryPackageOperations {
         return false;
     }
 
-    protected PackageConfigData loadGlobalPackage() {
+    protected Module loadGlobalModule() {
         ModuleItem item = rulesRepository.loadGlobalArea();
 
-        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithOutDependencies( item );
+        Module data = ModuleFactory.createModuleWithOutDependencies( item );
 
         if ( data.isSnapshot() ) {
             data.setSnapshotName( item.getSnapshotName() );
@@ -181,48 +181,48 @@ public class RepositoryPackageOperations {
         return data;
     }
 
-    protected String copyPackage(String sourcePackageName,
-                                 String destPackageName) throws SerializationException {
+    protected String copyModules(String sourceModuleName,
+                                 String destModuleName) throws SerializationException {
 
         try {
-            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
+            log.info( "USER:" + getCurrentUserName() + " COPYING module [" + sourceModuleName + "] to  module [" + destModuleName + "]" );
 
-            return rulesRepository.copyModule( sourcePackageName,
-                    destPackageName );
+            return rulesRepository.copyModule( sourceModuleName,
+                    destModuleName );
         } catch (RulesRepositoryException e) {
-            log.error( "Unable to copy package.",
+            log.error( "Unable to copy module.",
                     e );
             throw e;
         }
     }
 
-    protected void removePackage(String uuid) {
+    protected void removeModule(String uuid) {
 
         try {
             ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
-            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
+            log.info( "USER:" + getCurrentUserName() + " REMOVEING module [" + item.getName() + "]" );
             item.remove();
             rulesRepository.save();
         } catch (RulesRepositoryException e) {
-            log.error( "Unable to remove package.",
+            log.error( "Unable to remove module.",
                     e );
             throw e;
         }
     }
 
-    protected String renamePackage(String uuid,
+    protected String renameModule(String uuid,
                                    String newName) {
-        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
+        log.info( "USER:" + getCurrentUserName() + " RENAMING module [UUID: " + uuid + "] to module [" + newName + "]" );
 
         return rulesRepository.renameModule( uuid,
                 newName );
     }
 
-    protected byte[] exportPackages(String packageName) {
-        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
+    protected byte[] exportModules(String moduleName) {
+        log.info( "USER:" + getCurrentUserName() + " export module [name: " + moduleName + "] " );
 
         try {
-            return rulesRepository.dumpModuleFromRepositoryXml( packageName );
+            return rulesRepository.dumpModuleFromRepositoryXml( moduleName );
         } catch (PathNotFoundException e) {
             throw new RulesRepositoryException( e );
         } catch (IOException e) {
@@ -239,10 +239,10 @@ public class RepositoryPackageOperations {
                 importAsNew );
     }
 
-    protected String createPackage(String name, String description,
+    protected String createModule(String name, String description,
             String format) throws RulesRepositoryException {
 
-        log.info("USER: " + getCurrentUserName() + " CREATING package [" + name
+        log.info("USER: " + getCurrentUserName() + " CREATING module [" + name
                 + "]");
         ModuleItem item = rulesRepository.createModule(name,
                 description, format);
@@ -250,12 +250,12 @@ public class RepositoryPackageOperations {
         return item.getUUID();
     }
     
-    protected String createPackage(String name,
+    protected String createModule(String name,
                                    String description,
                                    String format,
                                    String[] workspace) throws RulesRepositoryException {
 
-        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
+        log.info( "USER: " + getCurrentUserName() + " CREATING module [" + name + "]" );
         ModuleItem item = rulesRepository.createModule( name,
                 description,
                 format,
@@ -264,26 +264,26 @@ public class RepositoryPackageOperations {
         return item.getUUID();
     }
     
-    protected String createSubPackage(String name,
+    protected String createSubModule(String name,
                                       String description,
                                       String parentNode) throws SerializationException {
-        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
+        log.info( "USER: " + getCurrentUserName() + " CREATING subModule [" + name + "], parent [" + parentNode + "]" );
         ModuleItem item = rulesRepository.createSubModule( name,
                 description,
                 parentNode );
         return item.getUUID();
     }
 
-    protected PackageConfigData loadPackageConfig(ModuleItem packageItem) {
-        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( packageItem );
+    protected Module loadModule(ModuleItem packageItem) {
+        Module data = ModuleFactory.createModuleWithDependencies( packageItem );
         if ( data.isSnapshot() ) {
             data.setSnapshotName( packageItem.getSnapshotName() );
         }
         return data;
     }
 
-    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.getName() + "]" );
+    public ValidatedResponse validateModule(Module data) throws SerializationException {
+        log.info( "USER:" + getCurrentUserName() + " validateModule module [" + data.getName() + "]" );
 
         RuleBaseCache.getInstance().remove( data.getUuid() );
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
@@ -293,38 +293,39 @@ public class RepositoryPackageOperations {
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
-    public void savePackage(PackageConfigData data) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.getName() + "]" );
+    public void saveModule(Module data) throws SerializationException {
+        log.info( "USER:" + getCurrentUserName() + " SAVING module [" + data.getName() + "]" );
 
-        ModuleItem item = rulesRepository.loadModule( data.getName() );
+        ModuleItem moduleItem = rulesRepository.loadModule( data.getName() );
 
-        // If package is being unarchived.
-        boolean unarchived = (!data.isArchived() && item.isArchived());
-        Calendar packageLastModified = item.getLastModified();
+        // If module is being unarchived.
+        boolean unarchived = (!data.isArchived() && moduleItem.isArchived());
+        Calendar lastModified = moduleItem.getLastModified();
 
+        //TODO: Drools specific
         DroolsHeader.updateDroolsHeader( data.getHeader(),
-                item );
+                moduleItem );
         updateCategoryRules( data,
-                item );
+                moduleItem );
 
-        item.updateExternalURI( data.getExternalURI() );
-        item.updateDescription( data.getDescription() );
-        item.archiveItem( data.isArchived() );
-        item.updateBinaryUpToDate( false );
+        moduleItem.updateExternalURI( data.getExternalURI() );
+        moduleItem.updateDescription( data.getDescription() );
+        moduleItem.archiveItem( data.isArchived() );
+        moduleItem.updateBinaryUpToDate( false );
         if(!data.getFormat().equals("")) {
-            item.updateFormat(data.getFormat());
+            moduleItem.updateFormat(data.getFormat());
         }
         RuleBaseCache.getInstance().remove( data.getUuid() );
-        item.checkin( data.getDescription() );
+        moduleItem.checkin( data.getDescription() );
 
-        // If package is archived, archive all the assets under it
+        // If module is archived, archive all the assets under it
         if ( data.isArchived() ) {
-            handleArchivedForSavePackage( data,
-                    item );
+            handleArchivedForSaveModule( data,
+                    moduleItem );
         } else if ( unarchived ) {
-            handleUnarchivedForSavePackage( data,
-                    item,
-                    packageLastModified );
+            handleUnarchivedForSaveModule( data,
+                    moduleItem,
+                    lastModified );
         }
     }
 
@@ -332,7 +333,7 @@ public class RepositoryPackageOperations {
         return new BRMSSuggestionCompletionLoader();
     }
 
-    void updateCategoryRules(PackageConfigData data,
+    void updateCategoryRules(Module data,
                              ModuleItem item) {
         KeyValueTO keyValueTO = convertMapToCsv( data.getCatRules() );
         item.updateCategoryRules( keyValueTO.getKeys(),
@@ -379,7 +380,7 @@ public class RepositoryPackageOperations {
         }
     }
 
-    void handleArchivedForSavePackage(PackageConfigData data,
+    void handleArchivedForSaveModule(Module data,
                                       ModuleItem item) {
         for (Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
             AssetItem assetItem = iter.next();
@@ -390,14 +391,14 @@ public class RepositoryPackageOperations {
         }
     }
 
-    void handleUnarchivedForSavePackage(PackageConfigData data,
+    void handleUnarchivedForSaveModule(Module data,
                                         ModuleItem item,
-                                        Calendar packageLastModified) {
+                                        Calendar lastModified) {
         for (Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
             AssetItem assetItem = iter.next();
             // Unarchive the assets archived after the package
             // ( == at the same time that the package was archived)
-            if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
+            if ( assetItem.getLastModified().compareTo( lastModified ) >= 0 ) {
                 assetItem.archiveItem( false );
                 assetItem.checkin( data.getDescription() );
             }
@@ -419,49 +420,50 @@ public class RepositoryPackageOperations {
         return res;
     }
 
-    protected void createPackageSnapshot(String packageName,
+    protected void createModuleSnapshot(String moduleName,
                                          String snapshotName,
                                          boolean replaceExisting,
                                          String comment) {
 
-        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
+        log.info( "USER:" + getCurrentUserName() + " CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
 
         if ( replaceExisting ) {
-            rulesRepository.removeModuleSnapshot( packageName,
+            rulesRepository.removeModuleSnapshot( moduleName,
                     snapshotName );
         }
 
-        rulesRepository.createModuleSnapshot( packageName,
+        rulesRepository.createModuleSnapshot( moduleName,
                 snapshotName );
-        ModuleItem item = rulesRepository.loadModuleSnapshot( packageName,
+        ModuleItem item = rulesRepository.loadModuleSnapshot( moduleName,
                 snapshotName );
         item.updateCheckinComment( comment );
         rulesRepository.save();
 
     }
 
-    protected void copyOrRemoveSnapshot(String packageName,
+    protected void copyOrRemoveSnapshot(String moduleName,
                                         String snapshotName,
                                         boolean delete,
                                         String newSnapshotName) throws SerializationException {
 
         if ( delete ) {
-            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
-            rulesRepository.removeModuleSnapshot( packageName,
+            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "]" );
+            rulesRepository.removeModuleSnapshot( moduleName,
                     snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
                 throw new SerializationException( "Need to have a new snapshot name." );
             }
-            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
-            rulesRepository.copyModuleSnapshot( packageName,
+            rulesRepository.copyModuleSnapshot( moduleName,
                     snapshotName,
                     newSnapshotName );
         }
 
     }
 
+    //Drools package specific
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force,
                                       String buildMode,
@@ -588,6 +590,7 @@ public class RepositoryPackageOperations {
         return asm.getDRL();
     }
 
+    //Drools specific
     protected String[] listRulesInPackage(String packageName) throws SerializationException {
         // load package
         ModuleItem item = rulesRepository.loadModule( packageName );
@@ -613,9 +616,8 @@ public class RepositoryPackageOperations {
         }
     }
 
-    protected String[] listImagesInPackage(String packageName) throws SerializationException {
-        // load package
-        ModuleItem item = rulesRepository.loadModule( packageName );
+    protected String[] listImagesInModule(String moduleName) throws SerializationException {
+        ModuleItem item = rulesRepository.loadModule( moduleName );
         List<String> retList = new ArrayList<String>();
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
@@ -642,8 +644,8 @@ public class RepositoryPackageOperations {
                 String name = getRuleName( line );
                 result.add( name );
                 count++;
-                if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
-                    result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
+                if ( count == MAX_ASSETS_TO_SHOW_IN_MODULE_LIST ) {
+                    result.add( "More then " + MAX_ASSETS_TO_SHOW_IN_MODULE_LIST + " rules." );
                     break;
                 }
             }
@@ -653,23 +655,23 @@ public class RepositoryPackageOperations {
     /**
      * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
      */
-    protected SnapshotDiffs compareSnapshots(String packageName,
+    protected SnapshotDiffs compareSnapshots(String moduleName,
                                              String firstSnapshotName,
                                              String secondSnapshotName) {
         SnapshotDiffs diffs = new SnapshotDiffs();
         List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
 
-        ModuleItem leftPackage = rulesRepository.loadModuleSnapshot( packageName,
+        ModuleItem leftModule = rulesRepository.loadModuleSnapshot( moduleName,
                 firstSnapshotName );
-        ModuleItem rightPackage = rulesRepository.loadModuleSnapshot( packageName,
+        ModuleItem rightModule = rulesRepository.loadModuleSnapshot( moduleName,
                 secondSnapshotName );
 
         // Older one has to be on the left.
-        if ( isRightOlderThanLeft( leftPackage,
-                rightPackage ) ) {
-            ModuleItem temp = leftPackage;
-            leftPackage = rightPackage;
-            rightPackage = temp;
+        if ( isRightOlderThanLeft( leftModule,
+                rightModule ) ) {
+            ModuleItem temp = leftModule;
+            leftModule = rightModule;
+            rightModule = temp;
 
             diffs.leftName = secondSnapshotName;
             diffs.rightName = firstSnapshotName;
@@ -678,10 +680,10 @@ public class RepositoryPackageOperations {
             diffs.rightName = secondSnapshotName;
         }
 
-        Iterator<AssetItem> leftExistingIter = leftPackage.getAssets();
+        Iterator<AssetItem> leftExistingIter = leftModule.getAssets();
         while (leftExistingIter.hasNext()) {
             AssetItem left = leftExistingIter.next();
-            if ( isPackageItemDeleted( rightPackage,
+            if ( isModuleItemDeleted( rightModule,
                     left ) ) {
                 SnapshotDiff diff = new SnapshotDiff();
 
@@ -693,12 +695,12 @@ public class RepositoryPackageOperations {
             }
         }
 
-        Iterator<AssetItem> rightExistingIter = rightPackage.getAssets();
+        Iterator<AssetItem> rightExistingIter = rightModule.getAssets();
         while (rightExistingIter.hasNext()) {
             AssetItem right = rightExistingIter.next();
             AssetItem left = null;
-            if ( right != null && leftPackage.containsAsset( right.getName() ) ) {
-                left = leftPackage.loadAsset( right.getName() );
+            if ( right != null && leftModule.containsAsset( right.getName() ) ) {
+                left = leftModule.loadAsset( right.getName() );
             }
 
             // Asset is deleted or added
@@ -757,14 +759,14 @@ public class RepositoryPackageOperations {
         return right.getLastModified().compareTo( left.getLastModified() ) != 0;
     }
 
-    private boolean isPackageItemDeleted(ModuleItem rightPackage,
+    private boolean isModuleItemDeleted(ModuleItem rightModuleItem,
                                          AssetItem left) {
-        return !rightPackage.containsAsset( left.getName() );
+        return !rightModuleItem.containsAsset( left.getName() );
     }
 
-    private boolean isRightOlderThanLeft(ModuleItem leftPackage,
-                                         ModuleItem rightPackage) {
-        return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
+    private boolean isRightOlderThanLeft(ModuleItem leftModuleItem,
+                                         ModuleItem rightModuleItem) {
+        return leftModuleItem.getLastModified().compareTo( rightModuleItem.getLastModified() ) > 0;
     }
 
     protected SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {

@@ -24,7 +24,7 @@ import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
@@ -80,7 +80,7 @@ public abstract class AbstractClientFactoryImpl
         return placeHistoryHandler;
     }
 
-    public PackageServiceAsync getPackageService() {
+    public ModuleServiceAsync getModuleService() {
         return RepositoryServiceFactory.getPackageService();
     }
 

@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryCategoryService;
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.RulesRepository;
@@ -37,7 +37,7 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
     @Inject
     protected ServiceImplementation serviceImplementation;
     @Inject
-    protected RepositoryPackageService repositoryPackageService;
+    protected RepositoryModuleService repositoryPackageService;
     @Inject
     protected RepositoryAssetService repositoryAssetService;
     @Inject

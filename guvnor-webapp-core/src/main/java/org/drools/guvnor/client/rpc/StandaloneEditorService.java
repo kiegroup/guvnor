@@ -29,7 +29,7 @@ public interface StandaloneEditorService
 
     
      StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException;
-     String[] getAsstesDRL(RuleAsset[] assets) throws SerializationException;
-     String[] getAsstesBRL(RuleAsset[] assets) throws SerializationException;
+     String[] getAsstesDRL(Asset[] assets) throws SerializationException;
+     String[] getAsstesBRL(Asset[] assets) throws SerializationException;
 
 }

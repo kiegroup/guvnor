@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -38,18 +38,18 @@ public class DecisionTableXLSHandler extends ContentHandler
         implements
         IRuleAsset {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         //do nothing, as we have an attachment
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         //do nothing, as we have an attachment
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
-                            RuleAsset asset,
+                            Asset asset,
                             StringBuilder stringBuilder) {
     }
 

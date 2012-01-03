@@ -36,7 +36,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -45,7 +45,7 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.RuleAssetPopulator;
+import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
@@ -98,12 +98,12 @@ public class RepositoryAssetService
      */
     @WebRemote
     @LoggedIn
-    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
+    public Asset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
         AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-        RuleAsset asset = new RuleAssetPopulator().populateFrom(item);
+        Asset asset = new AssetPopulator().populateFrom(item);
 
         asset.setMetaData(repositoryAssetOperations.populateMetaData(item));
 
@@ -118,7 +118,7 @@ public class RepositoryAssetService
     }
 
     private ModuleItem handlePackageItem(AssetItem item,
-                                          RuleAsset asset) throws SerializationException {
+                                          Asset asset) throws SerializationException {
         ModuleItem packageItem = item.getModule();
 
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
@@ -135,13 +135,13 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
+    public Asset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets(Arrays.asList(uuids));
     }
 
     @WebRemote
     @LoggedIn
-    public String checkinVersion(RuleAsset asset) throws SerializationException {
+    public String checkinVersion(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
         log.info("USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] ");
@@ -301,7 +301,7 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    public String buildAssetSource(RuleAsset asset) throws SerializationException {
+    public String buildAssetSource(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.buildAssetSource(asset);
     }
@@ -326,7 +326,7 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
+    public BuilderResult validateAsset(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.validateAsset(asset);
     }
@@ -454,17 +454,17 @@ public class RepositoryAssetService
                 numRows);
     }
 
-    RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
+    Asset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if (uuids == null) {
             return null;
         }
-        Collection<RuleAsset> assets = new HashSet<RuleAsset>();
+        Collection<Asset> assets = new HashSet<Asset>();
 
         for (String uuid : uuids) {
             assets.add(loadRuleAsset(uuid));
         }
 
-        return assets.toArray(new RuleAsset[assets.size()]);
+        return assets.toArray(new Asset[assets.size()]);
     }
 
     private void archiveOrUnarchiveAsset(String uuid,

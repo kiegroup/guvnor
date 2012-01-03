@@ -23,7 +23,7 @@ import org.drools.guvnor.client.asseteditor.drools.factmodel.AnnotationMetaModel
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
@@ -46,7 +46,7 @@ public class FactModelContentHandler extends ContentHandler
     private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
 
     @Override
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         try {
             List<FactMetaModel> models = toModel( item.getContent() );
@@ -63,7 +63,7 @@ public class FactModelContentHandler extends ContentHandler
     }
 
     @Override
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset)
                                                       throws SerializationException {
         if ( asset.getContent() instanceof FactModels ) {

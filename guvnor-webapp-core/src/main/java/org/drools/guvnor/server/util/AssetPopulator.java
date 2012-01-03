@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.repository.AssetItem;
 
-public class RuleAssetPopulator {
-    public RuleAsset populateFrom(final AssetItem assetItem) {
-        RuleAsset ruleAsset = new RuleAsset();
+public class AssetPopulator {
+    public Asset populateFrom(final AssetItem assetItem) {
+        Asset ruleAsset = new Asset();
         ruleAsset.setUuid( assetItem.getUUID() );
         ruleAsset.setName( assetItem.getName() );
         ruleAsset.setDescription( assetItem.getDescription() );

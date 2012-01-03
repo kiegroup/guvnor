@@ -6,7 +6,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 public class TestScenarioListActivity extends Activity {
@@ -29,10 +29,10 @@ public class TestScenarioListActivity extends Activity {
 
     public void openTestScenario(final AcceptItem tabbedPanel) {
 
-        clientFactory.getPackageService().loadPackageConfig(
+        clientFactory.getModuleService().loadModule(
                 moduleUuid,
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess(PackageConfigData packageConfigData) {
+                new GenericCallback<Module>() {
+                    public void onSuccess(Module packageConfigData) {
 
                         tabbedPanel.add(
                                 constants.ScenariosForPackage( packageConfigData.getName() ),

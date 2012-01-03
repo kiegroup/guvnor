@@ -19,39 +19,39 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-public abstract class PackageServiceAsyncMock implements PackageServiceAsync {
+public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
 
     public void loadSnapshotInfo(String packageName, String snapshotName, AsyncCallback<SnapshotInfo> async) {
     }
 
-    public void listPackages(String p0, AsyncCallback<PackageConfigData[]> cb) {
+    public void listModules(String p0, AsyncCallback<Module[]> cb) {
     }
 
-    public void listPackages(AsyncCallback<PackageConfigData[]> cb) {
+    public void listModules(AsyncCallback<Module[]> cb) {
     }
 
-    public void listArchivedPackages(AsyncCallback<PackageConfigData[]> cb) {
+    public void listArchivedModules(AsyncCallback<Module[]> cb) {
     }
 
-    public void loadGlobalPackage(AsyncCallback<PackageConfigData> cb) {
+    public void loadGlobalModule(AsyncCallback<Module> cb) {
     }
 
-    public void createPackage(String p0, String p1, String p2, AsyncCallback<String> cb) {
+    public void createModule(String p0, String p1, String p2, AsyncCallback<String> cb) {
     }
 
-    public void createSubPackage(String p0, String p1, String p2, AsyncCallback<String> cb) {
+    public void createSubModule(String p0, String p1, String p2, AsyncCallback<String> cb) {
     }
 
-    public void loadPackageConfig(String p0, AsyncCallback<PackageConfigData> cb) {
+    public void loadModule(String p0, AsyncCallback<Module> cb) {
     }
 
-    public void validatePackageConfiguration(PackageConfigData p0, AsyncCallback<ValidatedResponse> cb) {
+    public void validateModule(Module p0, AsyncCallback<ValidatedResponse> cb) {
     }
 
-    public void savePackage(PackageConfigData p0, AsyncCallback cb) {
+    public void saveModule(Module p0, AsyncCallback cb) {
     }
 
-    public void createPackageSnapshot(String p0, String p1, boolean p2, String p3, AsyncCallback cb) {
+    public void createModuleSnapshot(String p0, String p1, boolean p2, String p3, AsyncCallback cb) {
     }
 
     public void copyOrRemoveSnapshot(String p0, String p1, boolean p2, String p3, AsyncCallback cb) {
@@ -63,13 +63,13 @@ public abstract class PackageServiceAsyncMock implements PackageServiceAsync {
     public void buildPackageSource(String p0, AsyncCallback<String> cb) {
     }
 
-    public void copyPackage(String p0, String p1, AsyncCallback<String> cb) {
+    public void copyModule(String p0, String p1, AsyncCallback<String> cb) {
     }
 
-    public void removePackage(String p0, AsyncCallback cb) {
+    public void removeModule(String p0, AsyncCallback cb) {
     }
 
-    public void renamePackage(String p0, String p1, AsyncCallback<String> cb) {
+    public void renameModule(String p0, String p1, AsyncCallback<String> cb) {
     }
 
     public void rebuildSnapshots(AsyncCallback cb) {
@@ -81,7 +81,7 @@ public abstract class PackageServiceAsyncMock implements PackageServiceAsync {
     public void listRulesInPackage(String p0, AsyncCallback<String[]> cb) {
     }
 
-    public void listImagesInPackage(String p0, AsyncCallback<String[]> cb) {
+    public void listImagesInModule(String p0, AsyncCallback<String[]> cb) {
     }
 
     public void listSnapshots(String p0, AsyncCallback<SnapshotInfo[]> cb) {

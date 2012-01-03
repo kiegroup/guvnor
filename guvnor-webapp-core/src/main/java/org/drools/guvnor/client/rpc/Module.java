@@ -19,10 +19,10 @@ package org.drools.guvnor.client.rpc;
 import java.util.HashMap;
 
 /**
- * This contains data for a package configuration.
+ * This contains data for a module configuration.
  *
  */
-public class PackageConfigData extends Artifact {
+public class Module extends Artifact {
     
     public String header;
     public String externalURI;
@@ -33,12 +33,12 @@ public class PackageConfigData extends Artifact {
     public String[] workspaces;
     public String[] dependencies;
     
-    public PackageConfigData[] subPackages;
+    public Module[] subModules;
 
-    public PackageConfigData() {
+    public Module() {
     }
 
-    public PackageConfigData(String name) {
+    public Module(String name) {
         super.setName(name);
     }
 
@@ -46,7 +46,7 @@ public class PackageConfigData extends Artifact {
         return header;
     }
 
-    public PackageConfigData setHeader(String header) {
+    public Module setHeader(String header) {
         this.header = header;
         return this;
     }
@@ -55,7 +55,7 @@ public class PackageConfigData extends Artifact {
         return externalURI;
     }
 
-    public PackageConfigData setExternalURI(String externalURI) {
+    public Module setExternalURI(String externalURI) {
         this.externalURI = externalURI;
         return this;
     }
@@ -64,7 +64,7 @@ public class PackageConfigData extends Artifact {
         return archived;
     }
 
-    public PackageConfigData setArchived(boolean archived) {
+    public Module setArchived(boolean archived) {
         this.archived = archived;
         return this;
     }
@@ -73,7 +73,7 @@ public class PackageConfigData extends Artifact {
         return isSnapshot;
     }
 
-    public PackageConfigData setSnapshot(boolean isSnapshot) {
+    public Module setSnapshot(boolean isSnapshot) {
         this.isSnapshot = isSnapshot;
         return this;
     }
@@ -82,7 +82,7 @@ public class PackageConfigData extends Artifact {
         return snapshotName;
     }
 
-    public PackageConfigData setSnapshotName(String snapshotName) {
+    public Module setSnapshotName(String snapshotName) {
         this.snapshotName = snapshotName;
         return this;
     }
@@ -91,7 +91,7 @@ public class PackageConfigData extends Artifact {
         return catRules;
     }
 
-    public PackageConfigData setCatRules(HashMap<String, String> catRules) {
+    public Module setCatRules(HashMap<String, String> catRules) {
         this.catRules = catRules;
         return this;
     }
@@ -100,7 +100,7 @@ public class PackageConfigData extends Artifact {
         return workspaces;
     }
 
-    public PackageConfigData setWorkspaces(String[] workspaces) {
+    public Module setWorkspaces(String[] workspaces) {
         this.workspaces = workspaces;
         return this;
     }
@@ -109,17 +109,17 @@ public class PackageConfigData extends Artifact {
         return dependencies;
     }
 
-    public PackageConfigData setDependencies(String[] dependencies) {
+    public Module setDependencies(String[] dependencies) {
         this.dependencies = dependencies;
         return this;
     }
 
-    public PackageConfigData[] getSubPackages() {
-        return subPackages;
+    public Module[] getSubModules() {
+        return subModules;
     }
 
-    public PackageConfigData setSubPackages(PackageConfigData[] subPackages) {
-        this.subPackages = subPackages;
+    public Module setSubModules(Module[] subModules) {
+        this.subModules = subModules;
         return this;
     }
 

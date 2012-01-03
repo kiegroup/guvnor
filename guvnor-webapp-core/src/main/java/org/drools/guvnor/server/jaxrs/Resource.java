@@ -19,7 +19,7 @@ package org.drools.guvnor.server.jaxrs;
 
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryCategoryService;
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerService;
@@ -43,7 +43,7 @@ public abstract class Resource {
     @Inject
     protected ServiceImplementation serviceImplementation;
     @Inject
-    protected RepositoryPackageService repositoryPackageService;
+    protected RepositoryModuleService repositoryPackageService;
     @Inject
     protected RepositoryAssetService repositoryAssetService;
     @Inject
@@ -56,7 +56,7 @@ public abstract class Resource {
 
     // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
     protected void inject(ServiceImplementation serviceImplementation,
-            RepositoryPackageService repositoryPackageService, RepositoryAssetService repositoryAssetService,
+            RepositoryModuleService repositoryPackageService, RepositoryAssetService repositoryAssetService,
             RepositoryCategoryService repositoryCategoryService,
             RulesRepository rulesRepository, FileManagerService fileManagerService) {
         this.serviceImplementation = serviceImplementation;

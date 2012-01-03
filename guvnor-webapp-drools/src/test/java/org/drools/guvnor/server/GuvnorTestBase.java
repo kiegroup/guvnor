@@ -151,7 +151,7 @@ public abstract class GuvnorTestBase {
     protected RepositoryAssetService repositoryAssetService;
 
     @Inject
-    protected RepositoryPackageService repositoryPackageService;
+    protected RepositoryModuleService repositoryPackageService;
 
     @Inject
     protected RepositoryCategoryService repositoryCategoryService;

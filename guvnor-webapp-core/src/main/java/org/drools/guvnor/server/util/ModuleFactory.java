@@ -15,22 +15,22 @@
  */
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.ModuleItem;
 
-public class PackageConfigDataFactory {
-    public static PackageConfigData createPackageConfigDataWithDependencies(ModuleItem item) {
-        PackageConfigData data = create(item);
+public class ModuleFactory {
+    public static Module createModuleWithDependencies(ModuleItem item) {
+        Module data = create(item);
         data.setDependencies(item.getDependencies());
         return data;
     }
 
-    public static PackageConfigData createPackageConfigDataWithOutDependencies(ModuleItem item) {
+    public static Module createModuleWithOutDependencies(ModuleItem item) {
         return create(item);
     }
 
-    private static PackageConfigData create(ModuleItem item) {
-        PackageConfigData data = new PackageConfigData();
+    private static Module create(ModuleItem item) {
+        Module data = new Module();
         data.setUuid(item.getUUID());
         data.setHeader(DroolsHeader.getDroolsHeader(item));
         data.setExternalURI(item.getExternalURI());

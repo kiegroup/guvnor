@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
@@ -46,7 +46,7 @@ public class CustomFormsEditorPanel extends Composite {
     private TextBox customFormHeight = new TextBox();
     private boolean validFactsChanged = true;
     private Map<String, ConstraintConfiguration> contraintsMap = new HashMap<String, ConstraintConfiguration>();
-    private final RuleAsset workingSet;
+    private final Asset workingSet;
     private final WorkingSetEditor workingSetEditor;
 
     public CustomFormsEditorPanel(final WorkingSetEditor workingSetEditor) {

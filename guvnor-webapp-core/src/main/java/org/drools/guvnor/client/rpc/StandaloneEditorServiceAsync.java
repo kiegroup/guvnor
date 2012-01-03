@@ -22,7 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface StandaloneEditorServiceAsync {
 
     void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
+    void getAsstesDRL(Asset[] assets, AsyncCallback<String[]> asyncCallback);
+    void getAsstesBRL(Asset[] assets, AsyncCallback<String[]> asyncCallback);
 
 }

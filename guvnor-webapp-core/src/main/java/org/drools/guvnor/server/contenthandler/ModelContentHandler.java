@@ -28,7 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
@@ -43,12 +43,12 @@ public class ModelContentHandler extends ContentHandler
     implements
     ICanHasAttachment {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         // do nothing, as we have an attachment
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         // do nothing, as we have an attachment
     }

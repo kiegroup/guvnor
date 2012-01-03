@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 /**
  * A hierarchical representation of PackageConfigData, i.e. sub-packages are
@@ -24,7 +24,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 public class PackageHierarchicalView extends PackageView {
 
     void doAddPackage(String name,
-                      PackageConfigData conf) {
+                      Module conf) {
         Folder folder = root;
         String[] folders = name.split( "\\." );
         for ( int i = 0; i < folders.length; i++ ) {
@@ -47,7 +47,7 @@ public class PackageHierarchicalView extends PackageView {
             }
         }
         addSubPackages( name,
-                        conf.getSubPackages() );
+                        conf.getSubModules() );
     }
 
 }

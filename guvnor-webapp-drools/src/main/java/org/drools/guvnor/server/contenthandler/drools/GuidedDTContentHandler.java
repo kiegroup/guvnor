@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -39,7 +39,7 @@ public class GuidedDTContentHandler extends ContentHandler
     implements
     IRuleAsset {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
@@ -47,7 +47,7 @@ public class GuidedDTContentHandler extends ContentHandler
 
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         GuidedDecisionTable52 data = (GuidedDecisionTable52) asset.getContent();
         if ( data.getTableName() == null ) {
@@ -66,7 +66,7 @@ public class GuidedDTContentHandler extends ContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
-                            RuleAsset asset,
+                            Asset asset,
                             StringBuilder stringBuilder) {
         GuidedDecisionTable52 model = (GuidedDecisionTable52) asset.getContent();
 

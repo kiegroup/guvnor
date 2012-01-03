@@ -143,7 +143,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
-        repositoryPackageService.createPackage("testLoadRuleListForCategoryPagedResultsCategoryPackage",
+        repositoryPackageService.createModule("testLoadRuleListForCategoryPagedResultsCategoryPackage",
                 "testLoadRuleListForCategoryPagedResultsCategoryPackageDescription",
                 "package");
 
@@ -191,7 +191,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory("/",
                 cat,
                 "testLoadRuleListForCategoryFullResultsCategoryDescription");
-        repositoryPackageService.createPackage("testLoadRuleListForCategoryFullResultsCategoryPackage",
+        repositoryPackageService.createModule("testLoadRuleListForCategoryFullResultsCategoryPackage",
                 "testLoadRuleListForCategoryFullResultsCategoryPackageDescription",
                 "package");
 

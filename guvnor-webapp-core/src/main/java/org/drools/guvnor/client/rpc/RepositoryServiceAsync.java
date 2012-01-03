@@ -42,7 +42,7 @@ public interface RepositoryServiceAsync {
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback<java.lang.String> cb);
     public void createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0, AsyncCallback<java.lang.String> cb);
     public void createNewRule(org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration p0, AsyncCallback<java.lang.String> cb);
-    public void doesAssetExistInPackage(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.Boolean> cb);
+    public void doesAssetExistInModule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.Boolean> cb);
     public void createNewImportedRule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
     public void deleteUncheckedRule(java.lang.String p0, AsyncCallback cb);
     public void clearRulesRepository(AsyncCallback cb);

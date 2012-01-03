@@ -30,7 +30,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * This wraps a file uploader utility for model packages.
@@ -46,10 +46,10 @@ public abstract class AssetAttachmentFileWidget extends Composite
     private FormPanel form;
     private RuleViewer viewer;
     protected FormStyleLayout layout;
-    protected RuleAsset asset;
+    protected Asset asset;
     private final EventBus eventBus;
 
-    public AssetAttachmentFileWidget(final RuleAsset asset,
+    public AssetAttachmentFileWidget(final Asset asset,
                                      final RuleViewer viewer,
                                      ClientFactory clientFactory,
                                      EventBus eventBus) {

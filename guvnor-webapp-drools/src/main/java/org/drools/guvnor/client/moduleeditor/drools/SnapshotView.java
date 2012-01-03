@@ -52,8 +52,8 @@ import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTable;
@@ -68,7 +68,7 @@ public class SnapshotView extends Composite {
 
     public static final String LATEST_SNAPSHOT = "LATEST";
 
-    private PackageConfigData parentConf;
+    private Module parentConf;
     private SnapshotInfo snapInfo;
 
     private ListBox box = new ListBox();
@@ -83,7 +83,7 @@ public class SnapshotView extends Composite {
             ClientFactory clientFactory,
             EventBus eventBus,
             SnapshotInfo snapInfo,
-            PackageConfigData parentPackage) {
+            Module parentPackage) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         vert = new VerticalPanel();
@@ -264,7 +264,7 @@ public class SnapshotView extends Composite {
 
     private Button getCopyButton(final String snapshotName,
             final String packageName) {
-        final PackageServiceAsync serv = RepositoryServiceFactory.getPackageService();
+        final ModuleServiceAsync serv = RepositoryServiceFactory.getPackageService();
         Button btn = new Button(constants.Copy());
         btn.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -279,7 +279,7 @@ public class SnapshotView extends Composite {
 
     private GenericCallback<SnapshotInfo[]> createGenericCallback(final String snapshotName,
             final String packageName,
-            final PackageServiceAsync serv) {
+            final ModuleServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
                 final FormStylePopup copy = new FormStylePopup(images.snapshot(),

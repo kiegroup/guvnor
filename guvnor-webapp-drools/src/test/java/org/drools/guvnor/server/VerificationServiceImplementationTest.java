@@ -77,7 +77,7 @@ public class VerificationServiceImplementationTest {
         drl += "then\n";
         drl += "end\n";
 
-        RuleAsset ruleAsset = getAsset(drl);
+        Asset ruleAsset = getAsset(drl);
         AnalysisReport report = verificationService.verifyAsset(
                 ruleAsset,
                 new HashSet<String>());
@@ -92,8 +92,8 @@ public class VerificationServiceImplementationTest {
 
     }
 
-    public RuleAsset getAsset(String content) {
-        RuleAsset ruleAsset = new RuleAsset();
+    public Asset getAsset(String content) {
+        Asset ruleAsset = new Asset();
 
         ruleAsset.uuid = "mockUUID";
         ruleAsset.metaData = getMetaData();

@@ -385,7 +385,7 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package does not exist
             ModuleItem p = rulesRepository.loadModule(packageName);
-            repositoryPackageService.removePackage(p.getUUID());
+            repositoryPackageService.removeModule(p.getUUID());
         } catch (Exception e) {
             // catch RulesRepositoryException and other exceptions.
             throw new WebApplicationException(e);

@@ -97,7 +97,7 @@ public class RepositoryAssetOperations {
                 newName);
     }
 
-    protected BuilderResult validateAsset(RuleAsset asset) {
+    protected BuilderResult validateAsset(Asset asset) {
         try {
             ContentHandler handler = ContentManager
                     .getHandler(asset.getFormat());
@@ -119,7 +119,7 @@ public class RepositoryAssetOperations {
         }
     }
 
-    private BuilderResultLine createBuilderResultLine(RuleAsset asset) {
+    private BuilderResultLine createBuilderResultLine(Asset asset) {
         BuilderResultLine builderResultLine = new BuilderResultLine();
         builderResultLine.setAssetName(asset.name);
         builderResultLine.setAssetFormat(asset.getFormat());
@@ -128,7 +128,7 @@ public class RepositoryAssetOperations {
         return builderResultLine;
     }
 
-    public String checkinVersion(RuleAsset asset) throws SerializationException {
+    public String checkinVersion(Asset asset) throws SerializationException {
         AssetItem repoAsset = rulesRepository.loadAssetByUUID(asset.getUuid());
         if (isAssetUpdatedInRepository(asset,
                 repoAsset)) {
@@ -168,7 +168,7 @@ public class RepositoryAssetOperations {
         return cal;
     }
 
-    private boolean isAssetUpdatedInRepository(RuleAsset asset,
+    private boolean isAssetUpdatedInRepository(Asset asset,
                                                AssetItem repoAsset) {
         return asset.getLastModified().before(repoAsset.getLastModified().getTime());
     }
@@ -408,13 +408,13 @@ public class RepositoryAssetOperations {
                                             int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new PackageFilter(identity);
+        RepositoryFilter filter = new ModuleFilter(identity);
 
         AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
         while (assetItemIterator.hasNext()) {
             AssetItem assetItem = assetItemIterator.next();
-            PackageConfigData data = new PackageConfigData();
+            Module data = new Module();
             data.setUuid(assetItem.getModule().getUUID());
             if (filter.accept(data,
                     RoleType.PACKAGE_READONLY.getName())) {
@@ -429,7 +429,7 @@ public class RepositoryAssetOperations {
     }
 
     // TODO: Very hard to unit test -> needs refactoring
-    protected String buildAssetSource(RuleAsset asset) throws SerializationException {
+    protected String buildAssetSource(Asset asset) throws SerializationException {
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -550,9 +550,9 @@ public class RepositoryAssetOperations {
         return userName;
     }
 
-    protected RuleAsset loadAsset(AssetItem item) throws SerializationException {
+    protected Asset loadAsset(AssetItem item) throws SerializationException {
 
-        RuleAsset asset = new RuleAsset();
+        Asset asset = new Asset();
         asset.setUuid(item.getUUID());
         asset.setName(item.getName());
         asset.setDescription(item.getDescription());

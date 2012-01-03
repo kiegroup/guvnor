@@ -28,7 +28,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -45,7 +45,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     private Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
 
-    private final PackageConfigData packageConfigData;
+    private final Module packageConfigData;
     private boolean isHistoricalReadOnly = false;
     private Command refreshCommand;
 
@@ -53,7 +53,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public SOAServiceEditor(PackageConfigData data,
+    public SOAServiceEditor(Module data,
                             ClientFactory clientFactory,
                             EventBus eventBus,
                             Command refreshCommand) {
@@ -64,7 +64,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
                 refreshCommand );
     }
 
-    public SOAServiceEditor(PackageConfigData data,
+    public SOAServiceEditor(Module data,
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          boolean historicalReadOnly,
@@ -300,12 +300,12 @@ public class SOAServiceEditor extends AbstractModuleEditor {
         }
     }
 
-    static String getVersionFeed(PackageConfigData conf) {
+    static String getVersionFeed(Module conf) {
         String hurl = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
-    String getPackageSourceURL(PackageConfigData conf) {
+    String getPackageSourceURL(Module conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +
@@ -316,7 +316,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
         return url;
     }
 
-    String getPackageBinaryURL(PackageConfigData conf) {
+    String getPackageBinaryURL(Module conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +

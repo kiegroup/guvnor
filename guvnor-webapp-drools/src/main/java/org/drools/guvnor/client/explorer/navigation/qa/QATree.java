@@ -31,7 +31,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
 
@@ -81,8 +81,8 @@ public class QATree extends NavigationItemBuilderOld
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
 
-        if ( item.getUserObject() instanceof PackageConfigData ) {
-            PackageConfigData pc = (PackageConfigData) item.getUserObject();
+        if ( item.getUserObject() instanceof Module ) {
+            Module pc = (Module) item.getUserObject();
             String id = itemWidgets.get( item );
 
 
@@ -99,13 +99,13 @@ public class QATree extends NavigationItemBuilderOld
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
         if ( ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                public void onSuccess(PackageConfigData[] conf) {
+            RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+                public void onSuccess(Module[] conf) {
                     node.removeItems();
                     removeTestScenarioIDs( itemWidgets );
 
                     for (int i = 0; i < conf.length; i++) {
-                        final PackageConfigData c = conf[i];
+                        final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
                                 c.name ) );
 
@@ -117,12 +117,12 @@ public class QATree extends NavigationItemBuilderOld
                 }
             } );
         } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                public void onSuccess(PackageConfigData[] conf) {
+            RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+                public void onSuccess(Module[] conf) {
                     node.removeItems();
                     removeAnalysisIDs( itemWidgets );
                     for (int i = 0; i < conf.length; i++) {
-                        final PackageConfigData c = conf[i];
+                        final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
                                 c.name ) );
 

@@ -153,7 +153,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         assertTrue( before < fileManagerService.getLastModified( pkg.getName(),
                                                            "LATEST" ) );
 
-        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+        repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPPY 1",
                 false,
                 "");
@@ -204,7 +204,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "import java.util.List" ) > -1 );
 
         Thread.sleep( 100 );
-        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+        repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPX",
                 false,
                 "");
@@ -215,7 +215,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         Thread.sleep( 100 );
 
-        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+        repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPX",
                 true,
                 "yeah");

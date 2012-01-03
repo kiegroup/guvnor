@@ -36,7 +36,7 @@ import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
@@ -49,14 +49,14 @@ public class RuleFlowWrapper extends Composite
     private static Images images = GWT.create( Images.class );
 
     private RuleViewer viewer;
-    private RuleAsset asset;
+    private Asset asset;
 
     private RuleFlowViewer ruleFlowViewer;
     private DecoratedDisclosurePanel parameterPanel;
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public RuleFlowWrapper( final RuleAsset asset,
+    public RuleFlowWrapper( final Asset asset,
                             final RuleViewer viewer,
                             ClientFactory clientFactory,
                             EventBus eventBus) {

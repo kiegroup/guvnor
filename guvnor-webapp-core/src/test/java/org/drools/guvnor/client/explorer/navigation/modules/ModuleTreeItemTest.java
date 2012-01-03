@@ -26,7 +26,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -70,7 +70,7 @@ public class ModuleTreeItemTest {
                 view
         );
 
-        PackageConfigData packageConfigData = mock( PackageConfigData.class );
+        Module packageConfigData = mock( Module.class );
         when(
                 packageConfigData.getUuid()
         ).thenReturn(

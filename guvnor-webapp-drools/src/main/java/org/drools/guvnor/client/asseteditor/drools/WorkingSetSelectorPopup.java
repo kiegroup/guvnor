@@ -29,19 +29,19 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 
 
 public class WorkingSetSelectorPopup {
     private final RuleModeller modeller;
-    private final RuleAsset asset;
+    private final Asset asset;
     private FormStylePopup pop;
     private ListBox availableFacts = new ListBox(true);
     private ListBox selectedFacts = new ListBox(true);
 
-    public WorkingSetSelectorPopup(RuleModeller m, RuleAsset a) {
+    public WorkingSetSelectorPopup(RuleModeller m, Asset a) {
         this.modeller = m;
         this.asset = a;
 

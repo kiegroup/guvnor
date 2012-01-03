@@ -28,8 +28,8 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
@@ -43,7 +43,7 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
     private boolean             globalArea;
 
     //Services
-    private PackageServiceAsync packageService;
+    private ModuleServiceAsync packageService;
 
     //Package Info
     private String              packageUUID;
@@ -75,7 +75,7 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
 
         this.globalArea = packageName.equals( "globalArea" );
 
-        this.packageService = clientFactory.getPackageService();
+        this.packageService = clientFactory.getModuleService();
 
         //store data
         this.packageUUID = packageUUID;
@@ -91,42 +91,42 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
 
         if ( this.globalArea ) {
             //Global Area Data
-            this.packageService.loadGlobalPackage( new AsyncCallback<PackageConfigData>() {
+            this.packageService.loadGlobalModule( new AsyncCallback<Module>() {
 
                 public void onFailure(Throwable caught) {
                     ErrorPopup.showMessage( "Error listing Global Area information!" );
                 }
 
-                public void onSuccess(PackageConfigData result) {
+                public void onSuccess(Module result) {
                     populatePackageTree( result,
                                          null );
                 }
             } );
 
             //Packages Data
-            this.packageService.listPackages( new AsyncCallback<PackageConfigData[]>() {
+            this.packageService.listModules( new AsyncCallback<Module[]>() {
 
                 public void onFailure(Throwable caught) {
                     ErrorPopup.showMessage( "Error listing package information!" );
                 }
 
-                public void onSuccess(PackageConfigData[] result) {
+                public void onSuccess(Module[] result) {
                     for ( int i = 0; i < result.length; i++ ) {
-                        final PackageConfigData packageConfigData = result[i];
+                        final Module packageConfigData = result[i];
                         populatePackageTree( packageConfigData,
                                              null );
                     }
                 }
             } );
         } else {
-            this.packageService.loadPackageConfig( this.packageUUID,
-                                                   new AsyncCallback<PackageConfigData>() {
+            this.packageService.loadModule( this.packageUUID,
+                                                   new AsyncCallback<Module>() {
 
                                                        public void onFailure(Throwable caught) {
                                                            ErrorPopup.showMessage( "Error listing package information!" );
                                                        }
 
-                                                       public void onSuccess(PackageConfigData result) {
+                                                       public void onSuccess(Module result) {
                                                            populatePackageTree( result,
                                                                                 null );
                                                        }
@@ -138,7 +138,7 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
 
     }
 
-    private void populatePackageTree(final PackageConfigData packageConfigData,
+    private void populatePackageTree(final Module packageConfigData,
                                      final TreeItem rootItem) {
 
         final TreeItem packageItem = new TreeItem( packageConfigData.getName() );
@@ -156,14 +156,14 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
                                                public void onSuccess(SnapshotInfo[] result) {
                                                    for ( int j = 0; j < result.length; j++ ) {
                                                        final SnapshotInfo snapshotInfo = result[j];
-                                                       RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(),
-                                                                                                                       new AsyncCallback<PackageConfigData>() {
+                                                       RepositoryServiceFactory.getPackageService().loadModule( snapshotInfo.getUuid(),
+                                                                                                                       new AsyncCallback<Module>() {
 
                                                                                                                            public void onFailure(Throwable caught) {
                                                                                                                                ErrorPopup.showMessage( "Error listing snapshots information!" );
                                                                                                                            }
 
-                                                                                                                           public void onSuccess(PackageConfigData result) {
+                                                                                                                           public void onSuccess(Module result) {
                                                                                                                                packageItem.addItem( createTreeItem( snapshotInfo.getName(),
                                                                                                                                                                     PackageBuilderWidget.getDownloadLink( result ) ) );
                                                                                                                            }

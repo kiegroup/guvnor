@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler.drools;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ScenarioContentHandler extends PlainTextContentHandler {
 
     @Override
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         Scenario sc = ScenarioXMLPersistence.getInstance().unmarshal( item.getContent() );
         asset.setContent( sc );
@@ -35,7 +35,7 @@ public class ScenarioContentHandler extends PlainTextContentHandler {
     }
 
     @Override
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset)
                                                       throws SerializationException {
         Scenario sc = (Scenario) asset.getContent();

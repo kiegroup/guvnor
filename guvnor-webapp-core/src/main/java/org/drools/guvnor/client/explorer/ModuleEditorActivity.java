@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 public class ModuleEditorActivity extends Activity {
@@ -44,9 +44,9 @@ public class ModuleEditorActivity extends Activity {
 
         view.showLoadingPackageInformationMessage();
 
-        clientFactory.getPackageService().loadPackageConfig( uuid,
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess( PackageConfigData packageConfigData ) {
+        clientFactory.getModuleService().loadModule( uuid,
+                new GenericCallback<Module>() {
+                    public void onSuccess( Module packageConfigData ) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
                         acceptTabItem.add(
                                 packageConfigData.name,

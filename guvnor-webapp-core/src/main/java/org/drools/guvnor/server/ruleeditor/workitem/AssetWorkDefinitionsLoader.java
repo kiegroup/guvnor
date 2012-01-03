@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 
@@ -57,7 +57,7 @@ public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
         //Add individual assets to definitions list
         List<String> definitions = new ArrayList<String>();
         for ( AssetPageRow row : assetWorkDefinitions.getPageRowList() ) {
-            RuleAsset asset = repositoryAssetService.loadRuleAsset( row.getUuid() );
+            Asset asset = repositoryAssetService.loadRuleAsset( row.getUuid() );
             RuleContentText content = (RuleContentText) asset.getContent();
             definitions.add( content.content );
         }

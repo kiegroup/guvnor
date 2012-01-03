@@ -33,12 +33,12 @@ public interface AssetServiceAsync {
     public void archiveAssets(java.lang.String[] p0, boolean p1, AsyncCallback cb);
     public void removeAsset(java.lang.String p0, AsyncCallback cb);
     public void removeAssets(java.lang.String[] p0, AsyncCallback cb);
-    public void buildAssetSource(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);
-    public void validateAsset(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
+    public void buildAssetSource(org.drools.guvnor.client.rpc.Asset p0, AsyncCallback<java.lang.String> cb);
+    public void validateAsset(org.drools.guvnor.client.rpc.Asset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
-    public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
-    public void loadRuleAssets(java.lang.String[] p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset[]> cb);
-    public void checkinVersion(RuleAsset asset, AsyncCallback<java.lang.String> cb);
+    public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset> cb);
+    public void loadRuleAssets(java.lang.String[] p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset[]> cb);
+    public void checkinVersion(Asset asset, AsyncCallback<java.lang.String> cb);
     public void restoreVersion(String versionUUID, String assetUUID, String comment, AsyncCallback<Void> callback);
     public void loadItemHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadAssetHistory(java.lang.String p0, java.lang.String p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);

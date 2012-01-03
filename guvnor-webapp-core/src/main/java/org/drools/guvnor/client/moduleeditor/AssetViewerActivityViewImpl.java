@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
@@ -78,7 +78,7 @@ public class AssetViewerActivityViewImpl extends Composite
                                final Boolean formatIsRegistered,
                                final String title,
                                final ImageResource icon,
-                               final PackageConfigData packageConfigData,
+                               final Module packageConfigData,
                                final ClientFactory clientFactory) {
         LazyStackPanel lsp = new LazyStackPanel();
         lsp.add( title,
@@ -101,7 +101,7 @@ public class AssetViewerActivityViewImpl extends Composite
 
     private AssetPagedTable makeTable(final List<String> formatsInList,
                                       final Boolean formatIsRegistered,
-                                      final PackageConfigData packageConfigData,
+                                      final Module packageConfigData,
                                       final ClientFactory clientFactory) {
 
         //Asset table

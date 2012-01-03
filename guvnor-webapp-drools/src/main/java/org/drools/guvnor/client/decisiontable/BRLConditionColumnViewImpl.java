@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -47,7 +47,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
                                       final GuidedDecisionTable52 model,
                                       final boolean isNew,
-                                      final RuleAsset asset,
+                                      final Asset asset,
                                       final BRLConditionColumn column,
                                       final ClientFactory clientFactory,
                                       final EventBus eventBus) {

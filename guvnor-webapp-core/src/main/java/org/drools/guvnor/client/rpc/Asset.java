@@ -21,21 +21,21 @@ package org.drools.guvnor.client.rpc;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
- * This is the "payload" of a rule asset.
+ * This is the "payload" of an asset.
  * Includes the meta data.
  */
-public class RuleAsset extends Artifact {
+public class Asset extends Artifact {
 
     public MetaData       metaData;
     public PortableObject content;
-    public RuleAsset setMetaData(MetaData metaData) {
+    public Asset setMetaData(MetaData metaData) {
         this.metaData = metaData;
         return this;
     }
     public MetaData getMetaData() {
         return metaData;
     }
-    public RuleAsset setContent(PortableObject content) {
+    public Asset setContent(PortableObject content) {
         this.content = content;
         return this;
     }

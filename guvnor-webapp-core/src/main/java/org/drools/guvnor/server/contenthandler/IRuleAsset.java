@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.repository.AssetItem;
 
@@ -32,7 +32,7 @@ public interface IRuleAsset
                             StringBuilder stringBuilder);
 
     public void assembleDRL(BRMSPackageBuilder builder,
-                            RuleAsset asset,
+                            Asset asset,
                             StringBuilder stringBuilder);
 
     /**

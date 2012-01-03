@@ -33,7 +33,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
@@ -100,8 +100,8 @@ public class DeploymentTree extends NavigationItemBuilderOld
         if ( ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals( itemWidgets.get( node ) ) ) {
             return;
         }
-        if ( node.getUserObject() instanceof PackageConfigData ) {
-            final PackageConfigData packageConfigData = (PackageConfigData) node.getUserObject();
+        if ( node.getUserObject() instanceof Module ) {
+            final Module packageConfigData = (Module) node.getUserObject();
 
             RepositoryServiceFactory.getPackageService().listSnapshots(
                     packageConfigData.name,

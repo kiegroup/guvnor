@@ -15,11 +15,11 @@
  */
 package org.drools.guvnor.gwtutil;
 
-import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.ModuleService;
 
 public class RepositoryPackageServiceAsyncInterfaceGenerator {
     public static void main(String[] args) throws Exception {
-        Class< ? > cls = PackageService.class;
+        Class< ? > cls = ModuleService.class;
         String line = ServiceAsyncInterfaceGenerator.generate( cls );
         System.out.println( "/** PLACE THE FOLLOWING IN PackageServiceAsync.java **/\n" );
 

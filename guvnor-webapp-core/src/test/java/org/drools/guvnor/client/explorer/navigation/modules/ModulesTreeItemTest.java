@@ -30,8 +30,8 @@ import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseV
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsyncMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +48,7 @@ public class ModulesTreeItemTest {
 
     private ModulesTreeItemView view;
     private Presenter                    presenter;
-    private PackageConfigData[]          packageConfigDatas = new PackageConfigData[0];
+    private Module[]          packageConfigDatas = new Module[0];
     private PlaceController              placeController;
     private IsTreeItem                   modulesTreeItem;
     private ClientFactory                clientFactory;
@@ -69,7 +69,7 @@ public class ModulesTreeItemTest {
                 );
 
         when(
-                clientFactory.getPackageService() ).thenReturn(
+                clientFactory.getModuleService() ).thenReturn(
                                                                 new PackageServiceAsyncMockImpl()
                 );
 
@@ -110,7 +110,7 @@ public class ModulesTreeItemTest {
     @Test
     public void testAddModulesNoModulesExist() throws Exception {
 
-        packageConfigDatas = new PackageConfigData[0];
+        packageConfigDatas = new Module[0];
         setUpPresenter();
 
         verify( view ).setPresenter( presenter );
@@ -123,26 +123,26 @@ public class ModulesTreeItemTest {
     @Test
     public void testAddModules() throws Exception {
 
-        ArrayList<PackageConfigData> firstLevelDatas = new ArrayList<PackageConfigData>();
-        firstLevelDatas.add( new PackageConfigData( "defaultPackage" ) );
-        PackageConfigData mortgageConfigData = new PackageConfigData( "mortgage" );
+        ArrayList<Module> firstLevelDatas = new ArrayList<Module>();
+        firstLevelDatas.add( new Module( "defaultPackage" ) );
+        Module mortgageConfigData = new Module( "mortgage" );
 
-        ArrayList<PackageConfigData> secondLevelDatas = new ArrayList<PackageConfigData>();
-        secondLevelDatas.add( new PackageConfigData( "sub1" ) );
+        ArrayList<Module> secondLevelDatas = new ArrayList<Module>();
+        secondLevelDatas.add( new Module( "sub1" ) );
 
-        PackageConfigData thirdLevelConfigDataParent = new PackageConfigData( "sub2" );
+        Module thirdLevelConfigDataParent = new Module( "sub2" );
         secondLevelDatas.add( thirdLevelConfigDataParent );
 
-        ArrayList<PackageConfigData> thirdLevelDatas = new ArrayList<PackageConfigData>();
-        thirdLevelDatas.add( new PackageConfigData( "level3" ) );
+        ArrayList<Module> thirdLevelDatas = new ArrayList<Module>();
+        thirdLevelDatas.add( new Module( "level3" ) );
 
-        thirdLevelConfigDataParent.setSubPackages( thirdLevelDatas.toArray( new PackageConfigData[thirdLevelDatas.size()] ) );
-        secondLevelDatas.add( new PackageConfigData( "sub3" ) );
+        thirdLevelConfigDataParent.setSubModules( thirdLevelDatas.toArray( new Module[thirdLevelDatas.size()] ) );
+        secondLevelDatas.add( new Module( "sub3" ) );
 
-        mortgageConfigData.setSubPackages( secondLevelDatas.toArray( new PackageConfigData[secondLevelDatas.size()] ) );
+        mortgageConfigData.setSubModules( secondLevelDatas.toArray( new Module[secondLevelDatas.size()] ) );
         firstLevelDatas.add( mortgageConfigData );
 
-        packageConfigDatas = firstLevelDatas.toArray( new PackageConfigData[firstLevelDatas.size()] );
+        packageConfigDatas = firstLevelDatas.toArray( new Module[firstLevelDatas.size()] );
 
         IsTreeItem mortgagesRootTreeItem = mock( IsTreeItem.class );
         when(
@@ -211,7 +211,7 @@ public class ModulesTreeItemTest {
     @Test
     public void testSelectedModuleCanNotBeTheRootOne() throws Exception {
 
-        packageConfigDatas = new PackageConfigData[0];
+        packageConfigDatas = new Module[0];
         setUpPresenter();
 
         presenter.onModuleSelected( null );
@@ -225,7 +225,7 @@ public class ModulesTreeItemTest {
 
         setUpPresenter();
 
-        PackageConfigData packageConfigData = new PackageConfigData( "default" );
+        Module packageConfigData = new Module( "default" );
         packageConfigData.setUuid( "defaultUuid" );
 
         presenter.onModuleSelected(
@@ -277,11 +277,11 @@ public class ModulesTreeItemTest {
     }
 
     private IsTreeItem setUpDefaultModule(String moduleName) {
-        ArrayList<PackageConfigData> firstLevelDatas = new ArrayList<PackageConfigData>();
-        PackageConfigData mortgageConfigData = new PackageConfigData( moduleName );
+        ArrayList<Module> firstLevelDatas = new ArrayList<Module>();
+        Module mortgageConfigData = new Module( moduleName );
         mortgageConfigData.setUuid( "defaultUuid" );
         firstLevelDatas.add( mortgageConfigData );
-        packageConfigDatas = firstLevelDatas.toArray( new PackageConfigData[firstLevelDatas.size()] );
+        packageConfigDatas = firstLevelDatas.toArray( new Module[firstLevelDatas.size()] );
 
         IsTreeItem defaultRootTreeItem = mock( IsTreeItem.class );
         when(
@@ -302,9 +302,9 @@ public class ModulesTreeItemTest {
         fail( "Format " + expectedFormat + " was expected, but not found." );
     }
 
-    class PackageServiceAsyncMockImpl extends PackageServiceAsyncMock {
+    class PackageServiceAsyncMockImpl extends ModuleServiceAsyncMock {
 
-        public void listPackages(AsyncCallback<PackageConfigData[]> cb) {
+        public void listModules(AsyncCallback<Module[]> cb) {
             cb.onSuccess( packageConfigDatas );
         }
 

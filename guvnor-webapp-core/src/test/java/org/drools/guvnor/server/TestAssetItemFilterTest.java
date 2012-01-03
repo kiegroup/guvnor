@@ -23,7 +23,7 @@ public class TestAssetItemFilterTest {
 
     @Test
     public void testIsNullSafe() {
-        PackageFilter filter = new PackageFilter(null);
+        ModuleFilter filter = new ModuleFilter(null);
         assertFalse( filter.accept( null,
                                     null ) );
     }

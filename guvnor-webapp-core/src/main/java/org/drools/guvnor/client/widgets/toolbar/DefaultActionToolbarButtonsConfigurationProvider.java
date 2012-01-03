@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.widgets.toolbar;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 import static org.drools.guvnor.client.common.AssetFormats.*;
 
@@ -29,9 +29,9 @@ public class DefaultActionToolbarButtonsConfigurationProvider
 
     public static String[] VERIFY_FORMATS = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
-    private RuleAsset       asset;
+    private Asset       asset;
 
-    public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset) {
+    public DefaultActionToolbarButtonsConfigurationProvider(Asset asset) {
         this.asset = asset;
     }
 

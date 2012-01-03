@@ -28,7 +28,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -172,7 +172,7 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
         asset.updateContent( "declare Foo\n name: String\n end" );
         asset.checkin( "" );
 
-        RuleAsset ass = new RuleAsset();
+        Asset ass = new Asset();
         ch.retrieveAssetContent( ass,
                                  asset );
         assertTrue( ass.getContent() instanceof FactModels );

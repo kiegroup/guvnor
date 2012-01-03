@@ -86,13 +86,13 @@ public class RoleBasedPermissionResolver
     public void setupPermissionRules() {
         permissionRules.put( CategoryPathType.class,
                              categoryPathTypePermissionRule );
-        permissionRules.put( PackageUUIDType.class,
+        permissionRules.put( ModuleUUIDType.class,
                              packageUUIDTypePermissionRule );
-        permissionRules.put( PackageNameType.class,
+        permissionRules.put( ModuleNameType.class,
                              packagePermissionRule );
         permissionRules.put( WebDavPackageNameType.class,
                              packagePermissionRule );
-        permissionRuleObjectConverters.put( PackageNameType.class,
+        permissionRuleObjectConverters.put( ModuleNameType.class,
                                             packageNameTypeConverter );
         permissionRuleObjectConverters.put( WebDavPackageNameType.class,
                                             packageNameTypeConverter );
@@ -149,7 +149,7 @@ public class RoleBasedPermissionResolver
     }
 
     private boolean isInvalidInstance(Object requestedObject) {
-        return !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof PackageNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof PackageUUIDType));
+        return !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof ModuleNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof ModuleUUIDType));
     }
 
     private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {

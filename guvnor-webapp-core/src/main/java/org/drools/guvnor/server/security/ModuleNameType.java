@@ -18,22 +18,22 @@ package org.drools.guvnor.server.security;
 
 
 /**
- * This class is used to indicate this is a type that contains packageName
+ * This class is used to indicate this is a type that contains moduleName
  */
-public class PackageNameType {
+public class ModuleNameType {
 
-    private final String packageName;
+    private final String moduleName;
 
-    public PackageNameType(String packageName) {
-        this.packageName = packageName;
+    public ModuleNameType(String moduleName) {
+        this.moduleName = moduleName;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getModuleName() {
+        return moduleName;
     }
 
     public String toString() {
-        return "Package name: " + packageName;
+        return "Module name: " + moduleName;
     }
 
 }

@@ -22,7 +22,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEventHandler;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 public class ModulesTreeItem extends ModulesTreeItemBase {
 
@@ -83,8 +83,8 @@ public class ModulesTreeItem extends ModulesTreeItemBase {
 
     @Override
     protected void fillModulesTree(final IsTreeItem treeItem) {
-        clientFactory.getPackageService().listPackages(new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] packageConfigDatas) {
+        clientFactory.getModuleService().listModules(new GenericCallback<Module[]>() {
+            public void onSuccess(Module[] packageConfigDatas) {
                 addModules(packageConfigDatas,
                         treeItem);
             }

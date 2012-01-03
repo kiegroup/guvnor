@@ -286,9 +286,9 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                 RoleType.ADMIN.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package2Name ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package2Name ),
                                                 RoleType.ADMIN.getName() ) );
 
         } finally {
@@ -310,11 +310,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( packageName ),
                                                 RoleType.PACKAGE_ADMIN.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( packageName ),
                                                 RoleType.PACKAGE_DEVELOPER.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( packageName ),
                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
             assertFalse( roleBasedPermissionResolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
@@ -367,11 +367,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
-            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertFalse( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                  RoleType.PACKAGE_ADMIN.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                 RoleType.PACKAGE_DEVELOPER.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
             assertFalse( roleBasedPermissionResolver.hasPermission( package2Name,
@@ -397,11 +397,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
-            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertFalse( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                  RoleType.PACKAGE_DEVELOPER.getName() ) );
-            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertFalse( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                  RoleType.PACKAGE_DEVELOPER.getName() ) );
-            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertTrue( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
             assertFalse( roleBasedPermissionResolver.hasPermission( package2Name,
@@ -430,9 +430,9 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
-            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+            assertFalse( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package1Name ),
                                                  RoleType.ANALYST.getName() ) );
-            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package2Name ),
+            assertFalse( roleBasedPermissionResolver.hasPermission( new ModuleNameType( package2Name ),
                                                  RoleType.ANALYST.getName() ) );
             assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
                                                 RoleType.ANALYST.getName() ) );

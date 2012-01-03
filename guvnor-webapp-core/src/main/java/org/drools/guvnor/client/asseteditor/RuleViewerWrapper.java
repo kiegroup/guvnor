@@ -29,7 +29,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -37,7 +37,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEditorEvent.Handler  {
     private Constants constants = GWT.create(Constants.class);
 
-    private RuleAsset asset;
+    private Asset asset;
     private boolean isHistoricalReadOnly = false;
     private RuleViewerSettings ruleViewerSettings = null;
 
@@ -47,7 +47,7 @@ public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEdito
 
     public RuleViewerWrapper(ClientFactory clientFactory,
                              EventBus eventBus,
-                             RuleAsset asset) {
+                             Asset asset) {
         this(clientFactory,
                 eventBus,
                 asset,
@@ -56,7 +56,7 @@ public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEdito
 
     public RuleViewerWrapper(ClientFactory clientFactory,
                              EventBus eventBus,
-                             final RuleAsset asset,
+                             final Asset asset,
                              boolean isHistoricalReadOnly) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -110,8 +110,8 @@ public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEdito
         if (refreshAssetEditorEvent.getUuid().equals(asset.getUuid())) {
             LoadingPopup.showMessage(constants.RefreshingItem());
             RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
-                    new GenericCallback<RuleAsset>() {
-                        public void onSuccess(RuleAsset a) {
+                    new GenericCallback<Asset>() {
+                        public void onSuccess(Asset a) {
                             asset = a;
                             render();
                             LoadingPopup.close();

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
@@ -64,7 +64,7 @@ public class ActionsAPI {
      * @throws IOException
      * @throws RulesRepositoryException
      */
-    public void post(RepositoryPackageService service,
+    public void post(RepositoryModuleService service,
                      RulesRepository repository,
                      HttpServletRequest request,
                      HttpServletResponse response)

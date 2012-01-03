@@ -40,8 +40,8 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.server.util.ModuleEditorConfiguration;
 import org.drools.guvnor.server.util.PerspectiveConfigurationParser;
@@ -79,14 +79,14 @@ public class PerspectiveFactoryGenerator extends Generator {
         composerFactory.addImport( Constants.class.getCanonicalName() );
         composerFactory.addImport( Images.class.getCanonicalName() );
         composerFactory.addImport( ImageResource.class.getCanonicalName() );
-        composerFactory.addImport( RuleAsset.class.getCanonicalName() );
+        composerFactory.addImport( Asset.class.getCanonicalName() );
         composerFactory.addImport( RuleViewer.class.getCanonicalName() );
         composerFactory.addImport( DefaultContentUploadEditor.class.getCanonicalName() );
         composerFactory.addImport( Widget.class.getCanonicalName() );
         composerFactory.addImport( GWT.class.getCanonicalName() );
         composerFactory.addImport( ClientFactory.class.getCanonicalName() );
         composerFactory.addImport( EventBus.class.getCanonicalName() );
-        composerFactory.addImport( PackageConfigData.class.getCanonicalName() );
+        composerFactory.addImport( Module.class.getCanonicalName() );
         composerFactory.addImport( Command.class.getCanonicalName() );
         composerFactory.addImport( AbstractModuleEditor.class.getCanonicalName() );
         composerFactory.addImport( StackItemHeaderViewImpl.class.getCanonicalName() );      
@@ -194,7 +194,7 @@ public class PerspectiveFactoryGenerator extends Generator {
     }
     
     private void generateGetModuleEditorMethod( SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors ) {
-        sourceWriter.println( "public AbstractModuleEditor getModuleEditor(PackageConfigData module, ClientFactory clientFactory, EventBus eventBus, boolean isHistoryReadOnly, Command refreshCommand) {" );
+        sourceWriter.println( "public AbstractModuleEditor getModuleEditor(Module module, ClientFactory clientFactory, EventBus eventBus, boolean isHistoryReadOnly, Command refreshCommand) {" );
         sourceWriter.indent();
 
         for (List<ModuleEditorConfiguration> moduleEditorConfigurations : registeredEditors.values()) {
@@ -298,7 +298,7 @@ public class PerspectiveFactoryGenerator extends Generator {
     
     //TODO: Generate from perspective.xml 
     private void generateGetModuleEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
-        sourceWriter.println( "public Widget getModuleEditorActionToolbar(PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand) {" );
+        sourceWriter.println( "public Widget getModuleEditorActionToolbar(Module data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand) {" );
         sourceWriter.indent();
         
         sourceWriter.println( "if(\"soaservice\".equals(data.getFormat())) {");
@@ -315,7 +315,7 @@ public class PerspectiveFactoryGenerator extends Generator {
     
     //TODO: Generate from perspective.xml 
     private void generateGetAssetEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
-        sourceWriter.println( "public Widget getAssetEditorActionToolbar(String perspectiveType, RuleAsset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly) {" );
+        sourceWriter.println( "public Widget getAssetEditorActionToolbar(String perspectiveType, Asset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly) {" );
         sourceWriter.indent();
         
         sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");

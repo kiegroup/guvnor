@@ -70,7 +70,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextPagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -130,7 +130,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -306,7 +306,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetPagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -367,7 +367,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1084,7 +1084,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitiveFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitiveFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1137,7 +1137,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitivePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitivePagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1199,7 +1199,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitiveFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitiveFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1249,7 +1249,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitivePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitivePagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 

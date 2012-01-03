@@ -18,13 +18,13 @@ package org.drools.guvnor.server.security;
 
 
 /**
- * This class is used to indicate this is a type that contains pacakge UUID
+ * This class is used to indicate this is a type that contains module UUID
  */
-public class PackageUUIDType {
+public class ModuleUUIDType {
 
     private final String uuid;
 
-    public PackageUUIDType(String uuid) {
+    public ModuleUUIDType(String uuid) {
         this.uuid = uuid;
     }
 
@@ -33,6 +33,6 @@ public class PackageUUIDType {
     }
 
     public String toString() {
-        return "Package UUID: " + uuid;
+        return "Module UUID: " + uuid;
     }
 }
