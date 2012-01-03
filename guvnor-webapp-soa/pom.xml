@@ -217,14 +217,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- seam-bom overwrites the version of drools and other dependencies https://issues.jboss.org/browse/SEAM-110 -->
-      <!--<dependency>-->
-        <!--<groupId>org.jboss.seam</groupId>-->
-        <!--<artifactId>seam-bom</artifactId>-->
-        <!--<type>pom</type>-->
-        <!--<version>${seam.version}</version>-->
-        <!--<scope>import</scope>-->
-      <!--</dependency>-->
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
