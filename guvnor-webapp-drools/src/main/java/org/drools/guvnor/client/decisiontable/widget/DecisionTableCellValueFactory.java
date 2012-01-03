@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
+import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -170,6 +171,13 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     @Override
     public CellValue< ? extends Comparable< ? >> convertModelCellValue(BaseColumn column,
                                                                        DTCellValue52 dcv) {
+
+        //Analysis cells do not use data-type
+        if ( column instanceof AnalysisCol52 ) {
+            return makeNewAnalysisCellValue();
+        }
+
+        //Other cells do use data-type
         DTDataTypes52 dataType = getDataType( column );
         assertDTCellValue( dataType,
                            dcv );
