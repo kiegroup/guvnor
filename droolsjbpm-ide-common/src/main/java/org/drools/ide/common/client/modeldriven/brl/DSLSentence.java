@@ -32,10 +32,11 @@ public class DSLSentence
     public static final String ENUM_TAG    = "ENUM";
     public static final String DATE_TAG    = "DATE";
     public static final String BOOLEAN_TAG = "BOOLEAN";
+    public static final String CUSTOM_FORM_TAG = "CF";
 
     private String             sentence;
     private String             definition;
-    private List<String>       values;
+    private List<DSLVariableValue>       values;
 
     /**
      * This will strip off any residual "{" stuff...
@@ -90,7 +91,7 @@ public class DSLSentence
                                                     variableStart ) + 1;
             variableStart = definition.indexOf( "{",
                                                 variableEnd );
-            sb.append( values.get( index++ ) );
+            sb.append( values.get( index++ ).getValue() );
         }
         if ( variableEnd < definition.length() ) {
             sb.append( definition.substring( variableEnd ) );
@@ -106,9 +107,9 @@ public class DSLSentence
     public DSLSentence copy() {
         final DSLSentence newOne = new DSLSentence();
         newOne.definition = getDefinition();
-        List<String> values = getValues();
-        if ( values != null ) {
-            for ( String value : getValues() ) {
+        List<DSLVariableValue> variableValues = getValues();
+        if ( variableValues != null ) {
+            for ( DSLVariableValue value : getValues() ) {
                 newOne.getValues().add( value );
             }
         }
@@ -126,7 +127,7 @@ public class DSLSentence
         this.definition = definition;
     }
 
-    public List<String> getValues() {
+    public List<DSLVariableValue> getValues() {
         if ( this.values == null ) {
             parseDefinition();
         }
@@ -159,7 +160,7 @@ public class DSLSentence
                 String field = factAndField.substring( dotIndex + 1,
                                                        factAndField.length() );
                 fieldValueMap.put( field,
-                                   values.get( iVariable ) );
+                                   values.get( iVariable ).getValue() );
             }
             iVariable++;
             variableStart = definition.indexOf( "{",
@@ -178,7 +179,7 @@ public class DSLSentence
             return;
         }
         definition = sentence;
-        values = new ArrayList<String>();
+        values = new ArrayList<DSLVariableValue>();
         sentence = null;
 
         int variableStart = definition.indexOf( "{" );
@@ -195,7 +196,7 @@ public class DSLSentence
 
     //Build the Values from the Definition.
     private void parseDefinition() {
-        values = new ArrayList<String>();
+        values = new ArrayList<DSLVariableValue>();
         if ( getDefinition() == null ) {
             return;
         }
@@ -235,14 +236,21 @@ public class DSLSentence
         return -1;
     }
 
-    private String parseValue(String variable) {
+    private DSLVariableValue parseValue(String variable) {
+        //if the variable doesn't have a ':', then it is considered as a 
+        //simple value
         if ( !variable.contains( ":" ) ) {
-            return variable;
+            return new DSLVariableValue(variable);
         }
 
+        //if it does containt a ':', then the part before it is considered
+        //as the real value (used to create the final drl) and the part
+        //after it is considered as an id
         String value = variable.substring( 0,
                                            variable.indexOf( ":" ) );
-        return value;
+        String id = variable.substring( variable.indexOf( ":" )+1);
+        
+        return new DSLComplexVariableValue(id, value);
     }
 
 }
