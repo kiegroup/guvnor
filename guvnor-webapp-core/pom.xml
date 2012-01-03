@@ -148,23 +148,21 @@
     <dependency>
       <groupId>org.jboss.solder</groupId>
       <artifactId>solder-impl</artifactId>
-      <version>${seam.version}</version>
+      <!-- TODO revert back ${seam.version} after seam-remoting 3.1.0.Final is released -->
+      <!--<version>${seam.version}</version>-->
+      <version>3.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.security</groupId>
       <artifactId>seam-security</artifactId>
-      <version>${seam.version}</version>
+      <!-- TODO revert back ${seam.version} after seam-remoting 3.1.0.Final is released -->
+      <!--<version>${seam.version}</version>-->
+      <version>3.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.security</groupId>
       <artifactId>jboss-security-spi</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>1.6</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.remoting</groupId>
