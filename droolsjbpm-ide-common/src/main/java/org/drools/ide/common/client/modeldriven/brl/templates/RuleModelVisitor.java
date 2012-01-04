@@ -47,13 +47,23 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftS
 public class RuleModelVisitor {
 
     private IFactPattern                        factPattern;
+    private RuleModel                           model = new RuleModel();
     private Map<InterpolationVariable, Integer> vars;
-    private RuleModel                           model;
 
-    public RuleModelVisitor(RuleModel model,
+    public RuleModelVisitor(Map<InterpolationVariable, Integer> vars) {
+        this.vars = vars;
+    }
+
+    public RuleModelVisitor(IPattern pattern,
                             Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
-        this.model = model;
+        this.model.addLhsItem( pattern );
+    }
+
+    public RuleModelVisitor(IAction action,
+                            Map<InterpolationVariable, Integer> vars) {
+        this.vars = vars;
+        this.model.addRhsItem( action );
     }
 
     private void parseStringPattern(String text) {
@@ -209,7 +219,8 @@ public class RuleModelVisitor {
         parseStringPattern( pattern.getExpression().getText() );
     }
 
-    public void visitRuleModel(RuleModel model) {
+    private void visitRuleModel(RuleModel model) {
+        this.model = model;
         if ( model.lhs != null ) {
             for ( IPattern pat : model.lhs ) {
                 visit( pat );

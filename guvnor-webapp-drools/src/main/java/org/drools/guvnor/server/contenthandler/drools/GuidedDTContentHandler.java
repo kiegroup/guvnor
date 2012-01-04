@@ -68,24 +68,38 @@ public class GuidedDTContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             Asset asset,
                             StringBuilder stringBuilder) {
-        GuidedDecisionTable52 model = (GuidedDecisionTable52) asset.getContent();
-
-        stringBuilder.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
+        String drl = getSourceDRL( (GuidedDecisionTable52) asset.getContent(),
+                                   builder );
+        stringBuilder.append( drl );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuilder stringBuilder) {
-        String drl = getRawDRL( asset );
+        String drl = getSourceDRL( buildModelFromAsset( asset ),
+                                   builder );
         stringBuilder.append( drl );
     }
 
-    public String getRawDRL(AssetItem asset) {
+    private String getSourceDRL(GuidedDecisionTable52 model,
+                                BRMSPackageBuilder builder) {
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
+        if ( builder.hasDSL() && model.hasDSLSentences() ) {
+            drl = builder.getDSLExpander().expand( drl );
+        }
+        return drl;
+    }
+
+    protected GuidedDecisionTable52 buildModelFromAsset(AssetItem asset) {
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.setTableName( asset.getName() );
         model.setParentName( this.parentNameFromCategory( asset,
                                                           model.getParentName() ) );
-
-        return GuidedDTDRLPersistence.getInstance().marshal( model );
+        return model;
     }
+
+    public String getRawDRL(AssetItem asset) {
+        return GuidedDTDRLPersistence.getInstance().marshal( buildModelFromAsset( asset ) );
+    }
+
 }

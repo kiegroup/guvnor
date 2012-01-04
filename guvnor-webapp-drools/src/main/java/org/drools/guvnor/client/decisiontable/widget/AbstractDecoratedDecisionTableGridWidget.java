@@ -36,6 +36,10 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEven
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -200,7 +204,27 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         // Initialise CellTable's Condition columns
         for ( CompositeColumn< ? > cc : model.getConditions() ) {
-            if ( cc instanceof Pattern52 ) {
+
+            if ( cc instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) cc;
+                for ( BRLConditionVariableColumn variable : brl.getChildColumns() ) {
+                    DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( variable,
+                                                                                      cellFactory.getCell( variable ),
+                                                                                      colIndex,
+                                                                                      eventBus );
+                    columnWidth = variable.getWidth();
+                    variable.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setVisible( !variable.isHideColumn() );
+                    columns.add( column );
+
+                    data.addColumn( colIndex,
+                                    makeColumnData( model,
+                                                    variable,
+                                                    colIndex++ ),
+                                                    column.isVisible() );
+                }
+
+            } else if ( cc instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) cc;
                 for ( ConditionCol52 col : p.getChildColumns() ) {
                     DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
@@ -223,20 +247,42 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         // Initialise CellTable's Action columns
         for ( ActionCol52 col : model.getActionCols() ) {
-            DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
-                                                                              cellFactory.getCell( col ),
-                                                                              colIndex,
-                                                                              eventBus );
-            columnWidth = col.getWidth();
-            col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
-            column.setVisible( !col.isHideColumn() );
-            columns.add( column );
+            if ( col instanceof BRLActionColumn ) {
+                BRLActionColumn brl = (BRLActionColumn) col;
+                for ( BRLActionVariableColumn variable : brl.getChildColumns() ) {
+                    DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( variable,
+                                                                                      cellFactory.getCell( variable ),
+                                                                                      colIndex,
+                                                                                      eventBus );
+                    columnWidth = variable.getWidth();
+                    variable.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setVisible( !variable.isHideColumn() );
+                    columns.add( column );
 
-            data.addColumn( colIndex,
-                            makeColumnData( model,
-                                            col,
-                                            colIndex++ ),
-                                            column.isVisible() );
+                    data.addColumn( colIndex,
+                                    makeColumnData( model,
+                                                    variable,
+                                                    colIndex++ ),
+                                                    column.isVisible() );
+                }
+
+            } else {
+
+                DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( col,
+                                                                                  cellFactory.getCell( col ),
+                                                                                  colIndex,
+                                                                                  eventBus );
+                columnWidth = col.getWidth();
+                col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                column.setVisible( !col.isHideColumn() );
+                columns.add( column );
+
+                data.addColumn( colIndex,
+                                makeColumnData( model,
+                                                col,
+                                                colIndex++ ),
+                                                column.isVisible() );
+            }
 
         }
 

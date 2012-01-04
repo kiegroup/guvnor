@@ -132,8 +132,7 @@ public class TemplateModel extends RuleModel
 
     private Map<InterpolationVariable, Integer> getInterpolationVariables() {
         Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor( this,
-                              result ).visit( this );
+        new RuleModelVisitor( result ).visit( this );
 
         InterpolationVariable id = new InterpolationVariable( ID_COLUMN_NAME,
                                                               SuggestionCompletionEngine.TYPE_NUMERIC );

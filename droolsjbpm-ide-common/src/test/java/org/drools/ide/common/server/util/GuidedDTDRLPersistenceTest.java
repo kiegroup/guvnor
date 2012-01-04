@@ -46,6 +46,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
@@ -74,6 +75,7 @@ public class GuidedDTDRLPersistenceTest {
     @Test
     public void test2Rules() throws Exception {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
         dt.setTableName( "michael" );
 
         AttributeCol52 attr = new AttributeCol52();
@@ -145,7 +147,7 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2"},
-                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", null}
+                new String[]{"2", "desc", "66", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", "whee"}
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -155,8 +157,8 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "rating == ( age * 0.2 )" ) > 0 );
         assertTrue( drl.indexOf( "f2 : Driver( eval( age > 7 ))" ) > 0 );
         assertTrue( drl.indexOf( "rating == ( age * 0.3 )" ) > drl.indexOf( "rating == ( age * 0.2 )" ) );
-        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 ); // for default
-        assertTrue( drl.indexOf( "salience 66" ) > 0 ); // for default
+        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 );
+        assertTrue( drl.indexOf( "salience 66" ) > 0 );
 
     }
 
@@ -394,7 +396,7 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", "f2"},
-                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", null}
+                new String[]{"2", "desc", "66", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", "whee"}
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -402,13 +404,10 @@ public class GuidedDTDRLPersistenceTest {
 
         assertTrue( drl.indexOf( "from row number" ) > -1 );
         assertTrue( drl.indexOf( "rating == ( age * 0.2 )" ) > 0 );
-        // assertTrue(drl.indexOf("f2 : Driver( eval( age > 7 ))") > 0);
         assertTrue( drl.indexOf( "f2 : Driver( eval( this.hasSomething(BAM) ))" ) > 0 );
         assertTrue( drl.indexOf( "rating == ( age * 0.3 )" ) > drl.indexOf( "rating == ( age * 0.2 )" ) );
-        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 ); // for
-                                                                   // default
-        assertTrue( drl.indexOf( "salience 66" ) > 0 ); // for default
-
+        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 );
+        assertTrue( drl.indexOf( "salience 66" ) > 0 );
     }
 
     @Test
@@ -462,9 +461,18 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doConditions( allColumns,
                         allPatterns,
-                        upgrader.makeDataRowList( row ),
+                        rowDataProvider,
+                        rowData,
                         upgrader.makeDataLists( data ),
                         rm );
         assertEquals( 2,
@@ -564,11 +572,20 @@ public class GuidedDTDRLPersistenceTest {
         p1.getChildColumns().add( col3 );
         allColumns.add( col3 );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         RuleModel rm = new RuleModel();
 
         p.doConditions( allColumns,
                         allPatterns,
-                        upgrader.makeDataRowList( row ),
+                        rowDataProvider,
+                        rowData,
                         upgrader.makeDataLists( data ),
                         rm );
         assertEquals( 1,
@@ -666,11 +683,20 @@ public class GuidedDTDRLPersistenceTest {
         p2.getChildColumns().add( col4 );
         allColumns.add( col4 );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         RuleModel rm = new RuleModel();
 
         p.doConditions( allColumns,
                         allPatterns,
-                        upgrader.makeDataRowList( row ),
+                        rowDataProvider,
+                        rowData,
                         upgrader.makeDataLists( data ),
                         rm );
 
@@ -793,8 +819,16 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel0 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider0,
                         rowDTModel0,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -814,8 +848,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p1 : Person( alive == true )" ) > 0 );
         assertTrue( drl0.indexOf( "p2 : Person( alive != false )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel1 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider1,
                         rowDTModel1,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -889,8 +927,16 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel0 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider0,
                         rowDTModel0,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -910,8 +956,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p1 : Person( dateOfBirth == \"01-Jan-1980\" )" ) > 0 );
         assertTrue( drl0.indexOf( "p2 : Person( dateOfBirth != \"20-Jun-1985\" )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel1 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider1,
                         rowDTModel1,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -931,8 +981,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p1 : Person( dateOfBirth == \"01-Feb-1981\" )" ) > 0 );
         assertTrue( drl1.indexOf( "p2 : Person( dateOfBirth != \"21-Jun-1986\" )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel2 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider2,
                         rowDTModel2,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1006,8 +1060,16 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel0 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider0,
                         rowDTModel0,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1027,8 +1089,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p1 : Person( age == 1 )" ) > 0 );
         assertTrue( drl0.indexOf( "p2 : Person( age != 1 )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel1 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider1,
                         rowDTModel1,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1048,8 +1114,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p1 : Person( age == 2 )" ) > 0 );
         assertTrue( drl1.indexOf( "p2 : Person( age != 2 )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel2 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider2,
                         rowDTModel2,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1123,8 +1193,16 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel0 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider0,
                         rowDTModel0,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1144,8 +1222,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p1 : Person( name == \"Michael1\" )" ) > 0 );
         assertTrue( drl0.indexOf( "p2 : Person( name != \"Michael1\" )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel1 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider1,
                         rowDTModel1,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1165,8 +1247,12 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p1 : Person( name == \"Michael2\" )" ) > 0 );
         assertTrue( drl1.indexOf( "p2 : Person( name != \"Michael2\" )" ) > 0 );
 
+        TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  rowDTModel2 );
+
         p.doConditions( allColumns,
                         allPatterns,
+                        rowDataProvider2,
                         rowDTModel2,
                         upgrader.makeDataLists( data ),
                         rm );
@@ -1304,7 +1390,7 @@ public class GuidedDTDRLPersistenceTest {
     @Test
     public void testNoOperator() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
-        String[] row = new String[]{"1", "desc", "a", "> 42", "33 + 1", "age > 6", "stilton"};
+        String[] row = new String[]{"1", "desc", "a", "> 42"};
         String[][] data = new String[1][];
         data[0] = row;
 
@@ -1328,9 +1414,18 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doConditions( allColumns,
                         allPatterns,
-                        upgrader.makeDataRowList( row ),
+                        rowDataProvider,
+                        rowData,
                         upgrader.makeDataLists( data ),
                         rm );
 
@@ -1385,9 +1480,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 3,
                       rm.rhs.length );
@@ -2045,9 +2149,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 1,
                       rm.rhs.length );
@@ -2128,9 +2241,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 1,
                       rm.rhs.length );
@@ -2248,9 +2370,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 2,
                       rm.rhs.length );
@@ -2396,9 +2527,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 2,
                       rm.rhs.length );
@@ -2519,9 +2659,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 2,
                       rm.rhs.length );
@@ -2667,9 +2816,18 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
+        //When using a TemplateDataProvider the assumption is that we 
+        //have a "complete" decision table including AnalysisCol52
+        allColumns.add( new AnalysisCol52() );
+
+        List<DTCellValue52> rowData = upgrader.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
         p.doActions( allColumns,
                      cols,
-                     upgrader.makeDataRowList( row ),
+                     rowDataProvider,
+                     rowData,
                      rm );
         assertEquals( 2,
                       rm.rhs.length );

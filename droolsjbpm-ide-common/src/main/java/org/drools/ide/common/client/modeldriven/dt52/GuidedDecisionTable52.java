@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
@@ -77,17 +80,22 @@ public class GuidedDecisionTable52
     // TODO verify that it's not stored in the repository, else add @XStreamOmitField
     private transient AnalysisCol52                      analysisCol;
 
-    private TableFormat                                  tableFormat           = TableFormat.EXTENDED_ENTRY;
+    public enum TableFormat {
+        EXTENDED_ENTRY,
+        LIMITED_ENTRY
+    }
+
+    private TableFormat               tableFormat = TableFormat.EXTENDED_ENTRY;
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue52>>                    data                  = new ArrayList<List<DTCellValue52>>();
+    private List<List<DTCellValue52>> data        = new ArrayList<List<DTCellValue52>>();
 
     // TODO verify that it's not stored in the repository, else add @XStreamOmitField
-    private transient List<Analysis>                     analysisData;
+    private transient List<Analysis>  analysisData;
 
     public GuidedDecisionTable52() {
         analysisCol = new AnalysisCol52();
@@ -814,9 +822,33 @@ public class GuidedDecisionTable52
         this.tableFormat = tableFormat;
     }
 
-    public enum TableFormat {
-        EXTENDED_ENTRY,
-        LIMITED_ENTRY
+    /**
+     * Check is the model uses DSLSentences and hence requires expansion
+     * 
+     * @return true if any BRLColumn's contain DSLSentence's
+     */
+    public boolean hasDSLSentences() {
+        for ( CompositeColumn< ? extends BaseColumn> column : this.conditionPatterns ) {
+            if ( column instanceof BRLConditionColumn ) {
+                BRLConditionColumn brlColumn = (BRLConditionColumn) column;
+                for ( IPattern pattern : brlColumn.getDefinition() ) {
+                    if ( pattern instanceof DSLSentence ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        for ( ActionCol52 column : this.actionCols ) {
+            if ( column instanceof BRLActionColumn ) {
+                BRLActionColumn brlColumn = (BRLActionColumn) column;
+                for ( IAction action : brlColumn.getDefinition() ) {
+                    if ( action instanceof DSLSentence ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

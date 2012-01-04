@@ -267,9 +267,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     private void getDefinedVariables(RuleModel ruleModel) {
         //Extract Template Keys from RuleModel
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-        RuleModelVisitor rmv = new RuleModelVisitor( ruleModel,
-                                                     ivs );
-        rmv.visitRuleModel( ruleModel );
+        RuleModelVisitor rmv = new RuleModelVisitor( ivs );
+        rmv.visit( ruleModel );
 
         //Update column and UI
         editingCol.setChildColumns( convertInterpolationVariables( ivs ) );
