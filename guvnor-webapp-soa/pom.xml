@@ -193,7 +193,7 @@
   </build>
   <profiles>
     <profile>
-      <id>fullProfile</id>
+      <id>ngsoafullProfile</id>
       <activation>
         <property>
           <name>ngsoafull</name>

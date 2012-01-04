@@ -74,7 +74,7 @@
       </modules>
     </profile>
     <profile>
-      <id>ngsoa</id>
+      <id>ngsoaProfile</id>
       <activation>
         <property>
           <name>ngsoa</name>
@@ -85,7 +85,7 @@
       </modules>
     </profile>
     <profile>
-      <id>ngsoafull</id>
+      <id>ngsoafullProfile</id>
       <activation>
         <property>
           <name>ngsoafull</name>
