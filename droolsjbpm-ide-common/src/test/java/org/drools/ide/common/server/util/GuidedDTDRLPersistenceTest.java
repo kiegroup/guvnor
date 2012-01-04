@@ -35,6 +35,8 @@ import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -48,6 +50,10 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -2873,6 +2879,643 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( Boolean.class.getName(),
                       wifv1.getWorkItemParameterClassName() );
 
+    }
+
+    @Test
+    //This test checks a Decision Table involving BRL columns is correctly converted into a RuleModel
+    public void testLHSWithBRLColumn_ParseToRuleModel() {
+
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+
+        //Row 0 should become an IPattern in the resulting RuleModel as it contains values for all Template fields in the BRL Column
+        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        String[][] data = new String[][]{
+                new String[]{"1", "desc", "Gargamel", "Pupa", "50"},
+                new String[]{"2", "desc", "Gargamel", "", "50"},
+                new String[]{"3", "desc", "Gargamel", "Pupa", ""}
+        };
+
+        //Simple (mandatory) columns
+        dtable.setRowNumberCol( new RowNumberCol52() );
+        dtable.setDescriptionCol( new DescriptionCol52() );
+
+        //Simple Condition
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Baddie" );
+
+        ConditionCol52 con = new ConditionCol52();
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFactField( "name" );
+        con.setOperator( "==" );
+        p1.getChildColumns().add( con );
+
+        dtable.getConditions().add( p1 );
+
+        //BRL Column
+        BRLConditionColumn brl1 = new BRLConditionColumn();
+
+        //BRL Column definition
+        List<IPattern> brl1Definition = new ArrayList<IPattern>();
+        FactPattern brl1DefinitionFactPattern1 = new FactPattern( "Smurf" );
+
+        SingleFieldConstraint brl1DefinitionFactPattern1Constraint1 = new SingleFieldConstraint();
+        brl1DefinitionFactPattern1Constraint1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        brl1DefinitionFactPattern1Constraint1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionFactPattern1Constraint1.setFieldName( "name" );
+        brl1DefinitionFactPattern1Constraint1.setOperator( "==" );
+        brl1DefinitionFactPattern1Constraint1.setValue( "$name" );
+        brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint1 );
+
+        SingleFieldConstraint brl1DefinitionFactPattern1Constraint2 = new SingleFieldConstraint();
+        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionFactPattern1Constraint2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionFactPattern1Constraint2.setFieldName( "age" );
+        brl1DefinitionFactPattern1Constraint2.setOperator( "==" );
+        brl1DefinitionFactPattern1Constraint2.setValue( "$age" );
+        brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint2 );
+
+        brl1Definition.add( brl1DefinitionFactPattern1 );
+
+        brl1.setDefinition( brl1Definition );
+
+        //Setup BRL column bindings
+        BRLConditionVariableColumn brl1Variable1 = new BRLConditionVariableColumn( "$name",
+                                                                                   SuggestionCompletionEngine.TYPE_STRING,
+                                                                                   "Person",
+                                                                                   "name" );
+        brl1.getChildColumns().add( brl1Variable1 );
+        BRLConditionVariableColumn brl1Variable2 = new BRLConditionVariableColumn( "$age",
+                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                                   "Person",
+                                                                                   "age" );
+        brl1.getChildColumns().add( brl1Variable2 );
+
+        dtable.getConditions().add( brl1 );
+
+        //Now to test conversion
+        RuleModel rm = new RuleModel();
+        List<BaseColumn> allColumns = dtable.getAllColumns();
+        List<CompositeColumn< ? extends BaseColumn>> allPatterns = dtable.getConditions();
+        List<List<DTCellValue52>> dtData = upgrader.makeDataLists( data );
+
+        //Row 0
+        List<DTCellValue52> dtRowData0 = upgrader.makeDataRowList( data[0] );
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData0 );
+        p.doConditions( allColumns,
+                        allPatterns,
+                        rowDataProvider0,
+                        dtRowData0,
+                        dtData,
+                        rm );
+
+        assertEquals( 2,
+                      rm.lhs.length );
+        assertEquals( "Baddie",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "Smurf",
+                      ((FactPattern) rm.lhs[1]).getFactType() );
+
+        // examine the first pattern
+        FactPattern result0Fp1 = (FactPattern) rm.lhs[0];
+        assertEquals( 1,
+                      result0Fp1.constraintList.constraints.length );
+
+        SingleFieldConstraint result0Fp1Con1 = (SingleFieldConstraint) result0Fp1.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      result0Fp1Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result0Fp1Con1.getFieldName() );
+        assertEquals( "==",
+                      result0Fp1Con1.getOperator() );
+        assertEquals( "Gargamel",
+                      result0Fp1Con1.getValue() );
+
+        // examine the second pattern
+        FactPattern result0Fp2 = (FactPattern) rm.lhs[1];
+        assertEquals( 2,
+                      result0Fp2.constraintList.constraints.length );
+
+        SingleFieldConstraint result0Fp2Con1 = (SingleFieldConstraint) result0Fp2.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result0Fp2Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result0Fp2Con1.getFieldName() );
+        assertEquals( "==",
+                      result0Fp2Con1.getOperator() );
+        assertEquals( "$name",
+                      result0Fp2Con1.getValue() );
+
+        SingleFieldConstraint result0Fp2Con2 = (SingleFieldConstraint) result0Fp2.constraintList.constraints[1];
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result0Fp2Con2.getConstraintValueType() );
+        assertEquals( "age",
+                      result0Fp2Con2.getFieldName() );
+        assertEquals( "==",
+                      result0Fp2Con2.getOperator() );
+        assertEquals( "$age",
+                      result0Fp2Con2.getValue() );
+
+        //Row 1
+        List<DTCellValue52> dtRowData1 = upgrader.makeDataRowList( data[1] );
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData1 );
+        p.doConditions( allColumns,
+                        allPatterns,
+                        rowDataProvider1,
+                        dtRowData1,
+                        dtData,
+                        rm );
+
+        assertEquals( 1,
+                      rm.lhs.length );
+        assertEquals( "Baddie",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+
+        // examine the first pattern
+        FactPattern result1Fp1 = (FactPattern) rm.lhs[0];
+        assertEquals( 1,
+                      result1Fp1.constraintList.constraints.length );
+
+        SingleFieldConstraint result1Fp1Con1 = (SingleFieldConstraint) result1Fp1.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      result1Fp1Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result1Fp1Con1.getFieldName() );
+        assertEquals( "==",
+                      result1Fp1Con1.getOperator() );
+        assertEquals( "Gargamel",
+                      result1Fp1Con1.getValue() );
+
+        //Row 2
+        List<DTCellValue52> dtRowData2 = upgrader.makeDataRowList( data[2] );
+        TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData2 );
+        p.doConditions( allColumns,
+                        allPatterns,
+                        rowDataProvider2,
+                        dtRowData2,
+                        dtData,
+                        rm );
+
+        assertEquals( 1,
+                      rm.lhs.length );
+        assertEquals( "Baddie",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+
+        // examine the first pattern
+        FactPattern result2Fp1 = (FactPattern) rm.lhs[0];
+        assertEquals( 1,
+                      result2Fp1.constraintList.constraints.length );
+
+        SingleFieldConstraint result2Fp1Con1 = (SingleFieldConstraint) result2Fp1.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      result2Fp1Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result2Fp1Con1.getFieldName() );
+        assertEquals( "==",
+                      result2Fp1Con1.getOperator() );
+        assertEquals( "Gargamel",
+                      result2Fp1Con1.getValue() );
+
+    }
+
+    @Test
+    //This test checks a Decision Table involving BRL columns is correctly converted into DRL
+    public void testLHSWithBRLColumn_ParseToDRL() {
+
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        //Row 0 should become an IPattern in the resulting RuleModel as it contains values for all Template fields in the BRL Column
+        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        String[][] data = new String[][]{
+                new String[]{"1", "desc", "Gargamel", "Pupa", "50"},
+                new String[]{"2", "desc", "Gargamel", "", "50"},
+                new String[]{"3", "desc", "Gargamel", "Pupa", ""}
+        };
+
+        //Simple (mandatory) columns
+        dtable.setRowNumberCol( new RowNumberCol52() );
+        dtable.setDescriptionCol( new DescriptionCol52() );
+
+        //Simple Condition
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Baddie" );
+
+        ConditionCol52 con = new ConditionCol52();
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFactField( "name" );
+        con.setOperator( "==" );
+        p1.getChildColumns().add( con );
+
+        dtable.getConditions().add( p1 );
+
+        //BRL Column
+        BRLConditionColumn brl1 = new BRLConditionColumn();
+
+        //BRL Column definition
+        List<IPattern> brl1Definition = new ArrayList<IPattern>();
+        FactPattern brl1DefinitionFactPattern1 = new FactPattern( "Smurf" );
+
+        SingleFieldConstraint brl1DefinitionFactPattern1Constraint1 = new SingleFieldConstraint();
+        brl1DefinitionFactPattern1Constraint1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        brl1DefinitionFactPattern1Constraint1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionFactPattern1Constraint1.setFieldName( "name" );
+        brl1DefinitionFactPattern1Constraint1.setOperator( "==" );
+        brl1DefinitionFactPattern1Constraint1.setValue( "$name" );
+        brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint1 );
+
+        SingleFieldConstraint brl1DefinitionFactPattern1Constraint2 = new SingleFieldConstraint();
+        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionFactPattern1Constraint2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionFactPattern1Constraint2.setFieldName( "age" );
+        brl1DefinitionFactPattern1Constraint2.setOperator( "==" );
+        brl1DefinitionFactPattern1Constraint2.setValue( "$age" );
+        brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint2 );
+
+        brl1Definition.add( brl1DefinitionFactPattern1 );
+
+        brl1.setDefinition( brl1Definition );
+
+        //Setup BRL column bindings
+        BRLConditionVariableColumn brl1Variable1 = new BRLConditionVariableColumn( "$name",
+                                                                                   SuggestionCompletionEngine.TYPE_STRING,
+                                                                                   "Person",
+                                                                                   "name" );
+        brl1.getChildColumns().add( brl1Variable1 );
+        BRLConditionVariableColumn brl1Variable2 = new BRLConditionVariableColumn( "$age",
+                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                                   "Person",
+                                                                                   "age" );
+        brl1.getChildColumns().add( brl1Variable2 );
+
+        dtable.getConditions().add( brl1 );
+        dtable.setData( upgrader.makeDataLists( data ) );
+
+        //Now to test conversion
+        int ruleStartIndex;
+        int pattern1StartIndex;
+        int pattern2StartIndex;
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dtable );
+
+        //Row 0
+        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        assertFalse( ruleStartIndex == -1 );
+        pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
+                                          ruleStartIndex );
+        assertFalse( pattern1StartIndex == -1 );
+        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+                                          ruleStartIndex );
+        assertFalse( pattern2StartIndex == -1 );
+
+        //Row 1
+        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        assertFalse( ruleStartIndex == -1 );
+        pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
+                                          ruleStartIndex );
+        assertFalse( pattern1StartIndex == -1 );
+        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+                                          ruleStartIndex );
+        assertTrue( pattern2StartIndex == -1 );
+
+        //Row 2
+        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        assertFalse( ruleStartIndex == -1 );
+        pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
+                                          ruleStartIndex );
+        assertFalse( pattern1StartIndex == -1 );
+        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+                                          ruleStartIndex );
+        assertTrue( pattern2StartIndex == -1 );
+
+    }
+
+    @Test
+    //This test checks a Decision Table involving BRL columns is correctly converted into a RuleModel
+    public void testRHSWithBRLColumn_ParseToRuleModel() {
+
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+
+        //Row 0 should become an IPattern in the resulting RuleModel as it contains values for all Template fields in the BRL Column
+        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        String[][] data = new String[][]{
+                new String[]{"1", "desc", "Gargamel", "Pupa", "50"},
+                new String[]{"2", "desc", "Gargamel", "", "50"},
+                new String[]{"3", "desc", "Gargamel", "Pupa", ""}
+        };
+
+        //Simple (mandatory) columns
+        dtable.setRowNumberCol( new RowNumberCol52() );
+        dtable.setDescriptionCol( new DescriptionCol52() );
+
+        //Simple Action
+        ActionInsertFactCol52 a1 = new ActionInsertFactCol52();
+        a1.setFactType( "Baddie" );
+        a1.setFactField( "name" );
+        a1.setType( SuggestionCompletionEngine.TYPE_STRING );
+
+        dtable.getActionCols().add( a1 );
+
+        //BRL Column
+        BRLActionColumn brl1 = new BRLActionColumn();
+
+        //BRL Column definition
+        List<IAction> brl1Definition = new ArrayList<IAction>();
+        ActionInsertFact brl1DefinitionAction1 = new ActionInsertFact( "Smurf" );
+        ActionFieldValue brl1DefinitionAction1FieldValue1 = new ActionFieldValue( "name",
+                                                                                  "$name",
+                                                                                  SuggestionCompletionEngine.TYPE_STRING );
+        brl1DefinitionAction1FieldValue1.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue1 );
+        ActionFieldValue brl1DefinitionAction1FieldValue2 = new ActionFieldValue( "age",
+                                                                                  "$age",
+                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionAction1FieldValue2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue2 );
+        brl1Definition.add( brl1DefinitionAction1 );
+        brl1.setDefinition( brl1Definition );
+
+        //Setup BRL column bindings
+        BRLActionVariableColumn brl1Variable1 = new BRLActionVariableColumn( "$name",
+                                                                             SuggestionCompletionEngine.TYPE_STRING,
+                                                                             "Person",
+                                                                             "name" );
+        brl1.getChildColumns().add( brl1Variable1 );
+        BRLActionVariableColumn brl1Variable2 = new BRLActionVariableColumn( "$age",
+                                                                             SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                             "Person",
+                                                                             "age" );
+        brl1.getChildColumns().add( brl1Variable2 );
+
+        dtable.getActionCols().add( brl1 );
+
+        //Now to test conversion
+        RuleModel rm = new RuleModel();
+        List<BaseColumn> allColumns = dtable.getAllColumns();
+        List<ActionCol52> allActions = dtable.getActionCols();
+
+        //Row 0
+        List<DTCellValue52> dtRowData0 = upgrader.makeDataRowList( data[0] );
+        TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData0 );
+        p.doActions( allColumns,
+                     allActions,
+                     rowDataProvider0,
+                     dtRowData0,
+                     rm );
+
+        assertEquals( 2,
+                      rm.rhs.length );
+        assertEquals( "Baddie",
+                      ((ActionInsertFact) rm.rhs[0]).factType );
+        assertEquals( "Smurf",
+                      ((ActionInsertFact) rm.rhs[1]).factType );
+
+        // examine the first action
+        ActionInsertFact result0Action1 = (ActionInsertFact) rm.rhs[0];
+        assertEquals( 1,
+                      result0Action1.fieldValues.length );
+
+        ActionFieldValue result0Action1FieldValue1 = (ActionFieldValue) result0Action1.fieldValues[0];
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      result0Action1FieldValue1.type );
+        assertEquals( "name",
+                      result0Action1FieldValue1.field );
+        assertEquals( "Gargamel",
+                      result0Action1FieldValue1.value );
+
+        // examine the second action
+        ActionInsertFact result0Action2 = (ActionInsertFact) rm.rhs[1];
+        assertEquals( 2,
+                      result0Action2.fieldValues.length );
+
+        ActionFieldValue result0Action2FieldValue1 = (ActionFieldValue) result0Action2.fieldValues[0];
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      result0Action2FieldValue1.type );
+        assertEquals( "name",
+                      result0Action2FieldValue1.field );
+        assertEquals( "$name",
+                      result0Action2FieldValue1.value );
+
+        ActionFieldValue result0Action2FieldValue2 = (ActionFieldValue) result0Action2.fieldValues[1];
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      result0Action2FieldValue2.type );
+        assertEquals( "age",
+                      result0Action2FieldValue2.field );
+        assertEquals( "$age",
+                      result0Action2FieldValue2.value );
+
+        //Row 1
+        List<DTCellValue52> dtRowData1 = upgrader.makeDataRowList( data[1] );
+        TemplateDataProvider rowDataProvider1 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData1 );
+        p.doActions( allColumns,
+                     allActions,
+                     rowDataProvider1,
+                     dtRowData1,
+                     rm );
+
+        assertEquals( 1,
+                      rm.rhs.length );
+        assertEquals( "Baddie",
+                      ((ActionInsertFact) rm.rhs[0]).factType );
+
+        // examine the first action
+        ActionInsertFact result1Action1 = (ActionInsertFact) rm.rhs[0];
+        assertEquals( 1,
+                      result1Action1.fieldValues.length );
+
+        ActionFieldValue result1Action1FieldValue1 = (ActionFieldValue) result1Action1.fieldValues[0];
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      result1Action1FieldValue1.type );
+        assertEquals( "name",
+                      result1Action1FieldValue1.field );
+        assertEquals( "Gargamel",
+                      result1Action1FieldValue1.value );
+
+        //Row 2
+        List<DTCellValue52> dtRowData2 = upgrader.makeDataRowList( data[2] );
+        TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                  dtRowData2 );
+        p.doActions( allColumns,
+                     allActions,
+                     rowDataProvider2,
+                     dtRowData2,
+                     rm );
+
+        assertEquals( 1,
+                      rm.rhs.length );
+        assertEquals( "Baddie",
+                      ((ActionInsertFact) rm.rhs[0]).factType );
+
+        // examine the first action
+        ActionInsertFact result2Action1 = (ActionInsertFact) rm.rhs[0];
+        assertEquals( 1,
+                      result2Action1.fieldValues.length );
+
+        ActionFieldValue result2Action1FieldValue1 = (ActionFieldValue) result2Action1.fieldValues[0];
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      result2Action1FieldValue1.type );
+        assertEquals( "name",
+                      result2Action1FieldValue1.field );
+        assertEquals( "Gargamel",
+                      result2Action1FieldValue1.value );
+
+    }
+
+    @Test
+    //This test checks a Decision Table involving BRL columns is correctly converted into DRL
+    public void testRHSWithBRLColumn_ParseToDRL() {
+
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        //Row 0 should become an IPattern in the resulting RuleModel as it contains values for all Template fields in the BRL Column
+        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain values for all Template fields in the BRL Column
+        String[][] data = new String[][]{
+                new String[]{"1", "desc", "Gargamel", "Pupa", "50"},
+                new String[]{"2", "desc", "Gargamel", "", "50"},
+                new String[]{"3", "desc", "Gargamel", "Pupa", ""}
+        };
+
+        //Simple (mandatory) columns
+        dtable.setRowNumberCol( new RowNumberCol52() );
+        dtable.setDescriptionCol( new DescriptionCol52() );
+
+        //Simple Action
+        ActionInsertFactCol52 a1 = new ActionInsertFactCol52();
+        a1.setFactType( "Baddie" );
+        a1.setFactField( "name" );
+        a1.setType( SuggestionCompletionEngine.TYPE_STRING );
+
+        dtable.getActionCols().add( a1 );
+
+        //BRL Column
+        BRLActionColumn brl1 = new BRLActionColumn();
+
+        //BRL Column definition
+        List<IAction> brl1Definition = new ArrayList<IAction>();
+        ActionInsertFact brl1DefinitionAction1 = new ActionInsertFact( "Smurf" );
+        ActionFieldValue brl1DefinitionAction1FieldValue1 = new ActionFieldValue( "name",
+                                                                                  "$name",
+                                                                                  SuggestionCompletionEngine.TYPE_STRING );
+        brl1DefinitionAction1FieldValue1.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue1 );
+        ActionFieldValue brl1DefinitionAction1FieldValue2 = new ActionFieldValue( "age",
+                                                                                  "$age",
+                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionAction1FieldValue2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue2 );
+        brl1Definition.add( brl1DefinitionAction1 );
+        brl1.setDefinition( brl1Definition );
+
+        //Setup BRL column bindings
+        BRLActionVariableColumn brl1Variable1 = new BRLActionVariableColumn( "$name",
+                                                                             SuggestionCompletionEngine.TYPE_STRING,
+                                                                             "Person",
+                                                                             "name" );
+        brl1.getChildColumns().add( brl1Variable1 );
+        BRLActionVariableColumn brl1Variable2 = new BRLActionVariableColumn( "$age",
+                                                                             SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                             "Person",
+                                                                             "age" );
+        brl1.getChildColumns().add( brl1Variable2 );
+
+        dtable.getActionCols().add( brl1 );
+        dtable.setData( upgrader.makeDataLists( data ) );
+
+        //Now to test conversion
+        int ruleStartIndex;
+        int action1StartIndex;
+        int action2StartIndex;
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dtable );
+
+        //Row 0
+        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        assertFalse( ruleStartIndex == -1 );
+        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+                                         ruleStartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "insert( fact0 );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+
+        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+                                         ruleStartIndex );
+        assertFalse( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+                                         action2StartIndex );
+        assertFalse( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+                                         action2StartIndex );
+        assertFalse( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "insert( fact1 );",
+                                         action2StartIndex );
+        assertFalse( action2StartIndex == -1 );
+
+        //Row 1
+        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        assertFalse( ruleStartIndex == -1 );
+        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+                                         ruleStartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "insert( fact0 );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+
+        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "insert( fact1 );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+
+        //Row 2
+        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        assertFalse( ruleStartIndex == -1 );
+        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+                                         ruleStartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+        action1StartIndex = drl.indexOf( "insert( fact0 );",
+                                         action1StartIndex );
+        assertFalse( action1StartIndex == -1 );
+
+        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "insert( fact1 );",
+                                         ruleStartIndex );
+        assertTrue( action2StartIndex == -1 );
     }
 
 }
