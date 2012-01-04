@@ -88,11 +88,11 @@
       <id>ngsoafullProfile</id>
       <activation>
         <property>
+          <!-- Warning: if you do -Dngsoafull you should also do -Dngsoa -->
           <name>ngsoafull</name>
         </property>
       </activation>
       <modules>
-        <module>guvnor-webapp-soa</module>
         <module>guvnorsoa-distribution-wars</module>
       </modules>
     </profile>   
