@@ -89,6 +89,7 @@
       <activation>
         <property>
           <!-- Warning: if you do -Dngsoafull you should also do -Dngsoa -->
+          <!-- TODO support "-Dfull -Dngsoa" instead when http://jira.codehaus.org/browse/MNG-3328 is fixed -->
           <name>ngsoafull</name>
         </property>
       </activation>

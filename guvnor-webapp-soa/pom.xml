@@ -196,6 +196,7 @@
       <id>ngsoafullProfile</id>
       <activation>
         <property>
+          <!-- TODO support "-Dfull" instead when ngsoafullProfile can be fixed in guvnor/pom.xml -->
           <name>ngsoafull</name>
         </property>
       </activation>
