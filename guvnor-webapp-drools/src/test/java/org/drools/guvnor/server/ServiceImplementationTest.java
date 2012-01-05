@@ -1312,15 +1312,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testListUserPermissionsPagedResults() throws Exception {
 
-        final int PAGE_SIZE = 2;
+        //Find out how many users already exist (as we can't guarantee a clean repository)
+        PageRequest request = new PageRequest( 0,
+                                               null );
+        PageResponse<PermissionsPageRow> response;
+        response = serviceImplementation.listUserPermissions( request );
+        final int preExistingNumberOfUsers = response.getTotalRowSize();
 
         //Setup data
-        serviceImplementation.createUser("user1");
-        serviceImplementation.createUser("user2");
-        serviceImplementation.createUser("user3");
+        serviceImplementation.createUser("testListUserPermissionsPagedResultsUser1");
+        serviceImplementation.createUser("testListUserPermissionsPagedResultsUser2");
+        serviceImplementation.createUser("testListUserPermissionsPagedResultsUser3");
 
         PageRequest requestPage1 = new PageRequest( 0,
-                                                    PAGE_SIZE );
+                                                    preExistingNumberOfUsers );
         PageResponse<PermissionsPageRow> responsePage1 = serviceImplementation.listUserPermissions( requestPage1 );
 
         assertNotNull(responsePage1);
@@ -1333,12 +1338,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       responsePage1.getStartRowIndex() );
-        assertEquals( PAGE_SIZE,
+        assertEquals( preExistingNumberOfUsers,
                       responsePage1.getPageRowList().size() );
         assertFalse(responsePage1.isLastPage());
 
-        PageRequest requestPage2 = new PageRequest( PAGE_SIZE,
-                                                    PAGE_SIZE );
+        PageRequest requestPage2 = new PageRequest( preExistingNumberOfUsers,
+                                                    preExistingNumberOfUsers );
         PageResponse<PermissionsPageRow> responsePage2 = serviceImplementation.listUserPermissions( requestPage2 );
 
         assertNotNull( responsePage2 );
@@ -1349,9 +1354,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             System.out.println( "--> Username = " + row.getUserName() );
         }
 
-        assertEquals( PAGE_SIZE,
+        assertEquals( preExistingNumberOfUsers,
                       responsePage2.getStartRowIndex() );
-        assertEquals( 1,
+        assertEquals( 3,
                       responsePage2.getPageRowList().size() );
         assertTrue( responsePage2.isLastPage() );
 
@@ -1360,14 +1365,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testListUserPermissionsFullResults() throws Exception {
 
-        //Setup data
-        serviceImplementation.createUser("user1");
-        serviceImplementation.createUser("user2");
-        serviceImplementation.createUser("user3");
-
+        //Find out how many users already exist (as we can't guarantee a clean repository)
         PageRequest request = new PageRequest( 0,
                                                null );
         PageResponse<PermissionsPageRow> response;
+        response = serviceImplementation.listUserPermissions( request );
+        final int preExistingNumberOfUsers = response.getTotalRowSize();
+        
+        //Setup data
+        serviceImplementation.createUser("testListUserPermissionsFullResultsUser1");
+        serviceImplementation.createUser("testListUserPermissionsFullResultsUser2");
+        serviceImplementation.createUser("testListUserPermissionsFullResultsUser3");
+
+        request = new PageRequest( 0,
+                                   null );
         response = serviceImplementation.listUserPermissions( request );
 
         assertNotNull( response );
@@ -1380,7 +1391,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       response.getStartRowIndex() );
-        assertEquals( 3,
+        assertEquals( 3 + preExistingNumberOfUsers,
                       response.getPageRowList().size() );
 
         assertTrue( response.isLastPage() );
