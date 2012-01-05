@@ -40,21 +40,22 @@ import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
@@ -1191,10 +1192,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testGuidedDTExecute() throws Exception {
         repositoryCategoryService.createCategory( "/",
-                                                  "decisiontables",
+                                                  "testGuidedDTExecuteCategory",
                                                   "" );
 
-        ModuleItem pkg = rulesRepository.createModule( "testGuidedDTCompile",
+        ModuleItem pkg = rulesRepository.createModule( "testGuidedDTExecutePackage",
                                                        "" );
         DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
@@ -1230,7 +1231,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         String uid = serviceImplementation.createNewRule( "decTable",
                                                           "",
-                                                          "decisiontables",
+                                                          "testGuidedDTExecuteCategory",
                                                           pkg.getName(),
                                                           AssetFormats.DECISION_TABLE_GUIDED );
 
@@ -1240,9 +1241,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
+        for ( BuilderResultLine line : results.getLines() ) {
+            System.out.println( line.getMessage() );
+        }
         assertFalse( results.hasLines() );
 
-        pkg = rulesRepository.loadModule( "testGuidedDTCompile" );
+        pkg = rulesRepository.loadModule( "testGuidedDTExecutePackage" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1512,7 +1516,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testLoadRuleListForStateFullResults() throws Exception {
 
         String cat = "testLoadRuleListForStateFullResultsCategory";
-        String status = "testStatus";
+        String status = "testLoadRuleListForStateFullResultsTestStatus";
         String uuid;
         repositoryCategoryService.createCategory( "/",
                                                   cat,
