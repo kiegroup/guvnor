@@ -36,10 +36,10 @@ import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
@@ -72,42 +72,42 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotDiff() throws Exception {
         // Lets make a package and a rule into tit.
-        repositoryCategoryService.createCategory("/",
-                "snapshotDiffTesting",
-                "y");
+        repositoryCategoryService.createCategory( "/",
+                                                  "snapshotDiffTesting",
+                                                  "y" );
         String packageUuid = repositoryPackageService.createModule( "testSnapshotDiff",
                                                                      "d",
                                                                      "package" );
 
-        assertNotNull(packageUuid);
+        assertNotNull( packageUuid );
 
         // Create two rules
         String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
-                                                     "",
-                                                     "snapshotDiffTesting",
-                                                     "testSnapshotDiff",
-                                                     AssetFormats.DRL );
+                                                                      "",
+                                                                      "snapshotDiffTesting",
+                                                                      "testSnapshotDiff",
+                                                                      AssetFormats.DRL );
         String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
-                                                      "",
-                                                      "snapshotDiffTesting",
-                                                      "testSnapshotDiff",
-                                                      AssetFormats.DRL );
+                                                                       "",
+                                                                       "snapshotDiffTesting",
+                                                                       "testSnapshotDiff",
+                                                                       AssetFormats.DRL );
         String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
-                                                     "",
-                                                     "snapshotDiffTesting",
-                                                     "testSnapshotDiff",
-                                                     AssetFormats.DRL );
+                                                                      "",
+                                                                      "snapshotDiffTesting",
+                                                                      "testSnapshotDiff",
+                                                                      AssetFormats.DRL );
         String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
-                                                      "",
-                                                      "snapshotDiffTesting",
-                                                      "testSnapshotDiff",
-                                                      AssetFormats.DRL );
+                                                                       "",
+                                                                       "snapshotDiffTesting",
+                                                                       "testSnapshotDiff",
+                                                                       AssetFormats.DRL );
         @SuppressWarnings("unused")
         String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
-                                                       "",
-                                                       "snapshotDiffTesting",
-                                                       "testSnapshotDiff",
-                                                       AssetFormats.DRL );
+                                                                        "",
+                                                                        "snapshotDiffTesting",
+                                                                        "testSnapshotDiff",
+                                                                        AssetFormats.DRL );
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         // Create a snapshot called FIRST for the package
@@ -115,8 +115,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                         "FIRST",
                                                         false,
                                                         "ya" );
-        assertEquals(1,
-                repositoryPackageService.listSnapshots("testSnapshotDiff").length);
+        assertEquals( 1,
+                      repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
                       repositoryPackageService.listRulesInPackage( "testSnapshotDiff" ).length );
 
@@ -131,20 +131,20 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         @SuppressWarnings("unused")
         String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
-                                                   "",
-                                                   "snapshotDiffTesting",
-                                                   "testSnapshotDiff",
-                                                   AssetFormats.DRL );
+                                                                    "",
+                                                                    "snapshotDiffTesting",
+                                                                    "testSnapshotDiff",
+                                                                    AssetFormats.DRL );
 
-        repositoryAssetService.unArchiveAsset(restoredRuleUuid);
+        repositoryAssetService.unArchiveAsset( restoredRuleUuid );
 
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiff",
                                                         "SECOND",
                                                         false,
                                                         "we" );
-        assertEquals(2,
-                repositoryPackageService.listSnapshots("testSnapshotDiff").length);
+        assertEquals( 2,
+                      repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
                       repositoryPackageService.listRulesInPackage( "testSnapshotDiff" ).length );
 
@@ -260,22 +260,22 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         AssetItem func = pkg.addAsset( "func",
                                        "" );
-        func.updateFormat(AssetFormats.FUNCTION);
+        func.updateFormat( AssetFormats.FUNCTION );
         func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin("func version 1");
-        func.updateContent("function void foo() { System.out.println(version 2); }");
-        func.checkin("func version 2");
+        func.checkin( "func version 1" );
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "func version 2" );
 
         //Package version 2     
         pkg.checkout();
         pkg.checkin( "package version 2" );
 
         //calling updateDependency creates package version 3
-        pkg.updateDependency("func?version=1");
+        pkg.updateDependency( "func?version=1" );
         pkg.checkin( "package version 3" );
 
-        func.updateContent("function void foo() { System.out.println(version 2); }");
-        func.checkin("func version 3");
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "func version 3" );
 
         //Package version 4     
         pkg.checkout();
@@ -323,10 +323,10 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         String cat = repositoryCategoryService.loadChildCategories( "/" )[0];
 
         String uuid = serviceImplementation.createNewRule( "testMovePackage",
-                                          "desc",
-                                          cat,
-                                          "sourcePackage",
-                                          AssetFormats.DRL );
+                                                           "desc",
+                                                           cat,
+                                                           "sourcePackage",
+                                                           AssetFormats.DRL );
 
         TableDataResult res = repositoryAssetService.listAssets( destPkgId,
                                                                  new String[]{"drl"},
@@ -369,10 +369,10 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                 "package" );
         @SuppressWarnings("unused")
         String uuid = serviceImplementation.createNewRule( "testSnapshotRule",
-                                          "",
-                                          "snapshotTesting",
-                                          "testSnapshot",
-                                          AssetFormats.DRL );
+                                                           "",
+                                                           "snapshotTesting",
+                                                           "testSnapshot",
+                                                           AssetFormats.DRL );
 
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                         "X",
@@ -382,9 +382,9 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( 1,
                       snaps.length );
         assertEquals( "X",
-                snaps[0].getName() );
+                      snaps[0].getName() );
         assertEquals( "ya",
-                snaps[0].getComment() );
+                      snaps[0].getComment() );
         assertNotNull( snaps[0].getUuid() );
         Module confSnap = repositoryPackageService.loadModule( snaps[0].getUuid() );
         assertEquals( "testSnapshot",
@@ -458,8 +458,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         item.checkin( "" );
 
         BuilderResult builderResult = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                                                   true );
-        assertFalse(builderResult.hasLines());
+                                                                             true );
+        assertFalse( builderResult.hasLines() );
 
         repositoryPackageService.createModuleSnapshot( "testSnapshotRebuild",
                                                         "SNAP",
@@ -499,7 +499,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testPackageRebuild() throws Exception {
-
 
         RulesRepository repo = rulesRepository;
 
@@ -544,16 +543,16 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                                  "" );
 
         String uuid1 = serviceImplementation.createNewRule( "testExportPackageAsset1",
-                                           "desc",
-                                           "testExportPackageCat1",
-                                           "testExportPackage",
-                                           "dsl" );
+                                                            "desc",
+                                                            "testExportPackageCat1",
+                                                            "testExportPackage",
+                                                            "dsl" );
 
         String uuid2 = serviceImplementation.createNewRule( "testExportPackageAsset2",
-                                           "desc",
-                                           "testExportPackageCat2",
-                                           "testExportPackage",
-                                           "dsl" );
+                                                            "desc",
+                                                            "testExportPackageCat2",
+                                                            "testExportPackage",
+                                                            "dsl" );
 
         byte[] exportedPackage = repositoryPackageService.exportModules( "testExportPackage" );
 
@@ -576,14 +575,15 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         Module[] arch = repositoryPackageService.listArchivedModules();
 
         repositoryPackageService.createModule( "testCreateArchivedPackage",
-                                                              "this is a new package",
-                                                              "package" );
+                                               "this is a new package",
+                                               "package" );
 
         ModuleItem item = rulesRepository.loadModule( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
 
         item.archiveItem( true );
+        item.checkin( "" );
 
         TableDataResult td2 = repositoryAssetService.loadArchivedAssets( 0,
                                                                          1000 );
@@ -598,6 +598,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                       repositoryPackageService.listModules().length );
 
         item.archiveItem( false );
+        item.checkin( "" );
+
         arch2 = repositoryPackageService.listArchivedModules();
         assertEquals( arch2.length,
                       arch.length );
@@ -643,29 +645,29 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     public void testLoadPackageConfig() throws Exception {
         ModuleItem it = rulesRepository.loadDefaultModule();
         String uuid = it.getUUID();
-        it.updateCoverage("xyz");
+        it.updateCoverage( "xyz" );
         it.updateExternalURI( "ext" );
-        DroolsHeader.updateDroolsHeader("header",
-                it);
+        DroolsHeader.updateDroolsHeader( "header",
+                                         it );
         rulesRepository.save();
 
         Module data = repositoryPackageService.loadModule( uuid );
-        assertNotNull(data);
+        assertNotNull( data );
 
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       data.getName() );
-        assertEquals("header",
-                data.getHeader());
+        assertEquals( "header",
+                      data.getHeader() );
         assertEquals( "ext",
                       data.getExternalURI() );
 
-        assertNotNull(data.getUuid());
-        assertFalse(data.isSnapshot());
+        assertNotNull( data.getUuid() );
+        assertFalse( data.isSnapshot() );
 
-        assertNotNull(data.getDateCreated());
+        assertNotNull( data.getDateCreated() );
         Date original = data.getLastModified();
 
-        Thread.sleep(100);
+        Thread.sleep( 100 );
 
         repositoryPackageService.createModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                         "TEST SNAP 2.0",
@@ -690,35 +692,35 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "package" );
         Module data = repositoryPackageService.loadModule( uuid );
         ModuleItem it = rulesRepository.loadModuleByUUID( uuid );
-        data.setArchived(true);
+        data.setArchived( true );
 
         AssetItem rule1 = it.addAsset( "rule_1",
                                        "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
-        rule1.archiveItem(true);
-        rule1.checkin("");
+        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
+        rule1.archiveItem( true );
+        rule1.checkin( "" );
         rulesRepository.save();
 
-        repositoryPackageService.saveModule(data);
+        repositoryPackageService.saveModule( data );
         data = repositoryPackageService.loadModule( uuid );
-        it = rulesRepository.loadModule(data.getName());
+        it = rulesRepository.loadModule( data.getName() );
         assertTrue( data.isArchived() );
-        assertTrue(it.loadAsset("drools").isArchived());
+        assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
-        data.setArchived(false);
+        data.setArchived( false );
 
-        repositoryPackageService.saveModule(data);
+        repositoryPackageService.saveModule( data );
         data = repositoryPackageService.loadModule( uuid );
         it = rulesRepository.loadModule( data.getName() );
         assertFalse( data.isArchived() );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
-        assertTrue(it.loadAsset("rule_1").isArchived());
+        assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
-        data.setArchived(true);
+        data.setArchived( true );
 
-        repositoryPackageService.saveModule(data);
+        repositoryPackageService.saveModule( data );
         data = repositoryPackageService.loadModule( uuid );
         it = rulesRepository.loadModule( data.getName() );
         assertTrue( data.isArchived() );
@@ -737,7 +739,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         data.setDescription( "new desc" );
         data.setHeader( "wa" );
         data.setExternalURI( "new URI" );
-        repositoryPackageService.saveModule(data);
+        repositoryPackageService.saveModule( data );
 
         ValidatedResponse res = repositoryPackageService.validateModule( data );
         assertNotNull( res );
@@ -763,7 +765,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         assertFalse( res.hasErrors );
     }
-    
+
     @Test
     public void testUpdateModuleFormat() throws Exception {
         String uuid = repositoryPackageService.createModule( "testUpdateModuleFormat",
@@ -771,18 +773,18 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "package" );
         Module data = repositoryPackageService.loadModule( uuid );
         assertEquals( "a desc",
-                data.getDescription() );
+                      data.getDescription() );
         assertEquals( "package",
-                data.getFormat() );
-          
-        data.setFormat("SOAService");
-        repositoryPackageService.saveModule(data);
+                      data.getFormat() );
+
+        data.setFormat( "SOAService" );
+        repositoryPackageService.saveModule( data );
 
         data = repositoryPackageService.loadModule( uuid );
         assertEquals( "SOAService",
-                data.getFormat() );
+                      data.getFormat() );
     }
-    
+
     @Test
     public void testRemovePackage() throws Exception {
         int n = repositoryPackageService.listModules().length;
@@ -800,7 +802,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",
                                                   "testSnapshotDiffPagedResultsCategory",
@@ -812,34 +813,34 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         // Create some rules
         String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
-                                                     "testRuleArchivedDescription",
-                                                     "testSnapshotDiffPagedResultsCategory",
-                                                     "testSnapshotDiffPagedResultsPackage",
-                                                     AssetFormats.DRL );
+                                                                      "testRuleArchivedDescription",
+                                                                      "testSnapshotDiffPagedResultsCategory",
+                                                                      "testSnapshotDiffPagedResultsPackage",
+                                                                      AssetFormats.DRL );
         String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
-                                                      "testRuleModifiedDescription",
-                                                      "testSnapshotDiffPagedResultsCategory",
-                                                      "testSnapshotDiffPagedResultsPackage",
-                                                      AssetFormats.DRL );
+                                                                       "testRuleModifiedDescription",
+                                                                       "testSnapshotDiffPagedResultsCategory",
+                                                                       "testSnapshotDiffPagedResultsPackage",
+                                                                       AssetFormats.DRL );
         String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
-                                                     "testRuleDeletedDescription",
-                                                     "testSnapshotDiffPagedResultsCategory",
-                                                     "testSnapshotDiffPagedResultsPackage",
-                                                     AssetFormats.DRL );
+                                                                      "testRuleDeletedDescription",
+                                                                      "testSnapshotDiffPagedResultsCategory",
+                                                                      "testSnapshotDiffPagedResultsPackage",
+                                                                      AssetFormats.DRL );
         String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
-                                                      "testRuleRestoredDescription",
-                                                      "testSnapshotDiffPagedResultsCategory",
-                                                      "testSnapshotDiffPagedResultsPackage",
-                                                      AssetFormats.DRL );
+                                                                       "testRuleRestoredDescription",
+                                                                       "testSnapshotDiffPagedResultsCategory",
+                                                                       "testSnapshotDiffPagedResultsPackage",
+                                                                       AssetFormats.DRL );
 
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
         String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
-                                                       "testRuleNoChangesDescription",
-                                                       "testSnapshotDiffPagedResultsCategory",
-                                                       "testSnapshotDiffPagedResultsPackage",
-                                                       AssetFormats.DRL );
+                                                                        "testRuleNoChangesDescription",
+                                                                        "testSnapshotDiffPagedResultsCategory",
+                                                                        "testSnapshotDiffPagedResultsPackage",
+                                                                        AssetFormats.DRL );
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffPagedResultsPackage",
@@ -865,10 +866,10 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         //...create a new one...
         @SuppressWarnings("unused")
         String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
-                                                   "testRuleAddedDescription",
-                                                   "testSnapshotDiffPagedResultsCategory",
-                                                   "testSnapshotDiffPagedResultsPackage",
-                                                   AssetFormats.DRL );
+                                                                    "testRuleAddedDescription",
+                                                                    "testSnapshotDiffPagedResultsCategory",
+                                                                    "testSnapshotDiffPagedResultsPackage",
+                                                                    AssetFormats.DRL );
 
         //...and unarchive one
         repositoryAssetService.unArchiveAsset( restoredRuleUuid );
@@ -925,7 +926,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotDiffFullResults() throws Exception {
 
-
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",
                                                   "testSnapshotDiffFullResultsCategory",
@@ -937,34 +937,34 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         // Create some rules
         String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
-                                                     "testRuleArchivedDescription",
-                                                     "testSnapshotDiffFullResultsCategory",
-                                                     "testSnapshotDiffFullResultsPackage",
-                                                     AssetFormats.DRL );
+                                                                      "testRuleArchivedDescription",
+                                                                      "testSnapshotDiffFullResultsCategory",
+                                                                      "testSnapshotDiffFullResultsPackage",
+                                                                      AssetFormats.DRL );
         String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
-                                                      "testRuleModifiedDescription",
-                                                      "testSnapshotDiffFullResultsCategory",
-                                                      "testSnapshotDiffFullResultsPackage",
-                                                      AssetFormats.DRL );
+                                                                       "testRuleModifiedDescription",
+                                                                       "testSnapshotDiffFullResultsCategory",
+                                                                       "testSnapshotDiffFullResultsPackage",
+                                                                       AssetFormats.DRL );
         String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
-                                                     "testRuleDeletedDescription",
-                                                     "testSnapshotDiffFullResultsCategory",
-                                                     "testSnapshotDiffFullResultsPackage",
-                                                     AssetFormats.DRL );
+                                                                      "testRuleDeletedDescription",
+                                                                      "testSnapshotDiffFullResultsCategory",
+                                                                      "testSnapshotDiffFullResultsPackage",
+                                                                      AssetFormats.DRL );
         String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
-                                                      "testRuleRestoredDescription",
-                                                      "testSnapshotDiffFullResultsCategory",
-                                                      "testSnapshotDiffFullResultsPackage",
-                                                      AssetFormats.DRL );
+                                                                       "testRuleRestoredDescription",
+                                                                       "testSnapshotDiffFullResultsCategory",
+                                                                       "testSnapshotDiffFullResultsPackage",
+                                                                       AssetFormats.DRL );
 
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
         String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
-                                                       "testRuleNoChangesDescription",
-                                                       "testSnapshotDiffFullResultsCategory",
-                                                       "testSnapshotDiffFullResultsPackage",
-                                                       AssetFormats.DRL );
+                                                                        "testRuleNoChangesDescription",
+                                                                        "testSnapshotDiffFullResultsCategory",
+                                                                        "testSnapshotDiffFullResultsPackage",
+                                                                        AssetFormats.DRL );
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffFullResultsPackage",
@@ -990,10 +990,10 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         //...create a new one...
         @SuppressWarnings("unused")
         String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
-                                                   "testRuleAddedDescription",
-                                                   "testSnapshotDiffFullResultsCategory",
-                                                   "testSnapshotDiffFullResultsPackage",
-                                                   AssetFormats.DRL );
+                                                                    "testRuleAddedDescription",
+                                                                    "testSnapshotDiffFullResultsCategory",
+                                                                    "testSnapshotDiffFullResultsPackage",
+                                                                    AssetFormats.DRL );
 
         //...and unarchive one
         repositoryAssetService.unArchiveAsset( restoredRuleUuid );
@@ -1198,7 +1198,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         boolean saveBinPackage = false;
         if ( saveBinPackage ) {
             //FileOutputStream out = new FileOutputStream( "RepoBinPackage.pkg" );
-            FileOutputStream out = new FileOutputStream( "guvnor-webapp/src/test/resources/RepoBinPackage.pkg" );
+            FileOutputStream out = new FileOutputStream( "src/test/resources/org/drools/guvnor/server/RepoBinPackage.pkg" );
             out.write( binPackage );
             out.flush();
             out.close();
@@ -1285,14 +1285,14 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
+        loader.addPackage( this.getClass().getResourceAsStream( "RepoBinPackage.pkg" ) );
         RuleBase rb = loader.getRuleBase();
         StatelessSession sess = rb.newStatelessSession();
         sess.execute( p );
         assertEquals( 42,
                       p.getAge() );
     }
-    
+
     @Test
     public void testPackageSource() throws Exception {
         RulesRepository repo = rulesRepository;
@@ -1347,6 +1347,5 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "yeahMan();" ) > 0 );
 
     }
-
 
 }
