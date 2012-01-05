@@ -16,20 +16,17 @@
 
 package org.drools.guvnor.server;
 
-import javax.inject.Inject;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.util.IO;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class VerificationServiceImplementationIntegrationTest extends GuvnorTestBase {
@@ -40,12 +37,12 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
     @Test
     public void testVerifierCauseTrace() throws Exception {
         ModuleItem pkg = rulesRepository.createModule("testVerifierCauseTrace",
-                "");
+                                                      "");
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );
         asset.updateFormat( AssetFormats.DRL );
 
-        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "/VerifierCauseTrace.drl" ) ) );
+        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "VerifierCauseTrace.drl" ) ) );
         asset.checkin( "" );
 
         AnalysisReport report = verificationService.analysePackage( pkg.getUUID() );
@@ -63,7 +60,7 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
                                         "" );
         asset.updateFormat( AssetFormats.DRL );
 
-        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "/AnalysisSample.drl" ) ) );
+        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "AnalysisSample.drl" ) ) );
         asset.checkin( "" );
 
         AnalysisReport report = verificationService.analysePackage( pkg.getUUID() );
