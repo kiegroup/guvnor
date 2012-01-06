@@ -37,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -480,20 +481,26 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             width = width + mergeCol.getWidth();
                             colSpan++;
                         }
-
-                        // Make cell
                         iCol = iCol + colSpan - 1;
-                        StringBuilder patternLabel = new StringBuilder();
-                        String factType = ccPattern.getFactType();
-                        String boundName = ccPattern.getBoundName();
-                        if ( factType != null && factType.length() > 0 ) {
-                            if ( ccPattern.isNegated() ) {
-                                patternLabel.append( constants.negatedPattern() ).append( " " ).append( factType );
-                            } else {
-                                patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
+
+                        //Make applicable label (TODO move to Factory method)
+                        StringBuilder label = new StringBuilder();
+                        if ( cc instanceof BRLConditionVariableColumn ) {
+                            BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
+                            label.append( brl.getVarName() );
+                        } else if ( cc instanceof ConditionCol52 ) {
+                            String factType = ccPattern.getFactType();
+                            String boundName = ccPattern.getBoundName();
+                            if ( factType != null && factType.length() > 0 ) {
+                                if ( ccPattern.isNegated() ) {
+                                    label.append( constants.negatedPattern() ).append( " " ).append( factType );
+                                } else {
+                                    label.append( factType ).append( " [" ).append( boundName ).append( "]" );
+                                }
                             }
                         }
-                        tce.appendChild( makeLabel( patternLabel.toString(),
+
+                        tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                         tce.<TableCellElement> cast().setColSpan( colSpan );
@@ -508,32 +515,43 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                         tce = DOM.createTD();
                         tce.addClassName( resources.headerText() );
                         tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
+                        tce.addClassName( resources.headerRowIntermediate() );
                         tre.appendChild( tce );
 
-                        String factType = "";
-                        String binding = null;
+                        //Make applicable label (TODO move to Factory method)
+                        StringBuilder label = new StringBuilder();
                         if ( ac instanceof ActionInsertFactCol52 ) {
                             ActionInsertFactCol52 aifc = (ActionInsertFactCol52) ac;
-                            factType = aifc.getFactType();
-                            binding = aifc.getBoundName();
+                            String factType = aifc.getFactType();
+                            String binding = aifc.getBoundName();
+                            if ( factType != null && factType.length() > 0 ) {
+                                label.append( factType );
+                                if ( binding != null ) {
+                                    label.append( " [" + binding + "]" );
+                                }
+                            }
                         } else if ( ac instanceof ActionSetFieldCol52 ) {
-                            factType = ((ActionSetFieldCol52) ac).getBoundName();
+                            String factType = ((ActionSetFieldCol52) ac).getBoundName();
+                            if ( factType != null && factType.length() > 0 ) {
+                                label.append( factType );
+                            }
                         } else if ( ac instanceof LimitedEntryActionRetractFactCol52 ) {
-                            factType = ((LimitedEntryActionRetractFactCol52) ac).getValue().getStringValue();
+                            String factType = ((LimitedEntryActionRetractFactCol52) ac).getValue().getStringValue();
+                            if ( factType != null && factType.length() > 0 ) {
+                                label.append( factType );
+                            }
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
-                            factType = ((ActionWorkItemCol52) ac).getWorkItemDefinition().getDisplayName();
+                            String factType = ((ActionWorkItemCol52) ac).getWorkItemDefinition().getDisplayName();
+                            if ( factType != null && factType.length() > 0 ) {
+                                label.append( factType );
+                            }
                         } else if ( ac instanceof BRLActionVariableColumn ) {
-                            factType = ((BRLActionVariableColumn) ac).getVarName();
-                        }
-
-                        tce.addClassName( resources.headerRowIntermediate() );
-                        StringBuilder label = new StringBuilder();
-                        if ( factType != null && factType.length() > 0 ) {
-                            label.append( factType );
-                            if ( binding != null ) {
-                                label.append( " [" + binding + "]" );
+                            String factType = ((BRLActionVariableColumn) ac).getVarName();
+                            if ( factType != null && factType.length() > 0 ) {
+                                label.append( factType );
                             }
                         }
+
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
@@ -549,20 +567,28 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                         tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
                         tre.appendChild( tce );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
+
+                        //Make applicable label (TODO move to Factory method)
                         StringBuilder label = new StringBuilder();
-                        String factField = cc.getFactField();
-                        if ( factField != null && factField.length() > 0 ) {
-                            label.append( factField );
-                        }
-                        if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                            String lev = getLimitedEntryValue( cc );
-                            label.append( " [" );
-                            label.append( cc.getOperator() );
-                            if ( lev != null ) {
-                                label.append( lev );
+                        if ( cc instanceof BRLConditionVariableColumn ) {
+                            BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
+                            label.append( brl.getFactField() );
+                        } else if ( cc instanceof ConditionCol52 ) {
+                            String factField = cc.getFactField();
+                            if ( factField != null && factField.length() > 0 ) {
+                                label.append( factField );
                             }
-                            label.append( "]" );
+                            if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+                                label.append( " [" );
+                                label.append( cc.getOperator() );
+                                String lev = getLimitedEntryValue( cc );
+                                if ( lev != null ) {
+                                    label.append( lev );
+                                }
+                                label.append( "]" );
+                            }
                         }
+
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
@@ -576,32 +602,42 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                         tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
                         tre.appendChild( tce );
                         ActionCol52 ac = (ActionCol52) col.getModelColumn();
-                        StringBuilder label = new StringBuilder();
 
-                        String lev = null;
-                        String factField = null;
+                        //Make applicable label (TODO move to Factory method)
+                        StringBuilder label = new StringBuilder();
                         if ( ac instanceof ActionInsertFactCol52 ) {
                             ActionInsertFactCol52 aifc = (ActionInsertFactCol52) ac;
-                            lev = getLimitedEntryValue( aifc );
-                            factField = aifc.getFactField();
-                        } else if ( ac instanceof ActionSetFieldCol52 ) {
-                            ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
-                            lev = getLimitedEntryValue( asf );
-                            factField = asf.getFactField();
-                        } else if ( ac instanceof ActionRetractFactCol52 ) {
-                            factField = "[" + constants.Retract() + "]";
-                        } else if ( ac instanceof ActionWorkItemCol52 ) {
-                            factField = "[" + constants.WorkItemAction() + "]";
-                        }
-
-                        if ( factField != null && factField.length() > 0 ) {
-                            label.append( factField );
+                            String factField = aifc.getFactField();
+                            if ( factField != null && factField.length() > 0 ) {
+                                label.append( factField );
+                            }
+                            String lev = getLimitedEntryValue( aifc );
                             if ( lev != null ) {
                                 label.append( " [" );
                                 label.append( lev );
                                 label.append( "]" );
                             }
+                        } else if ( ac instanceof ActionSetFieldCol52 ) {
+                            ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                            String factField = asf.getFactField();
+                            if ( factField != null && factField.length() > 0 ) {
+                                label.append( factField );
+                            }
+                            String lev = getLimitedEntryValue( asf );
+                            if ( lev != null ) {
+                                label.append( " [" );
+                                label.append( lev );
+                                label.append( "]" );
+                            }
+                        } else if ( ac instanceof ActionRetractFactCol52 ) {
+                            label.append( "[" + constants.Retract() + "]" );
+                        } else if ( ac instanceof ActionWorkItemCol52 ) {
+                            label.append( "[" + constants.WorkItemAction() + "]" );
+                        } else if ( ac instanceof BRLActionVariableColumn ) {
+                            BRLActionVariableColumn brl = (BRLActionVariableColumn) ac;
+                            label.append( brl.getFactField() );
                         }
+
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );

@@ -17,9 +17,8 @@
 package org.drools.ide.common.client.modeldriven.brl;
 
 /**
- * Basically the same as setting fields, EXCEPT that
- * it will notify the engine of the changes.
- * This only applies to bound fact variables from the LHS.
+ * Basically the same as setting fields, EXCEPT that it will notify the engine
+ * of the changes. This only applies to bound fact variables from the LHS.
  */
 public class ActionUpdateField extends ActionSetField {
 
@@ -30,6 +29,5 @@ public class ActionUpdateField extends ActionSetField {
     public ActionUpdateField() {
         super();
     }
-
 
 }

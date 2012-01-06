@@ -117,10 +117,10 @@ public class RuleModelVisitor {
             visitDSLSentence( (DSLSentence) o );
         } else if ( o instanceof ActionInsertFact ) {
             visitActionFieldList( (ActionInsertFact) o );
-        } else if ( o instanceof ActionSetField ) {
-            visitActionFieldList( (ActionSetField) o );
         } else if ( o instanceof ActionUpdateField ) {
             visitActionFieldList( (ActionUpdateField) o );
+        } else if ( o instanceof ActionSetField ) {
+            visitActionFieldList( (ActionSetField) o );
         }
     }
 

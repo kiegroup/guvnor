@@ -27,6 +27,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
@@ -114,6 +115,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                                                                                   iv.getFactType(),
                                                                                   iv.getFactField() );
             variable.setHeader( editingCol.getHeader() );
+            variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
         }
         return Arrays.asList( variables );
@@ -149,7 +151,17 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     private List<IPattern> cloneDefinition(List<IPattern> definition) {
-        return new ArrayList<IPattern>();
+        RuleModelCloneVisitor visitor = new RuleModelCloneVisitor();
+        RuleModel rm = new RuleModel();
+        for ( IPattern pattern : definition ) {
+            rm.addLhsItem( pattern );
+        }
+        RuleModel rmClone = visitor.visitRuleModel( rm );
+        List<IPattern> clone = new ArrayList<IPattern>();
+        for ( IPattern pattern : rmClone.lhs ) {
+            clone.add( pattern );
+        }
+        return clone;
     }
 
 }

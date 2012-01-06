@@ -102,7 +102,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants         = GWT.create( Constants.class );
     private static Images               images            = GWT.create( Images.class );
 
-    private Asset                   asset;
+    private Asset                       asset;
     private GuidedDecisionTable52       guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
@@ -578,17 +578,17 @@ public class GuidedDecisionTableWidget extends Composite
 
                     public void onClick(ClickEvent event) {
                         if ( chkIncludeAdvancedOptions.getValue() ) {
-                            //addItem( 3,
-                            //         constants.AddNewConditionBRLFragment(),
-                            //         NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
+                            addItem( 3,
+                                     constants.AddNewConditionBRLFragment(),
+                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
                             addItem( constants.WorkItemAction(),
                                      NewColumnTypes.ACTION_WORKITEM.name() );
                             addItem( constants.WorkItemActionSetField(),
                                      NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
-                            //addItem( constants.AddNewActionBRLFragment(),
-                            //         NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
+                            addItem( constants.AddNewActionBRLFragment(),
+                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
                             removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
