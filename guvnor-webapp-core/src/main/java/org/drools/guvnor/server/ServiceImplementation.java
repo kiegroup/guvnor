@@ -35,15 +35,16 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -52,7 +53,6 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -81,10 +81,8 @@ import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
@@ -135,30 +133,30 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
-    private static final long           serialVersionUID = 510l;
+    private static final long          serialVersionUID = 510l;
 
-    private static final LoggingHelper  log              = LoggingHelper.getLogger( ServiceImplementation.class );
-
-    @Inject
-    private RulesRepository             rulesRepository;
+    private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
     @Inject
-    private ServiceSecurity             serviceSecurity;
+    private RulesRepository            rulesRepository;
 
     @Inject
-    private RepositoryAssetOperations   repositoryAssetOperations;
+    private ServiceSecurity            serviceSecurity;
 
     @Inject
-    private RepositoryAssetService      repositoryAssetService;
+    private RepositoryAssetOperations  repositoryAssetOperations;
+
+    @Inject
+    private RepositoryAssetService     repositoryAssetService;
 
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
-    private Backchannel                 backchannel;
+    private Backchannel                backchannel;
 
     @Inject
-    private Identity                    identity;
+    private Identity                   identity;
 
     @WebRemote
     @LoggedIn
@@ -880,7 +878,15 @@ public class ServiceImplementation
                                          entry.getValue() );
                 }
             }
+        } catch ( Exception e ) {
+            e.fillInStackTrace();
+            log.error( "Error loading Workitem Definitions for package [" + packageUUID + "]",
+                       e );
+            throw new DetailedSerializationException( "Error loading Workitem Definitions for package [" + packageUUID + "]",
+                                                      "View server logs for more information" );
+        }
 
+        try {
             // - workitem-definitions.xml
             Map<String, org.drools.process.core.WorkDefinition> configuredWorkDefinitions = ConfigFileWorkDefinitionsLoader.getInstance().getWorkDefinitions();
             for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : configuredWorkDefinitions.entrySet() ) {
@@ -890,9 +896,10 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            log.error( "Error loading Workitem Definitions",
+            e.fillInStackTrace();
+            log.error( "Error loading Workitem Definitions from configuration file",
                        e );
-            throw new DetailedSerializationException( "Error loading Workitem Definitions",
+            throw new DetailedSerializationException( "Error loading Workitem Definitions from configuration file",
                                                       "View server logs for more information" );
         }
 
