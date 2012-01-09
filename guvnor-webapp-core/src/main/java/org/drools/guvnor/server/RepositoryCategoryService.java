@@ -26,6 +26,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
@@ -33,6 +34,7 @@ import org.jboss.seam.remoting.annotations.WebRemote;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.jboss.seam.security.annotations.LoggedIn;
 
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.CategoryService")
 public class RepositoryCategoryService
     implements

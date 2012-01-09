@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.ItemExistsException;
@@ -128,6 +129,7 @@ import freemarker.template.Template;
  * front end. Generally requests for this are passed through from
  * RepositoryServiceServlet - and Seam manages instances of this.
  */
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.RepositoryService")
 public class ServiceImplementation
     implements

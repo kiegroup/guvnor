@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -83,16 +84,18 @@ import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.PackageService")
 public class RepositoryModuleService
         implements
         ModuleService {
-    @Inject
-    private RulesRepository             rulesRepository;
 
     private static final long           serialVersionUID = 901123;
 
     private static final LoggingHelper  log              = LoggingHelper.getLogger( RepositoryAssetService.class );
+
+    @Inject
+    private RulesRepository             rulesRepository;
 
     @Inject
     private ServiceSecurity             serviceSecurity;

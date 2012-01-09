@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -57,6 +58,7 @@ import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.AssetService")
 public class RepositoryAssetService
         implements
