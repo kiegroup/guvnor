@@ -773,17 +773,11 @@ public class BRDRLPersistence
                 OperatorParameterDRLBuilder builder = (OperatorParameterDRLBuilder) Class.forName( className ).newInstance();
                 return builder.buildDRL( parameters );
             } catch ( ClassNotFoundException cnfe ) {
-                cnfe.fillInStackTrace();
-                cnfe.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", cnfe );
             } catch ( IllegalAccessException iae ) {
-                iae.fillInStackTrace();
-                iae.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", iae );
             } catch ( InstantiationException ie ) {
-                ie.fillInStackTrace();
-                ie.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", ie );
             }
 
         }

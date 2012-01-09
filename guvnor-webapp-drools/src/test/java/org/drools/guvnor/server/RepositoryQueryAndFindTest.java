@@ -287,7 +287,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -525,7 +524,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -726,7 +724,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -866,7 +863,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }

@@ -879,7 +879,6 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            e.fillInStackTrace();
             log.error( "Error loading Workitem Definitions for package [" + packageUUID + "]",
                        e );
             throw new DetailedSerializationException( "Error loading Workitem Definitions for package [" + packageUUID + "]",
@@ -896,7 +895,6 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            e.fillInStackTrace();
             log.error( "Error loading Workitem Definitions from configuration file",
                        e );
             throw new DetailedSerializationException( "Error loading Workitem Definitions from configuration file",
