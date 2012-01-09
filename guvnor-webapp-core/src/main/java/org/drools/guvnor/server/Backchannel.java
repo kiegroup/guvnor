@@ -65,7 +65,7 @@ public class Backchannel {
      * @return never null, an empty list if there's nothing to tell
      */
     public List<PushResponse> subscribe() {
-        if (isSessionActive()) {
+        if (sessionStatus.isActive()) {
             try {
                 return await(credentials.getUsername());
             } catch (InterruptedException e) {
@@ -73,16 +73,6 @@ public class Backchannel {
             }
         } else {
             return new ArrayList<PushResponse>();
-        }
-    }
-
-    private boolean isSessionActive() {
-        try {
-            // Return false if the session is no longer valid
-            return sessionStatus.isActive();
-        } catch (Exception e) {
-            // Return false if there is no session
-            return false;
         }
     }
 
