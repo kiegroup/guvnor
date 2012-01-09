@@ -566,7 +566,6 @@ public class RepositoryModuleService
         return runScenario( packageName,
                             scenario,
                             null );
-
     }
 
     private SingleScenarioResult runScenario(String packageName,
