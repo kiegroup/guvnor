@@ -160,6 +160,12 @@
       <artifactId>jboss-security-spi</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.seam.remoting</groupId>
       <artifactId>seam-remoting</artifactId>
