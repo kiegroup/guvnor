@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisi
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
@@ -72,8 +73,8 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return true;
     }
 
-    public RuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
-        RuleModel ruleModel = new RuleModel();
+    public BRLRuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
+        BRLRuleModel ruleModel = new BRLRuleModel( model );
         List<IPattern> definition = column.getDefinition();
         ruleModel.lhs = definition.toArray( new IPattern[definition.size()] );
         return ruleModel;

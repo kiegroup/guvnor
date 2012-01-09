@@ -25,20 +25,20 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * An event representing a change in Patterns (added, deleted, edited)
  */
-public class PatternsChangedEvent extends GwtEvent<PatternsChangedEvent.Handler> {
+public class BoundFactsChangedEvent extends GwtEvent<BoundFactsChangedEvent.Handler> {
 
     public static interface Handler
         extends
         EventHandler {
 
-        void onPatternsChanged(PatternsChangedEvent event);
+        void onBoundFactsChanged(BoundFactsChangedEvent event);
     }
 
-    public static Type<PatternsChangedEvent.Handler> TYPE = new Type<PatternsChangedEvent.Handler>();
+    public static Type<BoundFactsChangedEvent.Handler> TYPE = new Type<BoundFactsChangedEvent.Handler>();
 
     private final List<Pattern52>                    patterns;
 
-    public PatternsChangedEvent(List<Pattern52> patterns) {
+    public BoundFactsChangedEvent(List<Pattern52> patterns) {
         this.patterns = patterns;
     }
 
@@ -47,13 +47,13 @@ public class PatternsChangedEvent extends GwtEvent<PatternsChangedEvent.Handler>
     }
 
     @Override
-    public Type<PatternsChangedEvent.Handler> getAssociatedType() {
+    public Type<BoundFactsChangedEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(PatternsChangedEvent.Handler handler) {
-        handler.onPatternsChanged( this );
+    protected void dispatch(BoundFactsChangedEvent.Handler handler) {
+        handler.onBoundFactsChanged( this );
     }
 
 }

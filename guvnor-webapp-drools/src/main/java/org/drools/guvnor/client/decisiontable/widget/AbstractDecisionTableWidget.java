@@ -267,7 +267,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().add( pattern );
 
             //Signal patterns changed event
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -368,7 +368,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().remove( pattern );
 
             //Signal patterns changed event to Decision Table Widget
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -977,7 +977,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().add( editPattern );
 
             //Signal patterns changed event
-            PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
             eventBus.fireEvent( pce );
         }
 
@@ -1017,7 +1017,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 model.getConditions().remove( origPattern );
 
                 //Signal patterns changed event to Decision Table Widget
-                PatternsChangedEvent pce = new PatternsChangedEvent( model.getPatterns() );
+                BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
                 eventBus.fireEvent( pce );
             }
             deleteColumn( origColumnIndex,

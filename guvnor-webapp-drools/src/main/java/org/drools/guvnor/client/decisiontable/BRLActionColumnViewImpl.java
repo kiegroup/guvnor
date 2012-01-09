@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -70,8 +71,8 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
         return true;
     }
 
-    protected RuleModel getRuleModel(BRLColumn<IAction, BRLActionVariableColumn> column) {
-        RuleModel ruleModel = new RuleModel();
+    protected BRLRuleModel getRuleModel(BRLColumn<IAction, BRLActionVariableColumn> column) {
+        BRLRuleModel ruleModel = new BRLRuleModel( model );
         List<IAction> definition = column.getDefinition();
         ruleModel.rhs = definition.toArray( new IAction[definition.size()] );
         return ruleModel;

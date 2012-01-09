@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.ide.common.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

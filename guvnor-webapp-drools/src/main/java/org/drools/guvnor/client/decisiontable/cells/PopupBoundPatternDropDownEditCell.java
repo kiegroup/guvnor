@@ -17,7 +17,7 @@ package org.drools.guvnor.client.decisiontable.cells;
 
 import java.util.List;
 
-import org.drools.guvnor.client.decisiontable.widget.PatternsChangedEvent;
+import org.drools.guvnor.client.decisiontable.widget.BoundFactsChangedEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 public class PopupBoundPatternDropDownEditCell extends
         AbstractPopupEditCell<String, String>
     implements
-    PatternsChangedEvent.Handler {
+    BoundFactsChangedEvent.Handler {
 
     private Constants     constants = GWT.create( Constants.class );
 
@@ -67,7 +67,7 @@ public class PopupBoundPatternDropDownEditCell extends
         vPanel.add( listBox );
 
         //Wire-up the events
-        eventBus.addHandler( PatternsChangedEvent.TYPE,
+        eventBus.addHandler( BoundFactsChangedEvent.TYPE,
                              this );
     }
 
@@ -80,7 +80,7 @@ public class PopupBoundPatternDropDownEditCell extends
         }
     }
 
-    public void onPatternsChanged(PatternsChangedEvent event) {
+    public void onBoundFactsChanged(BoundFactsChangedEvent event) {
         setPatterns( event.getPatterns() );
     }
 
