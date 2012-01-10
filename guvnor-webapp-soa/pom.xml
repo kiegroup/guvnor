@@ -38,7 +38,7 @@
           <module>org.drools.guvnor.FastCompiledGuvnorSOA</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.GuvnorDrools/Guvnor.html</runTarget>
+          <runTarget>org.drools.guvnor.GuvnorDrools/GuvnorSOA.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
