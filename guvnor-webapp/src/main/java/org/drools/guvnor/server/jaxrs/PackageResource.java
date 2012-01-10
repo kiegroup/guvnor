@@ -535,6 +535,8 @@ public class PackageResource extends Resource {
             String assetName = getHttpHeader(headers, "slug");
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
+            } else {
+            	assetName = URLDecoder.decode(assetName, "UTF-8");
             }
             String fileName = null;
             String extension = null;
