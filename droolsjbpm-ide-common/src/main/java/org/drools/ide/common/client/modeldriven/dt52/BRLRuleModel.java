@@ -271,12 +271,24 @@ public class BRLRuleModel extends RuleModel {
                     return true;
                 }
             } else if ( col instanceof ActionRetractFactCol52 ) {
-                ActionRetractFactCol52 action = (ActionRetractFactCol52) col;
-                int colIndex = dtable.getAllColumns().indexOf( action );
-                for ( List<DTCellValue52> row : dtable.getData() ) {
-                    DTCellValue52 cell = row.get( colIndex );
-                    if ( cell.getStringValue().equals( binding ) ) {
-                        return true;
+
+                if ( col instanceof LimitedEntryActionRetractFactCol52 ) {
+
+                    //Check whether Limited Entry retraction is bound to Pattern
+                    LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) col;
+                    if ( ler.getValue().getStringValue().equals( binding ) ) {
+                        return false;
+                    }
+
+                } else {
+
+                    //Check whether data for column contains Pattern binding
+                    int colIndex = dtable.getAllColumns().indexOf( col );
+                    for ( List<DTCellValue52> row : dtable.getData() ) {
+                        DTCellValue52 cell = row.get( colIndex );
+                        if ( cell != null && cell.getStringValue().equals( binding ) ) {
+                            return true;
+                        }
                     }
                 }
 

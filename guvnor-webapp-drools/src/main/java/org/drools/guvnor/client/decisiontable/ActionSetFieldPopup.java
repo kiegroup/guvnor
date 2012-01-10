@@ -15,9 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -28,13 +26,12 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -65,12 +62,14 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private GuidedDecisionTable52      model;
     private SuggestionCompletionEngine sce;
     private DTCellValueWidgetFactory   factory;
+    private BRLRuleModel               rm;
 
     public ActionSetFieldPopup(final SuggestionCompletionEngine sce,
                                final GuidedDecisionTable52 model,
                                final GenericColumnCommand refreshGrid,
                                final ActionSetFieldCol52 col,
                                final boolean isNew) {
+        this.rm = new BRLRuleModel( model );
         this.editingCol = cloneActionSetColumn( col );
         this.model = model;
         this.sce = sce;
@@ -302,12 +301,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( p.getBoundName().equals( boundName ) ) {
-                return p.getFactType();
-            }
-        }
-        return "";
+        return rm.getLHSBoundFact( boundName ).getFactType();
     }
 
     private TextBox getFieldLabel() {
@@ -320,26 +314,33 @@ public class ActionSetFieldPopup extends FormStylePopup {
         return box;
     }
 
-    private ListBox loadBoundFacts() {
-        Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( !p.isNegated() ) {
-                facts.add( p.getBoundName() );
-            }
-        }
+    private ListBox loadBoundFacts(String binding) {
+        ListBox listBox = new ListBox();
+        listBox.addItem( constants.Choose() );
+        List<String> factBindings = rm.getLHSBoundFacts();
 
-        ListBox box = new ListBox();
-        for ( Iterator<String> iterator = facts.iterator(); iterator.hasNext(); ) {
-            String b = (String) iterator.next();
-            box.addItem( b );
+        for ( int index = 0; index < factBindings.size(); index++ ) {
+            String boundName = factBindings.get( index );
+            if ( !"".equals( boundName ) ) {
+                listBox.addItem( boundName );
+                if ( boundName.equals( binding ) ) {
+                    listBox.setSelectedIndex( index + 1 );
+                }
+            }
         }
 
         String[] globs = this.sce.getGlobalVariables();
         for ( int i = 0; i < globs.length; i++ ) {
-            box.addItem( globs[i] );
+            listBox.addItem( globs[i] );
         }
 
-        return box;
+        listBox.setEnabled( listBox.getItemCount() > 1 );
+        if ( listBox.getItemCount() == 1 ) {
+            listBox.clear();
+            listBox.addItem( constants.NoPatternBindingsAvailable() );
+        }
+
+        return listBox;
     }
 
     private boolean nil(String s) {
@@ -349,7 +350,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private void showChangeFact(ClickEvent w) {
         final FormStylePopup pop = new FormStylePopup();
 
-        final ListBox pats = this.loadBoundFacts();
+        final ListBox pats = this.loadBoundFacts( editingCol.getBoundName() );
         pop.addAttribute( constants.ChooseFact(),
                           pats );
         Button ok = new Button( constants.OK() );

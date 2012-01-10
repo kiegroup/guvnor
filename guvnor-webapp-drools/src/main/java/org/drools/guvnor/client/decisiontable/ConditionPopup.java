@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -87,6 +88,7 @@ public class ConditionPopup extends FormStylePopup {
     private ConditionCol52             editingCol;
     private DTCellValueWidgetFactory   factory;
     private Validator                  validator;
+    private BRLRuleModel               rm;
 
     private InfoPopup                  fieldLabelInterpolationInfo      = getPredicateHint();
 
@@ -95,6 +97,7 @@ public class ConditionPopup extends FormStylePopup {
                           final ConditionColumnCommand refreshGrid,
                           final ConditionCol52 col,
                           final boolean isNew) {
+        this.rm = new BRLRuleModel( model );
         this.editingPattern = model.getPattern( col );
         this.editingCol = cloneConditionColumn( col );
         this.model = model;
@@ -429,15 +432,7 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( p.getBoundName().equals( binding ) ) return false;
-            for ( ConditionCol52 c : p.getChildColumns() ) {
-                if ( c.isBound() ) {
-                    if ( c.getBinding().equals( binding ) ) return false;
-                }
-            }
-        }
-        return true;
+        return !rm.isVariableNameUsed( binding );
     }
 
     private void doFieldLabel() {

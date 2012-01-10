@@ -62,6 +62,7 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -103,6 +104,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected DecisionTableCellValueFactory               cellValueFactory;
     protected DecisionTableControlsWidget                 dtableCtrls;
     protected final EventBus                              eventBus;
+    private BRLRuleModel                                  rm;
 
     protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
 
@@ -128,6 +130,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
         this.eventBus = eventBus;
+        this.rm = new BRLRuleModel( model );
 
         //Wire-up the events
         eventBus.addHandler( InsertRowEvent.TYPE,
@@ -267,7 +270,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().add( pattern );
 
             //Signal patterns changed event
-            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
             eventBus.fireEvent( pce );
         }
 
@@ -368,7 +371,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().remove( pattern );
 
             //Signal patterns changed event to Decision Table Widget
-            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
             eventBus.fireEvent( pce );
         }
 
@@ -882,7 +885,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
-
     }
 
     /**
@@ -941,6 +943,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
+        //Signal patterns changed event to Decision Table Widget
+        BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
+        eventBus.fireEvent( pce );
     }
 
     /**
@@ -977,7 +982,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().add( editPattern );
 
             //Signal patterns changed event
-            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
+            BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
             eventBus.fireEvent( pce );
         }
 
@@ -1017,7 +1022,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 model.getConditions().remove( origPattern );
 
                 //Signal patterns changed event to Decision Table Widget
-                BoundFactsChangedEvent pce = new BoundFactsChangedEvent( model.getPatterns() );
+                BRLRuleModel rm = new BRLRuleModel( model );
+                BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
                 eventBus.fireEvent( pce );
             }
             deleteColumn( origColumnIndex,

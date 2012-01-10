@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.widget.BoundFactsChangedEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -81,22 +80,18 @@ public class PopupBoundPatternDropDownEditCell extends
     }
 
     public void onBoundFactsChanged(BoundFactsChangedEvent event) {
-        setPatterns( event.getPatterns() );
+        setFactBindings( event.getFactBindings() );
     }
 
     /**
-     * Set content of drop-down. All Patterns that are bound to a non-null,
-     * non-empty name will be added to the ListBox
+     * Set content of drop-down.
      * 
      * @param patterns
      */
-    public void setPatterns(List<Pattern52> patterns) {
+    public void setFactBindings(List<String> factBindings) {
         listBox.clear();
-        for ( Pattern52 p : patterns ) {
-            String boundName = p.getBoundName();
-            if ( !"".equals( boundName ) ) {
-                listBox.addItem( boundName );
-            }
+        for ( String binding : factBindings ) {
+            listBox.addItem( binding );
         }
         listBox.setEnabled( listBox.getItemCount() > 0 );
         if ( listBox.getItemCount() == 0 ) {

@@ -36,14 +36,14 @@ public class BoundFactsChangedEvent extends GwtEvent<BoundFactsChangedEvent.Hand
 
     public static Type<BoundFactsChangedEvent.Handler> TYPE = new Type<BoundFactsChangedEvent.Handler>();
 
-    private final List<Pattern52>                    patterns;
+    private final List<String>                         factBindings;
 
-    public BoundFactsChangedEvent(List<Pattern52> patterns) {
-        this.patterns = patterns;
+    public BoundFactsChangedEvent(List<String> factBindings) {
+        this.factBindings = factBindings;
     }
 
-    public List<Pattern52> getPatterns() {
-        return patterns;
+    public List<String> getFactBindings() {
+        return factBindings;
     }
 
     @Override
