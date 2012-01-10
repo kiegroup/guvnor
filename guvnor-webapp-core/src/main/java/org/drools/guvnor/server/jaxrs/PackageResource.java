@@ -42,6 +42,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -543,6 +544,8 @@ public class PackageResource extends Resource {
             String assetName = getHttpHeader(headers, "slug");
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
+            } else {
+                assetName = URLDecoder.decode(assetName, "UTF-8");
             }
             String fileName = null;
             String extension = null;
