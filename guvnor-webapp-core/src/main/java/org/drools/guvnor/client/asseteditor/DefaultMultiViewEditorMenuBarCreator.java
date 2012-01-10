@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.asseteditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 
@@ -28,8 +29,11 @@ import org.drools.guvnor.client.messages.Constants;
 public class DefaultMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
 
     private Constants constants = GWT.create(Constants.class);
+    private EventBus eventBus;
 
-    public MenuBar createMenuBar(final MultiViewEditor editor) {
+    public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
+        this.eventBus = eventBus;
+        
         MenuBar toolbar = new MenuBar();
 
         toolbar.addItem(constants.SaveAllChanges(),

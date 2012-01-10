@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor;
 
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.MenuBar;
 
 /**
@@ -24,6 +25,6 @@ import com.google.gwt.user.client.ui.MenuBar;
  */
 public interface MultiViewEditorMenuBarCreator {
 
-    MenuBar createMenuBar(MultiViewEditor editor);
+    MenuBar createMenuBar(MultiViewEditor editor, EventBus eventBus);
     
 }

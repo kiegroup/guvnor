@@ -69,6 +69,8 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
+import org.drools.guvnor.client.asseteditor.GuvnorEditor;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -546,6 +548,11 @@ public class AssetEditorActionToolbar extends Composite {
                         //showInfoMessage( constants.SavedOK() );
                         if ( !closeAfter ) {
                             eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                        }
+                        
+                        //fire after check-in event
+                        if (editor instanceof GuvnorEditor){
+                            eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, (GuvnorEditor) editor));
                         }
                     }
                 } );
