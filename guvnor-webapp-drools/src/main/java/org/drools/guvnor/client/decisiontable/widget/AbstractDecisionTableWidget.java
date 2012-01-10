@@ -130,7 +130,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
         this.eventBus = eventBus;
-        this.rm = new BRLRuleModel( model );
 
         //Wire-up the events
         eventBus.addHandler( InsertRowEvent.TYPE,
@@ -438,6 +437,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.model = model;
         this.cellFactory.setModel( model );
         this.cellValueFactory.setModel( model );
+        this.rm = new BRLRuleModel( model );
 
         //Ensure field data-type is set (field did not exist before 5.2)
         for ( CompositeColumn< ? > cc : model.getConditions() ) {
