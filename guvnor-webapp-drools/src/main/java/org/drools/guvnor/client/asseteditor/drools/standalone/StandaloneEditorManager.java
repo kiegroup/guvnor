@@ -96,7 +96,7 @@ public class StandaloneEditorManager {
                                 //"Done" buton command
 
                                 public void execute() {
-                                    afterSaveAndClose();
+                                    afterSaveAndCloseCallbackFunction();
                                 }
                             }, new Command() {
                                 //"Done" buton command
@@ -108,9 +108,18 @@ public class StandaloneEditorManager {
                         } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
                             editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
                                 // "Close" button command
-
                                 public void execute() {
                                     afterCloseButtonCallbackFunction();
+                                }
+                            }, new Command() {
+                                // Before "Save All" button command
+                                public void execute() {
+                                    beforeSaveAllCallbackFunction();
+                                }
+                            }, new Command() {
+                                // After "Save All" button command
+                                public void execute() {
+                                    afterSaveAllCallbackFunction();
                                 }
                             });
                         } else {
@@ -133,7 +142,7 @@ public class StandaloneEditorManager {
                         editor.setCloseCommand(new Command() {
 
                             public void execute() {
-                                afterSaveAndClose();
+                                afterSaveAndCloseCallbackFunction();
                             }
                         });
 
@@ -258,6 +267,10 @@ public class StandaloneEditorManager {
             afterSaveAndCloseButtonCallbackFunction: null,
 
             afterCancelButtonCallbackFunction: null,
+            
+            afterSaveAllButtonCallbackFunction: null,
+            
+            beforeSaveAllButtonCallbackFunction: null,
 
             getDRL: function (callbackFunction) {
                 this.drlCallbackFunction = callbackFunction;
@@ -271,6 +284,14 @@ public class StandaloneEditorManager {
 
             registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction) {
                 this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
+            },
+            
+            registerAfterSaveAllButtonCallbackFunction: function (callbackFunction) {
+                this.afterSaveAllButtonCallbackFunction = callbackFunction;
+            },
+             
+            registerBeforeSaveAllButtonCallbackFunction: function (callbackFunction) {
+                this.beforeSaveAllButtonCallbackFunction = callbackFunction;
             },
 
             registerAfterCancelButtonCallbackFunction: function (callbackFunction) {
@@ -310,9 +331,27 @@ public class StandaloneEditorManager {
     /**
      * Method invoked after the "Save an Close" button is pressed.
      */
-    public native void afterSaveAndClose()/*-{
+    public native void afterSaveAndCloseCallbackFunction()/*-{
         if ($wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction) {
             $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction();
+        }
+    }-*/;
+    
+    /**
+     * Method invoked before the "Save All" button is pressed.
+     */
+    public native void beforeSaveAllCallbackFunction()/*-{
+        if ($wnd.guvnorEditorObject.beforeSaveAllButtonCallbackFunction) {
+            $wnd.guvnorEditorObject.beforeSaveAllButtonCallbackFunction();
+        }
+    }-*/;
+    
+    /**
+     * Method invoked after the "Save All" button is pressed.
+     */
+    public native void afterSaveAllCallbackFunction()/*-{
+        if ($wnd.guvnorEditorObject.afterSaveAllButtonCallbackFunction) {
+            $wnd.guvnorEditorObject.afterSaveAllButtonCallbackFunction();
         }
     }-*/;
 

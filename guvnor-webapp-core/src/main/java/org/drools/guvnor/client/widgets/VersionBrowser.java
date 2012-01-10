@@ -36,6 +36,7 @@ import org.drools.guvnor.client.rpc.*;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
 
 /**
  * This widget shows a list of versions for packages or assets
@@ -248,6 +249,8 @@ public class VersionBrowser extends Composite {
                                             new Command() {
                                                 public void execute() {
                                                     eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    //fire after check-in event
+                                                    eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, null));
                                                     pop.hide();
                                                 }
                                             } );
