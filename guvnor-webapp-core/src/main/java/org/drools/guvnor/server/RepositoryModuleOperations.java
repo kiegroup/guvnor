@@ -21,6 +21,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.PackageAssembler;
@@ -31,6 +32,7 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
+import org.drools.rule.Package;
 import org.jboss.seam.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -525,23 +527,18 @@ public class RepositoryModuleOperations {
 
     private void updateModuleBinaries(ModuleItem item, ModuleAssembler modulegeAssembler) throws DetailedSerializationException {
         try {
-            //REVISIT:Move this to PackageBuilder? 
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutput out = new DroolsObjectOutputStream( bout );
-            out.writeObject( modulegeAssembler.getBinaryPackage() );
-
-            item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray() ) );
-            out.flush();
-            out.close();
-
+            byte[] compiledPackageByte = modulegeAssembler.getCompiledBinary();
+            item.updateCompiledPackage( new ByteArrayInputStream(compiledPackageByte) );            
             item.updateBinaryUpToDate( true );
 
-            //REVISIT: Do not hard-code module type here
+            //REVISIT: This should be handled by PackageAssembler internally
             if(modulegeAssembler instanceof PackageAssembler) {
                 RuleBase ruleBase = RuleBaseFactory.newRuleBase(
                     new RuleBaseConfiguration( getClassLoaders( (PackageAssembler)modulegeAssembler ) )
                 );
-                ruleBase.addPackage( modulegeAssembler.getBinaryPackage() );
+                Package binPkg = (Package) DroolsStreamUtils.streamIn( compiledPackageByte );
+
+                ruleBase.addPackage( binPkg );
             }
 
             rulesRepository.save();

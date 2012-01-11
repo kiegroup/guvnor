@@ -53,8 +53,8 @@ public class SOAModuleAssembler extends AssemblerBase {
         return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isModuleItem();
     }
 
-    public Package getBinaryPackage() {
-        //TO_BE_IMPLEMENTED
+    public byte[] getCompiledBinary() {
+        //NOT_IMPLEMENTED
         return null;
     }
 }

@@ -55,7 +55,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         //NOT_IMPLEMENTED
     }
     
-    public Package getBinaryPackage() {
+    public byte[] getCompiledBinary() {
         //NOT_IMPLEMENTED
         return null;
     }

@@ -16,15 +16,23 @@
 
 package org.drools.guvnor.server.builder;
 
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.BuiltInSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutput;
 import java.util.Iterator;
 
 /**
@@ -142,17 +150,34 @@ public class PackageAssembler extends PackageAssemblerBase {
     public boolean isModuleConfigurationInError() {
         return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isModuleItem();
     }
-
+    
+    public byte[] getCompiledBinary() {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutput out;
+        try {
+            out = new DroolsObjectOutputStream( bout );
+            out.writeObject( getBinaryPackage() );
+            out.flush();
+            out.close();       
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error( "An error occurred building the module [" + moduleItem.getName() + "]: " + e.getMessage() );
+            throw new RulesRepositoryException( "An error occurred building the module.",
+                    e );
+        }
+        return bout.toByteArray();
+    }
+    
     /**
      * I've got a package people !
      */
-    public Package getBinaryPackage() {
+    private Package getBinaryPackage() {
         if (this.hasErrors()) {
             throw new IllegalStateException("There is no package available, as there were errors.");
         }
         return builder.getPackage();
     }
-
+    
     public BRMSPackageBuilder getBuilder() {
         return builder;
     }

@@ -18,8 +18,6 @@ package org.drools.guvnor.server.builder;
 
 import java.util.List;
 
-import org.drools.rule.Package;
-
 /**
  * This assembles modules into module deployment bundles, and deals
  * with errors etc. Each content type is responsible for contributing to the
@@ -37,8 +35,7 @@ public interface ModuleAssembler {
      */
     public boolean isModuleConfigurationInError();
 
-    //TODO: rename to getBinary or getModuleDeployementBundle
-    public Package getBinaryPackage();
+    public byte[] getCompiledBinary();
 
     public boolean hasErrors();
     
