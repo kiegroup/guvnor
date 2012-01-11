@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
@@ -133,7 +132,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        AssetItem asset = repo.loadDefaultModule().addAsset( "testIncomingMarkedRead",
+        AssetItem asset = repo.loadDefaultModule().addAsset( "testLoadEntriesIncoming",
                                                               "" );
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
@@ -245,7 +244,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        AssetItem asset = repo.loadDefaultModule().addAsset( "testIncomingMarkedRead",
+        AssetItem asset = repo.loadDefaultModule().addAsset( "testIncoming",
                                                               "" );
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
