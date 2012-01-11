@@ -44,6 +44,7 @@ public class SecurityServiceImplTestLogin extends GuvnorTestBase {
     public void testLogin() throws Exception {
         assertTrue( securityService.login( USER_NAME,
                                            USER_NAME ) );
+        securityService.logout();
     }
 
 }
