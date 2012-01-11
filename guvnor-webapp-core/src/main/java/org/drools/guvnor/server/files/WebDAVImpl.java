@@ -118,10 +118,12 @@ public class WebDAVImpl
             if (packageItem.containsAsset(resource[0])) {
                 AssetItem lazarus = packageItem.loadAsset(resource[0]);
                 lazarus.archiveItem(false);
+                lazarus.checkin( "<restored by webdav>" );
             } else {
                 AssetItem asset = packageItem.addAsset(resource[0],
                         "");
                 asset.updateFormat(resource[1]);
+                asset.checkin( "<from webdav>" );
             }
         } else if (isGlobalAreas(path)) {
             String[] resource = AssetItem.getAssetNameFromFileName(path[1]);
@@ -136,10 +138,12 @@ public class WebDAVImpl
             if (packageItem.containsAsset(resource[0])) {
                 AssetItem lazarus = packageItem.loadAsset(resource[0]);
                 lazarus.archiveItem(false);
+                lazarus.checkin( "<restored by webdav>" );
             } else {
                 AssetItem asset = packageItem.addAsset(resource[0],
                         "");
                 asset.updateFormat(resource[1]);
+                asset.checkin( "<from webdav>" );
             }
         } else {
             throw new UnsupportedOperationException("Can't add assets here.");
