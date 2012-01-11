@@ -41,6 +41,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 //import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
@@ -56,6 +58,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.Category;
 
 import static org.junit.Assert.*;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -74,14 +77,12 @@ public class CategoryResourceTest extends GuvnorTestBase {
     // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
     @Test
     public void startServers() throws Exception {
-        
         //Create 2 categories
-        repositoryCategoryService.createCategory(null, "Category 1", "Category 1");
-        repositoryCategoryService.createCategory(null, "Category 2", "Category 2");
-        repositoryCategoryService.createCategory("Category 1", "Category 1.1", "Category 1.1");
-        repositoryCategoryService.createCategory("Category 1", "Category 1.2", "Category 1.2");
-        repositoryCategoryService.createCategory("Category 1/Category 1.1", "Category 1.1.1", "Category 1.1.1");
-        
+        repositoryCategoryService.createCategory(null, "Category 1", "Category 1 description");
+        repositoryCategoryService.createCategory(null, "Category 2", "Category 2 description");
+        repositoryCategoryService.createCategory("Category 1", "Category 1.1", "Category 1.1 description");
+        repositoryCategoryService.createCategory("Category 1", "Category 1.2", "Category 1.2 description");
+        repositoryCategoryService.createCategory("Category 1/Category 1.1", "Category 1.1.1", "Category 1.1.1 description");
         
         //create a new package
         ModuleItem pkg = rulesRepository.createModule( "categoriesPackage1",
@@ -109,7 +110,6 @@ public class CategoryResourceTest extends GuvnorTestBase {
         rule.updateContent( "rule 'foo' when Goo1() then end" );
         rule.updateCategoryList(new String[]{"Category 1", "Category 2"});
         rule.checkin( "version 1" );
-        
     }
 
     @Test @RunAsClient
@@ -120,7 +120,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
                 new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         ClientResponse resp = client.get(new URL(baseURL, "rest/categories").toExternalForm());
         
-        assertEquals (ResponseType.SUCCESS, resp.getType());
+        assertEquals(ResponseType.SUCCESS, resp.getType());
         assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
         
         Document<Feed> document = resp.getDocument();
@@ -129,7 +129,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         document.writeTo(outputStream);
         outputStream.close();
         
-        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertEquals(5, categories.size());
         assertTrue(categories.containsKey("Category 1"));
@@ -137,9 +137,11 @@ public class CategoryResourceTest extends GuvnorTestBase {
         assertTrue(categories.containsKey("Category 1/Category 1.1"));
         assertTrue(categories.containsKey("Category 1/Category 1.2"));
         assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
-        
+        for (Category category : categories.values()) {
+            assertNotNull(category.getRefLink());
+        }
     }
-    
+
     @Test @RunAsClient
     public void getCategoryAsJAXB(@ArquillianResource URL baseURL) throws Exception {
         //get 'Category 1'
@@ -157,13 +159,13 @@ public class CategoryResourceTest extends GuvnorTestBase {
         document.writeTo(outputStream);
         outputStream.close();
         
-        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertEquals(1, categories.size());
         
         Category category = categories.values().iterator().next();
         assertEquals("Category 1", category.getPath());
-        
+
         //get 'Category 1/Category 1.1/Category 1.1.1'
         client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
@@ -173,20 +175,19 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
         assertEquals (ResponseType.SUCCESS, resp.getType());
         assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+
         document = resp.getDocument();
 
         outputStream = new ByteArrayOutputStream();
         document.writeTo(outputStream);
         outputStream.close();
-        
-        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+
+        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertEquals(1, categories.size());
         category = categories.values().iterator().next();
         
         assertEquals("Category 1/Category 1.1/Category 1.1.1", category.getPath());
-        
     }
     
     @Test @RunAsClient
@@ -207,7 +208,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         document.writeTo(outputStream);
         outputStream.close();
         
-        Map<String, Category> categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertEquals(2, categories.size());
         assertTrue(categories.containsKey("Category 1/Category 1.1"));
@@ -229,7 +230,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         document.writeTo(outputStream);
         outputStream.close();
         
-        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertEquals(1, categories.size());
         assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
@@ -250,10 +251,9 @@ public class CategoryResourceTest extends GuvnorTestBase {
         document.writeTo(outputStream);
         outputStream.close();
         
-        categories = this.fromXMLToCategoriesMap(outputStream.toString());
+        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
         
         assertTrue(categories.isEmpty());
-        
     }
 
     @Test @RunAsClient
@@ -565,27 +565,36 @@ public class CategoryResourceTest extends GuvnorTestBase {
             NodeList categoriesList = doc.getElementsByTagName("category");
             for (int i = 0; i < categoriesList.getLength(); i++) {
                 Element element = (Element) categoriesList.item(i);
-                
-                NodeList paths = element.getElementsByTagName("path");
-                if (paths.getLength() != 1){
-                    throw new IllegalStateException("Malfromed category. Expected 1 <path> tag, but found "+paths.getLength());
-                }
-                
-                String path = paths.item(0).getTextContent();
-                
                 Category category = new Category();
-                category.setPath(path);
                 
-                categories.put(path, category);
+                NodeList pathNodes = element.getElementsByTagName("path");
+                if (pathNodes.getLength() != 1){
+                    throw new IllegalStateException("Malformed category. Expected 1 <path> tag, but found " + pathNodes.getLength());
+                }
+                Node pathNode = pathNodes.item(0);
+                category.setPath(pathNode.getTextContent());
+
+                NodeList refLinkNodes = element.getElementsByTagName("refLink");
+                if (refLinkNodes.getLength() != 1){
+                    throw new IllegalStateException("Malformed category. Expected 1 <refLink> tag, but found " + refLinkNodes.getLength());
+                }
+                Node refLinkNode = refLinkNodes.item(0);
+                try {
+                    category.setRefLink(new URI(refLinkNode.getTextContent()));
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException("Error parsing categories xml", e);
+                }
+
+                categories.put(category.getPath(), category);
             }
             
             return categories;
         } catch (SAXException ex) {
-            throw new RuntimeException("Error parsing categories' xml",ex);
+            throw new RuntimeException("Error parsing categories xml", ex);
         } catch (IOException ex) {
-            throw new RuntimeException("Error parsing categories' xml",ex);
+            throw new RuntimeException("Error parsing categories xml", ex);
         } catch (ParserConfigurationException ex) {
-            throw new RuntimeException("Error parsing categories' xml",ex);
+            throw new RuntimeException("Error parsing categories xml", ex);
         }
     }
 
