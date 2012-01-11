@@ -575,6 +575,16 @@
             </row>
 
             <row>
+              <entry>/categories/{categoryPath}/children</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>Lists all subcategories under the category {categoryPath}</entry>
+            </row>
+
+            <row>
               <entry>/categories/{categoryPath}/assets</entry>
 
               <entry>GET</entry>
