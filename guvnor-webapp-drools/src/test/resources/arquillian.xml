@@ -22,7 +22,7 @@
     <!--</protocol>-->
     <configuration>
       <!-- Keep in sync with /guvnor-webapp-drools/pom.xml -->
-      <property name="jbossHome">target/jboss-as-7.0.2.Final/</property>
+      <property name="jbossHome">target/jboss-as-7.1.0.CR1b/</property>
 
       <!-- How-to debug an arquillian managed test -->
       <!-- In Arquillian 1.0.0.CR6 this will work from the run config: -Darq.container.qualifier.configuration.javaVmArguments="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y" -->

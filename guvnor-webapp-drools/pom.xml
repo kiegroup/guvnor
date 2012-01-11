@@ -17,7 +17,7 @@
 
   <properties>
     <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
-    <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
+    <appserver.jboss7.version>7.1.0.CR1b</appserver.jboss7.version>
     <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
     <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
