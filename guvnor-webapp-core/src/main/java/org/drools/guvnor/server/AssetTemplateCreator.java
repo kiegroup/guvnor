@@ -40,9 +40,6 @@ public class AssetTemplateCreator {
             asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
         } else if ( format.equals( AssetFormats.DSL ) ) {
             asset.updateContent( "[when]Condition sentence template {var}=" + "rule language mapping {var}\n" + "[then]Action sentence template=rule language mapping" );
-        } else if ( format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-            asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
-            asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
         } else if ( format.equals( AssetFormats.DRL ) ) {
             asset.updateContent( "when\n\t#conditions\nthen\n\t#actions" );
         } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
