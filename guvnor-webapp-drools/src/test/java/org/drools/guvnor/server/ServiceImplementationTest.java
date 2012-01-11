@@ -19,6 +19,7 @@ package org.drools.guvnor.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -288,9 +289,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                       "testAddRule",
                                                       "another",
                                                       AssetFormats.DECISION_SPREADSHEET_XLS );
+        
+        //Adding a XLS asset no longer attaches a default asset
         AssetItem dtItem = rulesRepository.loadAssetByUUID( result );
-        assertNotNull( dtItem.getBinaryContentAsBytes() );
-        assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
+        assertNull( dtItem.getBinaryContentAttachment() );
+        assertEquals( 0,
+                      dtItem.getBinaryContentAsBytes().length );
     }
 
     @Test

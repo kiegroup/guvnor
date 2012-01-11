@@ -723,7 +723,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                                          pkg );
         repo.save();
 
-        InputStream xls = this.getClass().getResourceAsStream( "drools/SampleDecisionTable.xls" );
+        InputStream xls = this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" );
         assertNotNull( xls );
 
         AssetItem asset = pkg.addAsset( "MyDT",
