@@ -15,19 +15,13 @@
  */
 package org.drools.guvnor.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
@@ -41,6 +35,9 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Test;
+import org.mortbay.log.Log;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
@@ -53,9 +50,15 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     @Inject
     private RoleBasedPermissionResolver roleBasedPermissionResolver;
 
+    public RepositoryCategoryServiceTest() {
+        //Some tests control their own login\logout life-cycle
+        autoLoginAsAdmin = false;
+    }
+    
     @Test
     public void testRemoveCategory() throws Exception {
-
+        loginAs(ADMIN_USERNAME);
+        
         String[] children = repositoryCategoryService.loadChildCategories( "/" );
         repositoryCategoryService.createCategory("/",
                 "testRemoveCategory",
@@ -65,11 +68,14 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         String[] _children = repositoryCategoryService.loadChildCategories( "/" );
         assertEquals( children.length,
                       _children.length );
-
+        
+        logoutAs( ADMIN_USERNAME);
     }
 
     @Test
     public void testAddCategories() throws Exception {
+        loginAs(ADMIN_USERNAME);
+        
         rulesRepository.createModule("testAddCategoriesPackage",
                 "desc");
         repositoryCategoryService.createCategory( "",
@@ -102,10 +108,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         assertEquals( 2,
                       dtItem3.getCategories().size() );
         assertTrue( dtItem3.getCategorySummary().contains( "testAddCategoriesCat2" ) );
+        
+        logoutAs( ADMIN_USERNAME );
     }
 
     @Test
     public void testLoadRuleListForCategoryPagedResultsCategory() throws Exception {
+        loginAs(ADMIN_USERNAME);
 
         String[] originalCats = repositoryCategoryService.loadChildCategories( "/" );
 
@@ -131,11 +140,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                            "Top4",
                                                            "description" );
         assertTrue( result.booleanValue() );
-
+        
+        logoutAs( ADMIN_USERNAME );
     }
 
     @Test
     public void testLoadRuleListForCategoryPagedResults() throws Exception {
+        loginAs(ADMIN_USERNAME);
 
         final int PAGE_SIZE = 2;
 
@@ -183,10 +194,14 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
+        
+        logoutAs( ADMIN_USERNAME );
     }
 
     @Test
     public void testLoadRuleListForCategoryFullResults() throws Exception {
+        loginAs(ADMIN_USERNAME);
+        
         String cat = "testLoadRuleListForCategoryFullResultsCategory";
         repositoryCategoryService.createCategory("/",
                 cat,
@@ -222,10 +237,14 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
+        
+        logoutAs( ADMIN_USERNAME );
     }
 
     @Test
     public void testLoadRuleListForCategoriesWithAnalystPermission() throws SerializationException {
+        loginAs(ADMIN_USERNAME);
+
         CategoryItem rootCategory = rulesRepository.loadCategory( "/" );
         CategoryItem cat = rootCategory.addCategory("testLoadRuleListForCategoriesWithAnalystPermissionRootCat", "description");
         cat.addCategory( "testLoadRuleListForCategoriesWithAnalystPermissionCat1",
@@ -234,6 +253,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         "yeah");
 
         logoutAs(ADMIN_USERNAME);
+        
         final String USERNAME = "categoryUser";
         loginAs(USERNAME);
 
@@ -333,8 +353,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             try {
                 roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
                 roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
-                logoutAs(USERNAME);
-                loginAs(ADMIN_USERNAME);
+                
+                try {
+                    logoutAs(USERNAME);
+                } catch(IllegalStateException ise) {
+                    //Swallow it is expected - See http://seamframework.org/Community/OrgjbossseamsecurityIdentityImpllogoutRegression
+                }
+                
             } catch (RuntimeException e) {
                 throw (failingException != null) ? failingException : e;
             }
@@ -343,6 +368,8 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleListForCategoriesWithAnalystNoRootCatPermission() throws SerializationException {
+        loginAs(ADMIN_USERNAME);
+        
         CategoryItem rootCategory = rulesRepository.loadCategory( "/" );
         CategoryItem cat = rootCategory.addCategory("testLoadRuleListForCategoriesWithAnalystNoRootCatPermission", "description");
         cat.addCategory( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat1",
@@ -351,6 +378,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         "yeah");
 
         logoutAs(ADMIN_USERNAME);
+        
         final String USERNAME = "categoryUser";
         loginAs(USERNAME);
 
@@ -439,8 +467,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             try {
                 roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
                 roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
-                logoutAs(USERNAME);
-                loginAs(ADMIN_USERNAME);
+                
+                try {
+                    logoutAs(USERNAME);
+                } catch(IllegalStateException ise) {
+                    //Swallow it is expected - See http://seamframework.org/Community/OrgjbossseamsecurityIdentityImpllogoutRegression
+                }
+                
             } catch (RuntimeException e) {
                 throw (failingException != null) ? failingException : e;
             }
