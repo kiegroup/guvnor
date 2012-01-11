@@ -155,8 +155,8 @@ public class GuidedDecisionTableWidget extends Composite
         this.asset = asset;
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
-        this.packageName = asset.getMetaData().getPackageName();
-        this.packageUUID = asset.getMetaData().getPackageUUID();
+        this.packageName = asset.getMetaData().getModuleName();
+        this.packageUUID = asset.getMetaData().getModuleUUID();
         this.guidedDecisionTable.setTableName( asset.getName() );
         this.globalEventBus = globalEventBus;
         this.clientFactory = clientFactory;

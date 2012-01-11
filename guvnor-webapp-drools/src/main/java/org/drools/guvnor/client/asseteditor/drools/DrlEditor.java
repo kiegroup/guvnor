@@ -54,7 +54,7 @@ public class DrlEditor extends Composite
         Grid layout = new Grid( 1,
                                 2 );
 
-        FactTypeBrowser browser = new FactTypeBrowser( SuggestionCompletionCache.getInstance().getEngineFromCache( a.getMetaData().getPackageName() ),
+        FactTypeBrowser browser = new FactTypeBrowser( SuggestionCompletionCache.getInstance().getEngineFromCache( a.getMetaData().getModuleName() ),
                                                        ce );
         layout.setWidget( 0,
                           0,

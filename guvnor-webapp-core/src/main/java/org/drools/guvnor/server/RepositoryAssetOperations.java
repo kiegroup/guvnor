@@ -436,8 +436,8 @@ public class RepositoryAssetOperations {
         if (handler.isRuleAsset()) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            ModuleItem packageItem = rulesRepository.loadModule(asset.getMetaData().getPackageName());
-            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(packageItem));
+            ModuleItem moduleItem = rulesRepository.loadModule(asset.getMetaData().getModuleName());
+            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(moduleItem));
             if (asset.getMetaData().isBinary()) {
                 AssetItem item = rulesRepository.loadAssetByUUID(
                         asset.getUuid());
@@ -578,8 +578,8 @@ public class RepositoryAssetOperations {
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData((VersionableItem) item);
 
-        meta.setPackageName(item.getModuleName());
-        meta.setPackageUUID(item.getModule().getUUID());
+        meta.setModuleName(item.getModuleName());
+        meta.setModuleUUID(item.getModule().getUUID());
         meta.setBinary(item.isBinary());
 
         List<CategoryItem> categories = item.getCategories();

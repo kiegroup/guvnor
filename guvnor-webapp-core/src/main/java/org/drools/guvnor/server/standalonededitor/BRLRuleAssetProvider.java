@@ -100,9 +100,9 @@ public class BRLRuleAssetProvider
     private MetaData createMetaData() {
         MetaData metaData = new MetaData();
 
-        metaData.setPackageName(packageName);
+        metaData.setModuleName(packageName);
 
-        metaData.setPackageUUID("mock");
+        metaData.setModuleUUID("mock");
 
         return metaData;
     }

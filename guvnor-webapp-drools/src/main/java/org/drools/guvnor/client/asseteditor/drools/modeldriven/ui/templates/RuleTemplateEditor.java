@@ -73,7 +73,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                          eventBus,
                                          new TemplateModellerWidgetFactory() );
 
-        String packageName = asset.getMetaData().getPackageName();
+        String packageName = asset.getMetaData().getModuleName();
         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();

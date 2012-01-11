@@ -329,7 +329,7 @@ public class RepositoryModuleService
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        return repositoryModuleOperations.buildPackage( packageUUID,
+        return repositoryModuleOperations.buildModule( packageUUID,
                                                          force,
                                                          buildMode,
                                                          statusOperator,
@@ -628,7 +628,7 @@ public class RepositoryModuleService
                 RuleBaseCache.getInstance().put( packageItem.getUUID(),
                                                  rb );
             } else {
-                BuilderResult result = repositoryModuleOperations.buildPackage( packageItem,
+                BuilderResult result = repositoryModuleOperations.buildModule( packageItem,
                                                                                  false );
                 if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( packageItem,
@@ -658,7 +658,7 @@ public class RepositoryModuleService
                        e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult res = repositoryModuleOperations.buildPackage( item,
+                BuilderResult res = repositoryModuleOperations.buildModule( item,
                                                                               true );
                 if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
@@ -796,7 +796,7 @@ public class RepositoryModuleService
                                                      loadRuleBase( packageItem,
                                                                    classloader ) );
                 } else {
-                    BuilderResult result = repositoryModuleOperations.buildPackage( packageItem,
+                    BuilderResult result = repositoryModuleOperations.buildModule( packageItem,
                                                                                      false );
                     if ( result == null || result.getLines().size() == 0 ) {
                         RuleBaseCache.getInstance().put( packageItem.getUUID(),

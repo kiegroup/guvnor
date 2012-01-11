@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.VersionedAssetItemIterator;
@@ -25,24 +24,18 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This assembles packages in the BRMS into binary package objects, and deals
+ * This assembles modules into deployment bundles, and deals
  * with errors etc. Each content type is responsible for contributing to the
- * package.
+ * module deployment bundles.
  */
-abstract class AssemblerBase {
+abstract class AssemblerBase implements ModuleAssembler {
 
-    protected final ModuleItem packageItem;
+    protected final ModuleItem moduleItem;
     protected BRMSPackageBuilder builder;
     protected final AssemblyErrorLogger errorLogger = new AssemblyErrorLogger();
 
-    protected AssemblerBase(ModuleItem packageItem) {
-        this.packageItem = packageItem;
-
-        createBuilder();
-    }
-
-    public void createBuilder() {
-        builder = new BRMSPackageBuilder(packageItem);
+    protected AssemblerBase(ModuleItem moduleItem) {
+        this.moduleItem = moduleItem;
     }
 
     public boolean hasErrors() {
@@ -54,23 +47,12 @@ abstract class AssemblerBase {
     }
 
     protected Iterator<AssetItem> getAllAssets() {
-        Iterator<AssetItem> iterator = packageItem.getAssets();
+        Iterator<AssetItem> iterator = moduleItem.getAssets();
         ((VersionedAssetItemIterator) iterator).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
         return iterator;
     }
 
-    protected void loadDSLFiles() {
-        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(getAssetItemIterator(AssetFormats.DSL),
-                new BRMSPackageBuilder.DSLErrorEvent() {
-                    public void recordError(AssetItem asset,
-                                            String message) {
-                        errorLogger.addError(asset,
-                                message);
-                    }
-                }));
-    }
-
     protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
-        return this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(formats);
+        return this.moduleItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(formats);
     }
 }

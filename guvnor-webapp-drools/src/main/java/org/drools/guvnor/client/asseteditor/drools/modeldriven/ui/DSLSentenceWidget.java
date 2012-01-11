@@ -293,7 +293,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         int dotIndex = factAndField.indexOf( "." );        
         
         
-        String pkg = this.getModeller().getAsset().getMetaData().getPackageName();
+        String pkg = this.getModeller().getAsset().getMetaData().getModuleName();
         
         String factType = factAndField.substring( 0,
                                                dotIndex );

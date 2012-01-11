@@ -36,16 +36,16 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(PackageAssembler.class);
 
-    private final PackageAssemblerConfiguration configuration;
+    private final ModuleAssemblerConfiguration configuration;
     private AssetSelector selector;
 
     public PackageAssembler(ModuleItem packageItem) {
         this(packageItem,
-                new PackageAssemblerConfiguration());
+                new ModuleAssemblerConfiguration());
     }
 
     public PackageAssembler(ModuleItem packageItem,
-                            PackageAssemblerConfiguration packageAssemblerConfiguration) {
+                            ModuleAssemblerConfiguration packageAssemblerConfiguration) {
         super(packageItem);
         configuration = packageAssemblerConfiguration;
     }
@@ -115,7 +115,7 @@ public class PackageAssembler extends PackageAssemblerBase {
         }
 
         if (selector == null) {
-            errorLogger.addError(packageItem, "The selector named " + configuration.getCustomSelectorConfigName() + " is not available.");
+            errorLogger.addError(moduleItem, "The selector named " + configuration.getCustomSelectorConfigName() + " is not available.");
             return false;
         } else {
             return true;
@@ -139,8 +139,8 @@ public class PackageAssembler extends PackageAssemblerBase {
      *
      * @return
      */
-    public boolean isPackageConfigurationInError() {
-        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isPackageItem();
+    public boolean isModuleConfigurationInError() {
+        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isModuleItem();
     }
 
     /**

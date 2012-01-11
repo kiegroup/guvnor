@@ -27,14 +27,14 @@ public class ContentAssemblyError {
     private final String  format;
     private final String  name;
     private final String  uuid;
-    private final boolean isPackageItem;
+    private final boolean isModuleItem;
     private final boolean isAssetItem;
 
-    public ContentAssemblyError(String errorReport, String format, String name, String uuid, boolean isPackageItem, boolean isAssetItem) {
+    public ContentAssemblyError(String errorReport, String format, String name, String uuid, boolean isModuleItem, boolean isAssetItem) {
         this.format = format;
         this.name = name;
         this.uuid = uuid;
-        this.isPackageItem = isPackageItem;
+        this.isModuleItem = isModuleItem;
         this.isAssetItem = isAssetItem;
 
         this.errorReport = errorReport;
@@ -60,8 +60,8 @@ public class ContentAssemblyError {
         return isAssetItem;
     }
 
-    public boolean isPackageItem() {
-        return isPackageItem;
+    public boolean isModuleItem() {
+        return isModuleItem;
     }
 
     public String getErrorReport() {

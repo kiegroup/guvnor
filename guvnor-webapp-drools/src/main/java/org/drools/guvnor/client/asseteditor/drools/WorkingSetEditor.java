@@ -129,7 +129,7 @@ public class WorkingSetEditor extends Composite
         Grid grid = new Grid( 2,
                               3 );
 
-        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getPackageName() );
+        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getModuleName() );
         boolean filteringFact = sce.isFilteringFacts();
         sce.setFilteringFacts( false );
 

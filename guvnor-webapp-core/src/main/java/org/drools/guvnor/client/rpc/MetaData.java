@@ -31,8 +31,8 @@ public class MetaData
     public String   title                = "";
     
 
-    public String   packageName          = "";
-    public String   packageUUID          = "";
+    public String   moduleName          = "";
+    public String   moduleUUID          = "";
     public String[] categories           = new String[0];
 
     public String   type                 = "";
@@ -107,22 +107,22 @@ public class MetaData
         return title;
     }
 
-    public MetaData setPackageName(String packageName) {
-        this.packageName = packageName;
+    public MetaData setModuleName(String packageName) {
+        this.moduleName = packageName;
         return this;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getModuleName() {
+        return moduleName;
     }
 
-    public MetaData setPackageUUID(String packageUUID) {
-        this.packageUUID = packageUUID;
+    public MetaData setModuleUUID(String moduleUUID) {
+        this.moduleUUID = moduleUUID;
         return this;
     }
 
-    public String getPackageUUID() {
-        return packageUUID;
+    public String getModuleUUID() {
+        return moduleUUID;
     }
 
     public MetaData setCategories(String[] categories) {

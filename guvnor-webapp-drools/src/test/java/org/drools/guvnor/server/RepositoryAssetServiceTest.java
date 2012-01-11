@@ -286,7 +286,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getMetaData().getTitle() );
         assertEquals( "testLoadRuleAsset",
-                      asset.getMetaData().getPackageName() );
+                      asset.getMetaData().getModuleName() );
         assertEquals( AssetFormats.DRL,
                       asset.getFormat() );
         assertNotNull( asset.getDateCreated() );
@@ -561,7 +561,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         Asset asset = repositoryAssetService.loadRuleAsset( uuid2 );
         assertNotNull( asset );
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
-                      asset.getMetaData().getPackageName() );
+                      asset.getMetaData().getModuleName() );
         assertEquals( "testCopyAsset2",
                       asset.getName() );
     }
@@ -990,7 +990,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                       assets.size() );
         // now lets copy...
         String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
-                                                           rule.getMetaData().getPackageName(),
+                                                           rule.getMetaData().getModuleName(),
                                                            "ruleName2" );
 
         assets = iteratorToList( pkg.getAssets() );

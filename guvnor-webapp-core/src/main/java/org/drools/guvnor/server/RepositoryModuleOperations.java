@@ -22,8 +22,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.PackageAssembler;
-import org.drools.guvnor.server.builder.PackageAssemblerConfiguration;
+import org.drools.guvnor.server.builder.ModuleAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -463,8 +464,9 @@ public class RepositoryModuleOperations {
 
     }
 
-    //Drools package specific
-    public BuilderResult buildPackage(String packageUUID,
+    //This builds a module. The build result is a deployment bundle. This is taken care by module specific Assembler. 
+    //In the case of Drools, the build result is a Drools package binary. 
+    public BuilderResult buildModule(String moduleUUID,
                                       boolean force,
                                       String buildMode,
                                       String statusOperator,
@@ -475,10 +477,10 @@ public class RepositoryModuleOperations {
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
 
-        ModuleItem item = rulesRepository.loadModuleByUUID( packageUUID );
+        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( moduleUUID );
         try {
-            return buildPackage( item,
-                    force,
+            return buildModule( moduleItem,
+                                 force,
                     createConfiguration( buildMode,
                             statusOperator,
                             statusDescriptionValue,
@@ -496,35 +498,37 @@ public class RepositoryModuleOperations {
         }
     }
 
-    private BuilderResult buildPackage(ModuleItem item,
+    private BuilderResult buildModule(ModuleItem item,
                                        boolean force,
-                                       PackageAssemblerConfiguration packageAssemblerConfiguration) throws DetailedSerializationException {
+                                       ModuleAssemblerConfiguration moduleAssemblerConfiguration) throws DetailedSerializationException {
         if ( !force && item.isBinaryUpToDate() ) {
             // we can just return all OK if its up to date.
             return BuilderResult.emptyResult();
         }
-        PackageAssembler packageAssembler = new PackageAssembler( item,
-                packageAssemblerConfiguration );
+        //TODO: get ModuleAssembler based on module type (ie, drools or SOA etc). This information should be captured by module configuration file.
+        ModuleAssembler moduleAssembler = new PackageAssembler( item,
+                moduleAssemblerConfiguration );
 
-        packageAssembler.compile();
+        moduleAssembler.compile();
 
-        if ( packageAssembler.hasErrors() ) {
+        if ( moduleAssembler.hasErrors() ) {
             BuilderResult result = new BuilderResult();
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
-            result.addLines( builderResultHelper.generateBuilderResults( packageAssembler.getErrors() ) );
+            result.addLines( builderResultHelper.generateBuilderResults( moduleAssembler.getErrors() ) );
             return result;
         }
 
-        updatePackageBinaries( item, packageAssembler );
+        updateModuleBinaries( item, moduleAssembler );
 
         return BuilderResult.emptyResult();
     }
 
-    private void updatePackageBinaries(ModuleItem item, PackageAssembler packageAssembler) throws DetailedSerializationException {
+    private void updateModuleBinaries(ModuleItem item, ModuleAssembler modulegeAssembler) throws DetailedSerializationException {
         try {
+            //REVISIT:Move this to PackageBuilder? 
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutput out = new DroolsObjectOutputStream( bout );
-            out.writeObject( packageAssembler.getBinaryPackage() );
+            out.writeObject( modulegeAssembler.getBinaryPackage() );
 
             item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray() ) );
             out.flush();
@@ -532,31 +536,34 @@ public class RepositoryModuleOperations {
 
             item.updateBinaryUpToDate( true );
 
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
-                    new RuleBaseConfiguration( getClassLoaders( packageAssembler ) )
-            );
-            ruleBase.addPackage( packageAssembler.getBinaryPackage() );
+            //REVISIT: Do not hard-code module type here
+            if(modulegeAssembler instanceof PackageAssembler) {
+                RuleBase ruleBase = RuleBaseFactory.newRuleBase(
+                    new RuleBaseConfiguration( getClassLoaders( (PackageAssembler)modulegeAssembler ) )
+                );
+                ruleBase.addPackage( modulegeAssembler.getBinaryPackage() );
+            }
 
             rulesRepository.save();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
-            throw new DetailedSerializationException( "An error occurred building the package.",
+            log.error( "An error occurred building the module [" + item.getName() + "]: " + e.getMessage() );
+            throw new DetailedSerializationException( "An error occurred building the module.",
                     e.getMessage() );
         }
     }
 
-    private PackageAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
-        PackageAssemblerConfiguration packageAssemblerConfiguration = new PackageAssemblerConfiguration();
-        packageAssemblerConfiguration.setBuildMode( buildMode );
-        packageAssemblerConfiguration.setStatusOperator( statusOperator );
-        packageAssemblerConfiguration.setStatusDescriptionValue( statusDescriptionValue );
-        packageAssemblerConfiguration.setEnableStatusSelector( enableStatusSelector );
-        packageAssemblerConfiguration.setCategoryOperator( categoryOperator );
-        packageAssemblerConfiguration.setCategoryValue( category );
-        packageAssemblerConfiguration.setEnableCategorySelector( enableCategorySelector );
-        packageAssemblerConfiguration.setCustomSelectorConfigName( selectorConfigName );
-        return packageAssemblerConfiguration;
+    private ModuleAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
+        ModuleAssemblerConfiguration moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
+        moduleAssemblerConfiguration.setBuildMode( buildMode );
+        moduleAssemblerConfiguration.setStatusOperator( statusOperator );
+        moduleAssemblerConfiguration.setStatusDescriptionValue( statusDescriptionValue );
+        moduleAssemblerConfiguration.setEnableStatusSelector( enableStatusSelector );
+        moduleAssemblerConfiguration.setCategoryOperator( categoryOperator );
+        moduleAssemblerConfiguration.setCategoryValue( category );
+        moduleAssemblerConfiguration.setEnableCategorySelector( enableCategorySelector );
+        moduleAssemblerConfiguration.setCustomSelectorConfigName( selectorConfigName );
+        return moduleAssemblerConfiguration;
     }
 
     private ClassLoader[] getClassLoaders(PackageAssembler packageAssembler) {
@@ -568,10 +575,10 @@ public class RepositoryModuleOperations {
         return rulesRepository.getSession().getUserID();
     }
 
-    protected BuilderResult buildPackage(ModuleItem item,
+    protected BuilderResult buildModule(ModuleItem item,
                                          boolean force) throws DetailedSerializationException {
-        return buildPackage( item,
-                force,
+        return buildModule( item,
+                             force,
                 createConfiguration(
                         null,
                         null,
@@ -583,6 +590,7 @@ public class RepositoryModuleOperations {
                         null ) );
     }
 
+    //Drools specific
     protected String buildPackageSource(String packageUUID) throws SerializationException {
 
         ModuleItem item = rulesRepository.loadModuleByUUID( packageUUID );

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.builder;
 
-public class PackageAssemblerConfiguration {
+public class ModuleAssemblerConfiguration {
 
     private String buildMode;
     private String statusOperator;

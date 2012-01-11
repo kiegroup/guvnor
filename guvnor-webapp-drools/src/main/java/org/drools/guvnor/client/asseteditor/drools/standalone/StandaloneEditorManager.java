@@ -167,7 +167,7 @@ public class StandaloneEditorManager {
                     WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
                 }
                 
-                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), workingSetAssets, afterWorkingSetsAreAppliedCommand);
+                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getModuleName(), workingSetAssets, afterWorkingSetsAreAppliedCommand);
             }
         });
 

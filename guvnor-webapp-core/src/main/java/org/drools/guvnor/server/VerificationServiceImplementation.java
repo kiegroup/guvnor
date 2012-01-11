@@ -144,7 +144,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     
     private TemporalBRLAssetVerifier getTemporalBRLAssetVerifier(VerifierConfiguration verifierConfiguration, Asset ruleAsset) throws SerializationException {
         
-        ModuleItem pkg = repositoryAssetService.getRulesRepository().loadModule(ruleAsset.getMetaData().packageName);
+        ModuleItem pkg = repositoryAssetService.getRulesRepository().loadModule(ruleAsset.getMetaData().moduleName);
         
         return new TemporalBRLAssetVerifier(
                 VerifierBuilderFactory.newVerifierBuilder().newVerifier(verifierConfiguration),

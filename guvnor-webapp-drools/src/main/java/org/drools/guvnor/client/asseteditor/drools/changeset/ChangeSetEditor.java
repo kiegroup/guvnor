@@ -95,8 +95,8 @@ public class ChangeSetEditor extends DirtyableComposite
 
         this.clientFactory = clientFactory;
 
-        assetPackageUUID = asset.getMetaData().getPackageUUID();
-        assetPackageName = asset.getMetaData().getPackageName();
+        assetPackageUUID = asset.getMetaData().getModuleUUID();
+        assetPackageName = asset.getMetaData().getModuleName();
         assetName = asset.getName();
 
         data = (RuleContentText) asset.getContent();

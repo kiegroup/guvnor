@@ -54,7 +54,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
                 viewer,
                 clientFactory,
                 eventBus );
-        this.packageName = asset.getMetaData().getPackageName();
+        this.packageName = asset.getMetaData().getModuleName();
     }
 
     public ImageResource getIcon() {

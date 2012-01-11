@@ -419,7 +419,7 @@ public class AssetEditorActionToolbar extends Composite {
             ((SaveEventListener) editor).onAfterSave();
         }
 
-        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getPackageUUID()));
+        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
         //TODO: JLIU
         //lastSaved = System.currentTimeMillis();
         //resetDirty();
@@ -500,7 +500,7 @@ public class AssetEditorActionToolbar extends Composite {
         RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
-                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                         close();
                     }
                 } );
@@ -619,7 +619,7 @@ public class AssetEditorActionToolbar extends Composite {
                         name,
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
-                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 //flushSuggestionCompletionCache(sel.getSelectedPackage());
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
@@ -663,7 +663,7 @@ public class AssetEditorActionToolbar extends Composite {
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
-                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                                 pop.hide();
                             }
@@ -684,7 +684,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doPromptToGlobal() {
-        if ( asset.getMetaData().getPackageName().equals( "globalArea" ) ) {
+        if ( asset.getMetaData().getModuleName().equals( "globalArea" ) ) {
             Window.alert( constants.ItemAlreadyInGlobalArea() );
             return;
         }
@@ -696,7 +696,7 @@ public class AssetEditorActionToolbar extends Composite {
 
                             //flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             //flushSuggestionCompletionCache("globalArea");
-                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                             eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
 

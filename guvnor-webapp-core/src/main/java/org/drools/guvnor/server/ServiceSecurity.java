@@ -102,7 +102,7 @@ public class ServiceSecurity {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new ModuleNameType(asset.getMetaData().getPackageName()),
+            identity.checkPermission(new ModuleNameType(asset.getMetaData().getModuleName()),
                     RoleType.PACKAGE_DEVELOPER.getName());
         } catch (RuntimeException e) {
             if (asset.getMetaData().getCategories().length == 0) {
@@ -170,7 +170,7 @@ public class ServiceSecurity {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new ModuleNameType(asset.getMetaData().getPackageName()),
+            identity.checkPermission(new ModuleNameType(asset.getMetaData().getModuleName()),
                     RoleType.PACKAGE_READONLY.getName());
         } catch (RuntimeException e) {
             if (asset.getMetaData().getCategories().length == 0) {

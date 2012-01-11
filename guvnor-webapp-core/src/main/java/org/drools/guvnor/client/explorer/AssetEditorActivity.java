@@ -76,7 +76,7 @@ public class AssetEditorActivity extends Activity {
                                                              final boolean[] loading) {
         return new GenericCallback<Asset>() {
             public void onSuccess(final Asset ruleAsset) {
-            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.packageName,
+            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.moduleName,
             	        createOnRefreshModuleDataModelCompletion( loading,
                                 ruleAsset )));
             }

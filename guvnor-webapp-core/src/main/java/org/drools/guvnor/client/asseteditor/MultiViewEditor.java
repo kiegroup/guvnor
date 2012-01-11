@@ -212,7 +212,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final Asset asset) {
-    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getPackageName(),
+    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getModuleName(),
                 new Command() {
 
                     public void execute() {
@@ -274,7 +274,7 @@ public class MultiViewEditor extends GuvnorEditor {
 		}
 
 		eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData()
-				.getPackageUUID()));
+				.getModuleUUID()));
 		// lastSaved = System.currentTimeMillis();
 		// resetDirty();
 	}
@@ -299,7 +299,7 @@ public class MultiViewEditor extends GuvnorEditor {
                             return;
                         }
 
-                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName(), asset);
+                        flushSuggestionCompletionCache(asset.getMetaData().getModuleName(), asset);
 /*                        if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }*/

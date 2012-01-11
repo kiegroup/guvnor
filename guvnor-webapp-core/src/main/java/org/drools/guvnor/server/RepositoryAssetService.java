@@ -288,15 +288,15 @@ public class RepositoryAssetService
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getModuleName());
 
-        //Perform house-keeping for when an Asset is removed from a package
+        //Perform house-keeping for when an Asset is removed from a module
         attachmentRemoved( item );
 
-        log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
+        log.info("USER:" + getCurrentUserName() + " CHANGING MODULE OF asset: [" + uuid + "] to [ globalArea ]");
         rulesRepository.moveRuleItemModule(RulesRepository.GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
         
-        //Perform house-keeping for when an Asset is added to a package
+        //Perform house-keeping for when an Asset is added to a module
         attachmentAdded( item );
         
     }

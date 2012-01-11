@@ -111,7 +111,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assembler = new PackageAssembler( pkg );
         assembler.compile();
         assertTrue( assembler.hasErrors() );
-        assertTrue( assembler.isPackageConfigurationInError() );
+        assertTrue( assembler.isModuleConfigurationInError() );
 
         DroolsHeader.updateDroolsHeader( "import java.util.Date",
                                          pkg );
@@ -155,7 +155,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assembler = new PackageAssembler( pkg );
         assembler.compile();
         assertTrue( assembler.hasErrors() );
-        assertFalse( assembler.isPackageConfigurationInError() );
+        assertFalse( assembler.isModuleConfigurationInError() );
         assertTrue( assembler.getErrors().get( 0 ).getName().equals( func.getName() ) );
         assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
@@ -571,7 +571,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         PackageAssembler asm = new PackageAssembler( pkg );
         asm.compile();
         assertTrue( asm.hasErrors() );
-        assertFalse( asm.isPackageConfigurationInError() );
+        assertFalse( asm.isModuleConfigurationInError() );
 
         for ( ContentAssemblyError err : asm.getErrors() ) {
             assertTrue( err.getName().equals( badRule.getName() ) );
@@ -876,7 +876,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                               }
                           } );
 
-        PackageAssemblerConfiguration configuration = new PackageAssemblerConfiguration();
+        ModuleAssemblerConfiguration configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "testSelect" );
 
@@ -896,7 +896,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertEquals( 2,
                       pk.getRules().length );
 
-        configuration = new PackageAssemblerConfiguration();
+        configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "nothing valid" );
         asm = new PackageAssembler( pkg,
@@ -907,11 +907,11 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                       asm.getErrors().size() );
         assertEquals( pkg.getName(),
                       asm.getErrors().get( 0 ).getName() );
-        assertTrue( asm.getErrors().get( 0 ).isPackageItem() );
+        assertTrue( asm.getErrors().get( 0 ).isModuleItem() );
         assertEquals( pkg.getUUID(),
                       asm.getErrors().get( 0 ).getUUID() );
 
-        configuration = new PackageAssemblerConfiguration();
+        configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "" );
         asm = new PackageAssembler( pkg,
@@ -964,7 +964,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                               }
                           } );
 
-        PackageAssemblerConfiguration packageAssemblerConfiguration = new PackageAssemblerConfiguration();
+        ModuleAssemblerConfiguration packageAssemblerConfiguration = new ModuleAssemblerConfiguration();
         packageAssemblerConfiguration.setBuildMode( "BuiltInSelector" );
         packageAssemblerConfiguration.setEnableStatusSelector( false );
         packageAssemblerConfiguration.setCategoryOperator( "=" );
@@ -988,7 +988,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertEquals( "rule1",
                       pk.getRules()[0].getName() );
 
-        packageAssemblerConfiguration = new PackageAssemblerConfiguration();
+        packageAssemblerConfiguration = new ModuleAssemblerConfiguration();
         packageAssemblerConfiguration.setBuildMode( "BuiltInSelector" );
         packageAssemblerConfiguration.setEnableStatusSelector( false );
         packageAssemblerConfiguration.setCategoryOperator( "!=" );

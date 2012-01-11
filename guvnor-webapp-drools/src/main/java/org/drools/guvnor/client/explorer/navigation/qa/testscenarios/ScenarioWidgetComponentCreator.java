@@ -70,7 +70,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget( getScenario(), this.asset.getMetaData().getPackageName(), this.scenarioWidget );
+        return new ConfigWidget( getScenario(), this.asset.getMetaData().getModuleName(), this.scenarioWidget );
     }
 
     protected AddExecuteButton createAddExecuteButton() {
@@ -98,7 +98,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel( this.asset.getMetaData().getPackageName(), currentExecutionTrace, getScenario(), this.scenarioWidget );
+        return new ExpectPanel( this.asset.getMetaData().getModuleName(), currentExecutionTrace, getScenario(), this.scenarioWidget );
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {

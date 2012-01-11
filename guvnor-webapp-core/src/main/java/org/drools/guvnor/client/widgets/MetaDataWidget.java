@@ -121,7 +121,7 @@ public class MetaDataWidget extends Composite {
                     readOnlyText( ((Asset) artifact).getMetaData().getCreator() ) );
 
             addAttribute( constants.PackageMetaData(),
-                    packageEditor( ((Asset) artifact).getMetaData().getPackageName() ) );
+                    packageEditor( ((Asset) artifact).getMetaData().getModuleName() ) );
 
             addAttribute( constants.IsDisabledMetaData(),
                     editableBoolean( new FieldBooleanBinding() {
@@ -430,7 +430,7 @@ public class MetaDataWidget extends Composite {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((Asset) artifact).getMetaData().getPackageName()
+            String hurl = getRESTBaseURL() + "packages/" + ((Asset) artifact).getMetaData().getModuleName()
                     + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }

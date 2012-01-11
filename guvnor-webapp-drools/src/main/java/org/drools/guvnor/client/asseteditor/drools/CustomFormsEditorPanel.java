@@ -203,7 +203,7 @@ public class CustomFormsEditorPanel extends Composite {
     }
 
     private SuggestionCompletionEngine getCompletionEngine() {
-        return SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.getMetaData().getPackageName());
+        return SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.getMetaData().getModuleName());
     }
 
     public void notifyValidFactsChanged() {

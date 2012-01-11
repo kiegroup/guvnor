@@ -26,7 +26,7 @@ import org.drools.repository.ModuleItem;
 
 import java.util.Iterator;
 
-public class PackageDRLAssembler extends AssemblerBase {
+public class PackageDRLAssembler extends PackageAssemblerBase {
 
     private StringBuilder src;
 
@@ -47,8 +47,8 @@ public class PackageDRLAssembler extends AssemblerBase {
     }
 
     private void loadHeader() {
-        src.append("package ").append(this.packageItem.getName()).append("\n");
-        src.append(DroolsHeader.getDroolsHeader(this.packageItem)).append("\n\n");
+        src.append("package ").append(this.moduleItem.getName()).append("\n");
+        src.append(DroolsHeader.getDroolsHeader(this.moduleItem)).append("\n\n");
     }
 
     private void loadDeclaredTypes() {

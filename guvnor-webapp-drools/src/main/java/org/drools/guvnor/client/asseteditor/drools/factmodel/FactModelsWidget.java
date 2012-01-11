@@ -84,7 +84,7 @@ public class FactModelsWidget extends Composite
 
     public void onAfterSave() {
         LoadingPopup.showMessage( constants.RefreshingModel() );
-        SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getPackageName(),
+        SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getModuleName(),
                                                              new Command() {
                                                                  public void execute() {
                                                                      LoadingPopup.close();

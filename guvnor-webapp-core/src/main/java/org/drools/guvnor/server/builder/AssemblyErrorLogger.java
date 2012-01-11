@@ -33,9 +33,9 @@ public class AssemblyErrorLogger {
         errors.add(err);
     }
 
-    public void addError(ModuleItem packageItem, String errorReport) {
+    public void addError(ModuleItem moduleItem, String errorReport) {
         errors.add(new ContentAssemblyError(
-                errorReport, packageItem.getFormat(), packageItem.getName(), packageItem.getUUID(), true, false));
+                errorReport, moduleItem.getFormat(), moduleItem.getName(), moduleItem.getUUID(), true, false));
     }
 
     public void addError(AssetItem assetItem, String errorReport) {
@@ -43,13 +43,13 @@ public class AssemblyErrorLogger {
                 errorReport, assetItem.getFormat(), assetItem.getName(), assetItem.getUUID(), false, true));
     }
 
-    public void addError(String message, String format, String name, String uuid, boolean isPackageItem, boolean isAssetItem) {
+    public void addError(String message, String format, String name, String uuid, boolean isModuleItem, boolean isAssetItem) {
         errors.add(new ContentAssemblyError(
                 message,
                 format,
                 name,
                 uuid,
-                isPackageItem,
+                isModuleItem,
                 isAssetItem));
     }
 

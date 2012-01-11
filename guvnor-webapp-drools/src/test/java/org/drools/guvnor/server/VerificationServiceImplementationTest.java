@@ -119,7 +119,7 @@ public class VerificationServiceImplementationTest {
 
     public MetaData getMetaData() {
         MetaData metaData = new MetaData();
-        metaData.packageName = "mockPackage";
+        metaData.moduleName = "mockPackage";
         return metaData;
     }
 
