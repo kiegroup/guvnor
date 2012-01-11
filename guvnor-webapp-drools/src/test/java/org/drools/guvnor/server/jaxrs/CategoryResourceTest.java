@@ -171,8 +171,9 @@ public class CategoryResourceTest extends GuvnorTestBase {
         client.addCredentials(baseURL.toExternalForm(), null, null,
                 new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
 
+        // resp = client.get(new URL(baseURL, "rest/categories/Category%201%2FCategory%201.1%2FCategory%201.1.1").toExternalForm());
         resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/Category%201.1.1").toExternalForm());
-        
+
         assertEquals (ResponseType.SUCCESS, resp.getType());
         assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
 
@@ -219,8 +220,9 @@ public class CategoryResourceTest extends GuvnorTestBase {
         client.addCredentials(baseURL.toExternalForm(), null, null,
                 new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
 
+        // resp = client.get(new URL(baseURL, "rest/categories/Category%201%2FCategory%201.1/children").toExternalForm());
         resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/children").toExternalForm());
-        
+
         assertEquals (ResponseType.SUCCESS, resp.getType());
         assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
         

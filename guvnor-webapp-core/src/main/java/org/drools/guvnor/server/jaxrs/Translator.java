@@ -53,6 +53,10 @@ public class Translator {
         category.setRefLink(uriInfo.getBaseUriBuilder()
                 .path("/categories/{categoryPath}")
                 .build(categoryItem.getFullPath()));
+        // TODO https://issues.jboss.org/browse/GUVNOR-1802
+//        category.setRefLink(uriInfo.getBaseUriBuilder()
+//                .path("categories").segment(categoryItem.getFullPath())
+//                .build());
         return category;
     }
 

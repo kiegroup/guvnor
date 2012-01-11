@@ -57,7 +57,6 @@ public class CategoryResource extends Resource {
     private final int pageSize = 10;
 
     @GET
-    @Path("/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Category> getCategoriesAsJAXB() {
         Collection<Category> ret = new ArrayList<Category>();
