@@ -516,7 +516,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
         rulesRepository.save();
 
-        InputStream xls = this.getClass().getResourceAsStream("/Sample.xls");
+        InputStream xls = this.getClass().getResourceAsStream("Sample.xls");
         assertNotNull(xls);
 
         AssetItem asset = pkg.addAsset("MyDT",
