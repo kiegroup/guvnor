@@ -746,6 +746,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         repositoryAssetService.archiveAsset( uuid4 );
         ModuleItem packageItem = rulesRepository.loadModule( packageName );
         packageItem.archiveItem( true );
+        packageItem.checkin( "" );
 
         TableDataResult td2 = repositoryAssetService.loadArchivedAssets( 0,
                                                                          1000 );
