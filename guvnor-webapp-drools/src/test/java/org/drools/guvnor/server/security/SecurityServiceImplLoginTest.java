@@ -29,14 +29,14 @@ import org.junit.Test;
 //
 // See http://seamframework.org/Community/OrgjbossseamsecurityIdentityImpllogoutRegression
 //
-public class SecurityServiceImplTestLogin extends GuvnorTestBase {
+public class SecurityServiceImplLoginTest extends GuvnorTestBase {
 
     private static final String USER_NAME = "securityServiceImplUser";
 
     @Inject
     private SecurityServiceImpl securityService;
 
-    public SecurityServiceImplTestLogin() {
+    public SecurityServiceImplLoginTest() {
         autoLoginAsAdmin = false;
     }
 
