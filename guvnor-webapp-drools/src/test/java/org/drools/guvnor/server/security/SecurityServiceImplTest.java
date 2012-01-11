@@ -16,16 +16,11 @@
 
 package org.drools.guvnor.server.security;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -35,20 +30,19 @@ import org.jboss.seam.security.AuthorizationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.picketlink.idm.impl.api.PasswordCredential;
 
 public class SecurityServiceImplTest extends GuvnorTestBase {
 
-    private static final String USER_NAME = "securityServiceImplUser";
+    private static final String         USER_NAME = "securityServiceImplUser";
 
     @Inject
-    private SecurityServiceImpl securityService;
+    private SecurityServiceImpl         securityService;
 
     @Inject
-    private RoleBasedPermissionStore roleBasedPermissionStore;
+    private RoleBasedPermissionStore    roleBasedPermissionStore;
 
     @Inject
-    private RoleBasedPermissionManager roleBasedPermissionManager;
+    private RoleBasedPermissionManager  roleBasedPermissionManager;
 
     @Inject
     private RoleBasedPermissionResolver roleBasedPermissionResolver;
@@ -59,23 +53,12 @@ public class SecurityServiceImplTest extends GuvnorTestBase {
 
     @Before
     public void loginAsSpecificUser() {
-        loginAs(USER_NAME);
+        loginAs( USER_NAME );
     }
 
     @After
     public void logoutAsSpecificUser() {
-        logoutAs(USER_NAME);
-    }
-
-    @Test
-    public void testLogin() throws Exception {
-        logoutAsSpecificUser();
-        try {
-            assertTrue( securityService.login( USER_NAME,
-                                    USER_NAME ) );
-        } finally {
-            loginAsSpecificUser();
-        }
+        logoutAs( USER_NAME );
     }
 
     @Test
@@ -87,30 +70,31 @@ public class SecurityServiceImplTest extends GuvnorTestBase {
     public void testCapabilities() {
         List<Capability> userCapabilities = securityService.getUserCapabilities();
 
-        assertTrue(userCapabilities.contains(Capability.SHOW_ADMIN));
-        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_ASSET));
-        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
-        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
-        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_QA));
+        assertTrue( userCapabilities.contains( Capability.SHOW_ADMIN ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_CREATE_NEW_ASSET ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_CREATE_NEW_PACKAGE ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_DEPLOYMENT ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_DEPLOYMENT_NEW ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) );
+        assertTrue( userCapabilities.contains( Capability.SHOW_QA ) );
     }
 
     @Test
     public void testCapabilitiesWithContext() {
-        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
-        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
-                                           RoleType.PACKAGE_READONLY.getName(),
-                                           "packagename",
-                                           null ) );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization( true );
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( USER_NAME,
+                                                                   new RoleBasedPermission( USER_NAME,
+                                                                                            RoleType.PACKAGE_READONLY.getName(),
+                                                                                            "packagename",
+                                                                                            null ) );
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
         try {
             List<Capability> c = securityService.getUserCapabilities();
-            assertTrue(c.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
+            assertTrue( c.contains( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) );
 
             //now lets give them no permissions
-            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting( USER_NAME );
             roleBasedPermissionManager.create(); // HACK flushes the permission cache
             try {
                 securityService.getUserCapabilities();
@@ -119,8 +103,8 @@ public class SecurityServiceImplTest extends GuvnorTestBase {
                 assertNotNull( e.getMessage() );
             }
         } finally {
-            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
-            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization( false );
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting( USER_NAME );
         }
         securityService.getUserCapabilities(); // should not blow up !
     }
