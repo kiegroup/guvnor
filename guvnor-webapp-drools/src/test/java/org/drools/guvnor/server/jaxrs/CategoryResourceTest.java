@@ -67,23 +67,33 @@ import org.xml.sax.SAXParseException;
 public class CategoryResourceTest extends GuvnorTestBase {
 
     private Abdera abdera = new Abdera();
-    
+
     public CategoryResourceTest() {
         autoLoginAsAdmin = false;
     }
-    
-//    @BeforeClass
+
+    //    @BeforeClass
     // Unreliable HACK
     // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
     @Test
     public void startServers() throws Exception {
         //Create 2 categories
-        repositoryCategoryService.createCategory(null, "Category 1", "Category 1 description");
-        repositoryCategoryService.createCategory(null, "Category 2", "Category 2 description");
-        repositoryCategoryService.createCategory("Category 1", "Category 1.1", "Category 1.1 description");
-        repositoryCategoryService.createCategory("Category 1", "Category 1.2", "Category 1.2 description");
-        repositoryCategoryService.createCategory("Category 1/Category 1.1", "Category 1.1.1", "Category 1.1.1 description");
-        
+        repositoryCategoryService.createCategory( null,
+                                                  "Category 1",
+                                                  "Category 1 description" );
+        repositoryCategoryService.createCategory( null,
+                                                  "Category 2",
+                                                  "Category 2 description" );
+        repositoryCategoryService.createCategory( "Category 1",
+                                                  "Category 1.1",
+                                                  "Category 1.1 description" );
+        repositoryCategoryService.createCategory( "Category 1",
+                                                  "Category 1.2",
+                                                  "Category 1.2 description" );
+        repositoryCategoryService.createCategory( "Category 1/Category 1.1",
+                                                  "Category 1.1.1",
+                                                  "Category 1.1.1 description" );
+
         //create a new package
         ModuleItem pkg = rulesRepository.createModule( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
@@ -92,511 +102,707 @@ public class CategoryResourceTest extends GuvnorTestBase {
                                        "" );
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo1() then end" );
-        rule.updateCategoryList(new String[]{"Category 1"});
+        rule.updateCategoryList( new String[]{"Category 1"} );
         rule.checkin( "version 1" );
-        
+
         //Create rule2 with 'category 2'
         rule = pkg.addAsset( "rule2",
                                        "" );
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo1() then end" );
-        rule.updateCategoryList(new String[]{"Category 2"});
+        rule.updateCategoryList( new String[]{"Category 2"} );
         rule.checkin( "version 1" );
-        
+
         //Create rule3 with 'category 1' and 'category 2'
         rule = pkg.addAsset( "rule3",
                                        "" );
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo1() then end" );
-        rule.updateCategoryList(new String[]{"Category 1", "Category 2"});
+        rule.updateCategoryList( new String[]{"Category 1", "Category 2"} );
         rule.checkin( "version 1" );
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void getCategoriesAsJAXB(@ArquillianResource URL baseURL) throws Exception {
-        //list all categories
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
-        ClientResponse resp = client.get(new URL(baseURL, "rest/categories").toExternalForm());
-        
-        assertEquals(ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+        //Client connection
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
+
+        //Get existing categories (the order of tests is unpredictable and hence we need to check the delta)
+        ClientResponse resp = client.get( new URL( baseURL,
+                                                   "rest/categories" ).toExternalForm() );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
         Document<Feed> document = resp.getDocument();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
-        
-        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertEquals(5, categories.size());
-        assertTrue(categories.containsKey("Category 1"));
-        assertTrue(categories.containsKey("Category 2"));
-        assertTrue(categories.containsKey("Category 1/Category 1.1"));
-        assertTrue(categories.containsKey("Category 1/Category 1.2"));
-        assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
-        for (Category category : categories.values()) {
-            assertNotNull(category.getRefLink());
+
+        final Map<String, Category> existingCategories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        //Make some new categories
+        resp = client.put( new URL( baseURL,
+                                    "rest/categories/getCategoriesAsJAXBCategory1" ).toExternalForm(),
+                           new ByteArrayInputStream( new String( "getCategoriesAsJAXBCategory1" ).getBytes() ) );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        resp = client.put( new URL( baseURL,
+                                    "rest/categories/getCategoriesAsJAXBCategory2" ).toExternalForm(),
+                           new ByteArrayInputStream( new String( "getCategoriesAsJAXBCategory2" ).getBytes() ) );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        resp = client.put( new URL( baseURL,
+                                    "rest/categories/getCategoriesAsJAXBCategory3" ).toExternalForm(),
+                           new ByteArrayInputStream( new String( "getCategoriesAsJAXBCategory3" ).getBytes() ) );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+
+        //Read all categories back using a new Client connection (the existing client cannot see the new categories)
+        AbderaClient client2 = new AbderaClient( abdera );
+        client2.addCredentials( baseURL.toExternalForm(),
+                                null,
+                                null,
+                                new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                               "admin" ) );
+        resp = client2.get( new URL( baseURL,
+                                     "rest/categories" ).toExternalForm() );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
+        document = resp.getDocument();
+
+        outputStream = new ByteArrayOutputStream();
+        document.writeTo( outputStream );
+        outputStream.close();
+
+        final Map<String, Category> allCategories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        //Check delta
+        assertEquals( 3 + existingCategories.size(),
+                      allCategories.size() );
+        assertTrue( allCategories.containsKey( "getCategoriesAsJAXBCategory1" ) );
+        assertTrue( allCategories.containsKey( "getCategoriesAsJAXBCategory2" ) );
+        assertTrue( allCategories.containsKey( "getCategoriesAsJAXBCategory3" ) );
+
+        //Check others created at server-startup (might include an additional from "createCategory")
+        assertTrue( allCategories.containsKey( "Category 1" ) );
+        assertTrue( allCategories.containsKey( "Category 2" ) );
+        assertTrue( allCategories.containsKey( "Category 1/Category 1.1" ) );
+        assertTrue( allCategories.containsKey( "Category 1/Category 1.2" ) );
+        assertTrue( allCategories.containsKey( "Category 1/Category 1.1/Category 1.1.1" ) );
+
+        for ( Category category : allCategories.values() ) {
+            assertNotNull( category.getRefLink() );
         }
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void getCategoryAsJAXB(@ArquillianResource URL baseURL) throws Exception {
         //get 'Category 1'
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
-        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201").toExternalForm());
-        
-        assertEquals (ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
+        ClientResponse resp = client.get( new URL( baseURL,
+                                                   "rest/categories/Category%201" ).toExternalForm() );
+
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
         Document<Feed> document = resp.getDocument();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
-        
-        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertEquals(1, categories.size());
-        
+
+        Map<String, Category> categories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        assertEquals( 1,
+                      categories.size() );
+
         Category category = categories.values().iterator().next();
-        assertEquals("Category 1", category.getPath());
+        assertEquals( "Category 1",
+                      category.getPath() );
 
         //get 'Category 1/Category 1.1/Category 1.1.1'
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
         // resp = client.get(new URL(baseURL, "rest/categories/Category%201%2FCategory%201.1%2FCategory%201.1.1").toExternalForm());
-        resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/Category%201.1.1").toExternalForm());
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories/Category%201/Category%201.1/Category%201.1.1" ).toExternalForm() );
 
-        assertEquals (ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
 
         document = resp.getDocument();
 
         outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
 
-        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertEquals(1, categories.size());
+        categories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        assertEquals( 1,
+                      categories.size() );
         category = categories.values().iterator().next();
-        
-        assertEquals("Category 1/Category 1.1/Category 1.1.1", category.getPath());
+
+        assertEquals( "Category 1/Category 1.1/Category 1.1.1",
+                      category.getPath() );
     }
-    
-    @Test @RunAsClient
+
+    @Test
+    @RunAsClient
     public void getCategoryChildrenAsJAXB(@ArquillianResource URL baseURL) throws Exception {
         //get children of 'Category 1'
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
-        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201/children").toExternalForm());
-        
-        assertEquals (ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+        ClientResponse resp = client.get( new URL( baseURL,
+                                                   "rest/categories/Category%201/children" ).toExternalForm() );
+
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
         Document<Feed> document = resp.getDocument();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
-        
-        Map<String, Category> categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertEquals(2, categories.size());
-        assertTrue(categories.containsKey("Category 1/Category 1.1"));
-        assertTrue(categories.containsKey("Category 1/Category 1.2"));
-        
+
+        Map<String, Category> categories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        assertEquals( 2,
+                      categories.size() );
+        assertTrue( categories.containsKey( "Category 1/Category 1.1" ) );
+        assertTrue( categories.containsKey( "Category 1/Category 1.2" ) );
+
         //get children of 'Category 1.1'
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
         // resp = client.get(new URL(baseURL, "rest/categories/Category%201%2FCategory%201.1/children").toExternalForm());
-        resp = client.get(new URL(baseURL, "rest/categories/Category%201/Category%201.1/children").toExternalForm());
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories/Category%201/Category%201.1/children" ).toExternalForm() );
 
-        assertEquals (ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
         document = resp.getDocument();
 
         outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
-        
-        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertEquals(1, categories.size());
-        assertTrue(categories.containsKey("Category 1/Category 1.1/Category 1.1.1"));
-        
+
+        categories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        assertEquals( 1,
+                      categories.size() );
+        assertTrue( categories.containsKey( "Category 1/Category 1.1/Category 1.1.1" ) );
+
         //get children of 'Category 2'
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
-        resp = client.get(new URL(baseURL, "rest/categories/Category%202/children").toExternalForm());
-        
-        assertEquals (ResponseType.SUCCESS, resp.getType());
-        assertEquals(MediaType.APPLICATION_XML, resp.getContentType().toString());
-        
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories/Category%202/children" ).toExternalForm() );
+
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      resp.getContentType().toString() );
+
         document = resp.getDocument();
 
         outputStream = new ByteArrayOutputStream();
-        document.writeTo(outputStream);
+        document.writeTo( outputStream );
         outputStream.close();
-        
-        categories = fromXMLToCategoriesMap(outputStream.toString("UTF-8"));
-        
-        assertTrue(categories.isEmpty());
+
+        categories = fromXMLToCategoriesMap( outputStream.toString( "UTF-8" ) );
+
+        assertTrue( categories.isEmpty() );
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void createCategory(@ArquillianResource URL baseURL) throws Exception {
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
-        ClientResponse resp = client.put(new URL(baseURL, "rest/categories/createCategory").toExternalForm(),
-                new ByteArrayInputStream(new byte[]{}));
-        assertEquals(ResponseType.SUCCESS, resp.getType());
+        ClientResponse resp = client.put( new URL( baseURL,
+                                                   "rest/categories/createCategory" ).toExternalForm(),
+                                          new ByteArrayInputStream( new byte[]{} ) );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void deleteCategory(@ArquillianResource URL baseURL) throws Exception {
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
 
-        ClientResponse resp = client.put(new URL(baseURL, "rest/categories/deleteCategory").toExternalForm(),
-                new ByteArrayInputStream(new byte[]{}));
-        assertEquals(ResponseType.SUCCESS, resp.getType());
+        ClientResponse resp = client.put( new URL( baseURL,
+                                                   "rest/categories/deleteCategory" ).toExternalForm(),
+                                          new ByteArrayInputStream( new byte[]{} ) );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
 
-        resp = client.delete(new URL(baseURL, "rest/categories/deleteCategory").toExternalForm());
-        assertEquals(ResponseType.SUCCESS, resp.getType());
+        resp = client.delete( new URL( baseURL,
+                                       "rest/categories/deleteCategory" ).toExternalForm() );
+        assertEquals( ResponseType.SUCCESS,
+                      resp.getType() );
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testGetAssetsByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Get assets from category 1
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
         RequestOptions options = client.getDefaultRequestOptions();
-        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+        options.setAccept( MediaType.APPLICATION_ATOM_XML );
 
-        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201/assets").toExternalForm());
-        
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error getting assets from 'Category 1'");
+        ClientResponse resp = client.get( new URL( baseURL,
+                                                   "rest/categories/Category%201/assets" ).toExternalForm() );
+
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error getting assets from 'Category 1'" );
         }
-        
+
         Document<Feed> document = resp.getDocument();
-        
-        //Must be 2 assets in the response
-        assertEquals(2, document.getRoot().getEntries().size());
-        
-        List<String> assetNames = new ArrayList<String>();
-        for (Entry entry : document.getRoot().getEntries()) {
-            assetNames.add(entry.getTitle());
-        }
-        
-        //rule1 and rule3 should be in the response
-        assertTrue(assetNames.contains("rule1"));
-        assertTrue(assetNames.contains("rule3"));
-        
-        //-----------------------------
-        
-        
-        //Get assets from category 2
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
-        options = client.getDefaultRequestOptions();
-        options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(new URL(baseURL, "rest/categories/Category%202/assets").toExternalForm());
-        
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error getting assets from 'Category 1'");
-        }
-        
-        document = resp.getDocument();
-        
         //Must be 2 assets in the response
-        assertEquals(2, document.getRoot().getEntries().size());
-        
-        assetNames = new ArrayList<String>();
-        for (Entry entry : document.getRoot().getEntries()) {
-            assetNames.add(entry.getTitle());
+        assertEquals( 2,
+                      document.getRoot().getEntries().size() );
+
+        List<String> assetNames = new ArrayList<String>();
+        for ( Entry entry : document.getRoot().getEntries() ) {
+            assetNames.add( entry.getTitle() );
         }
-        
+
+        //rule1 and rule3 should be in the response
+        assertTrue( assetNames.contains( "rule1" ) );
+        assertTrue( assetNames.contains( "rule3" ) );
+
+        //-----------------------------
+
+        //Get assets from category 2
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
+        options = client.getDefaultRequestOptions();
+        options.setAccept( MediaType.APPLICATION_ATOM_XML );
+
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories/Category%202/assets" ).toExternalForm() );
+
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error getting assets from 'Category 1'" );
+        }
+
+        document = resp.getDocument();
+
+        //Must be 2 assets in the response
+        assertEquals( 2,
+                      document.getRoot().getEntries().size() );
+
+        assetNames = new ArrayList<String>();
+        for ( Entry entry : document.getRoot().getEntries() ) {
+            assetNames.add( entry.getTitle() );
+        }
+
         //rule2 and rule3 should be in the response
-        assertTrue(assetNames.contains("rule2"));
-        assertTrue(assetNames.contains("rule3"));
+        assertTrue( assetNames.contains( "rule2" ) );
+        assertTrue( assetNames.contains( "rule3" ) );
     }
-    
+
     /**
      * Similar to testGetAssetsByCategoryAsAtom but here the rules are created
-     * using REST API. This test demonstrate that the category of assets created 
+     * using REST API. This test demonstrate that the category of assets created
      * in this way is correctly stored in the repository. See GUVNOR-1599
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testGetAssetsCreatedByAtomByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Create 2 new assets, one in each category
-        AbderaClient client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
-            
-        Entry processEntry = this.createProcessEntry("Process1", "Some test process", new ArrayList<String>(){{this.add("Category 1");
-        }});
-        
+        AbderaClient client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
+
+        Entry processEntry = this.createProcessEntry( "Process1",
+                                                      "Some test process",
+                                                      new ArrayList<String>() {
+                                                          {
+                                                              this.add( "Category 1" );
+                                                          }
+                                                      } );
+
         //invoke Guvnor REST API to store the process
         RequestOptions options = client.getDefaultRequestOptions();
-        options.setContentType("application/atom+xml");
+        options.setContentType( "application/atom+xml" );
 
-        ClientResponse resp = client.post(new URL(baseURL, "rest/packages/categoriesPackage1/assets").toExternalForm(), processEntry, options);
+        ClientResponse resp = client.post( new URL( baseURL,
+                                                    "rest/packages/categoriesPackage1/assets" ).toExternalForm(),
+                                           processEntry,
+                                           options );
 
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error creating process asset: "+resp.getStatusText());
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error creating process asset: " + resp.getStatusText() );
         }
-        
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
-            
-        processEntry = this.createProcessEntry("Process2", "Some other test process", new ArrayList<String>(){{this.add("Category 2");
-        }});
-        
+
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
+
+        processEntry = this.createProcessEntry( "Process2",
+                                                "Some other test process",
+                                                new ArrayList<String>() {
+                                                    {
+                                                        this.add( "Category 2" );
+                                                    }
+                                                } );
+
         //invoke Guvnor REST API to store the process
         options = client.getDefaultRequestOptions();
-        options.setContentType("application/atom+xml");
+        options.setContentType( "application/atom+xml" );
 
-        resp = client.post(new URL(baseURL, "rest/packages/categoriesPackage1/assets").toExternalForm(), processEntry, options);
+        resp = client.post( new URL( baseURL,
+                                     "rest/packages/categoriesPackage1/assets" ).toExternalForm(),
+                            processEntry,
+                            options );
 
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error creating process asset: "+resp.getStatusText());
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error creating process asset: " + resp.getStatusText() );
         }
-        
-        
+
         //---------------------------------------------
         //Enough configuration... Let's the tests begin
-        
+
         //Get assets from category 1
-        client = new AbderaClient(abdera);
-        client.addCredentials(baseURL.toExternalForm(), null, null,
-                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
+        client = new AbderaClient( abdera );
+        client.addCredentials( baseURL.toExternalForm(),
+                               null,
+                               null,
+                               new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                              "admin" ) );
         options = client.getDefaultRequestOptions();
-        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+        options.setAccept( MediaType.APPLICATION_ATOM_XML );
 
-        resp = client.get(new URL(baseURL, "rest/categories/Category%201/assets").toExternalForm());
-        
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error getting assets from 'Category 1'");
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories/Category%201/assets" ).toExternalForm() );
+
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error getting assets from 'Category 1'" );
         }
-        
+
         Document<Feed> document = resp.getDocument();
-        
+
         //Must be 3 assets in the response
-        assertEquals(3, document.getRoot().getEntries().size());
-        
+        assertEquals( 3,
+                      document.getRoot().getEntries().size() );
+
         List<String> assetNames = new ArrayList<String>();
-        for (Entry entry : document.getRoot().getEntries()) {
-            assetNames.add(entry.getTitle());
+        for ( Entry entry : document.getRoot().getEntries() ) {
+            assetNames.add( entry.getTitle() );
         }
-        
+
         //rule1, rule 3 and Process 1 should be in the response
-        assertTrue(assetNames.contains("rule1"));
-        assertTrue(assetNames.contains("rule3"));
-        assertTrue(assetNames.contains("Process1"));
-        
-        
+        assertTrue( assetNames.contains( "rule1" ) );
+        assertTrue( assetNames.contains( "rule3" ) );
+        assertTrue( assetNames.contains( "Process1" ) );
+
         //------------------------------------------------------------------
-                
+
         //clean up
-        resp = client.delete(new URL(baseURL, "rest/packages/categoriesPackage1/assets/Process1").toExternalForm());
-        
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error deleting 'Process1'");
+        resp = client.delete( new URL( baseURL,
+                                       "rest/packages/categoriesPackage1/assets/Process1" ).toExternalForm() );
+
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error deleting 'Process1'" );
         }
 
-        resp = client.delete(new URL(baseURL, "rest/packages/categoriesPackage1/assets/Process2").toExternalForm());
-        
-        if (resp.getType() != ResponseType.SUCCESS){
-            fail("Error deleting 'Process2'");
+        resp = client.delete( new URL( baseURL,
+                                       "rest/packages/categoriesPackage1/assets/Process2" ).toExternalForm() );
+
+        if ( resp.getType() != ResponseType.SUCCESS ) {
+            fail( "Error deleting 'Process2'" );
         }
-        
+
     }
 
-    @Test @RunAsClient @Ignore
+    @Test
+    @RunAsClient
+    @Ignore
     public void testGetAssetsByCategoryAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets");
+        URL url = new URL( baseURL,
+                           "rest/categories/Home%20Mortgage/assets" );
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
+        connection.setRequestProperty( "Authorization",
+                                       "Basic " + new Base64().encodeToString( ("admin:admin".getBytes()) ) );
+        connection.setRequestMethod( "GET" );
+        connection.setRequestProperty( "Accept",
+                                       MediaType.APPLICATION_JSON );
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
+        assertEquals( 200,
+                      connection.getResponseCode() );
+        assertEquals( MediaType.APPLICATION_JSON,
+                      connection.getContentType() );
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
-    @Test @RunAsClient @Ignore
+    @Test
+    @RunAsClient
+    @Ignore
     public void testGetAssetsByCategoryAsJaxb(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets");
+        URL url = new URL( baseURL,
+                           "rest/categories/Home%20Mortgage/assets" );
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setRequestProperty( "Authorization",
+                                       "Basic " + new Base64().encodeToString( ("admin:admin".getBytes()) ) );
+        connection.setRequestMethod( "GET" );
+        connection.setRequestProperty( "Accept",
+                                       MediaType.APPLICATION_XML );
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+        assertEquals( 200,
+                      connection.getResponseCode() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      connection.getContentType() );
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @RunAsClient @Ignore
+    @Test
+    @RunAsClient
+    @Ignore
     public void testGetAssetsByCategoryAndPageAsAtom(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
+        URL url = new URL( baseURL,
+                           "rest/categories/Home%20Mortgage/assets//page/0" );
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty( "Authorization",
+                                       "Basic " + new Base64().encodeToString( ("admin:admin".getBytes()) ) );
+        connection.setRequestMethod( "GET" );
+        connection.setRequestProperty( "Accept",
+                                       MediaType.APPLICATION_ATOM_XML );
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        assertEquals( 200,
+                      connection.getResponseCode() );
+        assertEquals( MediaType.APPLICATION_ATOM_XML,
+                      connection.getContentType() );
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @RunAsClient @Ignore
+    @Test
+    @RunAsClient
+    @Ignore
     public void testGetAssetsByCategoryAndPageAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
+        URL url = new URL( baseURL,
+                           "rest/categories/Home%20Mortgage/assets//page/0" );
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
+        connection.setRequestProperty( "Authorization",
+                                       "Basic " + new Base64().encodeToString( ("admin:admin".getBytes()) ) );
+        connection.setRequestMethod( "GET" );
+        connection.setRequestProperty( "Accept",
+                                       MediaType.APPLICATION_JSON );
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
+        assertEquals( 200,
+                      connection.getResponseCode() );
+        assertEquals( MediaType.APPLICATION_JSON,
+                      connection.getContentType() );
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
-    @Test @RunAsClient @Ignore
+    @Test
+    @RunAsClient
+    @Ignore
     public void testGetAssetsByCategoryAndPageAsJaxb(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
+        URL url = new URL( baseURL,
+                           "rest/categories/Home%20Mortgage/assets//page/0" );
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setRequestProperty( "Authorization",
+                                       "Basic " + new Base64().encodeToString( ("admin:admin".getBytes()) ) );
+        connection.setRequestMethod( "GET" );
+        connection.setRequestProperty( "Accept",
+                                       MediaType.APPLICATION_XML );
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+        assertEquals( 200,
+                      connection.getResponseCode() );
+        assertEquals( MediaType.APPLICATION_XML,
+                      connection.getContentType() );
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
-    
-    private Entry createProcessEntry(String title, String summary, List<String> categories){
-        
-        Entry processEntry = abdera.newEntry();
-        
-        processEntry.setTitle(title);
-        processEntry.setSummary(summary);
-        
-        //create metadata element
-        ExtensibleElement metadataExtension = processEntry.addExtension(new QName("", "metadata"));
-        
-        //add format element to metadata
-        ExtensibleElement formatExtension = metadataExtension.addExtension(new QName("", "format"));
-        formatExtension.addSimpleExtension(new QName("", "value"), "bpmn2");
-        
-        //add categories element to metadata
-        ExtensibleElement categoriesExtension = metadataExtension.addExtension(new QName("", "categories"));
 
-        categoriesExtension.addSimpleExtension(new QName("", "value"), categories.get(0));
-        
+    private Entry createProcessEntry(String title,
+                                     String summary,
+                                     List<String> categories) {
+
+        Entry processEntry = abdera.newEntry();
+
+        processEntry.setTitle( title );
+        processEntry.setSummary( summary );
+
+        //create metadata element
+        ExtensibleElement metadataExtension = processEntry.addExtension( new QName( "",
+                                                                                    "metadata" ) );
+
+        //add format element to metadata
+        ExtensibleElement formatExtension = metadataExtension.addExtension( new QName( "",
+                                                                                       "format" ) );
+        formatExtension.addSimpleExtension( new QName( "",
+                                                       "value" ),
+                                            "bpmn2" );
+
+        //add categories element to metadata
+        ExtensibleElement categoriesExtension = metadataExtension.addExtension( new QName( "",
+                                                                                           "categories" ) );
+
+        categoriesExtension.addSimpleExtension( new QName( "",
+                                                           "value" ),
+                                                categories.get( 0 ) );
+
         return processEntry;
     }
-    
+
     public Map<String, Category> fromXMLToCategoriesMap(String xml) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
-            
+            factory.setValidating( false );
+
             final List<String> errors = new ArrayList<String>();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            
-            builder.setErrorHandler(new ErrorHandler() {
+
+            builder.setErrorHandler( new ErrorHandler() {
 
                 public void warning(SAXParseException exception) throws SAXException {
-                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.WARNING, "Warning parsing categories from Guvnor", exception);
+                    java.util.logging.Logger.getLogger( Translator.class.getName() ).log( Level.WARNING,
+                                                                                          "Warning parsing categories from Guvnor",
+                                                                                          exception );
                 }
 
                 public void error(SAXParseException exception) throws SAXException {
-                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, "Error parsing categories from Guvnor", exception);
-                    errors.add(exception.getMessage());
+                    java.util.logging.Logger.getLogger( Translator.class.getName() ).log( Level.SEVERE,
+                                                                                          "Error parsing categories from Guvnor",
+                                                                                          exception );
+                    errors.add( exception.getMessage() );
                 }
 
                 public void fatalError(SAXParseException exception) throws SAXException {
-                    java.util.logging.Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, "Error parsing categories from Guvnor", exception);
-                    errors.add(exception.getMessage());
+                    java.util.logging.Logger.getLogger( Translator.class.getName() ).log( Level.SEVERE,
+                                                                                          "Error parsing categories from Guvnor",
+                                                                                          exception );
+                    errors.add( exception.getMessage() );
                 }
-            });
-            
-            org.w3c.dom.Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
-            
-            if (!errors.isEmpty()){
-                throw new IllegalStateException("Error parsing categories from guvnor. Check the log for errors' details.");
+            } );
+
+            org.w3c.dom.Document doc = builder.parse( new ByteArrayInputStream( xml.getBytes() ) );
+
+            if ( !errors.isEmpty() ) {
+                throw new IllegalStateException( "Error parsing categories from guvnor. Check the log for errors' details." );
             }
 
             Map<String, Category> categories = new HashMap<String, Category>();
-            
+
             //convert all catergories and add them to the list
-            NodeList categoriesList = doc.getElementsByTagName("category");
-            for (int i = 0; i < categoriesList.getLength(); i++) {
-                Element element = (Element) categoriesList.item(i);
+            NodeList categoriesList = doc.getElementsByTagName( "category" );
+            for ( int i = 0; i < categoriesList.getLength(); i++ ) {
+                Element element = (Element) categoriesList.item( i );
                 Category category = new Category();
-                
-                NodeList pathNodes = element.getElementsByTagName("path");
-                if (pathNodes.getLength() != 1){
-                    throw new IllegalStateException("Malformed category. Expected 1 <path> tag, but found " + pathNodes.getLength());
-                }
-                Node pathNode = pathNodes.item(0);
-                category.setPath(pathNode.getTextContent());
 
-                NodeList refLinkNodes = element.getElementsByTagName("refLink");
-                if (refLinkNodes.getLength() != 1){
-                    throw new IllegalStateException("Malformed category. Expected 1 <refLink> tag, but found " + refLinkNodes.getLength());
+                NodeList pathNodes = element.getElementsByTagName( "path" );
+                if ( pathNodes.getLength() != 1 ) {
+                    throw new IllegalStateException( "Malformed category. Expected 1 <path> tag, but found " + pathNodes.getLength() );
                 }
-                Node refLinkNode = refLinkNodes.item(0);
+                Node pathNode = pathNodes.item( 0 );
+                category.setPath( pathNode.getTextContent() );
+
+                NodeList refLinkNodes = element.getElementsByTagName( "refLink" );
+                if ( refLinkNodes.getLength() != 1 ) {
+                    throw new IllegalStateException( "Malformed category. Expected 1 <refLink> tag, but found " + refLinkNodes.getLength() );
+                }
+                Node refLinkNode = refLinkNodes.item( 0 );
                 try {
-                    category.setRefLink(new URI(refLinkNode.getTextContent()));
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException("Error parsing categories xml", e);
+                    category.setRefLink( new URI( refLinkNode.getTextContent() ) );
+                } catch ( URISyntaxException e ) {
+                    throw new RuntimeException( "Error parsing categories xml",
+                                                e );
                 }
 
-                categories.put(category.getPath(), category);
+                categories.put( category.getPath(),
+                                category );
             }
-            
+
             return categories;
-        } catch (SAXException ex) {
-            throw new RuntimeException("Error parsing categories xml", ex);
-        } catch (IOException ex) {
-            throw new RuntimeException("Error parsing categories xml", ex);
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException("Error parsing categories xml", ex);
+        } catch ( SAXException ex ) {
+            throw new RuntimeException( "Error parsing categories xml",
+                                        ex );
+        } catch ( IOException ex ) {
+            throw new RuntimeException( "Error parsing categories xml",
+                                        ex );
+        } catch ( ParserConfigurationException ex ) {
+            throw new RuntimeException( "Error parsing categories xml",
+                                        ex );
         }
     }
 
