@@ -96,6 +96,7 @@ import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -114,8 +115,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Inject
     private MailboxService                        mailboxService;
 
+    @Before
+    public void ensureMailServiceHasStarted() {
+        // Need to reference @ApplicationScoped bean to force load 
+        // in the absence of @ManagedBean( eager=true ) in JDK1.5
+        mailboxService.wakeUp();
+    }
+    
     @Test
     public void testInboxEvents() throws Exception {
+        
         assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
         //this should trigger the fact that the first user edited something
@@ -145,7 +154,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         as2.updateContent( "hey" );
         as2.checkin( "here we go again !" );
 
-        Thread.sleep( 200 );
+        Thread.sleep( 250 );
 
         //now check that it is in the first users inbox
         TableDataRow rowMatch = null;
@@ -171,7 +180,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       secondUsersInbox.loadRecentEdited().size() );
 
         //ok lets create a third user...
-        RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
+        RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "thirduser" ) );
         AssetItem as3 = repo3.loadDefaultModule().loadAsset( "testLoadInbox" );
         as3.updateContent( "hey22" );
         as3.checkin( "here we go again 22!" );
@@ -482,8 +491,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testTrackRecentOpenedChanged() throws Exception {
-        // The wakeUp() method doesn't really matter, it's just to make sure mailboxService is constructed and registered
-        mailboxService.wakeUp();
 
         UserInbox ib = new UserInbox( rulesRepository );
         ib.clearAll();
