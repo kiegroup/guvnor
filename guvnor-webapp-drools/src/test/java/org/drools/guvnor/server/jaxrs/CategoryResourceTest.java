@@ -15,28 +15,11 @@
  */
 package org.drools.guvnor.server.jaxrs;
 
-import javax.xml.namespace.QName;
-import org.apache.abdera.model.ExtensibleElement;
-import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Feed;
-import org.apache.abdera.protocol.Response.ResponseType;
-import org.apache.abdera.protocol.client.AbderaClient;
-import org.apache.abdera.protocol.client.ClientResponse;
-import org.apache.abdera.protocol.client.RequestOptions;
-import org.apache.abdera.Abdera;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.repository.AssetItem;
-import org.drools.repository.ModuleItem;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
-import org.drools.util.codec.Base64;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,19 +27,37 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-//import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import javax.ws.rs.core.MediaType;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.drools.guvnor.server.jaxrs.jaxb.Category;
 
-import static org.junit.Assert.*;
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.ExtensibleElement;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.protocol.Response.ResponseType;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.abdera.protocol.client.RequestOptions;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.jaxrs.jaxb.Category;
+import org.drools.repository.AssetItem;
+import org.drools.repository.ModuleItem;
+import org.drools.util.codec.Base64;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -166,15 +167,10 @@ public class CategoryResourceTest extends GuvnorTestBase {
         assertEquals( ResponseType.SUCCESS,
                       resp.getType() );
 
-        //Read all categories back using a new Client connection (the existing client cannot see the new categories)
-        AbderaClient client2 = new AbderaClient( abdera );
-        client2.addCredentials( baseURL.toExternalForm(),
-                                null,
-                                null,
-                                new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
-                                                                                               "admin" ) );
-        resp = client2.get( new URL( baseURL,
-                                     "rest/categories" ).toExternalForm() );
+        //Read all categories back (clearing AbderaClient's cache to ensure a call back to the server)
+        client.getCache().clear();
+        resp = client.get( new URL( baseURL,
+                                    "rest/categories" ).toExternalForm() );
         assertEquals( ResponseType.SUCCESS,
                       resp.getType() );
         assertEquals( MediaType.APPLICATION_XML,
