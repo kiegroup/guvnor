@@ -39,11 +39,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.drools.guvnor.server.jaxrs.Translator.*;
@@ -77,15 +74,31 @@ public class CategoryResource extends Resource {
     }
 
     @GET
-    @Path("{categoryPath}")
+    @Path("{categoryPath:.+}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Category getCategoryAsJAXB(@PathParam("categoryPath") String categoryPath) {
         CategoryItem categoryItem = rulesRepository.loadCategory(categoryPath);
         return toCategory(categoryItem, uriInfo);
     }
+    
+    @GET
+    @Path("{categoryPath:.+}/children")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Category> getCategoryChildrenAsJAXB(@PathParam("categoryPath") String categoryPath) {
+        //get the requested category
+        CategoryItem categoryItem = rulesRepository.loadCategory(categoryPath);
+        
+        //get its children and add them into a List
+        Collection<Category> ret = new ArrayList<Category>();
+        List<CategoryItem> children = categoryItem.getChildTags();
+        for (CategoryItem child : children) {
+            ret.add(toCategory(child, uriInfo));
+        }
+        return ret;
+    }
 
     @GET
-    @Path("{categoryPath}/assets")
+    @Path("{categoryPath:.+}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryPath") String categoryPath) {
         Factory factory = Abdera.getNewFactory();
@@ -113,7 +126,7 @@ public class CategoryResource extends Resource {
     }
 
     @GET
-    @Path("{categoryPath}/assets")
+    @Path("{categoryPath:.+}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("categoryPath") String categoryPath) {
         Collection<Asset> ret = new ArrayList<Asset>();
@@ -188,7 +201,7 @@ public class CategoryResource extends Resource {
     }*/
 
     @GET
-    @Path("{categoryName}/assets//page/{page}")
+    @Path("{categoryName:.+}/assets//page/{page}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXBIndex(@PathParam("categoryName") String categoryName,
             @PathParam("page") int page) {

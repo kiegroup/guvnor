@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -82,7 +82,7 @@ public class GuvnorAPIServlet extends HttpServlet {
             ServletOutputStream outputStream = response.getOutputStream();
 
             try {
-                RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+                Asset asset = repositoryAssetService.loadRuleAsset( uuid );
                 if ( asset.getContent() != null ) {
                     response.setContentType( "application/json" );
                     String content = null;

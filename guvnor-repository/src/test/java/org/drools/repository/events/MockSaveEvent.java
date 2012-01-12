@@ -17,7 +17,7 @@
 package org.drools.repository.events;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 public class MockSaveEvent implements SaveEvent {
     boolean checkinCalled = false;
@@ -30,7 +30,7 @@ public class MockSaveEvent implements SaveEvent {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void onPackageCreate(PackageItem item) {
+    public void onModuleCreate(ModuleItem item) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 }

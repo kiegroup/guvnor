@@ -24,13 +24,13 @@ import com.google.gwt.user.client.ui.HTML;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
 
     private static Images images = (Images) GWT.create( Images.class );
 
-    public DefaultContentUploadEditor( RuleAsset asset,
+    public DefaultContentUploadEditor( Asset asset,
                                        RuleViewer viewer,
                                        ClientFactory clientFactory,
                                        EventBus eventBus) {

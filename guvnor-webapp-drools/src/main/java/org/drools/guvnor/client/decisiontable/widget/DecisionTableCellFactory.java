@@ -37,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -131,7 +132,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         } else if ( column instanceof BRLConditionVariableColumn ) {
             cell = derieveCellFromCondition( (BRLConditionVariableColumn) column );
-            
+
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveCellFromCondition( (ConditionCol52) column );
 
@@ -203,7 +204,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         //Drop down of possible patterns
         PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus );
-        pudd.setPatterns( model.getPatterns() );
+        BRLRuleModel rm = new BRLRuleModel( model );
+        pudd.setFactBindings( rm.getLHSBoundFacts() );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );
     }

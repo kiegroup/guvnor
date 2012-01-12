@@ -22,7 +22,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.widgets.tables.AdminArchivedPagedTable;
@@ -154,7 +154,7 @@ public class ArchivedAssetManager extends Composite {
     }
 
     private void deletePackage(final String uuid) {
-        RepositoryServiceFactory.getPackageService().removePackage( uuid,
+        RepositoryServiceFactory.getPackageService().removeModule( uuid,
                                                                     new GenericCallback<java.lang.Void>() {
                                                                         public void onSuccess(Void data) {
                                                                             Window.alert( constants.PackageDeleted() );
@@ -165,11 +165,11 @@ public class ArchivedAssetManager extends Composite {
     }
 
     private void restorePackage(String uuid) {
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
-                                                                        new GenericCallback<PackageConfigData>() {
-                                                                            public void onSuccess(PackageConfigData cf) {
+        RepositoryServiceFactory.getPackageService().loadModule( uuid,
+                                                                        new GenericCallback<Module>() {
+                                                                            public void onSuccess(Module cf) {
                                                                                 cf.setArchived( false );
-                                                                                RepositoryServiceFactory.getPackageService().savePackage( cf,
+                                                                                RepositoryServiceFactory.getPackageService().saveModule( cf,
                                                                                                                                           new GenericCallback<ValidatedResponse>() {
                                                                                                                                               public void onSuccess(ValidatedResponse data) {
                                                                                                                                                   Window.alert( constants.PackageRestored() );
@@ -185,8 +185,8 @@ public class ArchivedAssetManager extends Composite {
 
     private ListBox loadPackages() {
 
-        RepositoryServiceFactory.getPackageService().listArchivedPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] configs) {
+        RepositoryServiceFactory.getPackageService().listArchivedModules( new GenericCallback<Module[]>() {
+            public void onSuccess(Module[] configs) {
                 for ( int i = 0; i < configs.length; i++ ) {
                     packages.addItem( configs[i].getName(),
                                       configs[i].getUuid() );

@@ -22,14 +22,16 @@ import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
@@ -47,7 +49,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     public BRLConditionColumnViewImpl(final SuggestionCompletionEngine sce,
                                       final GuidedDecisionTable52 model,
                                       final boolean isNew,
-                                      final RuleAsset asset,
+                                      final Asset asset,
                                       final BRLConditionColumn column,
                                       final ClientFactory clientFactory,
                                       final EventBus eventBus) {
@@ -71,8 +73,8 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return true;
     }
 
-    public RuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
-        RuleModel ruleModel = new RuleModel();
+    public BRLRuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
+        BRLRuleModel ruleModel = new BRLRuleModel( model );
         List<IPattern> definition = column.getDefinition();
         ruleModel.lhs = definition.toArray( new IPattern[definition.size()] );
         return ruleModel;
@@ -114,6 +116,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                                                                                   iv.getFactType(),
                                                                                   iv.getFactField() );
             variable.setHeader( editingCol.getHeader() );
+            variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
         }
         return Arrays.asList( variables );
@@ -149,7 +152,17 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     private List<IPattern> cloneDefinition(List<IPattern> definition) {
-        return new ArrayList<IPattern>();
+        RuleModelCloneVisitor visitor = new RuleModelCloneVisitor();
+        RuleModel rm = new RuleModel();
+        for ( IPattern pattern : definition ) {
+            rm.addLhsItem( pattern );
+        }
+        RuleModel rmClone = visitor.visitRuleModel( rm );
+        List<IPattern> clone = new ArrayList<IPattern>();
+        for ( IPattern pattern : rmClone.lhs ) {
+            clone.add( pattern );
+        }
+        return clone;
     }
 
 }

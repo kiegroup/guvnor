@@ -36,10 +36,12 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
@@ -50,6 +52,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -102,7 +105,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants         = GWT.create( Constants.class );
     private static Images               images            = GWT.create( Images.class );
 
-    private RuleAsset                   asset;
+    private Asset                       asset;
     private GuidedDecisionTable52       guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
@@ -112,6 +115,7 @@ public class GuidedDecisionTableWidget extends Composite
     private String                      packageUUID;
     private VerticalPanel               actionsConfigWidget;
     private SuggestionCompletionEngine  sce;
+    private BRLRuleModel                rm;
 
     private VerticalDecisionTableWidget dtable;
 
@@ -143,7 +147,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private final BRLConditionColumnView.Presenter BRL_CONDITION_PRESENTER = this;
 
-    public GuidedDecisionTableWidget(final RuleAsset asset,
+    public GuidedDecisionTableWidget(final Asset asset,
                                      final RuleViewer viewer,
                                      final ClientFactory clientFactory,
                                      final EventBus globalEventBus) {
@@ -151,11 +155,12 @@ public class GuidedDecisionTableWidget extends Composite
         this.asset = asset;
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
-        this.packageName = asset.getMetaData().getPackageName();
-        this.packageUUID = asset.getMetaData().getPackageUUID();
+        this.packageName = asset.getMetaData().getModuleName();
+        this.packageUUID = asset.getMetaData().getModuleUUID();
         this.guidedDecisionTable.setTableName( asset.getName() );
         this.globalEventBus = globalEventBus;
         this.clientFactory = clientFactory;
+        this.rm = new BRLRuleModel( guidedDecisionTable );
 
         layout = new VerticalPanel();
 
@@ -578,17 +583,17 @@ public class GuidedDecisionTableWidget extends Composite
 
                     public void onClick(ClickEvent event) {
                         if ( chkIncludeAdvancedOptions.getValue() ) {
-                            //                            addItem( 3,
-                            //                                     constants.AddNewConditionBRLFragment(),
-                            //                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
+                            addItem( 3,
+                                     constants.AddNewConditionBRLFragment(),
+                                     NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
                             addItem( constants.WorkItemAction(),
                                      NewColumnTypes.ACTION_WORKITEM.name() );
                             addItem( constants.WorkItemActionSetField(),
                                      NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
                             addItem( constants.WorkItemActionInsertFact(),
                                      NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
-                            //                            addItem( constants.AddNewActionBRLFragment(),
-                            //                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
+                            addItem( constants.AddNewActionBRLFragment(),
+                                     NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
                             removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
@@ -1056,7 +1061,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     constants.RemoveThisConditionColumn(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
-                                            if ( !canConditionBeDeleted( c ) ) {
+                                            if ( !canConditionBeDeleted( (BRLConditionColumn) c ) ) {
                                                 Window.alert( constants.UnableToDeleteConditionColumn( c.getHeader() ) );
                                                 return;
                                             }
@@ -1277,42 +1282,35 @@ public class GuidedDecisionTableWidget extends Composite
         dtable.setModel( guidedDecisionTable );
     }
 
-    //A Condition column cannot be deleted if it is the only column for a bound pattern 
-    //used by an Action. i.e. the dependent Actions should be deleted first.
-    private boolean canConditionBeDeleted(ConditionCol52 col) {
-        Pattern52 pattern = guidedDecisionTable.getPattern( col );
-        if ( pattern.getChildColumns().size() > 1 ) {
-            return true;
-        }
-        for ( ActionCol52 ac : guidedDecisionTable.getActionCols() ) {
-            if ( ac instanceof ActionSetFieldCol52 ) {
-                ActionSetFieldCol52 asfc = (ActionSetFieldCol52) ac;
-                if ( asfc.getBoundName().equals( pattern.getBoundName() ) ) {
-                    return false;
-                }
-            } else if ( ac instanceof ActionRetractFactCol52 ) {
-
-                if ( ac instanceof LimitedEntryActionRetractFactCol52 ) {
-
-                    //Check whether Limited Entry retraction is bound to Pattern
-                    LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) ac;
-                    if ( ler.getValue().getStringValue().equals( pattern.getBoundName() ) ) {
+    //Check if any of the bound Fact Patterns in the BRL Fragment are used elsewhere
+    private boolean canConditionBeDeleted(BRLConditionColumn col) {
+        for ( IPattern p : col.getDefinition() ) {
+            if ( p instanceof FactPattern ) {
+                FactPattern fp = (FactPattern) p;
+                if ( fp.isBound() ) {
+                    if ( isBindingUsed( fp.getBoundName() ) ) {
                         return false;
-                    }
-                } else {
-
-                    //Check whether data for column contains Pattern binding
-                    int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
-                    for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
-                        DTCellValue52 dcv = row.get( iCol );
-                        if ( dcv != null && pattern.getBoundName().equals( dcv.getStringValue() ) ) {
-                            return false;
-                        }
                     }
                 }
             }
         }
         return true;
+    }
+
+    //Check if the Pattern to which the Condition relates is used elsewhere
+    private boolean canConditionBeDeleted(ConditionCol52 col) {
+        Pattern52 pattern = guidedDecisionTable.getPattern( col );
+        if ( pattern.getChildColumns().size() > 1 ) {
+            return true;
+        }
+        if ( isBindingUsed( pattern.getBoundName() ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isBindingUsed(String binding) {
+        return rm.isBoundFactUsed( binding );
     }
 
     public Set<String> getBindings(String className) {

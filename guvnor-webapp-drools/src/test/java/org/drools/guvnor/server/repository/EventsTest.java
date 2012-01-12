@@ -24,7 +24,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.junit.Test;
 
 public class EventsTest extends GuvnorTestBase {
@@ -34,7 +34,7 @@ public class EventsTest extends GuvnorTestBase {
         System.setProperty( "guvnor.saveEventListener",
                             "org.drools.guvnor.server.repository.SampleSaveEvent" );
 
-        PackageItem pkg = rulesRepository.createPackage( "testLoadSaveEvents",
+        ModuleItem pkg = rulesRepository.createModule( "testLoadSaveEvents",
                                                                    "" );
         AssetItem asset = pkg.addAsset( "testLoadSaveEvent",
                                         "" );

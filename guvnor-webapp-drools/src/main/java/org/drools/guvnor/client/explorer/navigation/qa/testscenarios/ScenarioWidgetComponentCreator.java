@@ -22,7 +22,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
@@ -45,11 +45,11 @@ public class ScenarioWidgetComponentCreator {
 
     private Constants            constants = GWT.create( Constants.class );
     private final ScenarioWidget scenarioWidget;
-    private final RuleAsset      asset;
+    private final Asset      asset;
 
     private boolean              showResults;
 
-    protected ScenarioWidgetComponentCreator(RuleAsset asset, ScenarioWidget scenarioWidget) {
+    protected ScenarioWidgetComponentCreator(Asset asset, ScenarioWidget scenarioWidget) {
         this.asset = asset;
         this.scenarioWidget = scenarioWidget;
     }
@@ -70,7 +70,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget( getScenario(), this.asset.getMetaData().getPackageName(), this.scenarioWidget );
+        return new ConfigWidget( getScenario(), this.asset.getMetaData().getModuleName(), this.scenarioWidget );
     }
 
     protected AddExecuteButton createAddExecuteButton() {
@@ -98,7 +98,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel( this.asset.getMetaData().getPackageName(), currentExecutionTrace, getScenario(), this.scenarioWidget );
+        return new ExpectPanel( this.asset.getMetaData().getModuleName(), currentExecutionTrace, getScenario(), this.scenarioWidget );
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {

@@ -22,13 +22,13 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
@@ -61,7 +61,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private ServiceImplementation serviceImplementation;
 
     @Inject
-    private RepositoryPackageService repositoryPackageService;
+    private RepositoryModuleService repositoryPackageService;
 
     @Inject
     private FileManagerService fileManagerService;
@@ -164,7 +164,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     }
                 } else if (helper.isDocumentation()) {
 
-                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
+                    ModuleItem pkg = rulesRepository.loadModule(helper.getPackageName());
 
                     GuvnorDroolsDocsBuilder builder;
                     try {
@@ -179,7 +179,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     builder.writePDF(out);
 
                 } else if (helper.isPng()) {
-                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
+                    ModuleItem pkg = rulesRepository.loadModule(helper.getPackageName());
                     AssetItem asset = pkg.loadAsset(helper.getAssetName());
 
                     fileName = fileManagerService.loadFileAttachmentByUUID(asset.getUUID(),
@@ -203,7 +203,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         xml += "</change-set>";
                         out.write(xml.getBytes());
                     } else if (req.getRequestURI().endsWith("MODEL")) {
-                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
+                        ModuleItem pkg = rulesRepository.loadModule(helper.getPackageName());
                         AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
                         BufferedInputStream inputFile = null;
                         byte[] data = new byte[1000];
@@ -254,7 +254,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         String assetName = uri.substring(lastIndexOfSlash + 1);
                         fileName = assetName + ".xml";
 
-                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
+                        ModuleItem pkg = rulesRepository.loadModule(helper.getPackageName());
                         AssetItem asset = pkg.loadAsset(assetName);
                         out.write(asset.getBinaryContentAsBytes());
 
@@ -279,11 +279,11 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private void doRunScenarios(PackageDeploymentURIHelper helper,
                                 ByteArrayOutputStream out) throws IOException {
-        PackageItem pkg;
+        ModuleItem pkg;
         if (helper.isLatest()) {
-            pkg = rulesRepository.loadPackage(helper.getPackageName());
+            pkg = rulesRepository.loadModule(helper.getPackageName());
         } else {
-            pkg = rulesRepository.loadPackageSnapshot(helper.getPackageName(),
+            pkg = rulesRepository.loadModuleSnapshot(helper.getPackageName(),
                     helper.getVersion());
         }
         try {
@@ -301,7 +301,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     /**
      * Zip Model
      */
-    public InputStream zipModel(PackageItem pkg) {
+    public InputStream zipModel(ModuleItem pkg) {
 
         LinkedList<AssetItem> jarAssets = new LinkedList<AssetItem>();
         AssetZipper assetZipper = null;

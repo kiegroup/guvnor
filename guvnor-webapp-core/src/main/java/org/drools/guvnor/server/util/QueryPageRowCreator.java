@@ -28,7 +28,7 @@ public class QueryPageRowCreator {
         row.setDescription( assetItem.getDescription() );
         row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
                                                                80 ) );
-        row.setPackageName( assetItem.getPackageName() );
+        row.setPackageName( assetItem.getModuleName() );
         row.setCreatedDate( assetItem.getCreatedDate().getTime() );
         row.setLastModified( assetItem.getLastModified().getTime() );
         return row;

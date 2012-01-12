@@ -35,7 +35,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
@@ -60,7 +60,7 @@ public class RuleTemplateEditor extends DirtyableComposite
     @SuppressWarnings("unused")
     private EventBus                   globalEventBus;
 
-    public RuleTemplateEditor(RuleAsset asset,
+    public RuleTemplateEditor(Asset asset,
                               RuleViewer viewer,
                               ClientFactory clientFactory,
                               EventBus globalEventBus) {
@@ -73,7 +73,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                          eventBus,
                                          new TemplateModellerWidgetFactory() );
 
-        String packageName = asset.getMetaData().getPackageName();
+        String packageName = asset.getMetaData().getModuleName();
         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();

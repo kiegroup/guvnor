@@ -29,7 +29,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.ScopesAgendaFilter;
@@ -40,10 +40,10 @@ import java.io.StringReader;
 public abstract class VerifierRunner {
 
     private final Verifier verifier;
-    protected final PackageItem packageItem;
+    protected final ModuleItem packageItem;
 
     public VerifierRunner(Verifier verifier,
-                          PackageItem packageItem) {
+                          ModuleItem packageItem) {
         this.verifier = verifier;
         this.packageItem = packageItem;
     }

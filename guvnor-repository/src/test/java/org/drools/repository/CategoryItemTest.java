@@ -181,13 +181,13 @@ public class CategoryItemTest extends RepositoryTestCase {
     public void testRemoveCategoryUneeded() {
         RulesRepository repo = getRepo();
         repo.loadCategory("/").addCategory("testRemoveCat", "a");
-        AssetItem as = repo.loadDefaultPackage().addAsset("testRemoveCategory", "a", "testRemoveCat", "drl");
+        AssetItem as = repo.loadDefaultModule().addAsset("testRemoveCategory", "a", "testRemoveCat", "drl");
         as.checkin("a");
         as.updateCategoryList(new String[] {});
 
         as.checkin("a");
 
-        as = repo.loadDefaultPackage().loadAsset("testRemoveCategory");
+        as = repo.loadDefaultModule().loadAsset("testRemoveCategory");
         assertEquals(0, as.getCategories().size());
 
         repo.loadCategory("testRemoveCat").remove();
@@ -199,7 +199,7 @@ public class CategoryItemTest extends RepositoryTestCase {
     public void testRemoveCategoryLinkedWithArchived() {
         RulesRepository repo = getRepo();
         repo.loadCategory("/").addCategory("testRemoveCategoryWithArchivedCat", "a");
-        AssetItem as = repo.loadDefaultPackage().addAsset("testRemoveCategoryWithArchivedAsset",
+        AssetItem as = repo.loadDefaultModule().addAsset("testRemoveCategoryWithArchivedAsset",
                                                           "a",
                                                           "testRemoveCategoryWithArchivedCat",
                                                           "drl");

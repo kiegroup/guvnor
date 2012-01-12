@@ -21,7 +21,7 @@ import javax.jcr.NodeIterator;
 import java.util.Iterator;
 
 /**
- * This iterates over nodes and produces RuleItem's.
+ * This iterates over nodes and produces AssetItem's.
  * Also allows "skipping" of results to jump to certain items,
  * as per JCRs "skip".
  * <p/>
@@ -56,11 +56,11 @@ public class AssetItemIterator
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("You can't remove a rule this way.");
+        throw new UnsupportedOperationException("You can't remove an asset this way.");
     }
 
     /**
-     * @param i The number of rules to skip.
+     * @param i The number of assets to skip.
      */
     public void skip(long i) {
         it.skip(i);

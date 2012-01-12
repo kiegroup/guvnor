@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -49,7 +49,7 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     private static final LoggingHelper log = LoggingHelper.getLogger( BPMN2ProcessHandler.class );
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
         if ( process != null ) {
@@ -89,7 +89,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         return process;
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         RuleFlowContentModel content = (RuleFlowContentModel) asset.getContent();
         // 
@@ -195,7 +195,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         if ( content != null && !content.equals( "" ) ) {
             RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getBytes() ) );
             if ( process != null ) {
-                String packageName = item.getPackageName();
+                String packageName = item.getModuleName();
                 String originalPackageName = process.getPackageName();
                 if ( !packageName.equals( originalPackageName ) ) {
                     process.setPackageName( packageName );

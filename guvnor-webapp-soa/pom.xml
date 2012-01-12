@@ -30,15 +30,15 @@
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>2.3.0-1</version>
         <configuration>
-          <!-- TODO GUVNOR-1471 From version 2.3.0-1 add this line: <deploy>${project.build.directory}/gwt-symbols-deploy</deploy> -->
-          <!-- The default profile needs to be fast, so we only build 1 permutation 
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <!-- The default profile needs to be fast, so we only build 1 permutation
             { -->
           <module>org.drools.guvnor.FastCompiledGuvnorSOA</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.GuvnorDrools/Guvnor.html</runTarget>
+          <runTarget>org.drools.guvnor.GuvnorDrools/GuvnorSOA.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
@@ -193,9 +193,10 @@
   </build>
   <profiles>
     <profile>
-      <id>fullProfile</id>
+      <id>ngsoafullProfile</id>
       <activation>
         <property>
+          <!-- TODO support "-Dfull" instead when ngsoafullProfile can be fixed in guvnor/pom.xml -->
           <name>ngsoafull</name>
         </property>
       </activation>
@@ -217,14 +218,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- seam-bom overwrites the version of drools and other dependencies https://issues.jboss.org/browse/SEAM-110 -->
-      <!--<dependency>-->
-        <!--<groupId>org.jboss.seam</groupId>-->
-        <!--<artifactId>seam-bom</artifactId>-->
-        <!--<type>pom</type>-->
-        <!--<version>${seam.version}</version>-->
-        <!--<scope>import</scope>-->
-      <!--</dependency>-->
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>

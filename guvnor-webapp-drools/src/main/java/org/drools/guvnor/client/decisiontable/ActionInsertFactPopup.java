@@ -29,14 +29,12 @@ import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -71,12 +69,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private GuidedDecisionTable52      model;
     private SuggestionCompletionEngine sce;
     private DTCellValueWidgetFactory   factory;
+    private BRLRuleModel               validator;
 
     public ActionInsertFactPopup(final SuggestionCompletionEngine sce,
                                  final GuidedDecisionTable52 model,
                                  final GenericColumnCommand refreshGrid,
                                  final ActionInsertFactCol52 col,
                                  final boolean isNew) {
+        this.validator = new BRLRuleModel( model );
         this.editingCol = cloneActionInsertColumn( col );
         this.model = model;
         this.sce = sce;
@@ -447,15 +447,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private boolean isBindingUnique(String binding) {
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( p.getBoundName().equals( binding ) ) return false;
-            for ( ConditionCol52 c : p.getChildColumns() ) {
-                if ( c.isBound() ) {
-                    if ( c.getBinding().equals( binding ) ) return false;
-                }
-            }
-        }
-        return true;
+        return !validator.isVariableNameUsed( binding );
     }
 
     private Widget doInsertLogical() {

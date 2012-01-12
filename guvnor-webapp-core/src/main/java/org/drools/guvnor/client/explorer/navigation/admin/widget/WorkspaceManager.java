@@ -30,7 +30,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import java.util.ArrayList;
@@ -157,10 +157,10 @@ public class WorkspaceManager extends Composite {
         }
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getPackageService().listPackages(selectedWorkspaceName,  new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] packageConfigData) {
+        RepositoryServiceFactory.getPackageService().listModules(selectedWorkspaceName,  new GenericCallback<Module[]>() {
+            public void onSuccess(Module[] packageConfigData) {
                 selectedModulesListBox.clear();
-                for ( PackageConfigData p : packageConfigData) {
+                for ( Module p : packageConfigData) {
                     selectedModulesListBox.addItem( p.getName() );
                 }
                 LoadingPopup.close();
@@ -168,10 +168,10 @@ public class WorkspaceManager extends Composite {
         } );
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] packageConfigData) {
+        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+            public void onSuccess(Module[] packageConfigData) {
                 availableModulesListBox.clear();
-                for ( PackageConfigData p : packageConfigData) {
+                for ( Module p : packageConfigData) {
                     boolean isSelected = false;
                     for ( int i = 0; i < selectedModulesListBox.getItemCount(); i++ ) {
                         if(p.getName().equals(selectedModulesListBox.getItemText( i ))) {

@@ -36,7 +36,7 @@ import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -55,7 +55,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private Map<String, RuleViewer> ruleViews = new HashMap<String, RuleViewer>();
     private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
-    private Map<String, RuleAsset> assets = new HashMap<String, RuleAsset>();
+    private Map<String, Asset> assets = new HashMap<String, Asset>();
 
     private MultiViewEditorMenuBarCreator menuBarCreator;
     private final EventBus eventBus;
@@ -91,7 +91,7 @@ public class MultiViewEditor extends GuvnorEditor {
         init();
     }
 
-    public MultiViewEditor(RuleAsset[] assets,
+    public MultiViewEditor(Asset[] assets,
                            ClientFactory clientFactory,
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
@@ -102,7 +102,7 @@ public class MultiViewEditor extends GuvnorEditor {
                 null );
     }
 
-    public MultiViewEditor(RuleAsset[] assets,
+    public MultiViewEditor(Asset[] assets,
                            ClientFactory clientFactory,
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
@@ -116,16 +116,16 @@ public class MultiViewEditor extends GuvnorEditor {
         init();
     }
 
-    private void addAssets(RuleAsset[] assets) {
-        for (RuleAsset ruleAsset : assets) {
+    private void addAssets(Asset[] assets) {
+        for (Asset ruleAsset : assets) {
             this.assets.put( ruleAsset.getUuid(),
                     ruleAsset );
         }
     }
 
-    private static List<MultiViewRow> createRows(RuleAsset[] assets) {
+    private static List<MultiViewRow> createRows(Asset[] assets) {
         List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
-        for (RuleAsset ruleAsset : assets) {
+        for (Asset ruleAsset : assets) {
             MultiViewRow row = new MultiViewRow(
                     ruleAsset.getUuid(),
                     ruleAsset.getName(),
@@ -158,7 +158,7 @@ public class MultiViewEditor extends GuvnorEditor {
             this.menuBarCreator = new DefaultMultiViewEditorMenuBarCreator();
         }
 
-        return this.menuBarCreator.createMenuBar( this );
+        return this.menuBarCreator.createMenuBar( this , eventBus);
     }
 
     private void doViews() {
@@ -183,9 +183,9 @@ public class MultiViewEditor extends GuvnorEditor {
                                         assets.get( row.getUuid() ) );
                             } else {
                                 RepositoryServiceFactory.getAssetService().loadRuleAsset( row.getUuid(),
-                                        new GenericCallback<RuleAsset>() {
+                                        new GenericCallback<Asset>() {
 
-                                            public void onSuccess(final RuleAsset asset) {
+                                            public void onSuccess(final Asset asset) {
                                                 assets.put( asset.getUuid(),
                                                         asset );
 
@@ -211,8 +211,8 @@ public class MultiViewEditor extends GuvnorEditor {
 
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
-                                            final RuleAsset asset) {
-    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getPackageName(),
+                                            final Asset asset) {
+    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getModuleName(),
                 new Command() {
 
                     public void execute() {
@@ -264,7 +264,7 @@ public class MultiViewEditor extends GuvnorEditor {
 
     }
 
-	public void doCheckin(Widget editor, RuleAsset asset, String comment, boolean closeAfter) {
+	public void doCheckin(Widget editor, Asset asset, String comment, boolean closeAfter) {
 		if (editor instanceof SaveEventListener) {
 			((SaveEventListener) editor).onSave();
 		}
@@ -274,13 +274,13 @@ public class MultiViewEditor extends GuvnorEditor {
 		}
 
 		eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData()
-				.getPackageUUID()));
+				.getModuleUUID()));
 		// lastSaved = System.currentTimeMillis();
 		// resetDirty();
 	}
 
     private void performCheckIn(String comment,
-                                final boolean closeAfter, final RuleAsset asset) {
+                                final boolean closeAfter, final Asset asset) {
         asset.setCheckinComment( comment );
         final boolean[] saved = {false};
 
@@ -299,7 +299,7 @@ public class MultiViewEditor extends GuvnorEditor {
                             return;
                         }
 
-                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName(), asset);
+                        flushSuggestionCompletionCache(asset.getMetaData().getModuleName(), asset);
 /*                        if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }*/
@@ -311,6 +311,9 @@ public class MultiViewEditor extends GuvnorEditor {
                         if ( !closeAfter ) {
                             eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
                         }
+                        
+                        //fire after check-in event
+                        eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, MultiViewEditor.this));
                     }
                 } );
     }
@@ -320,7 +323,7 @@ public class MultiViewEditor extends GuvnorEditor {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache(final String packageName, RuleAsset asset) {
+    public void flushSuggestionCompletionCache(final String packageName, Asset asset) {
         if ( AssetFormats.isPackageDependency( asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
             eventBus.fireEvent(new RefreshModuleDataModelEvent(packageName,

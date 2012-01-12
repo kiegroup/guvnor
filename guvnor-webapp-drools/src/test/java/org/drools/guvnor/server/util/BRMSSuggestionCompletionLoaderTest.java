@@ -23,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoader",
+        ModuleItem item = repo.createModule( "testLoader",
                                                "to test the loader" );
         DroolsHeader.updateDroolsHeader( "import java.util.Date",
                                                   item );
@@ -59,7 +59,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoaderWithComplexFields",
+        ModuleItem item = repo.createModule( "testLoaderWithComplexFields",
                                                "to test the loader" );
         DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.util.Agent",
                                                   item );
@@ -127,7 +127,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoader2",
+        ModuleItem item = repo.createModule( "testLoader2",
                                                "to test the loader for fact templates" );
         DroolsHeader.updateDroolsHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend",
                                                   item );
@@ -168,7 +168,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoaderDeclaredTypes",
+        ModuleItem item = repo.createModule( "testLoaderDeclaredTypes",
                                                "to test the loader for declared types" );
         AssetItem asset = item.addAsset( "MyModel",
                                          "" );
@@ -212,7 +212,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoadDSLs",
+        ModuleItem item = repo.createModule( "testLoadDSLs",
                                                "to test the loader for DSLs" );
         AssetItem asset = item.addAsset( "mydsl",
                                          "" );
@@ -220,7 +220,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         asset.updateContent( dsl );
         asset.checkin( "ok" );
 
-        item = repo.loadPackage( "testLoadDSLs" );
+        item = repo.loadModule( "testLoadDSLs" );
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
 
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( item );
@@ -244,7 +244,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testLoadEnums",
+        ModuleItem item = repo.createModule( "testLoadEnums",
                                                "to test the loader for enums" );
         AssetItem asset = item.addAsset( "myenum",
                                          "" );
@@ -252,7 +252,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         asset.updateContent( enumeration );
         asset.checkin( "ok" );
 
-        item = repo.loadPackage( "testLoadEnums" );
+        item = repo.loadModule( "testLoadEnums" );
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
         SuggestionCompletionEngine sce = loader.getSuggestionEngine( item );
 
@@ -262,7 +262,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         asset.updateContent( "goober boy" );
         asset.checkin( "yeah" );
-        item = repo.loadPackage( "testLoadEnums" );
+        item = repo.loadModule( "testLoadEnums" );
         loader = new BRMSSuggestionCompletionLoader();
         sce = loader.getSuggestionEngine( item );
         assertTrue( loader.hasErrors() );
@@ -274,7 +274,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testErrorsInPackage",
+        ModuleItem item = repo.createModule( "testErrorsInPackage",
                                                "to test error handling" );
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
@@ -304,7 +304,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem item = repo.createPackage( "testmodelWithNoAttachment",
+        ModuleItem item = repo.createModule( "testmodelWithNoAttachment",
                                                "to test model loading" );
 
         item.addAsset( "testModel",

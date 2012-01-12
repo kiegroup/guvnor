@@ -1,7 +1,7 @@
 package org.drools.guvnor.server.files;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -21,7 +21,7 @@ public class AssetZipper {
     private final LinkedList<AssetItem> assets;
 
     public AssetZipper(LinkedList<AssetItem> assets,
-                       PackageItem pkg) {
+                       ModuleItem pkg) {
         this.assets = assets;
         //add pkg when it's really needed - zenix
     }

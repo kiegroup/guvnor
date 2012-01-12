@@ -16,41 +16,29 @@
 
 package org.drools.guvnor.server.repository;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
-import javax.jcr.Repository;
+import javax.inject.Inject;
 
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class RepositoryStartupServiceTest {
+public class RepositoryStartupServiceTest extends GuvnorTestBase {
+
+    @Inject
+    private RepositoryStartupService repositoryStartupService;
 
     @Test
-    @Ignore("RepositoryStartupService is a Seam managed application-wide Singleton, mocking it is not healthy to other tests.")
     public void testConfiguration() throws Exception {
 
-        RepositoryStartupService config = new ProductionRepositoryStartupService();
-        // TODO seam3upgrade
-//        config.setHomeDirectory( "qed" );
-        // TODO seam3upgrade
-//        assertEquals( "qed",
-//                      config.properties.get( JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY ) );
-        // TODO seam3upgrade
-//        config.setRepositoryConfigurator( MockRepositoryConfigurator.class.getName() );
-
-        Repository repository = config.getRepositoryInstance();
-
-        assertEquals( MockRepo.class.getSimpleName(),
-                      repository.getClass().getSimpleName() );
-
-        assertNotNull( config.newSession( "foo",
-                                          "password" ) );
-        assertNotSame( config.newSession( "foo",
-                                          "password" ),
-                       config.newSession( "foo",
-                                          "password" ) );
+        assertNotNull( repositoryStartupService.newSession( "foo",
+                                          "foo" ) );
+        assertNotSame( repositoryStartupService.newSession( "foo",
+                                          "foo" ),
+                repositoryStartupService.newSession( "foo",
+                                          "foo" ) );
     }
 
 }

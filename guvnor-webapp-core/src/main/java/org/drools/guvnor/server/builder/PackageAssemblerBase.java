@@ -29,8 +29,9 @@ import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.rule.Package;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -38,11 +39,27 @@ import org.drools.repository.RulesRepositoryException;
  * package.
  */
 abstract class PackageAssemblerBase extends AssemblerBase {
+    protected BRMSPackageBuilder builder;
 
-    protected PackageAssemblerBase(PackageItem packageItem) {
-        super( packageItem );
+    protected PackageAssemblerBase(ModuleItem moduleItem) {
+        super( moduleItem );
+
+        createBuilder();
     }
-
+    
+    public void createBuilder() {
+        builder = new BRMSPackageBuilder(moduleItem);
+    }
+    
+    public void compile() {
+        //NOT_IMPLEMENTED
+    }
+    
+    public byte[] getCompiledBinary() {
+        //NOT_IMPLEMENTED
+        return null;
+    }
+    
     /**
      * Builds assets that are "rule" assets (ie things that are not functions
      * etc).
@@ -86,7 +103,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     protected boolean setUpPackage() {
 
         // firstly we loadup the classpath
-        builder.addPackage( new PackageDescr( packageItem.getName() ) );
+        builder.addPackage( new PackageDescr( moduleItem.getName() ) );
 
         //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
         loadPackageHeader();
@@ -105,16 +122,27 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     private boolean doesPackageBuilderHaveAnyErrors() {
         if ( builder.hasErrors() ) {
             // if we have any failures, lets drop out now, no point in going any further
-            recordBuilderErrors( packageItem.getFormat(),
-                                 packageItem.getName(),
-                                 packageItem.getUUID(),
+            recordBuilderErrors( moduleItem.getFormat(),
+                                 moduleItem.getName(),
+                                 moduleItem.getUUID(),
                                  true,
                                  false );
             return true;
         }
         return false;
     }
-
+    
+    protected void loadDSLFiles() {
+        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(getAssetItemIterator(AssetFormats.DSL),
+                new BRMSPackageBuilder.DSLErrorEvent() {
+                    public void recordError(AssetItem asset,
+                                            String message) {
+                        errorLogger.addError(asset,
+                                message);
+                    }
+                }));
+    }
+    
     private void loadFunctions() {
         try {
             addDrl( getAllFunctionsAsOneString().toString() );
@@ -165,7 +193,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
                     errorLogger.addError( function,
                                           "IOException: " + e.getMessage() );
                 } catch ( DroolsParserException e ) {
-                    errorLogger.addError( packageItem,
+                    errorLogger.addError( moduleItem,
                                           "Parser exception: " + e.getMessage() );
                 }
 
@@ -178,12 +206,12 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     private void loadPackageHeader() {
         try {
-            addDrl( DroolsHeader.getDroolsHeader( packageItem ) );
+            addDrl( DroolsHeader.getDroolsHeader( moduleItem ) );
         } catch ( IOException e ) {
-            errorLogger.addError( packageItem,
+            errorLogger.addError( moduleItem,
                                   "IOException: " + e.getMessage() );
         } catch ( DroolsParserException e ) {
-            errorLogger.addError( packageItem,
+            errorLogger.addError( moduleItem,
                                   "Parser exception: " + e.getMessage() );
         }
     }
@@ -217,8 +245,8 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      *
      * @return
      */
-    public boolean isPackageConfigurationInError() {
-        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isPackageItem();
+    public boolean isModuleConfigurationInError() {
+        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isModuleItem();
     }
 
     private void addDrl(String drl) throws IOException,

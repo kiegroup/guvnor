@@ -27,10 +27,10 @@ public class StandaloneEditorInvocationParameters implements Serializable {
     
     static final long serialVersionUID = 530L;
     
-    private RuleAsset[] assetsToBeEdited;
+    private Asset[] assetsToBeEdited;
     
-    private RuleAsset[] activeWorkingSets;
-    private RuleAsset[] activeTemporalWorkingSets;
+    private Asset[] activeWorkingSets;
+    private Asset[] activeTemporalWorkingSets;
 
     private boolean temporalAssets;
     
@@ -42,11 +42,11 @@ public class StandaloneEditorInvocationParameters implements Serializable {
     public StandaloneEditorInvocationParameters() {
     }
 
-    public RuleAsset[] getAssetsToBeEdited() {
+    public Asset[] getAssetsToBeEdited() {
         return assetsToBeEdited;
     }
 
-    public void setAssetsToBeEdited(RuleAsset[] assetsToBeEdited) {
+    public void setAssetsToBeEdited(Asset[] assetsToBeEdited) {
         this.assetsToBeEdited = assetsToBeEdited;
     }
 
@@ -94,19 +94,19 @@ public class StandaloneEditorInvocationParameters implements Serializable {
         return serialVersionUID;
     }
 
-    public RuleAsset[] getActiveWorkingSets() {
+    public Asset[] getActiveWorkingSets() {
         return activeWorkingSets;
     }
 
-    public void setActiveWorkingSets(RuleAsset[] activeWorkingSets) {
+    public void setActiveWorkingSets(Asset[] activeWorkingSets) {
         this.activeWorkingSets = activeWorkingSets;
     }
 
-    public RuleAsset[] getActiveTemporalWorkingSets() {
+    public Asset[] getActiveTemporalWorkingSets() {
         return activeTemporalWorkingSets;
     }
 
-    public void setActiveTemporalWorkingSets(RuleAsset[] activeTemporalWorkingSets) {
+    public void setActiveTemporalWorkingSets(Asset[] activeTemporalWorkingSets) {
         this.activeTemporalWorkingSets = activeTemporalWorkingSets;
     }
     

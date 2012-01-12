@@ -601,10 +601,10 @@ public abstract class VersionableItem extends Item {
 	 * have a version number that we can refer to from the versioned package.
 	 */
     private void checkInAssetIfNecessary(boolean force) {
-    	if(!(this instanceof PackageItem)) {
+    	if(!(this instanceof ModuleItem)) {
     		return;
     	}
-    	Iterator<AssetItem> assets = ((PackageItem)this).getAssets();
+    	Iterator<AssetItem> assets = ((ModuleItem)this).getAssets();
     	while(assets.hasNext()) {
     		AssetItem asset = assets.next();
      		

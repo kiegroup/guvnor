@@ -42,7 +42,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.type.DateFormatsImpl;
 import org.junit.Test;
 
@@ -70,7 +70,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextPagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -130,7 +130,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -201,7 +201,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextFullResultsWithAnalystPermission.asset1",
@@ -287,7 +287,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -306,7 +305,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetPagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -367,7 +366,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -439,7 +438,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetWithAnalystPermission.asset1",
@@ -525,7 +524,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -538,7 +536,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsPackageDescription";
-        PackageItem pkg = rulesRepository.createPackage( packageName,
+        ModuleItem pkg = rulesRepository.createModule( packageName,
                                                          packageDescription );
 
         AssetItem[] assets = new AssetItem[3];
@@ -625,7 +623,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermission.testMetaDataSearchAsset1",
@@ -726,7 +724,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -765,7 +762,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
             String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRootPackage";
             String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRootPackageDescription";
-            PackageItem pkg = rulesRepository.createPackage( packageName,
+            ModuleItem pkg = rulesRepository.createModule( packageName,
                                                              packageDescription );
 
             AssetItem asset = pkg.addAsset( "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataPagedResultsWithAnalystPermissionRoot.testMetaDataSearchAsset1",
@@ -866,7 +863,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                 loginAs( ADMIN_USERNAME );
             } catch ( IllegalStateException ise ) {
                 //TODO logoutAs(USERNAME) throws an exception causing the test to fail
-                ise.fillInStackTrace();
                 System.err.println( ise.getMessage() );
             }
         }
@@ -877,7 +873,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryMetaDataFullResultsPackageDescription";
-        PackageItem pkg = rulesRepository.createPackage( packageName,
+        ModuleItem pkg = rulesRepository.createModule( packageName,
                                                          packageDescription );
 
         AssetItem[] assets = new AssetItem[3];
@@ -933,7 +929,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPagePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPagePagedResultsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription,
                                                                  "package" );
 
@@ -997,7 +993,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageFullResultsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription,
                                                                  "package" );
 
@@ -1044,7 +1040,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageUnregisteredAssetFormatsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testFindAssetPageUnregisteredAssetFormatsPackageDescription";
-        PackageItem packageItem = rulesRepository.createPackage( packageName,
+        ModuleItem packageItem = rulesRepository.createModule( packageName,
                                                                  packageDescription );
 
         AssetItem as;
@@ -1084,7 +1080,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitiveFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitiveFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1137,7 +1133,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitivePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQuickFindAssetCaseInsensitivePagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1199,7 +1195,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitiveFullResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitiveFullResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 
@@ -1249,7 +1245,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         String packageName = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitivePagedResultsPackage";
         String packageDescription = "org.drools.guvnor.server.RepositoryQueryAndFindTest.testQueryFullTextCaseInsensitivePagedResultsPackageDescription";
-        repositoryPackageService.createPackage( packageName,
+        repositoryPackageService.createModule( packageName,
                                                 packageDescription,
                                                 "package" );
 

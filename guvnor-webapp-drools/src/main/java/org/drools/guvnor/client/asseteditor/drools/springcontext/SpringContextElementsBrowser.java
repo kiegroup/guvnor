@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.Map;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
@@ -117,27 +117,27 @@ public class SpringContextElementsBrowser extends Composite {
         final TreeItem rootItem = new TreeItem(constants.Packages());
 
         //Global Area Data
-        RepositoryServiceFactory.getPackageService().loadGlobalPackage(new AsyncCallback<PackageConfigData>()   {
+        RepositoryServiceFactory.getPackageService().loadGlobalModule(new AsyncCallback<Module>()   {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing Global Area information!");
             }
 
-            public void onSuccess(PackageConfigData result) {
+            public void onSuccess(Module result) {
                 populatePackageTree(result, rootItem);
             }
         });
 
         //Packages Data
-        RepositoryServiceFactory.getPackageService().listPackages(new AsyncCallback<PackageConfigData[]>()    {
+        RepositoryServiceFactory.getPackageService().listModules(new AsyncCallback<Module[]>()    {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing package information!");
             }
 
-            public void onSuccess(PackageConfigData[] result) {
+            public void onSuccess(Module[] result) {
                 for (int i = 0; i < result.length; i++) {
-                    final PackageConfigData packageConfigData = result[i];
+                    final Module packageConfigData = result[i];
                     populatePackageTree(packageConfigData, rootItem);
                 }
             }
@@ -167,7 +167,7 @@ public class SpringContextElementsBrowser extends Composite {
 
     }
     
-    private void populatePackageTree(final PackageConfigData packageConfigData, final TreeItem rootItem) {
+    private void populatePackageTree(final Module packageConfigData, final TreeItem rootItem) {
 
         final String resourceElement = "<drools:resource type=\"PKG\" source=\"{url}\" basicAuthentication='enabled' username='|' password=''/>";
         
@@ -186,13 +186,13 @@ public class SpringContextElementsBrowser extends Composite {
             public void onSuccess(SnapshotInfo[] result) {
                 for (int j = 0; j < result.length; j++) {
                     final SnapshotInfo snapshotInfo = result[j];
-                    RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(), new AsyncCallback<PackageConfigData>()    {
+                    RepositoryServiceFactory.getPackageService().loadModule( snapshotInfo.getUuid(), new AsyncCallback<Module>()    {
 
                         public void onFailure(Throwable caught) {
                             ErrorPopup.showMessage("Error listing snapshots information!");
                         }
 
-                        public void onSuccess(PackageConfigData result) {
+                        public void onSuccess(Module result) {
                             TreeItem leafItem = new TreeItem(new ClickableLabel( snapshotInfo.getName(), new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
                             packageItem.addItem(leafItem);
                         }

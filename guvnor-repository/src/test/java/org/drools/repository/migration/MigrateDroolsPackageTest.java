@@ -19,7 +19,7 @@ package org.drools.repository.migration;
 import javax.jcr.Session;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
 
@@ -40,12 +40,12 @@ public class MigrateDroolsPackageTest extends RepositoryTestCase {
 
         MigrateDroolsPackage mig = new MigrateDroolsPackage();
 
-        PackageItem pkg = repo.createPackage("testMigratePackage", "");
-        pkg.updateStringProperty("some header", PackageItem.HEADER_PROPERTY_NAME);
+        ModuleItem pkg = repo.createModule("testMigratePackage", "");
+        pkg.updateStringProperty("some header", ModuleItem.HEADER_PROPERTY_NAME);
         sess.save();
 
-        repo.createPackageSnapshot("testMigratePackage", "SNAP1");
-        repo.createPackageSnapshot("testMigratePackage", "SNAP2");
+        repo.createModuleSnapshot("testMigratePackage", "SNAP1");
+        repo.createModuleSnapshot("testMigratePackage", "SNAP2");
 
 
 
@@ -53,18 +53,18 @@ public class MigrateDroolsPackageTest extends RepositoryTestCase {
         mig.migrate(repo);
         assertFalse(repo.getSession().hasPendingChanges());
         assertFalse(mig.needsMigration(repo));
-        pkg = repo.loadPackage("testMigratePackage");
+        pkg = repo.loadModule("testMigratePackage");
         assertTrue(pkg.containsAsset("drools"));
         AssetItem as = pkg.loadAsset("drools");
         assertEquals("some header", as.getContent());
 
 
-        pkg = repo.loadPackageSnapshot("testMigratePackage", "SNAP1");
+        pkg = repo.loadModuleSnapshot("testMigratePackage", "SNAP1");
         assertTrue(pkg.containsAsset("drools"));
         as = pkg.loadAsset("drools");
         assertEquals("some header", as.getContent());
 
-        pkg = repo.loadPackageSnapshot("testMigratePackage", "SNAP2");
+        pkg = repo.loadModuleSnapshot("testMigratePackage", "SNAP2");
         assertTrue(pkg.containsAsset("drools"));
         as = pkg.loadAsset("drools");
         assertEquals("some header", as.getContent());

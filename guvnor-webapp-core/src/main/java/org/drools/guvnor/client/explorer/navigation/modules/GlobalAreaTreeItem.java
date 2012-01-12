@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 public class GlobalAreaTreeItem extends ModulesTreeItemBase {
 
@@ -32,8 +32,8 @@ public class GlobalAreaTreeItem extends ModulesTreeItemBase {
 
     @Override
     protected void fillModulesTree( final IsTreeItem treeItem ) {
-        clientFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
-            public void onSuccess( PackageConfigData packageConfigData ) {
+        clientFactory.getModuleService().loadGlobalModule( new GenericCallback<Module>() {
+            public void onSuccess( Module packageConfigData ) {
                 new ModuleTreeSelectableItem(
                         clientFactory,
                         treeItem,

@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.place.shared.Place;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,10 +26,10 @@ import java.util.List;
 public class ModuleFormatsGridPlace extends Place {
 
     private String[] formats;
-    private PackageConfigData packageConfig;
+    private Module packageConfig;
     private String title;
 
-    public ModuleFormatsGridPlace( PackageConfigData packageConfig,
+    public ModuleFormatsGridPlace( Module packageConfig,
                                    String title,
                                    String[] formats ) {
         this.packageConfig = packageConfig;
@@ -41,7 +41,7 @@ public class ModuleFormatsGridPlace extends Place {
         return formats;
     }
 
-    public PackageConfigData getPackageConfigData() {
+    public Module getPackageConfigData() {
         return packageConfig;
     }
 

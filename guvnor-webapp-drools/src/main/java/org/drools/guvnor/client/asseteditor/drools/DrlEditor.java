@@ -22,7 +22,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.drools.FactTypeBrowser.ClickEvent;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,14 +34,14 @@ public class DrlEditor extends Composite
     implements
     EditorWidget {
 
-    public DrlEditor(RuleAsset a,
+    public DrlEditor(Asset a,
                      RuleViewer v,
                      ClientFactory clientFactory,
                      EventBus eventBus) {
         this( a );
     }
 
-    public DrlEditor(RuleAsset a) {
+    public DrlEditor(Asset a) {
         final DefaultRuleContentWidget ed = new DefaultRuleContentWidget( a,
                                                                           26 );
 
@@ -54,7 +54,7 @@ public class DrlEditor extends Composite
         Grid layout = new Grid( 1,
                                 2 );
 
-        FactTypeBrowser browser = new FactTypeBrowser( SuggestionCompletionCache.getInstance().getEngineFromCache( a.getMetaData().getPackageName() ),
+        FactTypeBrowser browser = new FactTypeBrowser( SuggestionCompletionCache.getInstance().getEngineFromCache( a.getMetaData().getModuleName() ),
                                                        ce );
         layout.setWidget( 0,
                           0,

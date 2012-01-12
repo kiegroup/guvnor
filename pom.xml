@@ -74,7 +74,7 @@
       </modules>
     </profile>
     <profile>
-      <id>ngsoa</id>
+      <id>ngsoaProfile</id>
       <activation>
         <property>
           <name>ngsoa</name>
@@ -85,14 +85,15 @@
       </modules>
     </profile>
     <profile>
-      <id>ngsoafull</id>
+      <id>ngsoafullProfile</id>
       <activation>
         <property>
+          <!-- Warning: if you do -Dngsoafull you should also do -Dngsoa -->
+          <!-- TODO support "-Dfull -Dngsoa" instead when http://jira.codehaus.org/browse/MNG-3328 is fixed -->
           <name>ngsoafull</name>
         </property>
       </activation>
       <modules>
-        <module>guvnor-webapp-soa</module>
         <module>guvnorsoa-distribution-wars</module>
       </modules>
     </profile>   

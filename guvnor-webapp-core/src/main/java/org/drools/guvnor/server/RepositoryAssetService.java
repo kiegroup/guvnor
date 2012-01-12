@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -36,7 +37,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -45,9 +46,9 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.RuleAssetPopulator;
+import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.VersionableItem;
@@ -57,6 +58,7 @@ import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.AssetService")
 public class RepositoryAssetService
         implements
@@ -98,17 +100,17 @@ public class RepositoryAssetService
      */
     @WebRemote
     @LoggedIn
-    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
+    public Asset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
         AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-        RuleAsset asset = new RuleAssetPopulator().populateFrom(item);
+        Asset asset = new AssetPopulator().populateFrom(item);
 
         asset.setMetaData(repositoryAssetOperations.populateMetaData(item));
 
         serviceSecurity.checkIsPackageReadOnlyOrAnalystReadOnly(asset);
-        PackageItem pkgItem = handlePackageItem(item,
+        ModuleItem pkgItem = handlePackageItem(item,
                 asset);
 
         log.debug("Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time));
@@ -117,9 +119,9 @@ public class RepositoryAssetService
 
     }
 
-    private PackageItem handlePackageItem(AssetItem item,
-                                          RuleAsset asset) throws SerializationException {
-        PackageItem packageItem = item.getPackage();
+    private ModuleItem handlePackageItem(AssetItem item,
+                                          Asset asset) throws SerializationException {
+        ModuleItem packageItem = item.getModule();
 
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
         handler.retrieveAssetContent(asset,
@@ -135,13 +137,13 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
+    public Asset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets(Arrays.asList(uuids));
     }
 
     @WebRemote
     @LoggedIn
-    public String checkinVersion(RuleAsset asset) throws SerializationException {
+    public String checkinVersion(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
         log.info("USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] ");
@@ -175,9 +177,9 @@ public class RepositoryAssetService
     @LoggedIn
     public TableDataResult loadAssetHistory(String packageUUID,
                                             String assetName) throws SerializationException {
-        PackageItem pi = rulesRepository.loadPackageByUUID(packageUUID);
+        ModuleItem pi = rulesRepository.loadModuleByUUID(packageUUID);
         AssetItem assetItem = pi.loadAsset(assetName);
-        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(assetItem.getPackage().getUUID());
+        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(assetItem.getModule().getUUID());
 
         return repositoryAssetOperations.loadItemHistory(assetItem);
     }
@@ -214,7 +216,7 @@ public class RepositoryAssetService
                                                      int skip,
                                                      int numRows,
                                                      String tableConfig) throws SerializationException {
-        PackageItem pkg = rulesRepository.loadPackage(packageName);
+        ModuleItem pkg = rulesRepository.loadModule(packageName);
         return listAssets(pkg.getUUID(),
                 formats,
                 skip,
@@ -270,7 +272,7 @@ public class RepositoryAssetService
         attachmentRemoved( item );
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
-        rulesRepository.moveRuleItemPackage(newPackage,
+        rulesRepository.moveRuleItemModule(newPackage,
                                             uuid,
                                             comment);
         
@@ -282,26 +284,26 @@ public class RepositoryAssetService
     @WebRemote
     @LoggedIn
     public void promoteAssetToGlobalArea(String uuid) {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( RulesRepository.GLOBAL_AREA );
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getPackageName());
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getModuleName());
 
-        //Perform house-keeping for when an Asset is removed from a package
+        //Perform house-keeping for when an Asset is removed from a module
         attachmentRemoved( item );
 
-        log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
-        rulesRepository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
+        log.info("USER:" + getCurrentUserName() + " CHANGING MODULE OF asset: [" + uuid + "] to [ globalArea ]");
+        rulesRepository.moveRuleItemModule(RulesRepository.GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
         
-        //Perform house-keeping for when an Asset is added to a package
+        //Perform house-keeping for when an Asset is added to a module
         attachmentAdded( item );
         
     }
 
     @WebRemote
     @LoggedIn
-    public String buildAssetSource(RuleAsset asset) throws SerializationException {
+    public String buildAssetSource(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.buildAssetSource(asset);
     }
@@ -326,7 +328,7 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
+    public BuilderResult validateAsset(Asset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.validateAsset(asset);
     }
@@ -351,7 +353,7 @@ public class RepositoryAssetService
     public void removeAsset(String uuid) {
         try {
             AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-            serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
+            serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getModule().getUUID());
 
             item.remove();
             rulesRepository.save();
@@ -454,25 +456,25 @@ public class RepositoryAssetService
                 numRows);
     }
 
-    RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
+    Asset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if (uuids == null) {
             return null;
         }
-        Collection<RuleAsset> assets = new HashSet<RuleAsset>();
+        Collection<Asset> assets = new HashSet<Asset>();
 
         for (String uuid : uuids) {
             assets.add(loadRuleAsset(uuid));
         }
 
-        return assets.toArray(new RuleAsset[assets.size()]);
+        return assets.toArray(new Asset[assets.size()]);
     }
 
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
         AssetItem item = rulesRepository.loadAssetByUUID(uuid);
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
-        if (item.getPackage().isArchived()) {
-            throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
+        if (item.getModule().isArchived()) {
+            throw new RulesRepositoryException("The package [" + item.getModuleName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
         }
         log.info("USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] ");
         try {
@@ -485,7 +487,7 @@ public class RepositoryAssetService
                     e);
         }
         item.archiveItem(archive);
-        PackageItem pkg = item.getPackage();
+        ModuleItem pkg = item.getModule();
         pkg.updateBinaryUpToDate(false);
         RuleBaseCache.getInstance().remove(pkg.getUUID());
         if (archive) {
@@ -552,7 +554,7 @@ public class RepositoryAssetService
 
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(uuid);
 
-        PackageItem pkg = rulesRepository.loadPackageByUUID(uuid);
+        ModuleItem pkg = rulesRepository.loadModuleByUUID(uuid);
         log.info("USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]");
         pkg.changeStatus(newState);
 

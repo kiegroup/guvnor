@@ -22,14 +22,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.junit.Test;
 
 public class DroolsHeaderTest {
 
     @Test
     public void testGetDroolsHeaderAndExists() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         AssetItem assetItem = mock( AssetItem.class );
         when( packageItem.containsAsset( "drools" ) ).thenReturn( true );
         when( packageItem.loadAsset( "drools" ) ).thenReturn( assetItem );
@@ -42,7 +42,7 @@ public class DroolsHeaderTest {
 
     @Test
     public void testGetDroolsHeaderAndDoesNotExist() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         AssetItem assetItem = mock( AssetItem.class );
         when( packageItem.containsAsset( "drools" ) ).thenReturn( false );
         when( packageItem.loadAsset( "drools" ) ).thenReturn( assetItem );
@@ -56,7 +56,7 @@ public class DroolsHeaderTest {
 
     @Test
     public void testUpdateDroolsHeaderAndExists() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         AssetItem assetItem = mock( AssetItem.class );
         when( packageItem.containsAsset( "drools" ) ).thenReturn( true );
         when( packageItem.loadAsset( "drools" ) ).thenReturn( assetItem );
@@ -68,7 +68,7 @@ public class DroolsHeaderTest {
 
     @Test
     public void testUpdateDroolsHeaderAndDoesNotExist() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         AssetItem assetItem = mock( AssetItem.class );
         when( packageItem.containsAsset( "drools" ) ).thenReturn( false );
         when( packageItem.addAsset( "drools",

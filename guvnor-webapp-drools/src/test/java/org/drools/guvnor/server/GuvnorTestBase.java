@@ -16,8 +16,6 @@
 package org.drools.guvnor.server;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,12 +30,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenImporterImpl;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.junit.After;
 import org.junit.Before;
@@ -151,7 +144,7 @@ public abstract class GuvnorTestBase {
     protected RepositoryAssetService repositoryAssetService;
 
     @Inject
-    protected RepositoryPackageService repositoryPackageService;
+    protected RepositoryModuleService repositoryPackageService;
 
     @Inject
     protected RepositoryCategoryService repositoryCategoryService;
@@ -175,7 +168,7 @@ public abstract class GuvnorTestBase {
 
     @Before
     public void autoLoginAsAdmin() {
-        // TODO this method seems to be called after the request and the rulesRepository therefor is created...
+        // TODO this method seems to be called after the request and the rulesRepository therefore is created...
         if (autoLoginAsAdmin) {
             loginAs(ADMIN_USERNAME);
         }

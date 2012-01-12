@@ -15,14 +15,20 @@
  */
 package org.drools.ide.common.client.modeldriven.brl.templates;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
@@ -39,206 +45,318 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 /**
- * A Rule Model Visitor to create a clone
- * 
- * TODO Clone LHS of model...
+ * A Rule Model Visitor to create a clone TODO Clone LHS of model...
  */
 public class RuleModelCloneVisitor {
 
-    private RuleModel clone;
-
-    private void visit(Object o) {
+    private Object visit(Object o) {
         if ( o == null ) {
-            return;
+            return null;
         }
         if ( o instanceof RuleModel ) {
-            visitRuleModel( (RuleModel) o );
+            return visitRuleModel( (RuleModel) o );
         } else if ( o instanceof RuleAttribute ) {
-            visitRuleAttribute( (RuleAttribute) o );
+            return visitRuleAttribute( (RuleAttribute) o );
         } else if ( o instanceof RuleMetadata ) {
-            visitRuleMetadata( (RuleMetadata) o );
+            return visitRuleMetadata( (RuleMetadata) o );
         } else if ( o instanceof FactPattern ) {
-            visitFactPattern( (FactPattern) o );
+            return visitFactPattern( (FactPattern) o );
         } else if ( o instanceof CompositeFieldConstraint ) {
-            visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
+            return visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
         } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
-            visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
+            return visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
         } else if ( o instanceof SingleFieldConstraint ) {
-            visitSingleFieldConstraint( (SingleFieldConstraint) o );
+            return visitSingleFieldConstraint( (SingleFieldConstraint) o );
+        } else if ( o instanceof ExpressionFormLine ) {
+            return visitExpressionFormLine( (ExpressionFormLine) o );
+        } else if ( o instanceof ConnectiveConstraint ) {
+            return visitConnectiveConstraint( (ConnectiveConstraint) o );
         } else if ( o instanceof CompositeFactPattern ) {
-            visitCompositeFactPattern( (CompositeFactPattern) o );
+            return visitCompositeFactPattern( (CompositeFactPattern) o );
         } else if ( o instanceof FreeFormLine ) {
-            visitFreeFormLine( (FreeFormLine) o );
+            return visitFreeFormLine( (FreeFormLine) o );
         } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
-            visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
+            return visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
         } else if ( o instanceof FromCollectCompositeFactPattern ) {
-            visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
+            return visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
         } else if ( o instanceof FromCompositeFactPattern ) {
-            visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
+            return visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
         } else if ( o instanceof DSLSentence ) {
-            visitDSLSentence( (DSLSentence) o );
+            return visitDSLSentence( (DSLSentence) o );
+        } else if ( o instanceof DSLVariableValue ) {
+            return visitDSLVariableValue( (DSLVariableValue) o );
         } else if ( o instanceof ActionInsertFact ) {
-            visitActionFieldList( (ActionInsertFact) o );
-        } else if ( o instanceof ActionSetField ) {
-            visitActionFieldList( (ActionSetField) o );
+            return visitActionFieldList( (ActionInsertFact) o );
         } else if ( o instanceof ActionUpdateField ) {
-            visitActionFieldList( (ActionUpdateField) o );
+            return visitActionFieldList( (ActionUpdateField) o );
+        } else if ( o instanceof ActionSetField ) {
+            return visitActionFieldList( (ActionSetField) o );
         }
+        throw new IllegalArgumentException( "Class " + o.getClass().getName() + " is not recognised" );
     }
 
-    private void visitRuleAttribute(RuleAttribute attr) {
-        RuleAttribute attrClone = new RuleAttribute();
-        attrClone.attributeName = attr.attributeName;
-        attrClone.value = attr.value;
-        this.clone.addAttribute( attrClone );
+    private RuleAttribute visitRuleAttribute(RuleAttribute attr) {
+        RuleAttribute clone = new RuleAttribute();
+        clone.attributeName = attr.attributeName;
+        clone.value = attr.value;
+        return clone;
     }
 
-    private void visitRuleMetadata(RuleMetadata md) {
-        RuleMetadata mdClone = new RuleMetadata();
-        mdClone.attributeName = md.attributeName;
-        mdClone.value = md.value;
-        this.clone.addMetadata( mdClone );
+    private RuleMetadata visitRuleMetadata(RuleMetadata md) {
+        RuleMetadata clone = new RuleMetadata();
+        clone.attributeName = md.attributeName;
+        clone.value = md.value;
+        return clone;
     }
 
     //ActionInsertFact, ActionSetField, ActionpdateField
-    private void visitActionFieldList(ActionInsertFact afl) {
-        ActionInsertFact aflClone = new ActionInsertFact();
-        aflClone.factType = afl.factType;
-        aflClone.setBoundName( afl.getBoundName() );
+    private ActionInsertFact visitActionFieldList(ActionInsertFact afl) {
+        ActionInsertFact clone = new ActionInsertFact();
+        clone.factType = afl.factType;
+        clone.setBoundName( afl.getBoundName() );
         for ( ActionFieldValue afv : afl.fieldValues ) {
             ActionFieldValue afvClone = new ActionFieldValue();
             afvClone.setField( afv.getField() );
             afvClone.setNature( afv.getNature() );
             afvClone.setType( afv.getType() );
             afvClone.setValue( afv.getValue() );
-            aflClone.addFieldValue( afvClone );
+            clone.addFieldValue( afvClone );
         }
-        this.clone.addRhsItem( aflClone );
+        return clone;
     }
 
-    private void visitActionFieldList(ActionSetField afl) {
-        ActionSetField aflClone = new ActionSetField();
-        aflClone.variable = afl.variable;
+    private ActionSetField visitActionFieldList(ActionSetField afl) {
+        ActionSetField clone = new ActionSetField();
+        clone.variable = afl.variable;
         for ( ActionFieldValue afv : afl.fieldValues ) {
             ActionFieldValue afvClone = new ActionFieldValue();
             afvClone.setField( afv.getField() );
             afvClone.setNature( afv.getNature() );
             afvClone.setType( afv.getType() );
             afvClone.setValue( afv.getValue() );
-            aflClone.addFieldValue( afvClone );
+            clone.addFieldValue( afvClone );
         }
-        this.clone.addRhsItem( aflClone );
+        return clone;
     }
 
-    private void visitActionFieldList(ActionUpdateField afl) {
-        ActionUpdateField aflClone = new ActionUpdateField();
-        aflClone.variable = afl.variable;
+    private ActionUpdateField visitActionFieldList(ActionUpdateField afl) {
+        ActionUpdateField clone = new ActionUpdateField();
+        clone.variable = afl.variable;
         for ( ActionFieldValue afv : afl.fieldValues ) {
             ActionFieldValue afvClone = new ActionFieldValue();
             afvClone.setField( afv.getField() );
             afvClone.setNature( afv.getNature() );
             afvClone.setType( afv.getType() );
             afvClone.setValue( afv.getValue() );
-            aflClone.addFieldValue( afvClone );
+            clone.addFieldValue( afvClone );
         }
-        this.clone.addRhsItem( aflClone );
+        return clone;
     }
 
-    private void visitCompositeFactPattern(CompositeFactPattern pattern) {
+    private CompositeFactPattern visitCompositeFactPattern(CompositeFactPattern pattern) {
+        CompositeFactPattern clone = new CompositeFactPattern();
+        clone.type = pattern.type;
         if ( pattern.getPatterns() != null ) {
             for ( IFactPattern fp : pattern.getPatterns() ) {
-                visit( fp );
+                clone.addFactPattern( (IFactPattern) visit( fp ) );
             }
         }
+        return clone;
     }
 
-    private void visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
+    private CompositeFieldConstraint visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
+        CompositeFieldConstraint clone = new CompositeFieldConstraint();
+        clone.compositeJunctionType = cfc.compositeJunctionType;
         if ( cfc.constraints != null ) {
-            for ( FieldConstraint fc : cfc.constraints ) {
-                visit( fc );
+            clone.constraints = new FieldConstraint[cfc.constraints.length];
+            for ( int i = 0; i < cfc.constraints.length; i++ ) {
+                FieldConstraint fc = cfc.constraints[i];
+                clone.constraints[i] = (FieldConstraint) visit( fc );
             }
         }
+        return clone;
     }
 
-    private void visitDSLSentence(final DSLSentence sentence) {
-        String text = sentence.getDefinition();
-    }
-
-    private void visitFactPattern(FactPattern pattern) {
-        for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
-            visit( fc );
+    private DSLSentence visitDSLSentence(final DSLSentence sentence) {
+        DSLSentence clone = new DSLSentence();
+        clone.setDefinition( sentence.getDefinition() );
+        for ( DSLVariableValue value : sentence.getValues() ) {
+            clone.getValues().add( (DSLVariableValue) visit( value ) );
         }
+        return clone;
     }
 
-    private void visitFreeFormLine(FreeFormLine ffl) {
+    private DSLVariableValue visitDSLVariableValue(DSLVariableValue value) {
+        DSLVariableValue clone = new DSLVariableValue();
+        clone.setValue( value.getValue() );
+        return clone;
     }
 
-    private void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
-        visit( pattern.getFactPattern() );
-        visit( pattern.getSourcePattern() );
-        pattern.getActionCode();
-        pattern.getInitCode();
-        pattern.getReverseCode();
+    private FactPattern visitFactPattern(FactPattern pattern) {
+        FactPattern clone = new FactPattern();
+        clone.setBoundName( pattern.getBoundName() );
+        clone.setFactType( pattern.getFactType() );
+        clone.setNegated( pattern.isNegated() );
+
+        CEPWindow cloneCEPWindow = new CEPWindow();
+        cloneCEPWindow.setOperator( pattern.getWindow().getOperator() );
+        cloneCEPWindow.setParameters( cloneCEPWindowParameters( pattern.getWindow() ) );
+        clone.setWindow( cloneCEPWindow );
+
+        for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
+            clone.addConstraint( (FieldConstraint) visit( fc ) );
+        }
+        return clone;
     }
 
-    private void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
-        visit( pattern.getFactPattern() );
-        visit( pattern.getRightPattern() );
+    private Map<String, String> cloneCEPWindowParameters(CEPWindow window) {
+        Map<String, String> clone = new HashMap<String, String>();
+        for ( Map.Entry<String, String> entry : window.getParameters().entrySet() ) {
+            clone.put( entry.getKey(),
+                       entry.getValue() );
+        }
+        return clone;
     }
 
-    private void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
-        visit( pattern.getFactPattern() );
-        pattern.getExpression().getText();
+    private FreeFormLine visitFreeFormLine(FreeFormLine ffl) {
+        FreeFormLine clone = new FreeFormLine();
+        clone.text = ffl.text;
+        return clone;
+    }
+
+    private FromAccumulateCompositeFactPattern visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
+        FromAccumulateCompositeFactPattern clone = new FromAccumulateCompositeFactPattern();
+        clone.setActionCode( pattern.getActionCode() );
+        clone.setExpression( (ExpressionFormLine) visit( pattern.getExpression() ) );
+        clone.setFactPattern( (FactPattern) visit( pattern.getFactPattern() ) );
+        clone.setFunction( pattern.getFunction() );
+        clone.setInitCode( pattern.getInitCode() );
+        clone.setResultCode( pattern.getResultCode() );
+        clone.setReverseCode( pattern.getReverseCode() );
+        clone.setSourcePattern( (IPattern) visit( pattern.getSourcePattern() ) );
+        return clone;
+    }
+
+    private FromCollectCompositeFactPattern visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
+        FromCollectCompositeFactPattern clone = new FromCollectCompositeFactPattern();
+        clone.setExpression( (ExpressionFormLine) visit( pattern.getExpression() ) );
+        clone.setFactPattern( (FactPattern) visit( pattern.getFactPattern() ) );
+        clone.setRightPattern( (IPattern) visit( pattern.getRightPattern() ) );
+        return clone;
+    }
+
+    private FromCompositeFactPattern visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
+        FromCompositeFactPattern clone = new FromCompositeFactPattern();
+        clone.setExpression( (ExpressionFormLine) visit( pattern.getExpression() ) );
+        clone.setFactPattern( (FactPattern) visit( pattern.getFactPattern() ) );
+        return clone;
     }
 
     public RuleModel visitRuleModel(RuleModel model) {
-        this.clone = new RuleModel();
-        this.clone.name = model.name;
-        this.clone.parentName = model.parentName;
-        this.clone.setNegated( model.isNegated() );
+        RuleModel clone = new RuleModel();
+        clone.modelVersion = model.modelVersion;
+        clone.name = model.name;
+        clone.parentName = model.parentName;
+        clone.setNegated( model.isNegated() );
 
         if ( model.attributes != null ) {
-            for ( RuleAttribute attr : model.attributes ) {
-                visit( attr );
+            clone.attributes = new RuleAttribute[model.attributes.length];
+            for ( int i = 0; i < model.attributes.length; i++ ) {
+                RuleAttribute attr = model.attributes[i];
+                clone.attributes[i] = (RuleAttribute) visit( attr );
             }
         }
         if ( model.metadataList != null ) {
-            for ( RuleMetadata md : model.metadataList ) {
-                visit( md );
+            clone.metadataList = new RuleMetadata[model.metadataList.length];
+            for ( int i = 0; i < model.metadataList.length; i++ ) {
+                RuleMetadata md = model.metadataList[i];
+                clone.metadataList[i] = (RuleMetadata) visit( md );
             }
         }
         if ( model.lhs != null ) {
-            for ( IPattern pattern : model.lhs ) {
-                visit( pattern );
+            clone.lhs = new IPattern[model.lhs.length];
+            for ( int i = 0; i < model.lhs.length; i++ ) {
+                IPattern pattern = model.lhs[i];
+                clone.lhs[i] = (IPattern) visit( pattern );
             }
         }
         if ( model.rhs != null ) {
-            for ( IAction action : model.rhs ) {
-                visit( action );
+            clone.rhs = new IAction[model.rhs.length];
+            for ( int i = 0; i < model.rhs.length; i++ ) {
+                IAction action = model.rhs[i];
+                clone.rhs[i] = (IAction) visit( action );
             }
         }
-        return this.clone;
+        return clone;
     }
 
-    private void visitSingleFieldConstraint(SingleFieldConstraint sfc) {
+    private SingleFieldConstraint visitSingleFieldConstraint(SingleFieldConstraint sfc) {
+        SingleFieldConstraint clone = new SingleFieldConstraint();
+        clone.setConstraintValueType( sfc.getConstraintValueType() );
+        clone.setExpressionValue( (ExpressionFormLine) visit( sfc.getExpressionValue() ) );
+        clone.setFieldBinding( sfc.getFieldBinding() );
+        clone.setFieldName( sfc.getFieldName() );
+        clone.setFieldType( sfc.getFieldType() );
+        clone.setOperator( sfc.getOperator() );
+        for ( Map.Entry<String, String> entry : sfc.getParameters().entrySet() ) {
+            clone.setParameter( entry.getKey(),
+                                entry.getValue() );
+        }
+        clone.setValue( sfc.getValue() );
 
-        //Visit Connection constraints
         if ( sfc.connectives != null ) {
+            clone.connectives = new ConnectiveConstraint[sfc.connectives.length];
             for ( int i = 0; i < sfc.connectives.length; i++ ) {
-                final ConnectiveConstraint cc = sfc.connectives[i];
+                clone.connectives[i] = (ConnectiveConstraint) visit( sfc.connectives[i] );
             }
         }
+        return clone;
     }
 
-    private void visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
+    private ExpressionFormLine visitExpressionFormLine(ExpressionFormLine efl) {
+        ExpressionFormLine clone = new ExpressionFormLine( efl );
+        clone.setBinding( efl.getBinding() );
+        return clone;
+    }
 
-        //Visit Connection constraints
+    private ConnectiveConstraint visitConnectiveConstraint(ConnectiveConstraint cc) {
+        ConnectiveConstraint clone = new ConnectiveConstraint();
+        clone.setConstraintValueType( cc.getConstraintValueType() );
+        clone.setExpressionValue( (ExpressionFormLine) visit( cc.getExpressionValue() ) );
+        clone.setFieldName( cc.getFieldName() );
+        clone.setFieldType( cc.getFieldType() );
+        clone.setOperator( cc.getOperator() );
+        for ( Map.Entry<String, String> entry : cc.getParameters().entrySet() ) {
+            clone.setParameter( entry.getKey(),
+                                entry.getValue() );
+        }
+        clone.setValue( cc.getValue() );
+        return clone;
+    }
+
+    private SingleFieldConstraintEBLeftSide visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
+        SingleFieldConstraintEBLeftSide clone = new SingleFieldConstraintEBLeftSide();
+        clone.setConstraintValueType( sfexp.getConstraintValueType() );
+        clone.setExpressionLeftSide( (ExpressionFormLine) visit( sfexp.getExpressionLeftSide() ) );
+        clone.setExpressionValue( (ExpressionFormLine) visit( sfexp.getExpressionValue() ) );
+        clone.setFieldBinding( sfexp.getFieldBinding() );
+        clone.setFieldName( sfexp.getFieldName() );
+        clone.setFieldType( sfexp.getFieldType() );
+        clone.setOperator( sfexp.getOperator() );
+        for ( Map.Entry<String, String> entry : sfexp.getParameters().entrySet() ) {
+            clone.setParameter( entry.getKey(),
+                                entry.getValue() );
+        }
+        clone.setParent( sfexp.getParent() );
+        clone.setValue( sfexp.getValue() );
+
         if ( sfexp.connectives != null ) {
+            clone.connectives = new ConnectiveConstraint[sfexp.connectives.length];
             for ( int i = 0; i < sfexp.connectives.length; i++ ) {
-                final ConnectiveConstraint cc = sfexp.connectives[i];
+                clone.connectives[i] = (ConnectiveConstraint) visit( sfexp.connectives[i] );
             }
         }
-
+        return clone;
     }
 
 }

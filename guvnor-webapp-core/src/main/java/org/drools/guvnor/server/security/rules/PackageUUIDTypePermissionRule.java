@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.ModuleUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -38,9 +38,9 @@ public class PackageUUIDTypePermissionRule
                                  String requestedPermission,
                                  List<RoleBasedPermission> permissions) {
         String targetName;
-        String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
+        String targetUUID = ((ModuleUUIDType) requestedObject).getUUID();
         try {
-            targetName = rulesRepository.loadPackageByUUID( targetUUID ).getName();
+            targetName = rulesRepository.loadModuleByUUID( targetUUID ).getName();
         } catch ( RulesRepositoryException e ) {
             return false;
         }

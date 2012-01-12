@@ -17,7 +17,7 @@
 package org.drools.guvnor.server.contenthandler.drools;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -102,7 +102,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
-                            RuleAsset asset,
+                            Asset asset,
                             StringBuilder stringBuilder) {
 
         String content = ((RuleContentText) asset.getContent()).content;

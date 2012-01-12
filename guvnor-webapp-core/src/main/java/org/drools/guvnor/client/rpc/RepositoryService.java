@@ -98,7 +98,7 @@ public interface RepositoryService
      * @return True if the asset already exists in the package
      * @throws SerializationException
      */
-    public boolean doesAssetExistInPackage(String assetName,
+    public boolean doesAssetExistInModule(String assetName,
                                            String packageName) throws SerializationException;
 
     /**

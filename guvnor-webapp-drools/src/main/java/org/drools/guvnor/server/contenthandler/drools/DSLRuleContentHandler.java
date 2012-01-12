@@ -18,7 +18,7 @@ package org.drools.guvnor.server.contenthandler.drools;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -37,7 +37,7 @@ public class DSLRuleContentHandler extends ContentHandler
         implements
         IRuleAsset {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
@@ -46,7 +46,7 @@ public class DSLRuleContentHandler extends ContentHandler
 
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
 
         RuleContentText text = (RuleContentText) asset.getContent();
@@ -92,7 +92,7 @@ public class DSLRuleContentHandler extends ContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
-                            RuleAsset asset,
+                            Asset asset,
                             StringBuilder stringBuilder) {
         RuleContentText text = (RuleContentText) asset.getContent();
         String source = text.content;

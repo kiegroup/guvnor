@@ -8,7 +8,7 @@ import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.util.Activity;
@@ -31,7 +31,7 @@ public class SnapshotActivity extends Activity {
 
     @Override
     public void start(final AcceptItem tabbedPanel, final EventBus eventBus) {
-        clientFactory.getPackageService().loadSnapshotInfo(
+        clientFactory.getModuleService().loadSnapshotInfo(
                 moduleName,
                 snapshotName,
                 new GenericCallback<SnapshotInfo>() {
@@ -45,9 +45,9 @@ public class SnapshotActivity extends Activity {
 
         LoadingPopup.showMessage( constants.LoadingSnapshot() );
 
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(),
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess(PackageConfigData conf) {
+        RepositoryServiceFactory.getPackageService().loadModule( snapshotInfo.getUuid(),
+                new GenericCallback<Module>() {
+                    public void onSuccess(Module conf) {
                         tabbedPanel.add( constants.SnapshotLabel( snapshotInfo.getName() ),
                                 new SnapshotView(
                                         clientFactory,

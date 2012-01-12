@@ -418,7 +418,7 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( assetName,
+                RepositoryServiceFactory.getService().doesAssetExistInModule( assetName,
                                                                                packageName,
                                                                                createGenericCallBackForCheckingIfExists( cmdInvokeWizard ) );
             }
@@ -457,7 +457,7 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
             }
@@ -496,7 +496,7 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
             }

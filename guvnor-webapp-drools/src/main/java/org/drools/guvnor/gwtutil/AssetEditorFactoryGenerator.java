@@ -34,7 +34,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 
@@ -69,7 +69,7 @@ public class AssetEditorFactoryGenerator extends Generator {
         composerFactory.addImport( Constants.class.getCanonicalName() );
         composerFactory.addImport( Images.class.getCanonicalName() );
         composerFactory.addImport( ImageResource.class.getCanonicalName() );
-        composerFactory.addImport( RuleAsset.class.getCanonicalName() );
+        composerFactory.addImport( Asset.class.getCanonicalName() );
         composerFactory.addImport( RuleViewer.class.getCanonicalName() );
         composerFactory.addImport( DefaultContentUploadEditor.class.getCanonicalName() );
         composerFactory.addImport( Widget.class.getCanonicalName() );
@@ -123,7 +123,7 @@ public class AssetEditorFactoryGenerator extends Generator {
     }
 
     private void generateGetAssetEditorMethod( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
-        sourceWriter.println( "public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus eventBus) {" );
+        sourceWriter.println( "public Widget getAssetEditor(Asset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus eventBus) {" );
         sourceWriter.indent();
 
         for (AssetEditorConfiguration a : registeredEditors) {

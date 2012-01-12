@@ -4,7 +4,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DSLLoader {
 
-    public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(PackageItem packageItem) {
+    public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(ModuleItem packageItem) {
         return loadDSLMappingFiles(packageItem, new BRMSPackageBuilder.DSLErrorEvent() {
             public void recordError(AssetItem asset,
                                     String message) {
@@ -24,7 +24,7 @@ public class DSLLoader {
         });
     }
 
-    public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(PackageItem packageItem,
+    public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(ModuleItem packageItem,
                                                                     BRMSPackageBuilder.DSLErrorEvent dslErrorEvent) {
         return loadDSLMappingFiles(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DSL), dslErrorEvent);
     }

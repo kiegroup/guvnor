@@ -18,7 +18,9 @@ package org.drools.ide.common.server.util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
@@ -35,12 +37,13 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
-import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
@@ -50,6 +53,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -81,9 +86,13 @@ public class GuidedDTDRLPersistence {
             BigDecimal num = row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
 
-            RuleModel rm = new RuleModel();
+            BRLRuleModel rm = new BRLRuleModel( dt );
             rm.name = getName( dt.getTableName(),
                                num );
+
+            //Hook-up data-provider for Template key expansion
+            TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( dt.getAllColumns(),
+                                                                                     dt.getData().get( i ) );
 
             doMetadata( allColumns,
                         dt.getMetadataCols(),
@@ -95,11 +104,13 @@ public class GuidedDTDRLPersistence {
                        rm );
             doConditions( allColumns,
                           dt.getConditions(),
+                          rowDataProvider,
                           row,
                           data,
                           rm );
             doActions( allColumns,
                        dt.getActionCols(),
+                       rowDataProvider,
                        row,
                        rm );
 
@@ -111,7 +122,10 @@ public class GuidedDTDRLPersistence {
             if ( desc != null && desc.length() > 0 ) {
                 sb.append( "#" + desc + "\n" );
             }
-            String rule = BRDRLPersistence.getInstance().marshal( rm );
+
+            //Specialised BRDRLPersistence provider than can handle template key expansion
+            GuidedDTBRDRLPersistence drlMarshaller = new GuidedDTBRDRLPersistence( rowDataProvider );
+            String rule = drlMarshaller.marshal( rm );
             sb.append( rule );
             sb.append( "\n" );
         }
@@ -122,6 +136,7 @@ public class GuidedDTDRLPersistence {
 
     void doActions(List<BaseColumn> allColumns,
                    List<ActionCol52> actionCols,
+                   TemplateDataProvider rowDataProvider,
                    List<DTCellValue52> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
@@ -131,6 +146,7 @@ public class GuidedDTDRLPersistence {
                 doAction( allColumns,
                           (BRLActionColumn) c,
                           actions,
+                          rowDataProvider,
                           row,
                           rm );
 
@@ -147,10 +163,6 @@ public class GuidedDTDRLPersistence {
                     }
                 } else {
                     cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
-                }
-
-                if ( !validCell( cell ) ) {
-                    cell = c.getDefaultValue();
                 }
 
                 if ( validCell( cell ) ) {
@@ -198,13 +210,35 @@ public class GuidedDTDRLPersistence {
     private void doAction(List<BaseColumn> allColumns,
                           BRLActionColumn column,
                           List<LabelledAction> actions,
+                          TemplateDataProvider rowDataProvider,
                           List<DTCellValue52> row,
                           RuleModel rm) {
-        //TODO {manstis} Need to ensure every key has a value and substitute keys for values
+
+        //Ensure every key has a value and substitute keys for values
         for ( IAction action : column.getDefinition() ) {
-            LabelledAction la = new LabelledAction();
-            la.action = action;
-            actions.add( la );
+
+            //Get interpolation variables used by the Action
+            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+            RuleModelVisitor rmv = new RuleModelVisitor( action,
+                                                         ivs );
+            rmv.visit( action );
+
+            //Check each variable has a value
+            boolean addAction = true;
+            for ( InterpolationVariable variable : ivs.keySet() ) {
+                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                if ( "".equals( value ) ) {
+                    addAction = false;
+                    break;
+                }
+            }
+
+            if ( addAction ) {
+                LabelledAction la = new LabelledAction();
+                la.action = action;
+                actions.add( la );
+            }
+
         }
     }
 
@@ -363,124 +397,179 @@ public class GuidedDTDRLPersistence {
 
     void doConditions(List<BaseColumn> allColumns,
                       List<CompositeColumn< ? >> conditionPatterns,
+                      TemplateDataProvider rowDataProvider,
                       List<DTCellValue52> row,
                       List<List<DTCellValue52>> data,
                       RuleModel rm) {
 
-        List<IFactPattern> patterns = new ArrayList<IFactPattern>();
+        List<IPattern> patterns = new ArrayList<IPattern>();
 
         for ( CompositeColumn< ? > cc : conditionPatterns ) {
 
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
+            if ( cc instanceof BRLConditionColumn ) {
+                doCondition( allColumns,
+                             (BRLConditionColumn) cc,
+                             patterns,
+                             rowDataProvider,
+                             row,
+                             rm );
 
-                List<ConditionCol52> cols = p.getChildColumns();
-
-                for ( ConditionCol52 c : cols ) {
-
-                    int index = allColumns.indexOf( c );
-
-                    DTCellValue52 dcv = row.get( index );
-                    String cell = "";
-
-                    if ( c instanceof LimitedEntryCol ) {
-                        if ( dcv.getBooleanValue() == true ) {
-                            LimitedEntryCol lec = (LimitedEntryCol) c;
-                            DTCellValue52 value = lec.getValue();
-                            if ( value != null ) {
-                                cell = GuidedDTDRLUtilities.convertDTCellValueToString( value );
-                            }
-                        }
-                    } else {
-                        cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
-                    }
-
-                    boolean isOtherwise = dcv.isOtherwise();
-                    boolean isValid = isOtherwise;
-
-                    //Otherwise values are automatically valid as they're constructed from the other rules
-                    if ( !isOtherwise ) {
-                        isValid = validCell( cell );
-                    }
-
-                    //If operator is "== null" or "!= null" add constraint if table value is true
-                    if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
-                        isValid = dcv.getBooleanValue();
-                    }
-
-                    if ( isValid ) {
-
-                        // get or create the pattern it belongs too
-                        IFactPattern ifp = findByFactPattern( patterns,
-                                                              p.getBoundName() );
-
-                        //If the pattern does not exist create one suitable
-                        if ( ifp == null ) {
-                            FactPattern fp = new FactPattern( p.getFactType() );
-                            fp.setBoundName( p.getBoundName() );
-                            fp.setNegated( p.isNegated() );
-                            fp.setWindow( p.getWindow() );
-                            if ( p.getEntryPointName() != null && p.getEntryPointName().length() > 0 ) {
-                                FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
-                                fep.setEntryPointName( p.getEntryPointName() );
-                                fep.setFactPattern( fp );
-                                patterns.add( fep );
-                                ifp = fep;
-                            } else {
-                                patterns.add( fp );
-                                ifp = fp;
-                            }
-                        }
-
-                        //Extract the FactPattern from the IFactPattern
-                        FactPattern fp;
-                        if ( ifp instanceof FactPattern ) {
-                            fp = (FactPattern) ifp;
-                        } else if ( ifp instanceof FromEntryPointFactPattern ) {
-                            FromEntryPointFactPattern fep = (FromEntryPointFactPattern) ifp;
-                            fp = fep.getFactPattern();
-                        } else {
-                            throw new IllegalArgumentException( "Inexpected IFactPattern implementation found." );
-                        }
-
-                        //Add the constraint from this cell
-                        switch ( c.getConstraintValueType() ) {
-                            case BaseSingleFieldConstraint.TYPE_LITERAL :
-                            case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                                if ( !isOtherwise ) {
-                                    FieldConstraint fc = makeSingleFieldConstraint( c,
-                                                                                    cell );
-                                    fp.addConstraint( fc );
-                                } else {
-                                    FieldConstraint fc = makeSingleFieldConstraint( c,
-                                                                                    allColumns,
-                                                                                    data );
-                                    fp.addConstraint( fc );
-                                }
-                                break;
-                            case BaseSingleFieldConstraint.TYPE_PREDICATE :
-                                SingleFieldConstraint pred = new SingleFieldConstraint();
-                                pred.setConstraintValueType( c.getConstraintValueType() );
-                                if ( c.getFactField() != null
-                                     && c.getFactField().indexOf( "$param" ) > -1 ) {
-                                    // handle interpolation
-                                    pred.setValue( c.getFactField().replace( "$param",
-                                                                             cell ) );
-                                } else {
-                                    pred.setValue( cell );
-                                }
-                                fp.addConstraint( pred );
-                                break;
-                            default :
-                                throw new IllegalArgumentException( "Unknown constraintValueType: "
-                                                                    + c.getConstraintValueType() );
-                        }
-
-                    }
-                }
+            } else if ( cc instanceof Pattern52 ) {
+                doCondition( allColumns,
+                             (Pattern52) cc,
+                             patterns,
+                             row,
+                             data,
+                             rm );
             }
         }
         rm.lhs = patterns.toArray( new IPattern[patterns.size()] );
+    }
+
+    private void doCondition(List<BaseColumn> allColumns,
+                             BRLConditionColumn column,
+                             List<IPattern> patterns,
+                             TemplateDataProvider rowDataProvider,
+                             List<DTCellValue52> row,
+                             RuleModel rm) {
+
+        //Ensure every key has a value and substitute keys for values
+        for ( IPattern pattern : column.getDefinition() ) {
+
+            //Get interpolation variables used by the Pattern
+            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+            RuleModelVisitor rmv = new RuleModelVisitor( pattern,
+                                                         ivs );
+            rmv.visit( pattern );
+
+            //Check each variable has a value
+            boolean addPattern = true;
+            for ( InterpolationVariable variable : ivs.keySet() ) {
+                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                if ( "".equals( value ) ) {
+                    addPattern = false;
+                    break;
+                }
+            }
+
+            if ( addPattern ) {
+                patterns.add( pattern );
+            }
+
+        }
+    }
+
+    private void doCondition(List<BaseColumn> allColumns,
+                             Pattern52 pattern,
+                             List<IPattern> patterns,
+                             List<DTCellValue52> row,
+                             List<List<DTCellValue52>> data,
+                             RuleModel rm) {
+
+        List<ConditionCol52> cols = pattern.getChildColumns();
+
+        for ( ConditionCol52 c : cols ) {
+
+            int index = allColumns.indexOf( c );
+
+            DTCellValue52 dcv = row.get( index );
+            String cell = "";
+
+            if ( c instanceof LimitedEntryCol ) {
+                if ( dcv.getBooleanValue() == true ) {
+                    LimitedEntryCol lec = (LimitedEntryCol) c;
+                    DTCellValue52 value = lec.getValue();
+                    if ( value != null ) {
+                        cell = GuidedDTDRLUtilities.convertDTCellValueToString( value );
+                    }
+                }
+            } else {
+                cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
+            }
+
+            boolean isOtherwise = dcv.isOtherwise();
+            boolean isValid = isOtherwise;
+
+            //Otherwise values are automatically valid as they're constructed from the other rules
+            if ( !isOtherwise ) {
+                isValid = validCell( cell );
+            }
+
+            //If operator is "== null" or "!= null" add constraint if table value is true
+            if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
+                isValid = dcv.getBooleanValue();
+            }
+
+            if ( isValid ) {
+
+                // get or create the pattern it belongs too
+                IPattern ifp = findByFactPattern( patterns,
+                                                  pattern.getBoundName() );
+
+                //If the pattern does not exist create one suitable
+                if ( ifp == null ) {
+                    FactPattern fp = new FactPattern( pattern.getFactType() );
+                    fp.setBoundName( pattern.getBoundName() );
+                    fp.setNegated( pattern.isNegated() );
+                    fp.setWindow( pattern.getWindow() );
+                    if ( pattern.getEntryPointName() != null && pattern.getEntryPointName().length() > 0 ) {
+                        FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
+                        fep.setEntryPointName( pattern.getEntryPointName() );
+                        fep.setFactPattern( fp );
+                        patterns.add( fep );
+                        ifp = fep;
+                    } else {
+                        patterns.add( fp );
+                        ifp = fp;
+                    }
+                }
+
+                //Extract the FactPattern from the IFactPattern
+                FactPattern fp;
+                if ( ifp instanceof FactPattern ) {
+                    fp = (FactPattern) ifp;
+                } else if ( ifp instanceof FromEntryPointFactPattern ) {
+                    FromEntryPointFactPattern fep = (FromEntryPointFactPattern) ifp;
+                    fp = fep.getFactPattern();
+                } else {
+                    throw new IllegalArgumentException( "Inexpected IFactPattern implementation found." );
+                }
+
+                //Add the constraint from this cell
+                switch ( c.getConstraintValueType() ) {
+                    case BaseSingleFieldConstraint.TYPE_LITERAL :
+                    case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                        if ( !isOtherwise ) {
+                            FieldConstraint fc = makeSingleFieldConstraint( c,
+                                                                            cell );
+                            fp.addConstraint( fc );
+                        } else {
+                            FieldConstraint fc = makeSingleFieldConstraint( c,
+                                                                            allColumns,
+                                                                            data );
+                            fp.addConstraint( fc );
+                        }
+                        break;
+                    case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                        SingleFieldConstraint pred = new SingleFieldConstraint();
+                        pred.setConstraintValueType( c.getConstraintValueType() );
+                        if ( c.getFactField() != null
+                             && c.getFactField().indexOf( "$param" ) > -1 ) {
+                            // handle interpolation
+                            pred.setValue( c.getFactField().replace( "$param",
+                                                                     cell ) );
+                        } else {
+                            pred.setValue( cell );
+                        }
+                        fp.addConstraint( pred );
+                        break;
+                    default :
+                        throw new IllegalArgumentException( "Unknown constraintValueType: "
+                                                            + c.getConstraintValueType() );
+                }
+
+            }
+        }
     }
 
     /**
@@ -507,13 +596,13 @@ public class GuidedDTDRLPersistence {
         return operator == null || "".equals( operator );
     }
 
-    private IFactPattern findByFactPattern(List<IFactPattern> patterns,
-                                           String boundName) {
+    private IPattern findByFactPattern(List<IPattern> patterns,
+                                       String boundName) {
         if ( boundName == null ) {
             return null;
         }
 
-        for ( IFactPattern ifp : patterns ) {
+        for ( IPattern ifp : patterns ) {
             if ( ifp instanceof FactPattern ) {
                 FactPattern fp = (FactPattern) ifp;
                 if ( fp.getBoundName() != null && fp.getBoundName().equals( boundName ) ) {

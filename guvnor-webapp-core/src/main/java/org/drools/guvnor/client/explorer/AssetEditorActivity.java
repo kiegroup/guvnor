@@ -26,7 +26,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.Activity;
 
 public class AssetEditorActivity extends Activity {
@@ -72,17 +72,17 @@ public class AssetEditorActivity extends Activity {
                         loading ) );
     }
 
-    private GenericCallback<RuleAsset> createGenericCallback(final AcceptItem tabbedPanel,
+    private GenericCallback<Asset> createGenericCallback(final AcceptItem tabbedPanel,
                                                              final boolean[] loading) {
-        return new GenericCallback<RuleAsset>() {
-            public void onSuccess(final RuleAsset ruleAsset) {
-            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.packageName,
+        return new GenericCallback<Asset>() {
+            public void onSuccess(final Asset ruleAsset) {
+            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.moduleName,
             	        createOnRefreshModuleDataModelCompletion( loading,
                                 ruleAsset )));
             }
 
             private Command createOnRefreshModuleDataModelCompletion(final boolean[] loading,
-                                                                   final RuleAsset ruleAsset) {
+                                                                   final Asset ruleAsset) {
                 return new Command() {
                     public void execute() {
                         loading[0] = false;

@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 /**
  * A class able to organise PackageConfigData into folders
@@ -25,22 +25,22 @@ public abstract class PackageView {
     protected Folder root = new Folder();
 
     abstract void doAddPackage(String packageName,
-                               PackageConfigData conf);
+                               Module conf);
 
     public Folder getRootFolder() {
         return this.root;
     }
 
-    public void addPackage(PackageConfigData conf) {
+    public void addPackage(Module conf) {
         String name = conf.getName();
         doAddPackage( name,
                       conf );
     }
 
     public void addSubPackages(String baseName,
-                        PackageConfigData[] subPackages) {
+                        Module[] subPackages) {
         if ( subPackages != null ) {
-            for ( PackageConfigData conf : subPackages ) {
+            for ( Module conf : subPackages ) {
                 StringBuilder sb = new StringBuilder( baseName );
                 sb.append( "." );
                 sb.append( conf.getName() );

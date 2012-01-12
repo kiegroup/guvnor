@@ -29,7 +29,7 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -73,25 +73,25 @@ public class ScenarioWidget extends Composite
     private HandlerRegistration                availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator     scenarioWidgetComponentCreator;
 
-    public ScenarioWidget(RuleAsset asset,
+    public ScenarioWidget(Asset asset,
                           RuleViewer viewer,
                         ClientFactory clientFactory,
                         EventBus eventBus) {
         this( asset );
     }
 
-    public ScenarioWidget(RuleAsset asset) {
+    public ScenarioWidget(Asset asset) {
         this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( asset,
                                                                                   this );
         this.setShowResults( false );
 
-        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().getPackageName() );
+        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().getModuleName() );
 
         ifFixturesSizeZeroThenAddExecutionTrace();
 
         if ( !asset.isReadonly() ) {
             layout.add( new TestRunnerWidget( this,
-                                              asset.getMetaData().getPackageName() ) );
+                                              asset.getMetaData().getModuleName() ) );
         }
 
         renderEditor();

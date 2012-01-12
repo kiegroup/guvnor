@@ -18,7 +18,7 @@ package org.drools.repository.events;
 
 import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.AssetItem;
 import org.junit.After;
 import org.junit.Test;
@@ -85,7 +85,7 @@ public class StorageEventManagerTest extends RepositoryTestCase {
         StorageEventManager.se = null;
 
         RulesRepository repo = getRepo();
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset("testAssetContentCallbacks", "");
         assertEquals(0, asset.getContentLength());
         asset.updateContent("boo");
@@ -117,7 +117,7 @@ public class StorageEventManagerTest extends RepositoryTestCase {
         };
         StorageEventManager.registerCheckinEvent(e);
         RulesRepository repo = getRepo();
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset("testCheckinListener", "");
         assertEquals(0, asset.getContentLength());
         asset.updateContent("boo");

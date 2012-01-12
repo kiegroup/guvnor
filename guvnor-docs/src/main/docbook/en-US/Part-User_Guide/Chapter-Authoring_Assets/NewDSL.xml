@@ -50,6 +50,19 @@
       providing boolean choices, when the DSL Sentence is used in the guided
       editor.</para>
     </listitem>
+    
+    <listitem>
+      <para>{&lt;varName&gt;:CF:&lt;factType.fieldName&gt;}</para>
+
+      <para>This will render a button that will allow you to set the value of
+      this variable using a Custom Form. In order to use this feature, a 
+      Working-Set containing a Custom Form Configuration for factType.fieldName
+      must be active. If there is no such Working-Set, a simple text box
+      is used (just like a regular variable).</para>
+      
+      <para>For more information, please read more about Working-Sets and
+      Custom Form Configurations.</para>
+    </listitem>
   </itemizedlist>
 
   <figure>

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.util.codec.Base64;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testGetRestServletNoLogin() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testGetRestServletNoLogin",
+        ModuleItem pkg = rulesRepository.createModule( "testGetRestServletNoLogin",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "" );
@@ -76,7 +76,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testGetRestServletBadLogin() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testGetRestServletBadLogin",
+        ModuleItem pkg = rulesRepository.createModule( "testGetRestServletBadLogin",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "" );
@@ -104,7 +104,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testGetRestServlet() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testGetRestServlet",
+        ModuleItem pkg = rulesRepository.createModule( "testGetRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "" );
@@ -153,7 +153,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testPost() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testPostRestServlet",
+        ModuleItem pkg = rulesRepository.createModule( "testPostRestServlet",
                                               "" );
 
         Map<String, String> headers = new HashMap<String, String>() {
@@ -208,7 +208,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testPut() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testPutRestServlet",
+        ModuleItem pkg = rulesRepository.createModule( "testPutRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "abc" );
@@ -249,7 +249,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testDelete() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testDeleteRestServlet",
+        ModuleItem pkg = rulesRepository.createModule( "testDeleteRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "abc" );
@@ -275,7 +275,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         assertEquals( "OK",
                       res.extractContent() );
 
-        pkg = rulesRepository.loadPackage( "testDeleteRestServlet" );
+        pkg = rulesRepository.loadModule( "testDeleteRestServlet" );
         assertFalse( pkg.listAssetsByFormat( new String[]{"drl"} ).hasNext() );
     }
 

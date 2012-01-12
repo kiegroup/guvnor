@@ -25,7 +25,7 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
+        ModuleItem pacakge = repo.createModule( "testModelAttachedPack",
                                                   "for test" );
         AssetItem asset = pacakge.addAsset( "testModelAttachedAsset",
                                             "description" );
@@ -56,7 +56,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage( "testModelRemovedPackage",
+        ModuleItem pkg = repo.createModule( "testModelRemovedPackage",
                                               "for test" );
         AssetItem asset = pkg.addAsset( "testModelRemovedAsset",
                                         "description" );

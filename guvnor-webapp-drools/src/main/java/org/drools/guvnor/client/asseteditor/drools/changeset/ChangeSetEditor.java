@@ -36,7 +36,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.RESTUtil;
 
@@ -72,7 +72,7 @@ public class ChangeSetEditor extends DirtyableComposite
     private final int                    visibleLines;
     private Constants                    constants = GWT.create( Constants.class );
 
-    public ChangeSetEditor(RuleAsset a,
+    public ChangeSetEditor(Asset a,
                            RuleViewer v,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
@@ -80,14 +80,14 @@ public class ChangeSetEditor extends DirtyableComposite
               clientFactory );
     }
 
-    public ChangeSetEditor(RuleAsset a,
+    public ChangeSetEditor(Asset a,
                            ClientFactory clientFactory) {
         this( a,
               clientFactory,
               -1 );
     }
 
-    public ChangeSetEditor(RuleAsset asset,
+    public ChangeSetEditor(Asset asset,
                            ClientFactory clientFactory,
                            int visibleLines) {
 
@@ -95,8 +95,8 @@ public class ChangeSetEditor extends DirtyableComposite
 
         this.clientFactory = clientFactory;
 
-        assetPackageUUID = asset.getMetaData().getPackageUUID();
-        assetPackageName = asset.getMetaData().getPackageName();
+        assetPackageUUID = asset.getMetaData().getModuleUUID();
+        assetPackageName = asset.getMetaData().getModuleName();
         assetName = asset.getName();
 
         data = (RuleContentText) asset.getContent();

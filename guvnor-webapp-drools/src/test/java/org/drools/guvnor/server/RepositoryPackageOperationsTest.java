@@ -25,12 +25,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class RepositoryPackageOperationsTest {
     // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
 
     private final RulesRepository             rulesRepository             = mock( RulesRepository.class );
-    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
+    private final RepositoryModuleOperations repositoryPackageOperations = new RepositoryModuleOperations();
 
     @Before
     public void setUp() {
@@ -52,13 +52,13 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testPackageNameSorting() {
-        PackageConfigData c1 = new PackageConfigData( "org.foo" );
-        PackageConfigData c2 = new PackageConfigData( "org.foo.bar" );
+        Module c1 = new Module( "org.foo" );
+        Module c2 = new Module( "org.foo.bar" );
 
-        List<PackageConfigData> ls = new ArrayList<PackageConfigData>();
+        List<Module> ls = new ArrayList<Module>();
         ls.add( c2 );
         ls.add( c1 );
-        this.repositoryPackageOperations.sortPackages( ls );
+        this.repositoryPackageOperations.sortModules( ls );
         assertEquals( c1,
                       ls.get( 0 ) );
         assertEquals( c2,
@@ -68,52 +68,52 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testLoadGlobalPackageAndDependenciesAreNotFetched() {
 
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         prepareMockForPackageConfigDataFactory( packageItem );
-        assertNull( this.repositoryPackageOperations.loadGlobalPackage().getDependencies() );
+        assertNull( this.repositoryPackageOperations.loadGlobalModule().getDependencies() );
 
     }
 
     @Test
     public void testLoadGlobalPackageAndIsSnapshot() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( true );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertTrue( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot() );
-        assertEquals( this.repositoryPackageOperations.loadGlobalPackage().getSnapshotName(),
+        assertTrue( this.repositoryPackageOperations.loadGlobalModule().isSnapshot() );
+        assertEquals( this.repositoryPackageOperations.loadGlobalModule().getSnapshotName(),
                       "snapshotName123" );
 
     }
 
     @Test
     public void testLoadGlobalPackageAndIsNotSnapshot() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( false );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertFalse( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot() );
-        assertNull( this.repositoryPackageOperations.loadGlobalPackage().getSnapshotName() );
+        assertFalse( this.repositoryPackageOperations.loadGlobalModule().isSnapshot() );
+        assertNull( this.repositoryPackageOperations.loadGlobalModule().getSnapshotName() );
     }
 
     @Test
     public void testCopyPackage() throws SerializationException {
         initSession();
-        repositoryPackageOperations.copyPackage( "from",
+        repositoryPackageOperations.copyModules( "from",
                                                  "to" );
-        verify( rulesRepository ).copyPackage( "from",
+        verify( rulesRepository ).copyModule( "from",
                                                "to" );
     }
 
     @Test
     public void testRemovePackage() throws SerializationException {
         initSession();
-        PackageItem packageItem = mock( PackageItem.class );
-        when( this.rulesRepository.loadPackageByUUID( "uuid" ) ).thenReturn( packageItem );
-        this.repositoryPackageOperations.removePackage( "uuid" );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( this.rulesRepository.loadModuleByUUID( "uuid" ) ).thenReturn( packageItem );
+        this.repositoryPackageOperations.removeModule( "uuid" );
         verify( packageItem ).remove();
         verify( rulesRepository ).save();
     }
@@ -121,9 +121,9 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testRenamePackage() throws SerializationException {
         initSession();
-        this.repositoryPackageOperations.renamePackage( "old",
+        this.repositoryPackageOperations.renameModule( "old",
                                                         "new" );
-        verify( this.rulesRepository ).renamePackage( "old",
+        verify( this.rulesRepository ).renameModule( "old",
                                                       "new" );
     }
 
@@ -132,8 +132,8 @@ public class RepositoryPackageOperationsTest {
                                     IOException,
                                     RepositoryException {
         initSession();
-        this.repositoryPackageOperations.exportPackages( "packageName" );
-        verify( this.rulesRepository ).dumpPackageFromRepositoryXml( "packageName" );
+        this.repositoryPackageOperations.exportModules( "packageName" );
+        verify( this.rulesRepository ).dumpModuleFromRepositoryXml( "packageName" );
     }
 
     @Test
@@ -147,18 +147,18 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testCreatePackage() {
         initSession();
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( packageItem.getUUID() ).thenReturn( "uuid" );
-        when( this.rulesRepository.createPackage( "name",
+        when( this.rulesRepository.createModule( "name",
                                                   "description",
                                                   "package",
                                                   new String[]{"workspace"} ) ).thenReturn( packageItem );
-        assertEquals( this.repositoryPackageOperations.createPackage( "name",
+        assertEquals( this.repositoryPackageOperations.createModule( "name",
                                                                       "description",
                                                                       "package",
                                                                       new String[]{"workspace"} ),
                       "uuid" );
-        verify( this.rulesRepository ).createPackage( "name",
+        verify( this.rulesRepository ).createModule( "name",
                                                       "description",
                                                       "package",
                                                       new String[]{"workspace"} );
@@ -168,16 +168,16 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testSubCreatePackage() throws SerializationException {
         initSession();
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( packageItem.getUUID() ).thenReturn( "uuid" );
-        when( this.rulesRepository.createSubPackage( "name",
+        when( this.rulesRepository.createSubModule( "name",
                                                      "description",
                                                      "parentNode" ) ).thenReturn( packageItem );
-        assertEquals( this.repositoryPackageOperations.createSubPackage( "name",
+        assertEquals( this.repositoryPackageOperations.createSubModule( "name",
                                                                          "description",
                                                                          "parentNode" ),
                       "uuid" );
-        verify( this.rulesRepository ).createSubPackage( "name",
+        verify( this.rulesRepository ).createSubModule( "name",
                                                          "description",
                                                          "parentNode" );
 
@@ -185,84 +185,84 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testLoadPackageConfigWithDependencies() {
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         prepareMockForPackageConfigDataFactory( packageItem );
-        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).getDependencies() );
+        assertNotNull( this.repositoryPackageOperations.loadModule( packageItem ).getDependencies() );
     }
 
     @Test
     public void testSavePackageArhived() throws SerializationException {
-        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        RepositoryModuleOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
 
-        PackageConfigData packageConfigData = createPackageConfigData( false );
-        PackageItem packageItem = mock( PackageItem.class );
+        Module packageConfigData = createPackageConfigData( false );
+        ModuleItem packageItem = mock( ModuleItem.class );
         Calendar calendar = GregorianCalendar.getInstance();
         when( packageItem.getLastModified() ).thenReturn( calendar );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( true );
-        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadModule( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
-        doNothing().when( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
+        doNothing().when( localRepositoryPackageOperations ).handleUnarchivedForSaveModule( packageConfigData,
                                                                                              packageItem,
                                                                                              calendar );
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
-        localRepositoryPackageOperations.savePackage( packageConfigData );
+        localRepositoryPackageOperations.saveModule( packageConfigData );
         verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
         verify( packageItem ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem ).checkin( packageConfigData.getDescription() );
-        verify( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
+        verify( localRepositoryPackageOperations ).handleUnarchivedForSaveModule( packageConfigData,
                                                                                    packageItem,
                                                                                    calendar );
     }
 
     @Test
     public void testSavePackageUnarhived() throws SerializationException {
-        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        RepositoryModuleOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
 
-        PackageConfigData packageConfigData = createPackageConfigData( true );
+        Module packageConfigData = createPackageConfigData( true );
 
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( false );
-        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadModule( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
-        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSaveModule( packageConfigData,
                                                                                              packageItem );
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
-        localRepositoryPackageOperations.savePackage( packageConfigData );
+        localRepositoryPackageOperations.saveModule( packageConfigData );
         verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
         verify( packageItem ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem ).checkin( packageConfigData.getDescription() );
-        verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+        verify( localRepositoryPackageOperations ).handleArchivedForSaveModule( packageConfigData,
                                                                                    packageItem );
     }
     
     @Test
     public void testValidatePackageConfiguration() throws SerializationException {
-        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        RepositoryModuleOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
 
-        PackageConfigData packageConfigData = createPackageConfigData( true );
+        Module packageConfigData = createPackageConfigData( true );
 
-        PackageItem packageItem = mock( PackageItem.class );
+        ModuleItem packageItem = mock( ModuleItem.class );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( false );
-        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadModule( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
-        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSaveModule( packageConfigData,
                                                                                              packageItem );
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
-        localRepositoryPackageOperations.validatePackageConfiguration( packageConfigData );
+        localRepositoryPackageOperations.validateModule( packageConfigData );
         verify( packageItem, never() ).updateExternalURI( "");
         verify( packageItem, never() ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem, never() ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem, never() ).checkin( packageConfigData.getDescription() );
-        verify( localRepositoryPackageOperations, never() ).handleArchivedForSavePackage( packageConfigData,
+        verify( localRepositoryPackageOperations, never() ).handleArchivedForSaveModule( packageConfigData,
                                                                                    packageItem );
     }
 
@@ -273,16 +273,16 @@ public class RepositoryPackageOperationsTest {
         final String snapshotName = "snapshotName";
         final String comment = "comment";
 
-        PackageItem packageItem = mock( PackageItem.class );
-        when( this.rulesRepository.loadPackageSnapshot( packageName,
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( this.rulesRepository.loadModuleSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
-        this.repositoryPackageOperations.createPackageSnapshot( packageName,
+        this.repositoryPackageOperations.createModuleSnapshot( packageName,
                                                                 snapshotName,
                                                                 true,
                                                                 comment );
-        verify( this.rulesRepository ).removePackageSnapshot( packageName,
+        verify( this.rulesRepository ).removeModuleSnapshot( packageName,
                                                               snapshotName );
-        verify( this.rulesRepository ).createPackageSnapshot( packageName,
+        verify( this.rulesRepository ).createModuleSnapshot( packageName,
                                                               snapshotName );
         verify( packageItem ).updateCheckinComment( comment );
 
@@ -295,17 +295,17 @@ public class RepositoryPackageOperationsTest {
         final String snapshotName = "snapshotName";
         final String comment = "comment";
 
-        PackageItem packageItem = mock( PackageItem.class );
-        when( this.rulesRepository.loadPackageSnapshot( packageName,
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( this.rulesRepository.loadModuleSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
-        this.repositoryPackageOperations.createPackageSnapshot( packageName,
+        this.repositoryPackageOperations.createModuleSnapshot( packageName,
                                                                 snapshotName,
                                                                 false,
                                                                 comment );
         verify( this.rulesRepository,
-                never() ).removePackageSnapshot( packageName,
+                never() ).removeModuleSnapshot( packageName,
                                                               snapshotName );
-        verify( this.rulesRepository ).createPackageSnapshot( packageName,
+        verify( this.rulesRepository ).createModuleSnapshot( packageName,
                                                               snapshotName );
         verify( packageItem ).updateCheckinComment( comment );
 
@@ -321,10 +321,10 @@ public class RepositoryPackageOperationsTest {
                                                                snapshotName,
                                                                true,
                                                                newSnapshotName );
-        verify( this.rulesRepository ).removePackageSnapshot( packageName,
+        verify( this.rulesRepository ).removeModuleSnapshot( packageName,
                                                               snapshotName );
         verify( this.rulesRepository,
-                Mockito.never() ).copyPackageSnapshot( packageName,
+                Mockito.never() ).copyModuleSnapshot( packageName,
                                                        snapshotName,
                                                        newSnapshotName );
     }
@@ -340,9 +340,9 @@ public class RepositoryPackageOperationsTest {
                                                                false,
                                                                newSnapshotName );
         verify( this.rulesRepository,
-                Mockito.never() ).removePackageSnapshot( packageName,
+                Mockito.never() ).removeModuleSnapshot( packageName,
                                                               snapshotName );
-        verify( this.rulesRepository ).copyPackageSnapshot( packageName,
+        verify( this.rulesRepository ).copyModuleSnapshot( packageName,
                                                             snapshotName,
                                                             newSnapshotName );
     }
@@ -351,10 +351,10 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testListRulesInPackageAndtDRLMissing() throws DroolsParserException,
                                                       SerializationException {
-        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        RepositoryModuleOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
         final String packageName = "packageName";
-        PackageItem packageItem = mock( PackageItem.class );
-        when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( this.rulesRepository.loadModule( packageName ) ).thenReturn( packageItem );
         PackageDRLAssembler contentPackageAssembler = mock( PackageDRLAssembler.class );
         doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createPackageDRLAssembler(packageItem);
         //doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler, new ArrayList<String>() );
@@ -371,10 +371,10 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testListRulesInPackageAndtDRLIsNotMissing() throws DroolsParserException,
                                                            SerializationException {
-        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        RepositoryModuleOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
         final String packageName = "packageName";
-        PackageItem packageItem = mock( PackageItem.class );
-        when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
+        ModuleItem packageItem = mock( ModuleItem.class );
+        when( this.rulesRepository.loadModule( packageName ) ).thenReturn( packageItem );
         PackageDRLAssembler contentPackageAssembler = mock( PackageDRLAssembler.class );
         doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createPackageDRLAssembler( packageItem );
         doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler,
@@ -387,13 +387,13 @@ public class RepositoryPackageOperationsTest {
 
     }
 
-    private void initSpyingAndMockingOnSuggestionCompletionLoader(RepositoryPackageOperations localRepositoryPackageOperations) {
+    private void initSpyingAndMockingOnSuggestionCompletionLoader(RepositoryModuleOperations localRepositoryPackageOperations) {
         BRMSSuggestionCompletionLoader suggestionCompletionLoader = mock( BRMSSuggestionCompletionLoader.class );
         doReturn( suggestionCompletionLoader ).when( localRepositoryPackageOperations ).createBRMSSuggestionCompletionLoader();
     }
 
-    private PackageConfigData createPackageConfigData(boolean isArchived) {
-        PackageConfigData packageConfigData = new PackageConfigData();
+    private Module createPackageConfigData(boolean isArchived) {
+        Module packageConfigData = new Module();
         packageConfigData.setName( "name" );
         packageConfigData.setHeader( "header" );
         packageConfigData.setArchived( isArchived );
@@ -402,15 +402,15 @@ public class RepositoryPackageOperationsTest {
         return packageConfigData;
     }
 
-    private RepositoryPackageOperations initSpyingOnRealRepositoryPackageOperations() {
-        RepositoryPackageOperations localRepositoryPackageOperations;
+    private RepositoryModuleOperations initSpyingOnRealRepositoryPackageOperations() {
+        RepositoryModuleOperations localRepositoryPackageOperations;
         localRepositoryPackageOperations = spy( this.repositoryPackageOperations );
         localRepositoryPackageOperations.setRulesRepositoryForTest(rulesRepository);
         initSession();
         return localRepositoryPackageOperations;
     }
 
-    private void initDroolsHeaderCheck(PackageItem packageItem) {
+    private void initDroolsHeaderCheck(ModuleItem packageItem) {
         AssetItem assetItem = mock( AssetItem.class );
         when( packageItem.containsAsset( "drools" ) ).thenReturn( false );
         when( packageItem.addAsset( "drools",
@@ -429,12 +429,12 @@ public class RepositoryPackageOperationsTest {
         when( this.rulesRepository.getSession() ).thenReturn( session );
     }
 
-    private void prepareMockForPackageConfigDataFactory(PackageItem packageItem) {
+    private void prepareMockForPackageConfigDataFactory(ModuleItem packageItem) {
         preparePackageItemMockDates( packageItem );
         when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
     }
 
-    private void preparePackageItemMockDates(PackageItem packageItem) {
+    private void preparePackageItemMockDates(ModuleItem packageItem) {
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
     }

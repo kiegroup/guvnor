@@ -20,7 +20,7 @@ import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
@@ -88,9 +88,9 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * @param content
      * @return
      */
-    protected GenericCallback<RuleAsset> createSetContentCallback(final T content) {
-        GenericCallback<RuleAsset> cb = new GenericCallback<RuleAsset>() {
-            public void onSuccess(RuleAsset asset) {
+    protected GenericCallback<Asset> createSetContentCallback(final T content) {
+        GenericCallback<Asset> cb = new GenericCallback<Asset>() {
+            public void onSuccess(Asset asset) {
                 asset.setContent( content );
                 asset.setCheckinComment( "Created from Wizard" );
                 RepositoryServiceFactory.getAssetService().checkinVersion( asset,

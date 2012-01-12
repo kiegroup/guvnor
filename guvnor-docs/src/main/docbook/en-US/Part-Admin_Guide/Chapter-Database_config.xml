@@ -34,7 +34,7 @@
 
       <para>
       To change the location, unzip the Guvnor WAR file, and locate the <filename>beans.xml</filename> file in
-      the <filename>WEB-INF/classes/META-INF</filename> directory. This is a JBoss Seam configuration file (Seam 3 is the
+      the <filename>WEB-INF</filename> directory. This is a JBoss Seam configuration file (Seam 3 is the
       framework used) which allows various parts of the system to be customized. When you have located the
       <filename>beans.xml</filename> file, you should see something like the following:
       </para>

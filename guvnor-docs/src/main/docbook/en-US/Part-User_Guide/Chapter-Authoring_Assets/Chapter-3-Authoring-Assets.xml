@@ -49,4 +49,6 @@
   <xi:include href="NewTestScenario.xml" xpointer="element(/1)" />
 
   <xi:include href="NewFile.xml" xpointer="element(/1)" />
+  
+  <xi:include href="NewChangeSet.xml" xpointer="element(/1)" />
 </chapter>

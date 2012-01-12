@@ -1,10 +1,10 @@
 package org.drools.guvnor.server.builder.pagerow;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.server.CategoryFilter;
-import org.drools.guvnor.server.PackageFilter;
+import org.drools.guvnor.server.ModuleFilter;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
@@ -29,7 +29,7 @@ public class QueryMetadataPageRowBuilder
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
-        RepositoryFilter packageFilter = new PackageFilter(identity);
+        RepositoryFilter packageFilter = new ModuleFilter(identity);
         RepositoryFilter categoryFilter = new CategoryFilter(identity);
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
@@ -72,12 +72,12 @@ public class QueryMetadataPageRowBuilder
     private boolean checkPackagePermissionHelper(RepositoryFilter filter,
                                                  AssetItem item,
                                                  String roleType) {
-        return filter.accept(getConfigDataHelper(item.getPackage().getUUID()),
+        return filter.accept(getConfigDataHelper(item.getModule().getUUID()),
                 roleType);
     }
 
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
+    private Module getConfigDataHelper(String uuidStr) {
+        Module data = new Module();
         data.setUuid(uuidStr);
         return data;
     }

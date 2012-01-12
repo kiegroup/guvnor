@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -83,8 +83,8 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             boolean hideAttributesInEditor = isHideAttributesInEditor(sessionParameters);
             String clientName = getClientName(sessionParameters);
             
-            RuleAsset[] activeWorkingSets = getActiveWorkingSets(sessionParameters);
-            RuleAsset[] activeTemporalWorkingSets = getActiveTemporalWorkingSets(sessionParameters);
+            Asset[] activeWorkingSets = getActiveWorkingSets(sessionParameters);
+            Asset[] activeTemporalWorkingSets = getActiveTemporalWorkingSets(sessionParameters);
             
             StandaloneEditorInvocationParameters invocationParameters = new StandaloneEditorInvocationParameters();
             this.loadRuleAssetsFromSessionParameters(sessionParameters,
@@ -111,19 +111,19 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
      * @param sessionParameters
      * @return 
      */
-    private RuleAsset[] getActiveWorkingSets(Map<String, Object> sessionParameters) throws DetailedSerializationException {
+    private Asset[] getActiveWorkingSets(Map<String, Object> sessionParameters) throws DetailedSerializationException {
         try {
             String[] wsUUID = (String[])sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ACTIVE_WORKING_SET_UUIDS_PARAMETER_NAME.getParameterName());
             
-            List<RuleAsset> result = new ArrayList<RuleAsset>();
+            List<Asset> result = new ArrayList<Asset>();
             
             //for UUIDs, we need to get them from repository
             if (wsUUID != null && wsUUID.length > 0){
-                RuleAsset[] workingSetRuleAssets = repositoryAssetService.loadRuleAssets(wsUUID);
+                Asset[] workingSetRuleAssets = repositoryAssetService.loadRuleAssets(wsUUID);
                 result.addAll(Arrays.asList(workingSetRuleAssets));
             }
             
-            return result.toArray(new RuleAsset[result.size()]);
+            return result.toArray(new Asset[result.size()]);
         } catch (SerializationException ex) {
             log.error("Error getting Working Set Definitions", ex);
             throw new DetailedSerializationException("Error getting Working Set Definitions", ex.getLocalizedMessage());
@@ -138,15 +138,15 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
      * @param sessionParameters
      * @return 
      */
-    private RuleAsset[] getActiveTemporalWorkingSets(Map<String, Object> sessionParameters) {
+    private Asset[] getActiveTemporalWorkingSets(Map<String, Object> sessionParameters) {
             String[] validFacts = (String[])sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName());
             String[] xmlDefinitions = (String[])sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ACTIVE_WORKING_SET_XML_DEFINITIONS_PARAMETER_NAME.getParameterName());
             
-            List<RuleAsset> result = new ArrayList<RuleAsset>();
+            List<Asset> result = new ArrayList<Asset>();
             
             //for validFacts we need to create a temporal Working Set RuleAsset
             if (validFacts != null && validFacts.length > 0){
-                final RuleAsset workingSet = new RuleAsset();
+                final Asset workingSet = new Asset();
                 workingSet.setUuid( "workingSetMock"+UUID.randomUUID().toString() );
             
                 WorkingSetConfigData wsConfig = new WorkingSetConfigData();
@@ -166,7 +166,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
                 for (String xml : xmlDefinitions) {
                     WorkingSetConfigData workingSetConfigData = (WorkingSetConfigData)xt.fromXML(xml);
 
-                    final RuleAsset workingSet = new RuleAsset();
+                    final Asset workingSet = new Asset();
                     workingSet.setUuid( "workingSetMock"+UUID.randomUUID().toString() );
 
                     workingSet.setContent( workingSetConfigData );
@@ -176,7 +176,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             }
             
             
-            return result.toArray(new RuleAsset[result.size()]);
+            return result.toArray(new Asset[result.size()]);
     }
     
 
@@ -296,7 +296,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesDRL(RuleAsset[] assets) throws SerializationException {
+    public String[] getAsstesDRL(Asset[] assets) throws SerializationException {
 
         String[] sources = new String[assets.length];
 
@@ -314,7 +314,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesBRL(RuleAsset[] assets) throws SerializationException {
+    public String[] getAsstesBRL(Asset[] assets) throws SerializationException {
 
         String[] sources = new String[assets.length];
 

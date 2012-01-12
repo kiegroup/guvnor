@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
@@ -37,7 +37,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter
 public class WorkingSetManager {
 
     private static WorkingSetManager INSTANCE = new WorkingSetManager();
-    private Map<String, Set<RuleAsset>> activeWorkingSets = new HashMap<String, Set<RuleAsset>>();
+    private Map<String, Set<Asset>> activeWorkingSets = new HashMap<String, Set<Asset>>();
     /**
      * This attribute should be sever side. Maybe in some FactConstraintConfig
      * object.
@@ -59,10 +59,10 @@ public class WorkingSetManager {
      * @see #applyWorkingSets(java.lang.String, java.util.Set, com.google.gwt.user.client.Command)
      */
     public void applyWorkingSets(final String packageName, final String[] wsUUIDs, final Command done) {
-        RepositoryServiceFactory.getAssetService().loadRuleAssets(wsUUIDs, new GenericCallback<RuleAsset[]>() {
+        RepositoryServiceFactory.getAssetService().loadRuleAssets(wsUUIDs, new GenericCallback<Asset[]>() {
 
-            public void onSuccess(RuleAsset[] result) {
-                final Set<RuleAsset> wss = new HashSet<RuleAsset>();
+            public void onSuccess(Asset[] result) {
+                final Set<Asset> wss = new HashSet<Asset>();
                 wss.addAll(Arrays.asList(result));
 
                 applyWorkingSets(packageName, wss, done);
@@ -80,7 +80,7 @@ public class WorkingSetManager {
      * @param done the command to execute after the SCE and internal map are
      * refreshed.
      */
-    public void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
+    public void applyWorkingSets(final String packageName, final Set<Asset> wss, final Command done) {
 
         if (wss == null || wss.isEmpty()) {
             //if no WS, we refresh the SCE (release any filter)
@@ -91,7 +91,7 @@ public class WorkingSetManager {
             
             //get all the validFact from all the WSs
             final Set<String> validFacts = new HashSet<String>();
-            for (RuleAsset asset : wss) {
+            for (Asset asset : wss) {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.getContent();
                 if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0) {
                     validFacts.addAll(Arrays.asList(wsConfig.validFacts));
@@ -113,17 +113,17 @@ public class WorkingSetManager {
      * @param packageName the package name
      * @return the active WorkingSets for a package (as RuleAsset), or null if any.
      */
-    public Set<RuleAsset> getActiveAssets(String packageName) {
+    public Set<Asset> getActiveAssets(String packageName) {
         return this.activeWorkingSets.get(packageName);
     }
 
     public Set<String> getActiveAssetUUIDs(String packageName) {
-        Set<RuleAsset> assets = this.activeWorkingSets.get(packageName);
+        Set<Asset> assets = this.activeWorkingSets.get(packageName);
         if (assets == null) {
             return null;
         }
         Set<String> uuids = new HashSet<String>(assets.size());
-        for (RuleAsset asset : assets) {
+        for (Asset asset : assets) {
             uuids.add(asset.getUuid());
         }
         return uuids;
@@ -135,13 +135,13 @@ public class WorkingSetManager {
      * @return the active WorkingSets for a package, or null if any.
      */
     public Set<WorkingSetConfigData> getActiveWorkingSets(String packageName) {
-        Set<RuleAsset> assets = this.activeWorkingSets.get(packageName);
+        Set<Asset> assets = this.activeWorkingSets.get(packageName);
         if (assets == null) {
             return null;
         }
 
         Set<WorkingSetConfigData> result = new HashSet<WorkingSetConfigData>();
-        for (RuleAsset ruleAsset : assets) {
+        for (Asset ruleAsset : assets) {
             result.add((WorkingSetConfigData) ruleAsset.getContent());
         }
 
@@ -154,7 +154,7 @@ public class WorkingSetManager {
      * @param workingSetAsset the (WorkingSet) RuleSet
      * @return whether the given (WorkingSet) RuleSet is active in a package or not.
      */
-    public boolean isWorkingSetActive(String packageName, RuleAsset workingSetAsset) {
+    public boolean isWorkingSetActive(String packageName, Asset workingSetAsset) {
         return this.isWorkingSetActive(packageName, workingSetAsset.getUuid());
     }
 
@@ -169,8 +169,8 @@ public class WorkingSetManager {
             return false;
         }
 
-        Set<RuleAsset> wss = this.activeWorkingSets.get(packageName);
-        for (RuleAsset asset : wss) {
+        Set<Asset> wss = this.activeWorkingSets.get(packageName);
+        for (Asset asset : wss) {
             if (asset.getUuid().equals(ruleAssetUUID)) {
                 return true;
             }
@@ -192,9 +192,9 @@ public class WorkingSetManager {
         Set<ConstraintConfiguration> result = new HashSet<ConstraintConfiguration>();
 
         //TODO: Change this with a centralized way of Constraint Administration.
-        Set<RuleAsset> activeAssets = this.getActiveAssets(packageName);
+        Set<Asset> activeAssets = this.getActiveAssets(packageName);
         if (activeAssets != null) {
-            for (RuleAsset ruleAsset : activeAssets) {
+            for (Asset ruleAsset : activeAssets) {
                 List<ConstraintConfiguration> constraints = ((WorkingSetConfigData) ruleAsset.getContent()).constraints;
                 if (constraints != null) {
                     for (ConstraintConfiguration constraint : constraints) {

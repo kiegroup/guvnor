@@ -28,11 +28,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -43,12 +43,12 @@ public class ModelContentHandler extends ContentHandler
     implements
     ICanHasAttachment {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         // do nothing, as we have an attachment
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         // do nothing, as we have an attachment
     }
@@ -60,7 +60,7 @@ public class ModelContentHandler extends ContentHandler
      */
     public void onAttachmentAdded(AssetItem asset) throws IOException {
 
-        PackageItem pkg = asset.getPackage();
+        ModuleItem pkg = asset.getModule();
         StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( asset );
@@ -81,7 +81,7 @@ public class ModelContentHandler extends ContentHandler
 
     public void onAttachmentRemoved(AssetItem item) throws IOException {
 
-        PackageItem pkg = item.getPackage();
+        ModuleItem pkg = item.getModule();
         StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( item );
@@ -125,7 +125,7 @@ public class ModelContentHandler extends ContentHandler
 
         Set<String> imports = new HashSet<String>();
         Map<String, String> nonCollidingImports = new HashMap<String, String>();
-        String assetPackageName = assetItem.getPackageName();
+        String assetPackageName = assetItem.getModuleName();
 
         //Setup class-loader to check for class visibility
         JarInputStream cljis = new JarInputStream( assetItem.getBinaryContentAttachment() );

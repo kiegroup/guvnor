@@ -18,7 +18,7 @@ package org.drools.guvnor.client.widgets;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
@@ -49,7 +49,7 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
         layout.add( new CommentWidget( artifact, readOnly ) );
 
-		if (artifact instanceof RuleAsset) {
+		if (artifact instanceof Asset) {
 	        Scheduler.get().scheduleDeferred( new Command() {
 	            public void execute() {
 	                layout.add( new DiscussionWidget( artifact, readOnly ) );

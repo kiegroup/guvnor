@@ -33,7 +33,9 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
     
     public ExpressionFormLine(ExpressionFormLine other) {
         CopyExpressionVisitor copier = new CopyExpressionVisitor();
-
+        if(other.getParts().size()==0) {
+            return;
+        }
         for (ExpressionPart exp = copier.copy(other.getRootExpression()); exp != null; exp = exp.getNext()) {
             parts.add(exp);
         }

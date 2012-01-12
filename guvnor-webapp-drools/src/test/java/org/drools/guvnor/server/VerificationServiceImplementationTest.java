@@ -20,7 +20,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class VerificationServiceImplementationTest {
     // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
 
     private VerificationService verificationService;
-    private PackageItem packageItem;
+    private ModuleItem packageItem;
     private RulesRepository rulesRepository;
 
     @Before
@@ -53,7 +53,7 @@ public class VerificationServiceImplementationTest {
         AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);
         when(assetItemIterator.hasNext()).thenReturn(false);
         when(packageItem.listAssetsByFormat(Matchers.<String>anyVararg())).thenReturn(assetItemIterator);
-        when(rulesRepository.loadPackage("mockPackage")).thenReturn(packageItem);
+        when(rulesRepository.loadModule("mockPackage")).thenReturn(packageItem);
 
         verificationService = verificationServiceImplementation;
     }
@@ -77,7 +77,7 @@ public class VerificationServiceImplementationTest {
         drl += "then\n";
         drl += "end\n";
 
-        RuleAsset ruleAsset = getAsset(drl);
+        Asset ruleAsset = getAsset(drl);
         AnalysisReport report = verificationService.verifyAsset(
                 ruleAsset,
                 new HashSet<String>());
@@ -92,8 +92,8 @@ public class VerificationServiceImplementationTest {
 
     }
 
-    public RuleAsset getAsset(String content) {
-        RuleAsset ruleAsset = new RuleAsset();
+    public Asset getAsset(String content) {
+        Asset ruleAsset = new Asset();
 
         ruleAsset.uuid = "mockUUID";
         ruleAsset.metaData = getMetaData();
@@ -107,7 +107,7 @@ public class VerificationServiceImplementationTest {
         when(assetItem.getUUID()).thenReturn("mockUUID");
         when(assetItem.getFormat()).thenReturn(AssetFormats.DRL);
         when(assetItem.getContent()).thenReturn(content);
-        when(assetItem.getPackage()).thenReturn(packageItem);
+        when(assetItem.getModule()).thenReturn(packageItem);
         return assetItem;
     }
 
@@ -119,12 +119,12 @@ public class VerificationServiceImplementationTest {
 
     public MetaData getMetaData() {
         MetaData metaData = new MetaData();
-        metaData.packageName = "mockPackage";
+        metaData.moduleName = "mockPackage";
         return metaData;
     }
 
-    public PackageItem createPackage() {
-        PackageItem packageItem = mock(PackageItem.class);
+    public ModuleItem createPackage() {
+        ModuleItem packageItem = mock(ModuleItem.class);
         when(packageItem.getName()).thenReturn("mockPackage");
         return packageItem;
     }

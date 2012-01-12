@@ -18,7 +18,7 @@ package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
@@ -36,6 +36,6 @@ public interface AssetEditorFactory {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus eventBus);
+    public Widget getAssetEditor(Asset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus eventBus);
 
  }

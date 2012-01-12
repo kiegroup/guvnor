@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.HTML;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * This widget deals with POJO Model files.
@@ -32,7 +32,7 @@ public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
 
     private static Images images = (Images) GWT.create( Images.class );
 
-    public POJOModelUploadWidget( RuleAsset asset,
+    public POJOModelUploadWidget( Asset asset,
                                   RuleViewer viewer,
                                   ClientFactory clientFactory,
                                   EventBus eventBus) {

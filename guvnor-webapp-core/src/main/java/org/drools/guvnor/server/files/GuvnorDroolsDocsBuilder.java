@@ -26,7 +26,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.VersionableItem;
 import org.drools.verifier.doc.DroolsDocsBuilder;
 import org.drools.verifier.misc.DrlPackageParser;
@@ -50,11 +50,11 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         formats.add(AssetFormats.DECISION_TABLE_GUIDED);
     }
 
-    private GuvnorDroolsDocsBuilder(PackageItem packageItem) throws DroolsParserException {
+    private GuvnorDroolsDocsBuilder(ModuleItem packageItem) throws DroolsParserException {
         super(createDrlPackageData(packageItem));
     }
 
-    protected static DrlPackageParser createDrlPackageData(PackageItem packageItem) {
+    protected static DrlPackageParser createDrlPackageData(ModuleItem packageItem) {
 
         List<DrlRuleParser> rules = new ArrayList<DrlRuleParser>();
 
@@ -115,7 +115,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         return list;
     }
 
-    public static GuvnorDroolsDocsBuilder getInstance(PackageItem packageItem) throws DroolsParserException {
+    public static GuvnorDroolsDocsBuilder getInstance(ModuleItem packageItem) throws DroolsParserException {
         return new GuvnorDroolsDocsBuilder(packageItem);
     }
 
@@ -128,7 +128,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
         StringBuilder stringBuilder = new StringBuilder();
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
-        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
+        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getModule()));
         ((IRuleAsset) handler).assembleDRL(builder,
                 item,
                 stringBuilder);

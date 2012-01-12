@@ -31,7 +31,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -50,7 +50,7 @@ public class PackageEditor extends AbstractModuleEditor {
     private Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
 
-    private final PackageConfigData packageConfigData;
+    private final Module packageConfigData;
     private boolean isHistoricalReadOnly = false;
     private Command refreshCommand;
 
@@ -58,7 +58,7 @@ public class PackageEditor extends AbstractModuleEditor {
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public PackageEditor(PackageConfigData data,
+    public PackageEditor(Module data,
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          Command refreshCommand) {
@@ -69,7 +69,7 @@ public class PackageEditor extends AbstractModuleEditor {
                 refreshCommand );
     }
 
-    public PackageEditor(PackageConfigData data,
+    public PackageEditor(Module data,
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          boolean historicalReadOnly,
@@ -221,7 +221,7 @@ public class PackageEditor extends AbstractModuleEditor {
 
         packageConfigurationValidationResult.add( busy );
 
-        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.packageConfigData,
+        RepositoryServiceFactory.getPackageService().validateModule( this.packageConfigData,
                 new GenericCallback<ValidatedResponse>() {
                     public void onSuccess(ValidatedResponse data) {
                         showValidatePackageConfigurationResult( data );
@@ -362,41 +362,41 @@ public class PackageEditor extends AbstractModuleEditor {
         }
     }
 
-    static String getDocumentationDownload(PackageConfigData conf) {
+    static String getDocumentationDownload(Module conf) {
         return makeLink( conf ) + "/documentation.pdf"; //NON-NLS
     }
 
-    static String getSourceDownload(PackageConfigData conf) {
+    static String getSourceDownload(Module conf) {
         return makeLink( conf ) + ".drl"; //NON-NLS
     }
 
-    static String getBinaryDownload(PackageConfigData conf) {
+    static String getBinaryDownload(Module conf) {
         return makeLink( conf );
     }
 
-    static String getScenarios(PackageConfigData conf) {
+    static String getScenarios(Module conf) {
         return makeLink( conf ) + "/SCENARIOS"; //NON-NLS
     }
 
-    static String getChangeset(PackageConfigData conf) {
+    static String getChangeset(Module conf) {
         return makeLink( conf ) + "/ChangeSet.xml"; //NON-NLS
     }
 
-    public static String getModelDownload(PackageConfigData conf) {
+    public static String getModelDownload(Module conf) {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
     }
 
-    static String getSpringContextDownload(PackageConfigData conf,
+    static String getSpringContextDownload(Module conf,
                                            String name) {
         return makeLink( conf ) + "/SpringContext/" + name;
     }
 
-    static String getVersionFeed(PackageConfigData conf) {
+    static String getVersionFeed(Module conf) {
         String hurl = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
-    String getPackageSourceURL(PackageConfigData conf) {
+    String getPackageSourceURL(Module conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +
@@ -407,7 +407,7 @@ public class PackageEditor extends AbstractModuleEditor {
         return url;
     }
 
-    String getPackageBinaryURL(PackageConfigData conf) {
+    String getPackageBinaryURL(Module conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = RESTUtil.getRESTBaseURL() + "packages/" + conf.getName() +
@@ -421,7 +421,7 @@ public class PackageEditor extends AbstractModuleEditor {
     /**
      * Get a download link for the binary package.
      */
-    public static String makeLink(PackageConfigData conf) {
+    public static String makeLink(Module conf) {
         String hurl = GWT.getModuleBaseURL() + "package/" + conf.getName();
         if ( !conf.isSnapshot() ) {
             hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;

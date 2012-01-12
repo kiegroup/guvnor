@@ -31,7 +31,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 
@@ -171,9 +171,9 @@ public class VersionChooser extends Composite {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
         RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
-                                                             new GenericCallback<RuleAsset>() {
+                                                             new GenericCallback<Asset>() {
 
-                                                                 public void onSuccess(RuleAsset asset) {
+                                                                 public void onSuccess(Asset asset) {
                                                                      asset.setReadonly( true );
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     constants.VersionNumber0Of1(

@@ -27,7 +27,7 @@ import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
 
@@ -72,11 +72,11 @@ public class ExplorerNodeConfig {
     }
 
     private static void deploymentListPackages( final TreeItem root ) {
-        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess( PackageConfigData[] values ) {
+        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+            public void onSuccess( Module[] values ) {
                 PackageView ph = new PackageHierarchicalView();
 
-                for (PackageConfigData val : values) {
+                for (Module val : values) {
                     ph.addPackage( val );
                 }
                 for (Folder hf : ph.getRootFolder().getChildren()) {
@@ -135,13 +135,13 @@ public class ExplorerNodeConfig {
 
             private void newRepoDialogIfShowAdminAndPathMatches( final String path ) {
                 if ( path.equals( "/" ) && UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
-                    RepositoryServiceFactory.getPackageService().listPackages( createGenericCallbackForListPackages() );
+                    RepositoryServiceFactory.getPackageService().listModules( createGenericCallbackForListPackages() );
                 }
             }
 
-            private GenericCallback<PackageConfigData[]> createGenericCallbackForListPackages() {
-                return new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess( PackageConfigData[] result ) {
+            private GenericCallback<Module[]> createGenericCallbackForListPackages() {
+                return new GenericCallback<Module[]>() {
+                    public void onSuccess( Module[] result ) {
                         if ( result.length == 1 ) {
                             doNewRepoDialog();
                         }

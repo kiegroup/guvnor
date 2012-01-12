@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 public abstract class ModulesTreeItemBase
     implements
@@ -61,10 +61,10 @@ public abstract class ModulesTreeItemBase
         return clientFactory.getNavigationViewFactory().getModulesTreeRootNodeHeader( perspectiveTypes );
     }
 
-    protected void addModules(PackageConfigData[] packageConfigDatas,
+    protected void addModules(Module[] packageConfigDatas,
                               IsTreeItem treeItem) {
 
-        for ( PackageConfigData packageConfigData : packageConfigDatas ) {
+        for ( Module packageConfigData : packageConfigDatas ) {
             packageHierarchy.addPackage( packageConfigData );
         }
 
@@ -79,7 +79,7 @@ public abstract class ModulesTreeItemBase
                                                   Folder folder) {
         ModuleTreeItem mti = null;
         String folderName = folder.getFolderName();
-        PackageConfigData conf = folder.getPackageConfigData();
+        Module conf = folder.getPackageConfigData();
         if ( conf != null ) {
             mti = new ModuleTreeSelectableItem( clientFactory,
                                                 view.addModuleTreeSelectableItem( treeItem,

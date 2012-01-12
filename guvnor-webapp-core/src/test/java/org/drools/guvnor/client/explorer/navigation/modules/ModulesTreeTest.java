@@ -7,7 +7,7 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -76,9 +76,9 @@ public class ModulesTreeTest {
                 knowledgeModulesTreeItemView
         );
 
-        PackageServiceAsync packageService = mock( PackageServiceAsync.class );
+        ModuleServiceAsync packageService = mock( ModuleServiceAsync.class );
         when(
-                clientFactory.getPackageService()
+                clientFactory.getModuleService()
         ).thenReturn(
                 packageService
         );

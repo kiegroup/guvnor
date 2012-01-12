@@ -34,7 +34,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
@@ -48,7 +48,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.junit.Ignore;
@@ -59,7 +59,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testCreateLinkedAssetItem() throws Exception {
         @SuppressWarnings("unused")
-        PackageItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createPackage( "testCreateNewRuleAsLinkPackage1",
+        ModuleItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createModule( "testCreateNewRuleAsLinkPackage1",
                                                                                                "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRuleAsLinkCat1",
@@ -96,10 +96,10 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                       "an initial desc" );
         assertEquals( itemLink.getFormat(),
                       AssetFormats.DSL_TEMPLATE_RULE );
-        assertEquals( itemLink.getPackage().getName(),
+        assertEquals( itemLink.getModule().getName(),
                       "globalArea" );
 
-        assertEquals( itemLink.getPackageName(),
+        assertEquals( itemLink.getModuleName(),
                       "globalArea" );
 
         assertTrue( itemLink.getCategories().size() == 1 );
@@ -113,7 +113,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                       "an initial desc" );
         assertEquals( referredItem.getFormat(),
                       AssetFormats.DSL_TEMPLATE_RULE );
-        assertEquals( referredItem.getPackage().getName(),
+        assertEquals( referredItem.getModule().getName(),
                       "globalArea" );
 
         assertTrue( referredItem.getCategories().size() == 1 );
@@ -130,12 +130,12 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
             size++;
             AssetItem ai = it.next();
             if ( ai.getUUID().equals( uuid ) ) {
-                assertEquals( ai.getPackage().getName(),
+                assertEquals( ai.getModule().getName(),
                               "globalArea" );
                 assertEquals( ai.getDescription(),
                               "an initial desc" );
             } else {
-                fail( "unexptected asset found: " + ai.getPackage().getName() );
+                fail( "unexptected asset found: " + ai.getModule().getName() );
             }
         }
         assertEquals( 1,
@@ -146,7 +146,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     public void testLinkedAssetItemHistoryRelated() throws Exception {
 
         @SuppressWarnings("unused")
-        PackageItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createPackage( "testLinkedAssetItemHistoryRelatedPack",
+        ModuleItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createModule( "testLinkedAssetItemHistoryRelatedPack",
                                                                                                "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLinkedAssetItemHistoryRelatedCat",
@@ -165,19 +165,19 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertTrue( uuidLink.equals( uuid ) );
 
         //create version 1.
-        RuleAsset assetWrapper = repositoryAssetService.loadRuleAsset( uuidLink );
+        Asset assetWrapper = repositoryAssetService.loadRuleAsset( uuidLink );
         assertEquals( assetWrapper.getDescription(),
                       "an initial desc" );
         assetWrapper.setDescription( "version 1" );
         String uuidLink1 = repositoryAssetService.checkinVersion( assetWrapper );
 
         //create version 2
-        RuleAsset assetWrapper2 = repositoryAssetService.loadRuleAsset( uuidLink );
+        Asset assetWrapper2 = repositoryAssetService.loadRuleAsset( uuidLink );
         assetWrapper2.setDescription( "version 2" );
         String uuidLink2 = repositoryAssetService.checkinVersion( assetWrapper2 );
 
         //create version head
-        RuleAsset assetWrapper3 = repositoryAssetService.loadRuleAsset( uuidLink );
+        Asset assetWrapper3 = repositoryAssetService.loadRuleAsset( uuidLink );
         assetWrapper3.setDescription( "version head" );
         @SuppressWarnings("unused")
         String uuidLink3 = repositoryAssetService.checkinVersion( assetWrapper3 );
@@ -197,10 +197,10 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertFalse( rows[1].id.equals( uuidLink ) );
         assertFalse( rows[2].id.equals( uuidLink ) );
 
-        RuleAsset version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
-        RuleAsset version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
-        RuleAsset version3 = repositoryAssetService.loadRuleAsset( rows[2].id );
-        RuleAsset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
+        Asset version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
+        Asset version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
+        Asset version3 = repositoryAssetService.loadRuleAsset( rows[2].id );
+        Asset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
         assertFalse( version1.getVersionNumber() == version2.getVersionNumber() );
         assertFalse( version1.getVersionNumber() == versionHead.getVersionNumber() );
         assertEquals( version1.getDescription(),
@@ -235,7 +235,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                                                versionHead.getUuid(),
                                                "this was cause of a mistake" );
 
-        RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
+        Asset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
                       newHead.getCheckinComment() );
@@ -244,7 +244,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testLoadRuleAsset() throws Exception {
-        rulesRepository.createPackage( "testLoadRuleAsset",
+        rulesRepository.createModule( "testLoadRuleAsset",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadRuleAsset",
@@ -270,7 +270,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         TableDataRow row = res.data[0];
         String uuid = row.id;
 
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset );
 
         assertEquals( uuid,
@@ -286,7 +286,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getMetaData().getTitle() );
         assertEquals( "testLoadRuleAsset",
-                      asset.getMetaData().getPackageName() );
+                      asset.getMetaData().getModuleName() );
         assertEquals( AssetFormats.DRL,
                       asset.getFormat() );
         assertNotNull( asset.getDateCreated() );
@@ -296,7 +296,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getMetaData().getCategories()[0] );
 
-        AssetItem rule = rulesRepository.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
+        AssetItem rule = rulesRepository.loadModule( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
         rulesRepository.createState("whee");
         rule.updateState("whee");
         rule.checkin("changed state");
@@ -327,7 +327,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListAssets() throws Exception {
-        PackageItem pacakgeItem = rulesRepository.createPackage( "testListAssetsPackage",
+        ModuleItem pacakgeItem = rulesRepository.createModule( "testListAssetsPackage",
                                                                            "desc" );
         repositoryCategoryService.createCategory("",
                 "testListAssetsCat",
@@ -389,7 +389,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadArchivedAssets() throws Exception {
-        rulesRepository.createPackage( "testLoadArchivedAssetsPackage",
+        rulesRepository.createModule( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsCat",
@@ -457,7 +457,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListUnregisteredAssetFormats() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testListUnregisteredAssetFormats",
+        ModuleItem pkg = rulesRepository.createModule( "testListUnregisteredAssetFormats",
                                                                    "" );
         AssetItem as = pkg.addAsset( "whee",
                                      "" );
@@ -482,7 +482,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
         long startTime = System.currentTimeMillis();
-        rulesRepository.createPackage( "testLoadAssetHistory",
+        rulesRepository.createModule( "testLoadAssetHistory",
                                                  "desc" );
         long nowTime1 = System.currentTimeMillis();
         System.out.println( "CreatePackage: " + (nowTime1 - startTime) );
@@ -500,7 +500,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         long nowTime3 = System.currentTimeMillis();
         System.out.println( "CreateNewRule: " + (nowTime3 - nowTime2) );
 
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
         repositoryAssetService.checkinVersion( asset ); // 1
         long nowTime4 = System.currentTimeMillis();
         System.out.println( "Checkin 1: " + (nowTime4 - nowTime3) );
@@ -521,11 +521,11 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertFalse( rows[0].id.equals( uuid ) );
         assertFalse( rows[1].id.equals( uuid ) );
 
-        RuleAsset old = repositoryAssetService.loadRuleAsset( rows[0].id );
-        RuleAsset newer = repositoryAssetService.loadRuleAsset( rows[1].id );
+        Asset old = repositoryAssetService.loadRuleAsset( rows[0].id );
+        Asset newer = repositoryAssetService.loadRuleAsset( rows[1].id );
         assertFalse( old.getVersionNumber() == newer.getVersionNumber() );
 
-        RuleAsset head = repositoryAssetService.loadRuleAsset( uuid );
+        Asset head = repositoryAssetService.loadRuleAsset( uuid );
 
         long oldVersion = old.getVersionNumber();
         assertFalse( oldVersion == head.getVersionNumber() );
@@ -534,7 +534,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                                                head.getUuid(),
                                                "this was cause of a mistake" );
 
-        RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
+        Asset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
                       newHead.getCheckinComment() );
@@ -558,10 +558,10 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertNotSame( uuid,
                        uuid2 );
 
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid2 );
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid2 );
         assertNotNull( asset );
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
-                      asset.getMetaData().getPackageName() );
+                      asset.getMetaData().getModuleName() );
         assertEquals( "testCopyAsset2",
                       asset.getName() );
     }
@@ -572,7 +572,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createPackage( "testRemoveAsset",
+        String pkgUUID = repositoryPackageService.createModule( "testRemoveAsset",
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -625,7 +625,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createPackage( "testArchiveAsset",
+        String pkgUUID = repositoryPackageService.createModule( "testArchiveAsset",
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -701,7 +701,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createPackage( packageName,
+        String pkgUUID = repositoryPackageService.createModule( packageName,
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -744,8 +744,9 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( originalAchivedAssetsTotal,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
-        PackageItem packageItem = rulesRepository.loadPackage( packageName );
+        ModuleItem packageItem = rulesRepository.loadModule( packageName );
         packageItem.archiveItem( true );
+        packageItem.checkin( "" );
 
         TableDataResult td2 = repositoryAssetService.loadArchivedAssets( 0,
                                                                          1000 );
@@ -785,7 +786,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testBuildAssetWithError",
+        ModuleItem pkg = repo.createModule( "testBuildAssetWithError",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
@@ -803,7 +804,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         asset.checkin( "" );
         repo.save();
 
-        RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         BuilderResult result = repositoryAssetService.validateAsset( rule );
         assertNotNull( result );
@@ -818,7 +819,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testBuildAsset",
+        ModuleItem pkg = repo.createModule( "testBuildAsset",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
@@ -836,7 +837,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         asset.checkin( "" );
         repo.save();
 
-        RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         // check its all OK
         BuilderResult result = repositoryAssetService.validateAsset( rule );
@@ -886,7 +887,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
-        repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
+        repositoryPackageService.createModule( "testBuildAssetMultipleFunctionsCallingEachOther",
                                                 "",
                                                 "package" );
         repositoryCategoryService.createCategory( "/",
@@ -899,7 +900,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                                             "testBuildAssetMultipleFunctionsCallingEachOther",
                                             AssetFormats.FUNCTION );
 
-        RuleAsset t1 = repositoryAssetService.loadRuleAsset(uuidt1);
+        Asset t1 = repositoryAssetService.loadRuleAsset(uuidt1);
         RuleContentText t1Content = new RuleContentText();
         t1Content.content = "function void t1(){\n";
         t1Content.content += " t2();\n";
@@ -912,7 +913,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                                             "funkytest",
                                             "testBuildAssetMultipleFunctionsCallingEachOther",
                                             AssetFormats.FUNCTION );
-        RuleAsset t2 = repositoryAssetService.loadRuleAsset( uuidt2 );
+        Asset t2 = repositoryAssetService.loadRuleAsset( uuidt2 );
         RuleContentText t2Content = new RuleContentText();
         t2Content.content = "function void t2(){\n";
         t2Content.content += " t1();\n";
@@ -931,7 +932,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testBuildAssetBRL",
+        ModuleItem pkg = repo.createModule( "testBuildAssetBRL",
                                               "" );
         AssetItem model = pkg.addAsset("MyModel",
                 "");
@@ -951,7 +952,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                                           "testBuildAssetBRL",
                                           AssetFormats.BUSINESS_RULE );
 
-        RuleAsset rule = repositoryAssetService.loadRuleAsset( uuid );
+        Asset rule = repositoryAssetService.loadRuleAsset( uuid );
 
         RuleModel m = (RuleModel) rule.getContent();
         assertNotNull( m );
@@ -989,13 +990,13 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                       assets.size() );
         // now lets copy...
         String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
-                                                           rule.getMetaData().getPackageName(),
+                                                           rule.getMetaData().getModuleName(),
                                                            "ruleName2" );
 
         assets = iteratorToList( pkg.getAssets() );
         assertEquals( 4,
                       assets.size() ); //we have 4 due to the drools.package file.
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( newUUID );
+        Asset asset = repositoryAssetService.loadRuleAsset( newUUID );
 
         String pkgSource = repositoryPackageService.buildPackageSource( pkg.getUUID() );
 
@@ -1022,7 +1023,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         RulesRepository repo = rulesRepository;
 
         // create our package
-        PackageItem pkg = repo.createPackage( "testAssetSource",
+        ModuleItem pkg = repo.createModule( "testAssetSource",
                                               "" );
         AssetItem asset = pkg.addAsset( "testRule",
                                         "" );
@@ -1031,7 +1032,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         asset.checkin( "" );
         repo.save();
 
-        RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
         String drl = repositoryAssetService.buildAssetSource( rule );
         assertEquals( "rule 'n' \n when Foo() then bar(); \n end",
                       drl );
@@ -1082,7 +1083,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     public void testBuildAssetWithPackageConfigError() throws Exception {
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError",
+        ModuleItem pkg = repo.createModule( "testBuildAssetWithPackageConfigError",
                                               "" );
         // AssetItem model = pkg.addAsset( "MyModel", "" );
         // model.updateFormat( AssetFormats.MODEL );
@@ -1099,7 +1100,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         asset.checkin( "" );
         repo.save();
 
-        RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         // check its all OK
         BuilderResult result = repositoryAssetService.validateAsset( rule );
@@ -1127,7 +1128,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        rulesRepository.createPackage( "testLoadArchivedAssetsPagedResultsPackage",
+        rulesRepository.createModule( "testLoadArchivedAssetsPagedResultsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsPagedResultsCat",
@@ -1178,7 +1179,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadArchivedAssetsFullResults() throws Exception {
-        rulesRepository.createPackage( "testLoadArchivedAssetsFullResultsPackage",
+        rulesRepository.createModule( "testLoadArchivedAssetsFullResultsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsFullResultsCat",

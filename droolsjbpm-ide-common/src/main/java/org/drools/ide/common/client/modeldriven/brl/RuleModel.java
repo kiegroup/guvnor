@@ -42,7 +42,7 @@ public class RuleModel
 
     public RuleModel() {
     }
-    
+
     /**
      * This will return a List<String> of all FactPattern bindings
      * 
@@ -69,7 +69,6 @@ public class RuleModel
      * 
      * @param var
      *            The bound fact variable (NOT bound field).
-     * 
      * @return null or the FactPattern found.
      */
     public FactPattern getLHSBoundFact(final String var) {
@@ -92,7 +91,6 @@ public class RuleModel
      * 
      * @param var
      *            The bound field variable (NOT bound fact).
-     * 
      * @return null or the FieldConstraint found.
      */
     public FieldConstraint getLHSBoundField(final String var) {
@@ -118,7 +116,6 @@ public class RuleModel
      * Get the data-type associated with the binding
      * 
      * @param var
-     * 
      * @return The data-type, or null if the binding could not be found
      */
     public String getLHSBindingType(final String var) {
@@ -143,8 +140,8 @@ public class RuleModel
         return null;
     }
 
-    private String getFieldBinding(FieldConstraint fc,
-                                   String var) {
+    protected String getFieldBinding(FieldConstraint fc,
+                                     String var) {
         String fieldType = null;
         if ( fc instanceof SingleFieldConstraint ) {
             SingleFieldConstraint s = (SingleFieldConstraint) fc;
@@ -276,7 +273,7 @@ public class RuleModel
                 }
             }
         }
-        
+
         for ( int i = 0; i < this.rhs.length; i++ ) {
             IAction pat = this.rhs[i];
             if ( pat instanceof ActionInsertFact ) {
@@ -286,11 +283,11 @@ public class RuleModel
                 }
             }
         }
-        
+
         return result;
     }
 
-    private List<String> getFieldBinding(FieldConstraint f) {
+    protected List<String> getFieldBinding(FieldConstraint f) {
         List<String> result = new ArrayList<String>();
         if ( f instanceof SingleFieldConstraint ) {
             SingleFieldConstraint con = (SingleFieldConstraint) f;

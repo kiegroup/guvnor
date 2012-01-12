@@ -27,7 +27,7 @@ import java.util.Properties;
 
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
@@ -47,7 +47,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetWithSpaces() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetSpaces", "", PackageItem.PACKAGE_FORMAT);
+        ModuleItem pkg = repo.createModule("testRestGetSpaces", "", ModuleItem.MODULE_FORMAT);
         AssetItem ass = pkg.addAsset("some space", "");
         ass.updateFormat("drl");
         ass.checkin("hey");
@@ -70,8 +70,8 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetBasics() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetBasics", "", PackageItem.PACKAGE_FORMAT);
-        pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
+        ModuleItem pkg = repo.createModule("testRestGetBasics", "", ModuleItem.MODULE_FORMAT);
+        pkg.updateStringProperty("This is some header", ModuleItem.HEADER_PROPERTY_NAME);
         repo.save();
 
 
@@ -106,7 +106,7 @@ public class RestAPITest extends RepositoryTestCase {
         res.writeData(out);
 
         String dotPackage = new String(out.toByteArray());
-        assertEquals(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME), dotPackage);
+        assertEquals(pkg.getStringProperty(ModuleItem.HEADER_PROPERTY_NAME), dotPackage);
 
         res = api.get("packages/testRestGetBasics");
         assertTrue(res instanceof Text);
@@ -180,7 +180,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetVersionHistory() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "", PackageItem.PACKAGE_FORMAT);
+        ModuleItem pkg = repo.createModule("testRestGetVersionHistory", "", ModuleItem.MODULE_FORMAT);
         repo.save();
 
 
@@ -235,7 +235,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testVersionHistoryAndArchived() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testVersionHistoryAndArchived", "", PackageItem.PACKAGE_FORMAT);
+        ModuleItem pkg = repo.createModule("testVersionHistoryAndArchived", "", ModuleItem.MODULE_FORMAT);
         repo.save();
 
 
@@ -281,8 +281,8 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testPost() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestPost", "", PackageItem.PACKAGE_FORMAT);
-        pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
+        ModuleItem pkg = repo.createModule("testRestPost", "", ModuleItem.MODULE_FORMAT);
+        pkg.updateStringProperty("This is some header", ModuleItem.HEADER_PROPERTY_NAME);
         repo.save();
 
         RestAPI api = new RestAPI(repo);
@@ -306,7 +306,7 @@ public class RestAPITest extends RepositoryTestCase {
         assertEquals("a comment", a.getCheckinComment());
         assertEquals("xls", a.getFormat());
 
-        List<AssetItem> assets = RulesRepositoryTest.iteratorToList(repo.loadPackage("testRestPost").listAssetsByFormat(new String[] {"drl", "xls"}));
+        List<AssetItem> assets = RulesRepositoryTest.iteratorToList(repo.loadModule("testRestPost").listAssetsByFormat(new String[] {"drl", "xls"}));
         assertEquals(2, assets.size());
 
     }
@@ -317,8 +317,8 @@ public class RestAPITest extends RepositoryTestCase {
         RestAPI api = new RestAPI(repo);
 
         api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), "This is a new package");
-        PackageItem pkg = repo.loadPackage("testPostNewPackage");
-        assertEquals("qaz", pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
+        ModuleItem pkg = repo.loadModule("testPostNewPackage");
+        assertEquals("qaz", pkg.getStringProperty(ModuleItem.HEADER_PROPERTY_NAME));
 
         assertEquals("This is a new package", pkg.getCheckinComment());
     }
@@ -327,8 +327,8 @@ public class RestAPITest extends RepositoryTestCase {
     public void testPut() throws Exception {
         //need to test both asset and .package shite.
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestPut", "", PackageItem.PACKAGE_FORMAT);
-        pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
+        ModuleItem pkg = repo.createModule("testRestPut", "", ModuleItem.MODULE_FORMAT);
+        pkg.updateStringProperty("This is some header", ModuleItem.HEADER_PROPERTY_NAME);
         repo.save();
 
         AssetItem asset1 = pkg.addAsset("asset1", "");
@@ -361,8 +361,8 @@ public class RestAPITest extends RepositoryTestCase {
 
         //now check updating the package header
         api.put("packages/testRestPut/.package", Calendar.getInstance(), new ByteArrayInputStream("whee".getBytes()), "hey");
-        pkg = repo.loadPackage("testRestPut");
-        assertEquals("whee", pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
+        pkg = repo.loadModule("testRestPut");
+        assertEquals("whee", pkg.getStringProperty(ModuleItem.HEADER_PROPERTY_NAME));
 
         try {
             api.put("packages/testRestPut/asset1.drl", cd, new ByteArrayInputStream("qaz".getBytes()), "a new comment");
@@ -384,8 +384,8 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testDelete() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestDelete", "", PackageItem.PACKAGE_FORMAT);
-        pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
+        ModuleItem pkg = repo.createModule("testRestDelete", "", ModuleItem.MODULE_FORMAT);
+        pkg.updateStringProperty("This is some header", ModuleItem.HEADER_PROPERTY_NAME);
         repo.save();
 
         AssetItem asset1 = pkg.addAsset("asset1", "");

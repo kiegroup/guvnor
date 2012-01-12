@@ -29,7 +29,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -69,7 +69,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void startServers() throws Exception {
         loginAs("admin");
         //Package version 1(Initial version)
-        PackageItem pkg = rulesRepository.createPackage( "restPackage1",
+        ModuleItem pkg = rulesRepository.createModule( "restPackage1",
                                                                    "this is package restPackage1" );
 
         //Package version 2	

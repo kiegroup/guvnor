@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.repository.AssetItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -27,12 +27,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class DefaultContentHandler extends ContentHandler {
 
     @Override
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
     }
 
     @Override
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset)
                                                       throws SerializationException {
     }

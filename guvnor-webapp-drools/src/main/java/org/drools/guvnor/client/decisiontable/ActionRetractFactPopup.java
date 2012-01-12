@@ -15,17 +15,18 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.List;
+
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -46,11 +47,13 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
     private ActionRetractFactCol52 editingCol;
     private GuidedDecisionTable52  model;
+    private BRLRuleModel           rm;
 
     public ActionRetractFactPopup(final GuidedDecisionTable52 model,
                                   final GenericColumnCommand refreshGrid,
                                   final ActionRetractFactCol52 col,
                                   final boolean isNew) {
+        this.rm = new BRLRuleModel( model );
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
 
@@ -147,9 +150,10 @@ public class ActionRetractFactPopup extends FormStylePopup {
     private ListBox loadBoundFacts(String binding) {
         ListBox listBox = new ListBox();
         listBox.addItem( constants.Choose() );
-        for ( int index = 0; index < model.getPatterns().size(); index++ ) {
-            Pattern52 p = model.getPatterns().get( index );
-            String boundName = p.getBoundName();
+        List<String> factBindings = rm.getLHSBoundFacts();
+
+        for ( int index = 0; index < factBindings.size(); index++ ) {
+            String boundName = factBindings.get( index );
             if ( !"".equals( boundName ) ) {
                 listBox.addItem( boundName );
                 if ( boundName.equals( binding ) ) {
@@ -157,6 +161,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
                 }
             }
         }
+
         listBox.setEnabled( listBox.getItemCount() > 1 );
         if ( listBox.getItemCount() == 1 ) {
             listBox.clear();

@@ -72,13 +72,13 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final String          WORKITEM_PREFIX         = "wi";
+    private static final String          WORKITEM_PREFIX = "wi";
 
-    private static final BRLPersistence  INSTANCE                = new BRDRLPersistence();
+    private static final BRLPersistence  INSTANCE        = new BRDRLPersistence();
 
     //Keep a record of all variable bindings for Actions that depend on them
-    private Map<String, IFactPattern>    bindingsPatterns;
-    private Map<String, FieldConstraint> bindingsFields;
+    protected Map<String, IFactPattern>    bindingsPatterns;
+    protected Map<String, FieldConstraint> bindingsFields;
 
     protected BRDRLPersistence() {
     }
@@ -211,12 +211,10 @@ public class BRDRLPersistence
                 buf.append( indentation );
                 buf.append( "not (\n" );
             }
-            LHSPatternVisitor visitor = new LHSPatternVisitor( isDSLEnhanced,
-                                                               bindingsPatterns,
-                                                               bindingsFields,
-                                                               buf,
-                                                               nestedIndentation,
-                                                               isNegated );
+            LHSPatternVisitor visitor = getLHSPatternVisitor( isDSLEnhanced,
+                                                              buf,
+                                                              nestedIndentation,
+                                                              isNegated );
             for ( IPattern cond : model.lhs ) {
                 visitor.visit( cond );
             }
@@ -229,6 +227,18 @@ public class BRDRLPersistence
                 buf.append( ")\n" );
             }
         }
+    }
+
+    protected LHSPatternVisitor getLHSPatternVisitor(boolean isDSLEnhanced,
+                                                     StringBuilder buf,
+                                                     String nestedIndentation,
+                                                     boolean isNegated) {
+        return new LHSPatternVisitor( isDSLEnhanced,
+                                      bindingsPatterns,
+                                      bindingsFields,
+                                      buf,
+                                      nestedIndentation,
+                                      isNegated );
     }
 
     private void marshalRHS(StringBuilder buf,
@@ -251,15 +261,23 @@ public class BRDRLPersistence
             }
 
             //Marshall the model itself
-            RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
-                                                                   bindingsPatterns,
-                                                                   bindingsFields,
-                                                                   buf,
-                                                                   indentation );
+            RHSActionVisitor actionVisitor = getRHSActionVisitor( isDSLEnhanced,
+                                                                  buf,
+                                                                  indentation );
             for ( IAction action : model.rhs ) {
                 actionVisitor.visit( action );
             }
         }
+    }
+
+    protected RHSActionVisitor getRHSActionVisitor(boolean isDSLEnhanced,
+                                                   StringBuilder buf,
+                                                   String indentation) {
+        return new RHSActionVisitor( isDSLEnhanced,
+                                     bindingsPatterns,
+                                     bindingsFields,
+                                     buf,
+                                     indentation );
     }
 
     private Map<String, List<ActionFieldValue>> getRHSClassDependencies(RuleModel model) {
@@ -702,59 +720,50 @@ public class BRDRLPersistence
 
             switch ( type ) {
                 case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                    buf.append( " " );
-                    buf.append( "( " );
-                    buf.append( value );
-                    buf.append( " )" );
+                    buildReturnValueFieldValue( value,
+                                                buf );
                     break;
                 case BaseSingleFieldConstraint.TYPE_LITERAL :
-                    if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
-                        buf.append( " " );
-                        buf.append( value );
-                    } else {
-                        if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                            buf.append( " " );
-                            DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                          type,
-                                                                          fieldType,
-                                                                          value );
-                        }
-                    }
+                    buildLiteralFieldValue( operator,
+                                            type,
+                                            fieldType,
+                                            value,
+                                            buf );
                     break;
                 case BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE :
-                    if ( expression != null ) {
-                        buf.append( " " );
-                        buf.append( expression.getText() );
-                    }
+                    buildExpressionFieldValue( expression,
+                                               buf );
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    buf.append( " " );
-                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                  type,
-                                                                  fieldType,
-                                                                  "@{" + value + "}" );
+                    buildTemplateFieldValue( type,
+                                             fieldType,
+                                             value,
+                                             buf );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
-                    buf.append( " " );
-                    if (operator.equals("in")) {
-                        buf.append( value );
-                    } else {
-                        DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                  type,
-                                                                  fieldType,
-                                                                  value );
-                    }
+                    buildEnumFieldValue( operator,
+                                         type,
+                                         fieldType,
+                                         value,
+                                         buf );
                     break;
                 default :
-                    if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                        buf.append( " " );
-                        buf.append( value );
-                    }
+                    buildDefaultFieldValue( operator,
+                                            value,
+                                            buf );
             }
+        }
+
+        protected void buildReturnValueFieldValue(String value,
+                                                  StringBuilder buf) {
+            buf.append( " " );
+            buf.append( "( " );
+            buf.append( value );
+            buf.append( " )" );
             buf.append( " " );
         }
 
-        private StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
+        protected StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
             String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
             if ( className == null ) {
                 throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
@@ -764,19 +773,81 @@ public class BRDRLPersistence
                 OperatorParameterDRLBuilder builder = (OperatorParameterDRLBuilder) Class.forName( className ).newInstance();
                 return builder.buildDRL( parameters );
             } catch ( ClassNotFoundException cnfe ) {
-                cnfe.fillInStackTrace();
-                cnfe.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", cnfe );
             } catch ( IllegalAccessException iae ) {
-                iae.fillInStackTrace();
-                iae.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", iae );
             } catch ( InstantiationException ie ) {
-                ie.fillInStackTrace();
-                ie.printStackTrace( System.err );
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", ie );
             }
 
+        }
+
+        protected void buildLiteralFieldValue(String operator,
+                                              int type,
+                                              String fieldType,
+                                              String value,
+                                              StringBuilder buf) {
+            if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
+                buf.append( " " );
+                buf.append( value );
+            } else {
+                if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
+                    buf.append( " " );
+                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                                  type,
+                                                                  fieldType,
+                                                                  value );
+                }
+            }
+            buf.append( " " );
+        }
+
+        protected void buildExpressionFieldValue(ExpressionFormLine expression,
+                                                 StringBuilder buf) {
+            if ( expression != null ) {
+                buf.append( " " );
+                buf.append( expression.getText() );
+                buf.append( " " );
+            }
+        }
+
+        protected void buildTemplateFieldValue(int type,
+                                               String fieldType,
+                                               String value,
+                                               StringBuilder buf) {
+            buf.append( " " );
+            DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                          type,
+                                                          fieldType,
+                                                          "@{" + value + "}" );
+            buf.append( " " );
+        }
+
+        private void buildEnumFieldValue(String operator,
+                                         int type,
+                                         String fieldType,
+                                         String value,
+                                         StringBuilder buf) {
+            buf.append( " " );
+            if ( operator.equals( "in" ) ) {
+                buf.append( value );
+            } else {
+                DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                              type,
+                                                              fieldType,
+                                                              value );
+            }
+            buf.append( " " );
+        }
+
+        protected void buildDefaultFieldValue(String operator,
+                                              String value,
+                                              StringBuilder buf) {
+            if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
+                buf.append( " " );
+                buf.append( value );
+            }
+            buf.append( " " );
         }
 
     }
@@ -925,16 +996,16 @@ public class BRDRLPersistence
             String wiImplName = WORKITEM_PREFIX + wiName;
 
             instantiatedWorkItems.add( wiName );
-            
+
             buf.append( indentation );
             buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
             buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
             buf.append( indentation );
-            buf.append( wiImplName  );
-            buf.append(".setName( \"");
-            buf.append(wiName);
-            buf.append("\" );\n");
+            buf.append( wiImplName );
+            buf.append( ".setName( \"" );
+            buf.append( wiName );
+            buf.append( "\" );\n" );
             for ( PortableParameterDefinition ppd : action.getWorkDefinition().getParameters() ) {
                 makeWorkItemParameterDRL( ppd,
                                           wiImplName );
@@ -1016,33 +1087,50 @@ public class BRDRLPersistence
         private void generateSetMethodCallParameterValue(StringBuilder buf,
                                                          ActionFieldValue fieldValue) {
             if ( fieldValue.isFormula() ) {
-                buf.append( fieldValue.value.substring( 1 ) );
-                return;
+                buildFormulaFieldValue( fieldValue,
+                                        buf );
+            } else if ( fieldValue.nature == FieldNature.TYPE_TEMPLATE ) {
+                buildTemplateFieldValue( fieldValue,
+                                         buf );
+            } else if ( fieldValue instanceof ActionWorkItemFieldValue ) {
+                buildWorkItemFieldValue( (ActionWorkItemFieldValue) fieldValue,
+                                         buf );
+            } else {
+                buildDefaultFieldValue( fieldValue,
+                                        buf );
             }
+        }
 
-            if ( fieldValue.nature == FieldNature.TYPE_TEMPLATE ) {
-                DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                              fieldValue.type,
-                                                              "@{" + fieldValue.value + "}" );
-                return;
-            }
+        protected void buildFormulaFieldValue(ActionFieldValue fieldValue,
+                                              StringBuilder buf) {
+            buf.append( fieldValue.value.substring( 1 ) );
+        }
 
-            if ( fieldValue instanceof ActionWorkItemFieldValue ) {
-                ActionWorkItemFieldValue afv = (ActionWorkItemFieldValue) fieldValue;
-                if ( instantiatedWorkItems.contains( afv.getWorkItemName() ) ) {
-                    buf.append( "(" );
-                    buf.append( afv.getWorkItemParameterClassName() );
-                    buf.append( ") " );
-                    buf.append( WORKITEM_PREFIX );
-                    buf.append( afv.getWorkItemName() );
-                    buf.append( ".getResult( \"" );
-                    buf.append( afv.getWorkItemParameterName() );
-                    buf.append( "\" )" );
-                } else {
-                    buf.append( "null" );
-                }
-                return;
+        protected void buildTemplateFieldValue(ActionFieldValue fieldValue,
+                                               StringBuilder buf) {
+            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
+                                                          fieldValue.type,
+                                                          "@{" + fieldValue.value + "}" );
+        }
+
+        protected void buildWorkItemFieldValue(ActionWorkItemFieldValue afv,
+                                               StringBuilder buf) {
+            if ( instantiatedWorkItems.contains( afv.getWorkItemName() ) ) {
+                buf.append( "(" );
+                buf.append( afv.getWorkItemParameterClassName() );
+                buf.append( ") " );
+                buf.append( WORKITEM_PREFIX );
+                buf.append( afv.getWorkItemName() );
+                buf.append( ".getResult( \"" );
+                buf.append( afv.getWorkItemParameterName() );
+                buf.append( "\" )" );
+            } else {
+                buf.append( "null" );
             }
+        }
+
+        protected void buildDefaultFieldValue(ActionFieldValue fieldValue,
+                                              StringBuilder buf) {
             DRLConstraintValueBuilder.buildRHSFieldValue( buf,
                                                           fieldValue.type,
                                                           fieldValue.value );

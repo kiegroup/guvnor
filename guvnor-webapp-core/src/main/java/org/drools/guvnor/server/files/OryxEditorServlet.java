@@ -1,6 +1,6 @@
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
@@ -60,7 +60,7 @@ public class OryxEditorServlet extends HttpServlet {
         log.debug("Successful login");
 
         try {
-            RuleAsset asset = repositoryAssetService.loadRuleAsset(uuid);
+            Asset asset = repositoryAssetService.loadRuleAsset(uuid);
             if (asset.getContent() != null) {
                 response.setContentType("application/xml");
                 response.setCharacterEncoding("UTF-8");

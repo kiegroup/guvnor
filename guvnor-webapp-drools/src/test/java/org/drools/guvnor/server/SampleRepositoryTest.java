@@ -17,7 +17,7 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,7 +27,7 @@ public class SampleRepositoryTest extends GuvnorTestBase {
     @Test
     public void testImportSampleRepository() throws Exception {
         repositoryPackageService.installSampleRepository();
-        PackageConfigData[] cfgs = repositoryPackageService.listPackages();
+        Module[] cfgs = repositoryPackageService.listModules();
         assertEquals( 2,
                       cfgs.length );
         assertTrue( cfgs[0].getName().equals( "mortgages" ) || cfgs[1].getName().equals( "mortgages" ) );

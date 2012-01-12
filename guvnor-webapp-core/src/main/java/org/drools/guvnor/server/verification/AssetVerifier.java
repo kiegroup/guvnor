@@ -11,7 +11,7 @@ public class AssetVerifier extends VerifierRunner {
     private final AssetItem assetItem;
 
     public AssetVerifier(Verifier verifier, AssetItem assetItem) {
-        super(verifier, assetItem.getPackage());
+        super(verifier, assetItem.getModule());
         this.assetItem = assetItem;
     }
 

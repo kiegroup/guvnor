@@ -19,7 +19,7 @@ package org.drools.guvnor.server.contenthandler.drools;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -43,7 +43,7 @@ public class RuleFlowHandler extends ContentHandler
     ICompilable,
     ICanHasAttachment {
 
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
 
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
@@ -91,7 +91,7 @@ public class RuleFlowHandler extends ContentHandler
         return process;
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
 
         RuleFlowContentModel content = (RuleFlowContentModel) asset.getContent();
@@ -137,7 +137,7 @@ public class RuleFlowHandler extends ContentHandler
             RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getBytes() ) );
 
             if ( process != null ) {
-                String packageName = item.getPackageName();
+                String packageName = item.getModuleName();
                 String originalPackageName = process.getPackageName();
 
                 if ( !packageName.equals( originalPackageName ) ) {

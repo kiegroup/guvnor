@@ -26,7 +26,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
@@ -45,12 +45,12 @@ public class DSLRuleEditor extends DirtyableComposite {
     private DSLSentence[] conditions;
     private DSLSentence[] actions;
 
-    public DSLRuleEditor(RuleAsset asset,
+    public DSLRuleEditor(Asset asset,
                          RuleViewer viewer) {
         this(asset);
     }
 
-    public DSLRuleEditor(RuleAsset asset) {
+    public DSLRuleEditor(Asset asset) {
 
         RuleContentText cont = (RuleContentText) asset.getContent();
 
@@ -60,7 +60,7 @@ public class DSLRuleEditor extends DirtyableComposite {
         text.setVisibleLines(16);
         text.setText(data.content);
 
-        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache(asset.getMetaData().getPackageName());
+        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache(asset.getMetaData().getModuleName());
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
 

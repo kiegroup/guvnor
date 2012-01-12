@@ -26,7 +26,7 @@ import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.event.shared.EventBus;
@@ -40,7 +40,7 @@ public class AssetViewerActivity extends Activity
         AssetViewerActivityView.Presenter {
 
     private final ClientFactory     clientFactory;
-    private PackageConfigData       packageConfigData;
+    private Module       packageConfigData;
     private AssetViewerActivityView view;
     private String                  uuid;
 
@@ -60,9 +60,9 @@ public class AssetViewerActivity extends Activity
         // title is not used.
         acceptTabItem.add( null,
                            view );
-        clientFactory.getPackageService().loadPackageConfig( uuid,
-                                                             new GenericCallback<PackageConfigData>() {
-                                                                 public void onSuccess(PackageConfigData conf) {
+        clientFactory.getModuleService().loadModule( uuid,
+                                                             new GenericCallback<Module>() {
+                                                                 public void onSuccess(Module conf) {
                                                                      packageConfigData = conf;
                                                                      RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
 
@@ -73,7 +73,7 @@ public class AssetViewerActivity extends Activity
                                                              } );
     }
 
-    public void viewPackageDetail(PackageConfigData packageConfigData) {
+    public void viewPackageDetail(Module packageConfigData) {
         clientFactory.getPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
 

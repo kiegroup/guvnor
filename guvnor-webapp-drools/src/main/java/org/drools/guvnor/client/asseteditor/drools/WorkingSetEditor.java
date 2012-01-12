@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.factconstraints.helper.ConstraintsContainer;
@@ -50,7 +50,7 @@ public class WorkingSetEditor extends Composite
     implements
     EditorWidget {
 
-    private RuleAsset                   workingSet;
+    private Asset                   workingSet;
     private ListBox                     availFacts = new ListBox( true );
     private ListBox                     validFacts = new ListBox( true );
     private ConstraintsContainer        cc;
@@ -59,14 +59,14 @@ public class WorkingSetEditor extends Composite
     private FactsConstraintsEditorPanel factsConstraintsgEditorPanel;
     private CustomFormsEditorPanel      customFormsEditorPanel;
     
-	public WorkingSetEditor(RuleAsset asset,
+	public WorkingSetEditor(Asset asset,
                             RuleViewer viewer,
                         ClientFactory clientFactory,
                         EventBus eventBus) {
 		this(asset);
 	}
 	
-    public WorkingSetEditor(RuleAsset asset) {
+    public WorkingSetEditor(Asset asset) {
         if ( !AssetFormats.WORKING_SET.equals( asset.getFormat() ) ) {
             throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getFormat() );
         }
@@ -129,7 +129,7 @@ public class WorkingSetEditor extends Composite
         Grid grid = new Grid( 2,
                               3 );
 
-        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getPackageName() );
+        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getModuleName() );
         boolean filteringFact = sce.isFilteringFacts();
         sce.setFilteringFacts( false );
 
@@ -244,7 +244,7 @@ public class WorkingSetEditor extends Composite
         return cfc;
     }
 
-    protected RuleAsset getWorkingSet() {
+    protected Asset getWorkingSet() {
         return workingSet;
     }
 

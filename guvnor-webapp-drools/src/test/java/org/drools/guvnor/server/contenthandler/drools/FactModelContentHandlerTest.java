@@ -28,13 +28,13 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -165,14 +165,14 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
 
         RulesRepository repo = rulesRepository;
 
-        PackageItem pkg = repo.loadDefaultPackage();
+        ModuleItem pkg = repo.loadDefaultModule();
         AssetItem asset = pkg.addAsset( "testDeclaredTypeStore",
                                         "" );
         asset.updateFormat( "model.drl" );
         asset.updateContent( "declare Foo\n name: String\n end" );
         asset.checkin( "" );
 
-        RuleAsset ass = new RuleAsset();
+        Asset ass = new Asset();
         ch.retrieveAssetContent( ass,
                                  asset );
         assertTrue( ass.getContent() instanceof FactModels );

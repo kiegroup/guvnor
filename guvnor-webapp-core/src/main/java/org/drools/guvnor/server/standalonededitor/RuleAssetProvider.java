@@ -17,7 +17,7 @@
 package org.drools.guvnor.server.standalonededitor;
 
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * Interface used by the standalone editor to convert request parameters
@@ -25,6 +25,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  */
 public interface RuleAssetProvider {
     
-    RuleAsset[] getRuleAssets() throws DetailedSerializationException ;
+    Asset[] getRuleAssets() throws DetailedSerializationException ;
     
 }

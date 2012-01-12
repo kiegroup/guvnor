@@ -30,7 +30,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * This wraps a file uploader utility for model packages.
@@ -46,7 +46,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
 
     private String packageName;
 
-    public ModelAttachmentFileWidget( RuleAsset asset,
+    public ModelAttachmentFileWidget( Asset asset,
                                       RuleViewer viewer,
                                       ClientFactory clientFactory,
                                       EventBus eventBus ) {
@@ -54,7 +54,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
                 viewer,
                 clientFactory,
                 eventBus );
-        this.packageName = asset.getMetaData().getPackageName();
+        this.packageName = asset.getMetaData().getModuleName();
     }
 
     public ImageResource getIcon() {

@@ -16,13 +16,13 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 /**
  * Helper class for getting Drools Header
  */
 public class DroolsHeader {
-    public static String getDroolsHeader(PackageItem pkg) {
+    public static String getDroolsHeader(ModuleItem pkg) {
         if ( pkg.containsAsset( "drools" ) ) {
             return pkg.loadAsset( "drools" ).getContent();
         }
@@ -30,7 +30,7 @@ public class DroolsHeader {
     }
 
     public static void updateDroolsHeader(String string,
-                                          PackageItem pkg) {
+                                          ModuleItem pkg) {
         pkg.checkout();
         AssetItem conf;
         if ( pkg.containsAsset( "drools" ) ) {

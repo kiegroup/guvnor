@@ -125,22 +125,22 @@ public class RulesRepositoryConfigurator {
             Node repositoryNode = RulesRepository.addNodeIfNew(root, RulesRepository.RULES_REPOSITORY_NAME, "nt:folder");
 
             // Setup the RulePackageItem area
-            Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
+            Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.MODULE_AREA, "nt:folder");
 
             // Setup the global area
-            if (!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)) {
-                Node globalAreaNode = RulesRepository.addNodeIfNew(packageAreaNode, RulesRepository.RULE_GLOBAL_AREA, PackageItem.RULE_PACKAGE_TYPE_NAME);
-                globalAreaNode.addNode(PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
-                globalAreaNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, RulesRepository.RULE_GLOBAL_AREA);
+            if (!packageAreaNode.hasNode(RulesRepository.GLOBAL_AREA)) {
+                Node globalAreaNode = RulesRepository.addNodeIfNew(packageAreaNode, RulesRepository.GLOBAL_AREA, ModuleItem.MODULE_TYPE_NAME);
+                globalAreaNode.addNode(ModuleItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
+                globalAreaNode.setProperty(ModuleItem.TITLE_PROPERTY_NAME, RulesRepository.GLOBAL_AREA);
                 globalAreaNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, "the global area that holds sharable assets");
-                globalAreaNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
-                globalAreaNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, session.getUserID());
+                globalAreaNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, ModuleItem.MODULE_FORMAT);
+                globalAreaNode.setProperty(ModuleItem.CREATOR_PROPERTY_NAME, session.getUserID());
                 Calendar lastModified = Calendar.getInstance();
-                globalAreaNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+                globalAreaNode.setProperty(ModuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             }
 
             // Setup the Snapshot area
-            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.PACKAGE_SNAPSHOT_AREA, "nt:folder");
+            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.MODULE_SNAPSHOT_AREA, "nt:folder");
 
             //Setup the Category area
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.TAG_AREA, "nt:folder");

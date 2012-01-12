@@ -66,6 +66,10 @@ public class Pattern52
         return boundName;
     }
 
+    public boolean isBound() {
+        return !(boundName == null || "".equals( boundName ));
+    }
+
     public void setBoundName(String boundName) {
         this.boundName = boundName;
     }

@@ -3,7 +3,7 @@ package org.drools.guvnor.server.verification;
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.AssetValidationIterator;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -11,17 +11,17 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.io.ResourceFactory;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 
 public class TemporalBRLAssetVerifier extends VerifierRunner {
 
-    private final RuleAsset ruleAsset;
+    private final Asset ruleAsset;
     private final Verifier verifier;
 
-    public TemporalBRLAssetVerifier(Verifier verifier, RuleAsset ruleAsset, PackageItem packageItem) {
+    public TemporalBRLAssetVerifier(Verifier verifier, Asset ruleAsset, ModuleItem packageItem) {
         super(verifier, packageItem);
         
         if (!ruleAsset.getFormat().equals(AssetFormats.BUSINESS_RULE)){
@@ -41,7 +41,7 @@ public class TemporalBRLAssetVerifier extends VerifierRunner {
 
     }
 
-    private boolean isAssetDecisionTable(RuleAsset ruleAsset) {
+    private boolean isAssetDecisionTable(Asset ruleAsset) {
         return AssetFormats.DECISION_TABLE_GUIDED.equals(ruleAsset.getFormat()) || AssetFormats.DECISION_SPREADSHEET_XLS.equals(ruleAsset.getFormat());
     }
 

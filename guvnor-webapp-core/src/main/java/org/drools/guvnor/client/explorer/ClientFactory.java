@@ -52,7 +52,7 @@ public interface ClientFactory {
     
     ConfigurationServiceAsync getConfigurationService();
 
-    PackageServiceAsync getPackageService();
+    ModuleServiceAsync getModuleService();
     
     RepositoryServiceAsync getService();
     

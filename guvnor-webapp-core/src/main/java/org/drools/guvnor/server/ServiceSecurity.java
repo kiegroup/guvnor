@@ -19,7 +19,7 @@ package org.drools.guvnor.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.security.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
@@ -55,7 +55,7 @@ public class ServiceSecurity {
     }
 
     protected void checkSecurityIsPackageAdminWithPackageName(String packageName) {
-        identity.checkPermission(new PackageNameType(packageName),
+        identity.checkPermission(new ModuleNameType(packageName),
                 RoleType.PACKAGE_ADMIN.getName());
     }
 
@@ -64,27 +64,27 @@ public class ServiceSecurity {
     }
 
     protected void checkSecurityIsPackageAdminWithPackageUuid(String uuid) {
-        identity.checkPermission(new PackageUUIDType(uuid),
+        identity.checkPermission(new ModuleUUIDType(uuid),
                 RoleType.PACKAGE_ADMIN.getName());
     }
 
     protected void checkSecurityIsPackageDeveloperWithPackageUuid(String uuid) {
-        identity.checkPermission(new PackageUUIDType(uuid),
+        identity.checkPermission(new ModuleUUIDType(uuid),
                 RoleType.PACKAGE_DEVELOPER.getName());
     }
 
     protected void checkSecurityIsPackageDeveloperWithPackageName(String packageName) {
-        identity.checkPermission(new PackageNameType(packageName),
+        identity.checkPermission(new ModuleNameType(packageName),
                 RoleType.PACKAGE_DEVELOPER.getName());
     }
 
     protected void checkSecurityIsPackageReadOnlyWithPackageName(String packageName) {
-        identity.checkPermission(new PackageNameType(packageName),
+        identity.checkPermission(new ModuleNameType(packageName),
                 RoleType.PACKAGE_READONLY.getName());
     }
 
     protected void checkSecurityPackageReadOnlyWithPackageUuid(final String uuid) {
-        identity.checkPermission(new PackageUUIDType(uuid),
+        identity.checkPermission(new ModuleUUIDType(uuid),
                 RoleType.PACKAGE_READONLY.getName());
     }
 
@@ -98,11 +98,11 @@ public class ServiceSecurity {
     * 2. The user has a package.developer role or higher (i.e., package.admin)
     * and this role has permission to access the package which the asset belongs to.
     */
-    protected void checkIsPackageDeveloperOrAnalyst(final RuleAsset asset) {
+    protected void checkIsPackageDeveloperOrAnalyst(final Asset asset) {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new PackageNameType(asset.getMetaData().getPackageName()),
+            identity.checkPermission(new ModuleNameType(asset.getMetaData().getModuleName()),
                     RoleType.PACKAGE_DEVELOPER.getName());
         } catch (RuntimeException e) {
             if (asset.getMetaData().getCategories().length == 0) {
@@ -141,7 +141,7 @@ public class ServiceSecurity {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new PackageUUIDType(asset.getPackage().getUUID()),
+            identity.checkPermission(new ModuleUUIDType(asset.getModule().getUUID()),
                     RoleType.PACKAGE_DEVELOPER.getName());
         } catch (RuntimeException e) {
             if (asset.getCategories().size() == 0) {
@@ -166,11 +166,11 @@ public class ServiceSecurity {
         }
     }   
 
-    protected void checkIsPackageReadOnlyOrAnalystReadOnly(final RuleAsset asset) {
+    protected void checkIsPackageReadOnlyOrAnalystReadOnly(final Asset asset) {
         boolean passed = false;
 
         try {
-            identity.checkPermission(new PackageNameType(asset.getMetaData().getPackageName()),
+            identity.checkPermission(new ModuleNameType(asset.getMetaData().getModuleName()),
                     RoleType.PACKAGE_READONLY.getName());
         } catch (RuntimeException e) {
             if (asset.getMetaData().getCategories().length == 0) {

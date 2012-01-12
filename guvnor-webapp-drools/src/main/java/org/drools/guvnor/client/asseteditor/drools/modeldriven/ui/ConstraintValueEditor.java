@@ -208,7 +208,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //Custom screen
         if ( this.constraint instanceof SingleFieldConstraint ) {
             final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
-            CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getPackageName(),
+            CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getModuleName(),
                                                                                                                           pattern.getFactType(),
                                                                                                                           fieldName );
             if ( customFormConfiguration != null ) {
@@ -378,7 +378,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private void showTypeChoice(Widget w,
                                 final BaseSingleFieldConstraint con) {
 
-        CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getPackageName(),
+        CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getModuleName(),
                                                                                                                       pattern.getFactType(),
                                                                                                                       fieldName );
 

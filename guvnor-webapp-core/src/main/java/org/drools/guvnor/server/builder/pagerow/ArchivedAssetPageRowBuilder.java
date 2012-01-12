@@ -65,7 +65,7 @@ public class ArchivedAssetPageRowBuilder
         row.setUuid( assetItem.getUUID() );
         row.setFormat( assetItem.getFormat() );
         row.setName( assetItem.getName() );
-        row.setPackageName( assetItem.getPackageName() );
+        row.setPackageName( assetItem.getModuleName() );
         row.setLastContributor( assetItem.getLastContributor() );
         row.setLastModified( assetItem.getLastModified().getTime() );
         return row;

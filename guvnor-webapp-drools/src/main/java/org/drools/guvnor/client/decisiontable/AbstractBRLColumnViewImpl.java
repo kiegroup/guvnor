@@ -27,7 +27,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.Temp
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
@@ -111,7 +111,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     public AbstractBRLColumnViewImpl(final SuggestionCompletionEngine sce,
                                      final GuidedDecisionTable52 model,
                                      final boolean isNew,
-                                     final RuleAsset asset,
+                                     final Asset asset,
                                      final BRLColumn<T, C> column,
                                      final ClientFactory clientFactory,
                                      final EventBus eventBus) {
@@ -267,9 +267,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     private void getDefinedVariables(RuleModel ruleModel) {
         //Extract Template Keys from RuleModel
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-        RuleModelVisitor rmv = new RuleModelVisitor( ruleModel,
-                                                     ivs );
-        rmv.visitRuleModel( ruleModel );
+        RuleModelVisitor rmv = new RuleModelVisitor( ivs );
+        rmv.visit( ruleModel );
 
         //Update column and UI
         editingCol.setChildColumns( convertInterpolationVariables( ivs ) );

@@ -17,7 +17,7 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -32,28 +32,26 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class RepositoryScenarioTest extends GuvnorTestBase {
+
     @Test
     public void testRunScenario() throws Exception {
-        RulesRepository repo = rulesRepository;
-
-        System.out.println( "create package" );
-        PackageItem pkg = repo.createPackage( "testScenarioRun",
-                                              "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person\n global org.drools.Cheese cheese\n",
-                                                  pkg );
+        ModuleItem pkg = rulesRepository.createModule("testScenarioRun",
+                "" );
+        DroolsHeader.updateDroolsHeader("import org.drools.Person\n global org.drools.Cheese cheese\n",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
-        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateFormat(AssetFormats.DRL );
         rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
         rule1.checkin("");
-        repo.save();
+        rulesRepository.save();
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
@@ -90,22 +88,22 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
                                                                       sc ).result;
-        assertNull( res.getErrors() );
+        assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
-        assertNull( res.getErrors() );
+        assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
-        assertTrue( vr.wasSuccessful() );
+        assertTrue(vr.wasSuccessful() );
 
         RuleBaseCache.getInstance().clearCache();
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
-        assertNull( res.getErrors() );
+        assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
@@ -118,7 +116,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         RuleBaseCache.getInstance().clearCache();
         pkg.updateBinaryUpToDate(false);
-        repo.save();
+        rulesRepository.save();
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
         assertNotNull( res.getErrors() );
@@ -136,7 +134,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
                                                 pkg.getName(),
                                                 AssetFormats.TEST_SCENARIO );
 
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( scenarioId );
+        Asset asset = repositoryAssetService.loadRuleAsset( scenarioId );
         assertNotNull( asset.getContent() );
         assertTrue( asset.getContent() instanceof Scenario );
 
@@ -154,18 +152,16 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithGeneratedBeans() throws Exception {
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
-                                              "" );
-        DroolsHeader.updateDroolsHeader( "declare GenBean\n name: String \n age: int \nend\n",
-                                                  pkg );
+        ModuleItem pkg = rulesRepository.createModule("testScenarioRunWithGeneratedBeans",
+                "" );
+        DroolsHeader.updateDroolsHeader("declare GenBean\n name: String \n age: int \nend\n",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
-        rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \n p : GenBean(name=='mic') \n then \n p.setAge(42); \n end" );
-        rule1.checkin( "" );
-        repo.save();
+        rule1.updateFormat(AssetFormats.DRL );
+        rule1.updateContent("rule 'rule1' \n when \n p : GenBean(name=='mic') \n then \n p.setAge(42); \n end");
+        rule1.checkin("");
+        rulesRepository.save();
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
@@ -212,25 +208,23 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
-                                              "" );
-        DroolsHeader.updateDroolsHeader( "declare Wang \n age: Integer \n name: String \n end",
-                                                  pkg );
+        ModuleItem pkg = rulesRepository.createModule("testScenarioRunBulkWithDeclaredFacts",
+                "" );
+        DroolsHeader.updateDroolsHeader("declare Wang \n age: Integer \n name: String \n end",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
-        rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Wang() \n then \np.setAge(42); \n end" );
-        rule1.checkin( "" );
+        rule1.updateFormat(AssetFormats.DRL );
+        rule1.updateContent("rule 'rule1' \n when \np : Wang() \n then \np.setAge(42); \n end");
+        rule1.checkin("");
 
         //this rule will never fire
         AssetItem rule2 = pkg.addAsset( "rule_2",
                                         "" );
-        rule2.updateFormat( AssetFormats.DRL );
-        rule2.updateContent( "rule 'rule2' \n when \np : Wang(age == 1000) \n then \np.setAge(46); \n end" );
-        rule2.checkin( "" );
-        repo.save();
+        rule2.updateFormat(AssetFormats.DRL );
+        rule2.updateContent("rule 'rule2' \n when \np : Wang(age == 1000) \n then \np.setAge(46); \n end");
+        rule2.checkin("");
+        rulesRepository.save();
 
         //first, the green scenario
         Scenario sc = new Scenario();
@@ -324,26 +318,24 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithJar() throws Exception {
-        RulesRepository repo = rulesRepository;
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testRunScenarioWithJar",
+        ModuleItem pkg = rulesRepository.createModule( "testRunScenarioWithJar",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
-        model.updateFormat( AssetFormats.MODEL );
-        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        model.checkin( "" );
+        model.updateFormat(AssetFormats.MODEL);
+        model.updateBinaryContentAttachment(this.getClass().getResourceAsStream("/billasurf.jar" ) );
+        model.checkin("");
 
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board",
-                                                  pkg );
+        DroolsHeader.updateDroolsHeader("import com.billasurf.Board",
+                pkg);
 
         AssetItem asset = pkg.addAsset( "testRule",
                                         "" );
-        asset.updateFormat( AssetFormats.DRL );
-        asset.updateContent( "rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end" );
-        asset.checkin( "" );
-        repo.save();
+        asset.updateFormat(AssetFormats.DRL);
+        asset.updateContent("rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end" );
+        asset.checkin("");
+        rulesRepository.save();
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
@@ -397,26 +389,24 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
-        RulesRepository repo = rulesRepository;
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testRunScenarioWithJarThatHasSourceFiles",
+        ModuleItem pkg = rulesRepository.createModule( "testRunScenarioWithJarThatHasSourceFiles",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
-        model.updateFormat( AssetFormats.MODEL );
-        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/jarWithSourceFiles.jar" ) );
-        model.checkin( "" );
+        model.updateFormat(AssetFormats.MODEL);
+        model.updateBinaryContentAttachment(this.getClass().getResourceAsStream("/jarWithSourceFiles.jar" ) );
+        model.checkin("");
 
-        DroolsHeader.updateDroolsHeader( "import org.test.Person; \n import org.test.Banana; \n ",
-                                                  pkg );
+        DroolsHeader.updateDroolsHeader("import org.test.Person; \n import org.test.Banana; \n ",
+                pkg);
 
         AssetItem asset = pkg.addAsset( "testRule",
                                         "" );
-        asset.updateFormat( AssetFormats.DRL );
-        asset.updateContent( "rule 'MyGoodRule' \n dialect 'mvel' \n when \n Person() \n then \n insert( new Banana() ); \n end" );
-        asset.checkin( "" );
-        repo.save();
+        asset.updateFormat(AssetFormats.DRL);
+        asset.updateContent("rule 'MyGoodRule' \n dialect 'mvel' \n when \n Person() \n then \n insert( new Banana() ); \n end" );
+        asset.checkin("");
+        rulesRepository.save();
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
@@ -457,30 +447,27 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
-
     }
 
     @Test
     public void testRunPackageScenarios() throws Exception {
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
-                                              "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
-                                                  pkg );
+        ModuleItem pkg = rulesRepository.createModule("testScenarioRunBulk",
+                "" );
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
-        rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
-        rule1.checkin( "" );
+        rule1.updateFormat(AssetFormats.DRL );
+        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.checkin("");
 
         //this rule will never fire
         AssetItem rule2 = pkg.addAsset( "rule_2",
                                         "" );
-        rule2.updateFormat( AssetFormats.DRL );
-        rule2.updateContent( "rule 'rule2' \n when \np : Person(age == 1000) \n then \np.setAge(46); \n end" );
-        rule2.checkin( "" );
-        repo.save();
+        rule2.updateFormat(AssetFormats.DRL );
+        rule2.updateContent("rule 'rule2' \n when \np : Person(age == 1000) \n then \np.setAge(46); \n end");
+        rule2.checkin("");
+        rulesRepository.save();
 
         //first, the green scenario
         Scenario sc = new Scenario();

@@ -112,14 +112,14 @@ public interface AssetService
      * This will return the effective source for an asset (in DRL). Used as an
      * aid for debugging.
      */
-    public String buildAssetSource(RuleAsset asset) throws SerializationException;
+    public String buildAssetSource(Asset asset) throws SerializationException;
 
     /**
      * This will build the asset and return any build results (errors). This is
      * only to report on the results - it will generally not store any state or
      * apply any changed.
      */
-    public BuilderResult validateAsset(RuleAsset asset) throws SerializationException;
+    public BuilderResult validateAsset(Asset asset) throws SerializationException;
 
     /**
      * Rename an asset.
@@ -131,9 +131,9 @@ public interface AssetService
      * This loads up all the stuff for a rule asset based on the UUID (always
      * latest and editable version).
      */
-    public RuleAsset loadRuleAsset(String UUID) throws SerializationException;
+    public Asset loadRuleAsset(String UUID) throws SerializationException;
 
-    public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
+    public Asset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
 
     /**
      * This checks in a new version of an asset.
@@ -141,7 +141,7 @@ public interface AssetService
      * @return the UUID of the asset you are checking in, null if there was some
      *         problem (and an exception was not thrown).
      */
-    public String checkinVersion(RuleAsset asset) throws SerializationException;
+    public String checkinVersion(Asset asset) throws SerializationException;
 
     /**
      * This will restore the specified version in the repository, saving, and

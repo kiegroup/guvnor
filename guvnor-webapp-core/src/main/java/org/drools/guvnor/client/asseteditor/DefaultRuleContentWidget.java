@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.TextArea;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
 /**
@@ -35,21 +35,21 @@ public class DefaultRuleContentWidget extends DirtyableComposite
     private TextArea text;
     final private RuleContentText data;
 
-    public DefaultRuleContentWidget(RuleAsset a,
+    public DefaultRuleContentWidget(Asset a,
                                     RuleViewer v,
                                     ClientFactory clientFactory,
                                     EventBus eventBus) {
         this(a);
     }
 
-    public DefaultRuleContentWidget(RuleAsset a) {
+    public DefaultRuleContentWidget(Asset a) {
         this(a,
                 -1);
     }
 
-    public DefaultRuleContentWidget(RuleAsset a,
+    public DefaultRuleContentWidget(Asset a,
                                     int visibleLines) {
-        RuleAsset asset = a;
+        Asset asset = a;
         data = (RuleContentText) asset.getContent();
 
         if (data.content == null) {

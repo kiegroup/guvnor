@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.util.codec.Base64;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testPackageFeedNoLogin() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testPackageFeedNoLogin",
+        ModuleItem pkg = rulesRepository.createModule( "testPackageFeedNoLogin",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -77,7 +77,7 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testPackageFeed() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testPackageFeed",
+        ModuleItem pkg = rulesRepository.createModule( "testPackageFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -157,7 +157,7 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testCategoryFeed() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage( "testCategoryFeed",
+        ModuleItem pkg = rulesRepository.createModule( "testCategoryFeed",
                                               "" );
         rulesRepository.loadCategory("/").addCategory( "testCategoryFeedCat",
                                               "" );
@@ -219,7 +219,7 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testDiscussionFeedNoLogin() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeedNoLogin",
+        ModuleItem pkg = rulesRepository.createModule( "testDiscussionFeedNoLogin",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -256,7 +256,7 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testDiscussionFeed() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeed",
+        ModuleItem pkg = rulesRepository.createModule( "testDiscussionFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );

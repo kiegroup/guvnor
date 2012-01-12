@@ -29,7 +29,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -48,7 +48,7 @@ public class PackageBuilderWidget extends Composite {
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create(Images.class);
 
-    private PackageConfigData conf;
+    private Module conf;
 
     private final FormStyleLayout buildWholePackageLayout = new FormStyleLayout();
     private final FormStyleLayout builtInSelectorLayout = new FormStyleLayout();
@@ -56,7 +56,7 @@ public class PackageBuilderWidget extends Composite {
     private String buildMode = "buildWholePackage";
     private final ClientFactory clientFactory;
 
-    public PackageBuilderWidget(final PackageConfigData conf,
+    public PackageBuilderWidget(final Module conf,
                                 ClientFactory clientFactory) {
 
         this.conf = conf;
@@ -470,7 +470,7 @@ public class PackageBuilderWidget extends Composite {
     /**
      * Get a download link for the binary package.
      */
-    public static String getDownloadLink(PackageConfigData conf) {
+    public static String getDownloadLink(Module conf) {
         String hurl = GWT.getModuleBaseURL()
                 + "package/"
                 + conf.getName(); // NON-NLS
@@ -581,7 +581,7 @@ public class PackageBuilderWidget extends Composite {
                 }
 
                 LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
-                RepositoryServiceFactory.getPackageService().createPackageSnapshot(packageName,
+                RepositoryServiceFactory.getPackageService().createModuleSnapshot(packageName,
                         name,
                         replace,
                         comment.getText(),

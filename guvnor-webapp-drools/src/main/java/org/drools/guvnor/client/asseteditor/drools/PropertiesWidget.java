@@ -27,7 +27,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable;
 
 /**
@@ -42,7 +42,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
 
     private static Images images = GWT.create( Images.class );
 
-    public PropertiesWidget( final RuleAsset asset,
+    public PropertiesWidget( final Asset asset,
                              final RuleViewer viewer,
                              ClientFactory clientFactory,
                              EventBus eventBus) {

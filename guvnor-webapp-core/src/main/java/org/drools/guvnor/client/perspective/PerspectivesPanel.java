@@ -19,7 +19,7 @@ package org.drools.guvnor.client.perspective;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView.Presenter;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.util.TabbedPanel;
 
@@ -82,14 +82,14 @@ public class PerspectivesPanel implements Presenter {
     
     //TODO: a temporary hack
     private void updateGlobalAreaType(final String perspectiveType) {
-        clientFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
-            public void onSuccess( PackageConfigData packageConfigData ) {
+        clientFactory.getModuleService().loadGlobalModule( new GenericCallback<Module>() {
+            public void onSuccess( Module packageConfigData ) {
                 if("author".equals(perspectiveType)) {
                     packageConfigData.setFormat("package");
                 } else if("soaservice".equals(perspectiveType)) {
                     packageConfigData.setFormat("soaservice");
                 }
-                clientFactory.getPackageService().savePackage( packageConfigData,
+                clientFactory.getModuleService().saveModule( packageConfigData,
                         new GenericCallback<ValidatedResponse>() {
                             public void onSuccess(ValidatedResponse data) {
                             }

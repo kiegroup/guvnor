@@ -22,7 +22,7 @@ import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfi
 import org.drools.guvnor.server.MockAssetItemIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReport;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 
 public class AssetVerifierTest {
 
-    private PackageItem packageItem;
+    private ModuleItem packageItem;
 
     @Before
     public void setUp() {
@@ -104,14 +104,14 @@ public class AssetVerifierTest {
     private AssetItem getAssetItem(String format) {
         AssetItem assetItem = mock(AssetItem.class);
         when(assetItem.getUUID()).thenReturn("mockUUID");
-        when(assetItem.getPackage()).thenReturn(packageItem);
+        when(assetItem.getModule()).thenReturn(packageItem);
         when(assetItem.getFormat()).thenReturn(format);
         when(assetItem.getContent()).thenReturn("");
         return assetItem;
     }
 
-    public PackageItem createPackage() {
-        PackageItem packageItem = mock(PackageItem.class);
+    public ModuleItem createPackage() {
+        ModuleItem packageItem = mock(ModuleItem.class);
         when(packageItem.getName()).thenReturn("mockPackage");
         when(packageItem.getCategoryRules()).thenReturn(new HashMap<String, String>());
         return packageItem;

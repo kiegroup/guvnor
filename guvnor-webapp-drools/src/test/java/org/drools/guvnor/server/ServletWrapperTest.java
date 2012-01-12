@@ -30,7 +30,7 @@ public class ServletWrapperTest extends GuvnorTestBase {
 
     @Test
     public void testMainService() {
-        repositoryServiceServlet.listPackages();
+        repositoryServiceServlet.listModules();
     }
 
     @Test

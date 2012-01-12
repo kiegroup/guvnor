@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -48,7 +49,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     public BRLActionColumnViewImpl(final SuggestionCompletionEngine sce,
                                    final GuidedDecisionTable52 model,
                                    final boolean isNew,
-                                   final RuleAsset asset,
+                                   final Asset asset,
                                    final BRLActionColumn column,
                                    final ClientFactory clientFactory,
                                    final EventBus eventBus) {
@@ -70,8 +71,8 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
         return true;
     }
 
-    protected RuleModel getRuleModel(BRLColumn<IAction, BRLActionVariableColumn> column) {
-        RuleModel ruleModel = new RuleModel();
+    protected BRLRuleModel getRuleModel(BRLColumn<IAction, BRLActionVariableColumn> column) {
+        BRLRuleModel ruleModel = new BRLRuleModel( model );
         List<IAction> definition = column.getDefinition();
         ruleModel.rhs = definition.toArray( new IAction[definition.size()] );
         return ruleModel;

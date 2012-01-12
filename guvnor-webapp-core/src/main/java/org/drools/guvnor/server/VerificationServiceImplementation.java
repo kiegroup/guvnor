@@ -19,7 +19,7 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -39,7 +39,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.verification.TemporalBRLAssetVerifier;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
@@ -65,7 +65,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
-                rulesRepository.loadPackageByUUID(packageUUID)
+                rulesRepository.loadModuleByUUID(packageUUID)
         ).verify();
 
         defaultVerifier.flushKnowledgeSession();
@@ -75,7 +75,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     @WebRemote
     @LoggedIn
-    public AnalysisReport verifyAsset(RuleAsset asset,
+    public AnalysisReport verifyAsset(Asset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
@@ -87,7 +87,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     @WebRemote
     @LoggedIn
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
+    public AnalysisReport verifyAssetWithoutVerifiersRules(Asset asset,
        Set<WorkingSetConfigData> activeWorkingSets) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
@@ -97,15 +97,15 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
                         activeWorkingSets));
     }
 
-    private RuleAsset[] loadWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
+    private Asset[] loadWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
         if (activeWorkingSets == null) {
-            return new RuleAsset[0];
+            return new Asset[0];
         } else {
             return repositoryAssetService.loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
         }
     }
 
-    private AnalysisReport verify(RuleAsset asset, VerifierConfiguration verifierConfiguration) throws SerializationException {
+    private AnalysisReport verify(Asset asset, VerifierConfiguration verifierConfiguration) throws SerializationException {
         long startTime = System.currentTimeMillis();
 
         AnalysisReport report = null;
@@ -129,7 +129,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
 
-    private AssetItem getAssetItem(RuleAsset asset) throws SerializationException {
+    private AssetItem getAssetItem(Asset asset) throws SerializationException {
         AssetItem assetItem = rulesRepository.loadAssetByUUID(asset.uuid);
         ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
         contentHandler.storeAssetContent(asset, assetItem);
@@ -142,9 +142,9 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
                 assetItem);
     }
     
-    private TemporalBRLAssetVerifier getTemporalBRLAssetVerifier(VerifierConfiguration verifierConfiguration, RuleAsset ruleAsset) throws SerializationException {
+    private TemporalBRLAssetVerifier getTemporalBRLAssetVerifier(VerifierConfiguration verifierConfiguration, Asset ruleAsset) throws SerializationException {
         
-        PackageItem pkg = repositoryAssetService.getRulesRepository().loadPackage(ruleAsset.getMetaData().packageName);
+        ModuleItem pkg = repositoryAssetService.getRulesRepository().loadModule(ruleAsset.getMetaData().moduleName);
         
         return new TemporalBRLAssetVerifier(
                 VerifierBuilderFactory.newVerifierBuilder().newVerifier(verifierConfiguration),

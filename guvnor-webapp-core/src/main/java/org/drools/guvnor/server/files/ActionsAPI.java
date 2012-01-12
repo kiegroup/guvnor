@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.RepositoryPackageService;
-import org.drools.repository.PackageItem;
-import org.drools.repository.PackageIterator;
+import org.drools.guvnor.server.RepositoryModuleService;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
@@ -64,7 +64,7 @@ public class ActionsAPI {
      * @throws IOException
      * @throws RulesRepositoryException
      */
-    public void post(RepositoryPackageService service,
+    public void post(RepositoryModuleService service,
                      RulesRepository repository,
                      HttpServletRequest request,
                      HttpServletResponse response)
@@ -74,10 +74,10 @@ public class ActionsAPI {
             String[] pathstr = split(request.getPathTranslated());
 
             if (pathstr[0].equals("compile")) {
-                if (repository.containsPackage(packageName)) {
-                    PackageIterator iter = repository.listPackages();
+                if (repository.containsModule(packageName)) {
+                    ModuleIterator iter = repository.listModules();
                     while (iter.hasNext()) {
-                        PackageItem p = iter.next();
+                        ModuleItem p = iter.next();
                         if (p.getName().equals(packageName)) {
                             String uuid = p.getUUID();
                             service.buildPackage(uuid,
@@ -86,9 +86,9 @@ public class ActionsAPI {
                         }
                     }
                 }
-            } else if (pathstr[0].equals("snapshot")) if (repository.containsPackage(packageName)) {
+            } else if (pathstr[0].equals("snapshot")) if (repository.containsModule(packageName)) {
                 String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
-                repository.createPackageSnapshot(packageName,
+                repository.createModuleSnapshot(packageName,
                         snapshotName);
             } else {
                 throw new RulesRepositoryException("Unknown action request: "

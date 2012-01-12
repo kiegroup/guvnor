@@ -19,7 +19,7 @@ package org.drools.guvnor.client.moduleeditor;
 import java.util.List;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -38,7 +38,7 @@ public interface AssetViewerActivityView
                         Boolean formatIsRegistered,
                         String title,
                         ImageResource icon,
-                        PackageConfigData packageConfigData,
+                        Module packageConfigData,
                         ClientFactory clientFactory);
 
     void showLoadingPackageInformationMessage();

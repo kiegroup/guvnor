@@ -19,7 +19,7 @@ package org.drools.guvnor.server.standalonededitor;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -50,10 +50,10 @@ public class BRLRuleAssetProvider
         this.repositoryAssetService = repositoryAssetService;
     }
 
-    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
+    public Asset[] getRuleAssets() throws DetailedSerializationException {
 
         List<RuleModel> models = new ArrayList<RuleModel>(initialBRLs.length);
-        List<RuleAsset> assets = new ArrayList<RuleAsset>(initialBRLs.length);
+        List<Asset> assets = new ArrayList<Asset>(initialBRLs.length);
 
         //We wan't to avoid inconsistent states, that is why we first unmarshal
         //each brl and then (if nothing fails) create each rule
@@ -69,7 +69,7 @@ public class BRLRuleAssetProvider
             }
         } catch (Exception e) {
             //if something failed, delete the generated assets
-            for (RuleAsset ruleAsset : assets) {
+            for (Asset ruleAsset : assets) {
                 repositoryAssetService.removeAsset(ruleAsset.getUuid());
             }
 
@@ -81,11 +81,11 @@ public class BRLRuleAssetProvider
                     e.getMessage());
         }
 
-        return assets.toArray(new RuleAsset[assets.size()]);
+        return assets.toArray(new Asset[assets.size()]);
     }
 
-    private RuleAsset createAsset(RuleModel ruleModel) {
-        RuleAsset asset = new RuleAsset();
+    private Asset createAsset(RuleModel ruleModel) {
+        Asset asset = new Asset();
 
         asset.setUuid("mock-" + UUID.randomUUID().toString());
         asset.setContent(ruleModel);
@@ -100,9 +100,9 @@ public class BRLRuleAssetProvider
     private MetaData createMetaData() {
         MetaData metaData = new MetaData();
 
-        metaData.setPackageName(packageName);
+        metaData.setModuleName(packageName);
 
-        metaData.setPackageUUID("mock");
+        metaData.setModuleUUID("mock");
 
         return metaData;
     }

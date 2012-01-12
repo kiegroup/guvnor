@@ -37,7 +37,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -143,9 +143,9 @@ public class WebDAVImplTest extends GuvnorTestBase {
         assertTrue(children.length > 0);
         int packageCount = children.length;
 
-        PackageItem pkg = rulesRepository.createPackage( "testWebDavChildNames1",
+        ModuleItem pkg = rulesRepository.createModule( "testWebDavChildNames1",
                                               "" );
-        rulesRepository.createPackage("testWebDavChildNames2",
+        rulesRepository.createModule("testWebDavChildNames2",
                 "");
         rulesRepository.save();
         children = webDAV.getChildrenNames( new TransactionMock(),
@@ -196,7 +196,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         assertContains("testCreateWebDavFolder",
                 children);
 
-        PackageItem pkg = rulesRepository.loadPackage( "testCreateWebDavFolder" );
+        ModuleItem pkg = rulesRepository.loadModule( "testCreateWebDavFolder" );
         assertNotNull( pkg );
 
         pkg.addAsset( "someAsset",
@@ -246,7 +246,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         webDAV.createResource( new TransactionMock(),
                             "/packages/.DS_Store" );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testCreateResourceAndCreatedDate" );
+        ModuleItem pkg = rulesRepository.loadModule( "testCreateResourceAndCreatedDate" );
         assertFalse( pkg.containsAsset( "._asset" ) );
         assertTrue( pkg.containsAsset( "asset" ) );
 
@@ -282,7 +282,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
     @Test
     public void testResourceContent() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testWebDAVContent",
+        ModuleItem pkg = rulesRepository.createModule( "testWebDAVContent",
                                               "" );
 
         AssetItem asset = pkg.addAsset("asset",
@@ -392,7 +392,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         webDAV.createResource( new TransactionMock(),
                             "/packages/testDavRemoveObjectAsset/asset.drl" );
 
-        AssetItem as = rulesRepository.loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
+        AssetItem as = rulesRepository.loadModule( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
         long origVer = as.getVersionNumber();
 
         assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
@@ -405,7 +405,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
                             "/packages/testDavRemoveObjectAsset/asset.drl" );
         assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
 
-        as = rulesRepository.loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
+        as = rulesRepository.loadModule( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
         assertTrue( as.getVersionNumber() > origVer );
         webDAV.createFolder( new TransactionMock(),
                           "/packages/testDavRemoveObjectFolder" );
@@ -466,7 +466,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         }
 
         try {
-            AssetItem as = rulesRepository.loadPackage("testSetDavContent").loadAsset( "Something" );
+            AssetItem as = rulesRepository.loadModule("testSetDavContent").loadAsset( "Something" );
             assertTrue(as.isBinary());
 
             String result = IOUtils.toString( webDAV.getResourceContent( new TransactionMock(),
@@ -474,7 +474,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
             assertEquals( EXPECTED_CONTENT1,
                           result );
 
-            PackageItem pkg = rulesRepository.loadPackage( "testSetDavContent" );
+            ModuleItem pkg = rulesRepository.loadModule( "testSetDavContent" );
             AssetItem asset = pkg.loadAsset( "Something" );
             assertEquals( "drl",
                           asset.getFormat() );
@@ -572,9 +572,9 @@ public class WebDAVImplTest extends GuvnorTestBase {
                                 null );
 
 
-        rulesRepository.createPackageSnapshot("testDavSnapshot",
+        rulesRepository.createModuleSnapshot("testDavSnapshot",
                 "SNAP1");
-        rulesRepository.createPackageSnapshot("testDavSnapshot",
+        rulesRepository.createModuleSnapshot("testDavSnapshot",
                 "SNAP2");
 
         String[] packages = webDAV.getChildrenNames( new TransactionMock(),

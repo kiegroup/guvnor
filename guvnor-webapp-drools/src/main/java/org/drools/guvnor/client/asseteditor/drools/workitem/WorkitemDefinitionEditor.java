@@ -20,7 +20,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -42,20 +42,20 @@ public class WorkitemDefinitionEditor extends DirtyableComposite implements
 
     private TextArea text;
     final private RuleContentText data;
-    final private RuleAsset asset;
+    final private Asset asset;
 
-    public WorkitemDefinitionEditor(RuleAsset a,
+    public WorkitemDefinitionEditor(Asset a,
                                     RuleViewer v,
                         ClientFactory clientFactory,
                         EventBus eventBus) {
         this(a);
     }
 
-    public WorkitemDefinitionEditor(RuleAsset a) {
+    public WorkitemDefinitionEditor(Asset a) {
         this(a, -1);
     }
 
-    public WorkitemDefinitionEditor(RuleAsset a, int visibleLines) {
+    public WorkitemDefinitionEditor(Asset a, int visibleLines) {
         asset = a;
         data = (RuleContentText) asset.getContent();
         if (data.content == null) {

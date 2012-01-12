@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  TODO This file is duplicated in src/main/resources/META-INF/beans.xml
-  as a workaround for https://issues.jboss.org/browse/SOLDER-220
--->
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:s="urn:java:ee"
     xmlns:weld="http://jboss.org/schema/weld/beans"

@@ -48,10 +48,10 @@ public abstract class CategorisableItem extends VersionableItem {
      * the repository. If the specified tag does not already have a corresponding node, a node is
      * created for it.
      *
-     * Please note that this is mainly intended for rule related assets, not packages
+     * Please note that this is mainly intended for assets, not modules (packages)
      * (although it could be used).
      *
-     * @param tag the tag to add to the rule. rules can have multiple tags
+     * @param tag the tag to add to the asset. assets can have multiple tags
      * @throws RulesRepositoryException
      */
     public void addCategory(String tag) throws RulesRepositoryException {
@@ -62,14 +62,14 @@ public abstract class CategorisableItem extends VersionableItem {
             CategoryItem tagItem = this.rulesRepository.loadCategory( tag );
             String tagItemUUID = this.node.getSession().getValueFactory().createValue( tagItem.getNode() ).getString();
 
-            //now set the tag property of the rule
+            //now set the tag property of the asset
             try {
                 Property tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] oldTagValues = tagReferenceProperty.getValues();
 
                 for ( int j = 0; j < oldTagValues.length; j++ ) {
                     if ( oldTagValues[j].getString().equals( tagItemUUID ) ) {
-                        log.info( "tag '" + tag + "' already existed for rule node: " + this.node.getName() );
+                        log.info( "tag '" + tag + "' already existed for asset node: " + this.node.getName() );
                         return;
                     }
                 }
@@ -128,7 +128,7 @@ public abstract class CategorisableItem extends VersionableItem {
     /**
      * Gets a list of CategoryItem objects for this assets node.
      *
-     * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list.
+     * @return a list of TagItem objects for each tag on the asset. If there are no tags, an empty list.
      * @throws RulesRepositoryException
      */
     public List<CategoryItem> getCategories() throws RulesRepositoryException {
@@ -143,9 +143,9 @@ public abstract class CategorisableItem extends VersionableItem {
 
     private void doList(Accum ac) {
         try {
-            Node ruleNode = getVersionContentNode();
+            Node assetNode = getVersionContentNode();
             try {
-                Property tagReferenceProperty = ruleNode.getProperty( CATEGORY_PROPERTY_NAME );
+                Property tagReferenceProperty = assetNode.getProperty( CATEGORY_PROPERTY_NAME );
                 if (tagReferenceProperty.isMultiple()) {
                     Value[] tagValues = tagReferenceProperty.getValues();
                     for ( int i = 0; i < tagValues.length; i++ ) {
@@ -202,9 +202,9 @@ public abstract class CategorisableItem extends VersionableItem {
     }
 
     /**
-     * Removes the specified tag from this object's rule node.
+     * Removes the specified tag from this asset node.
      *
-     * @param tag the tag to remove from the rule
+     * @param tag the tag to remove from the asset
      * @throws RulesRepositoryException
      */
     public void removeCategory(String tag) throws RulesRepositoryException {
@@ -212,22 +212,22 @@ public abstract class CategorisableItem extends VersionableItem {
     }
     
     /**
-     * Removes the specified tag from this object's rule node.
+     * Removes the specified tag from this asset node.
      *
      * @param targetNode the node from which the tag is to be removed.
-     * @param tag the tag to remove from the rule
+     * @param tag the tag to remove from the asset
      * @throws RulesRepositoryException
      */
     public static void removeCategory(Node targetNode, String tag) throws RulesRepositoryException {
         try {
             //make sure this object's node is the head version
             if (targetNode.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                String message = "Error. Tags can only be removed from the head version of a rule node";
+                String message = "Error. Tags can only be removed from the head version of an asset node";
                 log.error( message );
                 throw new RulesRepositoryException( message );
             }
 
-            //now set the tag property of the rule
+            //now set the tag property of the asset
             Property tagReferenceProperty;
             int i = 0;
             int j = 0;
@@ -267,7 +267,7 @@ public abstract class CategorisableItem extends VersionableItem {
                     targetNode.setProperty( CATEGORY_PROPERTY_NAME,
                                            newTagValues );
                 } else {
-                    log.error( "reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + targetNode.getName() );
+                    log.error( "reached expected path of execution when removing tag '" + tag + "' from asset node: " + targetNode.getName() );
                 }
             }
         } catch ( Exception e ) {

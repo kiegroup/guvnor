@@ -28,7 +28,7 @@ import javax.jcr.ValueFormatException;
 
 
 /**
- * This iterates over nodes and produces RuleItem's.
+ * This iterates over nodes and produces AssetItem's.
  * Also allows "skipping" of results to jump to certain items,
  * as per JCRs "skip".
  *
@@ -45,7 +45,7 @@ public class VersionedAssetItemIterator extends AssetItemIterator {
         super(nodes, repo);
         //this.dependencies = dependencies;
         for(String dependency : dependencies) {
-            String[] decodedPath = PackageItem.decodeDependencyPath(dependency);
+            String[] decodedPath = ModuleItem.decodeDependencyPath(dependency);
             if(!"LATEST".equals(decodedPath[1])) {
                 dependencyVersionMap.put(decodedPath[0], decodedPath[1]);
             }

@@ -28,7 +28,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -53,6 +53,10 @@ public class Translator {
         category.setRefLink(uriInfo.getBaseUriBuilder()
                 .path("/categories/{categoryPath}")
                 .build(categoryItem.getFullPath()));
+        // TODO https://issues.jboss.org/browse/GUVNOR-1802
+//        category.setRefLink(uriInfo.getBaseUriBuilder()
+//                .path("categories").segment(categoryItem.getFullPath())
+//                .build());
         return category;
     }
 
@@ -80,18 +84,18 @@ public class Translator {
         ret.setDescription(a.getDescription());
         ret.setRefLink(uriInfo.getBaseUriBuilder()
                 .path("/packages/{packageName}/assets/{assetName}")
-                .build(a.getPackage().getName(), a.getName()));
+                .build(a.getModule().getName(), a.getName()));
         ret.setBinaryLink(uriInfo.getBaseUriBuilder()
                 .path("/packages/{packageName}/assets/{assetName}/binary")
-                .build(a.getPackage().getName(), a.getName()));
+                .build(a.getModule().getName(), a.getName()));
         ret.setSourceLink(uriInfo.getBaseUriBuilder()
                 .path("/packages/{packageName}/assets/{assetName}/source")
-                .build(a.getPackage().getName(), a.getName()));
+                .build(a.getModule().getName(), a.getName()));
         ret.setVersion(a.getVersionNumber());
         return ret;
     }
 
-    public static Package toPackage(PackageItem p, UriInfo uriInfo) {
+    public static Package toPackage(ModuleItem p, UriInfo uriInfo) {
         PackageMetadata metadata = new PackageMetadata();
         metadata.setUuid(p.getUUID());
         metadata.setCreated(p.getCreatedDate().getTime());
@@ -126,7 +130,7 @@ public class Translator {
         return ret;
     }
 
-    public static Entry toPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
+    public static Entry toPackageEntryAbdera(ModuleItem p, UriInfo uriInfo) {
         URI baseURL;
         if (p.isHistoricalVersion()) {
             baseURL = uriInfo.getBaseUriBuilder()
@@ -225,11 +229,11 @@ public class Translator {
         if (a.isHistoricalVersion()) {
             baseURL = uriInfo.getBaseUriBuilder()
                     .path("packages/{packageName}/assets/{assetName}/versions/{version}")
-                    .build(a.getPackageName(), a.getName(), Long.toString(a.getVersionNumber()));
+                    .build(a.getModuleName(), a.getName(), Long.toString(a.getVersionNumber()));
         } else {
             baseURL = uriInfo.getBaseUriBuilder()
                     .path("packages/{packageName}/assets/{assetName}")
-                    .build(a.getPackageName(), a.getName());
+                    .build(a.getModuleName(), a.getName());
         }
 
         Factory factory = Abdera.getNewFactory();

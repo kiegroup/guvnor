@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server;
 
-import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.ModuleUUIDType;
 import org.drools.repository.AssetItem;
 import org.jboss.seam.security.Identity;
 
@@ -29,7 +29,7 @@ public class AssetItemFilter extends AbstractFilter<AssetItem> {
     @Override
     protected boolean checkPermission(AssetItem assetItem,
                                       String action) {
-        return identity.hasPermission( new PackageUUIDType( assetItem.getPackage().getUUID() ),
+        return identity.hasPermission( new ModuleUUIDType( assetItem.getModule().getUUID() ),
                                                   action );
     }
 

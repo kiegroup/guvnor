@@ -114,7 +114,7 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
 
     public void onRebuildConfirmed() {
         view.showLoadingPopUpRebuildingPackageBinaries();
-        clientFactory.getPackageService().rebuildPackages( new GenericCallback() {
+        clientFactory.getModuleService().rebuildPackages( new GenericCallback() {
             public void onSuccess( Object result ) {
                 view.closeLoadingPopUp();
             }

@@ -41,7 +41,7 @@ import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -81,7 +81,7 @@ public class RuleModeller extends DirtyableComposite
     private boolean                   showingOptions          = false;
     private int                       currentLayoutRow        = 0;
     private String                    packageName;
-    private RuleAsset                 asset;
+    private Asset                 asset;
     private ModellerWidgetFactory     widgetFactory;
     private EventBus                  eventBus;
 
@@ -98,7 +98,7 @@ public class RuleModeller extends DirtyableComposite
                                                                   }
                                                               };
 
-    public RuleModeller(RuleAsset asset,
+    public RuleModeller(Asset asset,
                         RuleViewer viewer,
                         ClientFactory clientFactory,
                         EventBus eventBus) {
@@ -109,21 +109,21 @@ public class RuleModeller extends DirtyableComposite
               new RuleModellerWidgetFactory() );
     }
 
-    public RuleModeller(RuleAsset asset,
+    public RuleModeller(Asset asset,
                         RuleViewer viewer,
                         ClientFactory clientFactory,
                         EventBus eventBus,
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();
-        this.packageName = asset.getMetaData().getPackageName();
+        this.packageName = asset.getMetaData().getModuleName();
         this.eventBus = eventBus;
         this.widgetFactory = widgetFactory;
         this.configuration = RuleModellerConfiguration.getDefault();
         doLayout();
     }
 
-    public RuleModeller(RuleAsset asset,
+    public RuleModeller(Asset asset,
                         RuleModel model,
                         RuleModellerConfiguration configuration,
                         ModellerWidgetFactory widgetFactory,
@@ -132,7 +132,7 @@ public class RuleModeller extends DirtyableComposite
         this.asset = asset;
         this.model = model;
         this.eventBus = eventBus;
-        this.packageName = asset.getMetaData().getPackageName();
+        this.packageName = asset.getMetaData().getModuleName();
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
         doLayout();
@@ -725,7 +725,7 @@ public class RuleModeller extends DirtyableComposite
         }
 
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-        Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets( asset.getMetaData().getPackageName() );
+        Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets( asset.getMetaData().getModuleName() );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
@@ -813,7 +813,7 @@ public class RuleModeller extends DirtyableComposite
         return widgetFactory.isTemplate();
     }
 
-    public RuleAsset getAsset() {
+    public Asset getAsset() {
         return asset;
     }
 

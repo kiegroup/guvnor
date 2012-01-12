@@ -32,10 +32,10 @@ public interface VerificationService
      */
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException;
 
-    public AnalysisReport verifyAsset(RuleAsset asset,
+    public AnalysisReport verifyAsset(Asset asset,
                                       Set<String> activeWorkingSets) throws SerializationException;
 
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
+    public AnalysisReport verifyAssetWithoutVerifiersRules(Asset asset,
                                                            Set<WorkingSetConfigData> activeWorkingSets) throws SerializationException;
 
 }

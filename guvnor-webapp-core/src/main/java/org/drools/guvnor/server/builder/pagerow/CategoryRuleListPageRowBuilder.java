@@ -56,7 +56,7 @@ public class CategoryRuleListPageRowBuilder
                                                                80 ) );
         row.setLastModified( assetItem.getLastModified().getTime() );
         row.setStateName( assetItem.getState().getName() );
-        row.setPackageName( assetItem.getPackageName() );
+        row.setPackageName( assetItem.getModuleName() );
         return row;
     }
 

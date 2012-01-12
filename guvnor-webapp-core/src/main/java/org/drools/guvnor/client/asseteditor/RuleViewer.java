@@ -51,14 +51,14 @@ public class RuleViewer extends GuvnorEditor {
     @UiField
     MessageWidget                    messageWidget;
 
-    protected RuleAsset              asset;
+    protected Asset              asset;
     private final RuleViewerSettings ruleViewerSettings;
     private final ClientFactory      clientFactory;
     private final EventBus           eventBus;
 
     private long                     lastSaved = System.currentTimeMillis();
 
-    public RuleViewer(RuleAsset asset,
+    public RuleViewer(Asset asset,
                       ClientFactory clientFactory,
                       EventBus eventBus) {
         this( asset,
@@ -71,7 +71,7 @@ public class RuleViewer extends GuvnorEditor {
      * @param historicalReadOnly
      *            true if this is a read only view for historical purposes.
      */
-    public RuleViewer(RuleAsset asset,
+    public RuleViewer(Asset asset,
                       ClientFactory clientFactory,
                       EventBus eventBus,
                       boolean historicalReadOnly) {
@@ -81,7 +81,7 @@ public class RuleViewer extends GuvnorEditor {
               null );
     }
 
-    public RuleViewer(RuleAsset asset,
+    public RuleViewer(Asset asset,
                       ClientFactory clientFactory,
                       EventBus eventBus,
                       RuleViewerSettings ruleViewerSettings) {

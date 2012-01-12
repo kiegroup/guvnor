@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.ItemExistsException;
@@ -35,15 +36,16 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
-import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -52,7 +54,6 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -81,10 +82,8 @@ import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
@@ -103,7 +102,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepository.DateQuery;
@@ -130,35 +129,36 @@ import freemarker.template.Template;
  * front end. Generally requests for this are passed through from
  * RepositoryServiceServlet - and Seam manages instances of this.
  */
+@ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.RepositoryService")
 public class ServiceImplementation
     implements
     RepositoryService {
 
-    private static final long           serialVersionUID = 510l;
+    private static final long          serialVersionUID = 510l;
 
-    private static final LoggingHelper  log              = LoggingHelper.getLogger( ServiceImplementation.class );
-
-    @Inject
-    private RulesRepository             rulesRepository;
+    private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
     @Inject
-    private ServiceSecurity             serviceSecurity;
+    private RulesRepository            rulesRepository;
 
     @Inject
-    private RepositoryAssetOperations   repositoryAssetOperations;
+    private ServiceSecurity            serviceSecurity;
 
     @Inject
-    private RepositoryAssetService      repositoryAssetService;
+    private RepositoryAssetOperations  repositoryAssetOperations;
 
     @Inject
-    private RepositoryPackageOperations repositoryPackageOperations;
+    private RepositoryAssetService     repositoryAssetService;
 
     @Inject
-    private Backchannel                 backchannel;
+    private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
-    private Identity                    identity;
+    private Backchannel                backchannel;
+
+    @Inject
+    private Identity                   identity;
 
     @WebRemote
     @LoggedIn
@@ -187,12 +187,12 @@ public class ServiceImplementation
                                 String[] selectedModules,
                                 String[] unselectedModules) {
         for ( String moduleName : selectedModules ) {
-            PackageItem module = rulesRepository.loadPackage( moduleName );
+            ModuleItem module = rulesRepository.loadModule( moduleName );
             module.addWorkspace( workspace );
             module.checkin( "Add workspace" );
         }
         for ( String moduleName : unselectedModules ) {
-            PackageItem module = rulesRepository.loadPackage( moduleName );
+            ModuleItem module = rulesRepository.loadModule( moduleName );
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
         }
@@ -216,7 +216,7 @@ public class ServiceImplementation
 
         try {
 
-            PackageItem pkg = rulesRepository.loadPackage( initialPackage );
+            ModuleItem pkg = rulesRepository.loadModule( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName,
                                             description,
                                             initialCategory,
@@ -289,7 +289,7 @@ public class ServiceImplementation
 
         //Set the Table Format and check-in
         //TODO Is it possible to alter the content and save without checking-in?
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
         GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
         content.setTableFormat( configuration.getTableFormat() );
         asset.setCheckinComment( "Table Format automatically set to [" + configuration.getTableFormat().toString() + "]" );
@@ -310,7 +310,7 @@ public class ServiceImplementation
         log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
-            PackageItem packageItem = rulesRepository.loadPackage( initialPackage );
+            ModuleItem packageItem = rulesRepository.loadModule( initialPackage );
             AssetItem asset = packageItem.addAssetImportedFromGlobalArea( sharedAssetName );
             rulesRepository.save();
 
@@ -334,7 +334,7 @@ public class ServiceImplementation
 
         AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
 
-        PackageItem packageItem = asset.getPackage();
+        ModuleItem packageItem = asset.getModule();
         packageItem.updateBinaryUpToDate( false );
 
         asset.remove();
@@ -419,7 +419,7 @@ public class ServiceImplementation
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
-        RepositoryFilter packageFilter = new PackageFilter( identity );
+        RepositoryFilter packageFilter = new ModuleFilter( identity );
         RepositoryFilter categoryFilter = new CategoryFilter( identity );
 
         while ( it.hasNext() ) {
@@ -441,12 +441,12 @@ public class ServiceImplementation
     private boolean checkPackagePermissionHelper(RepositoryFilter filter,
                                                  AssetItem item,
                                                  String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
+        return filter.accept( getConfigDataHelper( item.getModule().getUUID() ),
                               roleType );
     }
 
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
+    private Module getConfigDataHelper(String uuidStr) {
+        Module data = new Module();
         data.setUuid( uuidStr );
         return data;
     }
@@ -516,7 +516,7 @@ public class ServiceImplementation
         //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
-            PackageItem packageItem = rulesRepository.loadPackage( packageName );
+            ModuleItem packageItem = rulesRepository.loadModule( packageName );
             suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor( packageItem );
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
@@ -534,15 +534,15 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
-        return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listRulesInPackage( RulesRepository.GLOBAL_AREA );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
-        return repositoryPackageOperations.listImagesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listImagesInModule( RulesRepository.GLOBAL_AREA );
     }
 
     /**
@@ -880,7 +880,14 @@ public class ServiceImplementation
                                          entry.getValue() );
                 }
             }
+        } catch ( Exception e ) {
+            log.error( "Error loading Workitem Definitions for package [" + packageUUID + "]",
+                       e );
+            throw new DetailedSerializationException( "Error loading Workitem Definitions for package [" + packageUUID + "]",
+                                                      "View server logs for more information" );
+        }
 
+        try {
             // - workitem-definitions.xml
             Map<String, org.drools.process.core.WorkDefinition> configuredWorkDefinitions = ConfigFileWorkDefinitionsLoader.getInstance().getWorkDefinitions();
             for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : configuredWorkDefinitions.entrySet() ) {
@@ -890,9 +897,9 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            log.error( "Error loading Workitem Definitions",
+            log.error( "Error loading Workitem Definitions from configuration file",
                        e );
-            throw new DetailedSerializationException( "Error loading Workitem Definitions",
+            throw new DetailedSerializationException( "Error loading Workitem Definitions from configuration file",
                                                       "View server logs for more information" );
         }
 
@@ -1121,23 +1128,23 @@ public class ServiceImplementation
      * Check whether an asset exists in a package
      * 
      * @param assetName
-     * @param packageName
-     * @return True if the asset already exists in the package
+     * @param moduleName
+     * @return True if the asset already exists in the module
      * @throws SerializationException
      */
     @WebRemote
     @LoggedIn
-    public boolean doesAssetExistInPackage(String assetName,
-                                           String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
+    public boolean doesAssetExistInModule(String assetName,
+                                           String moduleName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
 
         try {
 
-            PackageItem pkg = rulesRepository.loadPackage( packageName );
-            return pkg.containsAsset( assetName );
+            ModuleItem moduleItem = rulesRepository.loadModule( moduleName );
+            return moduleItem.containsAsset( assetName );
 
         } catch ( RulesRepositoryException e ) {
-            log.error( "An error occurred checking if asset [" + assetName + "] exists in package [" + packageName + "]: ",
+            log.error( "An error occurred checking if asset [" + assetName + "] exists in module [" + moduleName + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
         }

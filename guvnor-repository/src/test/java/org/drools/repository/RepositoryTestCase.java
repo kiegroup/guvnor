@@ -37,8 +37,8 @@ public abstract class RepositoryTestCase {
         return RepositorySessionUtil.getRepository();
     }
 
-    protected PackageItem getDefaultPackage() {
-        return getRepo().loadDefaultPackage();
+    protected ModuleItem getDefaultPackage() {
+        return getRepo().loadDefaultModule();
     }
 
 }

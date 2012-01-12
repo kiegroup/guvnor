@@ -30,7 +30,7 @@ import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -182,7 +182,7 @@ public class DiscussionWidget extends Composite {
             } );
         }
         
-        final String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((RuleAsset)artifact).getMetaData().getPackageName()
+        final String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((Asset)artifact).getMetaData().getModuleName()
                 + "&assetName=" + URL.encode( artifact.getName() ) + "&viewUrl=" + Util.getSelfURL();       
         Image image = new Image(images.feed());
         image.addClickHandler(new ClickHandler() {

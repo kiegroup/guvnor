@@ -12,7 +12,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
 
@@ -36,7 +36,7 @@ public class StandaloneEditorManager {
     private Constants constants = GWT.create(Constants.class);
     private MultiViewEditor editor;
     private StandaloneEditorServiceAsync standaloneEditorService = GWT.create(StandaloneEditorService.class);
-    private RuleAsset[] assets;
+    private Asset[] assets;
     private final EventBus eventBus;
 
     public StandaloneEditorManager(ClientFactory clientFactory, EventBus eventBus) {
@@ -96,7 +96,7 @@ public class StandaloneEditorManager {
                                 //"Done" buton command
 
                                 public void execute() {
-                                    afterSaveAndClose();
+                                    afterSaveAndCloseCallbackFunction();
                                 }
                             }, new Command() {
                                 //"Done" buton command
@@ -108,9 +108,18 @@ public class StandaloneEditorManager {
                         } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
                             editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
                                 // "Close" button command
-
                                 public void execute() {
                                     afterCloseButtonCallbackFunction();
+                                }
+                            }, new Command() {
+                                // Before "Save All" button command
+                                public void execute() {
+                                    beforeSaveAllCallbackFunction();
+                                }
+                            }, new Command() {
+                                // After "Save All" button command
+                                public void execute() {
+                                    afterSaveAllCallbackFunction();
                                 }
                             });
                         } else {
@@ -133,7 +142,7 @@ public class StandaloneEditorManager {
                         editor.setCloseCommand(new Command() {
 
                             public void execute() {
-                                afterSaveAndClose();
+                                afterSaveAndCloseCallbackFunction();
                             }
                         });
 
@@ -144,7 +153,7 @@ public class StandaloneEditorManager {
                 
                 
                 //Apply working set configurations
-                Set<RuleAsset> workingSetAssets = new HashSet<RuleAsset>();
+                Set<Asset> workingSetAssets = new HashSet<Asset>();
                 if (parameters.getActiveTemporalWorkingSets() != null && parameters.getActiveTemporalWorkingSets().length > 0){
                     workingSetAssets.addAll(Arrays.asList(parameters.getActiveTemporalWorkingSets()));
                 }
@@ -158,7 +167,7 @@ public class StandaloneEditorManager {
                     WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
                 }
                 
-                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), workingSetAssets, afterWorkingSetsAreAppliedCommand);
+                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getModuleName(), workingSetAssets, afterWorkingSetsAreAppliedCommand);
             }
         });
 
@@ -258,6 +267,10 @@ public class StandaloneEditorManager {
             afterSaveAndCloseButtonCallbackFunction: null,
 
             afterCancelButtonCallbackFunction: null,
+            
+            afterSaveAllButtonCallbackFunction: null,
+            
+            beforeSaveAllButtonCallbackFunction: null,
 
             getDRL: function (callbackFunction) {
                 this.drlCallbackFunction = callbackFunction;
@@ -271,6 +284,14 @@ public class StandaloneEditorManager {
 
             registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction) {
                 this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
+            },
+            
+            registerAfterSaveAllButtonCallbackFunction: function (callbackFunction) {
+                this.afterSaveAllButtonCallbackFunction = callbackFunction;
+            },
+             
+            registerBeforeSaveAllButtonCallbackFunction: function (callbackFunction) {
+                this.beforeSaveAllButtonCallbackFunction = callbackFunction;
             },
 
             registerAfterCancelButtonCallbackFunction: function (callbackFunction) {
@@ -310,9 +331,27 @@ public class StandaloneEditorManager {
     /**
      * Method invoked after the "Save an Close" button is pressed.
      */
-    public native void afterSaveAndClose()/*-{
+    public native void afterSaveAndCloseCallbackFunction()/*-{
         if ($wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction) {
             $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction();
+        }
+    }-*/;
+    
+    /**
+     * Method invoked before the "Save All" button is pressed.
+     */
+    public native void beforeSaveAllCallbackFunction()/*-{
+        if ($wnd.guvnorEditorObject.beforeSaveAllButtonCallbackFunction) {
+            $wnd.guvnorEditorObject.beforeSaveAllButtonCallbackFunction();
+        }
+    }-*/;
+    
+    /**
+     * Method invoked after the "Save All" button is pressed.
+     */
+    public native void afterSaveAllCallbackFunction()/*-{
+        if ($wnd.guvnorEditorObject.afterSaveAllButtonCallbackFunction) {
+            $wnd.guvnorEditorObject.afterSaveAllButtonCallbackFunction();
         }
     }-*/;
 

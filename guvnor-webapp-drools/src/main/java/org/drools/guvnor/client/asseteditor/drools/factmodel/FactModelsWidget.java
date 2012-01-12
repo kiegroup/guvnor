@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.core.client.GWT;
@@ -41,17 +41,17 @@ public class FactModelsWidget extends Composite
     SaveEventListener,
     EditorWidget {
 
-    private RuleAsset        asset;
+    private Asset        asset;
     private static Constants constants = ((Constants) GWT.create( Constants.class ));
 
-    public FactModelsWidget(RuleAsset asset,
+    public FactModelsWidget(Asset asset,
                             RuleViewer viewer,
                         ClientFactory clientFactory,
                         EventBus eventBus) {
         this( asset );
     }
 
-    public FactModelsWidget(final RuleAsset asset) {
+    public FactModelsWidget(final Asset asset) {
         this.asset = asset;
 
         if ( isContentPlainText() ) {
@@ -84,7 +84,7 @@ public class FactModelsWidget extends Composite
 
     public void onAfterSave() {
         LoadingPopup.showMessage( constants.RefreshingModel() );
-        SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getPackageName(),
+        SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getModuleName(),
                                                              new Command() {
                                                                  public void execute() {
                                                                      LoadingPopup.close();

@@ -91,7 +91,7 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
         
     }
 
-    public void checkinVersion(RuleAsset p0, AsyncCallback<String> cb) {
+    public void checkinVersion(Asset p0, AsyncCallback<String> cb) {
         
     }
 
@@ -224,7 +224,7 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     public void loadWorkItemDefinitions(String p0, AsyncCallback<Set<PortableWorkDefinition>> cb) {
     }
 
-    public void doesAssetExistInPackage(String p0, String p1, AsyncCallback<Boolean> cb) {
+    public void doesAssetExistInModule(String p0, String p1, AsyncCallback<Boolean> cb) {
     }
     
 }

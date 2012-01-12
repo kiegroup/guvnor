@@ -99,7 +99,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private void loadData() {
-        if ( artifact instanceof RuleAsset ) {
+        if ( artifact instanceof Asset ) {
             addAttribute( constants.CategoriesMetaData(),
                     categories() );
         }
@@ -116,21 +116,21 @@ public class MetaDataWidget extends Composite {
                     readOnlyDate( artifact.getDateCreated() ) );
         }
 
-        if ( artifact instanceof RuleAsset ) {
+        if ( artifact instanceof Asset ) {
             addAttribute( constants.CreatedByMetaData(),
-                    readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
+                    readOnlyText( ((Asset) artifact).getMetaData().getCreator() ) );
 
             addAttribute( constants.PackageMetaData(),
-                    packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
+                    packageEditor( ((Asset) artifact).getMetaData().getModuleName() ) );
 
             addAttribute( constants.IsDisabledMetaData(),
                     editableBoolean( new FieldBooleanBinding() {
                         public boolean getValue() {
-                            return ((RuleAsset) artifact).getMetaData().isDisabled();
+                            return ((Asset) artifact).getMetaData().isDisabled();
                         }
 
                         public void setValue(boolean val) {
-                            ((RuleAsset) artifact).getMetaData().setDisabled( val );
+                            ((Asset) artifact).getMetaData().setDisabled( val );
                         }
                     },
                             constants.DisableTip() ) );
@@ -143,9 +143,9 @@ public class MetaDataWidget extends Composite {
 
         endSection( false );
 
-        if ( artifact instanceof RuleAsset ) {
+        if ( artifact instanceof Asset ) {
 
-            final MetaData data = ((RuleAsset) artifact).getMetaData();
+            final MetaData data = ((Asset) artifact).getMetaData();
             startSection( constants.OtherMetaData() );
 
             addAttribute( constants.SubjectMetaData(),
@@ -220,7 +220,7 @@ public class MetaDataWidget extends Composite {
             addRow(new VersionBrowser(clientFactory,
                     eventBus,
                     this.uuid,
-                    !(artifact instanceof RuleAsset)));
+                    !(artifact instanceof Asset)));
         }
 
         endSection(true);
@@ -332,7 +332,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor(((RuleAsset) this.artifact).getMetaData(),
+        ed = new AssetCategoryEditor(((Asset) this.artifact).getMetaData(),
                 this.readOnly);
         return ed;
     }
@@ -426,11 +426,11 @@ public class MetaDataWidget extends Composite {
     }
 
     static String getVersionFeed(Artifact artifact) {
-        if ( artifact instanceof PackageConfigData ) {
+        if ( artifact instanceof Module ) {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().getPackageName()
+            String hurl = getRESTBaseURL() + "packages/" + ((Asset) artifact).getMetaData().getModuleName()
                     + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }

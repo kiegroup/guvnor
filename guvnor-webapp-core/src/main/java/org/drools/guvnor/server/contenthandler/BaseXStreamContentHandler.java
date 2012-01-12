@@ -19,7 +19,7 @@ package org.drools.guvnor.server.contenthandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.repository.AssetItem;
@@ -36,7 +36,7 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
     }
 
     @SuppressWarnings("unchecked")
-    public void retrieveAssetContent(RuleAsset ruleAsset,
+    public void retrieveAssetContent(Asset ruleAsset,
                                      AssetItem assetItem) throws SerializationException {
         if (assetItem.getContent() != null && assetItem.getContent().length() > 0) {
             try {
@@ -51,7 +51,7 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
         }
     }
 
-    public void storeAssetContent(RuleAsset ruleAsset,
+    public void storeAssetContent(Asset ruleAsset,
                                   AssetItem assetItem) throws SerializationException {
         try {
             assetItem.updateContent(getXStream().toXML(ruleAsset.getContent()));

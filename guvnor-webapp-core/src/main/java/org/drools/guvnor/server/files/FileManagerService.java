@@ -52,7 +52,7 @@ import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import javax.annotation.PreDestroy;
@@ -106,7 +106,7 @@ public class FileManagerService {
 
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );
-        item.getPackage().updateBinaryUpToDate( false );
+        item.getModule().updateBinaryUpToDate( false );
         item.checkin( "Attached file: " + fileName );
 
         // Special treatment for model and ruleflow attachments.
@@ -178,15 +178,15 @@ public class FileManagerService {
                                     String packageVersion,
                                     boolean isLatest,
                                     OutputStream out) throws IOException {
-        PackageItem item = null;
+        ModuleItem item = null;
         if ( isLatest ) {
-            item = repository.loadPackage( packageName );
+            item = repository.loadModule( packageName );
             byte[] data = item.getCompiledPackageBytes();
             out.write( data );
             out.flush();
             return packageName + ".pkg";
         } else {
-            item = repository.loadPackageSnapshot( packageName,
+            item = repository.loadModuleSnapshot( packageName,
                                                    packageVersion );
             byte[] data = item.getCompiledPackageBytes();
             out.write( data );
@@ -208,16 +208,16 @@ public class FileManagerService {
                                     String packageVersion,
                                     boolean isLatest,
                                     OutputStream out) throws IOException {
-        PackageItem item = null;
+        ModuleItem item = null;
         if ( isLatest ) {
-            item = repository.loadPackage( packageName );
+            item = repository.loadModule( packageName );
             PackageDRLAssembler asm = new PackageDRLAssembler( item );
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();
             return packageName + ".drl";
         } else {
-            item = repository.loadPackageSnapshot( packageName,
+            item = repository.loadModuleSnapshot( packageName,
                                                    packageVersion );
             PackageDRLAssembler asm = new PackageDRLAssembler( item );
             String drl = asm.getDRL();
@@ -231,7 +231,7 @@ public class FileManagerService {
 
     public byte[] exportPackageFromRepository(String packageName) {
         try {
-            return this.repository.exportPackageFromRepository( packageName );
+            return this.repository.exportModuleFromRepository( packageName );
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         } catch ( IOException e ) {
@@ -240,11 +240,11 @@ public class FileManagerService {
     }
 
     public boolean isPackageExist(String packageName) {
-        return this.repository.containsPackage(packageName);
+        return this.repository.containsModule(packageName);
     }
     
     public void exportRulesRepository(OutputStream out) {
-        this.repository.exportRulesRepositoryToStream( out );
+        this.repository.exportRepositoryToStream( out );
     }
 
     @LoggedIn
@@ -305,7 +305,7 @@ public class FileManagerService {
                                    String packageName) throws IOException,
                                                       DroolsParserException {
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
-        PackageItem pkg = null;
+        ModuleItem pkg = null;
 
         if ( packageName == null ) {
             packageName = imp.getPackageName();
@@ -315,24 +315,24 @@ public class FileManagerService {
             throw new IllegalArgumentException( "Missing package name." );
         }
 
-        boolean existing = repository.containsPackage( packageName );
+        boolean existing = repository.containsModule( packageName );
 
         // Check if the package is archived
-        if ( existing && repository.isPackageArchived( packageName ) ) {
+        if ( existing && repository.isModuleArchived( packageName ) ) {
             // Remove the package so it can be created again.
-            PackageItem item = repository.loadPackage( packageName );
+            ModuleItem item = repository.loadModule( packageName );
             item.remove();
             existing = false;
         }
 
         if ( existing ) {
-            pkg = repository.loadPackage( packageName );
+            pkg = repository.loadModule( packageName );
             DroolsHeader.updateDroolsHeader( ClassicDRLImporter.mergeLines( DroolsHeader.getDroolsHeader( pkg ),
                                                                                      imp.getPackageHeader() ),
                                                       pkg );
             existing = true;
         } else {
-            pkg = repository.createPackage( packageName,
+            pkg = repository.createModule( packageName,
                                             "<imported>" );
             DroolsHeader.updateDroolsHeader( imp.getPackageHeader(),
                                                       pkg );
@@ -374,11 +374,11 @@ public class FileManagerService {
      */
     public long getLastModified(String name,
                                 String version) {
-        PackageItem item = null;
+        ModuleItem item = null;
         if ( version.equals( "LATEST" ) ) {
-            item = repository.loadPackage( name );
+            item = repository.loadModule( name );
         } else {
-            item = repository.loadPackageSnapshot( name,
+            item = repository.loadModuleSnapshot( name,
                                                    version );
         }
         return item.getLastModified().getTimeInMillis();
@@ -389,11 +389,11 @@ public class FileManagerService {
                                   boolean isLatest,
                                   String assetName,
                                   ByteArrayOutputStream out) throws IOException {
-        PackageItem pkg = null;
+        ModuleItem pkg = null;
         if ( isLatest ) {
-            pkg = repository.loadPackage( packageName );
+            pkg = repository.loadModule( packageName );
         } else {
-            pkg = repository.loadPackageSnapshot( packageName,
+            pkg = repository.loadModuleSnapshot( packageName,
                                                   packageVersion );
         }
 
@@ -403,7 +403,7 @@ public class FileManagerService {
         if ( handler.isRuleAsset() ) {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
-            builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( item.getPackage() ) );
+            builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( item.getModule() ) );
             ((IRuleAsset) handler).assembleDRL( builder,
                                                 item,
                                                 stringBuilder );

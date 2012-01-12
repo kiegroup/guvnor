@@ -20,7 +20,7 @@ import org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,14 +29,14 @@ public class FunctionEditor extends Composite
     implements
     EditorWidget {
 
-    public FunctionEditor(RuleAsset a,
+    public FunctionEditor(Asset a,
                           RuleViewer v,
                           ClientFactory clientFactory,
                           EventBus eventBus) {
         this( a );
     }
 
-    public FunctionEditor(RuleAsset a) {
+    public FunctionEditor(Asset a) {
         final DefaultRuleContentWidget ed = new DefaultRuleContentWidget( a );
 
         initWidget( ed );

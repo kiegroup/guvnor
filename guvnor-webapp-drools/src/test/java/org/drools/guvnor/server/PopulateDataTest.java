@@ -29,13 +29,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -69,7 +69,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
         createPermissions();
 
-        PackageItem pkg = rulesRepository.loadPackage("com.billasurf.manufacturing.plant");
+        ModuleItem pkg = rulesRepository.loadModule("com.billasurf.manufacturing.plant");
         repositoryPackageService.buildPackage( pkg.getUUID(),
                                                true );
     }
@@ -110,7 +110,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         assertEquals(item.getBinaryContentAttachmentFileName(),
                 "billasurf.jar");
 
-        PackageItem pkg = rulesRepository.loadPackage( "com.billasurf.manufacturing.plant" );
+        ModuleItem pkg = rulesRepository.loadModule( "com.billasurf.manufacturing.plant" );
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
                 pkg);
         pkg.checkin( "added imports" );
@@ -137,15 +137,15 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createPackageSnapshots() {
-        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "TEST",
                 false,
                 "The testing region.");
-        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION",
                 false,
                 "The testing region.");
-        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION ROLLBACK",
                 false,
                 "The testing region.");
@@ -185,24 +185,24 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createPackages() throws SerializationException {
-        String uuid = repositoryPackageService.createPackage( "com.billasurf.manufacturing",
+        String uuid = repositoryPackageService.createModule( "com.billasurf.manufacturing",
                                           "Rules for manufacturing.",
                                           "package");
 
-        PackageConfigData conf = repositoryPackageService.loadPackageConfig( uuid );
+        Module conf = repositoryPackageService.loadModule( uuid );
         conf.setHeader("import com.billasurf.manuf.materials.*");
-        repositoryPackageService.savePackage( conf );
+        repositoryPackageService.saveModule( conf );
 
-        repositoryPackageService.createPackage("com.billasurf.manufacturing.plant",
+        repositoryPackageService.createModule("com.billasurf.manufacturing.plant",
                 "Rules for manufacturing plants.",
                 "package");
-        repositoryPackageService.createPackage("com.billasurf.finance",
+        repositoryPackageService.createModule("com.billasurf.finance",
                 "All financial rules.",
                 "package");
-        repositoryPackageService.createPackage("com.billasurf.hrman",
+        repositoryPackageService.createModule("com.billasurf.hrman",
                 "Rules for in house HR application.",
                 "package");
-        repositoryPackageService.createPackage("com.billasurf.sales",
+        repositoryPackageService.createModule("com.billasurf.sales",
                 "Rules exposed as a service for pricing, and discounting.",
                 "package");
 

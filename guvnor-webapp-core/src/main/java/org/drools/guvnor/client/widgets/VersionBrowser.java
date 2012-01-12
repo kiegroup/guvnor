@@ -36,6 +36,7 @@ import org.drools.guvnor.client.rpc.*;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
 
 /**
  * This widget shows a list of versions for packages or assets
@@ -204,9 +205,9 @@ public class VersionBrowser extends Composite {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
         if ( isPackage ) {
-            RepositoryServiceFactory.getPackageService().loadPackageConfig( versionUUID,
-                    new GenericCallback<PackageConfigData>() {
-                        public void onSuccess( PackageConfigData conf ) {
+            RepositoryServiceFactory.getPackageService().loadModule( versionUUID,
+                    new GenericCallback<Module>() {
+                        public void onSuccess( Module conf ) {
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                     constants.VersionNumber0Of1( conf.getVersionNumber(),
                                             conf.getName() ),
@@ -228,9 +229,9 @@ public class VersionBrowser extends Composite {
                     } );
         } else {
             RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
-                    new GenericCallback<RuleAsset>() {
+                    new GenericCallback<Asset>() {
 
-                        public void onSuccess( RuleAsset asset ) {
+                        public void onSuccess( Asset asset ) {
                             asset.setReadonly( true );
                             //asset.metaData.name = metaData.name;
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
@@ -248,6 +249,8 @@ public class VersionBrowser extends Composite {
                                             new Command() {
                                                 public void execute() {
                                                     eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    //fire after check-in event
+                                                    eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, null));
                                                     pop.hide();
                                                 }
                                             } );

@@ -21,7 +21,7 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage("testSimplePackageWithDeclaredTypes2",
+        ModuleItem pkg = rulesRepository.createModule("testSimplePackageWithDeclaredTypes2",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -64,7 +64,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
+        ModuleItem pkg = rulesRepository.createModule("testSimplePackageWithDeclaredTypesUsingDependency",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -116,7 +116,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testGetHistoryPackageSource() throws Exception {
         //Package version 1(Initial version)
-        PackageItem pkg = rulesRepository.createPackage("testGetHistoryPackageSource",
+        ModuleItem pkg = rulesRepository.createModule("testGetHistoryPackageSource",
                 "");
 
         //Package version 2
@@ -172,7 +172,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.checkin("version3");
 
         //Verify the latest version
-        PackageItem item = rulesRepository.loadPackage("testGetHistoryPackageSource");
+        ModuleItem item = rulesRepository.loadModule("testGetHistoryPackageSource");
         PackageDRLAssembler asm = new PackageDRLAssembler(item);
         String drl = asm.getDRL();
 
@@ -189,7 +189,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         //assertEquals(12, item.getCompiledPackageBytes().length);
 
         //Verify version 2
-        PackageItem item2 = rulesRepository.loadPackage("testGetHistoryPackageSource",
+        ModuleItem item2 = rulesRepository.loadModule("testGetHistoryPackageSource",
                 2);
         PackageDRLAssembler asm2 = new PackageDRLAssembler(item2);
         String drl2 = asm2.getDRL();
@@ -210,7 +210,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     public void testShowSource() throws Exception {
 
         //first, setup the package correctly:
-        PackageItem pkg = rulesRepository.createPackage("testShowSource",
+        ModuleItem pkg = rulesRepository.createModule("testShowSource",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
@@ -275,7 +275,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testShowSourceUsingSpecifiedDependencies() throws Exception {
         //first, setup the package correctly:
-        PackageItem pkg = rulesRepository.createPackage("testShowSourceUsingSpecifiedDependencies",
+        ModuleItem pkg = rulesRepository.createModule("testShowSourceUsingSpecifiedDependencies",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
@@ -359,7 +359,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSourceForHistoricalPackage() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage("testShowSourceForHistoricalPackage",
+        ModuleItem pkg = rulesRepository.createModule("testShowSourceForHistoricalPackage",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
@@ -412,7 +412,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.checkout();
         pkg.checkin("Version 3");
 
-        PackageItem historicalPackage = rulesRepository.loadPackage("testShowSourceForHistoricalPackage",
+        ModuleItem historicalPackage = rulesRepository.loadModule("testShowSourceForHistoricalPackage",
                 2);
 
         PackageDRLAssembler asm = new PackageDRLAssembler(historicalPackage);
@@ -441,7 +441,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
         //first, setup the package correctly:
-        PackageItem pkg = rulesRepository.createPackage("testBuildPackageWithEmptyHeader",
+        ModuleItem pkg = rulesRepository.createModule("testBuildPackageWithEmptyHeader",
                 "");
 
         DroolsHeader.updateDroolsHeader("\n",
@@ -467,7 +467,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     public void testSkipDisabledAssets() throws Exception {
 
         //first, setup the package correctly:
-        PackageItem pkg = rulesRepository.createPackage("testSkipDisabledAssets",
+        ModuleItem pkg = rulesRepository.createModule("testSkipDisabledAssets",
                 "");
         rulesRepository.save();
 
@@ -511,12 +511,12 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     public void testSkipDisabledImports() throws Exception {
 
         //first, setup the package correctly:
-        PackageItem pkg = rulesRepository.createPackage("testXLSDecisionTableIgnoreImports",
+        ModuleItem pkg = rulesRepository.createModule("testXLSDecisionTableIgnoreImports",
                 "");
 
         rulesRepository.save();
 
-        InputStream xls = this.getClass().getResourceAsStream("/Sample.xls");
+        InputStream xls = this.getClass().getResourceAsStream("Sample.xls");
         assertNotNull(xls);
 
         AssetItem asset = pkg.addAsset("MyDT",

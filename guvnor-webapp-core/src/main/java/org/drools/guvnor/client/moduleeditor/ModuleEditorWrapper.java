@@ -28,7 +28,7 @@ import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
@@ -37,20 +37,20 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 public class ModuleEditorWrapper extends Composite {
     private Constants constants = GWT.create(Constants.class);
 
-    private PackageConfigData packageConfigData;
+    private Module packageConfigData;
     private boolean isHistoricalReadOnly = false;
 
     VerticalPanel layout = new VerticalPanel();
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public ModuleEditorWrapper(PackageConfigData data,
+    public ModuleEditorWrapper(Module data,
                                ClientFactory clientFactory,
                                EventBus eventBus) {
         this(data, clientFactory, eventBus, false);
     }
 
-    public ModuleEditorWrapper(PackageConfigData data,
+    public ModuleEditorWrapper(Module data,
                                ClientFactory clientFactory,
                                EventBus eventBus,
                                boolean isHistoricalReadOnly) {
@@ -116,9 +116,9 @@ public class ModuleEditorWrapper extends Composite {
      */
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingPackageData());
-        RepositoryServiceFactory.getPackageService().loadPackageConfig(this.packageConfigData.getUuid(),
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess(PackageConfigData data) {
+        RepositoryServiceFactory.getPackageService().loadModule(this.packageConfigData.getUuid(),
+                new GenericCallback<Module>() {
+                    public void onSuccess(Module data) {
                         LoadingPopup.close();
                         packageConfigData = data;
                         render();

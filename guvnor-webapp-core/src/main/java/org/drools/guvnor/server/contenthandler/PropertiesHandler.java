@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.drools.guvnor.client.asseteditor.PropertiesHolder;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.util.PropertiesPersistence;
 import org.drools.repository.AssetItem;
 
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * attachment
  */
 public class PropertiesHandler extends ContentHandler {
-    public void retrieveAssetContent(RuleAsset asset,
+    public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
         if ( item.getContent() != null ) {
             asset.setContent( PropertiesPersistence.getInstance().unmarshal(
@@ -41,7 +41,7 @@ public class PropertiesHandler extends ContentHandler {
         }
     }
 
-    public void storeAssetContent(RuleAsset asset,
+    public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset)
                                                       throws SerializationException {
         PropertiesHolder holder = (PropertiesHolder) asset.getContent();

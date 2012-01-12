@@ -45,7 +45,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -69,6 +69,8 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
+import org.drools.guvnor.client.asseteditor.GuvnorEditor;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -130,14 +132,14 @@ public class AssetEditorActionToolbar extends Composite {
     MenuItem sourceMenu;
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
-    protected RuleAsset asset;
+    protected Asset asset;
     final Widget editor;
     private final EventBus eventBus;
     private final ClientFactory clientFactory;
     private Command afterCheckinEvent;
     private boolean readOnly;
     
-    public AssetEditorActionToolbar(RuleAsset asset, 
+    public AssetEditorActionToolbar(Asset asset, 
                          final Widget editor,
                          ClientFactory clientFactory,
                          EventBus eventBus,
@@ -428,7 +430,7 @@ public class AssetEditorActionToolbar extends Composite {
             ((SaveEventListener) editor).onAfterSave();
         }
 
-        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getPackageUUID()));
+        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
         //TODO: JLIU
         //lastSaved = System.currentTimeMillis();
         //resetDirty();
@@ -438,7 +440,7 @@ public class AssetEditorActionToolbar extends Composite {
         onSave();
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
         Set<String> activeWorkingSets = null;
-        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().getPackageName() );
+        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().getModuleName() );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
@@ -509,7 +511,7 @@ public class AssetEditorActionToolbar extends Composite {
         RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
-                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                         close();
                     }
                 } );
@@ -535,7 +537,7 @@ public class AssetEditorActionToolbar extends Composite {
                             return;
                         }
 
-                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
+                        flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
                         if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }
@@ -546,6 +548,11 @@ public class AssetEditorActionToolbar extends Composite {
                         //showInfoMessage( constants.SavedOK() );
                         if ( !closeAfter ) {
                             eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                        }
+                        
+                        //fire after check-in event
+                        if (editor instanceof GuvnorEditor){
+                            eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, (GuvnorEditor) editor));
                         }
                     }
                 } );
@@ -628,7 +635,7 @@ public class AssetEditorActionToolbar extends Composite {
                         name,
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
-                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 flushSuggestionCompletionCache(sel.getSelectedPackage());
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
@@ -672,7 +679,7 @@ public class AssetEditorActionToolbar extends Composite {
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
-                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                                 pop.hide();
                             }
@@ -693,7 +700,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doPromptToGlobal() {
-        if ( asset.getMetaData().getPackageName().equals( "globalArea" ) ) {
+        if ( asset.getMetaData().getModuleName().equals( "globalArea" ) ) {
             Window.alert( constants.ItemAlreadyInGlobalArea() );
             return;
         }
@@ -703,9 +710,9 @@ public class AssetEditorActionToolbar extends Composite {
                         public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );
 
-                            flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
+                            flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
                             flushSuggestionCompletionCache("globalArea");
-                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                             eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
 
@@ -731,7 +738,7 @@ public class AssetEditorActionToolbar extends Composite {
                     public void onRefreshModule(
                             RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
                         String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
-                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
+                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getModuleName())) {
                             eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
                     

@@ -32,9 +32,9 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
@@ -47,7 +47,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
     private boolean                 globalArea;
 
     //Services
-    private PackageServiceAsync     packageService;
+    private ModuleServiceAsync     packageService;
     private final AssetServiceAsync assetService;
 
     private ClientFactory           clientFactory;
@@ -90,7 +90,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
 
         this.globalArea = packageName.equals( "globalArea" );
 
-        this.packageService = clientFactory.getPackageService();
+        this.packageService = clientFactory.getModuleService();
         this.assetService = clientFactory.getAssetService();
 
         this.clientFactory = clientFactory;
@@ -111,27 +111,27 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
 
         if ( this.globalArea ) {
             //Global Area Data
-            this.packageService.loadGlobalPackage( new AsyncCallback<PackageConfigData>() {
+            this.packageService.loadGlobalModule( new AsyncCallback<Module>() {
 
                 public void onFailure(Throwable caught) {
                     ErrorPopup.showMessage( "Error listing Global Area information!" );
                 }
 
-                public void onSuccess(PackageConfigData result) {
+                public void onSuccess(Module result) {
                     populatePackageList( result );
                 }
             } );
 
             //Packages Data
-            this.packageService.listPackages( new AsyncCallback<PackageConfigData[]>() {
+            this.packageService.listModules( new AsyncCallback<Module[]>() {
 
                 public void onFailure(Throwable caught) {
                     ErrorPopup.showMessage( "Error listing package information!" );
                 }
 
-                public void onSuccess(PackageConfigData[] result) {
+                public void onSuccess(Module[] result) {
                     for ( int i = 0; i < result.length; i++ ) {
-                        final PackageConfigData packageConfigData = result[i];
+                        final Module packageConfigData = result[i];
                         populatePackageList( packageConfigData );
                     }
 
@@ -140,14 +140,14 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
                 }
             } );
         } else {
-            this.packageService.loadPackageConfig( this.packageUUID,
-                                                   new AsyncCallback<PackageConfigData>() {
+            this.packageService.loadModule( this.packageUUID,
+                                                   new AsyncCallback<Module>() {
 
                                                        public void onFailure(Throwable caught) {
                                                            ErrorPopup.showMessage( "Error listing package information!" );
                                                        }
 
-                                                       public void onSuccess(PackageConfigData result) {
+                                                       public void onSuccess(Module result) {
                                                            populatePackageList( result );
 
                                                            //once packages are loaded is time to load the asset table
@@ -215,7 +215,7 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
         this.loadAssetTable();
     }
 
-    private void populatePackageList(PackageConfigData packageConfigData) {
+    private void populatePackageList(Module packageConfigData) {
         this.lstPackage.addItem( packageConfigData.getName(),
                                  packageConfigData.getUuid() );
         this.lstPackage.setSelectedIndex( 0 );
@@ -230,17 +230,17 @@ public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCrea
 
         //load asset information
         this.assetService.loadRuleAssets( selectedRowUUIDs,
-                                          new AsyncCallback<RuleAsset[]>() {
+                                          new AsyncCallback<Asset[]>() {
 
                                               public void onFailure(Throwable caught) {
                                                   resourceElementReadyCommand.onFailure( caught );
                                               }
 
-                                              public void onSuccess(RuleAsset[] assets) {
+                                              public void onSuccess(Asset[] assets) {
                                                   //for each selcted resource we are going to add a xml entry
                                                   String result = "";
                                                   int i = 1;
-                                                  for ( RuleAsset asset : assets ) {
+                                                  for ( Asset asset : assets ) {
                                                       String partialResult = resourceXMLElementTemplate;
 
                                                       String nameString = "";

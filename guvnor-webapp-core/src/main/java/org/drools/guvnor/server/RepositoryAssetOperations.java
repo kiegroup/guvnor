@@ -97,7 +97,7 @@ public class RepositoryAssetOperations {
                 newName);
     }
 
-    protected BuilderResult validateAsset(RuleAsset asset) {
+    protected BuilderResult validateAsset(Asset asset) {
         try {
             ContentHandler handler = ContentManager
                     .getHandler(asset.getFormat());
@@ -119,7 +119,7 @@ public class RepositoryAssetOperations {
         }
     }
 
-    private BuilderResultLine createBuilderResultLine(RuleAsset asset) {
+    private BuilderResultLine createBuilderResultLine(Asset asset) {
         BuilderResultLine builderResultLine = new BuilderResultLine();
         builderResultLine.setAssetName(asset.name);
         builderResultLine.setAssetFormat(asset.getFormat());
@@ -128,7 +128,7 @@ public class RepositoryAssetOperations {
         return builderResultLine;
     }
 
-    public String checkinVersion(RuleAsset asset) throws SerializationException {
+    public String checkinVersion(Asset asset) throws SerializationException {
         AssetItem repoAsset = rulesRepository.loadAssetByUUID(asset.getUuid());
         if (isAssetUpdatedInRepository(asset,
                 repoAsset)) {
@@ -150,7 +150,7 @@ public class RepositoryAssetOperations {
                 repoAsset);
 
         if (!asset.getFormat().equals(AssetFormats.TEST_SCENARIO) || asset.getFormat().equals(AssetFormats.ENUMERATION)) {
-            PackageItem pkg = repoAsset.getPackage();
+            ModuleItem pkg = repoAsset.getModule();
             pkg.updateBinaryUpToDate(false);
             RuleBaseCache.getInstance().remove(pkg.getUUID());
         }
@@ -168,7 +168,7 @@ public class RepositoryAssetOperations {
         return cal;
     }
 
-    private boolean isAssetUpdatedInRepository(RuleAsset asset,
+    private boolean isAssetUpdatedInRepository(Asset asset,
                                                AssetItem repoAsset) {
         return asset.getLastModified().before(repoAsset.getLastModified().getTime());
     }
@@ -274,7 +274,7 @@ public class RepositoryAssetOperations {
         row.values = new String[5];
         row.values[0] = archived.getName();
         row.values[1] = archived.getFormat();
-        row.values[2] = archived.getPackageName();
+        row.values[2] = archived.getModuleName();
         row.values[3] = archived.getLastContributor();
         row.values[4] = Long.toString(archived.getLastModified().getTime()
                 .getTime());
@@ -333,7 +333,7 @@ public class RepositoryAssetOperations {
                                          int numRows,
                                          String tableConfig) {
         long start = System.currentTimeMillis();
-        PackageItem pkg = rulesRepository.loadPackageByUUID(packageUuid);
+        ModuleItem pkg = rulesRepository.loadModuleByUUID(packageUuid);
         AssetItemIterator it;
         if (formats.length > 0) {
             it = pkg.listAssetsByFormat(formats);
@@ -408,14 +408,14 @@ public class RepositoryAssetOperations {
                                             int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new PackageFilter(identity);
+        RepositoryFilter filter = new ModuleFilter(identity);
 
         AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
         while (assetItemIterator.hasNext()) {
             AssetItem assetItem = assetItemIterator.next();
-            PackageConfigData data = new PackageConfigData();
-            data.setUuid(assetItem.getPackage().getUUID());
+            Module data = new Module();
+            data.setUuid(assetItem.getModule().getUUID());
             if (filter.accept(data,
                     RoleType.PACKAGE_READONLY.getName())) {
                 resultList.add(assetItem);
@@ -429,15 +429,15 @@ public class RepositoryAssetOperations {
     }
 
     // TODO: Very hard to unit test -> needs refactoring
-    protected String buildAssetSource(RuleAsset asset) throws SerializationException {
+    protected String buildAssetSource(Asset asset) throws SerializationException {
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
 
         StringBuilder stringBuilder = new StringBuilder();
         if (handler.isRuleAsset()) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            PackageItem packageItem = rulesRepository.loadPackage(asset.getMetaData().getPackageName());
-            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(packageItem));
+            ModuleItem moduleItem = rulesRepository.loadModule(asset.getMetaData().getModuleName());
+            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(moduleItem));
             if (asset.getMetaData().isBinary()) {
                 AssetItem item = rulesRepository.loadAssetByUUID(
                         asset.getUuid());
@@ -550,9 +550,9 @@ public class RepositoryAssetOperations {
         return userName;
     }
 
-    protected RuleAsset loadAsset(AssetItem item) throws SerializationException {
+    protected Asset loadAsset(AssetItem item) throws SerializationException {
 
-        RuleAsset asset = new RuleAsset();
+        Asset asset = new Asset();
         asset.setUuid(item.getUUID());
         asset.setName(item.getName());
         asset.setDescription(item.getDescription());
@@ -578,8 +578,8 @@ public class RepositoryAssetOperations {
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData((VersionableItem) item);
 
-        meta.setPackageName(item.getPackageName());
-        meta.setPackageUUID(item.getPackage().getUUID());
+        meta.setModuleName(item.getModuleName());
+        meta.setModuleUUID(item.getModule().getUUID());
         meta.setBinary(item.isBinary());
 
         List<CategoryItem> categories = item.getCategories();
@@ -666,7 +666,7 @@ public class RepositoryAssetOperations {
     }
     
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
-        PackageItem packageItem = rulesRepository.loadPackageByUUID( request.getPackageUuid() );
+        ModuleItem packageItem = rulesRepository.loadModuleByUUID( request.getPackageUuid() );
 
         AssetItemIterator iterator;
         if ( request.getFormatInList() != null ) {

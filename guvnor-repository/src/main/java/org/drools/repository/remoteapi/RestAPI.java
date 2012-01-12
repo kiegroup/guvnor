@@ -30,7 +30,7 @@ import java.util.Set;
 
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
@@ -100,11 +100,11 @@ public class RestAPI {
     }
 
     private Response loadContent(String pkgName, String resourceFile) throws UnsupportedEncodingException {
-        PackageItem pkg = repo.loadPackage(pkgName);
+        ModuleItem pkg = repo.loadModule(pkgName);
         if (resourceFile.equals(".package")) {
             Text r = new Response.Text();
             r.lastModified = pkg.getLastModified();
-            r.data = pkg.getStringProperty( PackageItem.HEADER_PROPERTY_NAME );
+            r.data = pkg.getStringProperty( ModuleItem.HEADER_PROPERTY_NAME );
             return r;
         } else {
             if (resourceFile.indexOf("?version=") > -1) {
@@ -175,7 +175,7 @@ public class RestAPI {
 
     }
 
-    private Response buildAssetContentResponse(PackageItem pkg, AssetItem asset) {
+    private Response buildAssetContentResponse(ModuleItem pkg, AssetItem asset) {
         if (asset.isBinary()) {
             Binary r = new Response.Binary();
             r.lastModified = asset.getLastModified();
@@ -190,7 +190,7 @@ public class RestAPI {
     }
 
     private Response listPackage(String pkgName) throws UnsupportedEncodingException {
-        PackageItem pkg = repo.loadPackage(URLDecoder.decode(pkgName, "UTF-8"));
+        ModuleItem pkg = repo.loadModule(URLDecoder.decode(pkgName, "UTF-8"));
         StringBuilder sb = new StringBuilder();
         Iterator<AssetItem> it = pkg.getAssets();
         SimpleDateFormat sdf = getISODateFormat();
@@ -234,13 +234,13 @@ public class RestAPI {
             String[] a = fileName.split("\\.");
             if (a[1].equals("package")) {
                 //new package
-                PackageItem pkg = repo.createPackage(bits[1], "<added remotely>");
+                ModuleItem pkg = repo.createModule(bits[1], "<added remotely>");
                 pkg.updateCheckinComment(comment);
-                pkg.updateStringProperty(readContent(in), PackageItem.HEADER_PROPERTY_NAME);
+                pkg.updateStringProperty(readContent(in), ModuleItem.HEADER_PROPERTY_NAME);
                 repo.save();
             } else {
                 //new asset
-                PackageItem pkg = repo.loadPackage(bits[1]);
+                ModuleItem pkg = repo.loadModule(bits[1]);
                 AssetItem asset;
                 if (pkg.containsAsset(a[0])) {
                     asset = pkg.loadAsset(a[0]);
@@ -293,13 +293,13 @@ public class RestAPI {
         if (bits[0].equals("packages")) {
             String fileName = bits[2];
             String[] a = fileName.split("\\.");
-            PackageItem pkg = repo.loadPackage(bits[1]);
+            ModuleItem pkg = repo.loadModule(bits[1]);
             if (a[1].equals("package")) {
                 //updating package header
                 if (lastModified != null && pkg.getLastModified().after(lastModified)) {
                     throw new RulesRepositoryException("The package was modified by: " + pkg.getLastContributor() + ", unable to write changes.");
                 }
-                pkg.updateStringProperty(readContent(in), PackageItem.HEADER_PROPERTY_NAME);
+                pkg.updateStringProperty(readContent(in), ModuleItem.HEADER_PROPERTY_NAME);
                 pkg.checkin(comment);
                 repo.save();
             } else {
@@ -329,7 +329,7 @@ public class RestAPI {
         String[] bits = split(path);
         if (bits[0].equals("packages")) {
             String fileName = bits[2].split("\\.")[0];
-            AssetItem asset = repo.loadPackage(bits[1]).loadAsset(fileName);
+            AssetItem asset = repo.loadModule(bits[1]).loadAsset(fileName);
             asset.archiveItem(true);
             asset.checkin("<removed remotely>");
         }

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.server.security;
 
-public class WebDavPackageNameType extends PackageNameType {
+public class WebDavPackageNameType extends ModuleNameType {
 
     public WebDavPackageNameType(String packageName) {
         super( packageName );

@@ -31,7 +31,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
 /**
@@ -44,19 +44,19 @@ public class SpringContextEditor extends DirtyableComposite
     private TextArea text;
     final private RuleContentText data;
 
-    public SpringContextEditor(RuleAsset a,
+    public SpringContextEditor(Asset a,
                                RuleViewer v,
                                ClientFactory clientFactory,
                                EventBus eventBus) {
         this(a);
     }
 
-    public SpringContextEditor(RuleAsset a) {
+    public SpringContextEditor(Asset a) {
         this(a,
                 -1);
     }
 
-    public SpringContextEditor(RuleAsset asset,
+    public SpringContextEditor(Asset asset,
                                int visibleLines) {
 
         data = (RuleContentText) asset.getContent();

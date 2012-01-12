@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.Module;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +29,7 @@ public class PackageHierarchyTest {
 
     @Test
     public void testFlatNoSubPackages() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
+        Module pc = new Module( "foo.bar" );
 
         //Expect the following packages:-
         // \- foo.bar
@@ -53,9 +53,9 @@ public class PackageHierarchyTest {
 
     @Test
     public void testFlatWithSubPackages() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
-        PackageConfigData spc = new PackageConfigData( "wee.yoo" );
-        pc.setSubPackages( new PackageConfigData[]{spc} );
+        Module pc = new Module( "foo.bar" );
+        Module spc = new Module( "wee.yoo" );
+        pc.setSubModules( new Module[]{spc} );
 
         //Expect the following packages:-
         // \- foo.bar
@@ -88,11 +88,11 @@ public class PackageHierarchyTest {
 
     @Test
     public void testFlatWithSubPackages2() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
-        PackageConfigData spc = new PackageConfigData( "wee.yoo" );
-        pc.setSubPackages( new PackageConfigData[]{spc} );
-        PackageConfigData spc2 = new PackageConfigData( "zee.goo" );
-        spc.setSubPackages( new PackageConfigData[]{spc2} );
+        Module pc = new Module( "foo.bar" );
+        Module spc = new Module( "wee.yoo" );
+        pc.setSubModules( new Module[]{spc} );
+        Module spc2 = new Module( "zee.goo" );
+        spc.setSubModules( new Module[]{spc2} );
 
         //Expect the following packages:-
         // \- foo.bar
@@ -134,7 +134,7 @@ public class PackageHierarchyTest {
 
     @Test
     public void testNestedNoSubPackages() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
+        Module pc = new Module( "foo.bar" );
 
         //Expect the following packages:-
         // \- foo
@@ -166,9 +166,9 @@ public class PackageHierarchyTest {
 
     @Test
     public void testNestedWithSubPackages() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
-        PackageConfigData spc = new PackageConfigData( "wee.yoo" );
-        pc.setSubPackages( new PackageConfigData[]{spc} );
+        Module pc = new Module( "foo.bar" );
+        Module spc = new Module( "wee.yoo" );
+        pc.setSubModules( new Module[]{spc} );
 
         //Expect the following packages:-
         // \- foo
@@ -218,11 +218,11 @@ public class PackageHierarchyTest {
 
     @Test
     public void testNestedWithSubPackages2() {
-        PackageConfigData pc = new PackageConfigData( "foo.bar" );
-        PackageConfigData spc = new PackageConfigData( "wee.yoo" );
-        pc.setSubPackages( new PackageConfigData[]{spc} );
-        PackageConfigData spc2 = new PackageConfigData( "zee.goo" );
-        spc.setSubPackages( new PackageConfigData[]{spc2} );
+        Module pc = new Module( "foo.bar" );
+        Module spc = new Module( "wee.yoo" );
+        pc.setSubModules( new Module[]{spc} );
+        Module spc2 = new Module( "zee.goo" );
+        spc.setSubModules( new Module[]{spc2} );
 
         //Expect the following packages:-
         // \- foo

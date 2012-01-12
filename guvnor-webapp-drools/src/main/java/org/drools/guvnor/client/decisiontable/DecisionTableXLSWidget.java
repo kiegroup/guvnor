@@ -25,7 +25,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 
 /**
  * This widget deals with XLS files in "classic" decision tables.
@@ -34,7 +34,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
     private static Images images = (Images) GWT.create( Images.class );
 
-    public DecisionTableXLSWidget( RuleAsset asset,
+    public DecisionTableXLSWidget( Asset asset,
                                    RuleViewer viewer,
                                    ClientFactory clientFactory,
                                    EventBus eventBus) {

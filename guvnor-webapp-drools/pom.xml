@@ -17,7 +17,7 @@
 
   <properties>
     <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
-    <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
+    <appserver.jboss7.version>7.1.0.CR1b</appserver.jboss7.version>
     <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
     <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
@@ -30,15 +30,15 @@
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>2.3.0-1</version>
         <configuration>
-          <!-- TODO GUVNOR-1471 From version 2.3.0-1 add this line: <deploy>${project.build.directory}/gwt-symbols-deploy</deploy> -->
-          <!-- The default profile needs to be fast, so we only build 1 permutation 
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <!-- The default profile needs to be fast, so we only build 1 permutation
             { -->
           <module>org.drools.guvnor.FastCompiledGuvnorDrools</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.GuvnorDrools/Guvnor.html</runTarget>
+          <runTarget>org.drools.guvnor.GuvnorDrools/GuvnorDrools.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
@@ -339,14 +339,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- seam-bom overwrites the version of drools and other dependencies https://issues.jboss.org/browse/SEAM-110 -->
-      <!--<dependency>-->
-        <!--<groupId>org.jboss.seam</groupId>-->
-        <!--<artifactId>seam-bom</artifactId>-->
-        <!--<type>pom</type>-->
-        <!--<version>${seam.version}</version>-->
-        <!--<scope>import</scope>-->
-      <!--</dependency>-->
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
