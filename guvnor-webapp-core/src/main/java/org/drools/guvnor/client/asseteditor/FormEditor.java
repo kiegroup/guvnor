@@ -5,7 +5,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.FormContentModel;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
@@ -29,14 +29,14 @@ SaveEventListener,
 EditorWidget {
 
     private String    modelUUID;
-    private RuleAsset asset;
+    private Asset asset;
     private Frame     frame;
     
     private String[] username = new String[] { null }; 
 
     private final RepositoryServiceAsync repoService;
     
-    public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus bus) {
+    public FormEditor(Asset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus bus) {
         this.asset = asset;
         modelUUID = asset.getUuid();
         RepositoryServiceFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
