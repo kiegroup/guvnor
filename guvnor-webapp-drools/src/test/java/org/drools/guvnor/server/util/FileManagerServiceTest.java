@@ -502,8 +502,6 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     }
 
     private void updatePackage(String nm) throws Exception {
-        System.err.println( "---> Updating the package " );
-
         ModuleItem pkg = rulesRepository.loadModule( nm );
         pkg.updateDescription(System.currentTimeMillis() + "");
         pkg.checkin("a change");
