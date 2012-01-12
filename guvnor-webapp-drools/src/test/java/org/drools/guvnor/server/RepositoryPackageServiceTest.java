@@ -207,9 +207,13 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNotNull( packageItem.getName() );
         packageItem.updateBinaryUpToDate( true );
         assertTrue( packageItem.isBinaryUpToDate() );
+        
+        //Need to commit change to Module for it to be visible to subsequent retrieval
+        packageItem.checkin( "" );
 
         serviceImplementation.deleteUncheckedRule( assetItem.getUUID() );
 
+        //Subsequent retrieval
         ModuleItem reloadedPackage = rulesRepository.loadModule( packageItem.getName() );
 
         assertEquals( packageItem.getName(),
