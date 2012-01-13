@@ -176,7 +176,7 @@ public class PopupCreator {
         if ( fields.length > 1 ) {
             return true;
         }
-        if ( fields[0].equals( "this" ) ) {
+        if ( SuggestionCompletionEngine.TYPE_THIS.equals( fields[0] ) ) {
             return false;
         }
         return true;
@@ -385,9 +385,13 @@ public class PopupCreator {
                 factType = factType.substring( factType.indexOf( "." ) + 1 );
             }
         } else {
-            //If FactType is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+            //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+            String fieldName = sfc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
             factType = sfc.getFieldType();
-            if ( "this".equals( factType ) ) {
+            if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
                 factType = fp.getFactType();
             }
         }

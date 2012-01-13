@@ -248,7 +248,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( this.constraint instanceof HasOperator ) {
             isCEPOperator = SuggestionCompletionEngine.isCEPOperator( ((HasOperator) this.constraint).getOperator() );
         }
-        if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldType ) && isCEPOperator) ) {
+        if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldName ) && isCEPOperator) ) {
 
             DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
             this.constraint.setValue( datePicker.getDateString() );
@@ -422,12 +422,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
         boolean showLiteralOrFormula = true;
         if ( con instanceof SingleFieldConstraint ) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-            if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+            String fieldName = sfc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() );
             }
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
-            if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+            String fieldName = cc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( cc.getOperator() );
             }
         }
@@ -645,7 +653,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //'this' can be compared to bound facts of the same type
-        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+        if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
             if ( boundFactType != null && boundFactType.equals( this.pattern.getFactType() ) ) {
                 return true;
             }
@@ -669,14 +677,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //'this' can be compared to bound fields of the same type
-        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+        if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
             if ( boundFieldType != null && boundFieldType.equals( this.pattern.getFactType() ) ) {
                 return true;
             }
         }
 
         //'this' can be compared to bound events if using a CEP operator
-        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( boundFieldType ) ) {
+        if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( boundFieldType ) ) {
             if ( this.constraint instanceof HasOperator ) {
                 HasOperator hop = (HasOperator) this.constraint;
                 if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
@@ -686,7 +694,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //'this' can be compared to bound Dates if using a CEP operator
-        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && boundFieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+        if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) && boundFieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             if ( this.constraint instanceof HasOperator ) {
                 HasOperator hop = (HasOperator) this.constraint;
                 if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {

@@ -821,8 +821,12 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                 public void onClick(ClickEvent event) {
                     String[] fields = new String[0];
-                    //If Constraint's field type is "this" use parent FactPattern type
-                    if ( "this".equals( con.getFieldType() ) ) {
+                    //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+                    String fieldName = con.getFieldName();
+                    if ( fieldName.contains( "." ) ) {
+                        fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                    }
+                    if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
                         fields = connectives.getCompletions().getFieldCompletions( pattern.getFactType() );
                     } else {
                         fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
