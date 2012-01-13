@@ -821,8 +821,15 @@ public class FactPatternWidget extends RuleModellerWidget {
             ClickHandler click = new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
+                    String[] fields = new String[0];
+                    //If Constraint's field type is "this" use parent FactPattern type
+                    if ( "this".equals( con.getFieldType() ) ) {
+                        fields = connectives.getCompletions().getFieldCompletions( pattern.getFactType() );
+                    } else {
+                        fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
+                    }
                     popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                     pattern,
                                                      con,
                                                      hasConstraints,
                                                      fields,

@@ -120,6 +120,7 @@ public class PopupCreator {
      * Display a little editor for field bindings.
      */
     public void showBindFieldPopup(final Widget w,
+                                   final FactPattern fp,
                                    final SingleFieldConstraint con,
                                    final HasConstraints hasConstraints,
                                    String[] fields,
@@ -156,8 +157,14 @@ public class PopupCreator {
             sub.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     popup.hide();
+                    
+                    //If FactType is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+                    String factType = con.getFieldType();
+                    if ( "this".equals( factType ) ) {
+                        factType = fp.getFactType();
+                    }
                     popupCreator.showPatternPopup( w,
-                                                   con.getFieldType(),
+                                                   factType,
                                                    con,
                                                    hasConstraints,
                                                    true );
