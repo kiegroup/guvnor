@@ -851,7 +851,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLActionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getAllColumns().indexOf( variable );
-            StringBuilder key = new StringBuilder( variable.getDataType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
@@ -862,7 +862,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         int index = model.getAllColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLActionVariableColumn variable : editColumn.getChildColumns() ) {
-            StringBuilder key = new StringBuilder( variable.getDataType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
@@ -908,7 +908,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLConditionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getAllColumns().indexOf( variable );
-            StringBuilder key = new StringBuilder( variable.getFactType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFieldType() );
+            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
@@ -919,7 +919,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         int index = model.getAllColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
-            StringBuilder key = new StringBuilder( variable.getFactType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFieldType() );
+            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );

@@ -140,7 +140,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
 
     private BRLActionVariableColumn cloneVariable(BRLActionVariableColumn variable) {
         BRLActionVariableColumn clone = new BRLActionVariableColumn( variable.getVarName(),
-                                                                     variable.getDataType(),
+                                                                     variable.getFieldType(),
                                                                      variable.getFactType(),
                                                                      variable.getFactField() );
         clone.setHeader( variable.getHeader() );
