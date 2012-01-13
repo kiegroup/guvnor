@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -628,15 +629,13 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * This returns the pattern label.
      */
-    private Widget getPatternLabel(final HasConstraints hasConstraints) {
+    private Widget getPatternLabel(final FactPattern fp) {
         ClickHandler click = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                String factTypeShortName = (pattern.getFactType().contains( "." ) ? pattern.getFactType().substring( pattern.getFactType().lastIndexOf( "." ) + 1 ) : pattern.getFactType());
                 popupCreator.showPatternPopup( (Widget) event.getSource(),
-                                               factTypeShortName,
+                                               fp,
                                                null,
-                                               hasConstraints,
                                                false );
             }
         };
@@ -831,7 +830,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                     popupCreator.showBindFieldPopup( (Widget) event.getSource(),
                                                      pattern,
                                                      con,
-                                                     hasConstraints,
                                                      fields,
                                                      popupCreator );
                 }
