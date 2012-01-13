@@ -38,7 +38,6 @@ import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
-import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
@@ -829,6 +828,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         // This is also set in the ColumnResizeEvent handler, however it makes
         // resizing columns in the header more simple too
         resizeColumn.setWidth( resizeColumnWidth );
+        resizeColumn.getModelColumn().setWidth( resizeColumnWidth );
         int resizeColumnIndex = widget.visibleCols.indexOf( resizeColumn );
 
         // Row 0 (General\Fact Type)
