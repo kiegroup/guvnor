@@ -60,11 +60,13 @@ public class RowExpander {
         this.columns = new ArrayList<ColumnValues>();
         this.dtable = dtable;
         this.sce = sce;
+
+        //Add all columns to Expander to generate row data. The AnalysisCol is not added 
+        //as its data is transient, not held in the underlying Decision Table's data
         addRowNumberColumn();
         addRowDescriptionColumn();
         addConditionColumns();
         addActionColumns();
-        addAnalysisColumn();
     }
 
     List<ColumnValues> getColumns() {
@@ -107,16 +109,6 @@ public class RowExpander {
                 addColumn( aif );
             }
         }
-    }
-
-    private void addAnalysisColumn() {
-        ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUE,
-                                            null );
-        cv.setExpandColumn( false );
-        this.expandedColumns.put( dtable.getAnalysisCol(),
-                                  cv );
-        this.columns.add( cv );
     }
 
     private void addColumn(Pattern52 p) {

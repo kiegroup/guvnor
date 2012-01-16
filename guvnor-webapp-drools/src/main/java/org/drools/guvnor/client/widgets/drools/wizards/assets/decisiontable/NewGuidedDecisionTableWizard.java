@@ -160,7 +160,7 @@ public class NewGuidedDecisionTableWizard
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        //Mark columns on which we are to expand (default is to include)
+        //Mark columns on which we are to expand (default is to include all)
         for ( BaseColumn c : dtable.getAllColumns() ) {
             re.setExpandColumn( c,
                                 false );

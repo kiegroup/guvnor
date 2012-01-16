@@ -136,7 +136,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 9,
+        assertEquals( 8,
                       columns.size() );
         assertEquals( 1,
                       columns.get( 0 ).values.size() );
@@ -154,8 +154,6 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
-        assertEquals( 1,
-                      columns.get( 8 ).values.size() );
 
         RowIterator ri = re.iterator();
         assertFalse( ri.hasNext() );
@@ -257,7 +255,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 9,
+        assertEquals( 8,
                       columns.size() );
 
         assertEquals( 1,
@@ -276,8 +274,6 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
-        assertEquals( 1,
-                      columns.get( 8 ).values.size() );
 
         assertEquals( "c1a",
                       columns.get( 2 ).values.get( 0 ) );
@@ -302,8 +298,6 @@ public class RowExpanderTests {
         assertNull( columns.get( 6 ).values.get( 0 ) );
 
         assertNull( columns.get( 7 ).values.get( 0 ) );
-
-        assertNull( columns.get( 8 ).values.get( 0 ) );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -392,7 +386,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 9,
+        assertEquals( 8,
                       columns.size() );
 
         assertEquals( 1,
@@ -411,8 +405,6 @@ public class RowExpanderTests {
                       columns.get( 6 ).values.size() );
         assertEquals( 1,
                       columns.get( 7 ).values.size() );
-        assertEquals( 1,
-                      columns.get( 8 ).values.size() );
 
         assertEquals( "f1a",
                       columns.get( 2 ).values.get( 0 ) );
@@ -437,8 +429,6 @@ public class RowExpanderTests {
         assertNull( columns.get( 6 ).values.get( 0 ) );
 
         assertNull( columns.get( 7 ).values.get( 0 ) );
-
-        assertNull( columns.get( 8 ).values.get( 0 ) );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -479,7 +469,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
 
         assertNull( columns.get( 0 ).getCurrentValue() );
@@ -531,7 +521,7 @@ public class RowExpanderTests {
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 4,
+        assertEquals( 3,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -604,7 +594,7 @@ public class RowExpanderTests {
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 5,
+        assertEquals( 4,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -707,7 +697,7 @@ public class RowExpanderTests {
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -820,7 +810,7 @@ public class RowExpanderTests {
         RowExpander re = new RowExpander( dtable,
                                           sce );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -941,7 +931,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c3,
                             false );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1018,7 +1008,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1114,7 +1104,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1229,7 +1219,7 @@ public class RowExpanderTests {
         re.setExpandColumn( c2,
                             false );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
@@ -1352,7 +1342,7 @@ public class RowExpanderTests {
                                           sce );
 
         List<ColumnValues> columns = re.getColumns();
-        assertEquals( 7,
+        assertEquals( 6,
                       columns.size() );
 
         assertEquals( 1,
@@ -1367,8 +1357,6 @@ public class RowExpanderTests {
                       columns.get( 4 ).values.size() );
         assertEquals( 1,
                       columns.get( 5 ).values.size() );
-        assertEquals( 1,
-                      columns.get( 6 ).values.size() );
 
         assertEquals( "true",
                       columns.get( 2 ).values.get( 0 ) );
@@ -1385,8 +1373,6 @@ public class RowExpanderTests {
 
         assertEquals( "false",
                       columns.get( 5 ).values.get( 0 ) );
-
-        assertNull( columns.get( 6 ).values.get( 0 ) );
 
         RowIterator i = re.iterator();
         List<List<String>> rows = new ArrayList<List<String>>();
@@ -1408,7 +1394,6 @@ public class RowExpanderTests {
                       rows.get( 0 ).get( 4 ) );
         assertEquals( "false",
                       rows.get( 0 ).get( 5 ) );
-        assertNull( rows.get( 0 ).get( 6 ) );
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
@@ -1420,7 +1405,6 @@ public class RowExpanderTests {
                       rows.get( 1 ).get( 4 ) );
         assertEquals( "false",
                       rows.get( 1 ).get( 5 ) );
-        assertNull( rows.get( 1 ).get( 6 ) );
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
@@ -1432,7 +1416,6 @@ public class RowExpanderTests {
                       rows.get( 2 ).get( 4 ) );
         assertEquals( "false",
                       rows.get( 2 ).get( 5 ) );
-        assertNull( rows.get( 2 ).get( 6 ) );
 
         assertNull( rows.get( 3 ).get( 0 ) );
         assertNull( rows.get( 3 ).get( 1 ) );
@@ -1444,7 +1427,6 @@ public class RowExpanderTests {
                       rows.get( 3 ).get( 4 ) );
         assertEquals( "false",
                       rows.get( 3 ).get( 5 ) );
-        assertNull( rows.get( 3 ).get( 6 ) );
 
     }
 
