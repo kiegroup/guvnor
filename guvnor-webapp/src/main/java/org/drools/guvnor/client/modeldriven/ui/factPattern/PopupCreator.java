@@ -29,7 +29,6 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasConstraints;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
@@ -116,8 +115,8 @@ public class PopupCreator {
      * Display a little editor for field bindings.
      */
     public void showBindFieldPopup(final Widget w,
+                                   final FactPattern fp,
                                    final SingleFieldConstraint con,
-                                   final HasConstraints hasConstraints,
                                    String[] fields,
                                    final PopupCreator popupCreator) {
         final FormStylePopup popup = new FormStylePopup();
@@ -145,7 +144,9 @@ public class PopupCreator {
         } );
         popup.addAttribute( constants.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
                             vn );
-        if ( fields != null ) {
+
+        //Show the sub-field selector is there are applicable sub-fields
+        if ( hasApplicableFields( fields ) ) {
             Button sub = new Button( constants.ShowSubFields() );
             popup.addAttribute( constants.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
                                 sub );
@@ -153,9 +154,8 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     popup.hide();
                     popupCreator.showPatternPopup( w,
-                                                   con.getFieldType(),
+                                                   fp,
                                                    con,
-                                                   hasConstraints,
                                                    true );
                 }
             } );
@@ -163,7 +163,21 @@ public class PopupCreator {
 
         popup.show();
     }
-
+    
+    //Check if there are any fields other than "this"
+    private boolean hasApplicableFields(String[] fields) {
+        if ( fields == null || fields.length == 0 ) {
+            return false;
+        }
+        if ( fields.length > 1 ) {
+            return true;
+        }
+        if ( SuggestionCompletionEngine.TYPE_THIS.equals( fields[0] ) ) {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * This shows a popup for adding fields to a composite
      */
@@ -248,12 +262,13 @@ public class PopupCreator {
      * This shows a popup allowing you to add field constraints to a pattern (its a popup).
      */
     public void showPatternPopup(Widget w,
-                                 final String factType,
-                                 final FieldConstraint con,
-                                 final HasConstraints hasConstraints,
+                                 final FactPattern fp,
+                                 final SingleFieldConstraint con,
                                  final boolean isNested) {
 
-        String title = (con == null) ? constants.ModifyConstraintsFor0( factType ) : constants.AddSubFieldConstraint();
+        final String factType = getFactType( fp,
+                                             con );
+        String title = (con == null) ? constants.ModifyConstraintsFor0( fp.getFactType() ) : constants.AddSubFieldConstraint();
         final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          title );
 
@@ -278,9 +293,9 @@ public class PopupCreator {
                 }
                 String qualifiedName = factType + "." + fieldName;
                 String fieldType = completions.getFieldType( qualifiedName );
-                hasConstraints.addConstraint( new SingleFieldConstraint( qualifiedName,
-                                                                         fieldType,
-                                                                         con ) );
+                fp.addConstraint( new SingleFieldConstraint( qualifiedName,
+                                                             fieldType,
+                                                             con ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -300,7 +315,7 @@ public class PopupCreator {
             public void onChange(ChangeEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
-                hasConstraints.addConstraint( comp );
+                fp.addConstraint( comp );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -325,7 +340,7 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
-                    hasConstraints.addConstraint( con );
+                    fp.addConstraint( con );
                     modeller.refreshWidget();
                     popup.hide();
                 }
@@ -339,7 +354,7 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
-                    hasConstraints.addConstraint( con );
+                    fp.addConstraint( con );
                     con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
                     modeller.refreshWidget();
                     popup.hide();
@@ -352,6 +367,29 @@ public class PopupCreator {
         }
 
         popup.show();
+    }
+    
+    private String getFactType(FactPattern fp,
+                               SingleFieldConstraint sfc) {
+        String factType;
+        if ( sfc == null ) {
+            //If FactType is qualified strip the field qualifier
+            factType = fp.getFactType();
+            if ( factType.contains( "." ) ) {
+                factType = factType.substring( factType.indexOf( "." ) + 1 );
+            }
+        } else {
+            //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+            String fieldName = sfc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            factType = sfc.getFieldType();
+            if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
+                factType = fp.getFactType();
+            }
+        }
+        return factType;
     }
 
     /**
