@@ -1137,7 +1137,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( results.hasLines() );
 
         pkg = rulesRepository.loadModule( "testBinaryPackageUpToDate" );
-        byte[] binPackage = pkg.getCompiledPackageBytes();
+        byte[] binPackage = pkg.getCompiledBinaryBytes();
 
         assertNotNull( binPackage );
 
@@ -1261,7 +1261,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( results.hasLines() );
 
         pkg = rulesRepository.loadModule( "testGuidedDTExecutePackage" );
-        byte[] binPackage = pkg.getCompiledPackageBytes();
+        byte[] binPackage = pkg.getCompiledBinaryBytes();
 
         assertNotNull( binPackage );
 

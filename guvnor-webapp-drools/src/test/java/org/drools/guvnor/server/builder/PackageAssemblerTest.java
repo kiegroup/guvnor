@@ -93,7 +93,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         rulesRepository.save();
 
         //now lets light it up
-        PackageAssembler assembler = new PackageAssembler( pkg );
+        PackageAssembler assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertFalse( assembler.hasErrors() );
         Package bin = (Package) DroolsStreamUtils.streamIn( assembler.getCompiledBinary() );
@@ -109,14 +110,16 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         DroolsHeader.updateDroolsHeader( "koo koo ca choo",
                                          pkg );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertTrue( assembler.hasErrors() );
         assertTrue( assembler.isModuleConfigurationInError() );
 
         DroolsHeader.updateDroolsHeader( "import java.util.Date",
                                          pkg );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertTrue( assembler.hasErrors() );
         assertTrue( assembler.getErrors().get( 0 ).isAssetItem() );
@@ -133,27 +136,31 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         //fix it up
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                          pkg );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertFalse( assembler.hasErrors() );
 
         //now break a DSL and check the error
         ass.updateContent( "rubbish" );
         ass.checkin( "" );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
 
         //now fix it up
         ass.updateContent( "[when]foo=String()" );
         ass.checkin( "" );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertFalse( assembler.hasErrors() );
 
         //break a func, and check for error
         func.updateContent( "goo" );
         func.checkin( "" );
-        assembler = new PackageAssembler( pkg );
+        assembler = new PackageAssembler();
+        assembler.init(pkg, null);
         assembler.compile();
         assertTrue( assembler.hasErrors() );
         assertFalse( assembler.isModuleConfigurationInError() );
@@ -195,7 +202,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         props2.updateBinaryContentAttachment( new ByteArrayInputStream( "drools.accumulate.function.groupFun = org.drools.base.accumulators.MinAccumulateFunction".getBytes() ) );
         props2.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertEquals( "org.drools.base.accumulators.MaxAccumulateFunction",
                       asm.getBuilder().getPackageBuilderConfiguration().getAccumulateFunction( "groupCount" ).getClass().getName() );
@@ -233,7 +241,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ruleFlow.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "drools/ruleflow.rfm" ) );
         ruleFlow.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( packageItem );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(packageItem, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
         Map<String, org.drools.definition.process.Process> flows = ((Package)DroolsStreamUtils.streamIn(asm.getCompiledBinary())).getRuleFlows();
@@ -281,7 +290,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         rule1.updateFormat( AssetFormats.DRL_MODEL );
         rule1.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.getErrors().toString(),
                      asm.hasErrors() );
@@ -313,7 +323,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.getErrors().toString(),
                      asm.hasErrors() );
@@ -350,7 +361,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
 
@@ -399,7 +411,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         model.checkin( "version 2" );
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.getErrors().toString(),
                      asm.hasErrors() );
@@ -413,7 +426,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         pkg.updateDependency( "model?version=2" );
         pkg.checkin( "Update dependency" );
 
-        PackageAssembler asm2 = new PackageAssembler( pkg );
+        PackageAssembler asm2 = new PackageAssembler();
+        asm2.init(pkg, null);
         asm2.compile();
         assertFalse( asm2.getErrors().toString(),
                      asm2.hasErrors() );
@@ -461,7 +475,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
         Package bin = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
@@ -480,14 +495,16 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         //and screw up the the non snapshot one
         DroolsHeader.updateDroolsHeader( "koo koo ca choo",
                                          pkg );
-        asm = new PackageAssembler( pkg );
+        asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertTrue( asm.hasErrors() );
 
         //check the snapshot is kosher
         pkg = repo.loadModuleSnapshot( pkg.getName(),
                                        "SNAP_1" );
-        asm = new PackageAssembler( pkg );
+        asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
 
@@ -523,7 +540,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertTrue( asm.hasErrors() );
 
@@ -531,7 +549,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         rule2.checkin( "" );
 
         assertTrue( rule2.isArchived() );
-        asm = new PackageAssembler( pkg );
+        asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
 
@@ -569,7 +588,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         badRule.updateContent( "if something then another" );
         badRule.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertTrue( asm.hasErrors() );
         assertFalse( asm.isModuleConfigurationInError() );
@@ -603,7 +623,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asset.updateContent( "rule 'zaa'\n  when \n  request: EventRequest( status == EventRequest.Status.ACTIVE )\n   then \n request.setStatus(EventRequest.Status.ACTIVE); \n  end" );
         asset.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         if ( asm.hasErrors() ) {
             for ( ContentAssemblyError err : asm.getErrors() ) {
@@ -671,7 +692,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         repo.save();
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
         Package bin = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
@@ -706,7 +728,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertRule1.updateDisabled( true );
         assertRule1.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
 
@@ -733,7 +756,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asset.updateBinaryContentAttachment( xls );
         asset.checkin( "" );
 
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         if ( asm.hasErrors() ) {
             System.err.println( asm.getErrors().get( 0 ).getErrorReport() );
@@ -761,12 +785,14 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "drools/SampleDecisionTable_WithError.xls" ) );
         asset.checkin( "" );
-        asm = new PackageAssembler( pkg );
+        asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertTrue( asm.hasErrors() );
         assertEquals( asset.getName(),
                       asm.getErrors().get( 0 ).getName() );
-        asm = new PackageAssembler( pkg );
+        asm = new PackageAssembler();
+        asm.init(pkg, null);
         assertFalse( asm.hasErrors() );
     }
 
@@ -838,7 +864,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ruleNODSL.checkin( "" );
 
         pkg = repo.loadModule( "testBRLWithDSLMixedIn" );
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
         Package bpkg = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
@@ -880,9 +907,9 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ModuleAssemblerConfiguration configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "testSelect" );
+        PackageDRLAssembler asm = new PackageDRLAssembler();
+        asm.init(pkg, configuration);
 
-        PackageAssembler asm = new PackageAssembler( pkg,
-                                                     configuration );
         asm.compile();
 
         Package pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
@@ -891,7 +918,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertEquals( "rule2",
                       pk.getRules()[0].getName() );
 
-        asm = new PackageAssembler( pkg );
+        asm = new PackageDRLAssembler();
+        asm.init(pkg, configuration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 2,
@@ -900,8 +928,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "nothing valid" );
-        asm = new PackageAssembler( pkg,
-                                    configuration );
+        asm = new PackageDRLAssembler();
+        asm.init(pkg, configuration);
         asm.compile();
         assertTrue( asm.hasErrors() );
         assertEquals( 1,
@@ -915,8 +943,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "" );
-        asm = new PackageAssembler( pkg,
-                                    configuration );
+        asm = new PackageDRLAssembler();
+        asm.init(pkg, configuration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 2,
@@ -973,15 +1001,16 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         packageAssemblerConfiguration.setEnableCategorySelector( true );
 
         //without selector
-        PackageAssembler asm = new PackageAssembler( pkg );
+        PackageAssembler asm = new PackageAssembler();
+        asm.init(pkg, packageAssemblerConfiguration);
         asm.compile();
         Package pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 2,
                       pk.getRules().length );
 
         //with built-in selector
-        asm = new PackageAssembler( pkg,
-                                    packageAssemblerConfiguration );
+        asm = new PackageAssembler();
+        asm.init(pkg, packageAssemblerConfiguration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 1,
@@ -997,8 +1026,8 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         packageAssemblerConfiguration.setEnableCategorySelector( true );
 
         //with built-in selector
-        asm = new PackageAssembler( pkg,
-                                    packageAssemblerConfiguration );
+        asm = new PackageAssembler();
+        asm.init(pkg, packageAssemblerConfiguration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 1,

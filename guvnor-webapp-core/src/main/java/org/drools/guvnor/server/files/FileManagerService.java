@@ -181,14 +181,14 @@ public class FileManagerService {
         ModuleItem item = null;
         if ( isLatest ) {
             item = repository.loadModule( packageName );
-            byte[] data = item.getCompiledPackageBytes();
+            byte[] data = item.getCompiledBinaryBytes();
             out.write( data );
             out.flush();
             return packageName + ".pkg";
         } else {
             item = repository.loadModuleSnapshot( packageName,
                                                    packageVersion );
-            byte[] data = item.getCompiledPackageBytes();
+            byte[] data = item.getCompiledBinaryBytes();
             out.write( data );
             out.flush();
             return packageName + "_" + URLEncoder.encode( packageVersion,

@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.repository.ModuleItem;
 import org.drools.repository.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,12 +99,13 @@ public class ModuleAssemblerManager {
         return INSTANCE;
     }
 
-    public static ModuleAssembler getModuleAssembler(String format) {
-        ModuleAssembler h = ModuleAssemblerManager.getInstance().getModuleAssemblers().get(format);
-        if (h == null) {
+    public static ModuleAssembler getModuleAssembler(String format, ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getInstance().getModuleAssemblers().get(format);        
+        if (moduleAssembler == null) {
             //h = new DefaultContentHandler();
             throw new IllegalArgumentException("Unable to handle the module type: " + format);
         }
-        return h;
+        moduleAssembler.init(moduleItem, moduleAssemblerConfiguration);
+        return moduleAssembler;
     }
 }

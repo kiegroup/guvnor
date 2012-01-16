@@ -146,7 +146,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
-        pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
+        pkg.updateCompiledBinary( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
 
         assertTrue( before < fileManagerService.getLastModified( pkg.getName(),
@@ -478,7 +478,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
-        pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
+        pkg.updateCompiledBinary( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
         //rulesRepository.logout(); // Breaks lifecycle of test
 

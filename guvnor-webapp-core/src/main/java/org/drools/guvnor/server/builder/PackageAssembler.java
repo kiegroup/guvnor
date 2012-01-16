@@ -49,7 +49,12 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
         this.moduleItem = moduleItem;
-        this.configuration = moduleAssemblerConfiguration;
+        
+        if(moduleAssemblerConfiguration == null) {
+            moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
+        } else {
+            this.configuration = moduleAssemblerConfiguration;
+        }
         createBuilder();
     }
     

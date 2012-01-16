@@ -686,7 +686,7 @@ public class RepositoryModuleService
                                         ClassLoader classloader) throws IOException,
                                                                 ClassNotFoundException {
         RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
-        Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
+        Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledBinaryBytes(),
                                                             classloader );
         rulebase.addPackage( bin );
         return rulebase;

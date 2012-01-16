@@ -509,13 +509,7 @@ public class RepositoryModuleOperations {
             return BuilderResult.emptyResult();
         }
         
-        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat());
-        moduleAssembler.init(item, moduleAssemblerConfiguration);
-        
-        //TODO: get ModuleAssembler based on module type (ie, drools or SOA etc). This information should be captured by module configuration file.
-/*        ModuleAssembler moduleAssembler = new PackageAssembler( item,
-                moduleAssemblerConfiguration );*/
-
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, moduleAssemblerConfiguration);
         moduleAssembler.compile();
 
         if ( moduleAssembler.hasErrors() ) {
@@ -532,8 +526,10 @@ public class RepositoryModuleOperations {
 
     private void updateModuleBinaries(ModuleItem item, ModuleAssembler modulegeAssembler) throws DetailedSerializationException {
         try {
+            //TODO: in some cases, we may not want to store the generated binary on module node in JCR because its size potentially can be huge. 
+            //We can always generate the binary on-demand.
             byte[] compiledPackageByte = modulegeAssembler.getCompiledBinary();
-            item.updateCompiledPackage( new ByteArrayInputStream(compiledPackageByte) );            
+            item.updateCompiledBinary( new ByteArrayInputStream(compiledPackageByte) );            
             item.updateBinaryUpToDate( true );
 
             //REVISIT: This should be handled by PackageAssembler internally
