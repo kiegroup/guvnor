@@ -206,7 +206,8 @@ public class PackageResource extends Resource {
     public Response getPackageSource(@PathParam("packageName") String packageName) {
         try {
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            PackageDRLAssembler asm = new PackageDRLAssembler(packageItem);
+            PackageDRLAssembler asm = new PackageDRLAssembler();
+            asm.init(packageItem, null);
             String drl = asm.getDRL();
             return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(packageItem.getLastModified()).getTime())).build();
@@ -297,7 +298,8 @@ public class PackageResource extends Resource {
     public Response getHistoricalPackageSource(@PathParam("packageName") String packageName,
                                                @PathParam("versionNumber") long versionNumber) {
         ModuleItem item = rulesRepository.loadModule(packageName, versionNumber);
-        PackageDRLAssembler asm = new PackageDRLAssembler(item);
+        PackageDRLAssembler asm = new PackageDRLAssembler();
+        asm.init(item, null);
         String drl = asm.getDRL();
         return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(item.getLastModified()).getTime())).build();

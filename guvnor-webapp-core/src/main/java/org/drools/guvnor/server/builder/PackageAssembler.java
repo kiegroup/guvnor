@@ -44,20 +44,15 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(PackageAssembler.class);
 
-    private final ModuleAssemblerConfiguration configuration;
+    private ModuleAssemblerConfiguration configuration;
     private AssetSelector selector;
 
-    public PackageAssembler(ModuleItem packageItem) {
-        this(packageItem,
-                new ModuleAssemblerConfiguration());
+    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+        this.moduleItem = moduleItem;
+        this.configuration = moduleAssemblerConfiguration;
+        createBuilder();
     }
-
-    public PackageAssembler(ModuleItem packageItem,
-                            ModuleAssemblerConfiguration packageAssemblerConfiguration) {
-        super(packageItem);
-        configuration = packageAssemblerConfiguration;
-    }
-
+    
     public void compile() {
         if (setUpPackage()) {
             buildPackage();

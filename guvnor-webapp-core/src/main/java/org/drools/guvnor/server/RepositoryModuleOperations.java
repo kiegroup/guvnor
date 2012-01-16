@@ -24,6 +24,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.ModuleAssembler;
+import org.drools.guvnor.server.builder.ModuleAssemblerManager;
 import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
@@ -507,9 +508,13 @@ public class RepositoryModuleOperations {
             // we can just return all OK if its up to date.
             return BuilderResult.emptyResult();
         }
+        
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat());
+        moduleAssembler.init(item, moduleAssemblerConfiguration);
+        
         //TODO: get ModuleAssembler based on module type (ie, drools or SOA etc). This information should be captured by module configuration file.
-        ModuleAssembler moduleAssembler = new PackageAssembler( item,
-                moduleAssemblerConfiguration );
+/*        ModuleAssembler moduleAssembler = new PackageAssembler( item,
+                moduleAssemblerConfiguration );*/
 
         moduleAssembler.compile();
 
@@ -591,7 +596,8 @@ public class RepositoryModuleOperations {
     protected String buildPackageSource(String packageUUID) throws SerializationException {
 
         ModuleItem item = rulesRepository.loadModuleByUUID( packageUUID );
-        PackageDRLAssembler asm = new PackageDRLAssembler( item );
+        PackageDRLAssembler asm = new PackageDRLAssembler();
+        asm.init(item, null);
         return asm.getDRL();
     }
 
@@ -635,7 +641,9 @@ public class RepositoryModuleOperations {
     }
 
     PackageDRLAssembler createPackageDRLAssembler(final ModuleItem packageItem) {
-        return new PackageDRLAssembler( packageItem );
+        PackageDRLAssembler asm = new PackageDRLAssembler();
+        asm.init(packageItem, null);
+        return asm;
     }
 
     void parseRulesToPackageList(PackageDRLAssembler asm,

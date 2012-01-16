@@ -18,12 +18,15 @@ package org.drools.guvnor.server.builder;
 
 import java.util.List;
 
+import org.drools.repository.ModuleItem;
+
 /**
  * This assembles modules into module deployment bundles, and deals
  * with errors etc. Each content type is responsible for contributing to the
  * module deployment bundle.
  */
 public interface ModuleAssembler {
+    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration);
 
     public void compile();
 

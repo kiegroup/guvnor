@@ -30,13 +30,9 @@ import java.util.List;
  */
 abstract class AssemblerBase implements ModuleAssembler {
 
-    protected final ModuleItem moduleItem;
+    protected ModuleItem moduleItem;
     protected BRMSPackageBuilder builder;
     protected final AssemblyErrorLogger errorLogger = new AssemblyErrorLogger();
-
-    protected AssemblerBase(ModuleItem moduleItem) {
-        this.moduleItem = moduleItem;
-    }
 
     public boolean hasErrors() {
         return errorLogger.hasErrors();

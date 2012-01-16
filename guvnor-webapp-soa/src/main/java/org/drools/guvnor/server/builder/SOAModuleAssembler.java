@@ -17,9 +17,7 @@
 package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.server.util.LoggingHelper;
-
 import org.drools.repository.ModuleItem;
-import org.drools.rule.Package;
 
 /**
  * This assembles SOA services into deployment bundles, and deals
@@ -29,16 +27,11 @@ import org.drools.rule.Package;
 public class SOAModuleAssembler extends AssemblerBase {
     private static final LoggingHelper log = LoggingHelper.getLogger(SOAModuleAssembler.class);
 
-    private final ModuleAssemblerConfiguration configuration;
+    private ModuleAssemblerConfiguration configuration;  
 
-    public SOAModuleAssembler(ModuleItem moduleItem) {
-        this(moduleItem, new ModuleAssemblerConfiguration());
-    }
-
-    public SOAModuleAssembler(ModuleItem moduleItem,
-                            ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
-        super(moduleItem);
-        configuration = moduleAssemblerConfiguration;
+    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+        this.moduleItem = moduleItem;
+        this.configuration = moduleAssemblerConfiguration;
     }
 
     public void compile() {

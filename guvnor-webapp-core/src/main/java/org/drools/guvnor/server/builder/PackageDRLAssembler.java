@@ -27,13 +27,12 @@ import org.drools.repository.ModuleItem;
 import java.util.Iterator;
 
 public class PackageDRLAssembler extends PackageAssemblerBase {
-
     private StringBuilder src;
-
-    public PackageDRLAssembler(ModuleItem packageItem) {
-        super(packageItem);
+    
+    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+        this.moduleItem = moduleItem;
     }
-
+    
     public String getDRL() {
         src = new StringBuilder();
 
