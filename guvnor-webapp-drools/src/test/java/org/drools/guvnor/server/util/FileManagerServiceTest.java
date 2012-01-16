@@ -41,7 +41,6 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
 public class FileManagerServiceTest extends GuvnorTestBase {
@@ -481,7 +480,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                                                   pkg );
         pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
-        //repo.logout();
+        //rulesRepository.logout(); // Breaks lifecycle of test
 
         int iterations = 0;
 
@@ -490,23 +489,18 @@ public class FileManagerServiceTest extends GuvnorTestBase {
             iterations++;
 
             if ( iterations % 50 == 0 ) {
-                updatePackage( "testHeadOOME" );
+                ModuleItem pkg1 = rulesRepository.loadModule("testHeadOOME");
+                pkg1.updateDescription(System.currentTimeMillis() + "");
+                pkg1.checkin("a change");
+                //rulesRepository.logout(); // Breaks lifecycle of test
             }
 
             //fm.setRepository( new RulesRepository(TestEnvironmentSessionHelper.getSession()));
             fileManagerService.getLastModified("testHeadOOME",
                     "LATEST");
-            //rulesRepository.logout();
+            //rulesRepository.logout(); // Breaks lifecycle of test
             System.err.println( "Number " + iterations + " free mem : " + Runtime.getRuntime().freeMemory() );
         }
-    }
-
-    private void updatePackage(String nm) throws Exception {
-        ModuleItem pkg = rulesRepository.loadModule( nm );
-        pkg.updateDescription(System.currentTimeMillis() + "");
-        pkg.checkin("a change");
-        rulesRepository.logout();
-
     }
 
     private List<AssetItem> iteratorToList(Iterator<AssetItem> assets) {
