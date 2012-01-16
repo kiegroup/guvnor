@@ -195,7 +195,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         assertTrue( fields.contains( "pieceOfRubbish" ) );
         assertTrue( fields.contains( "name" ) );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Car",
                       engine.getFieldType( "Car",
                                            "this" ) );
         assertEquals( "Boolean",
