@@ -417,7 +417,7 @@ public class SuggestionCompletionLoader
         this.builder.addFieldType( declaredType + "." + SuggestionCompletionEngine.TYPE_THIS,
                                    declaredType,
                                    null );
-        accessorsAndMutators.put( declaredType + ".this",
+        accessorsAndMutators.put( declaredType + "." + SuggestionCompletionEngine.TYPE_THIS,
                                   FieldAccessorsAndMutators.ACCESSOR );
         
         //Other facts and fields in the type hierarchy
@@ -661,7 +661,7 @@ public class SuggestionCompletionLoader
         methodSignatures.put( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
                               new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
                                                    clazz ) );
-        this.builder.addFieldType( shortTypeName + ".this",
+        this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
                                    shortTypeName,
                                    clazz );
         this.builder.addFieldsForType( shortTypeName,
