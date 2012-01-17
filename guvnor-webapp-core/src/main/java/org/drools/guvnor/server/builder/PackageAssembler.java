@@ -16,7 +16,11 @@
 
 package org.drools.guvnor.server.builder;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.selector.AssetSelector;
@@ -33,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -62,8 +67,19 @@ public class PackageAssembler extends PackageAssemblerBase {
         if (setUpPackage()) {
             buildPackage();
         }
+        
+        if (!hasErrors() ) {
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
+                new RuleBaseConfiguration(getClassLoaders())
+            );
+            ruleBase.addPackage(builder.getPackage());
+        }
     }
 
+    private ClassLoader[] getClassLoaders() {
+        Collection<ClassLoader> loaders = getBuilder().getRootClassLoader().getClassLoaders();
+        return loaders.toArray( new ClassLoader[loaders.size()] );
+    }
     /**
      * This will build the package - preparePackage would have been called first.
      * This will always prioritise DRL before other assets.

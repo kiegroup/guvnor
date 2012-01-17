@@ -16,16 +16,10 @@
 package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
-import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
@@ -33,19 +27,15 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
-import org.drools.rule.Package;
 import org.jboss.seam.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.util.*;
 
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
@@ -526,21 +516,11 @@ public class RepositoryModuleOperations {
 
     private void updateModuleBinaries(ModuleItem item, ModuleAssembler modulegeAssembler) throws DetailedSerializationException {
         try {
-            //TODO: in some cases, we may not want to store the generated binary on module node in JCR because its size potentially can be huge. 
+            //REVISIT: in some cases, we may not want to store the generated binary on module node in JCR because its size potentially can be huge. 
             //We can always generate the binary on-demand.
             byte[] compiledPackageByte = modulegeAssembler.getCompiledBinary();
             item.updateCompiledBinary( new ByteArrayInputStream(compiledPackageByte) );            
             item.updateBinaryUpToDate( true );
-
-            //REVISIT: This should be handled by PackageAssembler internally
-            if(modulegeAssembler instanceof PackageAssembler) {
-                RuleBase ruleBase = RuleBaseFactory.newRuleBase(
-                    new RuleBaseConfiguration( getClassLoaders( (PackageAssembler)modulegeAssembler ) )
-                );
-                Package binPkg = (Package) DroolsStreamUtils.streamIn( compiledPackageByte );
-
-                ruleBase.addPackage( binPkg );
-            }
 
             rulesRepository.save();
         } catch (Exception e) {
@@ -562,11 +542,6 @@ public class RepositoryModuleOperations {
         moduleAssemblerConfiguration.setEnableCategorySelector( enableCategorySelector );
         moduleAssemblerConfiguration.setCustomSelectorConfigName( selectorConfigName );
         return moduleAssemblerConfiguration;
-    }
-
-    private ClassLoader[] getClassLoaders(PackageAssembler packageAssembler) {
-        Collection<ClassLoader> loaders = packageAssembler.getBuilder().getRootClassLoader().getClassLoaders();
-        return loaders.toArray( new ClassLoader[loaders.size()] );
     }
 
     private String getCurrentUserName() {
