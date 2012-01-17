@@ -49,7 +49,7 @@ public class LimitedEntryBRLConditionColumnViewImpl extends AbstractLimitedEntry
                                                   final GuidedDecisionTable52 model,
                                                   final boolean isNew,
                                                   final Asset asset,
-                                                  final BRLConditionColumn column,
+                                                  final LimitedEntryBRLConditionColumn column,
                                                   final ClientFactory clientFactory,
                                                   final EventBus eventBus) {
         super( sce,
@@ -104,7 +104,7 @@ public class LimitedEntryBRLConditionColumnViewImpl extends AbstractLimitedEntry
 
     @Override
     protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn(BRLColumn<IPattern, BRLConditionVariableColumn> col) {
-        BRLConditionColumn clone = new LimitedEntryBRLConditionColumn();
+        LimitedEntryBRLConditionColumn clone = new LimitedEntryBRLConditionColumn();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );

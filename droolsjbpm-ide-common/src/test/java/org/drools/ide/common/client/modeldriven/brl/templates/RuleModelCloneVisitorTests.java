@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -486,6 +487,30 @@ public class RuleModelCloneVisitorTests {
                       auf1f1Clone.type );
         assertEquals( auf1f1.value,
                       auf1f1Clone.value );
+    }
+
+    @Test
+    public void testActionRetractFact() {
+        RuleModel model = new RuleModel();
+
+        model.rhs = new IAction[1];
+        ActionRetractFact arf = new ActionRetractFact();
+        arf.variableName = "$arf";
+        model.rhs[0] = arf;
+
+        RuleModelCloneVisitor cloneVisitor = new RuleModelCloneVisitor();
+        RuleModel clone = cloneVisitor.visitRuleModel( model );
+
+        assertEquals( 1,
+                      clone.rhs.length );
+
+        assertNotSame( model.rhs[0],
+                       clone.rhs[0] );
+        assertNotNull( clone.rhs[0] );
+        assertTrue( clone.rhs[0] instanceof ActionRetractFact );
+        ActionRetractFact arfClone = (ActionRetractFact) clone.rhs[0];
+        assertEquals( "$arf",
+                      arfClone.variableName );
     }
 
     @Test

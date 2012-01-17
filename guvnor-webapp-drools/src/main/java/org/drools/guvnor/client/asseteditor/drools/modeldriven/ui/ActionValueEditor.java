@@ -269,7 +269,8 @@ public class ActionValueEditor extends DirtyableComposite {
         box.addKeyUpHandler( new KeyUpHandler() {
 
             public void onKeyUp(KeyUpEvent event) {
-                box.setVisibleLength( box.getText().length() );
+                int length = box.getText().length();
+                box.setVisibleLength( length > 0 ? length : 1 );
             }
         } );
 

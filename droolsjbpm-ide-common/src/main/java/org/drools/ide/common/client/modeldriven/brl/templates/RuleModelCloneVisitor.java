@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
@@ -91,6 +92,8 @@ public class RuleModelCloneVisitor {
             return visitActionFieldList( (ActionUpdateField) o );
         } else if ( o instanceof ActionSetField ) {
             return visitActionFieldList( (ActionSetField) o );
+        } else if ( o instanceof ActionRetractFact ) {
+            return visitActionRetractFact( (ActionRetractFact) o );
         }
         throw new IllegalArgumentException( "Class " + o.getClass().getName() + " is not recognised" );
     }
@@ -150,6 +153,12 @@ public class RuleModelCloneVisitor {
             afvClone.setValue( afv.getValue() );
             clone.addFieldValue( afvClone );
         }
+        return clone;
+    }
+
+    private ActionRetractFact visitActionRetractFact(ActionRetractFact arf) {
+        ActionRetractFact clone = new ActionRetractFact();
+        clone.variableName = arf.variableName;
         return clone;
     }
 

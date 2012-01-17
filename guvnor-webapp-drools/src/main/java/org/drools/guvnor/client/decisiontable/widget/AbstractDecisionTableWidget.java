@@ -70,6 +70,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
@@ -188,6 +189,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
                        cellValueFactory.makeColumnData( variable ),
                        true );
         }
+        model.getActionCols().add( modelColumn );
+    }
+
+    /**
+     * Add a column to the table.
+     * 
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
+    public void addColumn(LimitedEntryBRLActionColumn modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+        addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
+                   true );
         model.getActionCols().add( modelColumn );
     }
 
@@ -335,6 +352,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
                           true );
         }
         model.getActionCols().remove( modelColumn );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(LimitedEntryBRLActionColumn modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+
+        int index = model.getExpandedColumns().indexOf( modelColumn );
+        model.getActionCols().remove( modelColumn );
+        deleteColumn( index,
+                      true );
     }
 
     /**
@@ -1052,6 +1085,51 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Update a LimitedEntryBRLActionColumn column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final LimitedEntryBRLActionColumn origColumn,
+                             final LimitedEntryBRLActionColumn editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getExpandedColumns().indexOf( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
+        }
+
+    }
+
+    /**
      * Update a Condition column
      * 
      * @param origPattern
@@ -1557,6 +1635,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setHideColumn( editingCol.isHideColumn() );
         col.setDefinition( editingCol.getDefinition() );
         col.setChildColumns( editingCol.getChildColumns() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final LimitedEntryBRLActionColumn col,
+                                     final LimitedEntryBRLActionColumn editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setDefinition( editingCol.getDefinition() );
     }
 
     // Copy values from one (transient) model column into another
