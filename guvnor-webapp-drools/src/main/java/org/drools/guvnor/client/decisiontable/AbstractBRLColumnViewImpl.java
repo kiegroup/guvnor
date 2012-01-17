@@ -231,8 +231,12 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                 return;
             }
             //Ensure variables reflect (name) changes made in RuleModeller
-            getDefinedVariables( this.ruleModel );
-            doInsertColumn();
+            if ( getDefinedVariables( this.ruleModel ) ) {
+                doInsertColumn();
+            } else {
+                Window.alert( constants.DecisionTableBRLFragmentNoTemplateKeysFound() );
+                return;
+            }
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
@@ -242,8 +246,12 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                 }
             }
             //Ensure variables reflect (name) changes made in RuleModeller
-            getDefinedVariables( this.ruleModel );
-            doUpdateColumn();
+            if ( getDefinedVariables( this.ruleModel ) ) {
+                doUpdateColumn();
+            } else {
+                Window.alert( constants.DecisionTableBRLFragmentNoTemplateKeysFound() );
+                return;
+            }
         }
 
         hide();
@@ -257,13 +265,15 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     }
 
     //Extract Template Keys from RuleModel
-    private void getDefinedVariables(RuleModel ruleModel) {
+    private boolean getDefinedVariables(RuleModel ruleModel) {
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
         RuleModelVisitor rmv = new RuleModelVisitor( ivs );
         rmv.visit( ruleModel );
 
         //Update column and UI
         editingCol.setChildColumns( convertInterpolationVariables( ivs ) );
+
+        return ivs.size() > 0;
     }
 
 }

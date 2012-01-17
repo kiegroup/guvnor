@@ -27,7 +27,6 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
-import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
@@ -109,6 +108,11 @@ public class LimitedEntryBRLConditionColumnViewImpl extends AbstractLimitedEntry
         clone.setHideColumn( col.isHideColumn() );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
+    }
+
+    @Override
+    protected boolean isDefined() {
+        return this.ruleModel.lhs.length > 0;
     }
 
     private List<IPattern> cloneDefinition(List<IPattern> definition) {

@@ -142,6 +142,8 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
 
     protected abstract BRLColumn<T, C> cloneBRLColumn(BRLColumn<T, C> col);
 
+    protected abstract boolean isDefined();
+
     public RuleModeller getRuleModeller() {
         return this.ruleModeller;
     }
@@ -200,7 +202,12 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
                 Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
-            doInsertColumn();
+            if ( isDefined() ) {
+                doInsertColumn();
+            } else {
+                Window.alert( constants.DecisionTableBRLFragmentNothingDefined() );
+                return;
+            }
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
@@ -209,7 +216,13 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
                     return;
                 }
             }
-            doUpdateColumn();
+            if ( isDefined() ) {
+                doUpdateColumn();
+            } else {
+                Window.alert( constants.DecisionTableBRLFragmentNothingDefined() );
+                return;
+            }
+
         }
 
         hide();

@@ -27,7 +27,6 @@ import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
@@ -107,6 +106,11 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
         clone.setHideColumn( col.isHideColumn() );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
+    }
+
+    @Override
+    protected boolean isDefined() {
+        return this.ruleModel.rhs.length > 0;
     }
 
     private List<IAction> cloneDefinition(List<IAction> definition) {
