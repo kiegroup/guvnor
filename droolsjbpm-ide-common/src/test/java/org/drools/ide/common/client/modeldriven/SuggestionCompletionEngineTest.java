@@ -451,7 +451,7 @@ public class SuggestionCompletionEngineTest {
                              new ModelField( "this",
                                              Object.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             SuggestionCompletionEngine.TYPE_THIS ),
+                                             "AnEvent" ),
                              new ModelField( "dateField",
                                              Date.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -567,7 +567,7 @@ public class SuggestionCompletionEngineTest {
                              new ModelField( "this",
                                              Object.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             SuggestionCompletionEngine.TYPE_THIS )
+                                             "AnEvent" )
                 } );
 
             }

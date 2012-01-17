@@ -76,7 +76,6 @@ public class ActionAPIServletTest extends GuvnorTestBase {
                      res );
         assertEquals( 200,
                       res.status );
-        rulesRepository.logout();
     }
 
     @Test
@@ -110,7 +109,6 @@ public class ActionAPIServletTest extends GuvnorTestBase {
                      res );
         assertEquals( 200,
                       res.status );
-        rulesRepository.logout();
     }
 
 }

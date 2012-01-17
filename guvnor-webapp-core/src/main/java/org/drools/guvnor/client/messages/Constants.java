@@ -2605,4 +2605,8 @@ public interface Constants
     
     String ActionBRLFragmentConfiguration();
     
+    String DecisionTableBRLFragmentNothingDefined();
+    
+    String DecisionTableBRLFragmentNoTemplateKeysFound();
+
 }

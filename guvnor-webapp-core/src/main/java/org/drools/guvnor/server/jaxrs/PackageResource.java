@@ -206,7 +206,8 @@ public class PackageResource extends Resource {
     public Response getPackageSource(@PathParam("packageName") String packageName) {
         try {
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            PackageDRLAssembler asm = new PackageDRLAssembler(packageItem);
+            PackageDRLAssembler asm = new PackageDRLAssembler();
+            asm.init(packageItem, null);
             String drl = asm.getDRL();
             return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(packageItem.getLastModified()).getTime())).build();
@@ -225,7 +226,7 @@ public class PackageResource extends Resource {
             String fileName = packageName + ".pkg";
             byte[] result;
             if (p.isBinaryUpToDate()) {
-                result = p.getCompiledPackageBytes();
+                result = p.getCompiledBinaryBytes();
             } else {
                 BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
                 if (builderResult != null) {
@@ -236,7 +237,7 @@ public class PackageResource extends Resource {
                     }
                     return Response.status(500).entity(errs.toString()).build();
                 }
-                result = rulesRepository.loadModule(packageName).getCompiledPackageBytes();
+                result = rulesRepository.loadModule(packageName).getCompiledBinaryBytes();
             }
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(p.getLastModified()).getTime())).build();
@@ -297,7 +298,8 @@ public class PackageResource extends Resource {
     public Response getHistoricalPackageSource(@PathParam("packageName") String packageName,
                                                @PathParam("versionNumber") long versionNumber) {
         ModuleItem item = rulesRepository.loadModule(packageName, versionNumber);
-        PackageDRLAssembler asm = new PackageDRLAssembler(item);
+        PackageDRLAssembler asm = new PackageDRLAssembler();
+        asm.init(item, null);
         String drl = asm.getDRL();
         return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(item.getLastModified()).getTime())).build();
@@ -309,7 +311,7 @@ public class PackageResource extends Resource {
     public Response getHistoricalPackageBinary(@PathParam("packageName") String packageName,
                                                @PathParam("versionNumber") long versionNumber) throws SerializationException {
         ModuleItem p = rulesRepository.loadModule(packageName, versionNumber);
-        byte[] result = p.getCompiledPackageBytes();
+        byte[] result = p.getCompiledBinaryBytes();
         if (result != null) {
             String fileName = packageName + ".pkg";
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).

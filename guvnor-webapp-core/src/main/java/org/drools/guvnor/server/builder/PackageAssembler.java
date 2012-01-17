@@ -16,7 +16,11 @@
 
 package org.drools.guvnor.server.builder;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.selector.AssetSelector;
@@ -33,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -44,26 +49,37 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(PackageAssembler.class);
 
-    private final ModuleAssemblerConfiguration configuration;
+    private ModuleAssemblerConfiguration configuration;
     private AssetSelector selector;
 
-    public PackageAssembler(ModuleItem packageItem) {
-        this(packageItem,
-                new ModuleAssemblerConfiguration());
+    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+        this.moduleItem = moduleItem;
+        
+        if(moduleAssemblerConfiguration == null) {
+            moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
+        } else {
+            this.configuration = moduleAssemblerConfiguration;
+        }
+        createBuilder();
     }
-
-    public PackageAssembler(ModuleItem packageItem,
-                            ModuleAssemblerConfiguration packageAssemblerConfiguration) {
-        super(packageItem);
-        configuration = packageAssemblerConfiguration;
-    }
-
+    
     public void compile() {
         if (setUpPackage()) {
             buildPackage();
         }
+        
+        if (!hasErrors() ) {
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
+                new RuleBaseConfiguration(getClassLoaders())
+            );
+            ruleBase.addPackage(builder.getPackage());
+        }
     }
 
+    private ClassLoader[] getClassLoaders() {
+        Collection<ClassLoader> loaders = getBuilder().getRootClassLoader().getClassLoaders();
+        return loaders.toArray( new ClassLoader[loaders.size()] );
+    }
     /**
      * This will build the package - preparePackage would have been called first.
      * This will always prioritise DRL before other assets.

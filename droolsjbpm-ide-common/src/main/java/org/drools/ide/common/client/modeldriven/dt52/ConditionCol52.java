@@ -18,6 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt52;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 import org.drools.ide.common.shared.workitems.HasBinding;
 
@@ -36,7 +37,7 @@ public class ConditionCol52 extends DTColumnConfig52
     // literal value etc. The valid types are from ISingleFieldConstraint:
     // TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
     // operator are ignored).
-    private int                 constraintValueType;
+    private int                 constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 
     // The field of the fact that this pertains to (if its a predicate, ignore it).
     private String              factField;

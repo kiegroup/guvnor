@@ -42,6 +42,7 @@ import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
@@ -155,6 +156,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         } else if ( column instanceof ActionWorkItemCol52 ) {
             cell = makeBooleanCell();
+
+        } else if ( column instanceof LimitedEntryBRLActionColumn ) {
+            cell = derieveCellFromAction( (LimitedEntryBRLActionColumn) column );
 
         } else if ( column instanceof BRLActionVariableColumn ) {
             cell = derieveCellFromAction( (BRLActionVariableColumn) column );

@@ -18,7 +18,6 @@ package org.drools.guvnor.client.decisiontable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -26,33 +25,32 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelCloneVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * An editor for a BRL Action Columns
+ * An editor for a Limited Entry BRL Action Columns
  */
-public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, BRLActionVariableColumn>
+public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRLColumnViewImpl<IAction, BRLActionVariableColumn>
     implements
-    BRLActionColumnView {
+    LimitedEntryBRLActionColumnView {
 
     private Presenter presenter;
 
-    public BRLActionColumnViewImpl(final SuggestionCompletionEngine sce,
-                                   final GuidedDecisionTable52 model,
-                                   final boolean isNew,
-                                   final Asset asset,
-                                   final BRLActionColumn column,
-                                   final ClientFactory clientFactory,
-                                   final EventBus eventBus) {
+    public LimitedEntryBRLActionColumnViewImpl(final SuggestionCompletionEngine sce,
+                                               final GuidedDecisionTable52 model,
+                                               final boolean isNew,
+                                               final Asset asset,
+                                               final LimitedEntryBRLActionColumn column,
+                                               final ClientFactory clientFactory,
+                                               final EventBus eventBus) {
         super( sce,
                model,
                isNew,
@@ -91,62 +89,28 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     @Override
     protected void doInsertColumn() {
         this.editingCol.setDefinition( Arrays.asList( this.ruleModel.rhs ) );
-        presenter.insertColumn( (BRLActionColumn) this.editingCol );
+        presenter.insertColumn( (LimitedEntryBRLActionColumn) this.editingCol );
     }
 
     @Override
     protected void doUpdateColumn() {
         this.editingCol.setDefinition( Arrays.asList( this.ruleModel.rhs ) );
-        presenter.updateColumn( (BRLActionColumn) this.originalCol,
-                                (BRLActionColumn) this.editingCol );
-    }
-
-    @Override
-    protected List<BRLActionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
-
-        //Convert to columns for use in the Decision Table
-        BRLActionVariableColumn[] variables = new BRLActionVariableColumn[ivs.size()];
-        for ( Map.Entry<InterpolationVariable, Integer> me : ivs.entrySet() ) {
-            InterpolationVariable iv = me.getKey();
-            int index = me.getValue();
-            BRLActionVariableColumn variable = new BRLActionVariableColumn( iv.getVarName(),
-                                                                            iv.getDataType(),
-                                                                            iv.getFactType(),
-                                                                            iv.getFactField() );
-            variable.setHeader( editingCol.getHeader() );
-            variable.setHideColumn( editingCol.isHideColumn() );
-            variables[index] = variable;
-        }
-        return Arrays.asList( variables );
+        presenter.updateColumn( (LimitedEntryBRLActionColumn) this.originalCol,
+                                (LimitedEntryBRLActionColumn) this.editingCol );
     }
 
     @Override
     protected BRLColumn<IAction, BRLActionVariableColumn> cloneBRLColumn(BRLColumn<IAction, BRLActionVariableColumn> col) {
-        BRLActionColumn clone = new BRLActionColumn();
+        LimitedEntryBRLActionColumn clone = new LimitedEntryBRLActionColumn();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
-        clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
     }
 
-    private List<BRLActionVariableColumn> cloneVariables(List<BRLActionVariableColumn> variables) {
-        List<BRLActionVariableColumn> clone = new ArrayList<BRLActionVariableColumn>();
-        for ( BRLActionVariableColumn variable : variables ) {
-            clone.add( cloneVariable( variable ) );
-        }
-        return clone;
-    }
-
-    private BRLActionVariableColumn cloneVariable(BRLActionVariableColumn variable) {
-        BRLActionVariableColumn clone = new BRLActionVariableColumn( variable.getVarName(),
-                                                                     variable.getFieldType(),
-                                                                     variable.getFactType(),
-                                                                     variable.getFactField() );
-        clone.setHeader( variable.getHeader() );
-        clone.setHideColumn( variable.isHideColumn() );
-        clone.setWidth( variable.getWidth() );
-        return clone;
+    @Override
+    protected boolean isDefined() {
+        return this.ruleModel.rhs.length > 0;
     }
 
     private List<IAction> cloneDefinition(List<IAction> definition) {

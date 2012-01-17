@@ -16,25 +16,29 @@
 
 package org.drools.ide.common.server.rules;
 
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.JarInputStream;
-
-import org.drools.lang.dsl.DSLMapping;
-import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.ModelAnnotation;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
-import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.junit.Test;
 
 public class SuggestionCompletionLoaderTest {
 
@@ -282,7 +286,7 @@ public class SuggestionCompletionLoaderTest {
 
         assertEquals( 3,
                       eng.getFieldCompletions( "Bean1" ).length );
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Bean1",
                       eng.getFieldType( "Bean1",
                                         "this" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
@@ -294,7 +298,7 @@ public class SuggestionCompletionLoaderTest {
 
         assertEquals( 4,
                       eng.getFieldCompletions( "Bean2" ).length );
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Bean2",
                       eng.getFieldType( "Bean2",
                                         "this" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
@@ -328,7 +332,7 @@ public class SuggestionCompletionLoaderTest {
 
         assertEquals( 4,
                       eng.getFieldCompletions( "Address" ).length );
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Address",
                       eng.getFieldType( "Address",
                                         "this" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -367,7 +371,7 @@ public class SuggestionCompletionLoaderTest {
 
         assertEquals( 4,
                       eng.getFieldCompletions( "Address" ).length );
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Address",
                       eng.getFieldType( "Address",
                                         "this" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -382,7 +386,7 @@ public class SuggestionCompletionLoaderTest {
 
         assertEquals( 5,
                       eng.getFieldCompletions( "Address2" ).length );
-        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+        assertEquals( "Address2",
                       eng.getFieldType( "Address2",
                                         "this" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,

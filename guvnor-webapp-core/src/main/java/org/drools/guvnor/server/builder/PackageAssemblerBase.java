@@ -40,13 +40,7 @@ import org.drools.rule.Package;
  */
 abstract class PackageAssemblerBase extends AssemblerBase {
     protected BRMSPackageBuilder builder;
-
-    protected PackageAssemblerBase(ModuleItem moduleItem) {
-        super( moduleItem );
-
-        createBuilder();
-    }
-    
+   
     public void createBuilder() {
         builder = new BRMSPackageBuilder(moduleItem);
     }

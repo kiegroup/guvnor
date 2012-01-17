@@ -18,7 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt52;
 /**
  * A column representing a single BRL fragment variable
  */
-public class BRLConditionVariableColumn extends ConditionCol52 {
+public class BRLConditionVariableColumn extends ConditionCol52 implements BRLVariableColumn {
 
     private static final long serialVersionUID = 540l;
 

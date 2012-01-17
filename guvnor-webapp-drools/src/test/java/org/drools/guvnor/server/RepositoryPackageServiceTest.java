@@ -248,7 +248,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( "version1",
                       p.getCheckinComment() );
         assertFalse( p.isBinaryUpToDate() );
-        byte[] result = p.getCompiledPackageBytes();
+        byte[] result = p.getCompiledBinaryBytes();
         assertNull( result );
 
         //Build package update package node to store compiled binary. This is wont work for a history version
@@ -518,7 +518,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         item.updateContent( " rule abc \n when \n then \n System.out.println(42); \n end" );
         item.checkin( "" );
 
-        assertNull( pkg.getCompiledPackageBytes() );
+        assertNull( pkg.getCompiledBinaryBytes() );
 
         long last = pkg.getLastModified().getTimeInMillis();
         Thread.sleep( 100 );
@@ -530,7 +530,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         }
 
         assertFalse( pkg.getLastModified().getTimeInMillis() == last );
-        assertNotNull( pkg.getCompiledPackageBytes() );
+        assertNotNull( pkg.getCompiledBinaryBytes() );
 
     }
 
@@ -1091,7 +1091,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertFalse( result.hasLines() );
 
         pkg = repo.loadModule( "testBinaryPackageCompile" );
-        byte[] binPackage = pkg.getCompiledPackageBytes();
+        byte[] binPackage = pkg.getCompiledBinaryBytes();
 
         assertNotNull( binPackage );
 
@@ -1195,7 +1195,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertFalse( result.hasLines() );
 
         pkg = repo.loadModule( "testBinaryPackageCompileBRL" );
-        byte[] binPackage = pkg.getCompiledPackageBytes();
+        byte[] binPackage = pkg.getCompiledBinaryBytes();
 
         // Here is where we write it out is needed... set to true if needed for
         // the binary test below "testLoadAndExecBinary"

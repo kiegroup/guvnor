@@ -394,9 +394,9 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         //Update category. Add a new category tag
         categoryExtension.addSimpleExtension(Translator.VALUE, "AssetPackageResourceTestCategory2");
         //Update state
-        stateExtension.getExtension(Translator.VALUE).setText("Dev");
+        stateExtension.<Element>getExtension(Translator.VALUE).setText("Dev");
         //Update format
-        formatExtension.getExtension(Translator.VALUE).setText("anotherformat");
+        formatExtension.<Element>getExtension(Translator.VALUE).setText("anotherformat");
         
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
@@ -467,7 +467,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         //Update state
         ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);   
-        stateExtension.getExtension(Translator.VALUE).setText("NonExistState");
+        stateExtension.<Element>getExtension(Translator.VALUE).setText("NonExistState");
         
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",

@@ -413,13 +413,13 @@ public class SuggestionCompletionLoader
         List<String> fieldNames = new ArrayList<String>();
 
         //'this' is a special case
-        fieldNames.add( "this" );
-        this.builder.addFieldType( declaredType + ".this",
-                                   SuggestionCompletionEngine.TYPE_THIS,
+        fieldNames.add( SuggestionCompletionEngine.TYPE_THIS );
+        this.builder.addFieldType( declaredType + "." + SuggestionCompletionEngine.TYPE_THIS,
+                                   declaredType,
                                    null );
-        accessorsAndMutators.put( declaredType + ".this",
+        accessorsAndMutators.put( declaredType + "." + SuggestionCompletionEngine.TYPE_THIS,
                                   FieldAccessorsAndMutators.ACCESSOR );
-
+        
         //Other facts and fields in the type hierarchy
         for ( TypeDeclarationDescr typeDeclarationDescr : th ) {
 
@@ -657,12 +657,12 @@ public class SuggestionCompletionLoader
 
         //'this' is a special case
         fields.add( 0,
-                    "this" );
-        methodSignatures.put( shortTypeName + ".this",
-                                  new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
-                                                       clazz ) );
-        this.builder.addFieldType( shortTypeName + ".this",
-                                   SuggestionCompletionEngine.TYPE_THIS,
+                    SuggestionCompletionEngine.TYPE_THIS );
+        methodSignatures.put( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
+                              new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                   clazz ) );
+        this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
+                                   shortTypeName,
                                    clazz );
         this.builder.addFieldsForType( shortTypeName,
                                        fields.toArray( new String[fields.size()] ) );
@@ -675,7 +675,7 @@ public class SuggestionCompletionLoader
         this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
 
         //Configure other fields
-        fields.remove( "this" );
+        fields.remove( SuggestionCompletionEngine.TYPE_THIS );
         for ( String field : fields ) {
             final Class< ? > type = inspector.getFieldTypes().get( field );
             final String fieldType = translateClassToGenericType( type );

@@ -153,6 +153,26 @@ public class GuidedDecisionTable52
         return new Pattern52();
     }
 
+    public BRLColumn< ? , ? > getBRLColumn(BRLVariableColumn col) {
+        for ( CompositeColumn< ? > cc : conditionPatterns ) {
+            if ( cc instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) cc;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        for ( ActionCol52 ac : actionCols ) {
+            if ( ac instanceof BRLActionColumn ) {
+                BRLActionColumn brl = (BRLActionColumn) ac;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
+    }
+
     public long getConditionsCount() {
         long size = 0;
         for ( CompositeColumn< ? > cc : this.conditionPatterns ) {
@@ -169,22 +189,39 @@ public class GuidedDecisionTable52
         return analysisData;
     }
 
-    public List<BaseColumn> getAllColumns() {
+    /**
+     * This method expands Composite columns into individual columns where
+     * knowledge of individual columns is necessary; for example separate
+     * columns in the user-interface or where individual columns need to be
+     * analysed.
+     * 
+     * @return A List of individual columns
+     */
+    public List<BaseColumn> getExpandedColumns() {
         List<BaseColumn> columns = new ArrayList<BaseColumn>();
         columns.add( rowNumberCol );
         columns.add( descriptionCol );
         columns.addAll( metadataCols );
         columns.addAll( attributeCols );
         for ( CompositeColumn< ? > cc : this.conditionPatterns ) {
-            for ( BaseColumn bc : cc.getChildColumns() ) {
-                columns.add( bc );
+            boolean explode = !(cc instanceof LimitedEntryCol);
+            if ( explode ) {
+                for ( BaseColumn bc : cc.getChildColumns() ) {
+                    columns.add( bc );
+                }
+            } else {
+                columns.add( cc );
             }
         }
         for ( ActionCol52 ac : this.actionCols ) {
             if ( ac instanceof BRLActionColumn ) {
-                BRLActionColumn bac = (BRLActionColumn) ac;
-                for ( BRLActionVariableColumn variable : bac.getChildColumns() ) {
-                    columns.add( variable );
+                if ( ac instanceof LimitedEntryCol ) {
+                    columns.add( ac );
+                } else {
+                    BRLActionColumn bac = (BRLActionColumn) ac;
+                    for ( BRLActionVariableColumn variable : bac.getChildColumns() ) {
+                        columns.add( variable );
+                    }
                 }
 
             } else {

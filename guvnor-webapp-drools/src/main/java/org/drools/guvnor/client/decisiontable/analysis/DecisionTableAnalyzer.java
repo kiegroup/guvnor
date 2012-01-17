@@ -37,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -51,6 +52,7 @@ public class DecisionTableAnalyzer {
         this.sce = sce;
     }
 
+    @SuppressWarnings("rawtypes")
     public List<Analysis> analyze(GuidedDecisionTable52 model) {
         List<List<DTCellValue52>> data = model.getData();
         List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
@@ -59,7 +61,7 @@ public class DecisionTableAnalyzer {
             RowDetector rowDetector = new RowDetector( row.get( 0 ).getNumericValue().longValue() - 1 );
             for ( Pattern52 pattern : model.getPatterns() ) {
                 for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
-                    int columnIndex = model.getAllColumns().indexOf( conditionCol );
+                    int columnIndex = model.getExpandedColumns().indexOf( conditionCol );
                     DTCellValue52 visibleCellValue = row.get( columnIndex );
                     DTCellValue52 realCellValue;
                     boolean cellIsNotBlank;
@@ -80,7 +82,11 @@ public class DecisionTableAnalyzer {
                 }
             }
             for (ActionCol52 actionCol : model.getActionCols()) {
-                int columnIndex = model.getAllColumns().indexOf( actionCol );
+                //BRLActionColumns cannot be analysed
+                if(actionCol instanceof BRLActionColumn) {
+                    continue;
+                }
+                int columnIndex = model.getExpandedColumns().indexOf( actionCol );
                 DTCellValue52 visibleCellValue = row.get( columnIndex );
                 DTCellValue52 realCellValue;
                 boolean cellIsNotBlank;
@@ -144,7 +150,6 @@ public class DecisionTableAnalyzer {
         return newDetector;
     }
 
-    @SuppressWarnings("rawtypes")
     private ActionDetector buildActionDetector(GuidedDecisionTable52 model,
             ActionCol52 actionCol,
             DTCellValue52 realCellValue) {

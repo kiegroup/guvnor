@@ -39,14 +39,17 @@ public class AssetItemValidator {
         if (handler instanceof IHasCustomValidator) {
             return ((IHasCustomValidator) handler).validateAsset(assetItemUnderValidation);
         } else {
-            return new BuilderValidator(assetItemUnderValidation.getModule()).validate();
+            BuilderValidator validator = new BuilderValidator();
+            validator.init(assetItemUnderValidation.getModule(), null);
+            return validator.validate();
         }
     }
 
     private class BuilderValidator extends PackageAssemblerBase {
-
-        public BuilderValidator(ModuleItem packageItem) {
-            super(packageItem);
+        
+        public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+            this.moduleItem = moduleItem;
+            createBuilder();
         }
 
         public BuilderResult validate() {

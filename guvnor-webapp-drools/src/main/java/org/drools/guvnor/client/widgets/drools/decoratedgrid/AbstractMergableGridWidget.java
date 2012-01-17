@@ -48,7 +48,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergin
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
-import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;

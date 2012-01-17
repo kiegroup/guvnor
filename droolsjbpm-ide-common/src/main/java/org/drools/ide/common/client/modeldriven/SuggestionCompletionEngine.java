@@ -239,7 +239,7 @@ public class SuggestionCompletionEngine
 
         if ( fieldType == null ) {
             return STANDARD_CONNECTIVES;
-        } else if ( fieldType.equals( TYPE_THIS ) ) {
+        } else if ( fieldName.equals( TYPE_THIS ) ) {
             if ( this.isFactTypeAnEvent( factType ) ) {
                 return joinArrays( STANDARD_CONNECTIVES,
                                    SIMPLE_CEP_CONNECTIVES,
@@ -280,7 +280,7 @@ public class SuggestionCompletionEngine
 
         if ( fieldType == null ) {
             return STANDARD_OPERATORS;
-        } else if ( fieldType.equals( TYPE_THIS ) ) {
+        } else if ( fieldName.equals( TYPE_THIS ) ) {
             if ( this.isFactTypeAnEvent( factType ) ) {
                 return joinArrays( STANDARD_OPERATORS,
                                    SIMPLE_CEP_OPERATORS,
@@ -651,7 +651,7 @@ public class SuggestionCompletionEngine
         }
         for ( Map.Entry<String, ModelField[]> entry : getModelFields().entrySet() ) {
             for ( ModelField mf : entry.getValue() ) {
-                if ( "this".equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
+                if ( TYPE_THIS.equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
                     return entry.getKey();
                 }
             }

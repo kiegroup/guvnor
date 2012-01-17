@@ -181,14 +181,14 @@ public class FileManagerService {
         ModuleItem item = null;
         if ( isLatest ) {
             item = repository.loadModule( packageName );
-            byte[] data = item.getCompiledPackageBytes();
+            byte[] data = item.getCompiledBinaryBytes();
             out.write( data );
             out.flush();
             return packageName + ".pkg";
         } else {
             item = repository.loadModuleSnapshot( packageName,
                                                    packageVersion );
-            byte[] data = item.getCompiledPackageBytes();
+            byte[] data = item.getCompiledBinaryBytes();
             out.write( data );
             out.flush();
             return packageName + "_" + URLEncoder.encode( packageVersion,
@@ -211,7 +211,8 @@ public class FileManagerService {
         ModuleItem item = null;
         if ( isLatest ) {
             item = repository.loadModule( packageName );
-            PackageDRLAssembler asm = new PackageDRLAssembler( item );
+            PackageDRLAssembler asm = new PackageDRLAssembler();
+            asm.init(item, null);
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();
@@ -219,7 +220,8 @@ public class FileManagerService {
         } else {
             item = repository.loadModuleSnapshot( packageName,
                                                    packageVersion );
-            PackageDRLAssembler asm = new PackageDRLAssembler( item );
+            PackageDRLAssembler asm = new PackageDRLAssembler();
+            asm.init(item, null);
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();

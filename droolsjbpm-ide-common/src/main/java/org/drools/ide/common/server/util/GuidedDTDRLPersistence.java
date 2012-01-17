@@ -60,6 +60,7 @@ import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -79,20 +80,22 @@ public class GuidedDTDRLPersistence {
         StringBuilder sb = new StringBuilder();
 
         List<List<DTCellValue52>> data = dt.getData();
-        List<BaseColumn> allColumns = dt.getAllColumns();
+        List<BaseColumn> allColumns = dt.getExpandedColumns();
 
         for ( int i = 0; i < data.size(); i++ ) {
+
             List<DTCellValue52> row = data.get( i );
+
+            //Specialised BRDRLPersistence provider than can handle template key expansion
+            TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                     row );
+
             BigDecimal num = row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
 
             BRLRuleModel rm = new BRLRuleModel( dt );
             rm.name = getName( dt.getTableName(),
                                num );
-
-            //Hook-up data-provider for Template key expansion
-            TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( dt.getAllColumns(),
-                                                                                     dt.getData().get( i ) );
 
             doMetadata( allColumns,
                         dt.getMetadataCols(),
@@ -123,7 +126,6 @@ public class GuidedDTDRLPersistence {
                 sb.append( "#" + desc + "\n" );
             }
 
-            //Specialised BRDRLPersistence provider than can handle template key expansion
             GuidedDTBRDRLPersistence drlMarshaller = new GuidedDTBRDRLPersistence( rowDataProvider );
             String rule = drlMarshaller.marshal( rm );
             sb.append( rule );
@@ -139,6 +141,7 @@ public class GuidedDTDRLPersistence {
                    TemplateDataProvider rowDataProvider,
                    List<DTCellValue52> row,
                    RuleModel rm) {
+
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( ActionCol52 c : actionCols ) {
 
@@ -214,22 +217,30 @@ public class GuidedDTDRLPersistence {
                           List<DTCellValue52> row,
                           RuleModel rm) {
 
-        //Ensure every key has a value and substitute keys for values
         for ( IAction action : column.getDefinition() ) {
 
-            //Get interpolation variables used by the Action
-            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-            RuleModelVisitor rmv = new RuleModelVisitor( action,
-                                                         ivs );
-            rmv.visit( action );
-
-            //Check each variable has a value
             boolean addAction = true;
-            for ( InterpolationVariable variable : ivs.keySet() ) {
-                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                if ( "".equals( value ) ) {
-                    addAction = false;
-                    break;
+
+            if ( column instanceof LimitedEntryCol ) {
+                int index = allColumns.indexOf( column );
+                DTCellValue52 dcv = row.get( index );
+                addAction = dcv.getBooleanValue();
+
+            } else {
+
+                //Get interpolation variables used by the Action
+                Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+                RuleModelVisitor rmv = new RuleModelVisitor( action,
+                                                             ivs );
+                rmv.visit( action );
+
+                //Ensure every key has a value and substitute keys for values
+                for ( InterpolationVariable variable : ivs.keySet() ) {
+                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                    if ( "".equals( value ) ) {
+                        addAction = false;
+                        break;
+                    }
                 }
             }
 
@@ -406,7 +417,15 @@ public class GuidedDTDRLPersistence {
 
         for ( CompositeColumn< ? > cc : conditionPatterns ) {
 
-            if ( cc instanceof BRLConditionColumn ) {
+            if ( cc instanceof LimitedEntryBRLConditionColumn ) {
+                doCondition( allColumns,
+                             (LimitedEntryBRLConditionColumn) cc,
+                             patterns,
+                             rowDataProvider,
+                             row,
+                             rm );
+
+            } else if ( cc instanceof BRLConditionColumn ) {
                 doCondition( allColumns,
                              (BRLConditionColumn) cc,
                              patterns,
@@ -433,22 +452,30 @@ public class GuidedDTDRLPersistence {
                              List<DTCellValue52> row,
                              RuleModel rm) {
 
-        //Ensure every key has a value and substitute keys for values
         for ( IPattern pattern : column.getDefinition() ) {
 
-            //Get interpolation variables used by the Pattern
-            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-            RuleModelVisitor rmv = new RuleModelVisitor( pattern,
-                                                         ivs );
-            rmv.visit( pattern );
-
-            //Check each variable has a value
             boolean addPattern = true;
-            for ( InterpolationVariable variable : ivs.keySet() ) {
-                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                if ( "".equals( value ) ) {
-                    addPattern = false;
-                    break;
+
+            if ( column instanceof LimitedEntryCol ) {
+                int index = allColumns.indexOf( column );
+                DTCellValue52 dcv = row.get( index );
+                addPattern = dcv.getBooleanValue();
+
+            } else {
+
+                //Get interpolation variables used by the Pattern
+                Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+                RuleModelVisitor rmv = new RuleModelVisitor( pattern,
+                                                             ivs );
+                rmv.visit( pattern );
+
+                //Ensure every key has a value and substitute keys for values
+                for ( InterpolationVariable variable : ivs.keySet() ) {
+                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                    if ( "".equals( value ) ) {
+                        addPattern = false;
+                        break;
+                    }
                 }
             }
 

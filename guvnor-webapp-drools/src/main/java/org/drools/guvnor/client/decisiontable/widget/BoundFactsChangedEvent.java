@@ -17,8 +17,6 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 

@@ -15,11 +15,6 @@
   <name>Guvnor web application core</name>
   <description>Guvnor web application core for a generic service repository framework</description>
 
-  <properties>
-    <weld.version>1.1.5.Final</weld.version>
-    <seam.version>3.1.0.Final</seam.version>
-  </properties>
-
   <build>
     <resources>
       <!-- TODO REVISIT guvnorNG: this is not needed if compileSourcesArtifact works -->
@@ -31,19 +26,6 @@
       </resource>      
     </resources>
   </build>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- seam-bom overwrites the version of drools and other dependencies https://issues.jboss.org/browse/SEAM-110 -->
-      <!--<dependency>-->
-        <!--<groupId>org.jboss.seam</groupId>-->
-        <!--<artifactId>seam-bom</artifactId>-->
-        <!--<type>pom</type>-->
-        <!--<version>${seam.version}</version>-->
-        <!--<scope>import</scope>-->
-      <!--</dependency>-->
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -137,23 +119,19 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
-      <version>${weld.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-      <version>${weld.version}</version>
     </dependency>
     <!-- Seam 3 (goodies in weld) -->
     <dependency>
       <groupId>org.jboss.solder</groupId>
       <artifactId>solder-impl</artifactId>
-      <version>${seam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.security</groupId>
       <artifactId>seam-security</artifactId>
-      <version>${seam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.security</groupId>
@@ -163,18 +141,15 @@
     <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.remoting</groupId>
       <artifactId>seam-remoting</artifactId>
-      <version>${seam.version}</version>
     </dependency>
     <!--<dependency>-->
       <!--<groupId>org.jboss.seam.rest</groupId>-->
       <!--<artifactId>seam-rest</artifactId>-->
-      <!--<version>${seam.version}</version>-->
     <!--</dependency>-->
 
     <dependency>
@@ -196,8 +171,10 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
-      <version>1.1.1</version>
-      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
