@@ -2957,7 +2957,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Now to test conversion
         RuleModel rm = new RuleModel();
-        List<BaseColumn> allColumns = dtable.getAllColumns();
+        List<BaseColumn> allColumns = dtable.getExpandedColumns();
         List<CompositeColumn< ? >> allPatterns = dtable.getConditions();
         List<List<DTCellValue52>> dtData = upgrader.makeDataLists( data );
 
@@ -3259,7 +3259,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Now to test conversion
         RuleModel rm = new RuleModel();
-        List<BaseColumn> allColumns = dtable.getAllColumns();
+        List<BaseColumn> allColumns = dtable.getExpandedColumns();
         List<ActionCol52> allActions = dtable.getActionCols();
 
         //Row 0

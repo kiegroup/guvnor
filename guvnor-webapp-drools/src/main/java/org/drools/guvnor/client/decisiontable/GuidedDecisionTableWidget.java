@@ -61,6 +61,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -959,8 +960,12 @@ public class GuidedDecisionTableWidget extends Composite
             }
 
             private BRLConditionColumn makeNewConditionBRLFragment() {
-                //TODO {manstis} Limited Entry
-                return new BRLConditionColumn();
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryBRLConditionColumn();
+                    default :
+                        return new BRLConditionColumn();
+                }
             }
 
         } );

@@ -61,7 +61,7 @@ public class DecisionTableAnalyzer {
             RowDetector rowDetector = new RowDetector( row.get( 0 ).getNumericValue().longValue() - 1 );
             for ( Pattern52 pattern : model.getPatterns() ) {
                 for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
-                    int columnIndex = model.getAllColumns().indexOf( conditionCol );
+                    int columnIndex = model.getExpandedColumns().indexOf( conditionCol );
                     DTCellValue52 visibleCellValue = row.get( columnIndex );
                     DTCellValue52 realCellValue;
                     boolean cellIsNotBlank;
@@ -86,7 +86,7 @@ public class DecisionTableAnalyzer {
                 if(actionCol instanceof BRLActionColumn) {
                     continue;
                 }
-                int columnIndex = model.getAllColumns().indexOf( actionCol );
+                int columnIndex = model.getExpandedColumns().indexOf( actionCol );
                 DTCellValue52 visibleCellValue = row.get( columnIndex );
                 DTCellValue52 realCellValue;
                 boolean cellIsNotBlank;

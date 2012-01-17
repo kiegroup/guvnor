@@ -19,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.ModellerWidgetFactory;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerWidgetFactory;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateModellerWidgetFactory;
 import org.drools.guvnor.client.common.Popup;
@@ -92,12 +94,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
     private static AbstractBRLColumnEditorBinder uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
 
-    //TODO {manstis} For Limited Entry
-    @SuppressWarnings("unused")
-    private final SuggestionCompletionEngine     sce;
-    @SuppressWarnings("unused")
-    private final DTCellValueWidgetFactory       factory;
-
     protected final GuidedDecisionTable52        model;
     protected final ClientFactory                clientFactory;
     protected final EventBus                     eventBus;
@@ -116,7 +112,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                                      final ClientFactory clientFactory,
                                      final EventBus eventBus) {
         this.model = model;
-        this.sce = sce;
         this.isNew = isNew;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
@@ -124,17 +119,28 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.originalCol = column;
         this.editingCol = cloneBRLColumn( column );
 
-        //TODO {manstis} Limited Entry - Set-up factory for common widgets
-        factory = new DTCellValueWidgetFactory( model,
-                                                sce );
-
         setModal( false );
 
         this.ruleModel = getRuleModel( editingCol );
+
+        //Limited Entry decision tables do not permit field values to be defined with Template Keys
+        ModellerWidgetFactory widgetFactory = null;
+        switch ( model.getTableFormat() ) {
+            case EXTENDED_ENTRY :
+                widgetFactory = new TemplateModellerWidgetFactory();
+                break;
+            case LIMITED_ENTRY :
+                widgetFactory = new RuleModellerWidgetFactory();
+                break;
+        }
+        if ( widgetFactory == null ) {
+            throw new IllegalArgumentException( "Unrecognised TableFormat" );
+        }
+
         this.ruleModeller = new RuleModeller( asset,
                                               this.ruleModel,
                                               getRuleModellerConfiguration(),
-                                              new TemplateModellerWidgetFactory(),
+                                              widgetFactory,
                                               clientFactory,
                                               eventBus );
 

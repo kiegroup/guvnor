@@ -33,7 +33,11 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -106,15 +110,20 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     @Override
     protected List<BRLConditionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
 
+        //This should never happen
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            throw new UnsupportedOperationException( "LimitedEntryBRLConditionColumn cannot contain variables" );
+        }
+
         //Convert to columns for use in the Decision Table
         BRLConditionVariableColumn[] variables = new BRLConditionVariableColumn[ivs.size()];
         for ( Map.Entry<InterpolationVariable, Integer> me : ivs.entrySet() ) {
             InterpolationVariable iv = me.getKey();
             int index = me.getValue();
             BRLConditionVariableColumn variable = new BRLConditionVariableColumn( iv.getVarName(),
-                                                                                  iv.getDataType(),
-                                                                                  iv.getFactType(),
-                                                                                  iv.getFactField() );
+                                                                                   iv.getDataType(),
+                                                                                   iv.getFactType(),
+                                                                                   iv.getFactField() );
             variable.setHeader( editingCol.getHeader() );
             variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
@@ -124,10 +133,15 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     @Override
     protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn(BRLColumn<IPattern, BRLConditionVariableColumn> col) {
-        BRLConditionColumn clone = new BRLConditionColumn();
+        BRLConditionColumn clone = null;
+        if ( col instanceof LimitedEntryBRLConditionColumn ) {
+            clone = new LimitedEntryBRLConditionColumn();
+        } else {
+            clone = new BRLConditionColumn();
+            clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
+        }
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
-        clone.setChildColumns( cloneVariables( col.getChildColumns() ) );
         clone.setDefinition( cloneDefinition( col.getDefinition() ) );
         return clone;
     }

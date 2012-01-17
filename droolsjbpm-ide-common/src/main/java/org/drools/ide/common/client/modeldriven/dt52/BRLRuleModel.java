@@ -283,7 +283,7 @@ public class BRLRuleModel extends RuleModel {
                 } else {
 
                     //Check whether data for column contains Pattern binding
-                    int colIndex = dtable.getAllColumns().indexOf( col );
+                    int colIndex = dtable.getExpandedColumns().indexOf( col );
                     for ( List<DTCellValue52> row : dtable.getData() ) {
                         DTCellValue52 cell = row.get( colIndex );
                         if ( cell != null && cell.getStringValue().equals( binding ) ) {
