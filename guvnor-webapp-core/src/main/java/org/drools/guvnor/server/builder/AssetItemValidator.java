@@ -49,6 +49,7 @@ public class AssetItemValidator {
         
         public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
             this.moduleItem = moduleItem;
+            createBuilder();
         }
 
         public BuilderResult validate() {
