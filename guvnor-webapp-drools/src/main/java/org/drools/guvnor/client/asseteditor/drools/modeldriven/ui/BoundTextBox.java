@@ -52,7 +52,8 @@ public class BoundTextBox extends TextBox
 
         addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
-                setVisibleLength( getText().length() );
+                int length = getText().length();
+                setVisibleLength( length > 0 ? length : 1 );
             }
         } );
     }

@@ -101,7 +101,8 @@ public class GuidedDecisionTableWidget extends Composite
         EditorWidget,
         IBindingProvider,
         BRLActionColumnView.Presenter,
-        BRLConditionColumnView.Presenter {
+        BRLConditionColumnView.Presenter,
+        LimitedEntryBRLConditionColumnView.Presenter {
 
     private Constants                   constants         = GWT.create( Constants.class );
     private static Images               images            = GWT.create( Images.class );
@@ -144,9 +145,11 @@ public class GuidedDecisionTableWidget extends Composite
         ACTION_BRL_FRAGMENT
     }
 
-    private final BRLActionColumnView.Presenter    BRL_ACTION_PRESENTER    = this;
+    private final BRLActionColumnView.Presenter                BRL_ACTION_PRESENTER                  = this;
 
-    private final BRLConditionColumnView.Presenter BRL_CONDITION_PRESENTER = this;
+    private final BRLConditionColumnView.Presenter             BRL_CONDITION_PRESENTER               = this;
+
+    private final LimitedEntryBRLConditionColumnView.Presenter LIMITED_ENTRY_BRL_CONDITION_PRESENTER = this;
 
     public GuidedDecisionTableWidget(final Asset asset,
                                      final RuleViewer viewer,
@@ -763,15 +766,30 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showConditionBRLFragment() {
                         final BRLConditionColumn column = makeNewConditionBRLFragment();
-                        BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
-                                                                                           guidedDecisionTable,
-                                                                                           true,
-                                                                                           asset,
-                                                                                           column,
-                                                                                           clientFactory,
-                                                                                           eventBus );
-                        popup.setPresenter( BRL_CONDITION_PRESENTER );
-                        popup.show();
+                        switch ( guidedDecisionTable.getTableFormat() ) {
+                            case EXTENDED_ENTRY :
+                                BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( sce,
+                                                                                                   guidedDecisionTable,
+                                                                                                   true,
+                                                                                                   asset,
+                                                                                                   column,
+                                                                                                   clientFactory,
+                                                                                                   eventBus );
+                                popup.setPresenter( BRL_CONDITION_PRESENTER );
+                                popup.show();
+                                break;
+                            case LIMITED_ENTRY :
+                                LimitedEntryBRLConditionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLConditionColumnViewImpl( sce,
+                                                                                                                                      guidedDecisionTable,
+                                                                                                                                      true,
+                                                                                                                                      asset,
+                                                                                                                                      column,
+                                                                                                                                      clientFactory,
+                                                                                                                                      eventBus );
+                                limtedEntryPopup.setPresenter( LIMITED_ENTRY_BRL_CONDITION_PRESENTER );
+                                limtedEntryPopup.show();
+                                break;
+                        }
                     }
 
                     private void showActionInsert() {
@@ -1035,6 +1053,23 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editCondition(final BRLConditionColumn origCol) {
+        if ( origCol instanceof LimitedEntryBRLConditionColumn ) {
+            return new ImageButton( images.edit(),
+                                    constants.EditThisColumnsConfiguration(),
+                                    new ClickHandler() {
+                                        public void onClick(ClickEvent w) {
+                                            LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( sce,
+                                                                                                                                       guidedDecisionTable,
+                                                                                                                                       false,
+                                                                                                                                       asset,
+                                                                                                                                       origCol,
+                                                                                                                                       clientFactory,
+                                                                                                                                       eventBus );
+                                            popup.setPresenter( LIMITED_ENTRY_BRL_CONDITION_PRESENTER );
+                                            popup.show();
+                                        }
+                                    } );
+        }
         return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
@@ -1061,7 +1096,24 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeCondition(final ConditionCol52 c) {
-        if ( c instanceof BRLConditionColumn ) {
+        if ( c instanceof LimitedEntryBRLConditionColumn ) {
+            return new ImageButton( images.deleteItemSmall(),
+                                    constants.RemoveThisConditionColumn(),
+                                    new ClickHandler() {
+                                        public void onClick(ClickEvent w) {
+                                            if ( !canConditionBeDeleted( (LimitedEntryBRLConditionColumn) c ) ) {
+                                                Window.alert( constants.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                return;
+                                            }
+                                            String cm = constants.DeleteConditionColumnWarning( c.getHeader() );
+                                            if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                                dtable.deleteColumn( (LimitedEntryBRLConditionColumn) c );
+                                                refreshConditionsWidget();
+                                            }
+                                        }
+                                    } );
+
+        } else if ( c instanceof BRLConditionColumn ) {
             return new ImageButton( images.deleteItemSmall(),
                                     constants.RemoveThisConditionColumn(),
                                     new ClickHandler() {
@@ -1366,6 +1418,18 @@ public class GuidedDecisionTableWidget extends Composite
 
     public void updateColumn(BRLConditionColumn originalColumn,
                              BRLConditionColumn editedColumn) {
+        dtable.updateColumn( originalColumn,
+                             editedColumn );
+        refreshConditionsWidget();
+    }
+
+    public void insertColumn(LimitedEntryBRLConditionColumn column) {
+        dtable.addColumn( column );
+        refreshConditionsWidget();
+    }
+
+    public void updateColumn(LimitedEntryBRLConditionColumn originalColumn,
+                             LimitedEntryBRLConditionColumn editedColumn) {
         dtable.updateColumn( originalColumn,
                              editedColumn );
         refreshConditionsWidget();

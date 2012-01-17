@@ -48,6 +48,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -507,7 +508,9 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                         //Make applicable label (TODO move to Factory method)
                         StringBuilder label = new StringBuilder();
-                        if ( cc instanceof BRLConditionVariableColumn ) {
+                        if ( cc instanceof LimitedEntryBRLConditionColumn ) {
+                            //Nothing needed
+                        } else if ( cc instanceof BRLConditionVariableColumn ) {
                             BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
                             label.append( brl.getVarName() );
                         } else if ( cc instanceof ConditionCol52 ) {
@@ -592,7 +595,9 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
                         //Make applicable label (TODO move to Factory method)
                         StringBuilder label = new StringBuilder();
-                        if ( cc instanceof BRLConditionVariableColumn ) {
+                        if ( cc instanceof LimitedEntryBRLConditionColumn ) {
+                            //Nothing needed
+                        } else if ( cc instanceof BRLConditionVariableColumn ) {
                             BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
                             label.append( brl.getFactField() );
                         } else if ( cc instanceof ConditionCol52 ) {

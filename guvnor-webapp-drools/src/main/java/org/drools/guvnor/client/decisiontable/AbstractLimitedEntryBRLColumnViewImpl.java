@@ -15,24 +15,17 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.ModellerWidgetFactory;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateModellerWidgetFactory;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerWidgetFactory;
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
-import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelVisitor;
 import org.drools.ide.common.client.modeldriven.dt52.BRLColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -40,28 +33,23 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * An editor for BRL Column definitions
+ * An editor for Limited Entry BRL Column definitions
  */
-public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends Popup
+public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends Popup
     implements
-    RuleModelEditor,
-    TemplateVariablesChangedEvent.Handler {
+    RuleModelEditor {
 
     protected static final Constants constants  = GWT.create( Constants.class );
 
@@ -86,30 +74,30 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     Widget                           popupContent;
 
     @SuppressWarnings("rawtypes")
-    interface AbstractBRLColumnEditorBinder
+    interface AbstractLimitedEntryBRLColumnEditorBinder
         extends
-        UiBinder<Widget, AbstractBRLColumnViewImpl> {
+        UiBinder<Widget, AbstractLimitedEntryBRLColumnViewImpl> {
     }
 
-    private static AbstractBRLColumnEditorBinder uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
+    private static AbstractLimitedEntryBRLColumnEditorBinder uiBinder = GWT.create( AbstractLimitedEntryBRLColumnEditorBinder.class );
 
-    protected final GuidedDecisionTable52        model;
-    protected final ClientFactory                clientFactory;
-    protected final EventBus                     eventBus;
-    protected final boolean                      isNew;
+    protected final GuidedDecisionTable52                    model;
+    protected final ClientFactory                            clientFactory;
+    protected final EventBus                                 eventBus;
+    protected final boolean                                  isNew;
 
-    protected final BRLColumn<T, C>              editingCol;
-    protected final BRLColumn<T, C>              originalCol;
+    protected final BRLColumn<T, C>                          editingCol;
+    protected final BRLColumn<T, C>                          originalCol;
 
-    protected final RuleModel                    ruleModel;
+    protected final RuleModel                                ruleModel;
 
-    public AbstractBRLColumnViewImpl(final SuggestionCompletionEngine sce,
-                                     final GuidedDecisionTable52 model,
-                                     final boolean isNew,
-                                     final Asset asset,
-                                     final BRLColumn<T, C> column,
-                                     final ClientFactory clientFactory,
-                                     final EventBus eventBus) {
+    public AbstractLimitedEntryBRLColumnViewImpl(final SuggestionCompletionEngine sce,
+                                                 final GuidedDecisionTable52 model,
+                                                 final boolean isNew,
+                                                 final Asset asset,
+                                                 final BRLColumn<T, C> column,
+                                                 final ClientFactory clientFactory,
+                                                 final EventBus eventBus) {
         this.model = model;
         this.isNew = isNew;
         this.eventBus = eventBus;
@@ -122,7 +110,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
         this.ruleModel = getRuleModel( editingCol );
 
-        ModellerWidgetFactory widgetFactory = new TemplateModellerWidgetFactory();
+        //Limited Entry decision tables do not permit field values to be defined with Template Keys
+        ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
 
         this.ruleModeller = new RuleModeller( asset,
                                               this.ruleModel,
@@ -141,23 +130,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
     }
 
-    @Override
-    public void show() {
-        //Hook-up events
-        final HandlerRegistration registration = eventBus.addHandler( TemplateVariablesChangedEvent.TYPE,
-                                                                      this );
-
-        //Release event handlers when closed
-        addCloseHandler( new CloseHandler<PopupPanel>() {
-
-            public void onClose(CloseEvent<PopupPanel> event) {
-                registration.removeHandler();
-            }
-
-        } );
-        super.show();
-    }
-
     protected abstract boolean isHeaderUnique(String header);
 
     protected abstract RuleModel getRuleModel(BRLColumn<T, C> column);
@@ -167,8 +139,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     protected abstract void doInsertColumn();
 
     protected abstract void doUpdateColumn();
-
-    protected abstract List<C> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs);
 
     protected abstract BRLColumn<T, C> cloneBRLColumn(BRLColumn<T, C> col);
 
@@ -230,8 +200,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                 Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
-            //Ensure variables reflect (name) changes made in RuleModeller
-            getDefinedVariables( this.ruleModel );
             doInsertColumn();
 
         } else {
@@ -241,29 +209,10 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                     return;
                 }
             }
-            //Ensure variables reflect (name) changes made in RuleModeller
-            getDefinedVariables( this.ruleModel );
             doUpdateColumn();
         }
 
         hide();
-    }
-
-    //Fired when a Template Key is added or removed
-    public void onTemplateVariablesChanged(TemplateVariablesChangedEvent event) {
-        if ( event.getSource() == this.ruleModel ) {
-            getDefinedVariables( event.getModel() );
-        }
-    }
-
-    //Extract Template Keys from RuleModel
-    private void getDefinedVariables(RuleModel ruleModel) {
-        Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-        RuleModelVisitor rmv = new RuleModelVisitor( ivs );
-        rmv.visit( ruleModel );
-
-        //Update column and UI
-        editingCol.setChildColumns( convertInterpolationVariables( ivs ) );
     }
 
 }

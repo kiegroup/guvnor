@@ -70,6 +70,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -201,25 +202,35 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
 
-        if ( modelColumn instanceof LimitedEntryCol ) {
-            model.getConditions().add( modelColumn );
-            addColumn( modelColumn,
-                       cellValueFactory.makeColumnData( modelColumn ),
+        //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
+        //columns added until after the data has been created. If the columns are added first a similar dilemma 
+        //exists as we can only ascertain the end index of the last column and we'd need an offset to count
+        //back from the end.
+        for ( int offset = 0; offset < modelColumn.getChildColumns().size(); offset++ ) {
+            BRLConditionVariableColumn variable = modelColumn.getChildColumns().get( offset );
+            addColumn( offset + 1,
+                       variable,
+                       cellValueFactory.makeColumnData( variable ),
                        true );
-        } else {
-            //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
-            //columns added until after the data has been created. If the columns are added first a similar dilemma 
-            //exists as we can only ascertain the end index of the last column and we'd need an offset to count
-            //back from the end.
-            for ( int offset = 0; offset < modelColumn.getChildColumns().size(); offset++ ) {
-                BRLConditionVariableColumn variable = modelColumn.getChildColumns().get( offset );
-                addColumn( offset + 1,
-                           variable,
-                           cellValueFactory.makeColumnData( variable ),
-                           true );
-            }
-            model.getConditions().add( modelColumn );
         }
+        model.getConditions().add( modelColumn );
+    }
+
+    /**
+     * Add a column to the table.
+     * 
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
+    public void addColumn(LimitedEntryBRLConditionColumn modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+
+        model.getConditions().add( modelColumn );
+        addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
+                   true );
     }
 
     /**
@@ -336,24 +347,33 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
 
-        if ( modelColumn instanceof LimitedEntryCol ) {
-            int index = model.getExpandedColumns().indexOf( modelColumn );
-            model.getConditions().remove( modelColumn );
-            deleteColumn( index,
+        //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
+        //columns added until after the data has been created. If the columns are added first a similar dilemma 
+        //exists as we can only ascertain the end index of the last column and we'd need an offset to count
+        //back from the end.
+        for ( int offset = 0; offset < modelColumn.getChildColumns().size(); offset++ ) {
+            BRLConditionVariableColumn variable = modelColumn.getChildColumns().get( offset );
+            int index = model.getExpandedColumns().indexOf( variable );
+            deleteColumn( index - offset,
                           true );
-        } else {
-            //Need to provide an offset for the column index as the model does not have the BRLActionVariableColumn 
-            //columns added until after the data has been created. If the columns are added first a similar dilemma 
-            //exists as we can only ascertain the end index of the last column and we'd need an offset to count
-            //back from the end.
-            for ( int offset = 0; offset < modelColumn.getChildColumns().size(); offset++ ) {
-                BRLConditionVariableColumn variable = modelColumn.getChildColumns().get( offset );
-                int index = model.getExpandedColumns().indexOf( variable );
-                deleteColumn( index - offset,
-                              true );
-            }
-            model.getConditions().remove( modelColumn );
         }
+        model.getConditions().remove( modelColumn );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(LimitedEntryBRLConditionColumn modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+
+        int index = model.getExpandedColumns().indexOf( modelColumn );
+        model.getConditions().remove( modelColumn );
+        deleteColumn( index,
+                      true );
     }
 
     /**
@@ -987,6 +1007,51 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Update a LimitedEntryBRLConditionColumn column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final LimitedEntryBRLConditionColumn origColumn,
+                             final LimitedEntryBRLConditionColumn editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getExpandedColumns().indexOf( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
+        }
+
+    }
+
+    /**
      * Update a Condition column
      * 
      * @param origPattern
@@ -1520,6 +1585,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setHideColumn( editingCol.isHideColumn() );
         col.setDefinition( editingCol.getDefinition() );
         col.setChildColumns( editingCol.getChildColumns() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final LimitedEntryBRLConditionColumn col,
+                                     final LimitedEntryBRLConditionColumn editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setDefinition( editingCol.getDefinition() );
     }
 
     //Remove Otherwise state from column cells

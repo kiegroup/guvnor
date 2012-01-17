@@ -88,7 +88,7 @@ public class GuidedDTDRLPersistence {
 
             //Specialised BRDRLPersistence provider than can handle template key expansion
             TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
-                                                                        row );
+                                                                                     row );
 
             BigDecimal num = row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
@@ -217,22 +217,30 @@ public class GuidedDTDRLPersistence {
                           List<DTCellValue52> row,
                           RuleModel rm) {
 
-        //Ensure every key has a value and substitute keys for values
         for ( IAction action : column.getDefinition() ) {
 
-            //Get interpolation variables used by the Action
-            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-            RuleModelVisitor rmv = new RuleModelVisitor( action,
-                                                         ivs );
-            rmv.visit( action );
-
-            //Check each variable has a value
             boolean addAction = true;
-            for ( InterpolationVariable variable : ivs.keySet() ) {
-                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                if ( "".equals( value ) ) {
-                    addAction = false;
-                    break;
+
+            if ( column instanceof LimitedEntryCol ) {
+                int index = allColumns.indexOf( column );
+                DTCellValue52 dcv = row.get( index );
+                addAction = dcv.getBooleanValue();
+
+            } else {
+
+                //Get interpolation variables used by the Action
+                Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+                RuleModelVisitor rmv = new RuleModelVisitor( action,
+                                                             ivs );
+                rmv.visit( action );
+
+                //Ensure every key has a value and substitute keys for values
+                for ( InterpolationVariable variable : ivs.keySet() ) {
+                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                    if ( "".equals( value ) ) {
+                        addAction = false;
+                        break;
+                    }
                 }
             }
 
@@ -438,61 +446,36 @@ public class GuidedDTDRLPersistence {
     }
 
     private void doCondition(List<BaseColumn> allColumns,
-                             LimitedEntryBRLConditionColumn column,
-                             List<IPattern> patterns,
-                             TemplateDataProvider rowDataProvider,
-                             List<DTCellValue52> row,
-                             RuleModel rm) {
-
-        //Ensure every key has a value and substitute keys for values
-        for ( IPattern pattern : column.getDefinition() ) {
-
-            //Get interpolation variables used by the Pattern
-            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-            RuleModelVisitor rmv = new RuleModelVisitor( pattern,
-                                                         ivs );
-            rmv.visit( pattern );
-
-            //Check each variable has a value
-            boolean addPattern = true;
-            for ( InterpolationVariable variable : ivs.keySet() ) {
-                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                if ( "".equals( value ) ) {
-                    addPattern = false;
-                    break;
-                }
-            }
-
-            if ( addPattern ) {
-                patterns.add( pattern );
-            }
-
-        }
-    }
-
-    private void doCondition(List<BaseColumn> allColumns,
                              BRLConditionColumn column,
                              List<IPattern> patterns,
                              TemplateDataProvider rowDataProvider,
                              List<DTCellValue52> row,
                              RuleModel rm) {
 
-        //Ensure every key has a value and substitute keys for values
         for ( IPattern pattern : column.getDefinition() ) {
 
-            //Get interpolation variables used by the Pattern
-            Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
-            RuleModelVisitor rmv = new RuleModelVisitor( pattern,
-                                                         ivs );
-            rmv.visit( pattern );
-
-            //Check each variable has a value
             boolean addPattern = true;
-            for ( InterpolationVariable variable : ivs.keySet() ) {
-                String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                if ( "".equals( value ) ) {
-                    addPattern = false;
-                    break;
+
+            if ( column instanceof LimitedEntryCol ) {
+                int index = allColumns.indexOf( column );
+                DTCellValue52 dcv = row.get( index );
+                addPattern = dcv.getBooleanValue();
+
+            } else {
+
+                //Get interpolation variables used by the Pattern
+                Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+                RuleModelVisitor rmv = new RuleModelVisitor( pattern,
+                                                             ivs );
+                rmv.visit( pattern );
+
+                //Ensure every key has a value and substitute keys for values
+                for ( InterpolationVariable variable : ivs.keySet() ) {
+                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                    if ( "".equals( value ) ) {
+                        addPattern = false;
+                        break;
+                    }
                 }
             }
 
