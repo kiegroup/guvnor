@@ -942,19 +942,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLActionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getExpandedColumns().indexOf( variable );
-            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
+            String key = getUpdateBRLActionColumnKey( variable );
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
             }
-            origColumnVariables.put( key.toString(),
+            origColumnVariables.put( key,
                                      columnData );
         }
 
         int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLActionVariableColumn variable : editColumn.getChildColumns() ) {
-            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
-            List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
+            String key = getUpdateBRLActionColumnKey( variable );
+            List<DTCellValue52> columnData = origColumnVariables.get( key );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
             }
@@ -978,6 +978,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              editColumn );
     }
 
+    private String getUpdateBRLActionColumnKey(BRLActionVariableColumn variable) {
+        StringBuilder key = new StringBuilder( variable.getVarName() ).append( ":" ).append( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+        return key.toString();
+    }
+
     /**
      * Update a BRLConditionColumn column
      * 
@@ -999,8 +1004,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLConditionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getExpandedColumns().indexOf( variable );
-            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
             List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
+            String key = getUpdateBRLConditionColumnKey( variable );
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
             }
@@ -1010,7 +1015,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
-            StringBuilder key = new StringBuilder( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+            String key = getUpdateBRLConditionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
@@ -1037,6 +1042,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         //Signal patterns changed event to Decision Table Widget
         BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
         eventBus.fireEvent( pce );
+    }
+
+    private String getUpdateBRLConditionColumnKey(BRLConditionVariableColumn variable) {
+        StringBuilder key = new StringBuilder( variable.getVarName() ).append( ":" ).append( variable.getFieldType() ).append( ":" ).append( variable.getFactField() ).append( ":" ).append( variable.getFactType() );
+        return key.toString();
     }
 
     /**
