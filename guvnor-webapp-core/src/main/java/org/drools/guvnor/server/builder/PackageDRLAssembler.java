@@ -31,6 +31,7 @@ public class PackageDRLAssembler extends PackageAssemblerBase {
     
     public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
         this.moduleItem = moduleItem;
+        createBuilder();
     }
     
     public String getDRL() {
