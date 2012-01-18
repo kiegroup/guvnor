@@ -18,15 +18,15 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.configurations.User;
 import org.drools.guvnor.client.explorer.ClientFactory;
 
 public class ModulesTree
-    implements
-    ModulesTreeView.Presenter {
+        implements
+        ModulesTreeView.Presenter {
 
     private ModulesTreeView view;
-    private ClientFactory            clientFactory;
+    private ClientFactory clientFactory;
     private final EventBus eventBus;
     private String perspectiveTypes;
 
@@ -35,38 +35,38 @@ public class ModulesTree
         this.eventBus = eventBus;
         this.perspectiveTypes = perspectiveTypes;
         this.view = clientFactory.getNavigationViewFactory().getModulesTreeView();
-        this.view.setPresenter( this );
+        this.view.setPresenter(this);
         addRootPanels();
     }
 
     private void addRootPanels() {
-        view.setGlobalAreaTreeItem( new GlobalAreaTreeItem( clientFactory ) );
+        view.setGlobalAreaTreeItem(new GlobalAreaTreeItem(clientFactory));
 
-        view.setModulesTreeItem( new ModulesTreeItem( clientFactory, eventBus, perspectiveTypes) );
+        view.setModulesTreeItem(new ModulesTreeItem(clientFactory, eventBus, perspectiveTypes));
 
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET ) ) {
+        if (User.INSTANCE.hasCapability(Capability.SHOW_CREATE_NEW_ASSET)) {
             view.setNewAssetMenu(clientFactory.getNavigationViewFactory().getModulesNewAssetMenu(perspectiveTypes));
         }
     }
 
     public void setFlatView() {
-        ChangeModuleHierarchyEvent event = new ChangeModuleHierarchyEvent( new PackageFlatView() );
-        eventBus.fireEvent( event );
+        ChangeModuleHierarchyEvent event = new ChangeModuleHierarchyEvent(new PackageFlatView());
+        eventBus.fireEvent(event);
     }
 
     public void setHierarchyView() {
-        ChangeModuleHierarchyEvent event = new ChangeModuleHierarchyEvent( new PackageHierarchicalView() );
-        eventBus.fireEvent( event );
+        ChangeModuleHierarchyEvent event = new ChangeModuleHierarchyEvent(new PackageHierarchicalView());
+        eventBus.fireEvent(event);
     }
 
     public void expandAll() {
         ExpandAllEvent event = new ExpandAllEvent();
-        eventBus.fireEvent( event );
+        eventBus.fireEvent(event);
     }
 
     public void collapseAll() {
         CollapseAllEvent event = new CollapseAllEvent();
-        eventBus.fireEvent( event );
+        eventBus.fireEvent(event);
     }
 
 }

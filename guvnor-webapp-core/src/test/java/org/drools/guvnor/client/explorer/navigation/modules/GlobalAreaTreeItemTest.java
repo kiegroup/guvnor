@@ -16,11 +16,10 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItem;
-import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
@@ -34,13 +33,13 @@ public class GlobalAreaTreeItemTest {
     private GlobalAreaTreeItemView view;
     private GlobalAreaTreeItem presenter;
     private NavigationViewFactory navigationViewFactory;
-    private ModuleServiceAsync packageService;
+    private ModuleServiceAsync moduleService;
 
     @Before
     public void setUp() throws Exception {
-        view = mock( GlobalAreaTreeItemView.class );
-        ClientFactory clientFactory = mock( ClientFactory.class );
-        navigationViewFactory = mock( NavigationViewFactory.class );
+        view = mock(GlobalAreaTreeItemView.class);
+        ClientFactory clientFactory = mock(ClientFactory.class);
+        navigationViewFactory = mock(NavigationViewFactory.class);
         when(
                 clientFactory.getNavigationViewFactory()
         ).thenReturn(
@@ -52,20 +51,20 @@ public class GlobalAreaTreeItemTest {
                 view
         );
 
-        packageService = mock( ModuleServiceAsync.class );
+        moduleService = mock(ModuleServiceAsync.class);
         when(
                 clientFactory.getModuleService()
         ).thenReturn(
-                packageService
+                moduleService
         );
 
-        presenter = new GlobalAreaTreeItem( clientFactory );
+        presenter = new GlobalAreaTreeItem(clientFactory);
     }
 
     @Test
     public void testSetUp() throws Exception {
-        verify( navigationViewFactory ).getGlobalAreaTreeItemView();
-        verify( view ).setPresenter( presenter );
-        verify( packageService ).loadGlobalModule( Matchers.<AsyncCallback<Module>>any() );
+        verify(navigationViewFactory).getGlobalAreaTreeItemView();
+        verify(view).setPresenter(presenter);
+        verify(moduleService).loadGlobalModule(Matchers.<AsyncCallback<Module>>any());
     }
 }

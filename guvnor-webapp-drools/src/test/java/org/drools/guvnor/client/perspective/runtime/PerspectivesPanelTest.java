@@ -23,7 +23,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
@@ -55,10 +54,10 @@ public class PerspectivesPanelTest {
         when(
                 clientFactory.getNavigationViewFactory()
         ).thenReturn(
-        		navigationViewFactory
+                navigationViewFactory
         );
         when(
-        		navigationViewFactory.getPerspectivesPanelView()
+                navigationViewFactory.getPerspectivesPanelView()
         ).thenReturn(
                 view
         );
@@ -69,35 +68,35 @@ public class PerspectivesPanelTest {
         ).thenReturn(
                 perspectiveFactory
         );
-        
+
         when(
                 perspectiveFactory.getPerspective("author")
         ).thenReturn(
                 new AuthorPerspective()
-                
+
         );
-        
+
         when(
                 perspectiveFactory.getPerspective("runtime")
         ).thenReturn(
                 new RunTimePerspective()
-                
-        );        
-        
+
+        );
+
         when(
                 perspectiveFactory.getRegisteredPerspectiveTypes()
         ).thenReturn(
                 new String[]{"author", "runtime"}
-                
+
         );
-        
+
         ModuleServiceAsync packageService = mock(ModuleServiceAsync.class);
         when(
                 clientFactory.getModuleService()
         ).thenReturn(
                 packageService
         );
-        
+
         perspectivesPanel = new PerspectivesPanel(clientFactory, eventBus);
         presenter = getPresenter();
     }
@@ -118,8 +117,8 @@ public class PerspectivesPanelTest {
 
     @Test
     public void testPerspectiveListIsLoaded() throws Exception {
-       verify(view).addPerspective("author", "author");
-       verify(view).addPerspective("runtime", "runtime");
+        verify(view).addPerspective("author", "author");
+        verify(view).addPerspective("runtime", "runtime");
     }
 
     @Test

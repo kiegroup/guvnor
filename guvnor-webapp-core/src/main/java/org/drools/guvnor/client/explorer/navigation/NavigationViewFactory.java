@@ -25,14 +25,6 @@ import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemVi
 import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderView;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeView;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
@@ -67,22 +59,6 @@ public interface NavigationViewFactory {
     MultiAssetView getMultiAssetView();
 
     Widget getModulesNewAssetMenu(String perspectiveType);
-
-    SettingsHeaderView getSettingsHeaderView();
-
-    SettingsTreeView getSettingsTreeView();
-
-    ProcessesHeaderView getProcessesHeaderView();
-
-    ProcessesTreeView getProcessesTreeView();
-
-    ReportingHeaderView getReportingHeaderView();
-
-    ReportingTreeView getReportingTreeView();
-
-    TasksHeaderView getTasksHeaderView();
-
-    TasksTreeView getTasksTreeView();
 
     WizardActivityView getWizardView(WizardContext context);
 

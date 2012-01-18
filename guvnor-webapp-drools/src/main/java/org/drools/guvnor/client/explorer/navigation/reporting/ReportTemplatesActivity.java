@@ -17,13 +17,25 @@
 package org.drools.guvnor.client.explorer.navigation.reporting;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.util.Activity;
 
 public class ReportTemplatesActivity extends Activity {
 
+//    private final ClientFactory clientFactory;
+//
+//    public ReportTemplatesActivity(ClientFactory clientFactory) {
+//        this.clientFactory = clientFactory;
+//    }
+
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-        //TODO: Generated code -Rikkola-
+//        ReportView reportView = new ReportView(clientFactory);
+//        reportView.setController(clientFactory.getController());
+//        Widget widget = reportView.asWidget();
+//        widget.setHeight("600px");
+//        tabbedPanel.add(Constants.INSTANCE.ReportTemplates(), widget);
+
     }
 }

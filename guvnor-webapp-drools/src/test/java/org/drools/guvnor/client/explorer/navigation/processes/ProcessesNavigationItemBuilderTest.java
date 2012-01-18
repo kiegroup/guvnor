@@ -32,7 +32,7 @@ public class ProcessesNavigationItemBuilderTest {
     @Before
     public void setUp() throws Exception {
         processesHeaderView = mock(ProcessesHeaderView.class);
-        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+        ProcessNavigationViewFactory navigationViewFactory = mock(ProcessNavigationViewFactory.class);
         when(
                 navigationViewFactory.getProcessesHeaderView()
         ).thenReturn(

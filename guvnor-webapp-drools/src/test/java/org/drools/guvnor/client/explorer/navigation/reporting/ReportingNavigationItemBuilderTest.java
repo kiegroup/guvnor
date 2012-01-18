@@ -1,7 +1,7 @@
 package org.drools.guvnor.client.explorer.navigation.reporting;
 
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class ReportingNavigationItemBuilderTest {
     @Before
     public void setUp() throws Exception {
         reportingHeaderView = mock(ReportingHeaderView.class);
-        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+        ProcessNavigationViewFactory navigationViewFactory = mock(ProcessNavigationViewFactory.class);
         when(
                 navigationViewFactory.getReportingHeaderView()
         ).thenReturn(

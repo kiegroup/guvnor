@@ -18,8 +18,8 @@ public class RunTimePerspectiveTest {
 
     @Test
     public void testAllBuildersExist() throws Exception {
-        ClientFactory clientFactory = mock(ClientFactory.class);
         EventBus eventBus = mock(EventBus.class);
+        ClientFactory clientFactory = mock(ClientFactory.class);
         Collection<NavigationItemBuilder> builders = new RunTimePerspective().getBuilders(clientFactory, eventBus);
 
         assertEquals(4, builders.size());

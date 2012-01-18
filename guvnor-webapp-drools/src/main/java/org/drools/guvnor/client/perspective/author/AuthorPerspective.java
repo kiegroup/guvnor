@@ -30,8 +30,13 @@ import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.perspective.Perspective;
 
 public class AuthorPerspective extends Perspective {
+
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
-    
+
+    public AuthorPerspective() {
+    }
+
+    @Override
     public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
@@ -40,11 +45,11 @@ public class AuthorPerspective extends Perspective {
 
         navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
 
-        navigationItemBuilders.add(new QATreeBuilder(clientFactory));
+        navigationItemBuilders.add(new QATreeBuilder(clientFactory.getPlaceController()));
 
-        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory));
+        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getPlaceController()));
 
-        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory));
+        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory.getPlaceController()));
 
         return navigationItemBuilders;
     }

@@ -22,6 +22,11 @@
           <!-- TODO in JBoss 7.1 it will be allowed to include weld too -->
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
 
+          <!-- Temporaly excludes the magic jars that comes from bpm-console -->
+          <exclude>WEB-INF/lib/jboss-seam-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-servlet-2.0.4.jar</exclude>
+          <exclude>WEB-INF/jboss-web.xml</exclude>
+
           <!--&lt;!&ndash; Weld transitive dependency excludes, it's bundled in the AS &ndash;&gt;-->
           <!--<exclude>WEB-INF/lib/cdi-api-*.jar</exclude>-->
           <!--<exclude>WEB-INF/lib/persistence-api-*.jar</exclude>-->

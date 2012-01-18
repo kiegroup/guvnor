@@ -1,6 +1,6 @@
 package org.drools.guvnor.client.explorer.drools;
 
-
+import com.google.gwt.place.shared.WithTokenizers;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
@@ -21,7 +21,6 @@ import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
-import com.google.gwt.place.shared.WithTokenizers;
 
 @WithTokenizers(
         {
@@ -47,4 +46,5 @@ import com.google.gwt.place.shared.WithTokenizers;
         }
 )
 public interface GuvnorDroolsPlaceHistoryMapper extends GuvnorPlaceHistoryMapper {
+
 }

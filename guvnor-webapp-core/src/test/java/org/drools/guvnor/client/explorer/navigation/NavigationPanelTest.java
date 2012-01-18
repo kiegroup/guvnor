@@ -26,7 +26,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.Event;
-
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
@@ -84,7 +83,7 @@ public class NavigationPanelTest {
         navigationItemBuilders.add(createNavigationItemBuilder(true, header, content));
         navigationItemBuilders.add(createNavigationItemBuilder(false, headerThatIsNeverShown, contentThatIsNeverShown));
         when(
-                perspective.getBuilders(eq(clientFactory), any(ResettableEventBus.class))
+                perspective.getBuilders(clientFactory, eventBus)
         ).thenReturn(
                 navigationItemBuilders
         );
@@ -102,7 +101,7 @@ public class NavigationPanelTest {
 
         ArgumentCaptor<ResettableEventBus> resettableEventBusArgumentCaptor = ArgumentCaptor.forClass(ResettableEventBus.class);
         when(
-                perspective.getBuilders(eq(clientFactory), resettableEventBusArgumentCaptor.capture())
+                perspective.getBuilders(clientFactory, eventBus)
         ).thenReturn(
                 Collections.<NavigationItemBuilder>emptyList()
         );

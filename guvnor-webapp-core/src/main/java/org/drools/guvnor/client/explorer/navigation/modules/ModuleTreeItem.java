@@ -16,19 +16,17 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.explorer.ClientFactory;
-
 import com.google.gwt.user.client.ui.IsTreeItem;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class ModuleTreeItem {
 
-    protected final IsTreeItem         treeItem;
+    protected final IsTreeItem treeItem;
     protected final ModuleTreeItemView view;
 
-    public ModuleTreeItem(ClientFactory clientFactory,
-                          IsTreeItem treeItem) {
-        this.view = clientFactory.getNavigationViewFactory().getModuleTreeItemView();
-        this.view.setRootItem( treeItem );
+    public ModuleTreeItem(NavigationViewFactory navigationViewFactory, IsTreeItem treeItem) {
+        this.view = navigationViewFactory.getModuleTreeItemView();
+        this.view.setRootItem(treeItem);
         this.treeItem = treeItem;
     }
 

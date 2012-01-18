@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.configurations.User;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
@@ -38,7 +38,7 @@ public class ModulesTreeBuilder extends NavigationItemBuilder {
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
+        return User.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
     }
 
     @Override

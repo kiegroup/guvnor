@@ -40,12 +40,20 @@ public class ConfigurationsLoader {
     }
 
     public static void loadUserCapabilities(final Command command) {
-        SecurityServiceAsync.INSTANCE.getUserCapabilities(new GenericCallback<List<Capability>>() {
-            public void onSuccess(List<Capability> capabilities) {
-                UserCapabilities.setUp(capabilities);
-                executeCommand(command);
-            }
-        });
+        SecurityServiceAsync.INSTANCE.getUserCapabilities(
+                new GenericCallback<List<Capability>>() {
+                    public void onSuccess(final List<Capability> capabilities) {
+                        SecurityServiceAsync.INSTANCE.getCurrentUser(
+                                new GenericCallback<UserSecurityContext>() {
+                                    public void onSuccess(UserSecurityContext userSecurityContext) {
+                                        User.setUp(userSecurityContext.getUserName(), capabilities);
+                                        executeCommand(command);
+                                    }
+                                }
+                        );
+                    }
+                }
+        );
     }
 
     private static void executeCommand(Command command) {

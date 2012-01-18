@@ -23,23 +23,20 @@ import org.drools.guvnor.client.rpc.Module;
 
 public class GlobalAreaTreeItem extends ModulesTreeItemBase {
 
-    public GlobalAreaTreeItem( ClientFactory clientFactory ) {
-        super(
-                clientFactory,
-                clientFactory.getNavigationViewFactory().getGlobalAreaTreeItemView(),
+    public GlobalAreaTreeItem(ClientFactory clientFactory) {
+        super(clientFactory,
                 null);
     }
 
     @Override
-    protected void fillModulesTree( final IsTreeItem treeItem ) {
-        clientFactory.getModuleService().loadGlobalModule( new GenericCallback<Module>() {
-            public void onSuccess( Module packageConfigData ) {
+    protected void fillModulesTree(final IsTreeItem treeItem) {
+        clientFactory.getModuleService().loadGlobalModule(new GenericCallback<Module>() {
+            public void onSuccess(Module packageConfigData) {
                 new ModuleTreeSelectableItem(
-                        clientFactory,
+                        clientFactory.getNavigationViewFactory(),
                         treeItem,
-                        packageConfigData
-                );
+                        packageConfigData);
             }
-        } );
+        });
     }
 }

@@ -16,124 +16,73 @@
 
 package org.drools.guvnor.client.explorer.drools;
 
-import org.drools.guvnor.client.explorer.AssetEditorActivity;
-import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.FindActivity;
-import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
-import org.drools.guvnor.client.explorer.ModuleEditorActivity;
-import org.drools.guvnor.client.explorer.ModuleEditorPlace;
-import org.drools.guvnor.client.explorer.MultiAssetActivity;
-import org.drools.guvnor.client.explorer.MultiAssetPlace;
-import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
-import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.InboxActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListActivity;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierActivity;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesActivity;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
-import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
-import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
+import org.drools.guvnor.client.perspective.runtime.BpmConsoleActivityMapper;
 import org.drools.guvnor.client.util.Activity;
-import org.drools.guvnor.client.widgets.wizards.WizardActivity;
-import org.drools.guvnor.client.widgets.wizards.WizardPlace;
-
-import com.google.gwt.place.shared.Place;
 
 public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
+
+    private BpmConsoleActivityMapper bpmConsoleActivityMapper;
 
     public GuvnorDroolsActivityMapper(ClientFactory clientFactory) {
         super(clientFactory);
     }
 
     public Activity getActivity(Place place) {
-        if ( place instanceof FindPlace ) {
-            return new FindActivity( clientFactory );
-        } else if ( place instanceof AssetEditorPlace ) {
-            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
-        } else if ( place instanceof ModuleEditorPlace ) {
-            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
-                    clientFactory );
-        } else if ( place instanceof AssetViewerPlace ) {
-            return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
-                    clientFactory );
-        } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
-            return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace(
-                    (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
-                    clientFactory );
-        } else if ( place instanceof ManagerPlace ) {
-            return new ManagerActivity(
-                    ((ManagerPlace) place).getId(),
-                    clientFactory );
-        } else if ( place instanceof TestScenarioListPlace ) {
+        Activity activity = tryParent(place);
+
+        if (activity == null) {
+            activity = tryDroolsGuvnor(place);
+        }
+
+        if (activity == null) {
+            activity = tryBpmConsoleActivityMapper(place);
+        }
+
+        return activity;
+    }
+
+    private Activity tryDroolsGuvnor(Place place) {
+        if (place instanceof TestScenarioListPlace) {
             return new TestScenarioListActivity(
                     ((TestScenarioListPlace) place).getModuleUuid(),
-                    clientFactory );
-        } else if ( place instanceof VerifierPlace ) {
+                    clientFactory);
+        } else if (place instanceof VerifierPlace) {
             return new VerifierActivity(
                     ((VerifierPlace) place).getModuleUuid(),
-                    clientFactory );
-        } else if ( place instanceof SnapshotPlace ) {
+                    clientFactory);
+        } else if (place instanceof SnapshotPlace) {
             return new SnapshotActivity(
                     ((SnapshotPlace) place).getModuleName(),
                     ((SnapshotPlace) place).getSnapshotName(),
                     clientFactory);
-        } else if ( place instanceof SnapshotAssetListPlace ) {
+        } else if (place instanceof SnapshotAssetListPlace) {
             return new SnapshotAssetListActivity(
                     (SnapshotAssetListPlace) place,
-                    clientFactory );
-        } else if ( place instanceof CategoryPlace ) {
-            return new CategoryActivity(
-                    ((CategoryPlace) place).getCategoryPath(),
-                    clientFactory );
-        } else if ( place instanceof StatePlace ) {
-            return new StateActivity(
-                    ((StatePlace) place).getStateName(),
-                    clientFactory );
-        } else if ( place instanceof InboxPlace ) {
-            return new InboxActivity(
-                    (InboxPlace) place,
-                    clientFactory );
-        } else if ( place instanceof MultiAssetPlace ) {
-            return new MultiAssetActivity(
-                    (MultiAssetPlace) place,
-                    clientFactory );
-        } else if ( place instanceof WizardPlace ) {
-            return new WizardActivity(
-                    (WizardPlace<?>) place,
-                    clientFactory );
-        } else if (place instanceof PersonalTasksPlace) {
-            return new PersonalTasksActivity();
-        } else if (place instanceof GroupTasksPlace) {
-            return new GroupTasksActivity();
-        } else if (place instanceof ReportTemplatesPlace) {
-            return new ReportTemplatesActivity();
-        } else if (place instanceof PreferencesPlace) {
-            return new PreferencesActivity();
-        } else if (place instanceof ProcessOverviewPlace) {
-            return new ProcessOverviewActivity();
+                    clientFactory);
         } else {
             return null;
         }
+    }
+
+    private Activity tryParent(Place place) {
+        return super.getActivity(place);
+    }
+
+    private Activity tryBpmConsoleActivityMapper(Place place) {
+        if (bpmConsoleActivityMapper == null) {
+            bpmConsoleActivityMapper = new BpmConsoleActivityMapper();
+        }
+        return bpmConsoleActivityMapper.getActivity(place);
     }
 }

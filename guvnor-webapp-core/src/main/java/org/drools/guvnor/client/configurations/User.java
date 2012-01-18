@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.configurations;
 
-
 import java.util.List;
 
 /**
@@ -28,15 +27,18 @@ import java.util.List;
 public class User {
 
     public static User INSTANCE;
+    private final String userName;
 
     private final List<Capability> capabilities;
 
-    private User(List<Capability> capabilities) {
+    private User(String userName, List<Capability> capabilities) {
+        this.userName = userName;
         this.capabilities = capabilities;
+
     }
 
-    static void setUp(List<Capability> capabilities) {
-        INSTANCE = new User(capabilities);
+    static void setUp(String userName, List<Capability> capabilities) {
+        INSTANCE = new User(userName, capabilities);
     }
 
     public boolean hasCapability(Capability... capabilities) {
@@ -47,5 +49,9 @@ public class User {
         }
 
         return false;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

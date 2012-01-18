@@ -22,8 +22,16 @@ import org.drools.guvnor.client.util.Activity;
 
 public class GroupTasksActivity extends Activity {
 
-    @Override
+    //    private final ClientFactory clientFactory;
+//
+//    public GroupTasksActivity(ClientFactory clientFactory) {
+//        this.clientFactory = clientFactory;
+//    }
+//
+//    @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-        //TODO: Generated code -Rikkola-
+//        OpenTasksView openTasksView = new OpenTasksView(clientFactory);
+//        openTasksView.setController(clientFactory.getController());
+//        tabbedPanel.add(Constants.INSTANCE.GroupTasks(), openTasksView);
     }
 }

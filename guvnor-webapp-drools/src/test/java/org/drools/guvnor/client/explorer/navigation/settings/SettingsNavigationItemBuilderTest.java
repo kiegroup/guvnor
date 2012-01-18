@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.settings;
 
 import com.google.gwt.place.shared.PlaceController;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class SettingsNavigationItemBuilderTest {
     @Before
     public void setUp() throws Exception {
         settingsHeaderView = mock(SettingsHeaderView.class);
-        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+        ProcessNavigationViewFactory navigationViewFactory = mock(ProcessNavigationViewFactory.class);
         when(
                 navigationViewFactory.getSettingsHeaderView()
         ).thenReturn(

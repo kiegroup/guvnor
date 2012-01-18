@@ -23,15 +23,17 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
 public class ModulesTreeItem extends ModulesTreeItemBase {
 
     private final EventBus eventBus;
 
     public ModulesTreeItem(ClientFactory clientFactory, EventBus eventBus, String perspectiveTypes) {
-        super(clientFactory,
-              clientFactory.getNavigationViewFactory().getModulesTreeItemView(),
-              perspectiveTypes);
+        super(
+                clientFactory,
+                perspectiveTypes);
+
 
         this.eventBus = eventBus;
 

@@ -24,16 +24,6 @@ import org.drools.guvnor.client.explorer.navigation.browse.InboxActivity;
 import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
 import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesActivity;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
 import org.drools.guvnor.client.util.Activity;
@@ -92,16 +82,6 @@ public class GuvnorActivityMapper
             return new WizardActivity(
                     (WizardPlace<?>) place,
                     clientFactory );
-        } else if (place instanceof PersonalTasksPlace) {
-            return new PersonalTasksActivity();
-        } else if (place instanceof GroupTasksPlace) {
-            return new GroupTasksActivity();
-        } else if (place instanceof ReportTemplatesPlace) {
-            return new ReportTemplatesActivity();
-        } else if (place instanceof PreferencesPlace) {
-            return new PreferencesActivity();
-        } else if (place instanceof ProcessOverviewPlace) {
-            return new ProcessOverviewActivity();
         } else {
             return null;
         }

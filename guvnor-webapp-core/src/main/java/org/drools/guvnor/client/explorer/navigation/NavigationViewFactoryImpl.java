@@ -150,38 +150,6 @@ public class NavigationViewFactoryImpl
                                                                              eventBus );
     }
 
-    public SettingsHeaderView getSettingsHeaderView() {
-        return new SettingsHeaderViewImpl();
-    }
-
-    public SettingsTreeView getSettingsTreeView() {
-        return new SettingsTreeViewImpl();
-    }
-
-    public ProcessesHeaderView getProcessesHeaderView() {
-        return new ProcessesHeaderViewImpl();
-    }
-
-    public ProcessesTreeView getProcessesTreeView() {
-        return new ProcessesTreeViewImpl();
-    }
-
-    public ReportingHeaderView getReportingHeaderView() {
-        return new ReportingHeaderViewImpl();
-    }
-
-    public ReportingTreeView getReportingTreeView() {
-        return new ReportingTreeViewImpl();
-    }
-
-    public TasksHeaderView getTasksHeaderView() {
-        return new TasksHeaderViewImpl();
-    }
-
-    public TasksTreeView getTasksTreeView() {
-        return new TasksTreeViewImpl();
-    }
-
     public WizardActivityView getWizardView(WizardContext context) {
         return new WizardActivityViewImpl( context,
                                            eventBus );

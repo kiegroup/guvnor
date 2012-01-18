@@ -22,6 +22,8 @@ import java.util.Collection;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactoryImpl;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
@@ -30,15 +32,27 @@ import org.drools.guvnor.client.perspective.Perspective;
 
 public class RunTimePerspective extends Perspective {
 
+    private ProcessNavigationViewFactory navigationViewFactory;
+
     @Override
-    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
+    public Collection<NavigationItemBuilder> getBuilders(
+            ClientFactory clientFactory,
+            EventBus eventBus) {
+        initNavigationViewFactory();
+
         Collection<NavigationItemBuilder> builders = new ArrayList<NavigationItemBuilder>();
 
-        builders.add(new TasksNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
-        builders.add(new ProcessesNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
-        builders.add(new ReportingNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
-        builders.add(new SettingsNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
+        builders.add(new TasksNavigationItemBuilder(navigationViewFactory, clientFactory.getPlaceController()));
+        builders.add(new ProcessesNavigationItemBuilder(navigationViewFactory, clientFactory.getPlaceController()));
+        builders.add(new ReportingNavigationItemBuilder(navigationViewFactory, clientFactory.getPlaceController()));
+        builders.add(new SettingsNavigationItemBuilder(navigationViewFactory, clientFactory.getPlaceController()));
 
         return builders;
+    }
+
+    private void initNavigationViewFactory() {
+        if (navigationViewFactory == null) {
+            navigationViewFactory = new ProcessNavigationViewFactoryImpl();
+        }
     }
 }
