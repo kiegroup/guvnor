@@ -24,7 +24,6 @@ import org.drools.guvnor.client.widgets.wizards.Wizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
-import org.drools.guvnor.client.widgets.wizards.WizardActivityView.Presenter;
 
 import com.google.gwt.event.shared.EventBus;
 

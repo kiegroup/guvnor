@@ -42,10 +42,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -63,11 +61,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
     private class VerticalSelectorWidget extends CellPanel {
 
         // Widgets (selectors) created (so they can be removed later)
-        private ArrayList<Widget> widgets     = new ArrayList<Widget>();
+        private ArrayList<Widget> widgets = new ArrayList<Widget>();
 
-        private ContextMenu       contextMenu = new ContextMenu( eventBus );
-
-        private VerticalSelectorWidget() {
+        private VerticalSelectorWidget(EventBus eventBus) {
             getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
             getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
             sinkEvents( Event.getTypeInt( "click" ) );
@@ -212,10 +208,11 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
                                       //Set source row index and show
                                       int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
-                                      contextMenu.setRowIndex( index );
-                                      contextMenu.setPopupPosition( event.getNativeEvent().getClientX(),
-                                                                    event.getNativeEvent().getClientY() );
-                                      contextMenu.show();
+                                      int clientX = event.getNativeEvent().getClientX();
+                                      int clientY = event.getNativeEvent().getClientY();
+                                      showContextMenu( index,
+                                                       clientX,
+                                                       clientY );
                                   }
 
                               },
@@ -343,7 +340,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
         // Construct the Widget
         scrollPanel = new ScrollPanel();
         VerticalPanel container = new VerticalPanel();
-        selectors = new VerticalSelectorWidget();
+        selectors = new VerticalSelectorWidget( eventBus );
 
         container.add( spacer );
         container.add( scrollPanel );
@@ -406,71 +403,6 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
     public void onRowGroupingChange(RowGroupingChangeEvent event) {
         selectors.redraw();
-    }
-
-    //TODO
-    private static class ContextMenu extends PopupPanel
-        implements
-        DeleteRowEvent.Handler,
-        InsertRowEvent.Handler,
-        RowGroupingChangeEvent.Handler {
-
-        private int rowIndex;
-        private int sourceRowIndex = -1;
-        private int targetRowIndex = -1;
-
-        private ContextMenu(final EventBus eventBus) {
-            super( true );
-            VerticalPanel vp = new VerticalPanel();
-            HTML copy = new HTML( "Copy row" );
-            copy.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    sourceRowIndex = rowIndex;
-                    hide();
-                }
-
-            } );
-            vp.add( copy );
-            HTML paste = new HTML( "Paste row" );
-            paste.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    //Nothing selected
-                    if ( sourceRowIndex == -1 ) {
-                        return;
-                    }
-                    targetRowIndex = rowIndex;
-                    CopyRowEvent cpre = new CopyRowEvent( sourceRowIndex,
-                                                          targetRowIndex );
-                    eventBus.fireEvent( cpre );
-                    hide();
-                }
-
-            } );
-            vp.add( paste );
-            add( vp );
-        }
-
-        private void setRowIndex(int rowIndex) {
-            this.rowIndex = rowIndex;
-        }
-
-        public void onRowGroupingChange(RowGroupingChangeEvent event) {
-            //Clear selection
-            sourceRowIndex = -1;
-        }
-
-        public void onInsertRow(InsertRowEvent event) {
-            //Clear selection
-            sourceRowIndex = -1;
-        }
-
-        public void onDeleteRow(DeleteRowEvent event) {
-            //Clear selection
-            sourceRowIndex = -1;
-        }
-
     }
 
 }

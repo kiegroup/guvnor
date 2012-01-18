@@ -16,11 +16,11 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -97,5 +97,16 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
      * addSelector for each row in the grid's data
      */
     abstract void redraw();
+
+    /**
+     * Show the Context Menu
+     * 
+     * @param index
+     * @param clientX
+     * @param clientY
+     */
+    public abstract void showContextMenu(int index,
+                                         int clientX,
+                                         int clientY);
 
 }

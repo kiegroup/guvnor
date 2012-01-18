@@ -49,4 +49,11 @@ public class VerticalTemplateDataSidebarWidget extends AbstractVerticalDecorated
         this.redraw();
     }
 
+    @Override
+    public void showContextMenu(int index,
+                                int clientX,
+                                int clientY) {
+        // TODO {manstis} TemplateDataGrid doesn't have one
+    }
+
 }

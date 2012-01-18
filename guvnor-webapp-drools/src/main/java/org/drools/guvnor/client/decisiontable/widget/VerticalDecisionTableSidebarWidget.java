@@ -15,10 +15,14 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CopyPasteContextMenu;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -28,7 +32,12 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * A "sidebar" for a vertical Decision Table
  */
-public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<GuidedDecisionTable52, BaseColumn> {
+public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<GuidedDecisionTable52, BaseColumn>
+    implements
+    DeleteColumnEvent.Handler,
+    InsertInternalDecisionTableColumnEvent.Handler<BaseColumn> {
+
+    private CopyPasteContextMenu contextMenu;
 
     /**
      * Construct a "sidebar" for a vertical Decision Table
@@ -39,8 +48,14 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
         super( resources,
                eventBus );
 
+        contextMenu = new CopyPasteContextMenu( eventBus );
+
         //Wire-up event handlers
         eventBus.addHandler( SetInternalDecisionTableModelEvent.TYPE,
+                             this );
+        eventBus.addHandler( DeleteColumnEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertInternalDecisionTableColumnEvent.TYPE,
                              this );
     }
 
@@ -48,6 +63,26 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
         this.data = event.getData();
         this.rowMapper = new RowMapper( this.data );
         this.redraw();
+    }
+
+    //If a column is inserted the current "copied" row becomes invalid so disable "Paste"
+    public void onInsertInternalColumn(InsertInternalColumnEvent<BaseColumn> event) {
+        contextMenu.clearCopy();
+    }
+
+    //If a column is deleted the current "copied" row becomes invalid so disable "Paste"
+    public void onDeleteColumn(DeleteColumnEvent event) {
+        contextMenu.clearCopy();
+    }
+
+    @Override
+    public void showContextMenu(int index,
+                                int clientX,
+                                int clientY) {
+        contextMenu.setRowIndex( index );
+        contextMenu.setPopupPosition( clientX,
+                                      clientY );
+        contextMenu.show();
     }
 
 }
