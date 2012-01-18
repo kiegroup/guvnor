@@ -34,6 +34,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateCha
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
@@ -73,6 +74,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
+    CopyRowEvent.Handler,
     DeleteColumnEvent.Handler,
     SetInternalModelEvent.Handler<M, T>,
     InsertInternalColumnEvent.Handler<T>,
@@ -247,6 +249,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         eventBus.addHandler( InsertRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( CopyRowEvent.TYPE,
                              this );
         eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
@@ -865,14 +869,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         //Delete row data
         data.deleteRow( index );
 
-        // Partial redraw
-        if ( !data.isMerged() ) {
-            // Single row when not merged
-            removeRowElement( index );
-        } else {
-            // Affected rows when merged
-            removeRowElement( index );
+        removeRowElement( index );
 
+        // Partial redraw
+        if ( data.isMerged() ) {
             if ( data.size() > 0 ) {
                 int minRedrawRow = findMinRedrawRow( index - 1 );
                 int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
@@ -899,27 +899,50 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                    rowData );
     }
 
+    public void onCopyRow(CopyRowEvent event) {
+        DynamicDataRow rowData = cellValueFactory.makeUIRowData();
+        DynamicDataRow sourceData = data.get( event.getSourceRowIndex() );
+
+        //Copy all data, other than RowNumber column to target row
+        for ( int iCol = 1; iCol < sourceData.size(); iCol++ ) {
+            CellValue< ? extends Comparable< ? >> cell = sourceData.get( iCol );
+            rowData.get( iCol ).setValue( cell.getValue() );
+        }
+        int index = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
+        insertRow( index,
+                   rowData );
+    }
+
     private void insertRow(int index,
                            DynamicDataRow rowData) {
 
         // Clear any selections
         clearSelection();
 
-        // Find rows that need to be (re)drawn
         int minRedrawRow = index;
         int maxRedrawRow = index;
+        
+        // Find rows that need to be (re)drawn before the new row is inserted
         if ( data.isMerged() ) {
             if ( index < data.size() ) {
                 minRedrawRow = findMinRedrawRow( index );
-                maxRedrawRow = findMaxRedrawRow( index ) + 1;
-            } else {
-                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
-                maxRedrawRow = index;
+                maxRedrawRow = findMaxRedrawRow( index );
             }
         }
 
         data.addRow( index,
                      rowData );
+
+        // Check extents as these could have changed after the row is inserted
+        if ( data.isMerged() ) {
+            if ( index < data.size() ) {
+                minRedrawRow = Math.min(minRedrawRow, findMinRedrawRow( index ));
+                maxRedrawRow = Math.max(maxRedrawRow, findMaxRedrawRow( index ));
+            } else {
+                minRedrawRow = Math.min(minRedrawRow, findMinRedrawRow( index ));
+                maxRedrawRow = index;
+            }
+        }
 
         // Partial redraw
         if ( !data.isMerged() ) {

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
@@ -32,6 +33,8 @@ import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -39,8 +42,10 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,7 +63,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
     private class VerticalSelectorWidget extends CellPanel {
 
         // Widgets (selectors) created (so they can be removed later)
-        private ArrayList<Widget> widgets = new ArrayList<Widget>();
+        private ArrayList<Widget> widgets     = new ArrayList<Widget>();
+
+        private ContextMenu       contextMenu = new ContextMenu( eventBus );
 
         private VerticalSelectorWidget() {
             getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
@@ -194,6 +201,26 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
             } );
             hp.add( fp );
+
+            //Add a context menu to copy\paste rows
+            hp.addDomHandler( new ContextMenuHandler() {
+
+                                  public void onContextMenu(ContextMenuEvent event) {
+                                      //Prevent the default context menu
+                                      event.preventDefault();
+                                      event.stopPropagation();
+
+                                      //Set source row index and show
+                                      int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
+                                      contextMenu.setRowIndex( index );
+                                      contextMenu.setPopupPosition( event.getNativeEvent().getClientX(),
+                                                                    event.getNativeEvent().getClientY() );
+                                      contextMenu.show();
+                                  }
+
+                              },
+                              ContextMenuEvent.getType() );
+
             return hp;
         }
 
@@ -372,8 +399,78 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
         selectors.appendRow();
     }
 
+    public void onCopyRow(CopyRowEvent event) {
+        int index = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
+        selectors.insertRowBefore( index );
+    }
+
     public void onRowGroupingChange(RowGroupingChangeEvent event) {
         selectors.redraw();
+    }
+
+    //TODO
+    private static class ContextMenu extends PopupPanel
+        implements
+        DeleteRowEvent.Handler,
+        InsertRowEvent.Handler,
+        RowGroupingChangeEvent.Handler {
+
+        private int rowIndex;
+        private int sourceRowIndex = -1;
+        private int targetRowIndex = -1;
+
+        private ContextMenu(final EventBus eventBus) {
+            super( true );
+            VerticalPanel vp = new VerticalPanel();
+            HTML copy = new HTML( "Copy row" );
+            copy.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    sourceRowIndex = rowIndex;
+                    hide();
+                }
+
+            } );
+            vp.add( copy );
+            HTML paste = new HTML( "Paste row" );
+            paste.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    //Nothing selected
+                    if ( sourceRowIndex == -1 ) {
+                        return;
+                    }
+                    targetRowIndex = rowIndex;
+                    CopyRowEvent cpre = new CopyRowEvent( sourceRowIndex,
+                                                          targetRowIndex );
+                    eventBus.fireEvent( cpre );
+                    hide();
+                }
+
+            } );
+            vp.add( paste );
+            add( vp );
+        }
+
+        private void setRowIndex(int rowIndex) {
+            this.rowIndex = rowIndex;
+        }
+
+        public void onRowGroupingChange(RowGroupingChangeEvent event) {
+            //Clear selection
+            sourceRowIndex = -1;
+        }
+
+        public void onInsertRow(InsertRowEvent event) {
+            //Clear selection
+            sourceRowIndex = -1;
+        }
+
+        public void onDeleteRow(DeleteRowEvent event) {
+            //Clear selection
+            sourceRowIndex = -1;
+        }
+
     }
 
 }

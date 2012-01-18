@@ -18,8 +18,9 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -37,6 +38,7 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
+    CopyRowEvent.Handler,
     SetInternalModelEvent.Handler<M, T>,
     RowGroupingChangeEvent.Handler {
 
@@ -68,6 +70,8 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
         eventBus.addHandler( InsertRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( CopyRowEvent.TYPE,
                              this );
         eventBus.addHandler( RowGroupingChangeEvent.TYPE,
                              this );

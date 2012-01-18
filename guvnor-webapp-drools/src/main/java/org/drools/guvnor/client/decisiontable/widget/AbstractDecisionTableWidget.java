@@ -40,6 +40,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
@@ -93,6 +94,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
+    CopyRowEvent.Handler,
     DeleteColumnEvent.Handler,
     InsertDecisionTableColumnEvent.Handler<BaseColumn, DTCellValue52>,
     MoveColumnsEvent.Handler,
@@ -139,6 +141,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.addHandler( DeleteRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( CopyRowEvent.TYPE,
                              this );
         eventBus.addHandler( SelectedCellChangeEvent.TYPE,
                              this );
@@ -2010,6 +2014,41 @@ public abstract class AbstractDecisionTableWidget extends Composite
         model.getData().add( event.getIndex(),
                              data );
         model.getAnalysisData().add( event.getIndex(),
+                                     new Analysis() );
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+            }
+
+        } );
+    }
+
+    public void onCopyRow(CopyRowEvent event) {
+        List<DTCellValue52> rowData = cellValueFactory.makeRowData();
+        List<DTCellValue52> sourceData = model.getData().get( event.getSourceRowIndex() );
+        
+        //Copy all data, other than RowNumber column to target row
+        for ( int iCol = 1; iCol < sourceData.size(); iCol++ ) {
+            DTCellValue52 sourceCell = sourceData.get( iCol );
+            DTCellValue52 targetCell = rowData.get( iCol );
+            switch ( sourceCell.getDataType() ) {
+                case BOOLEAN :
+                    targetCell.setBooleanValue( sourceCell.getBooleanValue() );
+                    break;
+                case DATE :
+                    targetCell.setDateValue( sourceCell.getDateValue() );
+                    break;
+                case NUMERIC :
+                    targetCell.setNumericValue( sourceCell.getNumericValue() );
+                    break;
+                default :
+                    targetCell.setStringValue( sourceCell.getStringValue() );
+            }
+        }
+        model.getData().add( event.getTargetRowIndex(),
+                             rowData );
+        model.getAnalysisData().add( event.getTargetRowIndex(),
                                      new Analysis() );
         Scheduler.get().scheduleFinally( new Command() {
 
