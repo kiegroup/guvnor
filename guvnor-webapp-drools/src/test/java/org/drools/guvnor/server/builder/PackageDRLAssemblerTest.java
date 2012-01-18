@@ -196,7 +196,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         ModuleItem item2 = rulesRepository.loadModule("testGetHistoryPackageSource",
                 2);
         PackageAssembler asm2 = new PackageAssembler();
-        asm.init(item2, null);
+        asm2.init(item2, null);
         String drl2 = asm2.getCompiledSource();
 
         System.out.println(drl2);

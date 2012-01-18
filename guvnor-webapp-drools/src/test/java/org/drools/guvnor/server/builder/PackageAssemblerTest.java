@@ -245,7 +245,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asm.init(packageItem, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
-        Map<String, org.drools.definition.process.Process> flows = ((Package)DroolsStreamUtils.streamIn(asm.getCompiledBinary())).getRuleFlows();
+        Map<String, org.drools.definition.process.Process> flows = asm.getBuilder().getPackage().getRuleFlows();
         assertNotNull( flows );
 
         assertEquals( 1,
@@ -479,7 +479,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
-        Package bin = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+        Package bin = asm.getBuilder().getPackage();
 
         assertEquals( pkg.getName(),
                       bin.getName() );
@@ -696,7 +696,9 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asm.init(pkg, null);
         asm.compile();
         assertFalse( asm.hasErrors() );
-        Package bin = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+        
+        Package bin = asm.getBuilder().getPackage();
+        //Package bin = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertNotNull( bin );
         assertEquals( 3,
                       bin.getRules().length );
@@ -919,7 +921,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                       pk.getRules()[0].getName() );
 
         asm = new PackageAssembler();
-        asm.init(pkg, configuration);
+        asm.init(pkg, null);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 2,
@@ -1002,7 +1004,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         //without selector
         PackageAssembler asm = new PackageAssembler();
-        asm.init(pkg, packageAssemblerConfiguration);
+        asm.init(pkg, null);
         asm.compile();
         Package pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
         assertEquals( 2,

@@ -210,25 +210,6 @@ public class PackageAssembler extends PackageAssemblerBase {
         return src.toString();
     }
     
-/*    private void loadHeader() {
-        src.append("package ").append(this.moduleItem.getName()).append("\n");
-        src.append(DroolsHeader.getDroolsHeader(this.moduleItem)).append("\n\n");
-    }
-*/
-/*    private void loadDeclaredTypes() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
-        while (assetItemIterator.hasNext()) {
-            addAsset(assetItemIterator.next());
-        }
-    }
-*/
-/*    private void loadFunctions() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.FUNCTION);
-        while (assetItemIterator.hasNext()) {
-            addAsset(assetItemIterator.next());
-        }
-    }*/
-
     private void loadRuleAssets() {
         Iterator<AssetItem> assetItemIterator = getAllAssets();
         while (assetItemIterator.hasNext()) {
@@ -248,10 +229,5 @@ public class PackageAssembler extends PackageAssemblerBase {
             src.append("\n\n");
         }
     }
-/*
-    private void addAsset(AssetItem assetItem) {
-        if (!assetItem.isArchived() && !assetItem.getDisabled()) {
-            src.append(assetItem.getContent()).append("\n\n");
-        }
-    }*/
+
 }
