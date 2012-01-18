@@ -314,7 +314,7 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackageSource(uuid,
+                RepositoryServiceFactory.getPackageService().buildModuleSource(uuid,
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String content) {
                                 showSource(content,

@@ -27,7 +27,6 @@ import javax.jcr.Session;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.PackageAssembler;
-import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;

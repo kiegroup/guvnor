@@ -55,7 +55,7 @@ public class PackageAssembler extends PackageAssemblerBase {
         this.moduleItem = moduleItem;
         
         if(moduleAssemblerConfiguration == null) {
-            moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
+            this.configuration = new ModuleAssemblerConfiguration();
         } else {
             this.configuration = moduleAssemblerConfiguration;
         }
