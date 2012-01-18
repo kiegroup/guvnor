@@ -907,7 +907,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ModuleAssemblerConfiguration configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "testSelect" );
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, configuration);
 
         asm.compile();
@@ -918,7 +918,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertEquals( "rule2",
                       pk.getRules()[0].getName() );
 
-        asm = new PackageDRLAssembler();
+        asm = new PackageAssembler();
         asm.init(pkg, configuration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
@@ -928,7 +928,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "nothing valid" );
-        asm = new PackageDRLAssembler();
+        asm = new PackageAssembler();
         asm.init(pkg, configuration);
         asm.compile();
         assertTrue( asm.hasErrors() );
@@ -943,7 +943,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         configuration = new ModuleAssemblerConfiguration();
         configuration.setBuildMode( "customSelector" );
         configuration.setCustomSelectorConfigName( "" );
-        asm = new PackageDRLAssembler();
+        asm = new PackageAssembler();
         asm.init(pkg, configuration);
         asm.compile();
         pk = (Package) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );

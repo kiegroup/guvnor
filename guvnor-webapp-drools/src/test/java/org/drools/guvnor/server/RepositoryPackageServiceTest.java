@@ -1318,7 +1318,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         func.updateContent( "this is a func" );
         func.checkin( "" );
 
-        String drl = repositoryPackageService.buildPackageSource( pkg.getUUID() );
+        String drl = repositoryPackageService.buildModuleSource( pkg.getUUID() );
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );
@@ -1341,7 +1341,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
 
-        drl = repositoryPackageService.buildPackageSource( pkg.getUUID() );
+        drl = repositoryPackageService.buildModuleSource( pkg.getUUID() );
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );

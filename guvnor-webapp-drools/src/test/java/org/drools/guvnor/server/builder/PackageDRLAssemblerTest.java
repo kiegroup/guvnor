@@ -18,11 +18,9 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -55,9 +53,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
         rulesRepository.save();
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertTrue(drl.indexOf("declare Album") > -1);
     }
@@ -89,14 +87,14 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         model.checkin("version 2");
         rulesRepository.save();
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
         assertFalse(asm.getErrors().toString(),
                 asm.hasErrors());
 
-        asm = new PackageDRLAssembler();
+        asm = new PackageAssembler();
         asm.init(pkg, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertTrue(drl.indexOf("genre2") == -1);
         assertTrue(drl.indexOf("genre3") > -1);
@@ -104,14 +102,14 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.updateDependency("model?version=2");
         pkg.checkin("Update dependency");
 
-        PackageDRLAssembler asm2 = new PackageDRLAssembler();
+        PackageAssembler asm2 = new PackageAssembler();
         asm2.init(pkg, null);
         assertFalse(asm2.getErrors().toString(),
                 asm2.hasErrors());
 
-        asm2 = new PackageDRLAssembler();
+        asm2 = new PackageAssembler();
         asm2.init(pkg, null);
-        String drl2 = asm2.getDRL();
+        String drl2 = asm2.getCompiledSource();
 
         assertTrue(drl2.indexOf("genre2") > -1);
         assertTrue(drl2.indexOf("genre3") == -1);
@@ -178,9 +176,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
         //Verify the latest version
         ModuleItem item = rulesRepository.loadModule("testGetHistoryPackageSource");
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(item, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         System.out.println(drl);
 
@@ -197,9 +195,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         //Verify version 2
         ModuleItem item2 = rulesRepository.loadModule("testGetHistoryPackageSource",
                 2);
-        PackageDRLAssembler asm2 = new PackageDRLAssembler();
+        PackageAssembler asm2 = new PackageAssembler();
         asm.init(item2, null);
-        String drl2 = asm2.getDRL();
+        String drl2 = asm2.getCompiledSource();
 
         System.out.println(drl2);
 
@@ -255,9 +253,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         rule3.updateDisabled(true);
         rule3.checkin("");
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertNotNull(drl);
 
@@ -341,9 +339,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.updateDependency("model1?version=1");
         pkg.checkin("Update dependency");
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertNotNull(drl);
 
@@ -424,9 +422,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         ModuleItem historicalPackage = rulesRepository.loadModule("testShowSourceForHistoricalPackage",
                 2);
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(historicalPackage, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertNotNull(drl);
         System.out.println(drl);
@@ -458,15 +456,15 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
                 pkg);
         rulesRepository.save();
 
-        PackageDRLAssembler asm = null;
+        PackageAssembler asm = null;
         try {
-            asm = new PackageDRLAssembler();
+            asm = new PackageAssembler();
             asm.init(pkg, null);
         } catch (NullPointerException e) {
             // Possible cause: Header has only white spaces "\n\t".
             fail(e.toString());
         }
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertNotNull(drl);
         assertEquals("package testBuildPackageWithEmptyHeader",
@@ -502,11 +500,11 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         assertRule3.updateContent("rule 'foo3' when then end");
         assertRule3.checkin("");
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
         assertFalse(asm.hasErrors());
 
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
 
         assertNotNull(drl);
 
@@ -537,9 +535,9 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         asset.updateBinaryContentAttachment(xls);
         asset.checkin("");
 
-        PackageDRLAssembler asm = new PackageDRLAssembler();
+        PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
-        String drl = asm.getDRL();
+        String drl = asm.getCompiledSource();
         System.err.println(drl);
 
         assertTrue(drl.indexOf("package ",

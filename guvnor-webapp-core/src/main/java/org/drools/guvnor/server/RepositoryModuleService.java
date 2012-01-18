@@ -187,9 +187,9 @@ public class RepositoryModuleService
 
     @WebRemote
     @LoggedIn
-    public String buildPackageSource(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        return repositoryModuleOperations.buildPackageSource( packageUUID );
+    public String buildModuleSource(String moduleUUID) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( moduleUUID );
+        return repositoryModuleOperations.buildModuleSource( moduleUUID );
     }
 
     @WebRemote

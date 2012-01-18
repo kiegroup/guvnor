@@ -29,9 +29,7 @@ import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
-import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
-import org.drools.rule.Package;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -40,7 +38,8 @@ import org.drools.rule.Package;
  */
 abstract class PackageAssemblerBase extends AssemblerBase {
     protected BRMSPackageBuilder builder;
-   
+    protected StringBuilder src;
+  
     public void createBuilder() {
         builder = new BRMSPackageBuilder(moduleItem);
     }
@@ -53,7 +52,10 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         //NOT_IMPLEMENTED
         return null;
     }
-    
+    public String getCompiledSource() {
+        //NOT_IMPLEMENTED
+        return null;
+    }   
     /**
      * Builds assets that are "rule" assets (ie things that are not functions
      * etc).
@@ -100,15 +102,15 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         builder.addPackage( new PackageDescr( moduleItem.getName() ) );
 
         //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
-        loadPackageHeader();
-        loadDeclaredTypes();
+        loadHeaderToBuilder();
+        loadDeclaredTypesToBuilder();
 
         if ( doesPackageBuilderHaveAnyErrors() ) {
             return false;
         }
 
         loadDSLFiles();
-        loadFunctions();
+        loadFunctionsToBuilder();
 
         return !errorLogger.hasErrors();
     }
@@ -137,41 +139,41 @@ abstract class PackageAssemblerBase extends AssemblerBase {
                 }));
     }
     
-    private void loadFunctions() {
+    protected void loadFunctionsToSource() {
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.FUNCTION);
+        while (assetItemIterator.hasNext()) {
+            AssetItem assetItem = assetItemIterator.next();
+            if (!assetItem.isArchived() && !assetItem.getDisabled()) {
+                src.append(assetItem.getContent()).append("\n\n");
+            }
+        }
+    }    
+    
+    protected void loadFunctionsToBuilder() {        
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.FUNCTION);
+        StringBuilder stringBuilder = new StringBuilder();
+        while (assetItemIterator.hasNext()) {
+            AssetItem assetItem = assetItemIterator.next();
+            if (!assetItem.getDisabled()) {
+                stringBuilder.append(assetItem.getContent());
+            }
+        }
+        
         try {
-            addDrl( getAllFunctionsAsOneString().toString() );
-        } catch ( IOException e ) {
-            throw new RulesRepositoryException( "Unexpected error when parsing package.",
-                                                e );
-        } catch ( DroolsParserException e ) {
+            addDrl(stringBuilder.toString());
+        } catch (IOException e) {
+            throw new RulesRepositoryException(
+                    "Unexpected error when parsing package.", e);
+        } catch (DroolsParserException e) {
             // TODO: Not really a RulesRepositoryException is it? -Rikkola-
-            throw new RulesRepositoryException( "Unexpected error when parsing package.",
-                                                e );
+            throw new RulesRepositoryException(
+                    "Unexpected error when parsing package.", e);
         }
 
         // If the function part had errors we need to add them one by one to find out which one is bad.
         if ( builder.hasErrors() ) {
             searchTheFunctionWithAnError();
         }
-    }
-
-    /**
-     * Get the function DRLs as one string because they might be calling each others.
-     *
-     * @return
-     */
-    private StringBuilder getAllFunctionsAsOneString() {
-        Iterator<AssetItem> functionsIterator = getAssetItemIterator( AssetFormats.FUNCTION );
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while ( functionsIterator.hasNext() ) {
-            AssetItem function = functionsIterator.next();
-            if ( !function.getDisabled() ) {
-                stringBuilder.append( function.getContent() );
-            }
-        }
-
-        return stringBuilder;
     }
 
     private void searchTheFunctionWithAnError() {
@@ -198,7 +200,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         }
     }
 
-    private void loadPackageHeader() {
+    protected void loadHeaderToBuilder() {
         try {
             addDrl( DroolsHeader.getDroolsHeader( moduleItem ) );
         } catch ( IOException e ) {
@@ -209,12 +211,26 @@ abstract class PackageAssemblerBase extends AssemblerBase {
                                   "Parser exception: " + e.getMessage() );
         }
     }
+    
+    protected void loadHeaderToSource() {
+        src.append("package ").append(this.moduleItem.getName()).append("\n");
+        src.append(DroolsHeader.getDroolsHeader(this.moduleItem)).append("\n\n");
+    }
+    
+    protected void loadDeclaredTypesToSource() {
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
+        while (assetItemIterator.hasNext()) {
+            AssetItem assetItem = assetItemIterator.next();
+            if (!assetItem.isArchived() && !assetItem.getDisabled()) {
+                src.append(assetItem.getContent()).append("\n\n");
+            }
+        }
+    }
 
-    private void loadDeclaredTypes() {
-        Iterator<AssetItem> declaredTypesIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
-
-        while ( declaredTypesIterator.hasNext() ) {
-            AssetItem assetItem = declaredTypesIterator.next();
+    protected void loadDeclaredTypesToBuilder() {
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
+        while ( assetItemIterator.hasNext() ) {
+            AssetItem assetItem = assetItemIterator.next();
             if ( !assetItem.getDisabled() ) {
                 try {
                     addDrl( assetItem.getContent() );

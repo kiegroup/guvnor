@@ -998,7 +998,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
                       assets.size() ); //we have 4 due to the drools.package file.
         Asset asset = repositoryAssetService.loadRuleAsset( newUUID );
 
-        String pkgSource = repositoryPackageService.buildPackageSource( pkg.getUUID() );
+        String pkgSource = repositoryPackageService.buildModuleSource( pkg.getUUID() );
 
         assertTrue( pkgSource.indexOf( "ruleName2" ) > 0 );
         assertTrue( repositoryAssetService.buildAssetSource( asset ).indexOf( "ruleName2" ) > 0 );

@@ -39,6 +39,7 @@ public interface ModuleAssembler {
     public boolean isModuleConfigurationInError();
 
     public byte[] getCompiledBinary();
+    public String getCompiledSource();
 
     public boolean hasErrors();
     

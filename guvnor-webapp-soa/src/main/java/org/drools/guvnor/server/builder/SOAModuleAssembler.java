@@ -50,4 +50,8 @@ public class SOAModuleAssembler extends AssemblerBase {
         //NOT_IMPLEMENTED
         return null;
     }
+    public String getCompiledSource() {
+        //NOT_IMPLEMENTED
+        return null;
+    }   
 }
