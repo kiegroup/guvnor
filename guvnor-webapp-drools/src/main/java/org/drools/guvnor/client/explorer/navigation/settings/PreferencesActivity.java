@@ -16,8 +16,22 @@
 
 package org.drools.guvnor.client.explorer.navigation.settings;
 
-import com.google.gwt.place.shared.Place;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.Label;
+import org.drools.guvnor.client.explorer.AcceptItem;
+import org.drools.guvnor.client.util.Activity;
 
-public class SystemPlace extends Place{
+public class PreferencesActivity extends Activity {
 
+//    private Controller controller;
+//
+//    public PreferencesActivity(Controller controller) {
+//        this.controller = controller;
+//    }
+
+    @Override
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
+        //TODO: Generated code -Rikkola-
+        tabbedPanel.add("unimplemented", new Label("Nothing to see here"));
+    }
 }

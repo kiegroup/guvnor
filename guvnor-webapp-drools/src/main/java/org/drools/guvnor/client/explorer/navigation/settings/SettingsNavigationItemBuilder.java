@@ -1,16 +1,17 @@
-package org.drools.guvnor.client.explorer.navigation.processes;
+package org.drools.guvnor.client.explorer.navigation.settings;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactory;
 
-public class ProcessesNavigationItemBuilder extends NavigationItemBuilder {
+public class SettingsNavigationItemBuilder extends NavigationItemBuilder {
 
-    private NavigationViewFactory navigationViewFactory;
+    private ProcessNavigationViewFactory navigationViewFactory;
     private PlaceController placeController;
 
-    public ProcessesNavigationItemBuilder(NavigationViewFactory navigationViewFactory, PlaceController placeController) {
+    public SettingsNavigationItemBuilder(ProcessNavigationViewFactory navigationViewFactory, PlaceController placeController) {
         this.navigationViewFactory = navigationViewFactory;
         this.placeController = placeController;
     }
@@ -22,11 +23,11 @@ public class ProcessesNavigationItemBuilder extends NavigationItemBuilder {
 
     @Override
     public IsWidget getHeader() {
-        return navigationViewFactory.getProcessesHeaderView();
+        return navigationViewFactory.getSettingsHeaderView();
     }
 
     @Override
     public IsWidget getContent() {
-        return new ProcessesTree(navigationViewFactory.getProcessesTreeView(), placeController);
+        return new SettingsTree(navigationViewFactory.getSettingsTreeView(), placeController);
     }
 }

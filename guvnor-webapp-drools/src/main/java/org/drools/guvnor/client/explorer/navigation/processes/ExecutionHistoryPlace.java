@@ -17,7 +17,32 @@
 package org.drools.guvnor.client.explorer.navigation.processes;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class ExecutionHistoryPlace extends Place{
+public class ExecutionHistoryPlace extends Place {
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ExecutionHistoryPlace) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    public static class Tokenizer implements PlaceTokenizer<ExecutionHistoryPlace> {
+
+        public ExecutionHistoryPlace getPlace(String token) {
+            return new ExecutionHistoryPlace();
+        }
+
+        public String getToken(ExecutionHistoryPlace place) {
+            return "EXECUTION_HISTORY";
+        }
+    }
 }

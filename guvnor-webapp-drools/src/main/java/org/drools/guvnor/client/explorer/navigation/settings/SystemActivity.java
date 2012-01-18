@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation.processes;
+package org.drools.guvnor.client.explorer.navigation.settings;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.util.Activity;
 
-public class ProcessOverviewActivity extends Activity {
+public class SystemActivity extends Activity {
+//
+//    private final ClientFactory clientFactory;
+//
+//    public SystemActivity(ClientFactory clientFactory) {
+//        this.clientFactory = clientFactory;
+//    }
 
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-        //TODO: Generated code -Rikkola-
+//        ServerStatusView serverStatusView = new ServerStatusView(clientFactory);
+//        serverStatusView.setController(clientFactory.getController());
+//        tabbedPanel.add(Constants.INSTANCE.System(), serverStatusView);
     }
 }
