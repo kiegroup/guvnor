@@ -17,6 +17,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetInternalTemplateDataModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CopyPasteContextMenu;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
@@ -29,6 +30,8 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class VerticalTemplateDataSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<TemplateModel, TemplateDataColumn> {
 
+    private CopyPasteContextMenu contextMenu;
+
     /**
      * Construct a "sidebar" for a vertical Template Data editor
      */
@@ -37,6 +40,8 @@ public class VerticalTemplateDataSidebarWidget extends AbstractVerticalDecorated
         // Argument validation performed in the superclass constructor
         super( resources,
                eventBus );
+
+        contextMenu = new CopyPasteContextMenu( eventBus );
 
         //Wire-up event handlers
         eventBus.addHandler( SetInternalTemplateDataModelEvent.TYPE,
@@ -53,7 +58,10 @@ public class VerticalTemplateDataSidebarWidget extends AbstractVerticalDecorated
     public void showContextMenu(int index,
                                 int clientX,
                                 int clientY) {
-        // TODO {manstis} TemplateDataGrid doesn't have one
+        contextMenu.setContextRows( rowMapper.mapToAllAbsoluteRows( index ) );
+        contextMenu.setPopupPosition( clientX,
+                                      clientY );
+        contextMenu.show();
     }
 
 }

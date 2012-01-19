@@ -946,7 +946,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             CellValue< ? extends Comparable< ? >> cell = sourceRowData.get( iCol );
             rowData.get( iCol ).setValue( cell.getValue() );
         }
-        rowData.get( 0 ).setValue( null );
         return rowData;
     }
 
@@ -967,7 +966,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             }
             rowData.add( cell );
         }
-        rowData.get( 0 ).setValue( null );
         for ( DynamicDataRow childRow : sourceRowData.getChildRows() ) {
             rowData.addChildRow( cloneRow( childRow ) );
         }

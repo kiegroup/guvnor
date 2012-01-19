@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetTemplateDataEvent;
@@ -24,8 +25,10 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
@@ -43,6 +46,8 @@ public class TemplateDataTableWidget extends Composite
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
+    CopyRowsEvent.Handler,
+    PasteRowsEvent.Handler,
     UpdateModelEvent.Handler {
 
     // Decision Table data
@@ -53,13 +58,16 @@ public class TemplateDataTableWidget extends Composite
     protected SuggestionCompletionEngine                                             sce;
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
-    private EventBus                                                                 eventBus  = new SimpleEventBus();
+    private EventBus                                                                 eventBus   = new SimpleEventBus();
 
     //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
     @SuppressWarnings("unused")
     private EventBus                                                                 globalEventBus;
 
-    protected static final ResourcesProvider<TemplateDataColumn>                     resources = new TemplateDataTableResourcesProvider();
+    //Rows that have been copied in a copy-paste operation
+    private List<String[]>                                                           copiedRows = new ArrayList<String[]>();
+
+    protected static final ResourcesProvider<TemplateDataColumn>                     resources  = new TemplateDataTableResourcesProvider();
 
     /**
      * Constructor
@@ -96,6 +104,10 @@ public class TemplateDataTableWidget extends Composite
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
+        eventBus.addHandler( CopyRowsEvent.TYPE,
+                             this );
+        eventBus.addHandler( PasteRowsEvent.TYPE,
+                             this );
         eventBus.addHandler( UpdateModelEvent.TYPE,
                              this );
 
@@ -105,13 +117,6 @@ public class TemplateDataTableWidget extends Composite
     public void appendRow() {
         AppendRowEvent are = new AppendRowEvent();
         eventBus.fireEvent( are );
-    }
-
-    /**
-     * Get the number of rows
-     */
-    public List<List<String>> getRows() {
-        return this.model.getTableAsList();
     }
 
     /**
@@ -152,6 +157,31 @@ public class TemplateDataTableWidget extends Composite
 
     public void onDeleteRow(DeleteRowEvent event) {
         model.removeRow( event.getIndex() );
+    }
+
+    public void onCopyRows(CopyRowsEvent event) {
+        copiedRows.clear();
+        for ( Integer iRow : event.getRowIndexes() ) {
+            String[] rowData = model.getTableAsArray()[iRow];
+            copiedRows.add( rowData );
+        }
+    }
+
+    public void onPasteRows(PasteRowsEvent event) {
+        if ( copiedRows == null || copiedRows.size() == 0 ) {
+            return;
+        }
+        int iRow = event.getTargetRowIndex();
+        for ( String[] sourceRowData : copiedRows ) {
+            String[] rowData = cellValueFactory.makeRowData().toArray( new String[0] );
+            for ( int iCol = 0; iCol < sourceRowData.length; iCol++ ) {
+                rowData[iCol] = sourceRowData[iCol];
+            }
+            model.addRow( iRow,
+                          rowData );
+            iRow++;
+        }
+
     }
 
     public void onInsertRow(InsertRowEvent event) {
