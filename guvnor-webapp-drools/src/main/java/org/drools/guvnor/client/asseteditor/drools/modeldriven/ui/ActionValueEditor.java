@@ -23,6 +23,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.Templat
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
@@ -47,8 +48,10 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -153,29 +156,65 @@ public class ActionValueEditor extends DirtyableComposite {
 
         //Template TextBoxes are always Strings as they hold the template key for the actual value
         if ( value.nature == FieldNature.TYPE_TEMPLATE ) {
-            Widget box = boundTextBox( this.value );
+            Widget box = wrap( boundTextBox( this.value ) );
             root.add( box );
             return;
         }
 
         //Variable fields (including bound enumeration fields)
         if ( value.nature == FieldNature.TYPE_VARIABLE ) {
-            Widget list = boundVariable( value );
+            Widget list = wrap( boundVariable( value ) );
             root.add( list );
             return;
         }
 
         //Enumerations - since this does not use FieldNature it should follow those that do
         if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
-            Widget list = boundEnum( value );
+            Widget list = wrap( boundEnum( value ) );
             root.add( list );
             return;
         }
 
         //Fall through for all remaining FieldNatures
-        Widget box = boundTextBox( this.value );
+        Widget box = wrap( boundTextBox( this.value ) );
         root.add( box );
 
+    }
+
+    //Wrap a Constraint Value Editor with an icon to remove the type 
+    private Widget wrap(Widget w) {
+        HorizontalPanel wrapper = new HorizontalPanel();
+        Image clear = new ImageButton( images.deleteItemSmall() );
+        clear.setTitle( constants.RemoveActionValueDefinition() );
+        clear.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                //Reset Constraint's value and value type
+                if ( Window.confirm( constants.RemoveActionValueDefinitionQuestion() ) ) {
+                    value.setNature( FieldNature.TYPE_UNDEFINED );
+                    value.setValue( null );
+                    doTypeChosen();
+                }
+            }
+
+        } );
+
+        wrapper.add( w );
+        wrapper.add( clear );
+        wrapper.setCellVerticalAlignment( clear, HasVerticalAlignment.ALIGN_MIDDLE );
+        return wrapper;
+    }
+
+    private void doTypeChosen() {
+        makeDirty();
+        executeOnChangeCommand();
+        executeOnTemplateVariablesChange();
+        refresh();
+    }
+
+    private void doTypeChosen(FormStylePopup form) {
+        doTypeChosen();
+        form.hide();
     }
 
     private Widget boundVariable(final FieldNature c) {
@@ -309,11 +348,7 @@ public class ActionValueEditor extends DirtyableComposite {
             public void onClick(ClickEvent event) {
                 value.nature = FieldNature.TYPE_LITERAL;
                 value.value = "";
-                makeDirty();
-                executeOnChangeCommand();
-                executeOnTemplateVariablesChange();
-                refresh();
-                form.hide();
+                doTypeChosen( form );
             }
         } );
 
@@ -328,15 +363,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 public void onClick(ClickEvent event) {
                     value.nature = FieldNature.TYPE_TEMPLATE;
                     value.value = "";
-                    makeDirty();
-                    refresh();
-
-                    //Signal change in Template variables
-                    TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-                    eventBus.fireEventFromSource( tvce,
-                                                  model );
-
-                    form.hide();
+                    doTypeChosen( form );
                 }
             } );
             form.addAttribute( constants.TemplateKey() + ":",
@@ -354,9 +381,7 @@ public class ActionValueEditor extends DirtyableComposite {
             public void onClick(ClickEvent event) {
                 value.nature = FieldNature.TYPE_FORMULA;
                 value.value = "=";
-                makeDirty();
-                refresh();
-                form.hide();
+                doTypeChosen( form );
             }
         } );
 
@@ -371,9 +396,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 public void onClick(ClickEvent event) {
                     value.nature = FieldNature.TYPE_VARIABLE;
                     value.value = "=";
-                    makeDirty();
-                    refresh();
-                    form.hide();
+                    doTypeChosen( form );
                 }
             } );
         }
@@ -532,8 +555,11 @@ public class ActionValueEditor extends DirtyableComposite {
         this.onChangeCommand = onChangeCommand;
     }
 
+    //Signal (potential) change in Template variables
     public void executeOnTemplateVariablesChange() {
-
+        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+        eventBus.fireEventFromSource( tvce,
+                                      model );
     }
 
 }

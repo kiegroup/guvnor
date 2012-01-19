@@ -2607,4 +2607,12 @@ public interface Constants
     
     String Paste();
 
+    String RemoveConstraintValueDefinition();
+
+    String RemoveConstraintValueDefinitionQuestion();
+    
+    String RemoveActionValueDefinition();
+
+    String RemoveActionValueDefinitionQuestion();
+
 }

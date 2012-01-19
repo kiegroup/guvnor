@@ -399,7 +399,6 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         FieldConstraint[] nested = constraint.constraints;
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        inner.setStyleName( "modeller-inner-nested-Constraints" ); //NON-NLS
         if ( nested != null ) {
             for ( int i = 0; i < nested.length; i++ ) {
                 this.renderFieldConstraint( inner,
