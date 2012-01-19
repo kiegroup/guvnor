@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasOperator;
@@ -216,7 +217,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     constraint.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
                     constraint.setValue( null );
                     constraint.clearParameters();
-                    constraint.setExpressionValue( null );
+                    constraint.setExpressionValue( new ExpressionFormLine() );
                     doTypeChosen();
                 }
             }
