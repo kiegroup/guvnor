@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.drools.guvnor.client.messages.Constants;
@@ -34,11 +35,13 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateCha
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
@@ -73,6 +76,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
+    CopyRowsEvent.Handler,
+    PasteRowsEvent.Handler,
     DeleteColumnEvent.Handler,
     SetInternalModelEvent.Handler<M, T>,
     InsertInternalColumnEvent.Handler<T>,
@@ -139,20 +144,20 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     //event.stopPropogation() doesn't prevent text selection
     private native static void disableTextSelectInternal(Element e,
                                                          boolean disable)/*-{
-		if (disable) {
-			e.ondrag = function() {
-				return false;
-			};
-			e.onselectstart = function() {
-				return false;
-			};
-			e.style.MozUserSelect = "none"
-		} else {
-			e.ondrag = null;
-			e.onselectstart = null;
-			e.style.MozUserSelect = "text"
-		}
-    }-*/;
+                                                                         if (disable) {
+                                                                         e.ondrag = function() {
+                                                                         return false;
+                                                                         };
+                                                                         e.onselectstart = function() {
+                                                                         return false;
+                                                                         };
+                                                                         e.style.MozUserSelect = "none"
+                                                                         } else {
+                                                                         e.ondrag = null;
+                                                                         e.onselectstart = null;
+                                                                         e.style.MozUserSelect = "text"
+                                                                         }
+                                                                         }-*/;
 
     // Selections store the actual grid data selected (irrespective of
     // merged cells). So a merged cell spanning 2 rows is stored as 2
@@ -194,6 +199,9 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
     protected MOVE_DIRECTION                                 rangeDirection       = MOVE_DIRECTION.NONE;
     protected boolean                                        bDragOperationPrimed = false;
+
+    //Rows that have been copied in a copy-paste operation
+    private List<DynamicDataRow>                             copiedRows           = new ArrayList<DynamicDataRow>();
 
     protected static final RowGroupingChangeEvent            ROW_GROUPING_EVENT   = new RowGroupingChangeEvent();
 
@@ -247,6 +255,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         eventBus.addHandler( InsertRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( CopyRowsEvent.TYPE,
+                             this );
+        eventBus.addHandler( PasteRowsEvent.TYPE,
                              this );
         eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
@@ -865,14 +877,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         //Delete row data
         data.deleteRow( index );
 
-        // Partial redraw
-        if ( !data.isMerged() ) {
-            // Single row when not merged
-            removeRowElement( index );
-        } else {
-            // Affected rows when merged
-            removeRowElement( index );
+        removeRowElement( index );
 
+        // Partial redraw
+        if ( data.isMerged() ) {
             if ( data.size() > 0 ) {
                 int minRedrawRow = findMinRedrawRow( index - 1 );
                 int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
@@ -899,27 +907,104 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                    rowData );
     }
 
+    public void onCopyRows(CopyRowsEvent event) {
+        copiedRows.clear();
+        //Determine set of *unique* logical (grouped) rows from absolute indexes
+        SortedSet<Integer> uniqueLogicalRowIndexes = new TreeSet<Integer>();
+        for ( Integer iRow : event.getRowIndexes() ) {
+            uniqueLogicalRowIndexes.add( rowMapper.mapToMergedRow( iRow ) );
+        }
+        for ( Integer iRow : uniqueLogicalRowIndexes ) {
+            copiedRows.add( data.get( iRow ) );
+        }
+    }
+
+    public void onPasteRows(PasteRowsEvent event) {
+        if ( copiedRows == null || copiedRows.size() == 0 ) {
+            return;
+        }
+        int iRow = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
+        for ( DynamicDataRow sourceRowData : copiedRows ) {
+            //Clone the row, other than RowNumber column
+            insertRow( iRow,
+                       cloneRow( sourceRowData ) );
+            iRow++;
+        }
+
+    }
+
+    private DynamicDataRow cloneRow(DynamicDataRow sourceRowData) {
+        if ( sourceRowData instanceof GroupedDynamicDataRow ) {
+            return cloneDynamicDataRow( (GroupedDynamicDataRow) sourceRowData );
+        }
+        return cloneDynamicDataRow( sourceRowData );
+    }
+
+    private DynamicDataRow cloneDynamicDataRow(DynamicDataRow sourceRowData) {
+        DynamicDataRow rowData = cellValueFactory.makeUIRowData();
+        for ( int iCol = 0; iCol < sourceRowData.size(); iCol++ ) {
+            CellValue< ? extends Comparable< ? >> cell = sourceRowData.get( iCol );
+            rowData.get( iCol ).setValue( cell.getValue() );
+        }
+        return rowData;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private DynamicDataRow cloneDynamicDataRow(GroupedDynamicDataRow sourceRowData) {
+        GroupedDynamicDataRow rowData = new GroupedDynamicDataRow();
+        for ( int iCol = 0; iCol < sourceRowData.size(); iCol++ ) {
+            CellValue< ? extends Comparable< ? >> sourceCell = sourceRowData.get( iCol );
+            GroupedCellValue cell = sourceCell.convertToGroupedCell();
+            if ( sourceCell instanceof GroupedCellValue ) {
+                GroupedCellValue groupedSourceCell = (GroupedCellValue) sourceCell;
+                if ( groupedSourceCell.isGrouped() ) {
+                    cell.addState( CellState.GROUPED );
+                }
+                if ( groupedSourceCell.isOtherwise() ) {
+                    cell.addState( CellState.OTHERWISE );
+                }
+            }
+            rowData.add( cell );
+        }
+        for ( DynamicDataRow childRow : sourceRowData.getChildRows() ) {
+            rowData.addChildRow( cloneRow( childRow ) );
+        }
+        return rowData;
+    }
+
     private void insertRow(int index,
                            DynamicDataRow rowData) {
 
         // Clear any selections
         clearSelection();
 
-        // Find rows that need to be (re)drawn
         int minRedrawRow = index;
         int maxRedrawRow = index;
+
+        // Find rows that need to be (re)drawn before the new row is inserted
         if ( data.isMerged() ) {
             if ( index < data.size() ) {
                 minRedrawRow = findMinRedrawRow( index );
-                maxRedrawRow = findMaxRedrawRow( index ) + 1;
-            } else {
-                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
-                maxRedrawRow = index;
+                maxRedrawRow = findMaxRedrawRow( index );
             }
         }
 
         data.addRow( index,
                      rowData );
+
+        // Check extents as these could have changed after the row is inserted
+        if ( data.isMerged() ) {
+            if ( index < data.size() ) {
+                minRedrawRow = Math.min( minRedrawRow,
+                                         findMinRedrawRow( index ) );
+                maxRedrawRow = Math.max( maxRedrawRow,
+                                         findMaxRedrawRow( index ) );
+            } else {
+                minRedrawRow = Math.min( minRedrawRow,
+                                         findMinRedrawRow( index ) );
+                maxRedrawRow = index;
+            }
+        }
 
         // Partial redraw
         if ( !data.isMerged() ) {

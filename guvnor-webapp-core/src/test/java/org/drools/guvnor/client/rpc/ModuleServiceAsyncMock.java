@@ -60,7 +60,7 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
     public void buildPackage(String p0, boolean p1, String p2, String p3, String p4, boolean p5, String p6, String p7, boolean p8, String p9, AsyncCallback<BuilderResult> cb) {
     }
 
-    public void buildPackageSource(String p0, AsyncCallback<String> cb) {
+    public void buildModuleSource(String p0, AsyncCallback<String> cb) {
     }
 
     public void copyModule(String p0, String p1, AsyncCallback<String> cb) {

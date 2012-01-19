@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
@@ -54,7 +55,6 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 /**
  * A servlet opening an API into the Guvnor services.

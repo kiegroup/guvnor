@@ -20,9 +20,10 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.BuiltInSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
@@ -32,10 +33,8 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,16 +50,17 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     private ModuleAssemblerConfiguration configuration;
     private AssetSelector selector;
-
+ 
     public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
         this.moduleItem = moduleItem;
         
         if(moduleAssemblerConfiguration == null) {
-            moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
+            this.configuration = new ModuleAssemblerConfiguration();
         } else {
             this.configuration = moduleAssemblerConfiguration;
         }
         createBuilder();
+        src = new StringBuilder();
     }
     
     public void compile() {
@@ -197,4 +197,37 @@ public class PackageAssembler extends PackageAssemblerBase {
     public BRMSPackageBuilder getBuilder() {
         return builder;
     }
+    
+    public String getCompiledSource() {
+        src = new StringBuilder();
+
+        loadHeaderToSource();
+        loadDSLFiles();
+        loadDeclaredTypesToSource();
+        loadFunctionsToSource();
+        loadRuleAssets();
+
+        return src.toString();
+    }
+    
+    private void loadRuleAssets() {
+        Iterator<AssetItem> assetItemIterator = getAllAssets();
+        while (assetItemIterator.hasNext()) {
+            addRuleAsset(assetItemIterator.next());
+        }
+    }
+
+    private void addRuleAsset(AssetItem asset) {
+        if (!asset.isArchived() && !asset.getDisabled()) {
+            ContentHandler handler = ContentManager.getHandler(asset.getFormat());
+            if (handler.isRuleAsset()) {
+                IRuleAsset ruleAsset = (IRuleAsset) handler;
+                ruleAsset.assembleDRL(builder,
+                        asset,
+                        src);
+            }
+            src.append("\n\n");
+        }
+    }
+
 }

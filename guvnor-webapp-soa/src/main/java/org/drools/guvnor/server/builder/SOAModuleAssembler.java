@@ -21,7 +21,7 @@ import org.drools.repository.ModuleItem;
 
 /**
  * This assembles SOA services into deployment bundles, and deals
- * with errors etc. Each content type is responsible for contributing to the
+ * with errors etc. Each asset is responsible for contributing to the
  * deployment bundle.
  */
 public class SOAModuleAssembler extends AssemblerBase {
@@ -47,7 +47,11 @@ public class SOAModuleAssembler extends AssemblerBase {
     }
 
     public byte[] getCompiledBinary() {
-        //NOT_IMPLEMENTED
+        //TO_BE_IMPLEMENTED
         return null;
     }
+    public String getCompiledSource() {
+        //TO_BE_IMPLEMENTED
+        return null;
+    }   
 }

@@ -539,16 +539,10 @@ public class DynamicData
                         if ( cell1.getValue().equals( cell2.getValue() ) ) {
                             bSplit = false;
                             if ( cell1 instanceof GroupedCellValue ) {
-                                GroupedCellValue gcv = (GroupedCellValue) cell1;
-                                if ( gcv.hasMultipleValues() ) {
-                                    bSplit = true;
-                                }
+                                bSplit = true;
                             }
                             if ( cell2 instanceof GroupedCellValue ) {
-                                GroupedCellValue gcv = (GroupedCellValue) cell2;
-                                if ( gcv.hasMultipleValues() ) {
-                                    bSplit = true;
-                                }
+                                bSplit = true;
                             }
                         }
                     } else if ( cell1.isOtherwise() && cell2.isOtherwise() ) {

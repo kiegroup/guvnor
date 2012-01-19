@@ -16,6 +16,9 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.junit.Before;
@@ -141,6 +144,57 @@ public class DynamicDataRowMapperTests extends BaseDynamicDataTests {
                       rowMapper.mapToAbsoluteRow( 4 ) );
         assertEquals( 7,
                       rowMapper.mapToAbsoluteRow( 5 ) );
+
+    }
+
+    @Test
+    public void testMapToAllAbsoluteRows() {
+        //0=[-][-][-] --> 0=[-][-][-]
+        //1=[1][1][1] --> 1=[1][1][1]
+        //2=[1][1][1] --> 2=[2][2][2]
+        //3=[1][1][1] --> 3=[2][2][2]
+        //4=[2][2][2] --> 4=[2][2][2]
+        //5=[2][2][2] --> 5=[-][-][-]
+        //6=[2][2][2]
+        //7=[-][-][-]
+        RowMapper rowMapper = new RowMapper( data );
+        CellValue< ? extends Comparable< ? >> cv = data.get( 1 ).get( 0 );
+
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        Set<Integer> results;
+        results = rowMapper.mapToAllAbsoluteRows( 0 );
+        assertEquals( 1,
+                      results.size() );
+        assertTrue( results.contains( 0 ) );
+
+        results = rowMapper.mapToAllAbsoluteRows( 1 );
+        assertEquals( 3,
+                      results.size() );
+        assertTrue( results.contains( 1 ) );
+        assertTrue( results.contains( 2 ) );
+        assertTrue( results.contains( 3 ) );
+
+        results = rowMapper.mapToAllAbsoluteRows( 2 );
+        assertEquals( 1,
+                      results.size() );
+        assertTrue( results.contains( 4 ) );
+
+        results = rowMapper.mapToAllAbsoluteRows( 3 );
+        assertEquals( 1,
+                      results.size() );
+        assertTrue( results.contains( 5 ) );
+
+        results = rowMapper.mapToAllAbsoluteRows( 4 );
+        assertEquals( 1,
+                      results.size() );
+        assertTrue( results.contains( 6 ) );
+
+        results = rowMapper.mapToAllAbsoluteRows( 5 );
+        assertEquals( 1,
+                      results.size() );
+        assertTrue( results.contains( 7 ) );
 
     }
 

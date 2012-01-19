@@ -2606,5 +2606,7 @@ public interface Constants
     String DecisionTableBRLFragmentNothingDefined();
     
     String DecisionTableBRLFragmentNoTemplateKeysFound();
+    
+    String Paste();
 
 }

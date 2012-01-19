@@ -243,8 +243,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                 p9 );
     }
 
-    public java.lang.String buildPackageSource(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.buildPackageSource( p0 );
+    public java.lang.String buildModuleSource(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return moduleService.buildModuleSource( p0 );
     }
 
     public String copyModule(java.lang.String p0,

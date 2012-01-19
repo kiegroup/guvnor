@@ -189,37 +189,6 @@ public class TemplateModel extends RuleModel
         return ret;
     }
 
-    public List<List<String>> getTableAsList() {
-        List<List<String>> rows = new ArrayList<List<String>>();
-        if ( rowsCount <= 0 ) {
-            rows.add( new ArrayList<String>() );
-            return rows;
-        }
-
-        //Refresh against interpolation variables
-        putInSync();
-
-        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
-        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
-            InterpolationVariable var = entry.getKey();
-            String varName = var.getVarName();
-            if ( ID_COLUMN_NAME.equals( varName ) ) {
-                continue;
-            }
-            int idx = entry.getValue();
-            for ( int iRow = 0; iRow < rowsCount; iRow++ ) {
-                List<String> row = rows.get( iRow );
-                if ( row == null ) {
-                    row = new ArrayList<String>();
-                    rows.add( row );
-                }
-                row.set( idx,
-                         table.get( varName ).get( iRow ) );
-            }
-        }
-        return rows;
-    }
-
     public void putInSync() {
 
         //vars.KeySet is a set of InterpolationVariable, whereas table.keySet is a set of String

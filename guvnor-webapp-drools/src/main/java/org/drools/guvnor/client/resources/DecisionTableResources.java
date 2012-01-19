@@ -83,6 +83,14 @@ public interface DecisionTableResources
         String patternConditionSectionHeader();
 
         String columnLabelHidden();
+
+        String contextMenu();
+
+        String contextMenuItem();
+
+        String contextMenuItemEnabled();
+
+        String contextMenuItemDisabled();
         
     };
 

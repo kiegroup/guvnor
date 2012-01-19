@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 
@@ -37,6 +38,7 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
+    PasteRowsEvent.Handler,
     SetInternalModelEvent.Handler<M, T>,
     RowGroupingChangeEvent.Handler {
 
@@ -69,6 +71,8 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
+        eventBus.addHandler( PasteRowsEvent.TYPE,
+                             this );
         eventBus.addHandler( RowGroupingChangeEvent.TYPE,
                              this );
     }
@@ -93,5 +97,16 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
      * addSelector for each row in the grid's data
      */
     abstract void redraw();
+
+    /**
+     * Show the Context Menu
+     * 
+     * @param index
+     * @param clientX
+     * @param clientY
+     */
+    public abstract void showContextMenu(int index,
+                                         int clientX,
+                                         int clientY);
 
 }

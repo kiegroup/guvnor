@@ -75,7 +75,7 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    boolean addChildRow(DynamicDataRow childRow) {
+    public boolean addChildRow(DynamicDataRow childRow) {
         for ( int iCol = 0; iCol < childRow.size(); iCol++ ) {
             if ( this.get( iCol ) instanceof GroupedCellValue ) {
                 GroupedCellValue gcv = (GroupedCellValue) this.get( iCol );

@@ -26,7 +26,8 @@ import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.server.builder.PackageDRLAssembler;
+import org.drools.guvnor.server.builder.ModuleAssembler;
+import org.drools.guvnor.server.builder.ModuleAssemblerManager;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.repository.AssetHistoryIterator;
@@ -205,12 +206,11 @@ public class PackageResource extends Resource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getPackageSource(@PathParam("packageName") String packageName) {
         try {
-            ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            PackageDRLAssembler asm = new PackageDRLAssembler();
-            asm.init(packageItem, null);
-            String drl = asm.getDRL();
+            ModuleItem moduleItem = rulesRepository.loadModule(packageName);
+            ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(moduleItem.getFormat(), moduleItem, null);
+            String drl = moduleAssembler.getCompiledSource();
             return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
-                    header("Last-Modified", createDateFormat().format(this.convertToGmt(packageItem.getLastModified()).getTime())).build();
+                    header("Last-Modified", createDateFormat().format(this.convertToGmt(moduleItem.getLastModified()).getTime())).build();
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
@@ -298,9 +298,8 @@ public class PackageResource extends Resource {
     public Response getHistoricalPackageSource(@PathParam("packageName") String packageName,
                                                @PathParam("versionNumber") long versionNumber) {
         ModuleItem item = rulesRepository.loadModule(packageName, versionNumber);
-        PackageDRLAssembler asm = new PackageDRLAssembler();
-        asm.init(item, null);
-        String drl = asm.getDRL();
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, null);
+        String drl = moduleAssembler.getCompiledSource();
         return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(item.getLastModified()).getTime())).build();
     }

@@ -17,6 +17,7 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CopyPasteContextMenu;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
@@ -30,6 +31,8 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecoratedGridSidebarWidget<GuidedDecisionTable52, BaseColumn> {
 
+    private CopyPasteContextMenu contextMenu;
+
     /**
      * Construct a "sidebar" for a vertical Decision Table
      */
@@ -38,6 +41,8 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
         // Argument validation performed in the superclass constructor
         super( resources,
                eventBus );
+
+        contextMenu = new CopyPasteContextMenu( eventBus );
 
         //Wire-up event handlers
         eventBus.addHandler( SetInternalDecisionTableModelEvent.TYPE,
@@ -48,6 +53,16 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
         this.data = event.getData();
         this.rowMapper = new RowMapper( this.data );
         this.redraw();
+    }
+
+    @Override
+    public void showContextMenu(int index,
+                                int clientX,
+                                int clientY) {
+        contextMenu.setContextRows( rowMapper.mapToAllAbsoluteRows( index ) );
+        contextMenu.setPopupPosition( clientX,
+                                      clientY );
+        contextMenu.show();
     }
 
 }

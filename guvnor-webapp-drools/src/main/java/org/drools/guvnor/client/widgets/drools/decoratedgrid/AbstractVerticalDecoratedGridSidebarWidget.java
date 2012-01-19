@@ -22,6 +22,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
@@ -32,6 +33,8 @@ import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -60,7 +63,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
         // Widgets (selectors) created (so they can be removed later)
         private ArrayList<Widget> widgets = new ArrayList<Widget>();
 
-        private VerticalSelectorWidget() {
+        private VerticalSelectorWidget(EventBus eventBus) {
             getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
             getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
             sinkEvents( Event.getTypeInt( "click" ) );
@@ -194,6 +197,26 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
             } );
             hp.add( fp );
+
+            //Add a context menu to copy\paste rows
+            hp.addDomHandler( new ContextMenuHandler() {
+
+                                  public void onContextMenu(ContextMenuEvent event) {
+                                      //Prevent the default context menu
+                                      event.preventDefault();
+                                      event.stopPropagation();
+
+                                      //Set source row index and show
+                                      int clientX = event.getNativeEvent().getClientX();
+                                      int clientY = event.getNativeEvent().getClientY();
+                                      showContextMenu( widgets.indexOf( hp ),
+                                                       clientX,
+                                                       clientY );
+                                  }
+
+                              },
+                              ContextMenuEvent.getType() );
+
             return hp;
         }
 
@@ -316,7 +339,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
         // Construct the Widget
         scrollPanel = new ScrollPanel();
         VerticalPanel container = new VerticalPanel();
-        selectors = new VerticalSelectorWidget();
+        selectors = new VerticalSelectorWidget( eventBus );
 
         container.add( spacer );
         container.add( scrollPanel );
@@ -370,6 +393,11 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
     public void onAppendRow(AppendRowEvent event) {
         selectors.appendRow();
+    }
+
+    public void onPasteRows(PasteRowsEvent event) {
+        int iRow = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
+        selectors.insertRowBefore( iRow );
     }
 
     public void onRowGroupingChange(RowGroupingChangeEvent event) {

@@ -21,7 +21,6 @@ import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
 import org.drools.guvnor.server.builder.ModuleAssemblerConfiguration;
-import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleType;
@@ -563,30 +562,26 @@ public class RepositoryModuleOperations {
                         null ) );
     }
 
-    //Drools specific
-    protected String buildPackageSource(String packageUUID) throws SerializationException {
-
-        ModuleItem item = rulesRepository.loadModuleByUUID( packageUUID );
-        PackageDRLAssembler asm = new PackageDRLAssembler();
-        asm.init(item, null);
-        return asm.getDRL();
+    protected String buildModuleSource(String moduleUUID) throws SerializationException {
+        ModuleItem item = rulesRepository.loadModuleByUUID( moduleUUID );
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, null);
+        return moduleAssembler.getCompiledSource();
     }
 
     //Drools specific
     protected String[] listRulesInPackage(String packageName) throws SerializationException {
-        // load package
         ModuleItem item = rulesRepository.loadModule( packageName );
 
-        PackageDRLAssembler assembler = createPackageDRLAssembler( item );
+        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, null);
 
         List<String> result = new ArrayList<String>();
         try {
 
-            String drl = assembler.getDRL();
+            String drl = moduleAssembler.getCompiledSource();
             if ( drl == null || "".equals( drl ) ) {
                 return new String[0];
             } else {
-                parseRulesToPackageList( assembler,
+                parseRulesToPackageList( moduleAssembler,
                         result );
             }
 
@@ -611,16 +606,10 @@ public class RepositoryModuleOperations {
         return retList.toArray( new String[]{} );
     }
 
-    PackageDRLAssembler createPackageDRLAssembler(final ModuleItem packageItem) {
-        PackageDRLAssembler asm = new PackageDRLAssembler();
-        asm.init(packageItem, null);
-        return asm;
-    }
-
-    void parseRulesToPackageList(PackageDRLAssembler asm,
+    void parseRulesToPackageList(ModuleAssembler asm,
                                  List<String> result) throws DroolsParserException {
         int count = 0;
-        StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(),
+        StringTokenizer stringTokenizer = new StringTokenizer( asm.getCompiledSource(),
                 "\n\r" );
         while (stringTokenizer.hasMoreTokens()) {
             String line = stringTokenizer.nextToken().trim();

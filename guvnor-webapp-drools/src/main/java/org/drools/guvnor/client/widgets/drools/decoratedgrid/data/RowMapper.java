@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.data;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 /**
  * Utility class to map an absolute row index to and from a merged row index. An
  * absolute row index represents a row in the underlying data that has not been
@@ -68,6 +71,34 @@ public class RowMapper {
             }
         }
         return absoluteRowIndex;
+    }
+
+    public SortedSet<Integer> mapToAllAbsoluteRows(int index) {
+        int absoluteRowIndex = 0;
+        DynamicDataRow row = null;
+        SortedSet<Integer> absoluteRowIndexes = new TreeSet<Integer>();
+        for ( int iRow = 0; iRow <= index; iRow++ ) {
+            row = data.get( iRow );
+            absoluteRowIndex++;
+            if ( row instanceof GroupedDynamicDataRow ) {
+                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+                absoluteRowIndex = absoluteRowIndex + (groupedRow.getChildRows().size() - 1);
+            }
+        }
+        if ( row == null ) {
+            return absoluteRowIndexes;
+        }
+        if ( row instanceof GroupedDynamicDataRow ) {
+            GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+            int groupedRowsCount = groupedRow.getChildRows().size();
+            for ( int iRow = 0; iRow < groupedRowsCount; iRow++ ) {
+                absoluteRowIndexes.add( absoluteRowIndex + iRow - groupedRowsCount );
+            }
+        } else {
+            absoluteRowIndexes.add( absoluteRowIndex - 1 );
+        }
+        return absoluteRowIndexes;
+
     }
 
 }
