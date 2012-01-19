@@ -154,7 +154,7 @@ public class DynamicDataTestsWithGroupingRowAdditions extends BaseDynamicDataTes
     @Test
     public void testIndexing_HtmlCoordinates() {
         //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2]
+        //[1][2][3] --> [-][2][3] --> [1,0][1,1][1,2]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -193,7 +193,7 @@ public class DynamicDataTestsWithGroupingRowAdditions extends BaseDynamicDataTes
                       1 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
-                      0 );
+                      1 );
         assertEquals( c.getCol(),
                       2 );
 
@@ -355,8 +355,8 @@ public class DynamicDataTestsWithGroupingRowAdditions extends BaseDynamicDataTes
 
     @Test
     public void testIndexing_RowSpans() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [1][1][2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1][1][0]
+        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [1][1][1]
+        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1][1][1]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -374,7 +374,7 @@ public class DynamicDataTestsWithGroupingRowAdditions extends BaseDynamicDataTes
                       1 );
         cv = data.get( 0 ).get( 2 );
         assertEquals( cv.getRowSpan(),
-                      2 );
+                      1 );
 
         cv = data.get( 1 ).get( 0 );
         assertEquals( cv.getRowSpan(),
@@ -384,7 +384,7 @@ public class DynamicDataTestsWithGroupingRowAdditions extends BaseDynamicDataTes
                       1 );
         cv = data.get( 1 ).get( 2 );
         assertEquals( cv.getRowSpan(),
-                      0 );
+                      1 );
 
         data.addRow( 1,
                      makeRow() );
