@@ -19,30 +19,23 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * An event to copy a row
+ * An event to paste row(s)
  */
-public class CopyRowEvent extends GwtEvent<CopyRowEvent.Handler> {
+public class PasteRowsEvent extends GwtEvent<PasteRowsEvent.Handler> {
 
     public static interface Handler
         extends
         EventHandler {
 
-        void onCopyRow(CopyRowEvent event);
+        void onPasteRows(PasteRowsEvent event);
     }
 
-    public static Type<CopyRowEvent.Handler> TYPE = new Type<CopyRowEvent.Handler>();
+    public static Type<PasteRowsEvent.Handler> TYPE = new Type<PasteRowsEvent.Handler>();
 
-    private int                              sourceRowIndex;
-    private int                              targetRowIndex;
+    private int                                targetRowIndex;
 
-    public CopyRowEvent(int sourceRowIndex,
-                        int targetRowIndex) {
-        this.sourceRowIndex = sourceRowIndex;
+    public PasteRowsEvent(int targetRowIndex) {
         this.targetRowIndex = targetRowIndex;
-    }
-
-    public int getSourceRowIndex() {
-        return this.sourceRowIndex;
     }
 
     public int getTargetRowIndex() {
@@ -50,13 +43,13 @@ public class CopyRowEvent extends GwtEvent<CopyRowEvent.Handler> {
     }
 
     @Override
-    public Type<CopyRowEvent.Handler> getAssociatedType() {
+    public Type<PasteRowsEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(CopyRowEvent.Handler handler) {
-        handler.onCopyRow( this );
+    protected void dispatch(PasteRowsEvent.Handler handler) {
+        handler.onPasteRows( this );
     }
 
 }

@@ -19,7 +19,6 @@ import org.drools.guvnor.client.resources.DecisionTableResources;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -39,7 +38,7 @@ public abstract class AbstractContextMenu extends PopupPanel {
      * @param eventBus
      *            So menu items can raise events
      */
-    public AbstractContextMenu(final EventBus eventBus) {
+    public AbstractContextMenu() {
         super( true );
         setStyleName( DecisionTableResources.INSTANCE.style().contextMenu() );
         add( vp );

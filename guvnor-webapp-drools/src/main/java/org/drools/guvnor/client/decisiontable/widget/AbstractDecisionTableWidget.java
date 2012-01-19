@@ -36,12 +36,13 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.Operation;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
@@ -94,7 +95,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
-    CopyRowEvent.Handler,
+    CopyRowsEvent.Handler,
+    PasteRowsEvent.Handler,
     DeleteColumnEvent.Handler,
     InsertDecisionTableColumnEvent.Handler<BaseColumn, DTCellValue52>,
     MoveColumnsEvent.Handler,
@@ -110,7 +112,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected final EventBus                              eventBus;
     private BRLRuleModel                                  rm;
 
-    protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
+    //Rows that have been copied in a copy-paste operation
+    private List<List<DTCellValue52>>                     copiedRows = new ArrayList<List<DTCellValue52>>();
+
+    protected static final DecisionTableResourcesProvider resources  = new DecisionTableResourcesProvider();
 
     /**
      * Constructor
@@ -142,7 +147,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
-        eventBus.addHandler( CopyRowEvent.TYPE,
+        eventBus.addHandler( CopyRowsEvent.TYPE,
+                             this );
+        eventBus.addHandler( PasteRowsEvent.TYPE,
                              this );
         eventBus.addHandler( SelectedCellChangeEvent.TYPE,
                              this );
@@ -2024,32 +2031,46 @@ public abstract class AbstractDecisionTableWidget extends Composite
         } );
     }
 
-    public void onCopyRow(CopyRowEvent event) {
-        List<DTCellValue52> rowData = cellValueFactory.makeRowData();
-        List<DTCellValue52> sourceData = model.getData().get( event.getSourceRowIndex() );
-        
-        //Copy all data, other than RowNumber column to target row
-        for ( int iCol = 1; iCol < sourceData.size(); iCol++ ) {
-            DTCellValue52 sourceCell = sourceData.get( iCol );
-            DTCellValue52 targetCell = rowData.get( iCol );
-            switch ( sourceCell.getDataType() ) {
-                case BOOLEAN :
-                    targetCell.setBooleanValue( sourceCell.getBooleanValue() );
-                    break;
-                case DATE :
-                    targetCell.setDateValue( sourceCell.getDateValue() );
-                    break;
-                case NUMERIC :
-                    targetCell.setNumericValue( sourceCell.getNumericValue() );
-                    break;
-                default :
-                    targetCell.setStringValue( sourceCell.getStringValue() );
-            }
+    public void onCopyRows(CopyRowsEvent event) {
+        copiedRows.clear();
+        for ( Integer iRow : event.getRowIndexes() ) {
+            copiedRows.add( model.getData().get( iRow ) );
         }
-        model.getData().add( event.getTargetRowIndex(),
-                             rowData );
-        model.getAnalysisData().add( event.getTargetRowIndex(),
-                                     new Analysis() );
+    }
+
+    public void onPasteRows(PasteRowsEvent event) {
+        if ( copiedRows == null || copiedRows.size() == 0 ) {
+            return;
+        }
+        int iRow = event.getTargetRowIndex();
+        for ( List<DTCellValue52> sourceRowData : copiedRows ) {
+            List<DTCellValue52> rowData = cellValueFactory.makeRowData();
+
+            //Clone the row, other than RowNumber column
+            for ( int iCol = 1; iCol < sourceRowData.size(); iCol++ ) {
+                DTCellValue52 sourceCell = sourceRowData.get( iCol );
+                DTCellValue52 targetCell = rowData.get( iCol );
+                switch ( sourceCell.getDataType() ) {
+                    case BOOLEAN :
+                        targetCell.setBooleanValue( sourceCell.getBooleanValue() );
+                        break;
+                    case DATE :
+                        targetCell.setDateValue( sourceCell.getDateValue() );
+                        break;
+                    case NUMERIC :
+                        targetCell.setNumericValue( sourceCell.getNumericValue() );
+                        break;
+                    default :
+                        targetCell.setStringValue( sourceCell.getStringValue() );
+                }
+            }
+
+            model.getData().add( iRow,
+                                 rowData );
+            model.getAnalysisData().add( iRow,
+                                         new Analysis() );
+            iRow++;
+        }
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -2057,6 +2078,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
         } );
+
     }
 
     public void onAppendRow(AppendRowEvent event) {

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
@@ -207,10 +207,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
                                       event.stopPropagation();
 
                                       //Set source row index and show
-                                      int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
                                       int clientX = event.getNativeEvent().getClientX();
                                       int clientY = event.getNativeEvent().getClientY();
-                                      showContextMenu( index,
+                                      showContextMenu( widgets.indexOf( hp ),
                                                        clientX,
                                                        clientY );
                                   }
@@ -396,9 +395,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
         selectors.appendRow();
     }
 
-    public void onCopyRow(CopyRowEvent event) {
-        int index = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
-        selectors.insertRowBefore( index );
+    public void onPasteRows(PasteRowsEvent event) {
+        int iRow = rowMapper.mapToMergedRow( event.getTargetRowIndex() );
+        selectors.insertRowBefore( iRow );
     }
 
     public void onRowGroupingChange(RowGroupingChangeEvent event) {
