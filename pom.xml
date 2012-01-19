@@ -48,6 +48,22 @@
     <url>https://issues.jboss.org/browse/GUVNOR</url>
   </issueManagement>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <!-- Remove me as soon as all of droolsjbpm requires at least Java 6 -->
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <modules>
     <module>guvnor-repository-connector</module>
     <module>guvnor-repository</module>
