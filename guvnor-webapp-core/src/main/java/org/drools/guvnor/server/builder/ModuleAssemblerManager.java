@@ -40,25 +40,24 @@ public class ModuleAssemblerManager {
     /**
      * This is a map of the module assemblers to use.
      */
-    private final Map<String, ModuleAssembler> moduleAssemblers = new HashMap<String, ModuleAssembler>();
+    private final Map<String, String> moduleAssemblers = new HashMap<String, String>();
 
 
-    @SuppressWarnings("rawtypes")
     ModuleAssemblerManager(String configPath) {
-        log.debug("Loading content properties");
+        log.debug("Loading ModuleAssembler properties");
         Properties props = new Properties();
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream(configPath);
             props.load(in);
             for (Object o : props.keySet()) {
-                String moduleType = (String) o;
-                String val = props.getProperty(moduleType);
+                String moduleFormat = (String) o;
+                String moduleAssemblerClassName = props.getProperty(moduleFormat);
 
-                moduleAssemblers.put(moduleType, loadModuleAssemblerImplementation(val));
+                moduleAssemblers.put(moduleFormat, moduleAssemblerClassName);
             }
         } catch (IOException e) {
-            log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
+            log.error("UNABLE to load ModuleAssembler. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
         } finally {
             IOUtils.closeQuietly(in);
         }
@@ -67,12 +66,12 @@ public class ModuleAssemblerManager {
     /**
      * Return the moduleAssemblers.
      */
-    public Map<String, ModuleAssembler> getModuleAssemblers() {
+    public Map<String, String> getModuleAssemblers() {
         return moduleAssemblers;
     }
 
 
-    private ModuleAssembler loadModuleAssemblerImplementation(String val) throws IOException {
+    private static ModuleAssembler loadModuleAssemblerImplementation(String val) throws IOException {
         try {
             return (ModuleAssembler) Thread.currentThread().getContextClassLoader().loadClass(val).newInstance();
         } catch (InstantiationException e) {
@@ -100,12 +99,19 @@ public class ModuleAssemblerManager {
     }
 
     public static ModuleAssembler getModuleAssembler(String format, ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
-        ModuleAssembler moduleAssembler = ModuleAssemblerManager.getInstance().getModuleAssemblers().get(format);        
-        if (moduleAssembler == null) {
+        String moduleAssemblerClassName = ModuleAssemblerManager.getInstance().getModuleAssemblers().get(format);        
+        if (moduleAssemblerClassName == null) {
             //h = new DefaultContentHandler();
             throw new IllegalArgumentException("Unable to handle the module type: " + format);
         }
-        moduleAssembler.init(moduleItem, moduleAssemblerConfiguration);
-        return moduleAssembler;
+        
+        ModuleAssembler moduleAssembler = null;
+        try {
+            moduleAssembler = loadModuleAssemblerImplementation(moduleAssemblerClassName);
+            moduleAssembler.init(moduleItem, moduleAssemblerConfiguration);     
+        } catch (IOException e) {
+            log.error("UNABLE to load ModuleAssembler. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
+        } 
+        return moduleAssembler;  
     }
 }
