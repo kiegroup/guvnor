@@ -72,7 +72,7 @@ public class CopyPasteContextMenu extends AbstractContextMenu
                                          new ClickHandler() {
 
                                              public void onClick(ClickEvent event) {
-                                                 int targetRowIndex = context.iterator().next();
+                                                 int targetRowIndex = context.first();
                                                  PasteRowsEvent pre = new PasteRowsEvent( targetRowIndex );
                                                  eventBus.fireEvent( pre );
                                                  hide();
