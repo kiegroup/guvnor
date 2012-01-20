@@ -71,7 +71,7 @@ public class PerspectivesPanel implements Presenter {
     public void onLogout() {
         clientFactory.getSecurityService().logout(new GenericCallback() {
             public void onSuccess(Object result) {
-                Window.open(GWT.getModuleBaseURL() + "GuvnorDrools.jsp", "_self", "");
+                Window.open(GWT.getModuleBaseURL() + "Guvnor.jsp", "_self", "");
             }
         });
     }

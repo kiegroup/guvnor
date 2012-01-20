@@ -38,7 +38,7 @@
           <module>org.drools.guvnor.FastCompiledGuvnorDrools</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.GuvnorDrools/GuvnorDrools.html</runTarget>
+          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
@@ -141,7 +141,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <module>org.drools.guvnor.GuvnorDrools</module>
+              <module>org.drools.guvnor.Guvnor</module>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -162,7 +162,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <module>org.drools.guvnor.GuvnorDrools</module>
+              <module>org.drools.guvnor.Guvnor</module>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
