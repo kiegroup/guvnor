@@ -1111,6 +1111,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                                       true );
         
         List<BuilderResultLine> lines = result.getLines();
+        System.out.println("---------------------mydebug2--------------------");
+
         for(BuilderResultLine line:lines) {
             System.out.println("---------------------mydebug--------------------"+line.getMessage());
         }
