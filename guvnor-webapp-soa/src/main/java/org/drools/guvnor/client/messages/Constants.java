@@ -2571,4 +2571,8 @@ public interface Constants
 
     String LogicallyInsertColon();
     
+    String Jar();
+    
+    String JarWidgetDescription();
+    
 }
