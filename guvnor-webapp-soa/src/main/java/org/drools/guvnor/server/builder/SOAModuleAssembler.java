@@ -16,17 +16,21 @@
 
 package org.drools.guvnor.server.builder;
 
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.drools.guvnor.server.files.AssetZipper;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 
 /**
- * This assembles SOA services into deployment bundles, and deals
- * with errors etc. Each asset is responsible for contributing to the
- * deployment bundle.
+ * Package all assets in a service module into a zip.
  */
 public class SOAModuleAssembler extends AssemblerBase {
     private static final LoggingHelper log = LoggingHelper.getLogger(SOAModuleAssembler.class);
-
     private ModuleAssemblerConfiguration configuration;  
 
     public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
@@ -35,7 +39,12 @@ public class SOAModuleAssembler extends AssemblerBase {
     }
 
     public void compile() {
-        //TO_BE_IMPLEMENTED
+        InputStream is = generateZip();
+        //byte[] compiledPackageByte = modulegeAssembler.getCompiledBinary();
+        moduleItem.updateCompiledBinary(is);            
+        moduleItem.updateBinaryUpToDate( true );
+        
+        moduleItem.getRulesRepository().save();
     }
 
     /**
@@ -47,11 +56,32 @@ public class SOAModuleAssembler extends AssemblerBase {
     }
 
     public byte[] getCompiledBinary() {
-        //TO_BE_IMPLEMENTED
-        return null;
+        return moduleItem.getCompiledBinaryBytes();
     }
+
     public String getCompiledSource() {
-        //TO_BE_IMPLEMENTED
+        //NOT_APPLICABLE
         return null;
     }   
+        
+    protected InputStream generateZip() {
+        List<AssetItem> jarAssets = new LinkedList<AssetItem>();
+        AssetZipper assetZipper = null;
+        
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator("jar", "wsdl", "xmlschema");
+        while (assetItemIterator.hasNext()) {
+            AssetItem assetItem = assetItemIterator.next();
+            if (!assetItem.isArchived() && !assetItem.getDisabled()) {
+                jarAssets.add(assetItem);
+            }
+        }
+        if (jarAssets.size() != 0) {
+            assetZipper = new AssetZipper(jarAssets, null);
+
+            return assetZipper.zipAssets();
+        }
+        
+        //REVISIT: return an empty zip instead?
+        return null;
+    }  
 }

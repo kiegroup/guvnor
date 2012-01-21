@@ -33,6 +33,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -73,7 +74,13 @@ public class PackageAssembler extends PackageAssemblerBase {
                 new RuleBaseConfiguration(getClassLoaders())
             );
             ruleBase.addPackage(builder.getPackage());
+
+            byte[] compiledPackageByte = getCompiledBinary();
+            moduleItem.updateCompiledBinary(new ByteArrayInputStream(compiledPackageByte));
+            moduleItem.updateBinaryUpToDate(true);
+            moduleItem.getRulesRepository().save();         
         }
+
     }
 
     private ClassLoader[] getClassLoaders() {

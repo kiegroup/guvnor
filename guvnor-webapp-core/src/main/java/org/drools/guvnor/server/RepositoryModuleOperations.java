@@ -482,10 +482,10 @@ public class RepositoryModuleOperations {
                             enableCategorySelector,
                             customSelectorName ) );
         } catch (NoClassDefFoundError e) {
-            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
+            throw new DetailedSerializationException( "Unable to find a class that was needed when building the module  [" + e.getMessage() + "]",
                     "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
         } catch (UnsupportedClassVersionError e) {
-            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+            throw new DetailedSerializationException( "Can not build the module. One or more of the classes that are needed were compiled with an unsupported Java version.",
                     "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
         }
     }
@@ -508,26 +508,7 @@ public class RepositoryModuleOperations {
             return result;
         }
 
-        updateModuleBinaries( item, moduleAssembler );
-
         return BuilderResult.emptyResult();
-    }
-
-    private void updateModuleBinaries(ModuleItem item, ModuleAssembler modulegeAssembler) throws DetailedSerializationException {
-        try {
-            //REVISIT: in some cases, we may not want to store the generated binary on module node in JCR because its size potentially can be huge. 
-            //We can always generate the binary on-demand.
-            byte[] compiledPackageByte = modulegeAssembler.getCompiledBinary();
-            item.updateCompiledBinary( new ByteArrayInputStream(compiledPackageByte) );            
-            item.updateBinaryUpToDate( true );
-
-            rulesRepository.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error( "An error occurred building the module [" + item.getName() + "]: " + e.getMessage() );
-            throw new DetailedSerializationException( "An error occurred building the module.",
-                    e.getMessage() );
-        }
     }
 
     private ModuleAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
