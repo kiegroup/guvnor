@@ -29,10 +29,7 @@
       <!--<property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</property>-->
 
       <!--Increase PermGen and Max Heap to prevent Hudson from barfing-->
-      <property name="javaVmArguments">
-            -XX:MaxPermSize=256m
-            -Xmx512m
-      </property>
+      <property name="javaVmArguments">-XX:MaxPermSize=256m -Xmx512m -Dorg.jboss.as.client.connect.timeout=10000</property>
             
      </configuration>
   </container>
