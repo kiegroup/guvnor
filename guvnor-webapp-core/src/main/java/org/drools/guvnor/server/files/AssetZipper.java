@@ -8,7 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -18,9 +18,13 @@ import java.util.zip.ZipOutputStream;
  */
 public class AssetZipper {
 
-    private final LinkedList<AssetItem> assets;
+    private final List<AssetItem> assets;
 
-    public AssetZipper(LinkedList<AssetItem> assets,
+    public AssetZipper(List<AssetItem> assets) {
+        this.assets = assets;
+    }
+    
+    public AssetZipper(List<AssetItem> assets,
                        ModuleItem pkg) {
         this.assets = assets;
         //add pkg when it's really needed - zenix

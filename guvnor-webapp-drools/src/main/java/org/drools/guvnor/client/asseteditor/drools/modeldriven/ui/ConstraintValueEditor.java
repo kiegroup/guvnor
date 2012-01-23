@@ -23,6 +23,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.Templat
 import org.drools.guvnor.client.common.DatePickerLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
@@ -34,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasOperator;
@@ -179,21 +181,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
             switch ( constraint.getConstraintValueType() ) {
                 case SingleFieldConstraint.TYPE_LITERAL :
                 case SingleFieldConstraint.TYPE_ENUM :
-
-                    constraintWidget = literalEditor();
+                    constraintWidget = wrap( literalEditor() );
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE :
-                    constraintWidget = returnValueEditor();
+                    constraintWidget = wrap( returnValueEditor() );
                     break;
                 case SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE :
-                    constraintWidget = expressionEditor();
+                    constraintWidget = wrap( expressionEditor() );
                     break;
                 case SingleFieldConstraint.TYPE_VARIABLE :
-                    constraintWidget = variableEditor();
+                    constraintWidget = wrap( variableEditor() );
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    constraintWidget = new DefaultLiteralEditor( this.constraint,
-                                                                 false );
+                    constraintWidget = wrap( new DefaultLiteralEditor( this.constraint,
+                                                                       false ) );
                     break;
                 default :
                     break;
@@ -201,6 +202,33 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         panel.add( constraintWidget );
+    }
+
+    //Wrap a Constraint Value Editor with an icon to remove the type 
+    private Widget wrap(Widget w) {
+        HorizontalPanel wrapper = new HorizontalPanel();
+        Image clear = new ImageButton( images.deleteItemSmall() );
+        clear.setTitle( constants.RemoveConstraintValueDefinition() );
+        clear.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                //Reset Constraint's value and value type
+                if ( Window.confirm( constants.RemoveConstraintValueDefinitionQuestion() ) ) {
+                    constraint.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
+                    constraint.setValue( null );
+                    constraint.clearParameters();
+                    constraint.setExpressionValue( new ExpressionFormLine() );
+                    doTypeChosen();
+                }
+            }
+
+        } );
+
+        wrapper.add( w );
+        wrapper.add( clear );
+        wrapper.setCellVerticalAlignment( clear,
+                                          HasVerticalAlignment.ALIGN_MIDDLE );
+        return wrapper;
     }
 
     private Widget literalEditor() {
@@ -455,11 +483,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 public void onClick(ClickEvent event) {
                     con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
                     doTypeChosen( form );
-
-                    //Signal change in Template variables
-                    TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-                    eventBus.fireEventFromSource( tvce,
-                                                  model );
                 }
             } );
 
@@ -530,9 +553,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
         form.show();
     }
 
-    private void doTypeChosen(final FormStylePopup form) {
+    private void doTypeChosen() {
         executeOnValueChangeCommand();
+        executeOnTemplateVariablesChange();
         refreshEditor();
+    }
+
+    private void doTypeChosen(final FormStylePopup form) {
+        doTypeChosen();
         form.hide();
     }
 
@@ -735,6 +763,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         EnumDropDownLabel eddl = (EnumDropDownLabel) this.constraintWidget;
         eddl.refreshDropDownData();
+    }
+
+    //Signal (potential) change in Template variables
+    private void executeOnTemplateVariablesChange() {
+        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+        eventBus.fireEventFromSource( tvce,
+                                      model );
     }
 
 }

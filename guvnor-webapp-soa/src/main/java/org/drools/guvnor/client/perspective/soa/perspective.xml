@@ -22,7 +22,7 @@
     <moduleeditor>
       <class>org.drools.guvnor.client.moduleeditor.soa.SOAServiceEditor</class>
       <format>soaservice</format>
-      <asseteditorformats>xmlschema,samplemessages,wsdl,bpmn2,esbconfig,smooks,scenariodiagram,choreographymodel,deploymentarchive,jmsdestination,javasource,doc,other</asseteditorformats>
+      <asseteditorformats>xmlschema,samplemessages,wsdl,jar,bpmn2,esbconfig,smooks,scenariodiagram,choreographymodel,deploymentarchive,jmsdestination,doc,other</asseteditorformats>
     </moduleeditor>
   </moduleeditors>
      

@@ -1294,8 +1294,11 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         //Re-select applicable cells, following change to merge
         startSelecting( selection );
 
-        //Raise event for underlying model to update itself
-        UpdateModelEvent dce = new UpdateModelEvent( selections.first().getCoordinate(),
+        //Raise event for underlying model to update itself, converting logical row to physical
+        Coordinate c = selections.first().getCoordinate();
+        int iRow = rowMapper.mapToAbsoluteRow( c.getRow() );
+        UpdateModelEvent dce = new UpdateModelEvent( new Coordinate( iRow,
+                                                                     c.getCol() ),
                                                      changedData );
         eventBus.fireEvent( dce );
     }

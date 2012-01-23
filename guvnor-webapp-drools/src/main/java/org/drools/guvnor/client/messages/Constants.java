@@ -74,7 +74,7 @@ public interface Constants
     String pleaseChooseABoundFactForThisColumn();
 
     String setterLabel(String actionDisplayName,
-            String descFact);
+                       String descFact);
 
     String statusIs(String status);
 
@@ -111,7 +111,7 @@ public interface Constants
     String AssetNameMustNotBeEmpty();
 
     String CreatedANewItemSuccess(String itemName,
-            String packageName);
+                                  String packageName);
 
     String CheckInChanges();
 
@@ -427,7 +427,7 @@ public interface Constants
     String DecisionTableWidgetDescription();
 
     String POJOModelWidgetDescription();
-    
+
     String UploadNewVersionDescription();
 
     String Deploy();
@@ -535,9 +535,9 @@ public interface Constants
     String Type();
 
     String TypeExtends();
-    
+
     String DoesNotExtend();
-    
+
     String CreatesCircularDependency(String name);
 
     String ChangeName();
@@ -889,7 +889,7 @@ public interface Constants
     String DisableTip();
 
     String AssetTableIsDisabled();
-    
+
     String AssetTableIsDisabledTip();
 
     String OtherMetaData();
@@ -1415,7 +1415,7 @@ public interface Constants
     String FindItemsWithANameMatching();
 
     String IncludeArchivedAssetsInResults();
-    
+
     String IsSearchCaseSensitive();
 
     String EnterSearchString();
@@ -1993,7 +1993,7 @@ public interface Constants
     String property0ModifiedOn12(String propertyName,
                                  String arg1,
                                  String arg2);
-    
+
     String property0ModifiedOn1By23(String propertyName,
                                     String lastModifier,
                                     String lastModifiedDate,
@@ -2166,11 +2166,11 @@ public interface Constants
     String MoveDownListMove();
 
     String DescSpringContext();
-    
+
     String DeskWorkItemDefinition();
-    
+
     String ChooseImportClass();
-    
+
     String ChooseIcon();
 
     String WorkingSets();
@@ -2178,9 +2178,9 @@ public interface Constants
     String SpringContext();
 
     String NewSpringContext();
-    
+
     String WorkItemDefinition();
-    
+
     String NewWorkitemDefinition();
 
     String NewWorkingSet();
@@ -2360,7 +2360,7 @@ public interface Constants
     String Dependencies();
 
     String missingGlobalsWarning();
-    
+
     String OverCEPWindow();
 
     String OverCEPWindowTime();
@@ -2370,31 +2370,31 @@ public interface Constants
     String noCEPWindow();
 
     String DTLabelOverCEPWindow();
-    
+
     String DTLabelFromEntryPoint();
-    
+
     String OnlyDisplayDSLConditions();
-    
+
     String OnlyDisplayDSLActions();
-        
+
     String PackageAssets(String packageName);
-    
+
     String ViewPackageConfiguration();
-    
+
     String ExpandAll();
-    
+
     String CollapseAll();
-    
+
     String FlatView();
-    
+
     String HierarchicalView();
-    
+
     String AttributeForModuleEditor();
 
     String RunTimePerspective();
-    
+
     String SOAPerspective();
-    
+
     String Tasks();
 
     String PersonalTasks();
@@ -2418,19 +2418,19 @@ public interface Constants
     String ExecutionHistory();
 
     String ProcessOverview();
-    
+
     String UseWizardToBuildAsset();
-    
+
     String Finish();
-    
+
     String Binding();
-    
+
     String DecisionTableWizardSummary();
-    
+
     String DecisionTableWizardFactPatterns();
-    
+
     String DecisionTableWizardFactPatternConstraints();
-    
+
     String DecisionTableWizardActions();
 
     String DecisionTableWizardNoAvailablePatterns();
@@ -2442,71 +2442,71 @@ public interface Constants
     String DecisionTableWizardChosenTypes();
 
     String DecisionTableWizardDuplicateBindings();
-    
+
     String DecisionTableWizardAvailableFields();
-    
+
     String DecisionTableWizardChosenConditions();
-    
+
     String DecisionTableWizardNoAvailableFields();
-    
+
     String DecisionTableWizardNoChosenFields();
-    
+
     String DecisionTableWizardIncompleteConditions();
-    
+
     String DecisionTableWizardPredicate();
-    
+
     String DecisionTableWizardPredicateExpression();
 
     String MandatoryField();
-    
+
     String DecisionTableWizardActionSetFields();
-    
+
     String DecisionTableWizardChosenFields();
-    
+
     String DecisionTableWizardActionInsertFacts();
-    
+
     String DecisionTableWizardIncompleteActions();
 
     String DecisionTableWizardSummaryNameMissing();
-    
+
     String XMLSchemas();
-    
+
     String SampleMessages();
-    
+
     String WSDLs();
-    
+
     String JBOSSESBConfig();
-    
+
     String Smooks();
-    
+
     String ScenarioDiagrams();
-    
+
     String ChoreographyModels();
-    
+
     String DeploymentArchives();
-    
+
     String JMSDestinations();
-    
+
     String JavaSource();
-    
+
     String Documentation();
-    
+
     String Other();
-    
+
     String New();
-    
+
     String DecisionTableWizardColumnExpansion();
-    
+
     String DecisionTableWizardAvailableColumns();
 
     String DecisionTableWizardChosenColumns();
-    
+
     String DecisionTableWizardNoAvailableColumns();
-    
+
     String DecisionTableWizardNoChosenColumns();
-    
+
     String DecisionTableWizardDescriptionSummaryPage();
-    
+
     String DecisionTableWizardDescriptionFactPatternsPage();
 
     String DecisionTableWizardDescriptionFactPatternConstraintsPage();
@@ -2518,95 +2518,103 @@ public interface Constants
     String DecisionTableWizardDescriptionExpandColumnsPage();
 
     String DecisionTableWizardExpandInFull();
-    
+
     String NoAssetsDefinedInPackage();
 
     String MissingExpectations();
 
     String TableFormat();
-   
+
     String TableFormatExtendedEntry();
-    
+
     String TableFormatLimitedEntry();
-    
+
     String LimitedEntryValue();
 
     String CouldNotFindTheTypeForVariable0(String variableName);
-    
+
     String NewAssetWizardGuidedDecisionTableOptions();
-    
+
     String BindingFact();
-    
+
     String BindingDescription();
-    
+
     String RetractAnExistingFact();
-    
+
     String ColumnConfigurationRetractAFact();
-    
+
     String NoPatternBindingsAvailable();
-    
+
     String FactToRetractColon();
-    
+
     String WorkItemAction();
 
     String ColumnConfigurationWorkItem();
-    
+
     String NoWorkItemsAvailable();
-    
+
     String WorkItemNameColon();
-    
+
     String WorkItemInputParameters();
-    
+
     String WorkItemOutputParameters();
-    
+
     String BindActionFieldToWorkItem();
-    
+
     String WorkItemActionSetField();
 
     String ColumnConfigurationWorkItemSetField();
-    
+
     String WorkItemActionInsertFact();
-    
+
     String ColumnConfigurationWorkItemInsertFact();
-    
+
     String IncludeAdvancedOptions();
 
     String LogicallyInsertColon();
-    
+
     String ChangeSets();
-    
+
     String NewChangeSet();
-    
+
     String NoPackageSeleced();
-    
+
     String AddNewResourceElement();
-    
+
     String Asset();
-    
+
     String NewResource();
-    
+
     String UnknownResourceFormat(String format);
 
     String AddNewColumn();
-    
+
     String AddNewMetadataOrAttributeColumn();
-    
+
     String AddNewConditionSimpleColumn();
-    
+
     String AddNewConditionBRLFragment();
-    
+
     String AddNewActionBRLFragment();
-    
+
     String TypeOfColumn();
 
     String ConditionBRLFragmentConfiguration();
-    
+
     String ActionBRLFragmentConfiguration();
-    
+
     String DecisionTableBRLFragmentNothingDefined();
-    
+
     String DecisionTableBRLFragmentNoTemplateKeysFound();
-    
+
     String Paste();
 
+    String RemoveConstraintValueDefinition();
+
+    String RemoveConstraintValueDefinitionQuestion();
+    
+    String RemoveActionValueDefinition();
+
+    String RemoveActionValueDefinitionQuestion();
+    
 }

@@ -3,15 +3,8 @@
 <asseteditors>
     <!-- If two or more asset editors (that are associated with different formats) have same titles,
 	they will be grouped together and displayed as one node on the package tree. -->
-	
-    <!--  business rules group   -->   
-    <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.POJOModelUploadWidget</class> 
-        <format>jar</format>
-        <icon>images.modelAsset()</icon>
-        <title>constants.Model()</title>    
-    </asseteditor>
-    
+
+   
     <!-- jBPM editor group   -->
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
@@ -78,6 +71,12 @@
         <title>constants.WSDLs()</title>    
     </asseteditor>
     <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.soa.JarWidget</class> 
+        <format>jar</format>
+        <icon>images.modelAsset()</icon>
+        <title>constants.Jar()</title>    
+    </asseteditor>   
+    <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.XmlFileWidget</class> 
         <format>esbconfig</format>
         <icon>images.dsl()</icon>
@@ -112,13 +111,7 @@
         <format>jmsdestination</format>
         <icon>images.workingset()</icon>
         <title>constants.JMSDestinations()</title>    
-    </asseteditor>   
-    <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.DefaultContentUploadEditor</class> 
-        <format>javasource</format>
-        <icon>images.newFile()</icon>
-        <title>constants.JavaSource()</title>    
-    </asseteditor>        
+    </asseteditor>
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.DefaultContentUploadEditor</class> 
         <format>doc</format>

@@ -2571,4 +2571,33 @@ public interface Constants
 
     String LogicallyInsertColon();
     
+    String Jar();
+    
+    String JarWidgetDescription();
+    
+    String BuildWholeService();
+
+    String BuildServiceUsingBuiltInSelector();
+
+    String BuildServiceUsingCustomSelector();
+
+    String BuildWholeServiceTip();
+
+    String BuiltInServiceSelectorTip();
+
+    String ServiceSelectorTip();
+
+    String BuildService();
+    
+    String ServiceBuiltSuccessfully();
+    
+    String DownloadBinaryService();
+    
+    String BuildBinaryService();
+    
+    String BuildingServiceNote();    
+    
+    String ValidatingAndBuildingServicePleaseWait();
+    
+    String URLForServiceBinary();
 }

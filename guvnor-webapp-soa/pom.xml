@@ -38,7 +38,7 @@
           <module>org.drools.guvnor.FastCompiledGuvnorSOA</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.GuvnorDrools/GuvnorSOA.html</runTarget>
+          <runTarget>org.drools.guvnor.GuvnorSOA/GuvnorSOA.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
@@ -214,6 +214,80 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <!-- This profile is active by default -->
+      <id>jboss-as-arquillian-container-managed</id>
+      <activation>
+        <property>
+          <name>!test.arquillian.jboss.remote</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- Download JBoss AS and unpack it to have it available during tests -->
+                <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
+                <id>unpack</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.jboss.as</groupId>
+                      <artifactId>jboss-as-dist</artifactId>
+                      <version>${appserver.jboss7.version}</version>
+                      <type>zip</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
+          <groupId>org.jboss.arquillian.protocol</groupId>
+          <artifactId>arquillian-protocol-servlet</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <version>${appserver.jboss7.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jboss-as-arquillian-container-remote</id>
+      <activation>
+        <property>
+          <name>test.arquillian.jboss.remote</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
+          <groupId>org.jboss.arquillian.protocol</groupId>
+          <artifactId>arquillian-protocol-servlet</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-remote</artifactId>
+          <version>${appserver.jboss7.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>    
   </profiles>
 
   <dependencyManagement>
@@ -222,7 +296,7 @@
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
         <type>pom</type>
-        <version>1.0.0.CR5</version>
+        <version>1.0.0.CR7</version>
         <scope>import</scope>
       </dependency>
     </dependencies>
@@ -252,17 +326,7 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
-      <groupId>org.jboss.arquillian.protocol</groupId>
-      <artifactId>arquillian-protocol-servlet</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!--dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-container-managed</artifactId>
-      <version>${managed-appserver.jboss7.version}</version>
-      <scope>test</scope>
-    </dependency-->
+    <!-- Arquillian container profiles are defined in the profiles -->
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>

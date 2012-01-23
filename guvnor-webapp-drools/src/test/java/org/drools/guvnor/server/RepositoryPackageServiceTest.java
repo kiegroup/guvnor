@@ -73,7 +73,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
-    @Ignore
     public void testSnapshotDiff() throws Exception {
         // Lets make a package and a rule into tit.
         repositoryCategoryService.createCategory( "/",
@@ -200,7 +199,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageBinaryUpdatedResetWhenDeletingAnAsset() throws Exception {
 
         ModuleItem packageItem = rulesRepository.createModule( "testPackageBinaryUpdatedResetWhenDeletingAnAsset",
@@ -227,7 +225,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testGetHistoryPackageBinary() throws Exception {
         RulesRepository repo = rulesRepository;
 
@@ -263,7 +260,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testDependencyHistoryPackage() throws Exception {
         //Package version 1
         ModuleItem pkg = rulesRepository.createModule( "testDependencyHistoryPackage",
@@ -317,7 +313,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testMovePackage() throws Exception {
         String[] cats = repositoryCategoryService.loadChildCategories( "/" );
         if ( cats.length == 0 ) {
@@ -372,7 +367,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshot() throws Exception {
         repositoryCategoryService.createCategory( "/",
                                                   "snapshotTesting",
@@ -443,7 +437,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshotRebuild() throws Exception {
 
         RulesRepository repo = rulesRepository;
@@ -512,7 +505,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageRebuild() throws Exception {
 
         RulesRepository repo = rulesRepository;
@@ -546,7 +538,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testExportPackage() throws Exception {
         int n = repositoryPackageService.listModules().length;
         repositoryCategoryService.createCategory( "/",
@@ -585,7 +576,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchivePackage() throws Exception {
         Module[] pkgs = repositoryPackageService.listModules();
 
@@ -623,7 +613,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCreatePackage() throws Exception {
         Module[] pkgs = repositoryPackageService.listModules();
         String uuid = repositoryPackageService.createModule( "testCreatePackage",
@@ -660,7 +649,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadPackageConfig() throws Exception {
         ModuleItem it = rulesRepository.loadDefaultModule();
         String uuid = it.getUUID();
@@ -705,7 +693,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
         String uuid = repositoryPackageService.createModule( "testArchiveAndUnarchivePackageAndHeader",
                                                              "a desc",
@@ -750,7 +737,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageConfSave() throws Exception {
         String uuid = repositoryPackageService.createModule( "testPackageConfSave",
                                                              "a desc",
@@ -788,7 +774,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testUpdateModuleFormat() throws Exception {
         String uuid = repositoryPackageService.createModule( "testUpdateModuleFormat",
                                                              "a desc",
@@ -808,7 +793,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRemovePackage() throws Exception {
         int n = repositoryPackageService.listModules().length;
         ModuleItem p = rulesRepository.createModule( "testRemovePackage",
@@ -821,7 +805,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshotDiffPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -948,7 +931,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshotDiffFullResults() throws Exception {
 
         // Lets make a package and put a rule into it
@@ -1111,9 +1093,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                                       true );
         
         List<BuilderResultLine> lines = result.getLines();
-        for(BuilderResultLine line:lines) {
-            System.out.println("---------------------mydebug--------------------"+line.getMessage());
-        }
         assertFalse( result.hasLines() );
 
         pkg = repo.loadModule( "testBinaryPackageCompile" );
@@ -1176,7 +1155,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
      */
 
     @Test
-    @Ignore
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         RulesRepository repo = rulesRepository;
 
@@ -1313,7 +1291,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
      * RepoBinPackage.pkg.
      */
     @Test
-    @Ignore
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
@@ -1326,7 +1303,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageSource() throws Exception {
         RulesRepository repo = rulesRepository;
         // create our package

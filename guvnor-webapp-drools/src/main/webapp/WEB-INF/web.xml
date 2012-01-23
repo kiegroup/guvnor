@@ -137,71 +137,71 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OryxEditorServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/oryxeditor/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/oryxeditor/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>StandaloneEditorServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/standaloneEditorServlet/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorServlet/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/standaloneEditorService</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>guvnorService</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/guvnorService</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>securityService</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/securityService</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/asset</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/asset</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PackageDeploymentServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/package/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/package/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RepositoryBackupServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/backup</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/backup</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WebdavServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/webdav/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/webdav/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RestAPIServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/api/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ActionsAPIServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/action/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/action/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>FeedServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/feed/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WorkflowManagerServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/workflowmanager/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/workflowmanager/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WSDLParserServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/wsdlparser/*</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>guvnorAPI</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/guvnorAPI</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>verificationService</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/verificationService</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>configurationService</servlet-name>
-    <url-pattern>/org.drools.guvnor.GuvnorDrools/configurationService</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/configurationService</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>180</session-timeout>
