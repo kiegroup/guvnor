@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
+import org.drools.guvnor.client.moduleeditor.soa.SOAServiceBuilderWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -82,90 +83,33 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     private void refreshWidgets() {
         clear();
 
-        startSection( constants.ConfigurationSection() );
-
-        addAttribute("NOTE:", new HTML("Add any SOA service editor specific UI here") );
-
-        endSection();
+        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
+            startSection( constants.BuildAndValidate() );
+            addRow( new SOAServiceBuilderWidget(
+                    this.packageConfigData,
+                    clientFactory ) );
+            endSection();
+        }
         
- /*       startSection( constants.InformationAndImportantURLs() );
+        startSection( constants.InformationAndImportantURLs() );
 
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                PackageBuilderWidget.doBuildSource( packageConfigData.getUuid(),
+                SOAServiceBuilderWidget.doBuildSource( packageConfigData.getUuid(),
                         packageConfigData.getName() );
             }
         } );
 
-        HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.packageConfigData ) + "' target='_blank'>" + getDocumentationDownload( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForDocumention(),
-                createHPanel( html0,
-                        constants.URLDocumentionDescription() ) );
-
-        HTML html = new HTML( "<a href='" + getPackageSourceURL( this.packageConfigData ) + "' target='_blank'>" + getPackageSourceURL( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForPackageSource(),
-                createHPanel( html,
-                        constants.URLSourceDescription() ) );
 
         HTML html2 = new HTML( "<a href='" + getPackageBinaryURL( this.packageConfigData ) + "' target='_blank'>" + getPackageBinaryURL( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForPackageBinary(),
+        addAttribute( constants.URLForServiceBinary(),
                 createHPanel( html2,
                         constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
 
-        HTML html3 = new HTML( "<a href='" + getScenarios( this.packageConfigData ) + "' target='_blank'>" + getScenarios( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForRunningTests(),
-                createHPanel( html3,
-                        constants.URLRunTestsRemote() ) );
-
-        HTML html4 = new HTML( "<a href='" + getChangeset( this.packageConfigData ) + "' target='_blank'>" + getChangeset( this.packageConfigData ) + "</a>" );
-
-        addAttribute( constants.ChangeSet(),
-                createHPanel( html4,
-                        constants.URLToChangeSetForDeploymentAgents() ) );
-
-        HTML html5 = new HTML( "<a href='" + getModelDownload( this.packageConfigData ) + "' target='_blank'>" + getModelDownload( this.packageConfigData ) + "</a>" );
-
-        addAttribute( constants.ModelSet(),
-                createHPanel( html5,
-                        constants.URLToDownloadModelSet() ) );
-
-        final Tree springContextTree = new Tree();
-        final TreeItem rootItem = new TreeItem( "" );
-
-        springContextTree.addItem( rootItem );
-
-        final int rowNumber = addAttribute( constants.SpringContext() + ":",
-                springContextTree );
-
-        GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
-
-            public void onSuccess(TableDataResult resultTable) {
-
-                if ( resultTable.data.length == 0 ) {
-                    removeRow( rowNumber );
-                }
-
-                for (int i = 0; i < resultTable.data.length; i++) {
-
-                    String url = getSpringContextDownload( packageConfigData,
-                            resultTable.data[i].getDisplayName() );
-                    HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
-                    rootItem.addItem( html );
-                }
-            }
-        };
-
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.packageConfigData.getName(),
-                new String[]{AssetFormats.SPRING_CONTEXT},
-                0,
-                -1,
-                ExplorerNodeConfig.RULE_LIST_TABLE_ID,
-                callBack );
-
         endSection();
-*/    }
+    }
 
     private Widget createHPanel(Widget widget,
                                 String popUpText) {
