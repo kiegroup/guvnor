@@ -27,6 +27,13 @@
       <!-- How-to debug an arquillian managed test -->
       <!-- In Arquillian 1.0.0.CR6 this will work from the run config: -Darq.container.qualifier.configuration.javaVmArguments="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y" -->
       <!--<property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</property>-->
+
+      <!--Increase PermGen and Max Heap to prevent Hudson from barfing-->
+      <property name="javaVmArguments">
+            -XX:MaxPermSize=256m
+            -Xmx512m
+      </property>
+            
      </configuration>
   </container>
 
