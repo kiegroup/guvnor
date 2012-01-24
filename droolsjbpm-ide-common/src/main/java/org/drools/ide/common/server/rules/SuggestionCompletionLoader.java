@@ -554,6 +554,12 @@ public class SuggestionCompletionLoader
 
     }
 
+    /**
+     * This represents a generalisation of java.lang.reflect.Field that is also
+     * used for Method return types. It contains enough information for use by a
+     * SuggestionCompletionLoader but should not be considered a general
+     * replacement for Field
+     */
     public static class FieldInfo {
 
         private Type       genericType;
@@ -679,29 +685,11 @@ public class SuggestionCompletionLoader
         Map<String, MethodSignature> methodSignatures = removeIrrelevantMethods( getMethodSignatures( shortTypeName,
                                                                                                       methods ) );
 
-        //'this' is a special case
-        fields.add( 0,
-                    SuggestionCompletionEngine.TYPE_THIS );
-        methodSignatures.put( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
-                              new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
-                                                   clazz.getGenericSuperclass(),
-                                                   clazz ) );
-        this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
-                                   shortTypeName,
-                                   clazz );
-
-        this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
-
         //Add Fields from ClassFieldInspector which provides a list of "reasonable" methods
         for ( String field : fields ) {
-            
-            //'this' is a special case and was added earlier
-            if ( field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                continue;
-            }
             Field f = inspector.getFieldTypesField().get( field );
             if ( f == null ) {
-                
+
                 //If a Field cannot be found is is really a delegated property so use the Method return type
                 final String qualifiedName = shortTypeName + "." + field;
                 if ( methodSignatures.containsKey( qualifiedName ) ) {
@@ -717,7 +705,7 @@ public class SuggestionCompletionLoader
                                                     fi );
                 }
             } else {
-                
+
                 //Otherwise we can use the results of ClassFieldInspector
                 final Class< ? > returnType = inspector.getFieldTypes().get( field );
                 final String genericType = translateClassToGenericType( returnType );
@@ -730,6 +718,19 @@ public class SuggestionCompletionLoader
                                                 fi );
             }
         }
+
+        //'this' is a special case
+        fields.add( 0,
+                    SuggestionCompletionEngine.TYPE_THIS );
+        methodSignatures.put( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
+                              new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                   clazz.getGenericSuperclass(),
+                                                   clazz ) );
+        this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
+                                   shortTypeName,
+                                   clazz );
+
+        this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
 
         this.builder.addFieldsForType( shortTypeName,
                                        fields.toArray( new String[fields.size()] ) );
