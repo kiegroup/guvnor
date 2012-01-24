@@ -203,7 +203,7 @@ public class RepositoryAssetOperations {
         while (it.hasNext()) {
             VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
-            if (isHistory(item, 
+            if (isHistory(item,
                           versionNumber)) {
                 result.add(createHistoricalRow(historical));
             }
@@ -483,7 +483,7 @@ public class RepositoryAssetOperations {
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
                 .buildWithTotalRowCount(totalRowsCount);
-        
+
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Found asset page of packageUuid ("
                 + request.getPackageUuid() + ") in " + methodDuration + " ms.");
@@ -552,17 +552,39 @@ public class RepositoryAssetOperations {
 
     protected Asset loadAsset(AssetItem item) throws SerializationException {
 
+
         Asset asset = new Asset();
+        log.info("item.getUUID() "+item.getUUID());
         asset.setUuid(item.getUUID());
+
+        log.info("item.getName() "+item.getName());
         asset.setName(item.getName());
+
+        log.info("item.getDescription()" + item.getDescription());
         asset.setDescription(item.getDescription());
+
+        log.info("item.getLastModified().getTime() "+item.getLastModified().getTime());
         asset.setLastModified(item.getLastModified().getTime());
+
+        log.info("item.getLastContributor() "+item.getLastContributor());
         asset.setLastContributor(item.getLastContributor());
+
+        log.info("item.getState() " +item.getState());
         asset.setState((item.getState() != null) ? item.getState().getName() : "");
+
+        log.info("item.getCreatedDate() "+item.getCreatedDate());
         asset.setDateCreated(item.getCreatedDate().getTime());
+
+        log.info(item.getCheckinComment());
         asset.setCheckinComment(item.getCheckinComment());
+
+        log.info("item.getVersionNumber() "+item.getVersionNumber());
         asset.setVersionNumber(item.getVersionNumber());
+
+        log.info("item.getFormat() "+item.getFormat());
         asset.setFormat(item.getFormat());
+
+        log.info("done");
 
         asset.setMetaData(populateMetaData(item));
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
@@ -652,7 +674,7 @@ public class RepositoryAssetOperations {
 
         return discussion;
     }
-    
+
     protected long getAssetCount(AssetPageRequest request) {
         log.debug( "Counting assets in packageUuid (" + request.getPackageUuid() + ")" );
         long start = System.currentTimeMillis();
@@ -664,7 +686,7 @@ public class RepositoryAssetOperations {
                    + request.getPackageUuid() + ") in " + methodDuration + " ms." );
         return iterator.getSize();
     }
-    
+
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
         ModuleItem packageItem = rulesRepository.loadModuleByUUID( request.getPackageUuid() );
 

@@ -1216,9 +1216,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         Class cls = cl.loadClass("foo.bar.Coolness");
         assertNotNull(cls);
 
-        ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(cl);
-
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
         ScenarioRunner run = new ScenarioRunner(sc,
@@ -1233,7 +1230,6 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertTrue(sc.wasSuccessful());
 
-        Thread.currentThread().setContextClassLoader(cl_);
 
     }
 
@@ -1282,8 +1278,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         Class<?> coolnessClass = classLoader.loadClass("foo.bar.Coolness");
         assertNotNull(coolnessClass);
 
-        ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
 
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
@@ -1324,7 +1318,6 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertTrue(scenario.wasSuccessful());
 
-        Thread.currentThread().setContextClassLoader(cl_);
     }
 
     @Test
