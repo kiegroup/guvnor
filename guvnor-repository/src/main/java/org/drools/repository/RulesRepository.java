@@ -124,6 +124,7 @@ public class RulesRepository {
     public final static String RULES_REPOSITORY_NAME = "drools:repository";
 
     private final Session session;
+    private boolean loggedIn;
 
     boolean initialized = false;
 
@@ -132,6 +133,7 @@ public class RulesRepository {
      */
     public RulesRepository(Session session) {
         this.session = session;
+        loggedIn = true;
         checkForDataMigration(this);
     }
 
@@ -195,7 +197,10 @@ public class RulesRepository {
      * Explicitly logout of the underlying JCR repository.
      */
     public void logout() {
-        this.session.logout();
+        if (loggedIn) {
+            this.session.logout();
+            loggedIn = false;
+        }
     }
 
     public Node getAreaNode(String areaName) throws RulesRepositoryException {
