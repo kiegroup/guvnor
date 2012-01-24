@@ -345,7 +345,7 @@ public class SuggestionCompletionLoaderTest {
                       eng.getFieldType( "Address",
                                         "zipCode" ) );
     }
-    
+
     @Test
     public void testGeneratedBeansExtendsPOJOComplex() throws Exception {
         String packageDrl = "package foo \n"
@@ -561,7 +561,8 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "Applicant",
                       eng.getFieldType( "LoanApplication",
                                         "applicant" ) );
-        assertEquals( "Applicant", eng.getFieldClassName( "LoanApplication",
+        assertEquals( "Applicant",
+                      eng.getFieldClassName( "LoanApplication",
                                                           "applicant" ) );
         assertEquals( FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
                       eng.getFieldClassType( "LoanApplication",
@@ -683,6 +684,80 @@ public class SuggestionCompletionLoaderTest {
             }
         }
         return -1;
+    }
+
+    @Test
+    public void testReadOnlyFieldWithAnnotation() throws Exception {
+        // GUVNOR-1792
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        String header = "";
+        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+
+        header += "declare ReadOnlyFact\n";
+        header += "@role( event )\n";
+        header += "end\n";
+
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( header,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "name" ) );
+    }
+
+    @Test
+    public void testReadOnlyFieldWithAnnotationAndField() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        String header = "";
+        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+
+        header += "declare ReadOnlyFact\n";
+        header += "@role( event )\n";
+        header += "age: Integer\n";
+        header += "end\n";
+
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( header,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "name" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      eng.getFieldType( "ReadOnlyFact",
+                                        "age" ) );
+    }
+
+    @Test
+    public void testLoadDelegatedProperties() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n" +
+                                                                             "import org.drools.ide.common.server.rules.MotherClass\n" +
+                                                                             "import org.drools.ide.common.server.rules.DelegationClass\n" +
+                                                                             "import org.drools.ide.common.server.rules.SubClass\n",
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "MotherClass",
+                                        "status" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "SubClass",
+                                        "message" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "SubClass",
+                                        "status" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "DelegationClass",
+                                        "status" ) );
     }
 
 }
