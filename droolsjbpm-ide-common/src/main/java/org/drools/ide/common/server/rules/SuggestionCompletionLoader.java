@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +48,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.util.ClassMethodInspector;
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.drools.ide.common.server.util.SuggestionCompletionEngineBuilder;
-import org.drools.lang.api.impl.FieldDescrBuilderImpl;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -58,7 +58,6 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MapBackedClassLoader;
 
 /**
@@ -419,7 +418,7 @@ public class SuggestionCompletionLoader
                                    null );
         accessorsAndMutators.put( declaredType + "." + SuggestionCompletionEngine.TYPE_THIS,
                                   FieldAccessorsAndMutators.ACCESSOR );
-        
+
         //Other facts and fields in the type hierarchy
         for ( TypeDeclarationDescr typeDeclarationDescr : th ) {
 
@@ -494,6 +493,7 @@ public class SuggestionCompletionLoader
                     if ( !methodSignatures.containsKey( factField ) ) {
                         methodSignatures.put( factField,
                                               new MethodSignature( FieldAccessorsAndMutators.MUTATOR,
+                                                                   void.class.getGenericSuperclass(),
                                                                    void.class ) );
                     } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
                         MethodSignature signature = methodSignatures.get( factField );
@@ -517,6 +517,7 @@ public class SuggestionCompletionLoader
                     if ( !methodSignatures.containsKey( factField ) ) {
                         methodSignatures.put( factField,
                                               new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                                   method.getGenericReturnType(),
                                                                    method.getReturnType() ) );
                     } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
                         MethodSignature signature = methodSignatures.get( factField );
@@ -540,14 +541,37 @@ public class SuggestionCompletionLoader
     private static class MethodSignature {
 
         MethodSignature(FieldAccessorsAndMutators accessorAndMutator,
+                        Type genericType,
                         Class< ? > returnType) {
             this.accessorAndMutator = accessorAndMutator;
+            this.genericType = genericType;
             this.returnType = returnType;
         }
 
         FieldAccessorsAndMutators accessorAndMutator;
+        Type                      genericType;
         Class< ? >                returnType;
 
+    }
+
+    public static class FieldInfo {
+
+        private Type       genericType;
+        private Class< ? > type;
+
+        public FieldInfo(Type genericType,
+                         Class< ? > type) {
+            this.genericType = genericType;
+            this.type = type;
+        }
+
+        public Type getGenericType() {
+            return genericType;
+        }
+
+        public Class< ? > getType() {
+            return type;
+        }
     }
 
     private boolean typeDeclarationDescrHasFields(TypeDeclarationDescr typeDeclarationDescr) {
@@ -645,21 +669,23 @@ public class SuggestionCompletionLoader
             return;
         }
 
+        //Class fields
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-        Set<String> fieldsSet = new TreeSet<String>();
-        fieldsSet.addAll( inspector.getFieldNames().keySet() );
+        Set<String> fieldsSet = new TreeSet<String>( inspector.getFieldNames().keySet() );
         List<String> fields = removeIrrelevantFields( fieldsSet );
 
+        //Class methods
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
-        Map<String, MethodSignature> methodSignatures = getMethodSignatures( shortTypeName,
-                                                                             methods );
+        Map<String, MethodSignature> methodSignatures = removeIrrelevantMethods( getMethodSignatures( shortTypeName,
+                                                                                                      methods ) );
 
         //'this' is a special case
         fields.add( 0,
                     SuggestionCompletionEngine.TYPE_THIS );
         methodSignatures.put( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
                               new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                   clazz.getGenericSuperclass(),
                                                    clazz ) );
         this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
                                    shortTypeName,
@@ -668,10 +694,8 @@ public class SuggestionCompletionLoader
                                        fields.toArray( new String[fields.size()] ) );
 
         //Configure modifiers and accessors
-        String[] modifiers = new String[modifierStrings.size()];
-        modifierStrings.toArray( modifiers );
         this.builder.addModifiersForType( shortTypeName,
-                                          modifiers );
+                                          modifierStrings.toArray( new String[modifierStrings.size()] ) );
         this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
 
         //Configure other fields
@@ -683,9 +707,31 @@ public class SuggestionCompletionLoader
                                        fieldType,
                                        type );
             Field f = inspector.getFieldTypesField().get( field );
-            this.builder.addFieldTypeField( shortTypeName + "." + field,
-                                            f );
+            if ( f != null ) {
+                FieldInfo fi = new FieldInfo( f.getGenericType(),
+                                              f.getType() );
+                this.builder.addFieldTypeField( shortTypeName + "." + field,
+                                                fi );
+            }
         }
+
+        /////////////
+        for ( Map.Entry<String, MethodSignature> m : methodSignatures.entrySet() ) {
+            String fieldName = m.getKey().substring( m.getKey().lastIndexOf( "." ) + 1 );
+            fields.add( fieldName );
+            final Class< ? > type = m.getValue().returnType;
+            final String fieldType = translateClassToGenericType( type );
+            this.builder.addFieldType( shortTypeName + "." + fieldName,
+                                       fieldType,
+                                       type );
+            FieldInfo fi = new FieldInfo( m.getValue().genericType,
+                                          m.getValue().returnType );
+            this.builder.addFieldTypeField( shortTypeName + "." + fieldName,
+                                            fi );
+        }
+        this.builder.addFieldsForType( shortTypeName,
+                                       fields.toArray( new String[fields.size()] ) );
+        /////
 
         ClassMethodInspector methodInspector = new ClassMethodInspector( clazz,
                                                                          this );
@@ -713,8 +759,25 @@ public class SuggestionCompletionLoader
     public List<String> removeIrrelevantFields(Collection<String> fields) {
         final List<String> result = new ArrayList<String>();
         for ( String field : fields ) {
+            //clone, empty, iterator, listIterator, size, toArray
             if ( !(field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" )) ) {
                 result.add( field );
+            }
+        }
+        return result;
+    }
+
+    /**
+     * This will remove the unneeded "methods" that come from java.lang.Object
+     */
+    public Map<String, MethodSignature> removeIrrelevantMethods(Map<String, MethodSignature> methods) {
+        final Map<String, MethodSignature> result = new HashMap<String, MethodSignature>();
+        for ( Map.Entry<String, MethodSignature> methodSignature : methods.entrySet() ) {
+            String methodName = methodSignature.getKey();
+            methodName = methodName.substring( methodName.lastIndexOf( "." ) + 1 );
+            if ( !methodName.equals( "class" ) ) {
+                result.put( methodSignature.getKey(),
+                                methodSignature.getValue() );
             }
         }
         return result;
@@ -745,8 +808,10 @@ public class SuggestionCompletionLoader
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.server.rules.ClassToGenericClassConverter#translateClassToGenericType(java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * @see org.drools.ide.common.server.rules.ClassToGenericClassConverter#
+     * translateClassToGenericType(java.lang.Class)
      */
     //XXX {bauna} field type
     public String translateClassToGenericType(final Class< ? > type) {
