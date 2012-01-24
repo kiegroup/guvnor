@@ -44,7 +44,7 @@ public class SuggestionCompletionEngineBuilder {
     private Map<String, FIELD_CLASS_TYPE>                 factTypes             = new HashMap<String, FIELD_CLASS_TYPE>();
     private Map<String, Map<String, Map<String, String>>> annotationsForType    = new HashMap<String, Map<String, Map<String, String>>>();
     private Map<String, String[]>                         fieldsForType         = new HashMap<String, String[]>();
-    private Map<String, String[]>                         modifiersForType      = new HashMap<String, String[]>();
+    //    private Map<String, String[]>                         modifiersForType      = new HashMap<String, String[]>();
     private Map<String, String>                           fieldTypes            = new HashMap<String, String>();
     private Map<String, Class< ? >>                       fieldClasses          = new HashMap<String, Class< ? >>();
     private Map<String, FieldInfo>                        fieldTypesField       = new HashMap<String, FieldInfo>();
@@ -68,7 +68,6 @@ public class SuggestionCompletionEngineBuilder {
         this.factTypes = new HashMap<String, FIELD_CLASS_TYPE>();
         this.annotationsForType = new HashMap<String, Map<String, Map<String, String>>>();
         this.fieldsForType = new HashMap<String, String[]>();
-        this.modifiersForType = new HashMap<String, String[]>();
         this.fieldTypes = new HashMap<String, String>();
         this.fieldTypesField = new HashMap<String, FieldInfo>();
         this.globalTypes = new HashMap<String, String>();
@@ -126,18 +125,6 @@ public class SuggestionCompletionEngineBuilder {
             this.fieldsForType.put( type,
                                     fields );
         }
-    }
-
-    /**
-     * Adds the list of modifiers for a given type
-     * 
-     * @param type
-     * @param fields
-     */
-    public void addModifiersForType(final String type,
-                                    final String[] fields) {
-        this.modifiersForType.put( type,
-                                   fields );
     }
 
     /**
@@ -240,7 +227,6 @@ public class SuggestionCompletionEngineBuilder {
      */
     public SuggestionCompletionEngine getInstance() {
         this.instance.setFactTypes( this.factTypes.keySet().toArray( new String[this.factTypes.keySet().size()] ) );
-        this.instance.setModifiers( this.modifiersForType );
 
         //FactType annotations
         Map<String, List<ModelAnnotation>> annotationMap = new HashMap<String, List<ModelAnnotation>>();
