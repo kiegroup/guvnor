@@ -669,14 +669,13 @@ public class SuggestionCompletionLoader
             return;
         }
 
-        //Class fields
+        //Get all getters and setters for the class. This does not handle delegated properties
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         Set<String> fieldsSet = new TreeSet<String>( inspector.getFieldNames().keySet() );
         List<String> fields = removeIrrelevantFields( fieldsSet );
 
-        //Class methods
+        //Consolidate methods into those with getters or setters
         Method[] methods = clazz.getMethods();
-        List<String> modifierStrings = new ArrayList<String>();
         Map<String, MethodSignature> methodSignatures = removeIrrelevantMethods( getMethodSignatures( shortTypeName,
                                                                                                       methods ) );
 
@@ -690,49 +689,52 @@ public class SuggestionCompletionLoader
         this.builder.addFieldType( shortTypeName + "." + SuggestionCompletionEngine.TYPE_THIS,
                                    shortTypeName,
                                    clazz );
-        this.builder.addFieldsForType( shortTypeName,
-                                       fields.toArray( new String[fields.size()] ) );
 
-        //Configure modifiers and accessors
-        this.builder.addModifiersForType( shortTypeName,
-                                          modifierStrings.toArray( new String[modifierStrings.size()] ) );
         this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
 
-        //Configure other fields
-        fields.remove( SuggestionCompletionEngine.TYPE_THIS );
+        //Add Fields from ClassFieldInspector which provides a list of "reasonable" methods
         for ( String field : fields ) {
-            final Class< ? > type = inspector.getFieldTypes().get( field );
-            final String fieldType = translateClassToGenericType( type );
-            this.builder.addFieldType( shortTypeName + "." + field,
-                                       fieldType,
-                                       type );
+            
+            //'this' is a special case and was added earlier
+            if ( field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                continue;
+            }
             Field f = inspector.getFieldTypesField().get( field );
-            if ( f != null ) {
-                FieldInfo fi = new FieldInfo( f.getGenericType(),
-                                              f.getType() );
+            if ( f == null ) {
+                
+                //If a Field cannot be found is is really a delegated property so use the Method return type
+                final String qualifiedName = shortTypeName + "." + field;
+                if ( methodSignatures.containsKey( qualifiedName ) ) {
+                    final MethodSignature m = methodSignatures.get( qualifiedName );
+                    final Class< ? > returnType = m.returnType;
+                    final String genericType = translateClassToGenericType( returnType );
+                    this.builder.addFieldType( qualifiedName,
+                                               genericType,
+                                               returnType );
+                    final FieldInfo fi = new FieldInfo( m.genericType,
+                                                        m.returnType );
+                    this.builder.addFieldTypeField( qualifiedName,
+                                                    fi );
+                }
+            } else {
+                
+                //Otherwise we can use the results of ClassFieldInspector
+                final Class< ? > returnType = inspector.getFieldTypes().get( field );
+                final String genericType = translateClassToGenericType( returnType );
+                this.builder.addFieldType( shortTypeName + "." + field,
+                                           genericType,
+                                           returnType );
+                final FieldInfo fi = new FieldInfo( f.getGenericType(),
+                                                    f.getType() );
                 this.builder.addFieldTypeField( shortTypeName + "." + field,
                                                 fi );
             }
         }
 
-        /////////////
-        for ( Map.Entry<String, MethodSignature> m : methodSignatures.entrySet() ) {
-            String fieldName = m.getKey().substring( m.getKey().lastIndexOf( "." ) + 1 );
-            fields.add( fieldName );
-            final Class< ? > type = m.getValue().returnType;
-            final String fieldType = translateClassToGenericType( type );
-            this.builder.addFieldType( shortTypeName + "." + fieldName,
-                                       fieldType,
-                                       type );
-            FieldInfo fi = new FieldInfo( m.getValue().genericType,
-                                          m.getValue().returnType );
-            this.builder.addFieldTypeField( shortTypeName + "." + fieldName,
-                                            fi );
-        }
         this.builder.addFieldsForType( shortTypeName,
                                        fields.toArray( new String[fields.size()] ) );
-        /////
 
+        //Methods for use in ActionCallMethod's
         ClassMethodInspector methodInspector = new ClassMethodInspector( clazz,
                                                                          this );
 

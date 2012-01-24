@@ -120,13 +120,6 @@ public class SuggestionCompletionEngine
     private Map<String, String>                     globalTypes              = new HashMap<String, String>();
 
     /**
-     * A map of types to the modifying methods they expose. key is type, value
-     * is (Sting[] of modifying methods)
-     * 
-     **/
-    private Map<String, String[]>                   modifiers;
-
-    /**
      * Contains a map of { TypeName.field : String[] } - where a list is valid
      * values to display in a drop down for a given Type.field combination.
      */
@@ -301,13 +294,13 @@ public class SuggestionCompletionEngine
     }
 
     public String[] getFieldCompletionsForGlobalVariable(final String varName) {
-        final String type = this.getGlobalVariable(varName);
+        final String type = this.getGlobalVariable( varName );
         return this.getModelFields( type );
     }
 
     public List<MethodInfo> getMethodInfosForGlobalVariable(final String varName) {
         final String type = this.getGlobalVariable( varName );
-        return this.methodInfos.get(type);
+        return this.methodInfos.get( type );
     }
 
     private String[] toStringArray(final Set< ? > set) {
@@ -321,9 +314,8 @@ public class SuggestionCompletionEngine
 
     /**
      * This returns a list of enums options (values) that can be used for the
-     * given field of the given FactPattern.
-     * 
-     * This also takes into account enums that depend on other fields.
+     * given field of the given FactPattern. This also takes into account enums
+     * that depend on other fields.
      */
     public DropDownData getEnums(String factType,
                                  CompositeFieldConstraint constraintList,
@@ -353,23 +345,25 @@ public class SuggestionCompletionEngine
      * Similar to the one above - but this one is for RHS.
      */
     public DropDownData getEnums(String type,
-                                 String field, 
+                                 String field,
                                  FieldNature[] currentFieldNatures) {
         Map<String, String> currentValueMap = new HashMap<String, String>();
-        
+
         if ( currentFieldNatures != null ) {
-            for (FieldNature currentFieldNature : currentFieldNatures) {
-                currentValueMap.put(currentFieldNature.getField(), currentFieldNature.getValue());
+            for ( FieldNature currentFieldNature : currentFieldNatures ) {
+                currentValueMap.put( currentFieldNature.getField(),
+                                     currentFieldNature.getValue() );
             }
         }
-        return getEnums(type, field, currentValueMap);
+        return getEnums( type,
+                         field,
+                         currentValueMap );
     }
 
     /**
      * This returns a list of enums options (values) that can be used for the
-     * given field of the given FactPattern.
-     *
-     * This also takes into account enums that depend on other fields.
+     * given field of the given FactPattern. This also takes into account enums
+     * that depend on other fields.
      */
     public DropDownData getEnums(String type,
                                  String field,
@@ -391,7 +385,7 @@ public class SuggestionCompletionEngine
                 for ( int j = 0; j < splitTypeFields.length; j++ ) {
                     String typeField = splitTypeFields[j];
 
-                    for (Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet()) {
+                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
                         String fieldName = currentValueEntry.getKey();
                         String fieldValue = currentValueEntry.getValue();
                         if ( fieldName.trim().equals( typeField.trim() ) ) {
@@ -430,10 +424,10 @@ public class SuggestionCompletionEngine
                 // collect all the values of the fields needed, then return it
                 // as a string...
                 for ( int i = 0; i < fieldsNeeded.length; i++ ) {
-                    for (Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet()) {
+                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
                         String fieldName = currentValueEntry.getKey();
                         String fieldValue = currentValueEntry.getValue();
-                        if ( fieldName.equals(fieldsNeeded[i]) ) {
+                        if ( fieldName.equals( fieldsNeeded[i] ) ) {
                             valuePairs[i] = fieldsNeeded[i] + "=" + fieldValue;
                         }
                     }
@@ -445,7 +439,8 @@ public class SuggestionCompletionEngine
                 }
             }
         }
-        return DropDownData.create( getEnumValues( type, field ) );
+        return DropDownData.create( getEnumValues( type,
+                                                   field ) );
     }
 
     /**
@@ -509,7 +504,7 @@ public class SuggestionCompletionEngine
         if ( this.dataEnumLookupFields == null ) {
             this.dataEnumLookupFields = new HashMap<String, Object>();
             Set<String> keys = this.dataEnumLists.keySet();
-            for (String key : keys) {
+            for ( String key : keys ) {
                 if ( key.indexOf( '[' ) != -1 ) {
                     int ix = key.indexOf( '[' );
                     String factField = key.substring( 0,
@@ -687,14 +682,6 @@ public class SuggestionCompletionEngine
 
     public String[] getGlobalVariables() {
         return toStringArray( this.globalTypes.keySet() );
-    }
-
-    public void setModifiers(Map<String, String[]> map) {
-        this.modifiers = map;
-    }
-
-    public String[] getModifiers(String name) {
-        return this.modifiers.get( name );
     }
 
     public void setGlobalCollections(String[] globalCollections) {
@@ -878,7 +865,6 @@ public class SuggestionCompletionEngine
     }
 
     /**
-     * 
      * @param propertyName
      *            of the type class.field
      * @return
