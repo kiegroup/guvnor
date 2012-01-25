@@ -15,10 +15,34 @@
  */
 package org.drools.guvnor.server;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.builder.AssetItemValidator;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
@@ -33,18 +57,23 @@ import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.util.*;
-import org.drools.repository.*;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.drools.guvnor.server.util.AssetEditorConfiguration;
+import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
+import org.drools.guvnor.server.util.AssetFormatHelper;
+import org.drools.guvnor.server.util.AssetLockManager;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.MetaDataMapper;
+import org.drools.guvnor.server.util.TableDisplayHandler;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.CategoryItem;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
-
-import java.text.DateFormat;
-import java.util.*;
 
 /**
  * Handles operations for Assets
@@ -72,7 +101,7 @@ public class RepositoryAssetOperations {
     @Inject
     private AssetLockManager assetLockManager;
 
-    private final String[]                   registeredFormats;
+    private final String[] registeredFormats;
 
     public RepositoryAssetOperations() {
         //Load recognised formats from configuration file
@@ -92,7 +121,7 @@ public class RepositoryAssetOperations {
     }
 
     public String renameAsset(String uuid,
-                              String newName) {
+            String newName) {
         return rulesRepository.renameAsset(uuid,
                 newName);
     }
@@ -169,13 +198,13 @@ public class RepositoryAssetOperations {
     }
 
     private boolean isAssetUpdatedInRepository(Asset asset,
-                                               AssetItem repoAsset) {
+            AssetItem repoAsset) {
         return asset.getLastModified().before(repoAsset.getLastModified().getTime());
     }
 
     public void restoreVersion(String versionUUID,
-                               String assetUUID,
-                               String comment) {
+            String assetUUID,
+            String comment) {
         AssetItem old = rulesRepository.loadAssetByUUID(versionUUID);
         AssetItem head = rulesRepository.loadAssetByUUID(assetUUID);
 
@@ -204,7 +233,7 @@ public class RepositoryAssetOperations {
             VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
             if (isHistory(item,
-                          versionNumber)) {
+                    versionNumber)) {
                 result.add(createHistoricalRow(historical));
             }
         }
@@ -216,7 +245,7 @@ public class RepositoryAssetOperations {
     }
 
     private boolean isHistory(VersionableItem item,
-                              long versionNumber) {
+            long versionNumber) {
         //return versionNumber != 0 && versionNumber != item.getVersionNumber();
         //we do return the LATEST version as part of the history. 
         return versionNumber != 0;
@@ -243,7 +272,7 @@ public class RepositoryAssetOperations {
      * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
      */
     protected TableDataResult loadArchivedAssets(int skip,
-                                                 int numRows) {
+            int numRows) {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter(identity);
 
@@ -282,7 +311,7 @@ public class RepositoryAssetOperations {
     }
 
     private TableDataResult createArchivedTable(List<TableDataRow> result,
-                                                AssetItemIterator it) {
+            AssetItemIterator it) {
         TableDataResult table = new TableDataResult();
         table.data = result.toArray(new TableDataRow[result.size()]);
         table.currentPosition = it.getPosition();
@@ -328,10 +357,10 @@ public class RepositoryAssetOperations {
      * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
      */
     protected TableDataResult listAssets(String packageUuid,
-                                         String formats[],
-                                         int skip,
-                                         int numRows,
-                                         String tableConfig) {
+            String formats[],
+            int skip,
+            int numRows,
+            String tableConfig) {
         long start = System.currentTimeMillis();
         ModuleItem pkg = rulesRepository.loadModuleByUUID(packageUuid);
         AssetItemIterator it;
@@ -359,9 +388,9 @@ public class RepositoryAssetOperations {
      * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
      */
     protected TableDataResult quickFindAsset(String searchText,
-                                             boolean searchArchived,
-                                             int skip,
-                                             int numRows)
+            boolean searchArchived,
+            int skip,
+            int numRows)
             throws SerializationException {
         String search = searchText.replace('*',
                 '%');
@@ -403,9 +432,9 @@ public class RepositoryAssetOperations {
      * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
      */
     protected TableDataResult queryFullText(String text,
-                                            boolean seekArchived,
-                                            int skip,
-                                            int numRows) throws SerializationException {
+            boolean seekArchived,
+            int skip,
+            int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
         RepositoryFilter filter = new ModuleFilter(identity);
@@ -467,7 +496,7 @@ public class RepositoryAssetOperations {
                 + request.getPackageUuid() + ")");
         long start = System.currentTimeMillis();
 
-        AssetItemIterator iterator = getAssetIterator( request );
+        AssetItemIterator iterator = getAssetIterator(request);
 
         // Populate response
         long totalRowsCount = iterator.getSize();
@@ -520,7 +549,7 @@ public class RepositoryAssetOperations {
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
                 .buildWithTotalRowCount(-1);//its impossible to know the exact count selected until we'v reached
-                                            //the end of iterator
+        //the end of iterator
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");
@@ -552,39 +581,17 @@ public class RepositoryAssetOperations {
 
     protected Asset loadAsset(AssetItem item) throws SerializationException {
 
-
         Asset asset = new Asset();
-        log.info("item.getUUID() "+item.getUUID());
         asset.setUuid(item.getUUID());
-
-        log.info("item.getName() "+item.getName());
         asset.setName(item.getName());
-
-        log.info("item.getDescription()" + item.getDescription());
         asset.setDescription(item.getDescription());
-
-        log.info("item.getLastModified().getTime() "+item.getLastModified().getTime());
         asset.setLastModified(item.getLastModified().getTime());
-
-        log.info("item.getLastContributor() "+item.getLastContributor());
         asset.setLastContributor(item.getLastContributor());
-
-        log.info("item.getState() " +item.getState());
         asset.setState((item.getState() != null) ? item.getState().getName() : "");
-
-        log.info("item.getCreatedDate() "+item.getCreatedDate());
         asset.setDateCreated(item.getCreatedDate().getTime());
-
-        log.info(item.getCheckinComment());
         asset.setCheckinComment(item.getCheckinComment());
-
-        log.info("item.getVersionNumber() "+item.getVersionNumber());
         asset.setVersionNumber(item.getVersionNumber());
-
-        log.info("item.getFormat() "+item.getFormat());
         asset.setFormat(item.getFormat());
-
-        log.info("done");
 
         asset.setMetaData(populateMetaData(item));
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());
@@ -629,7 +636,7 @@ public class RepositoryAssetOperations {
     }
 
     private void fillMetaCategories(MetaData meta,
-                                    List<CategoryItem> categories) {
+            List<CategoryItem> categories) {
         meta.setCategories(new String[categories.size()]);
         for (int i = 0; i < meta.getCategories().length; i++) {
             CategoryItem cat = (CategoryItem) categories.get(i);
@@ -656,7 +663,7 @@ public class RepositoryAssetOperations {
     }
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
-                                                             String comment) {
+            String comment) {
         AssetItem asset = rulesRepository.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
@@ -676,39 +683,39 @@ public class RepositoryAssetOperations {
     }
 
     protected long getAssetCount(AssetPageRequest request) {
-        log.debug( "Counting assets in packageUuid (" + request.getPackageUuid() + ")" );
+        log.debug("Counting assets in packageUuid (" + request.getPackageUuid() + ")");
         long start = System.currentTimeMillis();
 
-        AssetItemIterator iterator = getAssetIterator( request );
+        AssetItemIterator iterator = getAssetIterator(request);
 
         long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Counted assets in packageUuid ("
-                   + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        log.debug("Counted assets in packageUuid ("
+                + request.getPackageUuid() + ") in " + methodDuration + " ms.");
         return iterator.getSize();
     }
 
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
-        ModuleItem packageItem = rulesRepository.loadModuleByUUID( request.getPackageUuid() );
+        ModuleItem packageItem = rulesRepository.loadModuleByUUID(request.getPackageUuid());
 
         AssetItemIterator iterator;
-        if ( request.getFormatInList() != null ) {
-            if ( request.getFormatIsRegistered() != null ) {
-                throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
+        if (request.getFormatInList() != null) {
+            if (request.getFormatIsRegistered() != null) {
+                throw new IllegalArgumentException("Combining formatInList and formatIsRegistered is not yet supported.");
             }
-            iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
+            iterator = packageItem.listAssetsByFormat(request.getFormatInList());
 
         } else {
-            if ( request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals( Boolean.FALSE ) ) {
-                iterator = packageItem.listAssetsNotOfFormat( registeredFormats );
+            if (request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals(Boolean.FALSE)) {
+                iterator = packageItem.listAssetsNotOfFormat(registeredFormats);
             } else {
-                iterator = packageItem.queryAssets( "" );
+                iterator = packageItem.queryAssets("");
             }
         }
         return iterator;
     }
 
     private void push(String messageType,
-                      String message) {
+            String message) {
         backchannel.publish(new PushResponse(messageType,
                 message));
     }
