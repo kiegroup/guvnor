@@ -75,7 +75,6 @@ public class ContentHandlerTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("MVEL error")
     public void testValidating() throws Exception {
 
         RulesRepository repo = rulesRepository;

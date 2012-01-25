@@ -116,12 +116,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     private MailboxService                        mailboxService;
 
     @Test
-    @Ignore
     public void testInboxEvents() throws Exception {
         
         // Need to reference @ApplicationScoped bean to force load 
         // in the absence of @ManagedBean( eager=true ) in JDK1.5
-        // TODO {manstis} Is this the cause of our pain? mailboxService.wakeUp();
+        mailboxService.wakeUp();
         
         assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
@@ -208,12 +207,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testTrackRecentOpenedChanged() throws Exception {
 
         // Need to reference @ApplicationScoped bean to force load 
         // in the absence of @ManagedBean( eager=true ) in JDK1.5
-        // TODO {manstis} Is this the cause of our pain? mailboxService.wakeUp();
+        mailboxService.wakeUp();
 
         UserInbox ib = new UserInbox( rulesRepository );
         ib.clearAll();
