@@ -260,6 +260,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     }
 
     @Test @RunAsClient 
+    @Ignore("See JIRA https://issues.jboss.org/browse/GUVNOR-1814")
     public void testGetPackageForXML(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
