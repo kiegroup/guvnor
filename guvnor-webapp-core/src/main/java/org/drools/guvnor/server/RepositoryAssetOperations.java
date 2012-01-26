@@ -21,10 +21,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
@@ -74,6 +74,8 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for Assets
@@ -654,8 +656,13 @@ public class RepositoryAssetOperations {
     protected void clearAllDiscussionsForAsset(final String assetId) {
         RulesRepository repo = rulesRepository;
         AssetItem asset = repo.loadAssetByUUID(assetId);
+        
+        //Don't update the Last Modified Date as it means the Asset to which the Discussion relates
+        //needs to be re-loaded to prevent an Optimistic Lock Exception in isAssetUpdatedInRepository().
+        //Other Asset meta-data does not affect the Last Modified Date. Discussions are now consistent.
         asset.updateStringProperty("",
-                "discussion");
+                                   Discussion.DISCUSSION_PROPERTY_KEY,
+                                   false );
         repo.save();
 
         push("discussion",
@@ -663,15 +670,18 @@ public class RepositoryAssetOperations {
     }
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
-            String comment) {
+                                                             String comment) {
         AssetItem asset = rulesRepository.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
         discussion.add(new DiscussionRecord(rulesRepository.getSession().getUserID(),
-                StringEscapeUtils.escapeXml(comment)));
+                                            StringEscapeUtils.escapeXml(comment)));
+        
+        //Adding a new Discussion has *never* updated the Last Modified Date.
+        //clearAllDiscussionsForAsset has been made consistent with this behaviour.
         asset.updateStringProperty(dp.toString(discussion),
-                Discussion.DISCUSSION_PROPERTY_KEY,
-                false);
+                                   Discussion.DISCUSSION_PROPERTY_KEY,
+                                   false);
         rulesRepository.save();
 
         push("discussion",
