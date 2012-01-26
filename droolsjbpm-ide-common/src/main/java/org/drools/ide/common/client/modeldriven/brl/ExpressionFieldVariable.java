@@ -19,18 +19,17 @@ package org.drools.ide.common.client.modeldriven.brl;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 /**
- * This expression represent a bound field. Right now it only acts as a Text
- * expression
+ * This expression represent a bound field. 
  */
 public class ExpressionFieldVariable extends ExpressionText {
 
     protected ExpressionFieldVariable() {
     }
 
-    public ExpressionFieldVariable(String name) {
+    public ExpressionFieldVariable(String name, String type) {
         super( name,
-               "java.lang.String",
-               SuggestionCompletionEngine.TYPE_FINAL_OBJECT );
+               type,
+               type);
     }
 
     @Override
