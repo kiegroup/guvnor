@@ -20,8 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
@@ -33,7 +31,7 @@ import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
-import org.drools.repository.UserInfo.InboxEntry;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,19 +40,24 @@ import org.junit.Test;
  * MailboxService is shutdown completely as it appears to intefer with other
  * tests in the same class
  */
-public class ServiceImplementationMailboxServiceTest extends GuvnorTestBase {
+public class ServiceImplementationMailboxService2Test extends GuvnorTestBase {
 
     @Inject
     private RepositoryStartupService repositoryStartupService;
 
     @Inject
-    private MailboxService    mailboxService;
+    private MailboxService           mailboxService;
 
     @Before
     public void startMailboxService() {
         // Need to reference @ApplicationScoped bean to force load 
         // in the absence of @ManagedBean( eager=true ) in JDK1.5
         mailboxService.wakeUp();
+    }
+
+    @After
+    public void stopMailboxService() {
+        mailboxService.destroy();
     }
 
     @Test
@@ -143,55 +146,6 @@ public class ServiceImplementationMailboxServiceTest extends GuvnorTestBase {
             if ( row.id.equals( as.getUUID() ) ) found = true;
         }
         assertFalse( found );
-    }
-
-    @Test
-    public void testTrackRecentOpenedChanged() throws Exception {
-
-        UserInbox ib = new UserInbox( rulesRepository );
-        ib.clearAll();
-        rulesRepository.createModule( "testTrackRecentOpenedChanged",
-                                      "desc" );
-        repositoryCategoryService.createCategory( "",
-                                                  "testTrackRecentOpenedChanged",
-                                                  "this is a cat" );
-
-        String id = serviceImplementation.createNewRule( "myrule",
-                                                         "desc",
-                                                         "testTrackRecentOpenedChanged",
-                                                         "testTrackRecentOpenedChanged",
-                                                         "drl" );
-
-        Asset ass = repositoryAssetService.loadRuleAsset( id );
-
-        repositoryAssetService.checkinVersion( ass );
-
-        List<InboxEntry> es = ib.loadRecentEdited();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.getUuid(),
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.getName(),
-                      es.get( 0 ).note );
-
-        ib.clearAll();
-
-        repositoryAssetService.loadRuleAsset( ass.getUuid() );
-        es = ib.loadRecentEdited();
-        assertEquals( 0,
-                      es.size() );
-
-        //now check they have it in their opened list...
-        es = ib.loadRecentOpened();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.getUuid(),
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.getName(),
-                      es.get( 0 ).note );
-
-        assertEquals( 0,
-                      ib.loadRecentEdited().size() );
     }
 
 }
