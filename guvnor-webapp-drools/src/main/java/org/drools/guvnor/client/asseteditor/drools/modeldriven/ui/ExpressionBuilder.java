@@ -55,6 +55,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 
 public class ExpressionBuilder extends RuleModellerWidget
     implements
@@ -149,7 +150,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                 GLOBAL_VARIABLE_VALUE_PREFIX + "." + gv );
         }
 
-        for ( String v : getRuleModel().getLHSBoundFacts() ) {
+        for ( String v : getRuleModel().getAllLHSVariables() ) {
             startPoint.addItem( v,
                                 VARIABLE_VALUE_PREFIX + "." + v );
         }
@@ -189,8 +190,10 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( fact != null ) {
                 variable = new ExpressionVariable( fact );
             } else {
-                //TODO {baunax} fix it!!! to make recursive
-                variable = new ExpressionFieldVariable( attrib );
+                //if the variable is not bound to a Fact Pattern then it must
+                //be boubd to a Field
+                String lhsBindingType = getRuleModel().getLHSBindingType(attrib);
+                variable = new ExpressionFieldVariable(attrib, lhsBindingType );
             }
             expression.appendPart( variable );
 
