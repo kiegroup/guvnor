@@ -24,9 +24,9 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.security.RoleBasedPermission;
@@ -39,8 +39,8 @@ import org.drools.repository.ModuleItem;
 import org.jboss.seam.security.AuthorizationException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.picketlink.idm.impl.api.PasswordCredential;
 
 public class ServiceImplSecurityTest extends GuvnorTestBase {
 
@@ -276,6 +276,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     //The user role is analyst
 
     @Test
+    @Ignore("See JIRA https://issues.jboss.org/browse/GUVNOR-1813")
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         ModuleItem packageItem = rulesRepository.createModule( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                            "desc" );
