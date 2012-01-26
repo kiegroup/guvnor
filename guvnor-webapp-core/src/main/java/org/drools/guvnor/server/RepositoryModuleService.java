@@ -572,14 +572,18 @@ public class RepositoryModuleService
             String packageName,
             Scenario scenario,
             RuleCoverageListener coverage) throws SerializationException {
+
         ModuleItem item = this.rulesRepository.loadModule(packageName);
 
         try {
+            //Load cache before retrieving ClassLoader
+            RuleBase rulebase = loadCacheRuleBase(item);
+            ClassLoader classLoader=((InternalRuleBase) RuleBaseCache.getInstance().get(item.getUUID())).getRootClassLoader();
             return runScenario(scenario,
-                    item,
-                    ((InternalRuleBase) RuleBaseCache.getInstance().get(item.getUUID())).getRootClassLoader(),
-                    loadCacheRuleBase(item),
-                    coverage);
+                               item,
+                               classLoader,
+                               rulebase,
+                               coverage);
         } catch (Exception e) {
             if (e instanceof DetailedSerializationException) {
                 DetailedSerializationException err = (DetailedSerializationException) e;
