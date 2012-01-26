@@ -34,55 +34,63 @@ import org.drools.guvnor.client.widgets.RuleDocumentWidget;
  * The generic editor for all types of artifacts.
  */
 public class ArtifactEditor extends GuvnorEditor {
-    interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
+    interface ArtifactEditorBinder
+        extends
+        UiBinder<Widget, ArtifactEditor> {
     }
 
-    private static ArtifactEditorBinder uiBinder = GWT.create(ArtifactEditorBinder.class);
+    private static ArtifactEditorBinder uiBinder  = GWT.create( ArtifactEditorBinder.class );
 
     @UiField(provided = true)
-    final MetaDataWidget metaWidget;
+    final MetaDataWidget                metaWidget;
 
     @UiField(provided = true)
-    final RuleDocumentWidget ruleDocumentWidget;
+    final RuleDocumentWidget            ruleDocumentWidget;
 
     @UiField
-    MessageWidget messageWidget;
+    MessageWidget                       messageWidget;
 
-    protected Artifact artifact;
-    private long lastSaved = System.currentTimeMillis();
+    protected Artifact                  artifact;
+    private long                        lastSaved = System.currentTimeMillis();
 
     /**
-     * @param Artifact artifact
+     * @param Artifact
+     *            artifact
      */
     public ArtifactEditor(Artifact artifact,
                           ClientFactory clientFactory,
                           EventBus eventBus) {
-        this(artifact, clientFactory, eventBus, false);
+        this( artifact,
+              clientFactory,
+              eventBus,
+              false );
     }
 
     /**
-     * @param Artifact           artifact
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param Artifact
+     *            artifact
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
      */
     public ArtifactEditor(Artifact artifact,
                           ClientFactory clientFactory,
-                          EventBus eventBus,                          
+                          EventBus eventBus,
                           boolean historicalReadOnly) {
         this.artifact = artifact;
         boolean readOnly = historicalReadOnly || artifact.isReadonly();
 
-        ruleDocumentWidget = new RuleDocumentWidget(this.artifact,
-                readOnly);
+        ruleDocumentWidget = new RuleDocumentWidget( this.artifact,
+                                                     readOnly );
 
         metaWidget = new MetaDataWidget(
-                clientFactory,
-                eventBus,
-                this.artifact,
-                readOnly,
-                this.artifact.getUuid());
+                                         clientFactory,
+                                         eventBus,
+                                         this.artifact,
+                                         readOnly,
+                                         this.artifact.getUuid() );
 
-        initWidget(uiBinder.createAndBindUi(this));
-        setWidth("100%");
+        initWidget( uiBinder.createAndBindUi( this ) );
+        setWidth( "100%" );
         LoadingPopup.close();
     }
 
@@ -96,7 +104,4 @@ public class ArtifactEditor extends GuvnorEditor {
         return false;
     }
 
-    public void showInfoMessage(String message) {
-        messageWidget.showMessage(message);
-    }
 }

@@ -16,18 +16,17 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.Asset;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
-
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.widgets.MessageWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -47,9 +46,6 @@ public class RuleViewer extends GuvnorEditor {
 
     @UiField(provided = true)
     final Widget                     editor;
-
-    @UiField
-    MessageWidget                    messageWidget;
 
     protected Asset              asset;
     private final RuleViewerSettings ruleViewerSettings;
@@ -126,10 +122,6 @@ public class RuleViewer extends GuvnorEditor {
     @Override
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;
-    }
-
-    public void showInfoMessage(String message) {
-        messageWidget.showMessage( message );
     }
 
 }
