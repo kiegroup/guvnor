@@ -131,10 +131,16 @@ public class FactModelsWidget extends Composite
                 //Don't load Facts for the Asset being edited as we want the same
                 //objects instances to detect for circular dependencies.
                 final FactModelsSemaphore s = new FactModelsSemaphore( assets.size() - 1 );
-                for ( AssetPageRow otherAsset : assets ) {
-                    if ( !otherAsset.getUuid().equals( asset.getUuid() ) ) {
-                        clientFactory.getAssetService().loadRuleAsset( otherAsset.getUuid(),
-                                                                       makeLoadFactModelsCallback( s ) );
+
+                //If there are no models show the editor
+                if ( s.areAllFactModelsProcessed() ) {
+                    addEditorToContainer();
+                } else {
+                    for ( AssetPageRow otherAsset : assets ) {
+                        if ( !otherAsset.getUuid().equals( asset.getUuid() ) ) {
+                            clientFactory.getAssetService().loadRuleAsset( otherAsset.getUuid(),
+                                                                           makeLoadFactModelsCallback( s ) );
+                        }
                     }
                 }
             }
@@ -151,13 +157,18 @@ public class FactModelsWidget extends Composite
                 //When all Fact Models have been loaded show the editor
                 s.recordFactModelProcessed();
                 if ( s.areAllFactModelsProcessed() ) {
-                    editorContainer.add( new FactModelsEditor( ((FactModels) asset.getContent()).models,
-                                                               superTypeFactModels,
-                                                               modelNameHelper ) );
+                    addEditorToContainer();
                 }
             }
 
         };
+    }
+
+    private void addEditorToContainer() {
+        FactModelsEditor editor = new FactModelsEditor( ((FactModels) asset.getContent()).models,
+                                                        superTypeFactModels,
+                                                        modelNameHelper );
+        editorContainer.setWidget( editor );
     }
 
     //Load Facts for a given asset
