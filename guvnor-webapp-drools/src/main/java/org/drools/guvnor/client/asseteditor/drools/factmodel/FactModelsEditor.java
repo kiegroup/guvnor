@@ -43,7 +43,7 @@ public class FactModelsEditor extends Composite {
         UiBinder<Widget, FactModelsEditor> {
     }
 
-    private static FactModelsEditorBinder uiBinder        = GWT.create( FactModelsEditorBinder.class );
+    private static FactModelsEditorBinder uiBinder = GWT.create( FactModelsEditorBinder.class );
 
     @UiField
     LazyStackPanel                        factModelsPanel;
@@ -53,10 +53,16 @@ public class FactModelsEditor extends Composite {
 
     private final List<FactMetaModel>     factModels;
 
-    private final ModelNameHelper         modelNameHelper = new ModelNameHelper();
+    private final List<FactMetaModel>     superTypeFactModels;
 
-    public FactModelsEditor(List<FactMetaModel> factModels) {
+    private final ModelNameHelper         modelNameHelper;
+
+    public FactModelsEditor(final List<FactMetaModel> factModels,
+                            final List<FactMetaModel> superTypeFactModels,
+                            final ModelNameHelper modelNameHelper) {
         this.factModels = factModels;
+        this.superTypeFactModels = superTypeFactModels;
+        this.modelNameHelper = modelNameHelper;
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
@@ -68,12 +74,8 @@ public class FactModelsEditor extends Composite {
 
     public void addFactModelToStackPanel(final FactMetaModel factMetaModel) {
         final FactModelEditor editor = new FactModelEditor( factMetaModel,
-                                                            factModels );
-
-        modelNameHelper.getTypeDescriptions().put( factMetaModel.getName(),
-                                                   factMetaModel.getName() );
-
-        editor.setModelNameHelper( modelNameHelper );
+                                                            superTypeFactModels,
+                                                            modelNameHelper );
 
         editor.setMoveDownCommand( getMoveDownCommand( factMetaModel ) );
 
@@ -98,6 +100,7 @@ public class FactModelsEditor extends Composite {
 
                 modelNameHelper.getTypeDescriptions().remove( factMetaModel.getName() );
                 factModels.remove( factMetaModel );
+                superTypeFactModels.remove( factMetaModel );
                 factModelsPanel.remove( index );
             }
         };
@@ -169,13 +172,14 @@ public class FactModelsEditor extends Composite {
     @UiHandler("addFactIcon")
     void addFactClick(ClickEvent event) {
         final FactEditorPopup popup = new FactEditorPopup( modelNameHelper,
-                                                           factModels );
+                                                           superTypeFactModels );
 
         popup.setOkCommand( new Command() {
             public void execute() {
                 FactMetaModel factMetaModel = popup.getFactModel();
 
                 factModels.add( factMetaModel );
+                superTypeFactModels.add( factMetaModel );
                 addFactModelToStackPanel( factMetaModel );
             }
         } );
