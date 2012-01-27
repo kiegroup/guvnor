@@ -2615,4 +2615,6 @@ public interface Constants
 
     String RemoveActionValueDefinitionQuestion();
     
+    String CannotDeleteADeclarationThatIsASuperType();
+    
 }

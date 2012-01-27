@@ -40,6 +40,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -57,11 +58,14 @@ public class FactModelsWidget extends Composite
 
     //These are passed up to FactEditorPopup to provide the list of types from which to extend and provide 
     //validation services. They are populated asynchronously from 'populateSuperTypesFactModels' that calls 
-    //back to the server to retrieve a list of all Declared Facts in the package. There is a chance they
-    //will not be populated before the user navigates to the FactEditorPopup. If this proves to be the 
-    //case we should defer population of the screen widget until the list has been populated.
+    //back to the server to retrieve a list of all Declared Facts in the package.
     private final List<FactMetaModel> superTypeFactModels = new ArrayList<FactMetaModel>();
     private final ModelNameHelper     modelNameHelper     = new ModelNameHelper();
+
+    //While the necessary model information is loading the screen is initialised to an 
+    //empty container. The container is populated with the actual screen widget once the 
+    //necessary model information has been loaded.
+    private final SimplePanel         editorContainer     = new SimplePanel();
 
     public FactModelsWidget(final Asset asset,
                             final RuleViewer viewer,
@@ -73,7 +77,8 @@ public class FactModelsWidget extends Composite
         if ( isContentPlainText() ) {
             initWidget( getPlainTextEditor() );
         } else {
-            initWidget( getFactModelsEditor() );
+            initWidget( editorContainer );
+            initFactModelsEditor();
         }
 
         setWidth( "100%" );
@@ -89,15 +94,11 @@ public class FactModelsWidget extends Composite
         return new DefaultRuleContentWidget( asset );
     }
 
-    private Widget getFactModelsEditor() {
+    private void initFactModelsEditor() {
         if ( asset.getContent() == null ) {
             asset.setContent( new FactModels() );
         }
         populateSuperTypesFactModels();
-        return new FactModelsEditor( ((FactModels) asset.getContent()).models,
-                                     superTypeFactModels,
-                                     modelNameHelper );
-
     }
 
     //Load all Declarative Model assets in the package
@@ -123,27 +124,37 @@ public class FactModelsWidget extends Composite
 
             //Iterate list of Declarative Models, loading each model and adding types to complete list
             private void loadFactModelAssets(List<AssetPageRow> assets) {
-                for ( AssetPageRow otherAsset : assets ) {
-                    //Don't load Facts for the Asset being edited as we want the same
-                    //objects instances to detect for circular dependencies.
-                    if ( !otherAsset.getUuid().equals( asset.getUuid() ) ) {
-                        clientFactory.getAssetService().loadRuleAsset( otherAsset.getUuid(),
-                                                                       makeLoadFactModelsCallback() );
-                    }
-                }
-                
+
                 //Load the fact being edited
                 loadFacts( asset );
+
+                //Don't load Facts for the Asset being edited as we want the same
+                //objects instances to detect for circular dependencies.
+                final FactModelsSemaphore s = new FactModelsSemaphore( assets.size() - 1 );
+                for ( AssetPageRow otherAsset : assets ) {
+                    if ( !otherAsset.getUuid().equals( asset.getUuid() ) ) {
+                        clientFactory.getAssetService().loadRuleAsset( otherAsset.getUuid(),
+                                                                       makeLoadFactModelsCallback( s ) );
+                    }
+                }
             }
         };
     }
 
     //Add all Facts in a Declarative Model to the complete (cross-package) collection
-    private GenericCallback<Asset> makeLoadFactModelsCallback() {
+    private GenericCallback<Asset> makeLoadFactModelsCallback(final FactModelsSemaphore s) {
         return new GenericCallback<Asset>() {
 
-            public void onSuccess(Asset asset) {
-                loadFacts( asset );
+            public void onSuccess(Asset otherAsset) {
+                loadFacts( otherAsset );
+
+                //When all Fact Models have been loaded show the editor
+                s.recordFactModelProcessed();
+                if ( s.areAllFactModelsProcessed() ) {
+                    editorContainer.add( new FactModelsEditor( ((FactModels) asset.getContent()).models,
+                                                               superTypeFactModels,
+                                                               modelNameHelper ) );
+                }
             }
 
         };
@@ -160,6 +171,28 @@ public class FactModelsWidget extends Composite
             modelNameHelper.getTypeDescriptions().put( factMetaModel.getName(),
                                                        factMetaModel.getName() );
         }
+    }
+
+    //A container for the number of Fact Models to be added to the editor. Each Fact 
+    //Model is loaded with asynchronous GWT-RPC calls. Since we cannot control when the 
+    //responses are received we keep a running total of the number of Fact Models so
+    //the UI can be created after all have been loaded
+    private static class FactModelsSemaphore {
+
+        int numberOfFactModels = 0;
+
+        FactModelsSemaphore(int numberOfFactModels) {
+            this.numberOfFactModels = numberOfFactModels;
+        }
+
+        synchronized void recordFactModelProcessed() {
+            numberOfFactModels--;
+        }
+
+        synchronized boolean areAllFactModelsProcessed() {
+            return this.numberOfFactModels == 0;
+        }
+
     }
 
     public void onAfterSave() {

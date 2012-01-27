@@ -152,7 +152,7 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
         for ( FactMetaModel fmm : superTypeFactModels ) {
             if ( fmm.hasSuperType() ) {
                 if ( fmm.getSuperType().equals( factMetaModel.getName() ) ) {
-                    Window.confirm( "Are you crazy, that's a super type" );
+                    Window.confirm( constants.CannotDeleteADeclarationThatIsASuperType() );
                     return;
                 }
             }
