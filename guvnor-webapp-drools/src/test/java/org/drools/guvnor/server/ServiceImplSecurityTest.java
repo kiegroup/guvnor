@@ -61,7 +61,15 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Before
     public void loginAsSpecificUser() {
-        loginAs(USER_NAME);
+        loginAs( USER_NAME );
+        
+        //Hack to ensure there are permission records, granting an undefined role, for the user
+        //An undefined role is used so as not to interfere with the roles recognised by Guvnor
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( USER_NAME,
+                                                                   new RoleBasedPermission( USER_NAME,
+                                                                                            "UNDEFINED",
+                                                                                            null,
+                                                                                            null ) );
     }
 
     @After
