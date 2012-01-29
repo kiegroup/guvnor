@@ -223,7 +223,10 @@ public class PackageResource extends Resource {
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         try {
             ModuleItem p = rulesRepository.loadModule(packageName);
-            String fileName = packageName + ".pkg";
+            
+            ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
+
+            String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
             byte[] result;
             if (p.isBinaryUpToDate()) {
                 result = p.getCompiledBinaryBytes();
@@ -312,7 +315,8 @@ public class PackageResource extends Resource {
         ModuleItem p = rulesRepository.loadModule(packageName, versionNumber);
         byte[] result = p.getCompiledBinaryBytes();
         if (result != null) {
-            String fileName = packageName + ".pkg";
+            ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
+            String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(p.getLastModified()).getTime())).build();
         } else {

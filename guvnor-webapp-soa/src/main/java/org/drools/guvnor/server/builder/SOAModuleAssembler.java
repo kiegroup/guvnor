@@ -63,7 +63,9 @@ public class SOAModuleAssembler extends AssemblerBase {
         //NOT_APPLICABLE
         return null;
     }   
-        
+    public String getBinaryExtension() {
+        return "zip";
+    }        
     protected InputStream generateZip() {
         List<AssetItem> jarAssets = new LinkedList<AssetItem>();
         AssetZipper assetZipper = null;

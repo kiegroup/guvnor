@@ -52,6 +52,10 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         //NOT_IMPLEMENTED
         return null;
     }
+    public String getBinaryExtension() {
+        return "pkg";
+    }
+
     public String getCompiledSource() {
         //NOT_IMPLEMENTED
         return null;

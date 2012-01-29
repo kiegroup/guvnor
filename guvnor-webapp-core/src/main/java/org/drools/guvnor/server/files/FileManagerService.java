@@ -173,6 +173,7 @@ public class FileManagerService {
      * @param packageVersion The version (if it is a snapshot).
      * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
      * @return The filename if its all good.
+     * @deprecated Use JAX-RS based REST API instead
      */
     public String loadBinaryPackage(String packageName,
                                     String packageVersion,
