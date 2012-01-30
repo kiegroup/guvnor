@@ -346,5 +346,8 @@ public interface Images
 
     @Source("images/mandatory.png")
     ImageResource mandatory();
+    
+    @Source("images/info-large.png")
+    ImageResource infoLarge();
 
 }

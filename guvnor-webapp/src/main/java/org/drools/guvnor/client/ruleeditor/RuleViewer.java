@@ -16,16 +16,16 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.*;
+import java.util.Set;
+
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
@@ -40,12 +40,31 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
 import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.VerificationService;
+import org.drools.guvnor.client.rpc.VerificationServiceAsync;
+import org.drools.guvnor.client.ruleeditor.ShowMessageEvent.MessageType;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
 
-import java.util.Set;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -70,11 +89,7 @@ public class RuleViewer extends GuvnorEditor {
     @UiField(provided = true)
     final ActionToolbar toolbar;
 
-    @UiField
-    MessageWidget messageWidget;
-
     private Command afterCheckinEvent;
-
 
     protected RuleAsset asset;
     private boolean readOnly;
@@ -475,16 +490,13 @@ public class RuleViewer extends GuvnorEditor {
                         LoadingPopup.close();
                         saved[0] = true;
 
-                        showInfoMessage( constants.SavedOK() );
+                        eventBus.fireEvent( new ShowMessageEvent( constants.SavedOK(),
+                                                                  MessageType.INFO ) );
                         if ( !closeAfter ) {
                             eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
                         }
                     }
                 } );
-    }
-
-    public void showInfoMessage(String message) {
-        messageWidget.showMessage( message );
     }
 
     /**

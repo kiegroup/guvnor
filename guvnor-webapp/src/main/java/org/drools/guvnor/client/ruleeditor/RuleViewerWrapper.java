@@ -39,13 +39,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class RuleViewerWrapper extends GuvnorEditor
     implements
-    RefreshAssetEditorEvent.Handler {
+    RefreshAssetEditorEvent.Handler,
+    ShowMessageEvent.Handler {
 
     private Constants                         constants            = GWT.create( Constants.class );
 
     private RuleAsset                         asset;
     private boolean                           isHistoricalReadOnly = false;
     private final RuleViewerSettings          ruleViewerSettings;
+    private final MessageWidget               messageWidget        = new MessageWidget();
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
@@ -74,13 +76,16 @@ public class RuleViewerWrapper extends GuvnorEditor
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         this.ruleViewerSettings = ruleViewerSettings;
 
-        eventBus.addHandler(
-                             RefreshAssetEditorEvent.TYPE,
+        //Wire-up event handlers
+        eventBus.addHandler( RefreshAssetEditorEvent.TYPE,
+                             this );
+        eventBus.addHandler( ShowMessageEvent.TYPE,
                              this );
 
         initWidget( layout );
-        render();
         setWidth( "100%" );
+
+        render();
     }
 
     private void render() {
@@ -101,6 +106,7 @@ public class RuleViewerWrapper extends GuvnorEditor
 
         layout.clear();
         layout.add( actionToolBar );
+        layout.add( messageWidget );
 
         TabPanel tabPanel = new TabPanel();
         tabPanel.setWidth( "100%" );
@@ -146,6 +152,11 @@ public class RuleViewerWrapper extends GuvnorEditor
                                                                           }
                                                                       } );
         }
+    }
+
+    public void onShowMessage(ShowMessageEvent event) {
+        messageWidget.showMessage( event.getMessage(),
+                                   event.getMessageType() );
     }
 
 }

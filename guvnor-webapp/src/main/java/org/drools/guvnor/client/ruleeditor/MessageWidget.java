@@ -15,55 +15,70 @@
  */
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.ruleeditor.ShowMessageEvent.MessageType;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MessageWidget extends Composite {
 
-    interface MessageTemplate
+    interface MessageWidgetBinder
         extends
-        SafeHtmlTemplates {
-
-        @Template("<div style=\"background-color: yellow;\" >{0}</div>")
-        SafeHtml message(String message);
+        UiBinder<Widget, MessageWidget> {
     }
 
-    private Images                       images   = GWT.create( Images.class );
+    private static MessageWidgetBinder uiBinder = GWT.create( MessageWidgetBinder.class );
 
-    private static final MessageTemplate TEMPLATE = GWT.create( MessageTemplate.class );
+    @UiField
+    SimplePanel                        messageContainer;
 
-    private final SmallLabel             label    = new SmallLabel();
+    @UiField
+    Label                              lblMessage;
 
     public MessageWidget() {
-
-        label.setVisible( false );
-
-        initWidget( label );
+        initWidget( uiBinder.createAndBindUi( this ) );
+        setWidth( "100%" );
     }
 
-    public void showMessage(String message) {
-        showMessage( images.greenTick(),
-                     message );
-    }
-
-    public void showMessage(ImageResource image,
-                            String message) {
-
-        label.setVisible( true );
-        label.setHTML( TEMPLATE.message( message ) );
+    public void showMessage(String message,
+                            MessageType messageType) {
+        lblMessage.setText( message );
+        messageContainer.setVisible( true );
 
         Timer timer = new Timer() {
             public void run() {
-                label.setVisible( false );
+                HideMessageAnimation anim = new HideMessageAnimation( messageContainer );
+                anim.run( 250 );
             }
         };
         timer.schedule( 1500 );
+    }
+
+    private static class HideMessageAnimation extends Animation {
+
+        private final SimplePanel container;
+
+        private HideMessageAnimation(SimplePanel container) {
+            this.container = container;
+        }
+
+        @Override
+        protected void onUpdate(double progress) {
+            this.container.getElement().getStyle().setOpacity( 1.0 - progress );
+        }
+
+        @Override
+        protected void onComplete() {
+            this.container.setVisible( false );
+            this.container.getElement().getStyle().setOpacity( 1.0 );
+        }
+
     }
 }

@@ -95,7 +95,4 @@ public class ArtifactEditor extends GuvnorEditor {
         return false;
     }
 
-    public void showInfoMessage(String message) {
-        messageWidget.showMessage(message);
-    }
 }

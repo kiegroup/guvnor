@@ -16,100 +16,113 @@
 
 package org.drools.guvnor.client.packages;
 
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.common.HTMLFileManagerFields;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
+import org.drools.guvnor.client.ruleeditor.RefreshAssetEditorEvent;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.ruleeditor.ShowMessageEvent;
+import org.drools.guvnor.client.ruleeditor.ShowMessageEvent.MessageType;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This wraps a file uploader utility for model packages.
- * Model packages are jar files.
+ * This wraps a file uploader utility for model packages. Model packages are jar
+ * files.
  */
 
 public abstract class AssetAttachmentFileWidget extends Composite
         implements
         EditorWidget {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants         constants = GWT.create( Constants.class );
 
-    private FormPanel form;
-    private RuleViewer viewer;
+    private FormPanel         form;
+    private RuleViewer        viewer;
     protected FormStyleLayout layout;
-    protected RuleAsset asset;
-    private final EventBus eventBus;
+    protected RuleAsset       asset;
+    private final EventBus    eventBus;
 
     public AssetAttachmentFileWidget(final RuleAsset asset,
                                      final RuleViewer viewer,
                                      ClientFactory clientFactory,
                                      EventBus eventBus) {
         this.viewer = viewer;
-        ClientFactory clientFactory1 = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
-        initWidgets(asset.getUuid(),
-                asset.getName());
+        initWidgets( asset.getUuid(),
+                     asset.getName() );
         initAssetHandlers();
     }
 
     protected void initWidgets(final String uuid,
                                String formName) {
         form = new FormPanel();
-        form.setAction(GWT.getModuleBaseURL() + "asset");
-        form.setEncoding(FormPanel.ENCODING_MULTIPART);
-        form.setMethod(FormPanel.METHOD_POST);
+        form.setAction( GWT.getModuleBaseURL() + "asset" );
+        form.setEncoding( FormPanel.ENCODING_MULTIPART );
+        form.setMethod( FormPanel.METHOD_POST );
 
         FileUpload up = new FileUpload();
-        up.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add(getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID,
-                uuid));
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_UUID,
+                                    uuid ) );
 
-        Button ok = new Button(constants.Upload());
+        Button ok = new Button( constants.Upload() );
 
-        fields.add(up);
-        fields.add(ok);
+        fields.add( up );
+        fields.add( ok );
 
-        form.add(fields);
+        form.add( fields );
 
-        layout = new FormStyleLayout(getIcon(),
-                formName);
+        layout = new FormStyleLayout( getIcon(),
+                                      formName );
 
-        if (!this.asset.isReadonly()) layout.addAttribute(constants.UploadNewVersion(),
-                form);
+        if ( !this.asset.isReadonly() ) layout.addAttribute( constants.UploadNewVersion(),
+                                                             form );
 
-        Button dl = new Button(constants.Download());
-        dl.addClickHandler(new ClickHandler() {
+        Button dl = new Button( constants.Download() );
+        dl.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                Window.open(GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
-                        "downloading",
-                        "resizable=no,scrollbars=yes,status=no");
+                Window.open( GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
-        });
-        layout.addAttribute(constants.DownloadCurrentVersion(),
-                dl);
+        } );
+        layout.addAttribute( constants.DownloadCurrentVersion(),
+                             dl );
 
-        ok.addClickHandler(new ClickHandler() {
+        ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showUploadingBusy();
                 submitUpload();
             }
-        });
+        } );
 
-        initWidget(layout);
-        layout.setWidth("100%");
-        this.setStyleName(getOverallStyleName());
+        initWidget( layout );
+        layout.setWidth( "100%" );
+        this.setStyleName( getOverallStyleName() );
     }
 
     /**
@@ -123,23 +136,30 @@ public abstract class AssetAttachmentFileWidget extends Composite
     public abstract String getOverallStyleName();
 
     void initAssetHandlers() {
-        form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+        form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 LoadingPopup.close();
 
-                if (asset.getFormat().equals(AssetFormats.MODEL)) {
-                    eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getUuid()));
+                if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
+                    eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getUuid() ) );
                 }
 
-                if (event.getResults().indexOf("OK") > -1) {
-                    viewer.showInfoMessage(constants.FileWasUploadedSuccessfully());
+                if ( event.getResults().indexOf( "OK" ) > -1 ) {
+                    //Raise an Event to show an information message
+                    eventBus.fireEvent( new ShowMessageEvent( constants.FileWasUploadedSuccessfully(),
+                                                              MessageType.INFO ) );
+
+                    //Reload asset as the upload operation commits the asset's content. If we don't 
+                    //reload the asset we receive a optimistic lock error appearing as "Unable to save 
+                    //this asset, as it has been recently updated" message to users
+                    eventBus.fireEvent( new RefreshAssetEditorEvent( asset.getUuid() ) );
                 } else {
-                    ErrorPopup.showMessage(constants.UnableToUploadTheFile());
+                    ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
                 }
             }
 
-        });
+        } );
     }
 
     protected void submitUpload() {
@@ -147,20 +167,20 @@ public abstract class AssetAttachmentFileWidget extends Composite
     }
 
     protected void showUploadingBusy() {
-        LoadingPopup.showMessage(constants.Uploading());
+        LoadingPopup.showMessage( constants.Uploading() );
     }
 
     private TextBox getHiddenField(String name,
                                    String value) {
         TextBox t = new TextBox();
-        t.setName(name);
-        t.setText(value);
-        t.setVisible(false);
+        t.setName( name );
+        t.setText( value );
+        t.setVisible( false );
         return t;
     }
 
     public void addDescription(Widget d) {
-        this.layout.addRow(d);
+        this.layout.addRow( d );
     }
 
 }
