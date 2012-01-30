@@ -375,11 +375,6 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package module) {
-        System.out.println("-----------------------------");
-        System.out.println("---------updatePackageFromJAXB---------:" + packageName);
-        System.out.println("---------updatePackageFromJAXB---------desc:" + module.getDescription());
-        System.out.println("---------updatePackageFromJAXB---------title:" + module.getTitle());
-                System.out.println("-----------------------------");
         try {
             ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
             
@@ -394,9 +389,6 @@ public class PackageResource extends Resource {
             existingModuleItem.checkin(module.getCheckInComment());
             rulesRepository.save();
         } catch (Exception e) {
-            System.out.println("-----------------------------");
-            e.printStackTrace();
-            System.out.println("-----------------------------");
             throw new WebApplicationException(e);
         }
     }
