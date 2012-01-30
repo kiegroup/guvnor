@@ -35,6 +35,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,6 +56,8 @@ public class CEPWindowOperatorsDropdown extends Composite
     private ListBox                        box;
     private HorizontalPanel                parametersContainer              = new HorizontalPanel();
     private HorizontalPanel                windowContainer                  = new HorizontalPanel();
+
+    private boolean                        isEnabled                        = true;
 
     protected HasCEPWindow                 hcw;
 
@@ -97,6 +100,17 @@ public class CEPWindowOperatorsDropdown extends Composite
         return box.getValue( index );
     }
 
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+        box.setEnabled( isEnabled );
+        for ( int iChildWidgetIndex = 0; iChildWidgetIndex < parametersContainer.getWidgetCount(); iChildWidgetIndex++ ) {
+            Widget childWidget = parametersContainer.getWidget( iChildWidgetIndex );
+            if ( childWidget instanceof HasEnabled ) {
+                ((HasEnabled) childWidget).setEnabled( isEnabled );
+            }
+        }
+    }
+
     //Additional widget for CEP Window operator parameter
     private Widget getOperatorExtension() {
         parametersContainer.setStylePrimaryName( css.container() );
@@ -136,6 +150,7 @@ public class CEPWindowOperatorsDropdown extends Composite
                                           value );
         }
         txt.setText( value );
+        txt.setEnabled( isEnabled );
         parametersContainer.add( txt );
         parametersContainer.setVisible( true );
         hcw.getWindow().setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,

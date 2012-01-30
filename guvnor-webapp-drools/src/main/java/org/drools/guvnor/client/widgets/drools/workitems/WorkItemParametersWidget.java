@@ -33,17 +33,23 @@ public class WorkItemParametersWidget extends VerticalPanel {
 
     private List<PortableParameterDefinition> parameters;
 
-    private IBindingProvider                  bindingProvider;
+    private final IBindingProvider            bindingProvider;
 
-    public WorkItemParametersWidget(IBindingProvider bindingProvider) {
+    private final boolean                     isReadOnly;
+
+    public WorkItemParametersWidget(final IBindingProvider bindingProvider,
+                                    final boolean isReadOnly) {
         this.bindingProvider = bindingProvider;
+        this.isReadOnly = isReadOnly;
     }
 
     public void setParameters(Set<PortableParameterDefinition> parameters) {
         this.clear();
         this.parameters = sort( parameters );
         for ( PortableParameterDefinition ppd : this.parameters ) {
-            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd, bindingProvider );
+            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd,
+                                                                                   bindingProvider,
+                                                                                   isReadOnly );
             add( pw );
         }
     }

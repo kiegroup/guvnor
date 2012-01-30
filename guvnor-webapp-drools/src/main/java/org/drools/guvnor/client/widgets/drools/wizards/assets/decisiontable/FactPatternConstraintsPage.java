@@ -73,7 +73,8 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         }
         view.setPresenter( this );
         view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
-                                                                        sce ) );
+                                                                        sce,
+                                                                        false ) );
         content.setWidget( view );
     }
 

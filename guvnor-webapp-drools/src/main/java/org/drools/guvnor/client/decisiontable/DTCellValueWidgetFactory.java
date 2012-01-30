@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -36,7 +37,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -46,13 +49,19 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DTCellValueWidgetFactory {
 
-    private GuidedDecisionTable52      dtable;
-    private SuggestionCompletionEngine sce;
+    private final GuidedDecisionTable52      dtable;
+    private final SuggestionCompletionEngine sce;
+    private final boolean                    isReadOnly;
+
+    private static final String              DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final DateTimeFormat      format      = DateTimeFormat.getFormat( DATE_FORMAT );
 
     public DTCellValueWidgetFactory(GuidedDecisionTable52 dtable,
-                                    SuggestionCompletionEngine sce) {
+                                    SuggestionCompletionEngine sce,
+                                    boolean isReadOnly) {
         this.sce = sce;
         this.dtable = dtable;
+        this.isReadOnly = isReadOnly;
     }
 
     /**
@@ -251,13 +260,16 @@ public class DTCellValueWidgetFactory {
         lb.setSelectedIndex( currentItem ? 0 : 1 );
 
         // Wire up update handler
-        lb.addClickHandler( new ClickHandler() {
+        lb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            lb.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                value.setBooleanValue( lb.getValue( lb.getSelectedIndex() ).equals( "true" ) );
-            }
+                public void onClick(ClickEvent event) {
+                    value.setBooleanValue( lb.getValue( lb.getSelectedIndex() ).equals( "true" ) );
+                }
 
-        } );
+            } );
+        }
         return lb;
     }
 
@@ -278,18 +290,21 @@ public class DTCellValueWidgetFactory {
         }
 
         // Wire up update handler
-        lb.addClickHandler( new ClickHandler() {
+        lb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            lb.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                int index = lb.getSelectedIndex();
-                if ( index > -1 ) {
-                    value.setStringValue( lb.getValue( index ) );
-                } else {
-                    value.setStringValue( null );
+                public void onClick(ClickEvent event) {
+                    int index = lb.getSelectedIndex();
+                    if ( index > -1 ) {
+                        value.setStringValue( lb.getValue( index ) );
+                    } else {
+                        value.setStringValue( null );
+                    }
                 }
-            }
 
-        } );
+            } );
+        }
 
         //If nothing has been selected, select the first value
         if ( selectedIndex == -1 ) {
@@ -305,19 +320,22 @@ public class DTCellValueWidgetFactory {
         tb.setValue( value.getNumericValue() == null ? "" : value.getNumericValue().toPlainString() );
 
         // Wire up update handler
-        tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
-                try {
-                    value.setNumericValue( new BigDecimal( event.getValue() ) );
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setNumericValue( new BigDecimal( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setNumericValue( BigDecimal.ZERO );
+                        tb.setValue( BigDecimal.ZERO.toPlainString() );
+                    }
                 }
-                catch ( NumberFormatException nfe ) {
-                    value.setNumericValue( BigDecimal.ZERO );
-                    tb.setValue( BigDecimal.ZERO.toPlainString() );
-                }
-            }
 
-        } );
+            } );
+        }
         return tb;
     }
 
@@ -326,17 +344,27 @@ public class DTCellValueWidgetFactory {
         tb.setValue( value.getStringValue() );
 
         // Wire up update handler
-        tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
-                value.setStringValue( event.getValue() );
-            }
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    value.setStringValue( event.getValue() );
+                }
 
-        } );
+            } );
+        }
         return tb;
     }
 
-    private PopupDatePicker makeDateSelector(final DTCellValue52 value) {
+    private Widget makeDateSelector(final DTCellValue52 value) {
+        //If read-only return a label
+        if ( isReadOnly ) {
+            Label dateLabel = new Label();
+            dateLabel.setText( format.format( value.getDateValue() ) );
+            return dateLabel;
+        }
+
         PopupDatePicker dp = new PopupDatePicker();
         dp.setValue( value.getDateValue() );
 
@@ -357,15 +385,21 @@ public class DTCellValueWidgetFactory {
      * @param col
      * @return
      */
-    public static TextBox getDefaultEditor(final DTColumnConfig52 col) {
+    public static TextBox getDefaultEditor(final DTColumnConfig52 col,
+                                           boolean isReadOnly) {
         final TextBox txtDefaultValue = new TextBox();
         txtDefaultValue.setText( col.getDefaultValue() );
-        txtDefaultValue.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                col.setDefaultValue( txtDefaultValue.getText() );
-            }
-        } );
+        // Wire up update handler
+        txtDefaultValue.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            txtDefaultValue.addChangeHandler( new ChangeHandler() {
+
+                public void onChange(ChangeEvent event) {
+                    col.setDefaultValue( txtDefaultValue.getText() );
+                }
+            } );
+        }
         return txtDefaultValue;
     }
 

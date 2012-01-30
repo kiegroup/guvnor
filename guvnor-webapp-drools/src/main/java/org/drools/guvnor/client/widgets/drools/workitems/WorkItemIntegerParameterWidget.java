@@ -53,12 +53,14 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
     private static WorkItemIntegerParameterWidgetBinder uiBinder = GWT.create( WorkItemIntegerParameterWidgetBinder.class );
 
     public WorkItemIntegerParameterWidget(PortableIntegerParameterDefinition ppd,
-                                          IBindingProvider bindingProvider) {
+                                          IBindingProvider bindingProvider,
+                                          boolean isReadOnly) {
         super( ppd,
                bindingProvider );
+        this.parameterName.setText( ppd.getName() );
+        this.parameterEditor.setEnabled( !isReadOnly );
 
         //Setup widget to select a literal value
-        this.parameterName.setText( ppd.getName() );
         if ( ppd.getValue() != null ) {
             this.parameterEditor.setText( Integer.toString( ppd.getValue() ) );
         }
@@ -68,7 +70,7 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );
-            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;
             for ( String binding : bindings ) {
@@ -78,7 +80,7 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
                 }
             }
             lstAvailableBindings.setSelectedIndex( selectedIndex );
-            parameterEditor.setEnabled( selectedIndex == 0 );
+            parameterEditor.setEnabled( selectedIndex == 0 && !isReadOnly );
         }
 
     }

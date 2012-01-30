@@ -52,10 +52,12 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
     private static WorkItemBooleanParameterWidgetBinder uiBinder = GWT.create( WorkItemBooleanParameterWidgetBinder.class );
 
     public WorkItemBooleanParameterWidget(PortableBooleanParameterDefinition ppd,
-                                          IBindingProvider bindingProvider) {
+                                          IBindingProvider bindingProvider,
+                                          boolean isReadOnly) {
         super( ppd,
                bindingProvider );
         this.parameterName.setText( ppd.getName() );
+        this.parameterValues.setEnabled( !isReadOnly );
 
         //Setup widget to select a literal value
         boolean isItemSelected = false;
@@ -80,7 +82,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );
-            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;
             for ( String binding : bindings ) {
@@ -90,7 +92,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
                 }
             }
             lstAvailableBindings.setSelectedIndex( selectedIndex );
-            parameterValues.setEnabled( selectedIndex == 0 );
+            parameterValues.setEnabled( selectedIndex == 0 && !isReadOnly );
         }
 
     }

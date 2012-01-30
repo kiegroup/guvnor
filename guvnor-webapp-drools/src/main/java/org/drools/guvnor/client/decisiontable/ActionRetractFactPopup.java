@@ -52,7 +52,8 @@ public class ActionRetractFactPopup extends FormStylePopup {
     public ActionRetractFactPopup(final GuidedDecisionTable52 model,
                                   final GenericColumnCommand refreshGrid,
                                   final ActionRetractFactCol52 col,
-                                  final boolean isNew) {
+                                  final boolean isNew,
+                                  final boolean isReadOnly) {
         this.rm = new BRLRuleModel( model );
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
@@ -64,16 +65,19 @@ public class ActionRetractFactPopup extends FormStylePopup {
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
             final LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) editingCol;
             final ListBox patterns = loadBoundFacts( ler.getValue().getStringValue() );
-            patterns.addClickHandler( new ClickHandler() {
+            patterns.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                patterns.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
-                    int index = patterns.getSelectedIndex();
-                    if ( index > -1 ) {
-                        ler.getValue().setStringValue( patterns.getValue( index ) );
+                    public void onClick(ClickEvent event) {
+                        int index = patterns.getSelectedIndex();
+                        if ( index > -1 ) {
+                            ler.getValue().setStringValue( patterns.getValue( index ) );
+                        }
                     }
-                }
 
-            } );
+                } );
+            }
             addAttribute( constants.FactToRetractColon(),
                           patterns );
         }
@@ -81,11 +85,14 @@ public class ActionRetractFactPopup extends FormStylePopup {
         //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setHeader( header.getText() );
-            }
-        } );
+        header.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            header.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setHeader( header.getText() );
+                }
+            } );
+        }
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 

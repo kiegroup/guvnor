@@ -18,7 +18,6 @@ package org.drools.guvnor.client.widgets.drools.workitems;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.IBindingProvider;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -54,12 +53,14 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
     private static WorkItemStringParameterWidgetBinder uiBinder = GWT.create( WorkItemStringParameterWidgetBinder.class );
 
     public WorkItemStringParameterWidget(PortableStringParameterDefinition ppd,
-                                         IBindingProvider bindingProvider) {
+                                         IBindingProvider bindingProvider,
+                                         boolean isReadOnly) {
         super( ppd,
                bindingProvider );
+        this.parameterName.setText( ppd.getName() );
+        this.parameterEditor.setEnabled( !isReadOnly );
 
         //Setup widget to select a literal value
-        this.parameterName.setText( ppd.getName() );
         if ( ppd.getValue() != null ) {
             this.parameterEditor.setText( ppd.getValue() );
         }
@@ -69,7 +70,7 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );
-            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;
             for ( String binding : bindings ) {
@@ -79,7 +80,7 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
                 }
             }
             lstAvailableBindings.setSelectedIndex( selectedIndex );
-            parameterEditor.setEnabled( selectedIndex == 0 );
+            parameterEditor.setEnabled( selectedIndex == 0 && !isReadOnly );
         }
 
     }

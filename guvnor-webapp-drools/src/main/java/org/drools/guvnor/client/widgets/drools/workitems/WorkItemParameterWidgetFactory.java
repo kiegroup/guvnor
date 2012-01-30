@@ -31,34 +31,42 @@ import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 public class WorkItemParameterWidgetFactory {
 
     public static WorkItemParameterWidget getWidget(PortableParameterDefinition ppd,
-                                                    IBindingProvider bindingProvider) {
+                                                    IBindingProvider bindingProvider,
+                                                    boolean isReadOnly) {
         if ( ppd instanceof PortableBooleanParameterDefinition ) {
             return new WorkItemBooleanParameterWidget( (PortableBooleanParameterDefinition) ppd,
-                                                       bindingProvider );
+                                                       bindingProvider,
+                                                       isReadOnly );
         }
         if ( ppd instanceof PortableEnumParameterDefinition ) {
             return new WorkItemEnumParameterWidget( (PortableEnumParameterDefinition) ppd,
-                                                    bindingProvider );
+                                                    bindingProvider,
+                                                    isReadOnly );
         }
         if ( ppd instanceof PortableFloatParameterDefinition ) {
             return new WorkItemFloatParameterWidget( (PortableFloatParameterDefinition) ppd,
-                                                     bindingProvider );
+                                                     bindingProvider,
+                                                     isReadOnly );
         }
         if ( ppd instanceof PortableIntegerParameterDefinition ) {
             return new WorkItemIntegerParameterWidget( (PortableIntegerParameterDefinition) ppd,
-                                                       bindingProvider );
+                                                       bindingProvider,
+                                                       isReadOnly );
         }
         if ( ppd instanceof PortableListParameterDefinition ) {
             return new WorkItemListParameterWidget( (PortableListParameterDefinition) ppd,
-                                                    bindingProvider );
+                                                    bindingProvider,
+                                                    isReadOnly );
         }
         if ( ppd instanceof PortableObjectParameterDefinition ) {
             return new WorkItemObjectParameterWidget( (PortableObjectParameterDefinition) ppd,
-                                                      bindingProvider );
+                                                      bindingProvider,
+                                                      isReadOnly );
         }
         if ( ppd instanceof PortableStringParameterDefinition ) {
             return new WorkItemStringParameterWidget( (PortableStringParameterDefinition) ppd,
-                                                      bindingProvider );
+                                                      bindingProvider,
+                                                      isReadOnly );
         }
         throw new IllegalArgumentException( "Unrecognized PortableParameterDefinition" );
     }
