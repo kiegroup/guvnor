@@ -2524,5 +2524,7 @@ public interface Constants
     String CouldNotFindTheTypeForVariable0(String variableName);
     
     String LogicallyInsertColon();
+
+    String CannotDeleteADeclarationThatIsASuperType();
     
 }

@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,30 +39,40 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class FactEditorPopup {
 
-    private static Constants          constants     = ((Constants) GWT.create( Constants.class ));
+    private static Constants                      constants                 = ((Constants) GWT.create( Constants.class ));
+
+    //Convenience comparator
+    public static final Comparator<FactMetaModel> byNameAscendingComparator = new Comparator<FactMetaModel>() {
+
+                                                                                public int compare(FactMetaModel o1,
+                                                                                                   FactMetaModel o2) {
+                                                                                    return o1.getName().compareTo( o2.getName() );
+                                                                                }
+
+                                                                            };
 
     // A valid Fact, Field or Annotation name
-    private static final RegExp VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );
-    
-    private final FactMetaModel       factModel;
-    private final List<FactMetaModel> factModels;
-    private final ModelNameHelper     modelNameHelper;
-    private final ListBox             lstSuperTypes = new ListBox();
+    private static final RegExp                   VALID_NAME                = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );
 
-    private Command                   okCommand;
+    private final FactMetaModel                   factModel;
+    private final List<FactMetaModel>             superTypeFactModels;
+    private final ModelNameHelper                 modelNameHelper;
+    private final ListBox                         lstSuperTypes             = new ListBox();
+
+    private Command                               okCommand;
 
     public FactEditorPopup(ModelNameHelper modelNameHelper,
-                           List<FactMetaModel> factModels) {
+                           List<FactMetaModel> superTypeFactModels) {
         this( new FactMetaModel(),
-              factModels,
+              superTypeFactModels,
               modelNameHelper );
     }
 
     public FactEditorPopup(FactMetaModel factModel,
-                           List<FactMetaModel> factModels,
+                           List<FactMetaModel> superTypeFactModels,
                            ModelNameHelper modelNameHelper) {
         this.factModel = factModel;
-        this.factModels = factModels;
+        this.superTypeFactModels = superTypeFactModels;
         this.modelNameHelper = modelNameHelper;
     }
 
@@ -83,7 +95,13 @@ public class FactEditorPopup {
 
         int selectedIndex = 0;
         lstSuperTypes.addItem( constants.DoesNotExtend() );
-        for ( FactMetaModel fmm : factModels ) {
+
+        //Sort Super Types by name
+        Collections.sort( superTypeFactModels,
+                          byNameAscendingComparator );
+
+        //Populate listbox
+        for ( FactMetaModel fmm : superTypeFactModels ) {
             if ( !fmm.getName().equals( factModel.getName() ) ) {
                 lstSuperTypes.addItem( fmm.getName() );
                 if ( factModel.getSuperType() != null && factModel.getSuperType().equals( fmm.getName() ) ) {
@@ -225,7 +243,7 @@ public class FactEditorPopup {
     }
 
     private FactMetaModel getFactMetaModel(String type) {
-        for ( FactMetaModel fmm : this.factModels ) {
+        for ( FactMetaModel fmm : this.superTypeFactModels ) {
             if ( fmm.getName().equals( type ) ) {
                 return fmm;
             }
