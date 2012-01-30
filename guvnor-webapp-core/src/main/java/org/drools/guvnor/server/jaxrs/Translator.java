@@ -102,7 +102,8 @@ public class Translator {
         metadata.setLastModified(p.getLastModified().getTime());
         metadata.setLastContributor(p.getLastContributor());
         metadata.setState((p.getState() != null) ? p.getState().getName() : "");
-
+        metadata.setArchived(p.isArchived());
+        
         Package ret = new Package();
         ret.setMetadata(metadata);
         ret.setVersion(p.getVersionNumber());

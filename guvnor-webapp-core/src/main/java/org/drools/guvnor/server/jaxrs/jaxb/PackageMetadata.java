@@ -23,16 +23,12 @@ import java.util.Date;
 
 @XmlRootElement(name="metadata")
 public class PackageMetadata {
-
     private String uuid;
-
     private Date created;
-
     private Date lastModified;
-
-    private String lastContributor;
-    
-    private String state;
+    private String lastContributor;    
+    private String state;    
+    private boolean archived;
 
     @XmlElement
     public String getUuid() {
@@ -77,5 +73,15 @@ public class PackageMetadata {
 
 	public void setState(String state) {
 		this.state = state;
-	}      
+	}
+
+    @XmlElement
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }   
+	
 }

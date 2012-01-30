@@ -328,15 +328,18 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updatePackageFromAtom(@PathParam("packageName") String packageName, Entry entry) {
-        try {
-            ModuleItem p = rulesRepository.loadModule(packageName);
-            p.checkout();
-            // TODO: support rename package.
-            // p.updateTitle(entry.getTitle());
+       try {
+            ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
+            
+            //Rename:
+            if(!existingModuleItem.getTitle().equalsIgnoreCase(entry.getTitle())) {
+                rulesRepository.renameModule(existingModuleItem.getUUID(), entry.getTitle());
+            }
 
             if (entry.getSummary() != null) {
-                p.updateDescription(entry.getSummary());
+                existingModuleItem.updateDescription(entry.getSummary());
             }
+            
             // TODO: support LastContributor
             if (entry.getAuthor() != null) {
             }
@@ -347,7 +350,7 @@ public class PackageResource extends Resource {
                 ExtensibleElement archivedExtension = metadataExtension
                         .getExtension(Translator.ARCHIVED);
                 if (archivedExtension != null) {
-                    p.archiveItem(Boolean.getBoolean(archivedExtension
+                    existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension
                             .getSimpleExtension(Translator.VALUE)));
                 }
 
@@ -361,7 +364,7 @@ public class PackageResource extends Resource {
                  */
             }
 
-            p.checkin("Updated from ATOM.");
+            existingModuleItem.checkin("Updated from ATOM.");
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -371,16 +374,29 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package p) {
+    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package module) {
+        System.out.println("-----------------------------");
+        System.out.println("---------updatePackageFromJAXB---------:" + packageName);
+        System.out.println("---------updatePackageFromJAXB---------desc:" + module.getDescription());
+        System.out.println("---------updatePackageFromJAXB---------title:" + module.getTitle());
+                System.out.println("-----------------------------");
         try {
-            ModuleItem item = rulesRepository.loadModule(packageName);
-            item.checkout();
-            item.updateDescription(p.getDescription());
-            item.updateTitle(p.getTitle());
+            ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
+            
+            //Rename:
+            if(!existingModuleItem.getTitle().equalsIgnoreCase(module.getTitle())) {
+                rulesRepository.renameModule(existingModuleItem.getUUID(), module.getTitle());
+            }
+            
+            existingModuleItem.updateDescription(module.getDescription());
+            
             /* TODO: add more updates to package item from JSON */
-            item.checkin(p.getCheckInComment());
+            existingModuleItem.checkin(module.getCheckInComment());
             rulesRepository.save();
         } catch (Exception e) {
+            System.out.println("-----------------------------");
+            e.printStackTrace();
+            System.out.println("-----------------------------");
             throw new WebApplicationException(e);
         }
     }
