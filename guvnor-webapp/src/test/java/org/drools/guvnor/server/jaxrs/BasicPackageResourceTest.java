@@ -325,6 +325,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        assertEquals("version3", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+        ExtensibleElement versionNumberExtension = metadataExtension.getExtension(Translator.VERSION_NUMBER);  
+        assertEquals("3", versionNumberExtension.getSimpleExtension(Translator.VALUE));
     }
 
     /* Package Creation */
@@ -477,6 +481,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
+        ExtensibleElement extension = e.addExtension(Translator.METADATA);
+        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:updated desc for testCreatePackageFromAtom");  
         resp = client.put(generateBaseUrl() + "/packages/testCreatePackageFromAtom", e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
         assertEquals(204, resp.getStatus());
@@ -509,8 +516,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("testCreatePackageFromAtom", entry.getTitle());
 		assertTrue(entry.getPublished() != null);
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
-        
-		//Roll back changes. 
+		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        assertEquals("checkin comment:updated desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+		
+        //Roll back changes. 
 		resp = client.delete(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
 		assertEquals(ResponseType.SUCCESS, resp.getType());
 
@@ -1373,6 +1383,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         //Test update package
         Package p2 = createTestPackage("testUpdatePackageFromJAXB");
         p2.setDescription("update package testUpdatePackageFromJAXB");
+        p2.setCheckInComment("checkInComment: update package testUpdatePackageFromJAXB");
         JAXBContext context2 = JAXBContext.newInstance(p2.getClass());
         Marshaller marshaller2 = context2.createMarshaller();
         StringWriter sw2 = new StringWriter();
@@ -1410,6 +1421,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         Package p3 = unmarshalPackageXML(connection3.getInputStream());
         assertEquals("testUpdatePackageFromJAXB", p3.getTitle());
         assertEquals("update package testUpdatePackageFromJAXB", p3.getDescription());
+        assertEquals("checkInComment: update package testUpdatePackageFromJAXB", p3.getCheckInComment());
         //assertEquals("version3", p3.getCheckInComment());
         assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/source").toExternalForm(), p3.getSourceLink().toString());
         assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/binary").toExternalForm(), p3.getBinaryLink().toString());
@@ -1417,7 +1429,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertFalse(pm3.isArchived());
         assertNotNull(pm3.getCreated());
         assertNotNull(pm3.getUuid());
-        assertNotNull(pm3.getLastModified());
+        assertNotNull(pm3.getLastModified());        
     }  
     
     public String generateBaseUrl() {

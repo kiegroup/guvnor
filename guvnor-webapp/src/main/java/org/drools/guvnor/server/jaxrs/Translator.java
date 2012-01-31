@@ -46,7 +46,9 @@ public class Translator {
     public static final QName STATE = new QName(NS, "state");
     public static final QName FORMAT = new QName(NS, "format");
     public static final QName CATEGORIES = new QName(NS, "categories");
-
+    public static final QName VERSION_NUMBER = new QName(NS, "versionNumber");
+    public static final QName CHECKIN_COMMENT = new QName(NS, "checkinComment");
+    
     public static Category toCategory(CategoryItem categoryItem, UriInfo uriInfo) {
         Category category = new Category();
         category.setPath(categoryItem.getFullPath());
@@ -170,6 +172,12 @@ public class Translator {
         childExtension = extension.addExtension(STATE);
         childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
 
+        childExtension = extension.addExtension(VERSION_NUMBER);
+        childExtension.addSimpleExtension(VALUE, String.valueOf(p.getVersionNumber()));
+        
+        childExtension = extension.addExtension(CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(VALUE, p.getCheckinComment());   
+        
         org.apache.abdera.model.Content content = factory.newContent();
         content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
         content.setMimeType("application/octet-stream");
@@ -269,6 +277,12 @@ while (i.hasNext()) {
         childExtension = extension.addExtension(FORMAT);
         childExtension.addSimpleExtension(VALUE, a.getFormat());
 
+        childExtension = extension.addExtension(VERSION_NUMBER);
+        childExtension.addSimpleExtension(VALUE, String.valueOf(a.getVersionNumber()));
+        
+        childExtension = extension.addExtension(CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(VALUE, a.getCheckinComment());  
+        
         List<CategoryItem> categories = a.getCategories();
         childExtension = extension.addExtension(CATEGORIES);
         for (CategoryItem c : categories) {

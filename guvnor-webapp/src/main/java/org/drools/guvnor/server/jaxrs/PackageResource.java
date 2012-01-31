@@ -43,8 +43,6 @@ import javax.ws.rs.core.*;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -331,6 +329,7 @@ public class PackageResource extends Resource {
 
             ExtensibleElement metadataExtension = entry
                     .getExtension(Translator.METADATA);
+            String checkinComment = "";
             if (metadataExtension != null) {
                 ExtensibleElement archivedExtension = metadataExtension
                         .getExtension(Translator.ARCHIVED);
@@ -339,6 +338,10 @@ public class PackageResource extends Resource {
                             .getSimpleExtension(Translator.VALUE)));
                 }
 
+                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+                if (checkinCommentExtension != null) {
+                    checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
+                }
                 // TODO: Package state is not fully supported yet
                 /*
                  * ExtensibleElement stateExtension =
@@ -349,7 +352,7 @@ public class PackageResource extends Resource {
                  */
             }
 
-            existingPackage.checkin("Updated from ATOM.");
+            existingPackage.checkin(checkinComment);
             repository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -371,7 +374,11 @@ public class PackageResource extends Resource {
             existingPackage.updateDescription(newPackage.getDescription());
 
             /* TODO: add more updates to package item from JSON */
-            existingPackage.checkin(newPackage.getCheckInComment());
+            String checkInComment = "";
+            if(newPackage.getCheckInComment() != null) {
+                checkInComment = newPackage.getCheckInComment();
+            }
+            existingPackage.checkin(checkInComment);
             repository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
