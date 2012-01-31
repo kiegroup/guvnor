@@ -35,6 +35,7 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
     public TemplateDataCellFactory(SuggestionCompletionEngine sce,
                                    EventBus eventBus) {
         super( sce,
+               false,
                eventBus );
     }
 
@@ -62,7 +63,7 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
 
         //Make a drop-down or plain cell
         if ( vals != null && vals.length > 0 ) {
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
             pudd.setItems( vals );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );

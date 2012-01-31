@@ -33,7 +33,11 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
     private final TextBox textBox;
 
     public PopupTextEditCell() {
-        super();
+        this( false );
+    }
+
+    public PopupTextEditCell(boolean isReadOnly) {
+        super( isReadOnly );
         this.textBox = new TextBox();
 
         // Tabbing out of the TextBox commits changes

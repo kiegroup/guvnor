@@ -45,6 +45,7 @@ public abstract class AbstractPopupEditCell<C, V> extends
     protected final PopupPanel               panel;
     protected final VerticalPanel            vPanel;
     protected final SafeHtmlRenderer<String> renderer;
+    protected final boolean                  isReadOnly;
     protected ValueUpdater<C>                valueUpdater;
 
     /**
@@ -54,11 +55,12 @@ public abstract class AbstractPopupEditCell<C, V> extends
      * 
      * @param renderer
      */
-    public AbstractPopupEditCell() {
+    public AbstractPopupEditCell(boolean isReadOnly) {
         super( "dblclick",
                "keydown" );
         this.renderer = SimpleSafeHtmlRenderer.getInstance();
         this.vPanel = new VerticalPanel();
+        this.isReadOnly = isReadOnly;
 
         // Pressing ESCAPE dismisses the pop-up loosing any changes
         this.panel = new PopupPanel( true,
@@ -107,6 +109,11 @@ public abstract class AbstractPopupEditCell<C, V> extends
                                C value,
                                NativeEvent event,
                                ValueUpdater<C> valueUpdater) {
+
+        //If read-only ignore editing events
+        if ( isReadOnly ) {
+            return;
+        }
 
         // KeyDown and "Enter" key-press is handled here
         super.onBrowserEvent( context,

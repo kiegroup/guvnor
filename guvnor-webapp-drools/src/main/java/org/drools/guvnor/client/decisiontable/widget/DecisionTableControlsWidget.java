@@ -29,56 +29,65 @@ import org.drools.guvnor.client.messages.Constants;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    protected static final Constants messages = GWT.create(Constants.class);
+    protected static final Constants    messages = GWT.create( Constants.class );
 
     private AbstractDecisionTableWidget dtable;
 
-    private Button addRowButton;
-    private Button otherwiseButton;
-    private Button analyzeButton;
+    private Button                      addRowButton;
+    private Button                      otherwiseButton;
+    private Button                      analyzeButton;
+
+    private final boolean               isReadOnly;
 
     public DecisionTableControlsWidget() {
+        this( false );
+    }
+
+    public DecisionTableControlsWidget(final boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
         Panel panel = new HorizontalPanel();
 
         // Add row button
-        addRowButton = new Button(messages.AddRow(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.appendRow();
-                        }
-                    }
-                });
-        panel.add(addRowButton);
+        addRowButton = new Button( messages.AddRow(),
+                                   new ClickHandler() {
+                                       public void onClick(ClickEvent event) {
+                                           if ( dtable != null ) {
+                                               dtable.appendRow();
+                                           }
+                                       }
+                                   } );
+        addRowButton.setEnabled( !isReadOnly );
+        panel.add( addRowButton );
 
-        otherwiseButton = new Button(messages.Otherwise(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.makeOtherwiseCell();
-                        }
-                    }
-                });
-        otherwiseButton.setEnabled(false);
-        panel.add(otherwiseButton);
+        otherwiseButton = new Button( messages.Otherwise(),
+                                      new ClickHandler() {
+                                          public void onClick(ClickEvent event) {
+                                              if ( dtable != null ) {
+                                                  dtable.makeOtherwiseCell();
+                                              }
+                                          }
+                                      } );
+        otherwiseButton.setEnabled( false );
+        panel.add( otherwiseButton );
 
         // Add row button
-        analyzeButton = new Button(messages.Analyze(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.analyze();
-                        }
-                    }
-                });
-        panel.add(analyzeButton);
+        analyzeButton = new Button( messages.Analyze(),
+                                    new ClickHandler() {
+                                        public void onClick(ClickEvent event) {
+                                            if ( dtable != null ) {
+                                                dtable.analyze();
+                                            }
+                                        }
+                                    } );
+        analyzeButton.setEnabled( !isReadOnly );
+        panel.add( analyzeButton );
 
-        initWidget(panel);
+        initWidget( panel );
     }
 
     /**
      * Retrieve "otherwise" button
-     *
+     * 
      * @return
      */
     Button getOtherwiseButton() {
@@ -87,7 +96,7 @@ public class DecisionTableControlsWidget extends Composite {
 
     /**
      * Inject DecisionTable to which these controls relate
-     *
+     * 
      * @param dtable
      */
     void setDecisionTableWidget(AbstractDecisionTableWidget dtable) {

@@ -777,8 +777,8 @@ public class ConditionPopup extends FormStylePopup {
         lbl.setStyleName( "paddedLabel" );
         hp.add( lbl );
 
-        cwo = new CEPWindowOperatorsDropdown( c );
-        cwo.setEnabled( !isReadOnly );
+        cwo = new CEPWindowOperatorsDropdown( c,
+                                              isReadOnly );
         if ( !isReadOnly ) {
             cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 

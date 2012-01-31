@@ -35,7 +35,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,7 +56,7 @@ public class CEPWindowOperatorsDropdown extends Composite
     private HorizontalPanel                parametersContainer              = new HorizontalPanel();
     private HorizontalPanel                windowContainer                  = new HorizontalPanel();
 
-    private boolean                        isEnabled                        = true;
+    private boolean                        isReadOnly                       = false;
 
     protected HasCEPWindow                 hcw;
 
@@ -69,8 +68,10 @@ public class CEPWindowOperatorsDropdown extends Composite
         initWidget( windowContainer );
     }
 
-    public CEPWindowOperatorsDropdown(HasCEPWindow hcw) {
+    public CEPWindowOperatorsDropdown(HasCEPWindow hcw,
+                                      boolean isReadOnly) {
         this();
+        this.isReadOnly = isReadOnly;
         setCEPWindow( hcw );
     }
 
@@ -98,17 +99,6 @@ public class CEPWindowOperatorsDropdown extends Composite
      */
     public String getValue(int index) {
         return box.getValue( index );
-    }
-
-    public void setEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-        box.setEnabled( isEnabled );
-        for ( int iChildWidgetIndex = 0; iChildWidgetIndex < parametersContainer.getWidgetCount(); iChildWidgetIndex++ ) {
-            Widget childWidget = parametersContainer.getWidget( iChildWidgetIndex );
-            if ( childWidget instanceof HasEnabled ) {
-                ((HasEnabled) childWidget).setEnabled( isEnabled );
-            }
-        }
     }
 
     //Additional widget for CEP Window operator parameter
@@ -150,7 +140,7 @@ public class CEPWindowOperatorsDropdown extends Composite
                                           value );
         }
         txt.setText( value );
-        txt.setEnabled( isEnabled );
+        txt.setEnabled( !isReadOnly );
         parametersContainer.add( txt );
         parametersContainer.setVisible( true );
         hcw.getWindow().setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
@@ -163,10 +153,12 @@ public class CEPWindowOperatorsDropdown extends Composite
 
         String selected = "";
         String selectedText = "";
-        box = new ListBox();
 
+        box = new ListBox();
+        box.setEnabled( !isReadOnly );
         box.addItem( constants.noCEPWindow(),
                      "" );
+
         for ( int i = 0; i < operators.size(); i++ ) {
             String op = operators.get( i );
             box.addItem( HumanReadable.getOperatorDisplayName( op ),

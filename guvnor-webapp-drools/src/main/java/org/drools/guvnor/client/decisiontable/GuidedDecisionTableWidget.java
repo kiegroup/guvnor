@@ -1418,8 +1418,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupDecisionTable() {
-        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
+        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget( isReadOnly ),
                                                   getSCE(),
+                                                  isReadOnly,
                                                   eventBus );
         dtable.setPixelSize( 1000,
                              400 );
