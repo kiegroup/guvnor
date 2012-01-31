@@ -82,7 +82,7 @@
       <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+          <guvnor:BindingTextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}" />
           <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
