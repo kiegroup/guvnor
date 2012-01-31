@@ -29,7 +29,7 @@ public class PackageMetadata {
     private String state;    
     private boolean archived;
     private long versionNumber;
-    private String checkInComment;
+    private String checkinComment;
 
     @XmlElement
     public String getUuid() {
@@ -86,12 +86,12 @@ public class PackageMetadata {
     }
 
     @XmlElement
-    public String getCheckInComment() {
-        return checkInComment;
+    public String getCheckinComment() {
+        return checkinComment;
     }
 
-    public void setCheckInComment(String checkInComment) {
-        this.checkInComment = checkInComment;
+    public void setCheckinComment(String checkinComment) {
+        this.checkinComment = checkinComment;
     }   
 	
     

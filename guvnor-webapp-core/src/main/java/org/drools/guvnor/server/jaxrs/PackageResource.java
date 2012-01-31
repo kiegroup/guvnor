@@ -344,16 +344,19 @@ public class PackageResource extends Resource {
             if (entry.getAuthor() != null) {
             }
 
-            ExtensibleElement metadataExtension = entry
-                    .getExtension(Translator.METADATA);
+            String checkinComment = "";
+            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
             if (metadataExtension != null) {
-                ExtensibleElement archivedExtension = metadataExtension
-                        .getExtension(Translator.ARCHIVED);
+                ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);
                 if (archivedExtension != null) {
-                    existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension
-                            .getSimpleExtension(Translator.VALUE)));
+                    existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
                 }
 
+                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+                if (checkinCommentExtension != null) {
+                    checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
+                }
+                
                 // TODO: Package state is not fully supported yet
                 /*
                  * ExtensibleElement stateExtension =
@@ -364,7 +367,7 @@ public class PackageResource extends Resource {
                  */
             }
 
-            existingModuleItem.checkin("Updated from ATOM.");
+            existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -386,7 +389,7 @@ public class PackageResource extends Resource {
             existingModuleItem.updateDescription(module.getDescription());
             
             /* TODO: add more updates to package item from JSON */
-            existingModuleItem.checkin(module.getMetadata().getCheckInComment());
+            existingModuleItem.checkin(module.getMetadata().getCheckinComment());
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);

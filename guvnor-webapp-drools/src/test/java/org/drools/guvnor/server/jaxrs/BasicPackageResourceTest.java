@@ -261,18 +261,18 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
      *   <?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
      *   <package>
      *     <binaryLink>http://127.0.0.1:8080/da8f3038-194b-4627-ae55-94b1f21d8e24/rest/packages/restPackage1/binary</binaryLink> 
-     *     <checkInComment>version3</checkInComment> 
      *     <description>this is package restPackage1</description> 
      *     <sourceLink>http://127.0.0.1:8080/da8f3038-194b-4627-ae55-94b1f21d8e24/rest/packages/restPackage1/source</sourceLink> 
      *     <title>restPackage1</title> 
-     *     <version>3</version> 
+     *     <author>guest</author>
+     *     <published>2012-01-31T19:15:56.933+08:00</published>
      *     <metadata>
      *       <archived>false</archived>
      *       <created>2012-01-30T16:48:37.081+08:00</created> 
-     *       <lastContributor>guest</lastContributor> 
-     *       <lastModified>2012-01-30T16:48:37.738+08:00</lastModified> 
      *       <state /> 
      *       <uuid>690e386a-89df-4018-8688-cb322b492f53</uuid> 
+     *       <versionNumber>3</versionNumber>
+     *       <checkInComment>version3</checkInComment>
      *     </metadata>
      *     
      *     <assets>http://127.0.0.1:8080/da8f3038-194b-4627-ae55-94b1f21d8e24/rest/packages/restPackage1/assets/rule4</assets> 
@@ -300,6 +300,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package p = unmarshalPackageXML(connection.getInputStream());
         assertEquals("restPackage1", p.getTitle());
         assertEquals("this is package restPackage1", p.getDescription());
+        assertNotNull(p.getAuthor());       
         assertNotNull(p.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
@@ -309,7 +310,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        assertEquals("version3", pm.getCheckInComment());
+        assertEquals("version3", pm.getCheckinComment());
         assertEquals(3, pm.getVersionNumber());
         
         Set<URI> assetsURI = p.getAssets();        
@@ -355,6 +356,12 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
      *     <state>
      *       <value /> 
      *     </state> 
+     *     <versionNumber>
+     *       <value>3</value>
+     *     </versionNumber>
+     *     <checkinComment>
+     *       <value>version3</value>
+     *     </checkinComment>
      *   </metadata> 
      *   
      *   <content src= "http://127.0.0.1:8080/1c71582d-3 f64-4027-bc5a-d442ab4816e6/rest/packages/restPackage1/binary"/> 
@@ -406,6 +413,10 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 		assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        assertEquals("version3", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+        ExtensibleElement versionNumberExtension = metadataExtension.getExtension(Translator.VERSION_NUMBER);  
+        assertEquals("3", versionNumberExtension.getSimpleExtension(Translator.VALUE));
     }
 
     /* Package Creation */
@@ -584,6 +595,9 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
+        ExtensibleElement extension = e.addExtension(Translator.METADATA);
+        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:updated desc for testCreatePackageFromAtom");  
         resp = client.put(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm(), e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
         assertEquals(204, resp.getStatus());
@@ -621,6 +635,9 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 		assertNotNull(entry.getPublished());
 	    assertNotNull(entry.getAuthor().getName());     
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        assertEquals("checkin comment:updated desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
         
 		//Roll back changes. 
 		resp = client.delete(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm());
@@ -936,6 +953,9 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Test update package      
         Package p2 = createTestPackage("testUpdatePackageFromJAXB");
         p2.setDescription("update package testUpdatePackageFromJAXB");
+        PackageMetadata meta = new PackageMetadata();
+        meta.setCheckinComment("checkInComment: update package testUpdatePackageFromJAXB");
+        p2.setMetadata(meta);
         JAXBContext context2 = JAXBContext.newInstance(p2.getClass());
         Marshaller marshaller2 = context2.createMarshaller();
         StringWriter sw2 = new StringWriter();
@@ -980,6 +1000,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertFalse(pm3.isArchived());
         assertNotNull(pm3.getCreated());
         assertNotNull(pm3.getUuid());
+        assertEquals("checkInComment: update package testUpdatePackageFromJAXB", pm3.getCheckinComment());
     }
 
     @Ignore @Test @RunAsClient
@@ -1669,7 +1690,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         PackageMetadata metadata = new PackageMetadata();
         metadata.setCreated(new Date(System.currentTimeMillis()));
         metadata.setUuid(UUID.randomUUID().toString());
-        metadata.setCheckInComment("Check in comment for test package.");
+        metadata.setCheckinComment("Check in comment for test package.");
 
         p.setMetadata(metadata);
         p.setAuthor("awaterma");

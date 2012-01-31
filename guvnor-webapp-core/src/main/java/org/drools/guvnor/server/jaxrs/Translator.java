@@ -46,6 +46,8 @@ public class Translator {
     public static final QName STATE = new QName(NS, "state");
     public static final QName FORMAT = new QName(NS, "format");
     public static final QName CATEGORIES = new QName(NS, "categories");
+    public static final QName VERSION_NUMBER = new QName(NS, "versionNumber");
+    public static final QName CHECKIN_COMMENT = new QName(NS, "checkinComment");
 
     public static Category toCategory(CategoryItem categoryItem, UriInfo uriInfo) {
         Category category = new Category();
@@ -102,7 +104,7 @@ public class Translator {
         metadata.setState((p.getState() != null) ? p.getState().getName() : "");
         metadata.setArchived(p.isArchived());
         metadata.setVersionNumber(p.getVersionNumber());
-        metadata.setCheckInComment(p.getCheckinComment());
+        metadata.setCheckinComment(p.getCheckinComment());
         
         Package ret = new Package();
         ret.setMetadata(metadata);
@@ -174,6 +176,12 @@ public class Translator {
         childExtension = extension.addExtension(STATE);
         childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
 
+        childExtension = extension.addExtension(VERSION_NUMBER);
+        childExtension.addSimpleExtension(VALUE, String.valueOf(p.getVersionNumber()));
+        
+        childExtension = extension.addExtension(CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(VALUE, p.getCheckinComment());       
+        
         org.apache.abdera.model.Content content = factory.newContent();
         content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
         content.setMimeType("application/octet-stream");
@@ -248,16 +256,6 @@ public class Translator {
 
         e.setId(baseURL.toString());
 
-/*        Iterator<AssetItem> i = p.getAssets();
-while (i.hasNext()) {
-    AssetItem item = i.next();
-    org.apache.abdera.model.Link l = factory.newLink();
-    l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
-    l.setTitle(item.getTitle());
-    l.setRel("asset");
-    e.addLink(l);
-}*/
-
         //generate meta data
         ExtensibleElement extension = e.addExtension(METADATA);
         ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
@@ -273,6 +271,12 @@ while (i.hasNext()) {
         childExtension = extension.addExtension(FORMAT);
         childExtension.addSimpleExtension(VALUE, a.getFormat());
 
+        childExtension = extension.addExtension(VERSION_NUMBER);
+        childExtension.addSimpleExtension(VALUE, String.valueOf(a.getVersionNumber()));
+        
+        childExtension = extension.addExtension(CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(VALUE, a.getCheckinComment());    
+        
         List<CategoryItem> categories = a.getCategories();
         childExtension = extension.addExtension(CATEGORIES);
         for (CategoryItem c : categories) {
