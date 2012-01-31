@@ -642,7 +642,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         Unmarshaller un = context.createUnmarshaller();
         Asset a = (Asset) un.unmarshal(br);
         a.setDescription("An updated description.");
-        a.getMetadata().setLastModified(new Date(System.currentTimeMillis()));
+        a.setPublished(new Date(System.currentTimeMillis()));
         connection.disconnect();
 
         HttpURLConnection conn2 = (HttpURLConnection)url.openConnection();

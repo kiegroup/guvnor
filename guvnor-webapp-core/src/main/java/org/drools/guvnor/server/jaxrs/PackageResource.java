@@ -386,7 +386,7 @@ public class PackageResource extends Resource {
             existingModuleItem.updateDescription(module.getDescription());
             
             /* TODO: add more updates to package item from JSON */
-            existingModuleItem.checkin(module.getCheckInComment());
+            existingModuleItem.checkin(module.getMetadata().getCheckInComment());
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -650,9 +650,9 @@ public class PackageResource extends Resource {
             AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
             /* Update asset */
             ai.checkout();
-            ai.updateTitle(asset.getMetadata().getTitle());
+            ai.updateTitle(asset.getTitle());
             ai.updateDescription(asset.getDescription());
-            ai.checkin(asset.getCheckInComment());
+            ai.checkin(asset.getMetadata().getCheckInComment());
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);

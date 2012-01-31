@@ -17,21 +17,20 @@
 package org.drools.guvnor.server.jaxrs.jaxb;
 
 import java.net.URI;
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement()
 public class Asset {
-
-    private AssetMetadata metadata;
-
+    private String title;
     private String description;
-
-    private String checkInComment;
-    
-    private long version;
-
+    private String author;    
+    private Date published;
     private URI binaryLink, sourceLink, refLink;
+    
+    private AssetMetadata metadata;
 
     @XmlElement
     public URI getBinaryLink() {
@@ -50,7 +49,15 @@ public class Asset {
     public void setSourceLink(URI sourceLink) {
         this.sourceLink = sourceLink;
     }
+    
+    @XmlElement
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
     @XmlElement()
     public String getDescription() {
         return description;
@@ -60,25 +67,24 @@ public class Asset {
         this.description = description;
     }
 
-
-    @XmlElement()
-    public String getCheckInComment() {
-        return checkInComment;
-    }
-   
-    public void setCheckInComment(String checkInComment) {
-        this.checkInComment = checkInComment;
+    @XmlElement
+    public String getAuthor() {
+        return author;
     }
 
-    @XmlElement()
-    public long getVersion() {
-        return version;
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    
+    @XmlElement
+    public Date getPublished() {
+        return published;
     }
 
-    public void setVersion(long version) {
-        this.version = version;
+    public void setPublished(Date published) {
+        this.published = published;
     }
-
+    
     @XmlElement
     public URI getRefLink() {
         return refLink;

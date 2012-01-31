@@ -21,10 +21,8 @@ import org.apache.abdera.model.*;
 import org.apache.abdera.protocol.Response.ResponseType;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
-import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -34,11 +32,8 @@ import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mvel2.util.StringAppender;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
@@ -305,8 +300,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package p = unmarshalPackageXML(connection.getInputStream());
         assertEquals("restPackage1", p.getTitle());
         assertEquals("this is package restPackage1", p.getDescription());
-        assertEquals("version3", p.getCheckInComment());
-        assertEquals(3, p.getVersion());
+        assertNotNull(p.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
@@ -315,7 +309,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        assertNotNull(pm.getLastModified());
+        assertEquals("version3", pm.getCheckInComment());
+        assertEquals(3, pm.getVersionNumber());
         
         Set<URI> assetsURI = p.getAssets();        
         assertEquals(7, assetsURI.size());
@@ -448,13 +443,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package result = unmarshalPackageXML(connection.getInputStream());
         assertEquals("TestCreatePackageFromJAXB", result.getTitle());
         assertEquals("desc for testCreatePackageFromJAXB", result.getDescription());
+        assertNotNull(result.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/TestCreatePackageFromJAXB/source").toExternalForm(), result.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/TestCreatePackageFromJAXB/binary").toExternalForm(), result.getBinaryLink().toString());
         PackageMetadata pm = result.getMetadata();
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        assertNotNull(pm.getLastModified());
     }
 
     /* Package Creation */
@@ -763,14 +758,14 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package result = unmarshalPackageXML(connection.getInputStream());
         assertEquals("testRenamePackageFromXML", result.getTitle());
         assertEquals("desc for testRenamePackageFromXML", result.getDescription());
+        assertNotNull(result.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/testRenamePackageFromXML/source").toExternalForm(), result.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/testRenamePackageFromXML/binary").toExternalForm(), result.getBinaryLink().toString());
         PackageMetadata pm = result.getMetadata();
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        assertNotNull(pm.getLastModified());
-        
+         
         
         //Test rename package      
         p.setDescription("renamed package testRenamePackageFromXML");
@@ -929,13 +924,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package result = unmarshalPackageXML(connection.getInputStream());
         assertEquals("testUpdatePackageFromJAXB", result.getTitle());
         assertEquals("desc for testUpdatePackageFromJAXB", result.getDescription());
+        assertNotNull(result.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/testUpdatePackageFromJAXB/source").toExternalForm(), result.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/testUpdatePackageFromJAXB/binary").toExternalForm(), result.getBinaryLink().toString());
         PackageMetadata pm = result.getMetadata();
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        assertNotNull(pm.getLastModified());
         
         
         //Test update package      
@@ -978,14 +973,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Package p3 = unmarshalPackageXML(connection3.getInputStream());
         assertEquals("testUpdatePackageFromJAXB", p3.getTitle());
         assertEquals("update package testUpdatePackageFromJAXB", p3.getDescription());
-        //assertEquals("version3", p3.getCheckInComment());
+        assertNotNull(p3.getPublished());
         assertEquals(new URL(baseURL, "rest/packages/testUpdatePackageFromJAXB/source").toExternalForm(), p3.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/testUpdatePackageFromJAXB/binary").toExternalForm(), p3.getBinaryLink().toString());
         PackageMetadata pm3 = p3.getMetadata();
         assertFalse(pm3.isArchived());
         assertNotNull(pm3.getCreated());
         assertNotNull(pm3.getUuid());
-        assertNotNull(pm3.getLastModified());
     }
 
     @Ignore @Test @RunAsClient
@@ -1675,11 +1669,11 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         PackageMetadata metadata = new PackageMetadata();
         metadata.setCreated(new Date(System.currentTimeMillis()));
         metadata.setUuid(UUID.randomUUID().toString());
-        metadata.setLastContributor("awaterma");
-        metadata.setLastModified(new Date(System.currentTimeMillis()));
+        metadata.setCheckInComment("Check in comment for test package.");
 
         p.setMetadata(metadata);
-        p.setCheckInComment("Check in comment for test package.");
+        p.setAuthor("awaterma");
+        p.setPublished(new Date(System.currentTimeMillis()));
         p.setTitle(title);
         p.setDescription("A simple test package with 0 assets.");
         return p;

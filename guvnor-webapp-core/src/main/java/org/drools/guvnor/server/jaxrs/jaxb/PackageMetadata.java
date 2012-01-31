@@ -25,10 +25,11 @@ import java.util.Date;
 public class PackageMetadata {
     private String uuid;
     private Date created;
-    private Date lastModified;
-    private String lastContributor;    
+    private String format;
     private String state;    
     private boolean archived;
+    private long versionNumber;
+    private String checkInComment;
 
     @XmlElement
     public String getUuid() {
@@ -47,25 +48,16 @@ public class PackageMetadata {
     public void setCreated(Date created) {
         this.created = created;
     }
-
-    @XmlElement
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    @XmlElement
-    public String getLastContributor() {
-        return lastContributor;
-    }
-
-    public void setLastContributor(String lastContributor) {
-        this.lastContributor = lastContributor;
-    }
     
+    @XmlElement
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     @XmlElement
 	public String getState() {
 		return state;
@@ -82,6 +74,25 @@ public class PackageMetadata {
 
     public void setArchived(boolean archived) {
         this.archived = archived;
+    }
+
+    @XmlElement
+    public long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+    @XmlElement
+    public String getCheckInComment() {
+        return checkInComment;
+    }
+
+    public void setCheckInComment(String checkInComment) {
+        this.checkInComment = checkInComment;
     }   
 	
+    
 }

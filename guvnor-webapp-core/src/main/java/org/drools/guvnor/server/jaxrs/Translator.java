@@ -63,13 +63,12 @@ public class Translator {
     public static Asset toAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
         metadata.setUuid(a.getUUID());
-        metadata.setTitle(a.getTitle());
-        metadata.setLastModified(a.getLastModified().getTime());
         metadata.setCreated(a.getCreatedDate().getTime());
-        metadata.setCreatedBy(a.getCreator());
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
+        metadata.setCheckInComment(a.getCheckinComment());
+        metadata.setVersionNumber(a.getVersionNumber());
         List<CategoryItem> categories = a.getCategories();
         //TODO: Is this a bug since cat's are never assigned to metadata after this?
         String[] cats = new String[categories.size()];
@@ -79,8 +78,10 @@ public class Translator {
         }
 
         Asset ret = new Asset();
+        ret.setTitle(a.getTitle());
+        ret.setPublished(a.getLastModified().getTime());
+        ret.setAuthor(a.getLastContributor());
         ret.setMetadata(metadata);
-        ret.setCheckInComment(a.getCheckinComment());
         ret.setDescription(a.getDescription());
         ret.setRefLink(uriInfo.getBaseUriBuilder()
                 .path("/packages/{packageName}/assets/{assetName}")
@@ -91,7 +92,6 @@ public class Translator {
         ret.setSourceLink(uriInfo.getBaseUriBuilder()
                 .path("/packages/{packageName}/assets/{assetName}/source")
                 .build(a.getModule().getName(), a.getName()));
-        ret.setVersion(a.getVersionNumber());
         return ret;
     }
 
@@ -99,16 +99,16 @@ public class Translator {
         PackageMetadata metadata = new PackageMetadata();
         metadata.setUuid(p.getUUID());
         metadata.setCreated(p.getCreatedDate().getTime());
-        metadata.setLastModified(p.getLastModified().getTime());
-        metadata.setLastContributor(p.getLastContributor());
         metadata.setState((p.getState() != null) ? p.getState().getName() : "");
         metadata.setArchived(p.isArchived());
+        metadata.setVersionNumber(p.getVersionNumber());
+        metadata.setCheckInComment(p.getCheckinComment());
         
         Package ret = new Package();
         ret.setMetadata(metadata);
-        ret.setVersion(p.getVersionNumber());
         ret.setTitle(p.getTitle());
-        ret.setCheckInComment(p.getCheckinComment());
+        ret.setAuthor(p.getLastContributor());
+        ret.setPublished(p.getLastModified().getTime());
         ret.setDescription(p.getDescription());
 
         ret.setBinaryLink(uriInfo.getBaseUriBuilder()
@@ -118,7 +118,7 @@ public class Translator {
                 .path("/packages/{packageName}/source")
                 .build(p.getName()));
         //ret.setSnapshot(p.getSnapshotName());
-        ret.setVersion(p.getVersionNumber());
+
         Iterator<AssetItem> iter = p.getAssets();
         Set<URI> assets = new HashSet<URI>();
         while (iter.hasNext()) {
