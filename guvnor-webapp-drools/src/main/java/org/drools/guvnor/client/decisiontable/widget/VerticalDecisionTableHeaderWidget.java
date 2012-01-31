@@ -677,18 +677,20 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
                             final DynamicColumn<BaseColumn> sortableColumn = col;
-                            shp.addClickHandler( new ClickHandler() {
+                            if ( !isReadOnly ) {
+                                shp.addClickHandler( new ClickHandler() {
 
-                                public void onClick(ClickEvent event) {
-                                    if ( sortableColumn.isSortable() ) {
-                                        updateSortOrder( sortableColumn );
+                                    public void onClick(ClickEvent event) {
+                                        if ( sortableColumn.isSortable() ) {
+                                            updateSortOrder( sortableColumn );
 
-                                        SortDataEvent sde = new SortDataEvent( getSortConfiguration() );
-                                        eventBus.fireEvent( sde );
+                                            SortDataEvent sde = new SortDataEvent( getSortConfiguration() );
+                                            eventBus.fireEvent( sde );
+                                        }
                                     }
-                                }
 
-                            } );
+                                } );
+                            }
                             sorters.add( shp );
 
                             tce = DOM.createTD();
@@ -738,8 +740,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
      * @param eventBus
      */
     public VerticalDecisionTableHeaderWidget(final ResourcesProvider<BaseColumn> resources,
+                                             final boolean isReadOnly,
                                              final EventBus eventBus) {
         super( resources,
+               isReadOnly,
                eventBus );
 
         //Wire-up event handlers

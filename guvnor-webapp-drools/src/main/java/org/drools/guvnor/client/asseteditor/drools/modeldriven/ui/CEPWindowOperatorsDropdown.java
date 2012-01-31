@@ -56,6 +56,8 @@ public class CEPWindowOperatorsDropdown extends Composite
     private HorizontalPanel                parametersContainer              = new HorizontalPanel();
     private HorizontalPanel                windowContainer                  = new HorizontalPanel();
 
+    private boolean                        isReadOnly                       = false;
+
     protected HasCEPWindow                 hcw;
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
@@ -66,8 +68,10 @@ public class CEPWindowOperatorsDropdown extends Composite
         initWidget( windowContainer );
     }
 
-    public CEPWindowOperatorsDropdown(HasCEPWindow hcw) {
+    public CEPWindowOperatorsDropdown(HasCEPWindow hcw,
+                                      boolean isReadOnly) {
         this();
+        this.isReadOnly = isReadOnly;
         setCEPWindow( hcw );
     }
 
@@ -136,6 +140,7 @@ public class CEPWindowOperatorsDropdown extends Composite
                                           value );
         }
         txt.setText( value );
+        txt.setEnabled( !isReadOnly );
         parametersContainer.add( txt );
         parametersContainer.setVisible( true );
         hcw.getWindow().setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
@@ -148,10 +153,12 @@ public class CEPWindowOperatorsDropdown extends Composite
 
         String selected = "";
         String selectedText = "";
-        box = new ListBox();
 
+        box = new ListBox();
+        box.setEnabled( !isReadOnly );
         box.addItem( constants.noCEPWindow(),
                      "" );
+
         for ( int i = 0; i < operators.size(); i++ ) {
             String op = operators.get( i );
             box.addItem( HumanReadable.getOperatorDisplayName( op ),

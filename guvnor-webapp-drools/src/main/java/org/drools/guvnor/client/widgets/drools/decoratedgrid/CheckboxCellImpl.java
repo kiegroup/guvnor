@@ -35,16 +35,27 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
     /**
      * An html string representation of a checked input box.
      */
-    private static final SafeHtml INPUT_CHECKED   = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\" checked/>" );
+    private static final SafeHtml INPUT_CHECKED             = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\" checked/>" );
 
     /**
      * An html string representation of an unchecked input box.
      */
-    private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\"/>" );
+    private static final SafeHtml INPUT_UNCHECKED           = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\"/>" );
+
+    /**
+     * An html string representation of a read-only checked input box.
+     */
+    private static final SafeHtml READ_ONLY_INPUT_CHECKED   = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\" checked disabled=\"disabled\"/>" );
+
+    /**
+     * An html string representation of a read-only unchecked input box.
+     */
+    private static final SafeHtml READ_ONLY_INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant( "<input type=\"checkbox\" tabindex=\"-1\" disabled=\"disabled\"/>" );
+
+    protected boolean             isReadOnly;
 
     /**
      * Construct a new {@link CheckboxCellImpl}
-     * 
      */
     public CheckboxCellImpl() {
         super( "change",
@@ -53,6 +64,10 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
 
     CheckboxCellImpl(String... consumedEvents) {
         super( consumedEvents );
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 
     @Override
@@ -70,6 +85,12 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
                                Boolean value,
                                NativeEvent event,
                                ValueUpdater<Boolean> valueUpdater) {
+
+        //If read-only ignore editing events
+        if ( isReadOnly ) {
+            return;
+        }
+
         String type = event.getType();
 
         boolean enterPressed = "keydown".equals( type ) && event.getKeyCode() == KeyCodes.KEY_ENTER;
@@ -78,11 +99,11 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
             Boolean isChecked = input.isChecked();
 
             /*
-             * Toggle the value if the enter key was pressed and the cell handles
-             * selection or doesn't depend on selection. If the cell depends on
-             * selection but doesn't handle selection, then ignore the enter key and
-             * let the SelectionEventManager determine which keys will trigger a
-             * change.
+             * Toggle the value if the enter key was pressed and the cell
+             * handles selection or doesn't depend on selection. If the cell
+             * depends on selection but doesn't handle selection, then ignore
+             * the enter key and let the SelectionEventManager determine which
+             * keys will trigger a change.
              */
             if ( enterPressed ) {
                 isChecked = !isChecked;
@@ -90,8 +111,9 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
             }
 
             /*
-             * Save the new value. However, if the cell depends on the selection, then
-             * do not save the value because we can get into an inconsistent state.
+             * Save the new value. However, if the cell depends on the
+             * selection, then do not save the value because we can get into an
+             * inconsistent state.
              */
             if ( value != isChecked ) {
                 setViewData( context.getKey(),
@@ -117,9 +139,17 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
         }
 
         if ( value != null && ((viewData != null) ? viewData : value) ) {
-            sb.append( INPUT_CHECKED );
+            if ( isReadOnly ) {
+                sb.append( READ_ONLY_INPUT_CHECKED );
+            } else {
+                sb.append( INPUT_CHECKED );
+            }
         } else {
-            sb.append( INPUT_UNCHECKED );
+            if ( isReadOnly ) {
+                sb.append( READ_ONLY_INPUT_UNCHECKED );
+            } else {
+                sb.append( INPUT_UNCHECKED );
+            }
         }
     }
 }

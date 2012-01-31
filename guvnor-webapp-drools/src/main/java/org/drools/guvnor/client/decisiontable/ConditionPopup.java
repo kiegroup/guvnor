@@ -90,22 +90,27 @@ public class ConditionPopup extends FormStylePopup {
     private Validator                  validator;
     private BRLRuleModel               rm;
 
+    private final boolean              isReadOnly;
+
     private InfoPopup                  fieldLabelInterpolationInfo      = getPredicateHint();
 
     public ConditionPopup(SuggestionCompletionEngine sce,
                           final GuidedDecisionTable52 model,
                           final ConditionColumnCommand refreshGrid,
                           final ConditionCol52 col,
-                          final boolean isNew) {
+                          final boolean isNew,
+                          final boolean isReadOnly) {
         this.rm = new BRLRuleModel( model );
         this.editingPattern = model.getPattern( col );
         this.editingCol = cloneConditionColumn( col );
         this.model = model;
         this.sce = sce;
+        this.isReadOnly = isReadOnly;
 
         //Set-up factory for common widgets
         factory = new DTCellValueWidgetFactory( model,
-                                                sce );
+                                                sce,
+                                                isReadOnly );
 
         validator = new Validator( model.getConditions() );
 
@@ -118,70 +123,88 @@ public class ConditionPopup extends FormStylePopup {
 
         //Pattern selector
         ImageButton changePattern = new ImageButton( images.edit(),
+                                                     images.editDisabled(),
                                                      constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              showChangePattern( w );
                                                          }
                                                      } );
+        changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
 
         addAttribute( constants.Pattern(),
                       pattern );
 
         //Radio buttons for Calculation Type
-        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            RadioButton literal = new RadioButton( "constraintValueType",
-                                                   constants.LiteralValue() );// NON-NLS
-            RadioButton formula = new RadioButton( "constraintValueType",
-                                                   constants.Formula() ); // NON-NLS
-            RadioButton predicate = new RadioButton( "constraintValueType",
-                                                     constants.Predicate() ); // NON-NLS
+        switch ( model.getTableFormat() ) {
+            case EXTENDED_ENTRY :
+                RadioButton literal = new RadioButton( "constraintValueType",
+                                                       constants.LiteralValue() );// NON-NLS
+                RadioButton formula = new RadioButton( "constraintValueType",
+                                                       constants.Formula() ); // NON-NLS
+                RadioButton predicate = new RadioButton( "constraintValueType",
+                                                         constants.Predicate() ); // NON-NLS
 
-            HorizontalPanel valueTypes = new HorizontalPanel();
-            valueTypes.add( literal );
-            valueTypes.add( formula );
-            valueTypes.add( predicate );
-            addAttribute( constants.CalculationType(),
-                          valueTypes );
+                HorizontalPanel valueTypes = new HorizontalPanel();
+                valueTypes.add( literal );
+                valueTypes.add( formula );
+                valueTypes.add( predicate );
+                addAttribute( constants.CalculationType(),
+                              valueTypes );
 
-            switch ( editingCol.getConstraintValueType() ) {
-                case BaseSingleFieldConstraint.TYPE_LITERAL :
-                    literal.setValue( true );
-                    binding.setEnabled( true );
-                    break;
-                case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                    formula.setValue( true );
-                    binding.setEnabled( false );
-                    break;
-                case BaseSingleFieldConstraint.TYPE_PREDICATE :
-                    predicate.setValue( true );
-                    binding.setEnabled( false );
-            }
-
-            literal.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    editingCol.setFactField( null );
-                    applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
+                switch ( editingCol.getConstraintValueType() ) {
+                    case BaseSingleFieldConstraint.TYPE_LITERAL :
+                        literal.setValue( true );
+                        binding.setEnabled( true && !isReadOnly );
+                        break;
+                    case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                        formula.setValue( true );
+                        binding.setEnabled( false );
+                        break;
+                    case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                        predicate.setValue( true );
+                        binding.setEnabled( false );
                 }
-            } );
 
-            formula.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    editingCol.setFactField( null );
-                    applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+                literal.setEnabled( !isReadOnly );
+                if ( !isReadOnly ) {
+                    literal.addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            editingCol.setFactField( null );
+                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
+                        }
+                    } );
                 }
-            } );
-            predicate.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    editingCol.setFactField( null );
-                    applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
+
+                formula.setEnabled( !isReadOnly );
+                if ( !isReadOnly ) {
+                    formula.addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            editingCol.setFactField( null );
+                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+                        }
+                    } );
                 }
-            } );
+
+                predicate.setEnabled( !isReadOnly );
+                if ( !isReadOnly ) {
+                    predicate.addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            editingCol.setFactField( null );
+                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
+                        }
+                    } );
+                }
+                break;
+
+            case LIMITED_ENTRY :
+                binding.setEnabled( !isReadOnly );
         }
 
         //Fact field
         HorizontalPanel field = new HorizontalPanel();
+        fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
         this.editField = new ImageButton( images.edit(),
@@ -192,6 +215,7 @@ public class ConditionPopup extends FormStylePopup {
                                                   showFieldChange();
                                               }
                                           } );
+        editField.setEnabled( !isReadOnly );
         field.add( editField );
         addAttribute( constants.Field(),
                       field );
@@ -208,6 +232,7 @@ public class ConditionPopup extends FormStylePopup {
                                                showOperatorChange();
                                            }
                                        } );
+        editOp.setEnabled( !isReadOnly );
         operator.add( editOp );
         addAttribute( constants.Operator(),
                       operator );
@@ -222,22 +247,28 @@ public class ConditionPopup extends FormStylePopup {
         //Entry point
         entryPointName = new TextBox();
         entryPointName.setText( editingPattern.getEntryPointName() );
-        entryPointName.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingPattern.setEntryPointName( entryPointName.getText() );
-            }
-        } );
+        entryPointName.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            entryPointName.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingPattern.setEntryPointName( entryPointName.getText() );
+                }
+            } );
+        }
         addAttribute( constants.DTLabelFromEntryPoint(),
                       entryPointName );
 
         //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setHeader( header.getText() );
-            }
-        } );
+        header.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            header.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setHeader( header.getText() );
+                }
+            } );
+        }
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
@@ -245,11 +276,14 @@ public class ConditionPopup extends FormStylePopup {
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             final TextBox valueList = new TextBox();
             valueList.setText( editingCol.getValueList() );
-            valueList.addChangeHandler( new ChangeHandler() {
-                public void onChange(ChangeEvent event) {
-                    editingCol.setValueList( valueList.getText() );
-                }
-            } );
+            valueList.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                valueList.addChangeHandler( new ChangeHandler() {
+                    public void onChange(ChangeEvent event) {
+                        editingCol.setValueList( valueList.getText() );
+                    }
+                } );
+            }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueList );
             vl.add( new InfoPopup( constants.ValueList(),
@@ -261,7 +295,8 @@ public class ConditionPopup extends FormStylePopup {
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             addAttribute( constants.DefaultValue(),
-                          DTCellValueWidgetFactory.getDefaultEditor( editingCol ) );
+                          DTCellValueWidgetFactory.getDefaultEditor( editingCol,
+                                                                     isReadOnly ) );
         }
 
         //Limited entry value widget
@@ -271,11 +306,13 @@ public class ConditionPopup extends FormStylePopup {
 
         //Field Binding
         binding.setText( col.getBinding() );
-        binding.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setBinding( binding.getText() );
-            }
-        } );
+        if ( !isReadOnly ) {
+            binding.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setBinding( binding.getText() );
+                }
+            } );
+        }
         addAttribute( constants.Binding(),
                       binding );
 
@@ -419,7 +456,7 @@ public class ConditionPopup extends FormStylePopup {
 
     private void applyConsTypeChange(int newType) {
         editingCol.setConstraintValueType( newType );
-        binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL );
+        binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
         doFieldLabel();
         doOperatorLabel();
         doImageButtons();
@@ -427,8 +464,8 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doImageButtons() {
         int constraintType = editingCol.getConstraintValueType();
-        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE );
-        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE );
+        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
+        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
     }
 
     private boolean isBindingUnique(String binding) {
@@ -484,7 +521,6 @@ public class ConditionPopup extends FormStylePopup {
         }
         doFieldLabel();
         doOperatorLabel();
-
     }
 
     private TextBox getFieldLabel() {
@@ -741,15 +777,18 @@ public class ConditionPopup extends FormStylePopup {
         lbl.setStyleName( "paddedLabel" );
         hp.add( lbl );
 
-        cwo = new CEPWindowOperatorsDropdown( c );
-        cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+        cwo = new CEPWindowOperatorsDropdown( c,
+                                              isReadOnly );
+        if ( !isReadOnly ) {
+            cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                OperatorSelection selection = event.getValue();
-                String selected = selection.getValue();
-                c.getWindow().setOperator( selected );
-            }
-        } );
+                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                    OperatorSelection selection = event.getValue();
+                    String selected = selection.getValue();
+                    c.getWindow().setOperator( selected );
+                }
+            } );
+        }
 
         hp.add( cwo );
         return hp;

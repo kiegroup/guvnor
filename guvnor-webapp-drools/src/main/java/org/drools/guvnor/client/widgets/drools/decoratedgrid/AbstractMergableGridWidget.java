@@ -205,14 +205,18 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
     protected static final RowGroupingChangeEvent            ROW_GROUPING_EVENT   = new RowGroupingChangeEvent();
 
+    protected final boolean                                  isReadOnly;
+
     /**
      * A grid of cells.
      */
     public AbstractMergableGridWidget(ResourcesProvider<T> resources,
                                       AbstractCellValueFactory<T, ? > cellValueFactory,
+                                      boolean isReadOnly,
                                       EventBus eventBus) {
         this.resources = resources;
         this.cellValueFactory = cellValueFactory;
+        this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
 
         ImageResource selectorGroupedCells = resources.collapseCellsIcon();
@@ -476,6 +480,11 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                         nc = new Coordinate( c.getRow(),
                                              nc.getCol() + step );
                     }
+                    //If the next column is not visible don't move
+                    if ( !columns.get( nc.getCol() ).isVisible() ) {
+                        nc = c;
+                        break;
+                    }
 
                     //Move to top of a merged cells
                     CellValue< ? > newCell = data.get( nc );
@@ -674,16 +683,13 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         }
 
         // Cells in hidden columns do not have extents
-        if ( !columns.get( cv.getCoordinate().getCol() )
-                .isVisible() ) {
+        if ( !columns.get( cv.getCoordinate().getCol() ).isVisible() ) {
             return null;
         }
 
         Coordinate hc = cv.getHtmlCoordinate();
-        TableRowElement tre = tbody.getRows().getItem( hc.getRow() )
-                .<TableRowElement> cast();
-        TableCellElement tce = tre.getCells().getItem( hc.getCol() )
-                .<TableCellElement> cast();
+        TableRowElement tre = tbody.getRows().getItem( hc.getRow() ).<TableRowElement> cast();
+        TableCellElement tce = tre.getCells().getItem( hc.getCol() ).<TableCellElement> cast();
         int offsetX = tce.getOffsetLeft();
         int offsetY = tce.getOffsetTop();
         int w = tce.getOffsetWidth();
@@ -753,7 +759,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      * @param width
      */
     abstract void resizeColumn(DynamicColumn< ? > col,
-                                      int width);
+                               int width);
 
     /**
      * Add styling to cell to indicate a selected state
@@ -771,7 +777,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      *            The last cell to select
      */
     void selectRange(CellValue< ? > startCell,
-                             CellValue< ? > endCell) {
+                     CellValue< ? > endCell) {
         int col = startCell.getCoordinate().getCol();
 
         //Ensure startCell precedes endCell

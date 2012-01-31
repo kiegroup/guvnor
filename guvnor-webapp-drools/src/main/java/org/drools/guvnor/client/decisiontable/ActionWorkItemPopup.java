@@ -64,19 +64,24 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private int                                 workItemInputParametersIndex;
     private Map<String, PortableWorkDefinition> workItemDefinitions;
 
+    private final boolean                       isReadOnly;
+
     public ActionWorkItemPopup(final ClientFactory clientFactory,
                                final String packageUUID,
                                final GuidedDecisionTable52 model,
                                final IBindingProvider bindingProvider,
                                final GenericColumnCommand refreshGrid,
                                final ActionWorkItemCol52 col,
-                               final boolean isNew) {
+                               final boolean isNew,
+                               final boolean isReadOnly) {
         this.editingCol = cloneActionWorkItemColumn( col );
         this.clientFactory = clientFactory;
         this.packageUUID = packageUUID;
         this.model = model;
+        this.isReadOnly = isReadOnly;
 
-        this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider );
+        this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider,
+                                                                     isReadOnly );
 
         setTitle( constants.ColumnConfigurationWorkItem() );
         setModal( false );
@@ -84,11 +89,14 @@ public class ActionWorkItemPopup extends FormStylePopup {
         //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setHeader( header.getText() );
-            }
-        } );
+        header.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            header.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setHeader( header.getText() );
+                }
+            } );
+        }
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
@@ -97,19 +105,22 @@ public class ActionWorkItemPopup extends FormStylePopup {
         addAttribute( constants.WorkItemNameColon(),
                       workItemsListBox );
         setupWorkItems( workItemsListBox );
-        workItemsListBox.addChangeHandler( new ChangeHandler() {
+        workItemsListBox.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            workItemsListBox.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                int index = workItemsListBox.getSelectedIndex();
-                if ( index >= 0 ) {
-                    String selectedWorkItemName = workItemsListBox.getValue( index );
-                    editingCol.setWorkItemDefinition( workItemDefinitions.get( selectedWorkItemName ) );
-                    showWorkItemParameters();
-                    center();
+                public void onChange(ChangeEvent event) {
+                    int index = workItemsListBox.getSelectedIndex();
+                    if ( index >= 0 ) {
+                        String selectedWorkItemName = workItemsListBox.getValue( index );
+                        editingCol.setWorkItemDefinition( workItemDefinitions.get( selectedWorkItemName ) );
+                        showWorkItemParameters();
+                        center();
+                    }
                 }
-            }
 
-        } );
+            } );
+        }
 
         //Work Item Input Parameters
         workItemInputParametersIndex = addAttribute( constants.WorkItemInputParameters(),
@@ -250,7 +261,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                     //Add list of Work Item Definitions to list box
                                                                     if ( result.size() > 0 ) {
                                                                         workItemsListBox.clear();
-                                                                        workItemsListBox.setEnabled( true );
+                                                                        workItemsListBox.setEnabled( true && !isReadOnly );
                                                                         workItemsListBox.addItem( constants.pleaseChoose(),
                                                                                                   "" );
                                                                         workItemDefinitions = new HashMap<String, PortableWorkDefinition>();

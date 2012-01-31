@@ -214,18 +214,20 @@ public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<
                     for ( DynamicColumn<TemplateDataColumn> col : headerColumns ) {
                         final HeaderSorter shp = new HeaderSorter( col );
                         final DynamicColumn<TemplateDataColumn> sortableColumn = col;
-                        shp.addClickHandler( new ClickHandler() {
+                        if ( !isReadOnly ) {
+                            shp.addClickHandler( new ClickHandler() {
 
-                            public void onClick(ClickEvent event) {
-                                if ( sortableColumn.isSortable() ) {
-                                    updateSortOrder( sortableColumn );
+                                public void onClick(ClickEvent event) {
+                                    if ( sortableColumn.isSortable() ) {
+                                        updateSortOrder( sortableColumn );
 
-                                    SortDataEvent sde = new SortDataEvent( getSortConfiguration() );
-                                    eventBus.fireEvent( sde );
+                                        SortDataEvent sde = new SortDataEvent( getSortConfiguration() );
+                                        eventBus.fireEvent( sde );
+                                    }
                                 }
-                            }
 
-                        } );
+                            } );
+                        }
                         sorters.add( shp );
 
                         tce = DOM.createTD();
@@ -278,8 +280,10 @@ public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<
      * @param grid
      */
     public TemplateDataHeaderWidget(final ResourcesProvider<TemplateDataColumn> resources,
+                                    final boolean isReadOnly,
                                     final EventBus eventBus) {
         super( resources,
+               isReadOnly,
                eventBus );
 
         //Wire-up event handlers

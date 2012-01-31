@@ -46,7 +46,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -71,19 +70,24 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private DTCellValueWidgetFactory   factory;
     private BRLRuleModel               validator;
 
+    private final boolean              isReadOnly;
+
     public ActionInsertFactPopup(final SuggestionCompletionEngine sce,
                                  final GuidedDecisionTable52 model,
                                  final GenericColumnCommand refreshGrid,
                                  final ActionInsertFactCol52 col,
-                                 final boolean isNew) {
+                                 final boolean isNew,
+                                 final boolean isReadOnly) {
         this.validator = new BRLRuleModel( model );
         this.editingCol = cloneActionInsertColumn( col );
         this.model = model;
         this.sce = sce;
+        this.isReadOnly = isReadOnly;
 
         //Set-up factory for common widgets
         factory = new DTCellValueWidgetFactory( model,
-                                                sce );
+                                                sce,
+                                                isReadOnly );
 
         setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
         setModal( false );
@@ -93,27 +97,32 @@ public class ActionInsertFactPopup extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( images.edit(),
-                                               constants.ChooseAPatternThatThisColumnAddsDataTo(),
-                                               new ClickHandler() {
-                                                   public void onClick(ClickEvent w) {
-                                                       showChangePattern( w );
-                                                   }
-                                               } );
+        ImageButton changePattern = new ImageButton( images.edit(),
+                                                     images.editDisabled(),
+                                                     constants.ChooseAPatternThatThisColumnAddsDataTo(),
+                                                     new ClickHandler() {
+                                                         public void onClick(ClickEvent w) {
+                                                             showChangePattern( w );
+                                                         }
+                                                     } );
+        changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
         addAttribute( constants.Pattern(),
                       pattern );
 
         //Fact field being set
         HorizontalPanel field = new HorizontalPanel();
+        fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        Image editField = new ImageButton( images.edit(),
-                                           constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickHandler() {
-                                               public void onClick(ClickEvent w) {
-                                                   showFieldChange();
-                                               }
-                                           } );
+        ImageButton editField = new ImageButton( images.edit(),
+                                                 images.editDisabled(),
+                                                 constants.EditTheFieldThatThisColumnOperatesOn(),
+                                                 new ClickHandler() {
+                                                     public void onClick(ClickEvent w) {
+                                                         showFieldChange();
+                                                     }
+                                                 } );
+        editField.setEnabled( !isReadOnly );
         field.add( editField );
         addAttribute( constants.Field(),
                       field );
@@ -122,11 +131,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
         //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setHeader( header.getText() );
-            }
-        } );
+        header.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            header.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setHeader( header.getText() );
+                }
+            } );
+        }
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
@@ -134,11 +146,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             final TextBox valueList = new TextBox();
             valueList.setText( editingCol.getValueList() );
-            valueList.addChangeHandler( new ChangeHandler() {
-                public void onChange(ChangeEvent event) {
-                    editingCol.setValueList( valueList.getText() );
-                }
-            } );
+            valueList.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                valueList.addChangeHandler( new ChangeHandler() {
+                    public void onChange(ChangeEvent event) {
+                        editingCol.setValueList( valueList.getText() );
+                    }
+                } );
+            }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueList );
             vl.add( new InfoPopup( constants.ValueList(),
@@ -150,7 +165,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             addAttribute( constants.DefaultValue(),
-                          DTCellValueWidgetFactory.getDefaultEditor( editingCol ) );
+                          DTCellValueWidgetFactory.getDefaultEditor( editingCol,
+                                                                     isReadOnly ) );
         }
 
         //Limited entry value widget
@@ -456,16 +472,19 @@ public class ActionInsertFactPopup extends FormStylePopup {
         final CheckBox cb = new CheckBox();
         cb.setValue( editingCol.isInsertLogical() );
         cb.setText( "" );
-        cb.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
-                if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
-                    cb.setEnabled( false );
-                    editingCol.setInsertLogical( false );
-                } else {
-                    editingCol.setInsertLogical( cb.getValue() );
+        cb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            cb.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent arg0) {
+                    if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
+                        cb.setEnabled( false );
+                        editingCol.setInsertLogical( false );
+                    } else {
+                        editingCol.setInsertLogical( cb.getValue() );
+                    }
                 }
-            }
-        } );
+            } );
+        }
         hp.add( cb );
         hp.add( new InfoPopup( constants.LogicallyInsertANewFact(),
                                constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );

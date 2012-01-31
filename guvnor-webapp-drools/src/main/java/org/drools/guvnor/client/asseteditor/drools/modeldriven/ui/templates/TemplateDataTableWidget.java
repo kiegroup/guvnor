@@ -73,6 +73,7 @@ public class TemplateDataTableWidget extends Composite
      * Constructor
      */
     public TemplateDataTableWidget(SuggestionCompletionEngine sce,
+                                   boolean isReadOnly,
                                    EventBus globalEventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
@@ -85,6 +86,7 @@ public class TemplateDataTableWidget extends Composite
 
         //Factories for new cell elements
         this.cellFactory = new TemplateDataCellFactory( sce,
+                                                        isReadOnly,
                                                         eventBus );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
@@ -92,6 +94,7 @@ public class TemplateDataTableWidget extends Composite
         widget = new VerticalDecoratedTemplateDataGridWidget( resources,
                                                               cellFactory,
                                                               cellValueFactory,
+                                                              isReadOnly,
                                                               eventBus );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing

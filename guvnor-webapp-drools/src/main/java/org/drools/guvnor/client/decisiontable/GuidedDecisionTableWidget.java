@@ -155,6 +155,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     private final LimitedEntryBRLActionColumnView.Presenter    LIMITED_ENTRY_BRL_ACTION_PRESENTER    = this;
 
+    private final boolean                                      isReadOnly;
+
     public GuidedDecisionTableWidget(final Asset asset,
                                      final RuleViewer viewer,
                                      final ClientFactory clientFactory,
@@ -169,6 +171,7 @@ public class GuidedDecisionTableWidget extends Composite
         this.globalEventBus = globalEventBus;
         this.clientFactory = clientFactory;
         this.rm = new BRLRuleModel( guidedDecisionTable );
+        this.isReadOnly = asset.readonly;
 
         layout = new VerticalPanel();
 
@@ -189,7 +192,10 @@ public class GuidedDecisionTableWidget extends Composite
         config.setWidth( "100%" );
         disclosurePanel.add( config );
 
-        config.add( newColumn() );
+        //Can't add new columns if the asset is read-only
+        if ( !isReadOnly ) {
+            config.add( newColumn() );
+        }
 
         DecoratedDisclosurePanel conditions = new DecoratedDisclosurePanel( constants.ConditionColumns() );
         conditions.setOpen( false );
@@ -247,10 +253,12 @@ public class GuidedDecisionTableWidget extends Composite
 
         //Add Actions to panel
         List<ActionCol52> actions = guidedDecisionTable.getActionCols();
-        boolean bAreActionsDraggable = actions.size() > 1;
+        boolean bAreActionsDraggable = actions.size() > 1 && !isReadOnly;
         for ( ActionCol52 c : actions ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( removeAction( c ) );
+            if ( !isReadOnly ) {
+                hp.add( removeAction( c ) );
+            }
             hp.add( editAction( c ) );
             Label actionLabel = makeColumnLabel( c );
             hp.add( actionLabel );
@@ -290,7 +298,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                                   }
                                                                                                               },
                                                                                                               awisf,
-                                                                                                              false );
+                                                                                                              false,
+                                                                                                              isReadOnly );
                                             ed.show();
                                         }
                                     } );
@@ -311,7 +320,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                   }
                                                                                               },
                                                                                               asf,
-                                                                                              false );
+                                                                                              false,
+                                                                                              isReadOnly );
                                             ed.show();
                                         }
                                     } );
@@ -332,7 +342,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                                       }
                                                                                                                   },
                                                                                                                   awiif,
-                                                                                                                  false );
+                                                                                                                  false,
+                                                                                                                  isReadOnly );
                                             ed.show();
                                         }
                                     } );
@@ -353,7 +364,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                       }
                                                                                                   },
                                                                                                   asf,
-                                                                                                  false );
+                                                                                                  false,
+                                                                                                  isReadOnly );
                                             ed.show();
                                         }
                                     } );
@@ -373,7 +385,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                         }
                                                                                                     },
                                                                                                     arf,
-                                                                                                    false );
+                                                                                                    false,
+                                                                                                    isReadOnly );
                                             ed.show();
                                         }
                                     } );
@@ -396,7 +409,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                      }
                                                                                                  },
                                                                                                  awi,
-                                                                                                 false );
+                                                                                                 false,
+                                                                                                 isReadOnly );
                                             popup.show();
                                         }
                                     } );
@@ -512,7 +526,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                        dtable ) );
 
         List<CompositeColumn< ? >> columns = guidedDecisionTable.getConditions();
-        boolean arePatternsDraggable = columns.size() > 1;
+        boolean arePatternsDraggable = columns.size() > 1 && !isReadOnly;
         for ( CompositeColumn< ? > column : columns ) {
             if ( column instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) column;
@@ -543,11 +557,13 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                    dtable ) );
 
                 List<ConditionCol52> conditions = p.getChildColumns();
-                boolean bAreConditionsDraggable = conditions.size() > 1;
+                boolean bAreConditionsDraggable = conditions.size() > 1 && !isReadOnly;
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     HorizontalPanel hp = new HorizontalPanel();
                     hp.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternConditionSectionHeader() );
-                    hp.add( removeCondition( c ) );
+                    if ( !isReadOnly ) {
+                        hp.add( removeCondition( c ) );
+                    }
                     hp.add( editCondition( p,
                                            c ) );
                     SmallLabel conditionLabel = makeColumnLabel( c );
@@ -570,7 +586,9 @@ public class GuidedDecisionTableWidget extends Composite
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
                 patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
                 HorizontalPanel patternPanel = new HorizontalPanel();
-                patternPanel.add( removeCondition( brl ) );
+                if ( !isReadOnly ) {
+                    patternPanel.add( removeCondition( brl ) );
+                }
                 patternPanel.add( editCondition( brl ) );
                 Label patternLabel = makePatternLabel( brl );
                 patternPanel.add( patternLabel );
@@ -795,7 +813,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                         }
                                                                     },
                                                                     column,
-                                                                    true );
+                                                                    true,
+                                                                    isReadOnly );
                         dialog.show();
                     }
 
@@ -837,7 +856,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                    }
                                                                                },
                                                                                afc,
-                                                                               true );
+                                                                               true,
+                                                                               isReadOnly );
                         ins.show();
                     }
 
@@ -851,7 +871,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                }
                                                                            },
                                                                            afc,
-                                                                           true );
+                                                                           true,
+                                                                           isReadOnly );
                         set.show();
                     }
 
@@ -864,7 +885,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                        }
                                                                                    },
                                                                                    arf,
-                                                                                   true );
+                                                                                   true,
+                                                                                   isReadOnly );
                         popup.show();
                     }
 
@@ -880,7 +902,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                  }
                                                                              },
                                                                              awi,
-                                                                             true );
+                                                                             true,
+                                                                             isReadOnly );
                         popup.show();
                     }
 
@@ -894,7 +917,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                  }
                                                                                              },
                                                                                              awisf,
-                                                                                             true );
+                                                                                             true,
+                                                                                             isReadOnly );
                         popup.show();
                     }
 
@@ -908,7 +932,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                          }
                                                                                                      },
                                                                                                      awiif,
-                                                                                                     true );
+                                                                                                     true,
+                                                                                                     isReadOnly );
                         popup.show();
                     }
 
@@ -1101,7 +1126,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                         }
                                                                                     },
                                                                                     origCol,
-                                                                                    false );
+                                                                                    false,
+                                                                                    isReadOnly );
                                         dialog.show();
                                     }
                                 } );
@@ -1221,7 +1247,9 @@ public class GuidedDecisionTableWidget extends Composite
             HorizontalPanel hp = new HorizontalPanel();
             hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
-            hp.add( removeMeta( atc ) );
+            if ( !isReadOnly ) {
+                hp.add( removeMeta( atc ) );
+            }
             final SmallLabel label = makeColumnLabel( atc );
             hp.add( label );
 
@@ -1256,13 +1284,16 @@ public class GuidedDecisionTableWidget extends Composite
             hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
 
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
-            hp.add( removeAttr( at ) );
+            if ( !isReadOnly ) {
+                hp.add( removeAttr( at ) );
+            }
             final SmallLabel label = makeColumnLabel( atc );
             hp.add( label );
 
             final TextBox defaultValue = new TextBox();
             defaultValue.setStyleName( "form-field" );
             defaultValue.setText( at.getDefaultValue() );
+            defaultValue.setEnabled( !isReadOnly );
             defaultValue.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
                     at.setDefaultValue( defaultValue.getText() );
@@ -1274,13 +1305,14 @@ public class GuidedDecisionTableWidget extends Composite
                 final CheckBox useRowNumber = new CheckBox( constants.UseRowNumber() );
                 useRowNumber.setStyleName( "form-field" );
                 useRowNumber.setValue( at.isUseRowNumber() );
+                useRowNumber.setEnabled( !isReadOnly );
                 hp.add( useRowNumber );
 
                 hp.add( new SmallLabel( "(" ) );
                 final CheckBox reverseOrder = new CheckBox( constants.ReverseOrder() );
                 reverseOrder.setStyleName( "form-field" );
                 reverseOrder.setValue( at.isReverseOrder() );
-                reverseOrder.setEnabled( at.isUseRowNumber() );
+                reverseOrder.setEnabled( at.isUseRowNumber() && !isReadOnly );
 
                 useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
@@ -1386,8 +1418,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupDecisionTable() {
-        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
+        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget( isReadOnly ),
                                                   getSCE(),
+                                                  isReadOnly,
                                                   eventBus );
         dtable.setPixelSize( 1000,
                              400 );

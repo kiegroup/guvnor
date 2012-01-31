@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,6 +73,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     private GuidedDecisionTable52          model;
     private SuggestionCompletionEngine     sce;
 
+    private final boolean                  isReadOnly;
+
     //Container to contain WorkItem and WorkItem Parameters associations
     private static class WorkItemParameter {
 
@@ -91,10 +92,12 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                          final GuidedDecisionTable52 model,
                                          final GenericColumnCommand refreshGrid,
                                          final ActionWorkItemInsertFactCol52 col,
-                                         final boolean isNew) {
+                                         final boolean isNew,
+                                         final boolean isReadOnly) {
         this.editingCol = cloneActionInsertColumn( col );
         this.model = model;
         this.sce = sce;
+        this.isReadOnly = isReadOnly;
 
         setTitle( constants.ColumnConfigurationWorkItemInsertFact() );
         setModal( false );
@@ -104,27 +107,32 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( images.edit(),
-                                               constants.ChooseAPatternThatThisColumnAddsDataTo(),
-                                               new ClickHandler() {
-                                                   public void onClick(ClickEvent w) {
-                                                       showChangePattern( w );
-                                                   }
-                                               } );
+        ImageButton changePattern = new ImageButton( images.edit(),
+                                                     images.editDisabled(),
+                                                     constants.ChooseAPatternThatThisColumnAddsDataTo(),
+                                                     new ClickHandler() {
+                                                         public void onClick(ClickEvent w) {
+                                                             showChangePattern( w );
+                                                         }
+                                                     } );
+        changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
         addAttribute( constants.Pattern(),
                       pattern );
 
         //Fact field being set
         HorizontalPanel field = new HorizontalPanel();
+        fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        Image editField = new ImageButton( images.edit(),
-                                           constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickHandler() {
-                                               public void onClick(ClickEvent w) {
-                                                   showFieldChange();
-                                               }
-                                           } );
+        ImageButton editField = new ImageButton( images.edit(),
+                                                 images.editDisabled(),
+                                                 constants.EditTheFieldThatThisColumnOperatesOn(),
+                                                 new ClickHandler() {
+                                                     public void onClick(ClickEvent w) {
+                                                         showFieldChange();
+                                                     }
+                                                 } );
+        editField.setEnabled( !isReadOnly );
         field.add( editField );
         addAttribute( constants.Field(),
                       field );
@@ -133,11 +141,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setHeader( header.getText() );
-            }
-        } );
+        header.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            header.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setHeader( header.getText() );
+                }
+            } );
+        }
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
@@ -148,20 +159,22 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         //Bind field to a WorkItem result parameter
         addAttribute( constants.BindActionFieldToWorkItem(),
                       doBindFieldToWorkItem() );
-        workItemResultParameters.addChangeHandler( new ChangeHandler() {
+        if ( !isReadOnly ) {
+            workItemResultParameters.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                int index = workItemResultParameters.getSelectedIndex();
-                if ( index >= 0 ) {
-                    String key = workItemResultParameters.getValue( index );
-                    WorkItemParameter wip = workItemResultParametersMap.get( key );
-                    editingCol.setWorkItemName( wip.workDefinition.getName() );
-                    editingCol.setWorkItemResultParameterName( wip.workParameterDefinition.getName() );
-                    editingCol.setParameterClassName( wip.workParameterDefinition.getClassName() );
+                public void onChange(ChangeEvent event) {
+                    int index = workItemResultParameters.getSelectedIndex();
+                    if ( index >= 0 ) {
+                        String key = workItemResultParameters.getValue( index );
+                        WorkItemParameter wip = workItemResultParametersMap.get( key );
+                        editingCol.setWorkItemName( wip.workDefinition.getName() );
+                        editingCol.setWorkItemResultParameterName( wip.workParameterDefinition.getName() );
+                        editingCol.setParameterClassName( wip.workParameterDefinition.getClassName() );
+                    }
                 }
-            }
 
-        } );
+            } );
+        }
 
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
@@ -408,16 +421,19 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         final CheckBox cb = new CheckBox();
         cb.setValue( editingCol.isInsertLogical() );
         cb.setText( "" );
-        cb.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
-                if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
-                    cb.setEnabled( false );
-                    editingCol.setInsertLogical( false );
-                } else {
-                    editingCol.setInsertLogical( cb.getValue() );
+        cb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            cb.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent arg0) {
+                    if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
+                        cb.setEnabled( false );
+                        editingCol.setInsertLogical( false );
+                    } else {
+                        editingCol.setInsertLogical( cb.getValue() );
+                    }
                 }
-            }
-        } );
+            } );
+        }
         hp.add( cb );
         hp.add( new InfoPopup( constants.UpdateFact(),
                                constants.UpdateDescription() ) );
@@ -448,7 +464,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         } else {
             int selectedItemIndex = -1;
             String selectedItemKey = editingCol.getWorkItemName() + "." + editingCol.getWorkItemResultParameterName();
-            workItemResultParameters.setEnabled( true );
+            workItemResultParameters.setEnabled( true && !isReadOnly );
             for ( PortableWorkDefinition pwd : actionWorkItems ) {
                 for ( PortableParameterDefinition ppd : pwd.getResults() ) {
                     if ( acceptParameterType( ppd ) ) {

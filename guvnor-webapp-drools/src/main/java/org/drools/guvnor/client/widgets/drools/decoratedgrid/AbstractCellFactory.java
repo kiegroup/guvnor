@@ -37,6 +37,8 @@ public abstract class AbstractCellFactory<T> {
 
     protected final SuggestionCompletionEngine sce;
 
+    protected final boolean                    isReadOnly;
+
     protected final EventBus                   eventBus;
 
     /**
@@ -44,10 +46,13 @@ public abstract class AbstractCellFactory<T> {
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
+     * @param isReadOnly
+     *            Should cells be created for a read-only mode of operation
      * @param eventBus
      *            EventBus to which cells can send update events
      */
     public AbstractCellFactory(final SuggestionCompletionEngine sce,
+                               final boolean isReadOnly,
                                final EventBus eventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
@@ -56,6 +61,7 @@ public abstract class AbstractCellFactory<T> {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.sce = sce;
+        this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
     }
 
@@ -71,25 +77,27 @@ public abstract class AbstractCellFactory<T> {
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
         CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
+        cbc.setReadOnly( isReadOnly );
         return new DecoratedGridCellValueAdaptor<Boolean>( cbc,
                                                            eventBus );
     }
 
     // Make a new Cell for Date columns
     protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ) ),
+        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ),
+                                                                               isReadOnly ),
                                                         eventBus );
     }
 
     // Make a new Cell for Numeric columns
     protected DecoratedGridCellValueAdaptor<BigDecimal> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell(),
+        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell( isReadOnly ),
                                                               eventBus );
     }
 
     // Make a new Cell for a Text columns
     protected DecoratedGridCellValueAdaptor<String> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell(),
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell( isReadOnly ),
                                                           eventBus );
     }
 

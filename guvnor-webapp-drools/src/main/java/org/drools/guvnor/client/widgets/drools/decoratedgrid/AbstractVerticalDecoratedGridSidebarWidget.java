@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -165,57 +166,78 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
             hp.setWidth( "100%" );
 
-            FocusPanel fp;
-            fp = new FocusPanel();
-            fp.setHeight( "100%" );
-            fp.setWidth( "50%" );
-            fp.add( new Image( resources.selectorAddIcon() ) );
-            fp.addClickHandler( new ClickHandler() {
+            //Add row icon
+            if ( !isReadOnly ) {
+                FocusPanel fp = new FocusPanel();
+                fp.setHeight( "100%" );
+                fp.setWidth( "50%" );
+                fp.add( new Image( resources.selectorAddIcon() ) );
+                if ( !isReadOnly ) {
+                    fp.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
-                    //Raise an event to add row
-                    int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
-                    InsertRowEvent ire = new InsertRowEvent( index );
-                    eventBus.fireEvent( ire );
+                        public void onClick(ClickEvent event) {
+                            //Raise an event to add row
+                            int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
+                            InsertRowEvent ire = new InsertRowEvent( index );
+                            eventBus.fireEvent( ire );
+                        }
+
+                    } );
                 }
+                hp.add( fp );
+            } else {
+                SimplePanel sp = new SimplePanel();
+                sp.setHeight( "100%" );
+                sp.setWidth( "50%" );
+                sp.add( new Image( resources.selectorAddIcon() ) );
+                hp.add( sp );
+            }
 
-            } );
-            hp.add( fp );
+            //Delete row icon
+            if ( !isReadOnly ) {
+                FocusPanel fp = new FocusPanel();
+                fp.setHeight( "100%" );
+                fp.setWidth( "50%" );
+                fp.add( new Image( resources.selectorDeleteIcon() ) );
+                fp.addClickHandler( new ClickHandler() {
 
-            fp = new FocusPanel();
-            fp.setHeight( "100%" );
-            fp.setWidth( "50%" );
-            fp.add( new Image( resources.selectorDeleteIcon() ) );
-            fp.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        //Raise an event to delete row
+                        int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
+                        DeleteRowEvent ire = new DeleteRowEvent( index );
+                        eventBus.fireEvent( ire );
+                    }
 
-                public void onClick(ClickEvent event) {
-                    //Raise an event to delete row
-                    int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
-                    DeleteRowEvent ire = new DeleteRowEvent( index );
-                    eventBus.fireEvent( ire );
-                }
-
-            } );
-            hp.add( fp );
+                } );
+                hp.add( fp );
+            } else {
+                SimplePanel sp = new SimplePanel();
+                sp.setHeight( "100%" );
+                sp.setWidth( "50%" );
+                sp.add( new Image( resources.selectorDeleteIcon() ) );
+                hp.add( sp );
+            }
 
             //Add a context menu to copy\paste rows
-            hp.addDomHandler( new ContextMenuHandler() {
+            if ( !isReadOnly ) {
+                hp.addDomHandler( new ContextMenuHandler() {
 
-                                  public void onContextMenu(ContextMenuEvent event) {
-                                      //Prevent the default context menu
-                                      event.preventDefault();
-                                      event.stopPropagation();
+                                      public void onContextMenu(ContextMenuEvent event) {
+                                          //Prevent the default context menu
+                                          event.preventDefault();
+                                          event.stopPropagation();
 
-                                      //Set source row index and show
-                                      int clientX = event.getNativeEvent().getClientX();
-                                      int clientY = event.getNativeEvent().getClientY();
-                                      showContextMenu( widgets.indexOf( hp ),
-                                                       clientX,
-                                                       clientY );
-                                  }
+                                          //Set source row index and show
+                                          int clientX = event.getNativeEvent().getClientX();
+                                          int clientY = event.getNativeEvent().getClientY();
+                                          showContextMenu( widgets.indexOf( hp ),
+                                                           clientX,
+                                                           clientY );
+                                      }
 
-                              },
-                              ContextMenuEvent.getType() );
+                                  },
+                                  ContextMenuEvent.getType() );
+            }
 
             return hp;
         }
@@ -331,9 +353,11 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
      * @param decisionTable
      */
     public AbstractVerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
+                                                      boolean isReadOnly,
                                                       EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
+               isReadOnly,
                eventBus );
 
         // Construct the Widget

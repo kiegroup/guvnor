@@ -41,8 +41,8 @@ public class PopupNumericEditCell extends
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
-    public PopupNumericEditCell() {
-        super();
+    public PopupNumericEditCell(boolean isReadOnly) {
+        super(isReadOnly);
         this.textBox = new TextBox();
 
         // Tabbing out of the TextBox commits changes

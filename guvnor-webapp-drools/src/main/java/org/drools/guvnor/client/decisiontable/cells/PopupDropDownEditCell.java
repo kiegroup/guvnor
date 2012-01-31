@@ -36,8 +36,8 @@ public class PopupDropDownEditCell extends
     private final ListBox listBox;
     private String[][]    items;
 
-    public PopupDropDownEditCell() {
-        super();
+    public PopupDropDownEditCell(boolean isReadOnly) {
+        super( isReadOnly );
         this.listBox = new ListBox();
 
         // Tabbing out of the ListBox commits changes

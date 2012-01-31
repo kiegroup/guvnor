@@ -47,10 +47,13 @@ public class WorkItemEnumParameterWidget extends WorkItemParameterWidget {
     private static WorkItemEnumParameterWidgetBinder uiBinder = GWT.create( WorkItemEnumParameterWidgetBinder.class );
 
     public WorkItemEnumParameterWidget(PortableEnumParameterDefinition ppd,
-                                       IBindingProvider bindingProvider) {
+                                       IBindingProvider bindingProvider,
+                                       boolean isReadOnly) {
         super( ppd,
                bindingProvider );
         this.parameterName.setText( ppd.getName() );
+        this.parameterValues.setEnabled( !isReadOnly );
+        
         boolean isItemSelected = false;
         String selectedItem = ppd.getValue();
         if ( ppd.getValues() != null ) {
