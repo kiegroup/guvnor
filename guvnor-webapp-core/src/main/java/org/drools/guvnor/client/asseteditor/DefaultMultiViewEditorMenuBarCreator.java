@@ -29,10 +29,9 @@ import org.drools.guvnor.client.messages.Constants;
 public class DefaultMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
 
     private Constants constants = GWT.create(Constants.class);
-    private EventBus eventBus;
+
 
     public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
-        this.eventBus = eventBus;
         
         MenuBar toolbar = new MenuBar();
 

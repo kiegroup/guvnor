@@ -187,9 +187,9 @@ public class ArchivedAssetManager extends Composite {
 
         RepositoryServiceFactory.getPackageService().listArchivedModules( new GenericCallback<Module[]>() {
             public void onSuccess(Module[] configs) {
-                for ( int i = 0; i < configs.length; i++ ) {
-                    packages.addItem( configs[i].getName(),
-                                      configs[i].getUuid() );
+                for (Module config : configs) {
+                    packages.addItem(config.getName(),
+                            config.getUuid());
                 }
                 if ( configs.length == 0 ) {
                     packages.addItem( constants.noArchivedPackages() );

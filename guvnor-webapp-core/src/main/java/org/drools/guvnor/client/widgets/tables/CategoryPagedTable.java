@@ -95,9 +95,8 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
 
         TitledTextColumn<CategoryPageRow> titleColumn = new TitledTextColumn<CategoryPageRow>() {
             public TitledText getValue(CategoryPageRow row) {
-                TitledText tt = new TitledText( row.getName(),
+                return new TitledText( row.getName(),
                                                 row.getAbbreviatedDescription() );
-                return tt;
             }
         };
         columnPicker.addColumn( titleColumn,

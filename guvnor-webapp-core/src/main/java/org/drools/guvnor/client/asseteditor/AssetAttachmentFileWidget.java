@@ -45,7 +45,6 @@ public abstract class AssetAttachmentFileWidget extends Composite
     private Constants         constants = GWT.create( Constants.class );
 
     private FormPanel         form;
-    private RuleViewer        viewer;
     protected FormStyleLayout layout;
     protected Asset           asset;
     private final EventBus    eventBus;
@@ -54,7 +53,6 @@ public abstract class AssetAttachmentFileWidget extends Composite
                                      final RuleViewer viewer,
                                      ClientFactory clientFactory,
                                      EventBus eventBus) {
-        this.viewer = viewer;
         this.eventBus = eventBus;
         this.asset = asset;
         initWidgets( asset.getUuid(),

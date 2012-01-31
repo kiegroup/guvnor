@@ -48,9 +48,6 @@ public class RuleViewer extends GuvnorEditor {
     final Widget                     editor;
 
     protected Asset              asset;
-    private final RuleViewerSettings ruleViewerSettings;
-    private final ClientFactory      clientFactory;
-    private final EventBus           eventBus;
 
     private long                     lastSaved = System.currentTimeMillis();
 
@@ -82,13 +79,12 @@ public class RuleViewer extends GuvnorEditor {
                       EventBus eventBus,
                       RuleViewerSettings ruleViewerSettings) {
         this.asset = asset;
-        this.eventBus = eventBus;
-        this.clientFactory = clientFactory;
 
+        RuleViewerSettings ruleViewerSettings1;
         if ( ruleViewerSettings == null ) {
-            this.ruleViewerSettings = new RuleViewerSettings();
+            ruleViewerSettings1 = new RuleViewerSettings();
         } else {
-            this.ruleViewerSettings = ruleViewerSettings;
+            ruleViewerSettings1 = ruleViewerSettings;
         }
 
         editor = clientFactory.getAssetEditorFactory().getAssetEditor( asset,
@@ -98,7 +94,7 @@ public class RuleViewer extends GuvnorEditor {
 
         // for designer we need to give it more playing room
         if ( editor instanceof BusinessProcessEditor ) {
-            if ( this.ruleViewerSettings.isStandalone() ) {
+            if ( ruleViewerSettings1.isStandalone() ) {
                 // standalone bigger dimensions"
                 editor.setWidth( "100%" );
                 editor.setHeight( "1000px" );

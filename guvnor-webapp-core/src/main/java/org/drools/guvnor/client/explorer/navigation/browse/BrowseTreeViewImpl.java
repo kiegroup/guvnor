@@ -40,7 +40,6 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     private TreeItem root;
     private TreeItem states;
     private TreeItem inbox;
-    private ClientFactory clientFactory;
 
     interface BrowseTreeViewImplBinder
             extends
@@ -60,7 +59,6 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     public BrowseTreeViewImpl(ClientFactory clientFactory) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        this.clientFactory = clientFactory;
 
         addSelectionHandler();
         addOpenHandler();

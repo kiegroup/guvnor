@@ -145,8 +145,8 @@ public class StateManager extends Composite {
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] statii) {
                 currentStatuses.clear();
-                for ( int i = 0; i < statii.length; i++ ) {
-                    currentStatuses.addItem( statii[i] );
+                for (String aStatii : statii) {
+                    currentStatuses.addItem(aStatii);
                 }
                 LoadingPopup.close();
             }

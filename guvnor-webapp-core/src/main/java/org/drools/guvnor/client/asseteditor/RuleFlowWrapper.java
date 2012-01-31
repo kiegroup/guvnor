@@ -107,7 +107,7 @@ public class RuleFlowWrapper extends Composite
         try {
             FormStylePopup pop = new FormStylePopup( images.viewSource(),
                     constants.ViewingDiagram(),
-                    new Integer( 800 ) );
+                    800);
 
             pop.addRow( new ScrollPanel( ruleFlowViewer ) );
             pop.addRow( parameterPanel );

@@ -47,7 +47,7 @@ public class RuleEnabledStateCell extends AbstractCell<Boolean> {
     public void render(Context context,
                        Boolean value,
                        SafeHtmlBuilder sb) {
-        if ( value == true ) {
+        if (value) {
             sb.append( shtml );
         }
     }

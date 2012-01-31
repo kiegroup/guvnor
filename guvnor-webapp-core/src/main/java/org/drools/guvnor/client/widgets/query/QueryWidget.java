@@ -154,19 +154,18 @@ public class QueryWidget extends Composite {
         };
 
         FormStyleLayout fm = new FormStyleLayout();
-        for (Iterator<String> iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
-            String fieldName = (String) iterator.next();
-            final MetaDataQuery q = (MetaDataQuery) atts.get( fieldName );
+        for (String fieldName : atts.keySet()) {
+            final MetaDataQuery q = (MetaDataQuery) atts.get(fieldName);
             final TextBox box = new TextBox();
-            box.setTitle( constants.WildCardsSearchTip() );
-            fm.addAttribute( fieldName
+            box.setTitle(constants.WildCardsSearchTip());
+            fm.addAttribute(fieldName
                     + ":",
-                    box );
-            box.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent arg0 ) {
+                    box);
+            box.addChangeHandler(new ChangeHandler() {
+                public void onChange(ChangeEvent arg0) {
                     q.valueList = box.getText();
                 }
-            } );
+            });
         }
 
         HorizontalPanel created = new HorizontalPanel();

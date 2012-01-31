@@ -154,15 +154,14 @@ public class AssetViewerActivity extends Activity
 
                                                                    //If all groups have been processed add sections to UI
                                                                    if ( s.areAllGroupsProcessed() ) {
-                                                                       for ( int i = 0; i < sections.length; i++ ) {
-                                                                           AssetViewerSection section = sections[i];
-                                                                           if ( section != null ) {
-                                                                               view.addAssetFormat( section.formatsInList,
-                                                                                                    section.formatIsRegistered,
-                                                                                                    section.title,
-                                                                                                    section.icon,
-                                                                                                    packageConfigData,
-                                                                                                    clientFactory );
+                                                                       for (AssetViewerSection section : sections) {
+                                                                           if (section != null) {
+                                                                               view.addAssetFormat(section.formatsInList,
+                                                                                       section.formatIsRegistered,
+                                                                                       section.title,
+                                                                                       section.icon,
+                                                                                       packageConfigData,
+                                                                                       clientFactory);
                                                                            }
                                                                        }
                                                                    }

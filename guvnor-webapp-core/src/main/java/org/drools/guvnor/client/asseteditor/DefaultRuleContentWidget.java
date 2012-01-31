@@ -49,8 +49,7 @@ public class DefaultRuleContentWidget extends DirtyableComposite
 
     public DefaultRuleContentWidget(Asset a,
                                     int visibleLines) {
-        Asset asset = a;
-        data = (RuleContentText) asset.getContent();
+        data = (RuleContentText) a.getContent();
 
         if (data.content == null) {
             data.content = "";

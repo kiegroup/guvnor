@@ -134,6 +134,6 @@ public class LazyStackPanelRow extends VerticalPanel {
 
     }
 
-    ;
+
 
 }

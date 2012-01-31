@@ -143,8 +143,8 @@ public class WorkspaceManager extends Composite {
         RepositoryServiceFactory.getService().listWorkspaces( new GenericCallback<String[]>() {
             public void onSuccess(String[] workspaces) {
                 availableWorkspacesListBox.clear();
-                for ( int i = 0; i < workspaces.length; i++ ) {
-                    availableWorkspacesListBox.addItem( workspaces[i] );
+                for (String workspace : workspaces) {
+                    availableWorkspacesListBox.addItem(workspace);
                 }
                 LoadingPopup.close();
             }

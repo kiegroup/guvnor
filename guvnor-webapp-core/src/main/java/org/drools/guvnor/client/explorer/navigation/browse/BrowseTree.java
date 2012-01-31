@@ -33,11 +33,9 @@ public class BrowseTree implements Presenter {
 
     private final BrowseTreeView view;
     private final ClientFactory clientFactory;
-    private final EventBus eventBus;
     private final Map<IsTreeItem, String> categories = new HashMap<IsTreeItem, String>();
     private final List<IsTreeItem> states = new ArrayList<IsTreeItem>();
     private IsTreeItem incomingInboxTreeItem;
-    private IsTreeItem statesRootTreeItem;
     private IsTreeItem findRootTreeItem;
     private IsTreeItem inboxRecentlyEditedTreeItem;
     private IsTreeItem inboxRecentlyViewedTreeItem;
@@ -47,7 +45,6 @@ public class BrowseTree implements Presenter {
     public BrowseTree(ClientFactory clientFactory, EventBus eventBus) {
         this.view = clientFactory.getNavigationViewFactory().getBrowseTreeView();
         this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
         this.view.setPresenter( this );
 
 /*        if ( canShowMenu() ) {
@@ -57,7 +54,7 @@ public class BrowseTree implements Presenter {
         addInbox();
         findRootTreeItem = this.view.addFind();
         if ( canShowStates() ) {
-            statesRootTreeItem = this.view.addRootStateTreeItem();
+            IsTreeItem statesRootTreeItem = this.view.addRootStateTreeItem();
         }
         addRootCategory();
     }

@@ -106,7 +106,7 @@ public class LoginWidget {
                                                 userNameLoggedIn = userName.getText();
                                                 LoadingPopup.close();
                                                 Boolean success = (Boolean) o;
-                                                if ( !success.booleanValue() ) {
+                                                if ( !success) {
                                                     com.google.gwt.user.client.Window.alert( constants.IncorrectUsernameOrPassword() );
                                                 } else {
                                                     loggedInEvent.execute();

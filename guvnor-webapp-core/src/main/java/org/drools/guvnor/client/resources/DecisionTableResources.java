@@ -84,7 +84,7 @@ public interface DecisionTableResources
         
         String columnLabelHidden();
         
-    };
+    }
 
     @Source("../resources/images/emptyArrow.png")
     ImageResource arrowSpacerIcon();
@@ -122,4 +122,4 @@ public interface DecisionTableResources
     @Source({"css/DecisionTable.css"})
     DecisionTableStyle style();
 
-};
+}

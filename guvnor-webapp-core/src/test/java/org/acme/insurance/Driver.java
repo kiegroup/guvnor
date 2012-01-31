@@ -22,8 +22,8 @@ package org.acme.insurance;
 public class Driver {
 
     private String name = "Mr Joe Blogs";
-    private Integer age = new Integer(30);
-    private Integer priorClaims = new Integer(0);
+    private Integer age = 30;
+    private Integer priorClaims = 0;
     private String  locationRiskProfile = "LOW";
 
     public Integer getAge() {
