@@ -315,13 +315,15 @@ public class PackageResource extends Resource {
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updatePackageFromAtom(@PathParam("packageName") String packageName, Entry entry) {
         try {
-            PackageItem p = repository.loadPackage(packageName);
-            p.checkout();
-            // TODO: support rename package.
-            // p.updateTitle(entry.getTitle());
+            PackageItem existingPackage = repository.loadPackage(packageName);
+            
+            //Rename:
+            if(!existingPackage.getTitle().equalsIgnoreCase(entry.getTitle())) {
+                repository.renamePackage(existingPackage.getUUID(), entry.getTitle());
+            }
 
             if (entry.getSummary() != null) {
-                p.updateDescription(entry.getSummary());
+                existingPackage.updateDescription(entry.getSummary());
             }
             // TODO: support LastContributor
             if (entry.getAuthor() != null) {
@@ -333,7 +335,7 @@ public class PackageResource extends Resource {
                 ExtensibleElement archivedExtension = metadataExtension
                         .getExtension(Translator.ARCHIVED);
                 if (archivedExtension != null) {
-                    p.archiveItem(Boolean.getBoolean(archivedExtension
+                    existingPackage.archiveItem(Boolean.getBoolean(archivedExtension
                             .getSimpleExtension(Translator.VALUE)));
                 }
 
@@ -347,7 +349,7 @@ public class PackageResource extends Resource {
                  */
             }
 
-            p.checkin("Updated from ATOM.");
+            existingPackage.checkin("Updated from ATOM.");
             repository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -357,14 +359,19 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package p) {
+    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package newPackage) {
         try {
-            PackageItem item = repository.loadPackage(packageName);
-            item.checkout();
-            item.updateDescription(p.getDescription());
-            item.updateTitle(p.getTitle());
+            PackageItem existingPackage = repository.loadPackage(packageName);
+            
+            //Rename:
+            if(!existingPackage.getTitle().equalsIgnoreCase(newPackage.getTitle())) {
+                repository.renamePackage(existingPackage.getUUID(), newPackage.getTitle());
+            }            
+
+            existingPackage.updateDescription(newPackage.getDescription());
+
             /* TODO: add more updates to package item from JSON */
-            item.checkin(p.getCheckInComment());
+            existingPackage.checkin(newPackage.getCheckInComment());
             repository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);

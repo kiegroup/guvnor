@@ -33,7 +33,9 @@ public class PackageMetadata {
     private String lastContributor;
     
     private String state;
-
+    
+    private boolean archived;
+    
     @XmlElement
     public String getUuid() {
         return uuid;
@@ -78,4 +80,14 @@ public class PackageMetadata {
 	public void setState(String state) {
 		this.state = state;
 	}      
+    
+    @XmlElement
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+    
 }

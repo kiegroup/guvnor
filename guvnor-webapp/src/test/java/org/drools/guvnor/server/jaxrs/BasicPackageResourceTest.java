@@ -470,7 +470,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		
 		//Test update package
         Entry e = abdera.newEntry();
-        e.setTitle("testUpdatePackageFromAtom");
+        e.setTitle("testCreatePackageFromAtom");
         org.apache.abdera.model.Link l = Abdera.getNewFactory().newLink();
         l.setHref(generateBaseUrl() + "/packages/" + "testCreatePackageFromAtom");
         l.setRel("self");
@@ -562,34 +562,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
         System.out.println(GetContent(connection));
-    }
-
-    @Test @Ignore
-    public void testUpdatePackageFromJAXB() throws Exception {
-        Package p = createTestPackage("TestCreatePackageFromJAXB");
-        p.setDescription("Updated description.");
-        JAXBContext context = JAXBContext.newInstance(p.getClass());
-        Marshaller marshaller = context.createMarshaller();
-        StringWriter sw = new StringWriter();
-        marshaller.marshal(p, sw);
-        String xml = sw.toString();
-        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromJAXB");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("PUT");
-        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
-        connection.setRequestProperty("Content-Length", Integer.toString(xml.getBytes().length));
-        connection.setUseCaches (false);
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-
-        //Send request
-        DataOutputStream wr = new DataOutputStream(
-              connection.getOutputStream());
-        wr.writeBytes(xml);
-        wr.flush();
-        wr.close();
-
-        assertEquals(204, connection.getResponseCode());
     }
 
     @Ignore @Test
@@ -1147,6 +1119,306 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals(500, connection.getResponseCode());
     } 
+    
+    @Test 
+    public void testRenamePackageFromAtom() throws Exception {
+        //create a package for testing
+        Abdera abdera = new Abdera();
+        AbderaClient client = new AbderaClient(abdera);
+        Entry entry = abdera.newEntry();
+        entry.setTitle("testRenamePackageFromAtom");
+        entry.setSummary("desc for testRenamePackageFromAtom");
+        
+        ClientResponse resp = client.post(new URL(generateBaseUrl() + "/packages").toExternalForm(), entry);
+        //System.out.println(GetContent(resp.getInputStream()));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        Document<Entry> doc = resp.getDocument();
+        Entry returnedEntry = doc.getRoot();
+        assertEquals("testRenamePackageFromAtom", returnedEntry.getTitle());
+        assertEquals("desc for testRenamePackageFromAtom", returnedEntry.getSummary());
+        
+        
+        //Test rename package
+        Entry e = abdera.newEntry();
+        e.setTitle("testRenamePackageFromAtomNew");
+        org.apache.abdera.model.Link l = Abdera.getNewFactory().newLink();
+        l.setHref(new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtomNew").toExternalForm());
+        l.setRel("self");
+        e.addLink(l);
+        e.setSummary("renamed package testRenamePackageFromAtom");
+        e.addAuthor("Test McTesty");
+        resp = client.put(new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtom").toExternalForm(), e);
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+        assertEquals(204, resp.getStatus());
+
+        
+        //Verify new package is available after renaming
+        URL url1 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtomNew");
+        HttpURLConnection conn1 = (HttpURLConnection)url1.openConnection();
+        String userpassword = "test" + ":" + "password";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        conn1.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn1.setRequestMethod("GET");
+        conn1.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn1.connect();
+        //System.out.println(GetContent(conn));
+        assertEquals (200, conn1.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, conn1.getContentType());
+        
+        InputStream in = conn1.getInputStream();
+        assertNotNull(in);
+        doc = abdera.getParser().parse(in);
+        entry = doc.getRoot();
+        assertEquals("testRenamePackageFromAtomNew", entry.getTitle());
+        assertTrue(entry.getPublished() != null);
+        assertEquals("renamed package testRenamePackageFromAtom", entry.getSummary());
+        
+        
+        //Verify the old package does not exist after renaming
+        URL url2 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtom");
+        HttpURLConnection conn2 = (HttpURLConnection)url2.openConnection();
+        conn2.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn2.setRequestMethod("GET");
+        conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn2.connect();
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals (500, conn2.getResponseCode());
+        
+        
+        //Roll back changes.
+        resp = client.delete(new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtomNew").toExternalForm());
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        
+        //Verify the package is indeed deleted
+        URL url3 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromAtomNew");
+        HttpURLConnection conn3 = (HttpURLConnection)url3.openConnection();
+        conn3.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn3.setRequestMethod("GET");
+        conn3.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn3.connect();
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals (500, conn3.getResponseCode());
+    }
+    
+    @Test
+    public void testRenamePackageFromXML() throws Exception {
+        //create a package for testing
+        Package p = createTestPackage("testRenamePackageFromXML");
+        p.setDescription("desc for testRenamePackageFromXML");
+        JAXBContext context = JAXBContext.newInstance(p.getClass());
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(p, sw);
+        String xml = sw.toString();
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        String userpassword = "test" + ":" + "password";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
+        connection.setRequestProperty("Content-Length", Integer.toString(xml.getBytes().length));
+        connection.setUseCaches (false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        
+        DataOutputStream wr = new DataOutputStream (connection.getOutputStream ());
+        wr.writeBytes (xml);
+        wr.flush ();
+        wr.close ();
+
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        Package result = unmarshalPackageXML(connection.getInputStream());
+        assertEquals("testRenamePackageFromXML", result.getTitle());
+        assertEquals("desc for testRenamePackageFromXML", result.getDescription());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testRenamePackageFromXML/source").toExternalForm(), result.getSourceLink().toString());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testRenamePackageFromXML/binary").toExternalForm(), result.getBinaryLink().toString());
+        PackageMetadata pm = result.getMetadata();
+        assertFalse(pm.isArchived());
+        assertNotNull(pm.getCreated());
+        assertNotNull(pm.getUuid());
+        assertNotNull(pm.getLastModified());
+        
+        
+        //Test rename package
+        p.setDescription("renamed package testRenamePackageFromXML");
+        p.setTitle("testRenamePackageFromXMLNew");
+        JAXBContext context2 = JAXBContext.newInstance(p.getClass());
+        Marshaller marshaller2 = context2.createMarshaller();
+        StringWriter sw2 = new StringWriter();
+        marshaller2.marshal(p, sw2);
+        String xml2 = sw2.toString();
+        URL url2 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromXML");
+        HttpURLConnection connection2 = (HttpURLConnection)url2.openConnection();
+        connection2.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection2.setRequestMethod("PUT");
+        connection2.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
+        connection2.setRequestProperty("Content-Length", Integer.toString(xml2.getBytes().length));
+        connection2.setUseCaches (false);
+        //connection2.setDoInput(true);
+        connection2.setDoOutput(true);
+
+        OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
+        out.write(xml2);
+        out.close();
+        connection2.getInputStream();
+        //assertEquals (200, connection2.getResponseCode());
+        
+        //Verify the new package is available after renaming
+        URL url3 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromXMLNew");
+        HttpURLConnection conn3 = (HttpURLConnection)url3.openConnection();
+        conn3.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn3.setRequestMethod("GET");
+        conn3.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn3.connect();
+        //System.out.println(GetContent(conn));
+        assertEquals (200, conn3.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, conn3.getContentType());
+        
+        InputStream in = conn3.getInputStream();
+        assertNotNull(in);
+        Document<Entry> doc = abdera.getParser().parse(in);
+        Entry entry = doc.getRoot();
+        assertEquals("testRenamePackageFromXMLNew", entry.getTitle());
+        assertTrue(entry.getPublished() != null);
+        assertEquals("renamed package testRenamePackageFromXML", entry.getSummary());
+        
+        
+        //Verify the old package does not exist after renaming
+        URL url4 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromXML");
+        HttpURLConnection conn4 = (HttpURLConnection)url4.openConnection();
+        conn4.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn4.setRequestMethod("GET");
+        conn4.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn4.connect();
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals (500, conn4.getResponseCode());
+        
+        
+        //Roll back changes.
+        Abdera abdera = new Abdera();
+        AbderaClient client = new AbderaClient(abdera);
+        ClientResponse resp = client.delete(new URL(generateBaseUrl() + "/packages/testRenamePackageFromXMLNew").toExternalForm());
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+
+        
+        //Verify the package is indeed deleted
+        URL url5 = new URL(generateBaseUrl() + "/packages/testRenamePackageFromXMLNew");
+        HttpURLConnection conn5 = (HttpURLConnection)url5.openConnection();
+        conn5.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        conn5.setRequestMethod("GET");
+        conn5.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        conn5.connect();
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals (500, conn5.getResponseCode());
+    }
+    
+    @Test
+    public void testUpdatePackageFromJAXB() throws Exception {
+        //create a package for testing
+        Package p = createTestPackage("testUpdatePackageFromJAXB");
+        p.setDescription("desc for testUpdatePackageFromJAXB");
+        JAXBContext context = JAXBContext.newInstance(p.getClass());
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(p, sw);
+        String xml = sw.toString();
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        String userpassword = "test" + ":" + "password";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
+        connection.setRequestProperty("Content-Length", Integer.toString(xml.getBytes().length));
+        connection.setUseCaches (false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        
+        DataOutputStream wr = new DataOutputStream (connection.getOutputStream ());
+        wr.writeBytes (xml);
+        wr.flush ();
+        wr.close ();
+
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        Package result = unmarshalPackageXML(connection.getInputStream());
+        assertEquals("testUpdatePackageFromJAXB", result.getTitle());
+        assertEquals("desc for testUpdatePackageFromJAXB", result.getDescription());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/source").toExternalForm(), result.getSourceLink().toString());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/binary").toExternalForm(), result.getBinaryLink().toString());
+        PackageMetadata pm = result.getMetadata();
+        assertFalse(pm.isArchived());
+        assertNotNull(pm.getCreated());
+        assertNotNull(pm.getUuid());
+        assertNotNull(pm.getLastModified());
+        
+        
+        //Test update package
+        Package p2 = createTestPackage("testUpdatePackageFromJAXB");
+        p2.setDescription("update package testUpdatePackageFromJAXB");
+        JAXBContext context2 = JAXBContext.newInstance(p2.getClass());
+        Marshaller marshaller2 = context2.createMarshaller();
+        StringWriter sw2 = new StringWriter();
+        marshaller2.marshal(p2, sw2);
+        String xml2 = sw2.toString();
+        URL url2 = new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB");
+        HttpURLConnection connection2 = (HttpURLConnection)url2.openConnection();
+        connection2.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection2.setRequestMethod("PUT");
+        connection2.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
+        connection2.setRequestProperty("Content-Length", Integer.toString(xml2.getBytes().length));
+        connection2.setUseCaches (false);
+        //connection2.setDoInput(true);
+        connection2.setDoOutput(true);
+
+        OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
+        out.write(xml2);
+        out.close();
+        connection2.getInputStream();
+       
+        
+        //Verify
+        URL url3 = new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB");
+        HttpURLConnection connection3 = (HttpURLConnection)url3.openConnection();
+        connection3.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection3.setRequestMethod("GET");
+        connection3.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection3.connect();
+        assertEquals (200, connection3.getResponseCode());
+        assertEquals(MediaType.APPLICATION_XML, connection3.getContentType());
+        //System.out.println("------------------------");
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
+        Package p3 = unmarshalPackageXML(connection3.getInputStream());
+        assertEquals("testUpdatePackageFromJAXB", p3.getTitle());
+        assertEquals("update package testUpdatePackageFromJAXB", p3.getDescription());
+        //assertEquals("version3", p3.getCheckInComment());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/source").toExternalForm(), p3.getSourceLink().toString());
+        assertEquals(new URL(generateBaseUrl() + "/packages/testUpdatePackageFromJAXB/binary").toExternalForm(), p3.getBinaryLink().toString());
+        PackageMetadata pm3 = p3.getMetadata();
+        assertFalse(pm3.isArchived());
+        assertNotNull(pm3.getCreated());
+        assertNotNull(pm3.getUuid());
+        assertNotNull(pm3.getLastModified());
+    }  
     
     public String generateBaseUrl() {
     	return "http://localhost:9080";
