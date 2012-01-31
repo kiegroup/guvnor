@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.messages.Constants;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,7 +24,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import org.drools.guvnor.client.messages.Constants;
 
 /**
  * Simple container for controls to manipulate a Decision Table
@@ -37,14 +38,11 @@ public class DecisionTableControlsWidget extends Composite {
     private Button                      otherwiseButton;
     private Button                      analyzeButton;
 
-    private final boolean               isReadOnly;
-
     public DecisionTableControlsWidget() {
         this( false );
     }
 
     public DecisionTableControlsWidget(final boolean isReadOnly) {
-        this.isReadOnly = isReadOnly;
         Panel panel = new HorizontalPanel();
 
         // Add row button
@@ -86,12 +84,10 @@ public class DecisionTableControlsWidget extends Composite {
     }
 
     /**
-     * Retrieve "otherwise" button
-     * 
-     * @return
+     * Enable the "Otherwise" button
      */
-    Button getOtherwiseButton() {
-        return this.otherwiseButton;
+    void setEnableOtherwiseButton(boolean isEnabled) {
+        otherwiseButton.setEnabled( isEnabled );
     }
 
     /**

@@ -32,9 +32,11 @@ public class VerticalMergableDecisionTableGridWidget extends AbstractVerticalMer
 
     public VerticalMergableDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                    DecisionTableCellValueFactory cellValueFactory,
+                                                   boolean isReadOnly,
                                                    EventBus eventBus) {
         super( resources,
                cellValueFactory,
+               isReadOnly,
                eventBus );
 
         //Wire-up event handlers

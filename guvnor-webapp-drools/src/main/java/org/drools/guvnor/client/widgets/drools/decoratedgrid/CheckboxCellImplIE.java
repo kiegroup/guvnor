@@ -32,7 +32,6 @@ public class CheckboxCellImplIE extends CheckboxCellImpl {
 
     /**
      * Construct a new {@link CheckboxCellImplIE}
-     * 
      */
     public CheckboxCellImplIE() {
         super( "click",
@@ -45,6 +44,12 @@ public class CheckboxCellImplIE extends CheckboxCellImpl {
                                Boolean value,
                                NativeEvent event,
                                ValueUpdater<Boolean> valueUpdater) {
+
+        //If read-only ignore editing events
+        if ( isReadOnly ) {
+            return;
+        }
+
         String type = event.getType();
 
         boolean enterPressed = "keydown".equals( type ) && event.getKeyCode() == KeyCodes.KEY_ENTER;
@@ -53,11 +58,11 @@ public class CheckboxCellImplIE extends CheckboxCellImpl {
             Boolean isChecked = input.isChecked();
 
             /*
-             * Toggle the value if the enter key was pressed and the cell handles
-             * selection or doesn't depend on selection. If the cell depends on
-             * selection but doesn't handle selection, then ignore the enter key and
-             * let the SelectionEventManager determine which keys will trigger a
-             * change.
+             * Toggle the value if the enter key was pressed and the cell
+             * handles selection or doesn't depend on selection. If the cell
+             * depends on selection but doesn't handle selection, then ignore
+             * the enter key and let the SelectionEventManager determine which
+             * keys will trigger a change.
              */
             if ( enterPressed ) {
                 isChecked = !isChecked;
@@ -65,8 +70,9 @@ public class CheckboxCellImplIE extends CheckboxCellImpl {
             }
 
             /*
-             * Save the new value. However, if the cell depends on the selection, then
-             * do not save the value because we can get into an inconsistent state.
+             * Save the new value. However, if the cell depends on the
+             * selection, then do not save the value because we can get into an
+             * inconsistent state.
              */
             if ( value != isChecked ) {
                 setViewData( context.getKey(),

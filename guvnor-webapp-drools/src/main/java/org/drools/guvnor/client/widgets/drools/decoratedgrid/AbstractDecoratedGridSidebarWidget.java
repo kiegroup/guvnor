@@ -43,6 +43,7 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
     RowGroupingChangeEvent.Handler {
 
     protected ResourcesProvider<T> resources;
+    protected boolean              isReadOnly;
     protected EventBus             eventBus;
 
     /**
@@ -54,6 +55,7 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
      * @param eventBus
      */
     public AbstractDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
+                                              boolean isReadOnly,
                                               EventBus eventBus) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
@@ -62,6 +64,7 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.resources = resources;
+        this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
 
         //Wire-up event handlers

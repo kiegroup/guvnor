@@ -77,7 +77,7 @@ public abstract class AbstractCellFactory<T> {
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
         CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
-        //TODO {manstis} ---> Make read-only
+        cbc.setReadOnly( isReadOnly );
         return new DecoratedGridCellValueAdaptor<Boolean>( cbc,
                                                            eventBus );
     }

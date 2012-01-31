@@ -36,9 +36,11 @@ public class VerticalTemplateDataSidebarWidget extends AbstractVerticalDecorated
      * Construct a "sidebar" for a vertical Template Data editor
      */
     public VerticalTemplateDataSidebarWidget(ResourcesProvider<TemplateDataColumn> resources,
-                                                           EventBus eventBus) {
+                                             boolean isReadOnly,
+                                             EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
+               isReadOnly,
                eventBus );
 
         contextMenu = new CopyPasteContextMenu( eventBus );

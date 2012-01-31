@@ -121,6 +121,8 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     protected M                      model;
     protected List<DynamicColumn<T>> sortableColumns  = new ArrayList<DynamicColumn<T>>();
 
+    protected final boolean          isReadOnly;
+
     // Resources
     protected static final Constants constants        = GWT.create( Constants.class );
     protected ResourcesProvider<T>   resources;
@@ -138,6 +140,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
      * @param eventBus
      */
     public AbstractDecoratedGridHeaderWidget(ResourcesProvider<T> resources,
+                                             boolean isReadOnly,
                                              EventBus eventBus) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
@@ -146,6 +149,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.resources = resources;
+        this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
 
         // Container DIV in which the components will live

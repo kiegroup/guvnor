@@ -33,9 +33,10 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
      *            EventBus to which cells can send update events
      */
     public TemplateDataCellFactory(SuggestionCompletionEngine sce,
+                                   boolean isReadOnly,
                                    EventBus eventBus) {
         super( sce,
-               false,
+               isReadOnly,
                eventBus );
     }
 

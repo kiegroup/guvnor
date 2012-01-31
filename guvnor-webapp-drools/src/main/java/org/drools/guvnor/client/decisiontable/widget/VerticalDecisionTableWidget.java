@@ -32,6 +32,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                        EventBus eventBus) {
         super( ctrls,
                sce,
+               isReadOnly,
                eventBus );
 
         VerticalPanel vp = new VerticalPanel();
@@ -49,6 +50,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
                                                                cellFactory,
                                                                cellValueFactory,
+                                                               isReadOnly,
                                                                eventBus );
 
         vp.add( widget );

@@ -114,7 +114,7 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
         this.gridWidget = gridWidget;
         this.headerWidget = headerWidget;
         this.sidebarWidget = sidebarWidget;
-        
+
         //The height of the sidebar controls the height of the resize divider
         this.headerWidget.setSidebar( this.sidebarWidget );
 

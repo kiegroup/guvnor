@@ -30,9 +30,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class VerticalDecoratedTemplateDataGridWidget extends AbstractDecoratedTemplateDataGridWidget {
 
     public VerticalDecoratedTemplateDataGridWidget(ResourcesProvider<TemplateDataColumn> resources,
-                                          TemplateDataCellFactory cellFactory,
-                                          TemplateDataCellValueFactory cellValueFactory,
-                                          EventBus eventBus) {
+                                                   TemplateDataCellFactory cellFactory,
+                                                   TemplateDataCellValueFactory cellValueFactory,
+                                                   boolean isReadOnly,
+                                                   EventBus eventBus) {
         super( resources,
                cellFactory,
                cellValueFactory,
@@ -41,11 +42,14 @@ public class VerticalDecoratedTemplateDataGridWidget extends AbstractDecoratedTe
                new VerticalPanel(),
                new VerticalMergableTemplateDataGridWidget( resources,
                                                            cellValueFactory,
+                                                           isReadOnly,
                                                            eventBus ),
                new TemplateDataHeaderWidget( resources,
+                                             isReadOnly,
                                              eventBus ),
                new VerticalTemplateDataSidebarWidget( resources,
-                                                                   eventBus ) );
+                                                      isReadOnly,
+                                                      eventBus ) );
 
         //Wire-up event handlers
         eventBus.addHandler( SetTemplateDataEvent.TYPE,

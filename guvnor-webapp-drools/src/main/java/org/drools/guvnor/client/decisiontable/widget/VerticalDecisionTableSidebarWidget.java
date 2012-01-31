@@ -37,9 +37,11 @@ public class VerticalDecisionTableSidebarWidget extends AbstractVerticalDecorate
      * Construct a "sidebar" for a vertical Decision Table
      */
     public VerticalDecisionTableSidebarWidget(ResourcesProvider<BaseColumn> resources,
+                                              boolean isReadOnly,
                                               EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
+               isReadOnly,
                eventBus );
 
         contextMenu = new CopyPasteContextMenu( eventBus );
