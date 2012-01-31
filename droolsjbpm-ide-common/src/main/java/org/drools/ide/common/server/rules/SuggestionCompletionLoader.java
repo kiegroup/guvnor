@@ -522,6 +522,8 @@ public class SuggestionCompletionLoader
                     } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
                         MethodSignature signature = methodSignatures.get( factField );
                         signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
+                        signature.genericType = method.getGenericReturnType();
+                        signature.returnType = method.getReturnType();
                     }
                 }
             }
