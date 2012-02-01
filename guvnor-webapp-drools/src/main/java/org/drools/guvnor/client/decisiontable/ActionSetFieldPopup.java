@@ -178,16 +178,25 @@ public class ActionSetFieldPopup extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+                if ( !isValidFactType() ) {
+                    Window.alert( constants.YouMustEnterAColumnFact() );
+                    return;
+                }
+                if ( !isValidFactField() ) {
+                    Window.alert( constants.YouMustEnterAColumnField() );
+                    return;
+                }
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
+
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
                         Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-
+                    
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
@@ -417,6 +426,14 @@ public class ActionSetFieldPopup extends FormStylePopup {
         } );
         pop.show();
 
+    }
+
+    private boolean isValidFactType() {
+        return !(editingCol.getBoundName() == null || "".equals( editingCol.getBoundName() ));
+    }
+
+    private boolean isValidFactField() {
+        return !(editingCol.getFactField() == null || "".equals( editingCol.getFactField() ));
     }
 
     private boolean unique(String header) {

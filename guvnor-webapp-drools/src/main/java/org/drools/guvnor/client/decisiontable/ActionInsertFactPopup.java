@@ -185,11 +185,19 @@ public class ActionInsertFactPopup extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader()
-                        || "".equals( editingCol.getHeader() ) ) {
+                if ( !isValidFactType() ) {
+                    Window.alert( constants.YouMustEnterAColumnPattern() );
+                    return;
+                }
+                if ( !isValidFactField() ) {
+                    Window.alert( constants.YouMustEnterAColumnField() );
+                    return;
+                }
+                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
+
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
                         Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
@@ -464,6 +472,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     private boolean isBindingUnique(String binding) {
         return !validator.isVariableNameUsed( binding );
+    }
+
+    private boolean isValidFactType() {
+        return !(editingCol.getFactType() == null || "".equals( editingCol.getFactType() ));
+    }
+
+    private boolean isValidFactField() {
+        return !(editingCol.getFactField() == null || "".equals( editingCol.getFactField() ));
     }
 
     private Widget doInsertLogical() {

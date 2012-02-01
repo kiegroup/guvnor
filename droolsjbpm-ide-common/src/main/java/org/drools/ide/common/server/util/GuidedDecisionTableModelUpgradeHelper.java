@@ -43,6 +43,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
@@ -63,6 +64,8 @@ public class GuidedDecisionTableModelUpgradeHelper
         assertConditionColumnPatternGrouping( legacyDTModel );
 
         GuidedDecisionTable52 newDTModel = new GuidedDecisionTable52();
+        
+        newDTModel.setTableFormat( TableFormat.EXTENDED_ENTRY );
 
         newDTModel.setTableName( legacyDTModel.tableName );
         newDTModel.setParentName( legacyDTModel.parentName );
