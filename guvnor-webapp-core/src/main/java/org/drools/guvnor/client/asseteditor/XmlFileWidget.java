@@ -16,31 +16,31 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.RuleContentText;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
 
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.RuleContentText;
-
 public class XmlFileWidget extends AssetAttachmentFileWidget
         implements
         SaveEventListener {
 
-    private TextArea text;
-    final private RuleContentText data;
+    private final TextArea        text;
+    private final RuleContentText data;
 
-    public XmlFileWidget( final Asset asset,
+    public XmlFileWidget(final Asset asset,
                           final RuleViewer viewer,
-                          ClientFactory clientFactory,
-                          EventBus eventBus) {
+                          final ClientFactory clientFactory,
+                          final EventBus eventBus) {
         super( asset,
-                viewer,
-                clientFactory,
-                eventBus );
+               viewer,
+               clientFactory,
+               eventBus );
         data = (RuleContentText) asset.getContent();
 
         if ( data.content == null ) {
@@ -55,12 +55,12 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
         text.setStyleName( "default-text-Area" );
 
         text.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 data.content = text.getText();
             }
         } );
 
-        layout.addRow( text );
+        addSupplementaryWidget( text );
     }
 
     public ImageResource getIcon() {

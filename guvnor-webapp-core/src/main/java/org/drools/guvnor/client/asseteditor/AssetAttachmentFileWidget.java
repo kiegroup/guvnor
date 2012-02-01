@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 
 /**
@@ -42,17 +43,22 @@ public abstract class AssetAttachmentFileWidget extends Composite
         implements
         EditorWidget {
 
-    private Constants         constants = GWT.create( Constants.class );
+    protected static final Images    images    = (Images) GWT.create( Images.class );
 
-    private FormPanel         form;
-    protected FormStyleLayout layout;
-    protected Asset           asset;
-    private final EventBus    eventBus;
+    protected static final Constants constants = GWT.create( Constants.class );
+
+    private FormPanel                form;
+    private FormStyleLayout          layout;
+
+    protected final Asset            asset;
+    protected final ClientFactory    clientFactory;
+    protected final EventBus         eventBus;
 
     public AssetAttachmentFileWidget(final Asset asset,
                                      final RuleViewer viewer,
                                      ClientFactory clientFactory,
                                      EventBus eventBus) {
+        this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
         initWidgets( asset.getUuid(),
@@ -87,6 +93,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                                                              form );
 
         Button dl = new Button( constants.Download() );
+        dl.setEnabled( this.asset.versionNumber > 0 );
         dl.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 Window.open( GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
@@ -163,7 +170,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         return t;
     }
 
-    public void addDescription(Widget d) {
+    public void addSupplementaryWidget(Widget d) {
         this.layout.addRow( d );
     }
 

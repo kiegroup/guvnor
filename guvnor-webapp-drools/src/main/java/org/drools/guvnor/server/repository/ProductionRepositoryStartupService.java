@@ -16,25 +16,7 @@
 
 package org.drools.guvnor.server.repository;
 
-
-import org.drools.repository.*;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Specializes;
-import javax.inject.Inject;
-
-import org.jboss.solder.core.Veto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.util.Properties;
 
 @ApplicationScoped
 public class ProductionRepositoryStartupService extends RepositoryStartupService {

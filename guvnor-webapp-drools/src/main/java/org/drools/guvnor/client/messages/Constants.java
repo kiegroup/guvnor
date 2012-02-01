@@ -2610,11 +2610,13 @@ public interface Constants
     String RemoveConstraintValueDefinition();
 
     String RemoveConstraintValueDefinitionQuestion();
-    
+
     String RemoveActionValueDefinition();
 
     String RemoveActionValueDefinitionQuestion();
-    
+
     String CannotDeleteADeclarationThatIsASuperType();
-    
+
+    String ConvertTo0(String convertTo);
+
 }

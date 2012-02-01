@@ -18,10 +18,13 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
@@ -33,29 +36,28 @@ public interface ClientFactory {
 
     PlaceController getPlaceController();
 
-    MultiActivityManager getActivityManager();   
-    
-    ActivityMapper getActivityMapper();       
-    
+    MultiActivityManager getActivityManager();
+
+    ActivityMapper getActivityMapper();
+
     PlaceHistoryHandler getPlaceHistoryHandler();
-    
-    PlaceHistoryMapper getPlaceHistoryMapper();    
+
+    PlaceHistoryMapper getPlaceHistoryMapper();
 
     NavigationViewFactory getNavigationViewFactory();
-    
+
     AssetEditorFactory getAssetEditorFactory();
-    
+
     PerspectiveFactory getPerspectiveFactory();
 
-    WizardFactory getWizardFactory();    
+    WizardFactory getWizardFactory();
 
-    
     ConfigurationServiceAsync getConfigurationService();
 
     ModuleServiceAsync getModuleService();
-    
+
     RepositoryServiceAsync getService();
-    
+
     RepositoryServiceAsync getRepositoryService();
 
     CategoryServiceAsync getCategoryService();
@@ -63,4 +65,5 @@ public interface ClientFactory {
     AssetServiceAsync getAssetService();
 
     SecurityServiceAsync getSecurityService();
+    
 }

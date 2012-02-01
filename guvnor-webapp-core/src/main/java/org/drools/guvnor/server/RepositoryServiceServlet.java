@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.CategoryService;
+import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -34,6 +35,7 @@ import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -735,4 +737,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                      p1 );
     }
 
+    public ConversionResult convertAsset(String uuid,
+                                         String targetFormat) throws SerializationException {
+        return assetService.convertAsset( uuid,
+                                          targetFormat );
+    }
+    
 }

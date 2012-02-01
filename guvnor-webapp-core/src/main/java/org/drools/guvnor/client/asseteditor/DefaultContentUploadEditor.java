@@ -16,19 +16,15 @@
 
 package org.drools.guvnor.client.asseteditor;
 
-import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.Asset;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
-
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.Asset;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
-
-    private static Images images = (Images) GWT.create( Images.class );
 
     public DefaultContentUploadEditor( Asset asset,
                                        RuleViewer viewer,
@@ -38,7 +34,11 @@ public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
                 viewer,
                 clientFactory,
                 eventBus);
-        super.addDescription( new HTML( ((Constants) GWT.create( Constants.class )).UploadNewVersionDescription() ) );
+        super.addSupplementaryWidget( makeDescriptionWidget() );
+    }
+
+    private Widget makeDescriptionWidget() {
+        return new HTML( constants.UploadNewVersionDescription() );
     }
 
     public ImageResource getIcon() {

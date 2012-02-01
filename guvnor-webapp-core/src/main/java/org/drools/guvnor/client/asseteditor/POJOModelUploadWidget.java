@@ -15,24 +15,20 @@
  */
 package org.drools.guvnor.client.asseteditor;
 
-import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.Asset;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
-
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.Asset;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget deals with POJO Model files.
  */
 public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
 
-    private static Images images = (Images) GWT.create( Images.class );
-
-    public POJOModelUploadWidget( Asset asset,
+    public POJOModelUploadWidget(Asset asset,
                                   RuleViewer viewer,
                                   ClientFactory clientFactory,
                                   EventBus eventBus) {
@@ -40,7 +36,11 @@ public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
                 viewer,
                 clientFactory,
                 eventBus );
-        super.addDescription( new HTML( ((Constants) GWT.create( Constants.class )).POJOModelWidgetDescription() ) );
+        super.addSupplementaryWidget( makeDescriptionWidget() );
+    }
+
+    private Widget makeDescriptionWidget() {
+        return new HTML( constants.POJOModelWidgetDescription() );
     }
 
     public ImageResource getIcon() {
