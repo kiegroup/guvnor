@@ -114,8 +114,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
 
         TextColumn<AdminArchivedPageRow> nameColumn = new TextColumn<AdminArchivedPageRow>() {
             public String getValue(AdminArchivedPageRow row) {
-                String name = row.getName();
-                return name;
+                return row.getName();
             }
         };
         columnPicker.addColumn( nameColumn,

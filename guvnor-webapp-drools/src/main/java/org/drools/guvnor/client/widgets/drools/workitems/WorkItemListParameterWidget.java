@@ -24,9 +24,11 @@ import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
 public class WorkItemListParameterWidget extends WorkItemObjectParameterWidget {
 
     public WorkItemListParameterWidget(PortableListParameterDefinition ppd,
-                                       IBindingProvider bindingProvider) {
+                                       IBindingProvider bindingProvider,
+                                       boolean isReadOnly) {
         super( ppd,
-               bindingProvider );
+               bindingProvider,
+               isReadOnly );
         this.parameterName.setText( ppd.getName() );
     }
 

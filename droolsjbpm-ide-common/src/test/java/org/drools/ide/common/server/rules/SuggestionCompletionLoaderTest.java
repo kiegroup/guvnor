@@ -345,7 +345,7 @@ public class SuggestionCompletionLoaderTest {
                       eng.getFieldType( "Address",
                                         "zipCode" ) );
     }
-    
+
     @Test
     public void testGeneratedBeansExtendsPOJOComplex() throws Exception {
         String packageDrl = "package foo \n"
@@ -561,7 +561,8 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "Applicant",
                       eng.getFieldType( "LoanApplication",
                                         "applicant" ) );
-        assertEquals( "Applicant", eng.getFieldClassName( "LoanApplication",
+        assertEquals( "Applicant",
+                      eng.getFieldClassName( "LoanApplication",
                                                           "applicant" ) );
         assertEquals( FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
                       eng.getFieldClassType( "LoanApplication",
@@ -731,4 +732,32 @@ public class SuggestionCompletionLoaderTest {
                       eng.getFieldType( "ReadOnlyFact",
                                         "age" ) );
     }
+
+    @Test
+    public void testLoadDelegatedProperties() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n" +
+                                                                             "import org.drools.ide.common.server.rules.MotherClass\n" +
+                                                                             "import org.drools.ide.common.server.rules.DelegationClass\n" +
+                                                                             "import org.drools.ide.common.server.rules.SubClass\n",
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "MotherClass",
+                                        "status" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "SubClass",
+                                        "message" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "SubClass",
+                                        "status" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE,
+                      eng.getFieldType( "DelegationClass",
+                                        "status" ) );
+    }
+
 }

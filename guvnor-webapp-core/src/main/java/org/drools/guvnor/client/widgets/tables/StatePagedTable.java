@@ -88,9 +88,8 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
 
         TitledTextColumn<StatePageRow> titleColumn = new TitledTextColumn<StatePageRow>() {
             public TitledText getValue(StatePageRow row) {
-                TitledText tt = new TitledText( row.getName(),
+                return new TitledText( row.getName(),
                                                 row.getAbbreviatedDescription() );
-                return tt;
             }
         };
         columnPicker.addColumn( titleColumn,

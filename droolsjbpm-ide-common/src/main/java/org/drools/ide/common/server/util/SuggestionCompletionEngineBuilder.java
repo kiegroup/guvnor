@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader.FieldInfo;
 import org.drools.lang.dsl.DSLMappingEntry;
 
 /**
@@ -43,10 +44,10 @@ public class SuggestionCompletionEngineBuilder {
     private Map<String, FIELD_CLASS_TYPE>                 factTypes             = new HashMap<String, FIELD_CLASS_TYPE>();
     private Map<String, Map<String, Map<String, String>>> annotationsForType    = new HashMap<String, Map<String, Map<String, String>>>();
     private Map<String, String[]>                         fieldsForType         = new HashMap<String, String[]>();
-    private Map<String, String[]>                         modifiersForType      = new HashMap<String, String[]>();
+    //    private Map<String, String[]>                         modifiersForType      = new HashMap<String, String[]>();
     private Map<String, String>                           fieldTypes            = new HashMap<String, String>();
     private Map<String, Class< ? >>                       fieldClasses          = new HashMap<String, Class< ? >>();
-    private Map<String, Field>                            fieldTypesField       = new HashMap<String, Field>();
+    private Map<String, FieldInfo>                        fieldTypesField       = new HashMap<String, FieldInfo>();
     private Map<String, String>                           globalTypes           = new HashMap<String, String>();
     private List<DSLSentence>                             actionDSLSentences    = new ArrayList<DSLSentence>();
     private List<DSLSentence>                             conditionDSLSentences = new ArrayList<DSLSentence>();
@@ -67,9 +68,8 @@ public class SuggestionCompletionEngineBuilder {
         this.factTypes = new HashMap<String, FIELD_CLASS_TYPE>();
         this.annotationsForType = new HashMap<String, Map<String, Map<String, String>>>();
         this.fieldsForType = new HashMap<String, String[]>();
-        this.modifiersForType = new HashMap<String, String[]>();
         this.fieldTypes = new HashMap<String, String>();
-        this.fieldTypesField = new HashMap<String, Field>();
+        this.fieldTypesField = new HashMap<String, FieldInfo>();
         this.globalTypes = new HashMap<String, String>();
         this.actionDSLSentences = new ArrayList<DSLSentence>();
         this.conditionDSLSentences = new ArrayList<DSLSentence>();
@@ -111,32 +111,20 @@ public class SuggestionCompletionEngineBuilder {
      */
     public void addFieldsForType(final String type,
                                  final String[] fields) {
-        String[] oldFields = this.fieldsForType.get(type);
+        String[] oldFields = this.fieldsForType.get( type );
         if ( oldFields != null ) {
-            List<String> mergedFields = new ArrayList<String>(Arrays.asList(oldFields));
+            List<String> mergedFields = new ArrayList<String>( Arrays.asList( oldFields ) );
             for ( String field : fields ) {
-                if (!mergedFields.contains(field)) {
-                    mergedFields.add(field);
+                if ( !mergedFields.contains( field ) ) {
+                    mergedFields.add( field );
                 }
             }
             this.fieldsForType.put( type,
-                    mergedFields.toArray(new String[mergedFields.size()]) );
+                                    mergedFields.toArray( new String[mergedFields.size()] ) );
         } else {
             this.fieldsForType.put( type,
                                     fields );
         }
-    }
-
-    /**
-     * Adds the list of modifiers for a given type
-     * 
-     * @param type
-     * @param fields
-     */
-    public void addModifiersForType(final String type,
-                                    final String[] fields) {
-        this.modifiersForType.put( type,
-                                   fields );
     }
 
     /**
@@ -173,7 +161,7 @@ public class SuggestionCompletionEngineBuilder {
      * @param type
      */
     public void addFieldTypeField(final String field,
-                                  final Field type) {
+                                  final FieldInfo type) {
         this.fieldTypesField.put( field,
                                   type );
     }
@@ -239,7 +227,6 @@ public class SuggestionCompletionEngineBuilder {
      */
     public SuggestionCompletionEngine getInstance() {
         this.instance.setFactTypes( this.factTypes.keySet().toArray( new String[this.factTypes.keySet().size()] ) );
-        this.instance.setModifiers( this.modifiersForType );
 
         //FactType annotations
         Map<String, List<ModelAnnotation>> annotationMap = new HashMap<String, List<ModelAnnotation>>();
@@ -282,7 +269,7 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.setFieldsForTypes( modelMap );
 
         for ( String fieldName : this.fieldTypesField.keySet() ) {
-            Field field = this.fieldTypesField.get( fieldName );
+            FieldInfo field = this.fieldTypesField.get( fieldName );
             if ( field != null ) {
                 String genericType = obtainGenericType( field.getGenericType() );
                 if ( genericType != null ) {
@@ -332,7 +319,7 @@ public class SuggestionCompletionEngineBuilder {
 
     public void addDSLMapping(DSLMappingEntry entry) {
         DSLSentence sen = new DSLSentence();
-        sen.setDefinition( entry.getMappingKey());
+        sen.setDefinition( entry.getMappingKey() );
         if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
             this.conditionDSLSentences.add( sen );
         } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {

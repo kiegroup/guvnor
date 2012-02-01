@@ -29,19 +29,18 @@ public class AssetFormatsTest {
     @Test
     public void testGrouping() {
         String[] formats = AssetFormats.BUSINESS_RULE_FORMATS;
-        for ( int i = 0; i < formats.length; i++ ) {
-            String fmt = formats[i];
-            if (! (fmt.equals( AssetFormats.BUSINESS_RULE )
+        for (String fmt : formats) {
+            if (!(fmt.equals(AssetFormats.BUSINESS_RULE)
                     ||
-                    fmt.equals( AssetFormats.DECISION_SPREADSHEET_XLS )
+                    fmt.equals(AssetFormats.DECISION_SPREADSHEET_XLS)
                     ||
-                    fmt.equals( AssetFormats.DSL_TEMPLATE_RULE )
+                    fmt.equals(AssetFormats.DSL_TEMPLATE_RULE)
                     ||
-                    fmt.equals( AssetFormats.DECISION_TABLE_GUIDED )
+                    fmt.equals(AssetFormats.DECISION_TABLE_GUIDED)
                     ||
-                    fmt.equals( AssetFormats.RULE_TEMPLATE )
-            ) ) {
-                fail("Incorrect grouping of business rules. format=" + fmt );
+                    fmt.equals(AssetFormats.RULE_TEMPLATE)
+            )) {
+                fail("Incorrect grouping of business rules. format=" + fmt);
             }
         }
     }

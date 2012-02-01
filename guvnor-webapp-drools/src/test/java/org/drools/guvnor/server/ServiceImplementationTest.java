@@ -26,12 +26,9 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -64,8 +61,6 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.workitem.AssetWorkDefinitionsLoader;
 import org.drools.guvnor.server.ruleeditor.workitem.ConfigFileWorkDefinitionsLoader;
@@ -90,13 +85,10 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RulesRepository;
 import org.drools.repository.StateItem;
-import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -105,162 +97,11 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  * This is really a collection of integration tests.
  */
+@SuppressWarnings("deprecation")
 public class ServiceImplementationTest extends GuvnorTestBase {
 
     private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
 
-    @Inject
-    private RepositoryStartupService              repositoryStartupService;
-
-    @Inject
-    private MailboxService                        mailboxService;
-
-    @Test
-    @Ignore
-    public void testInboxEvents() throws Exception {
-        
-        // Need to reference @ApplicationScoped bean to force load 
-        // in the absence of @ManagedBean( eager=true ) in JDK1.5
-        // TODO {manstis} Is this the cause of our pain? mailboxService.wakeUp();
-        
-        assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
-
-        //this should trigger the fact that the first user edited something
-        AssetItem as = rulesRepository.loadDefaultModule().addAsset( "testLoadInbox",
-                                                                                "" );
-        as.checkin( "" );
-        Asset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
-
-        TableDataResult res = serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
-        boolean found = false;
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( ras.getUuid() ) ) found = true;
-        }
-        assertTrue( found );
-
-        //but should not be in "incoming" yet
-        found = false;
-        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertFalse( found );
-
-        //Now, the second user comes along, makes a change...
-        RulesRepository repo2 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
-        AssetItem as2 = repo2.loadDefaultModule().loadAsset( "testLoadInbox" );
-        as2.updateContent( "hey" );
-        as2.checkin( "here we go again !" );
-
-        Thread.sleep( 250 );
-
-        //now check that it is in the first users inbox
-        TableDataRow rowMatch = null;
-        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) {
-                rowMatch = row;
-                break;
-            }
-        }
-        assertNotNull( rowMatch );
-        assertEquals( as.getName(),
-                      rowMatch.values[0] );
-        assertEquals( "seconduser",
-                      rowMatch.values[2] ); //should be "from" that user name...
-
-        //shouldn't be in second user's inbox
-        UserInbox secondUsersInbox = new UserInbox( repo2 );
-        secondUsersInbox.loadIncoming();
-        assertEquals( 0,
-                      secondUsersInbox.loadIncoming().size() );
-        assertEquals( 1,
-                      secondUsersInbox.loadRecentEdited().size() );
-
-        //ok lets create a third user...
-        RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "thirduser" ) );
-        AssetItem as3 = repo3.loadDefaultModule().loadAsset( "testLoadInbox" );
-        as3.updateContent( "hey22" );
-        as3.checkin( "here we go again 22!" );
-
-        Thread.sleep( 250 );
-
-        //so should be in second user's inbox
-        assertEquals( 1,
-                      secondUsersInbox.loadIncoming().size() );
-
-        //and also still in the first user's...
-        found = false;
-        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertTrue( found );
-
-        //now lets open it with first user, and check that it disappears from the incoming...
-        repositoryAssetService.loadRuleAsset( as.getUUID() );
-        found = false;
-        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertFalse( found );
-    }
-
-    @Test
-    @Ignore
-    public void testTrackRecentOpenedChanged() throws Exception {
-
-        // Need to reference @ApplicationScoped bean to force load 
-        // in the absence of @ManagedBean( eager=true ) in JDK1.5
-        // TODO {manstis} Is this the cause of our pain? mailboxService.wakeUp();
-
-        UserInbox ib = new UserInbox( rulesRepository );
-        ib.clearAll();
-        rulesRepository.createModule( "testTrackRecentOpenedChanged",
-                                      "desc" );
-        repositoryCategoryService.createCategory( "",
-                                                  "testTrackRecentOpenedChanged",
-                                                  "this is a cat" );
-
-        String id = serviceImplementation.createNewRule( "myrule",
-                                                         "desc",
-                                                         "testTrackRecentOpenedChanged",
-                                                         "testTrackRecentOpenedChanged",
-                                                         "drl" );
-
-        Asset ass = repositoryAssetService.loadRuleAsset( id );
-
-        repositoryAssetService.checkinVersion( ass );
-
-        List<InboxEntry> es = ib.loadRecentEdited();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.getUuid(),
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.getName(),
-                      es.get( 0 ).note );
-
-        ib.clearAll();
-
-        repositoryAssetService.loadRuleAsset( ass.getUuid() );
-        es = ib.loadRecentEdited();
-        assertEquals( 0,
-                      es.size() );
-
-        //now check they have it in their opened list...
-        es = ib.loadRecentOpened();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.getUuid(),
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.getName(),
-                      es.get( 0 ).note );
-
-        assertEquals( 0,
-                      ib.loadRecentEdited().size() );
-    }
-    
     @Test
     public void testDeleteUnversionedRule() throws Exception {
 
@@ -350,7 +191,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                       "testAddRule",
                                                       "another",
                                                       AssetFormats.DECISION_SPREADSHEET_XLS );
-        
+
         //Adding a XLS asset no longer attaches a default asset
         AssetItem dtItem = rulesRepository.loadAssetByUUID( result );
         assertNull( dtItem.getBinaryContentAttachment() );
@@ -539,111 +380,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( fmt );
 
         assertTrue( fmt.length() > 8 );
-    }
-
-    @Test
-    public void testCheckin() throws Exception {
-        // The wakeUp() method doesn't really matter, it's just to make sure mailboxService is constructed and registered
-        mailboxService.wakeUp();
-
-        UserInbox ib = new UserInbox( rulesRepository );
-        List<InboxEntry> inbox = ib.loadRecentEdited();
-
-        repositoryPackageService.listModules();
-
-        repositoryCategoryService.createCategory( "/",
-                                                  "testCheckinCategory",
-                                                  "this is a description" );
-        repositoryCategoryService.createCategory( "/",
-                                                  "testCheckinCategory2",
-                                                  "this is a description" );
-        repositoryCategoryService.createCategory( "testCheckinCategory",
-                                                  "deeper",
-                                                  "description" );
-
-        String uuid = serviceImplementation.createNewRule( "testChecking",
-                                                           "this is a description",
-                                                           "testCheckinCategory",
-                                                           RulesRepository.DEFAULT_PACKAGE,
-                                                           AssetFormats.DRL );
-
-        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
-
-        assertNotNull( asset.getLastModified() );
-
-        asset.getMetaData().setCoverage( "boo" );
-        asset.setContent( new RuleContentText() );
-        ((RuleContentText) asset.getContent()).content = "yeah !";
-        asset.setDescription( "Description 1" );
-
-        Date start = new Date();
-        Thread.sleep( 100 );
-
-        String uuid2 = repositoryAssetService.checkinVersion( asset );
-        assertEquals( uuid,
-                      uuid2 );
-
-        assertTrue( ib.loadRecentEdited().size() > inbox.size() );
-
-        Asset asset2 = repositoryAssetService.loadRuleAsset( uuid );
-        assertNotNull( asset2.getLastModified() );
-        assertTrue( asset2.getLastModified().after( start ) );
-
-        assertEquals( "boo",
-                      asset2.getMetaData().getCoverage() );
-        assertEquals( 1,
-                      asset2.getVersionNumber() );
-
-        assertEquals( "yeah !",
-                      ((RuleContentText) asset2.getContent()).content );
-
-        assertEquals( "Description 1",
-                      asset2.getDescription() );
-
-        asset2.getMetaData().setCoverage( "ya" );
-        asset2.setCheckinComment( "checked in" );
-
-        String cat = asset2.getMetaData().getCategories()[0];
-        asset2.getMetaData().setCategories( new String[3] );
-        asset2.getMetaData().getCategories()[0] = cat;
-        asset2.getMetaData().getCategories()[1] = "testCheckinCategory2";
-        asset2.getMetaData().getCategories()[2] = "testCheckinCategory/deeper";
-        asset2.setDescription( "Description 2" );
-
-        repositoryAssetService.checkinVersion( asset2 );
-
-        asset2 = repositoryAssetService.loadRuleAsset( uuid );
-        assertEquals( "ya",
-                      asset2.getMetaData().getCoverage() );
-        assertEquals( 2,
-                      asset2.getVersionNumber() );
-        assertEquals( "checked in",
-                      asset2.getCheckinComment() );
-        assertEquals( 3,
-                      asset2.getMetaData().getCategories().length );
-        assertEquals( "testCheckinCategory",
-                      asset2.getMetaData().getCategories()[0] );
-        assertEquals( "testCheckinCategory2",
-                      asset2.getMetaData().getCategories()[1] );
-        assertEquals( "testCheckinCategory/deeper",
-                      asset2.getMetaData().getCategories()[2] );
-        assertEquals( "Description 2",
-                      asset2.getDescription() );
-
-        // now lets try a concurrent edit of an asset.
-        // asset3 will be loaded and edited, and then asset2 will try to
-        // clobber, it, which should fail.
-        // as it is optimistically locked.
-        Asset asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
-        asset3.getMetaData().setSubject( "new sub" );
-        repositoryAssetService.checkinVersion( asset3 );
-
-        asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
-        assertFalse( asset3.getVersionNumber() == asset2.getVersionNumber() );
-
-        String result = repositoryAssetService.checkinVersion( asset2 );
-        assertTrue( result.startsWith( "ERR" ) );
-        System.err.println( result.substring( 5 ) );
     }
 
     @Test

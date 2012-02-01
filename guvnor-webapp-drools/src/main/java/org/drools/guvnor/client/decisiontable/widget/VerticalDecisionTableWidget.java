@@ -28,18 +28,21 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
     public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
                                        SuggestionCompletionEngine sce,
+                                       boolean isReadOnly,
                                        EventBus eventBus) {
         super( ctrls,
                sce,
+               isReadOnly,
                eventBus );
 
         VerticalPanel vp = new VerticalPanel();
 
         //Factories for new cell elements
         this.cellFactory = new DecisionTableCellFactory( sce,
+                                                         isReadOnly,
                                                          eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce );
-        
+
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
@@ -47,6 +50,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
                                                                cellFactory,
                                                                cellValueFactory,
+                                                               isReadOnly,
                                                                eventBus );
 
         vp.add( widget );

@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.SerializationException;
 
 public interface AssetServiceAsync {
     /** PLACE THE FOLLOWING IN AssetServiceAsync.java **/
@@ -56,5 +55,6 @@ public interface AssetServiceAsync {
     public void changeState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void changePackageState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0, AsyncCallback<java.lang.Long> cb);
+    public void convertAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<ConversionResult> cb);
     
 }

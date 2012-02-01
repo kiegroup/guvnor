@@ -24,16 +24,10 @@ import java.util.Set;
 
 @XmlRootElement()
 public class Package {
-
     private String title;
-
     private String description;
-
-    private long version;
-
-    private String checkInComment;
-
-    //private String snapshot;
+    private String author;    
+    private Date published;
 
     private URI binaryLink, sourceLink;
 
@@ -87,21 +81,21 @@ public class Package {
     }
 
     @XmlElement
-    public String getCheckInComment() {
-        return checkInComment;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setCheckInComment(String checkInComment) {
-        this.checkInComment = checkInComment;
+    public void setAuthor(String author) {
+        this.author = author;
     }
-
+    
     @XmlElement
-    public long getVersion() {
-        return version;
+    public Date getPublished() {
+        return published;
     }
 
-    public void setVersion(long version) {
-        this.version = version;
+    public void setPublished(Date published) {
+        this.published = published;
     }
 
     @XmlElement

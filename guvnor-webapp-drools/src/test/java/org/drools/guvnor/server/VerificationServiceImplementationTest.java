@@ -16,21 +16,27 @@
 
 package org.drools.guvnor.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
-
-import java.util.HashSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
 
 public class VerificationServiceImplementationTest {
 
@@ -59,6 +65,7 @@ public class VerificationServiceImplementationTest {
     }
 
     @Test
+    @Ignore("See JIRA https://issues.jboss.org/browse/GUVNOR-1812")
     public void testVerifyAsset() throws Exception {
 
 

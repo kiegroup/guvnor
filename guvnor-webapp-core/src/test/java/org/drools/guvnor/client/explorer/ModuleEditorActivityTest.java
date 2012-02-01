@@ -27,21 +27,19 @@ import static org.mockito.Mockito.when;
 public class ModuleEditorActivityTest {
 
     private ClientFactory clientFactory;
-    private ModuleEditorActivity moduleEditorActivity;
-    private ModuleEditorActivityView view;
 
     @Before
     public void setUp() throws Exception {
         clientFactory = mock( ClientFactory.class );
-        NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
+        setUpNavigationFactory();
 
-        view = mock( ModuleEditorActivityView.class );
+        ModuleEditorActivityView view = mock(ModuleEditorActivityView.class);
         when(
                 clientFactory.getNavigationViewFactory().getModuleEditorActivityView()
         ).thenReturn(
                 view
         );
-        moduleEditorActivity = new ModuleEditorActivity( "mockUuid", clientFactory );
+         new ModuleEditorActivity("mockUuid", clientFactory);
     }
 
     private NavigationViewFactory setUpNavigationFactory() {

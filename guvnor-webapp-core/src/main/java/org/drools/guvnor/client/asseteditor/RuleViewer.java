@@ -16,18 +16,17 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.Asset;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
-
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.widgets.MessageWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -48,13 +47,7 @@ public class RuleViewer extends GuvnorEditor {
     @UiField(provided = true)
     final Widget                     editor;
 
-    @UiField
-    MessageWidget                    messageWidget;
-
     protected Asset              asset;
-    private final RuleViewerSettings ruleViewerSettings;
-    private final ClientFactory      clientFactory;
-    private final EventBus           eventBus;
 
     private long                     lastSaved = System.currentTimeMillis();
 
@@ -86,13 +79,12 @@ public class RuleViewer extends GuvnorEditor {
                       EventBus eventBus,
                       RuleViewerSettings ruleViewerSettings) {
         this.asset = asset;
-        this.eventBus = eventBus;
-        this.clientFactory = clientFactory;
 
+        RuleViewerSettings ruleViewerSettings1;
         if ( ruleViewerSettings == null ) {
-            this.ruleViewerSettings = new RuleViewerSettings();
+            ruleViewerSettings1 = new RuleViewerSettings();
         } else {
-            this.ruleViewerSettings = ruleViewerSettings;
+            ruleViewerSettings1 = ruleViewerSettings;
         }
 
         editor = clientFactory.getAssetEditorFactory().getAssetEditor( asset,
@@ -102,7 +94,7 @@ public class RuleViewer extends GuvnorEditor {
 
         // for designer we need to give it more playing room
         if ( editor instanceof BusinessProcessEditor ) {
-            if ( this.ruleViewerSettings.isStandalone() ) {
+            if ( ruleViewerSettings1.isStandalone() ) {
                 // standalone bigger dimensions"
                 editor.setWidth( "100%" );
                 editor.setHeight( "1000px" );
@@ -136,10 +128,6 @@ public class RuleViewer extends GuvnorEditor {
     @Override
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;
-    }
-
-    public void showInfoMessage(String message) {
-        messageWidget.showMessage( message );
     }
 
 }

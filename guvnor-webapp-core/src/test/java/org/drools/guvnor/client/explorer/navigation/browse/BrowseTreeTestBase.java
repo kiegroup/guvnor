@@ -41,7 +41,6 @@ public class BrowseTreeTestBase {
     protected CategoryServiceAsyncMockImpl categoryServiceAsyncMock;
     protected IsTreeItem rootCategoryTreeItem;
     protected IsTreeItem find;
-    private IsTreeItem rootStatesTreeItem;
     protected IsTreeItem incomingInboxTreeItem;
     protected IsTreeItem inboxRecentEdited;
     protected IsTreeItem inboxRecentViewed;
@@ -102,14 +101,14 @@ public class BrowseTreeTestBase {
         find = mock( IsTreeItem.class );
         rootTreeItem = mock( IsTreeItem.class );
         rootCategoryTreeItem = mock( IsTreeItem.class );
-        rootStatesTreeItem = mock( IsTreeItem.class );
+        IsTreeItem rootStatesTreeItem = mock(IsTreeItem.class);
         incomingInboxTreeItem = mock( IsTreeItem.class );
         inboxRecentEdited = mock( IsTreeItem.class );
         inboxRecentViewed = mock( IsTreeItem.class );
         when( view.addFind() ).thenReturn( find );
         when( view.addRootTreeItem() ).thenReturn( rootTreeItem );
         when( view.addRootCategoryTreeItem() ).thenReturn( rootCategoryTreeItem );
-        when( view.addRootStateTreeItem() ).thenReturn( rootStatesTreeItem );
+        when( view.addRootStateTreeItem() ).thenReturn(rootStatesTreeItem);
         when( view.addInboxIncomingTreeItem() ).thenReturn( incomingInboxTreeItem );
         when( view.addInboxRecentEditedTreeItem() ).thenReturn( inboxRecentEdited );
         when( view.addInboxRecentViewedTreeItem() ).thenReturn( inboxRecentViewed );

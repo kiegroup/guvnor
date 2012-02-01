@@ -34,14 +34,10 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 
 public class ModuleTreeItemTest {
 
-
-    private IsTreeItem treeItem;
-    private ModuleTreeItemView view;
-
     @Test
     public void testSetRootItem() throws Exception {
-        treeItem = mock( IsTreeItem.class );
-        view = mock( ModuleTreeItemView.class );
+        IsTreeItem treeItem = mock(IsTreeItem.class);
+        ModuleTreeItemView view = mock(ModuleTreeItemView.class);
         ClientFactory clientFactory = mock( ClientFactory.class );
 
         AssetEditorFactory assetEditorFactory = mock( AssetEditorFactory.class );
@@ -78,10 +74,10 @@ public class ModuleTreeItemTest {
         );
         new ModuleTreeSelectableItem( clientFactory, treeItem, packageConfigData );
 
-        verify( view ).setRootItem( treeItem );
+        verify(view).setRootItem(treeItem);
 
         ArgumentCaptor<ModuleEditorPlace> moduleEditorPlaceArgumentCaptor = ArgumentCaptor.forClass( ModuleEditorPlace.class );
-        verify( view ).setRootUserObject( moduleEditorPlaceArgumentCaptor.capture() );
+        verify(view).setRootUserObject( moduleEditorPlaceArgumentCaptor.capture() );
         ModuleEditorPlace assetViewerPlace = moduleEditorPlaceArgumentCaptor.getValue();
 
         assertEquals( "mockUuid", assetViewerPlace.getUuid() );

@@ -32,7 +32,6 @@ public class BrowseTreeBuilderTest {
 
     private BrowseTreeBuilder builder;
     private BrowseHeaderView stackItemHeaderView;
-    private BrowseTreeView browseTreeView;
     private ClientFactory clientFactory;
     private EventBus eventBus;
     
@@ -42,7 +41,7 @@ public class BrowseTreeBuilderTest {
         builder = new BrowseTreeBuilder( clientFactory, eventBus);
         NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
         stackItemHeaderView = setUpHeaderView( navigationViewFactory );
-        browseTreeView = setUpContentView( navigationViewFactory );
+        BrowseTreeView browseTreeView = setUpContentView(navigationViewFactory);
     }
 
     private NavigationViewFactory setUpNavigationFactory() {

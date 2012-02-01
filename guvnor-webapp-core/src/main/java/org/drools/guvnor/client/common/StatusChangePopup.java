@@ -63,8 +63,8 @@ public class StatusChangePopup extends FormStylePopup {
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] list) {
                 box.addItem( constants.ChooseOne() );
-                for ( int i = 0; i < list.length; i++ ) {
-                    box.addItem( list[i] );
+                for (String aList : list) {
+                    box.addItem(aList);
                 }
                 LoadingPopup.close();
             }

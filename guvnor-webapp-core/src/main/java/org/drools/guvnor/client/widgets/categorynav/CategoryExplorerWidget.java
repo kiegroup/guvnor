@@ -134,12 +134,12 @@ public class CategoryExplorerWidget extends Composite
                                                              } else {
                                                                  hideEmptyTree();
                                                              }
-                                                             for ( int i = 0; i < categories.length; i++ ) {
+                                                             for (String category : categories) {
                                                                  TreeItem it = new TreeItem();
-                                                                 it.setHTML( AbstractImagePrototype.create(images.categorySmall()).getHTML() + h( categories[i] ) );
-                                                                 it.setUserObject( categories[i] );
-                                                                 it.addItem( new PendingItem() );
-                                                                 root.addItem( it );
+                                                                 it.setHTML(AbstractImagePrototype.create(images.categorySmall()).getHTML() + h(category));
+                                                                 it.setUserObject(category);
+                                                                 it.addItem(new PendingItem());
+                                                                 root.addItem(it);
                                                              }
 
                                                              root.setState( true );
@@ -190,13 +190,13 @@ public class CategoryExplorerWidget extends Composite
                                                          // root.removeItem( child );
                                                          child.setVisible( false );
                                                      }
-                                                     for ( int i = 0; i < list.length; i++ ) {
+                                                     for (String aList : list) {
                                                          TreeItem it = new TreeItem();
-                                                         it.setHTML( AbstractImagePrototype.create(images.categorySmall()).getHTML() + h( list[i] ) );
-                                                         it.setUserObject( list[i] );
-                                                         it.addItem( new PendingItem() );
+                                                         it.setHTML(AbstractImagePrototype.create(images.categorySmall()).getHTML() + h(aList));
+                                                         it.setUserObject(aList);
+                                                         it.addItem(new PendingItem());
 
-                                                         root.addItem( it );
+                                                         root.addItem(it);
                                                      }
                                                  }
 

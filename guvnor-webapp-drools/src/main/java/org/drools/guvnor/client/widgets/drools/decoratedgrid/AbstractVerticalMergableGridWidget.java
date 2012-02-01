@@ -53,9 +53,11 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
 
     public AbstractVerticalMergableGridWidget(ResourcesProvider<T> resources,
                                               AbstractCellValueFactory<T, ? > cellValueFactory,
+                                              boolean isReadOnly,
                                               EventBus eventBus) {
         super( resources,
                cellValueFactory,
+               isReadOnly,
                eventBus );
     }
 
@@ -293,7 +295,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
 
     //Handle "Key Down" events relating to keyboard navigation
     private void handleKeyboardNavigationEvent(Event event) {
-        if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
+        if ( event.getKeyCode() == KeyCodes.KEY_DELETE && !isReadOnly ) {
             for ( CellValue< ? > cell : selections ) {
                 cell.removeState( CellState.OTHERWISE );
             }
@@ -301,15 +303,13 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
-                    || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
-                            .getShiftKey()) ) {
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && !event.getShiftKey()) ) {
             moveSelection( MOVE_DIRECTION.RIGHT );
             event.preventDefault();
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
-                    || (event.getKeyCode() == KeyCodes.KEY_TAB && event
-                            .getShiftKey()) ) {
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && event.getShiftKey()) ) {
             moveSelection( MOVE_DIRECTION.LEFT );
             event.preventDefault();
             return;

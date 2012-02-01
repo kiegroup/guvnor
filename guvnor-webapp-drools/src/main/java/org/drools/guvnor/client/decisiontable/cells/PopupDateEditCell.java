@@ -33,8 +33,9 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
     private final DatePicker     datePicker;
     private final DateTimeFormat format;
 
-    public PopupDateEditCell(DateTimeFormat format) {
-        super();
+    public PopupDateEditCell(DateTimeFormat format,
+                             boolean isReadOnly) {
+        super( isReadOnly );
         if ( format == null ) {
             throw new IllegalArgumentException( "format == null" );
         }

@@ -538,18 +538,21 @@ public class FactPatternWidget extends RuleModellerWidget {
             Label lbl = new Label( constants.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
             hp.add( lbl );
-            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c );
+            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
+                                                                             readOnly );
 
-            cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+            if ( !this.isReadOnly() ) {
+                cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                    setModified( true );
-                    OperatorSelection selection = event.getValue();
-                    String selected = selection.getValue();
-                    c.getWindow().setOperator( selected );
-                    getModeller().makeDirty();
-                }
-            } );
+                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                        setModified( true );
+                        OperatorSelection selection = event.getValue();
+                        String selected = selection.getValue();
+                        c.getWindow().setOperator( selected );
+                        getModeller().makeDirty();
+                    }
+                } );
+            }
 
             hp.add( cwo );
             return hp;

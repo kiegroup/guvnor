@@ -37,9 +37,7 @@ public class RuleFlowConnectionFactory {
             throw new RuntimeException( "Connection needs existing from and to nodes." );
         }
 
-        RectilinearTwoEndedConnection connection = new RectilinearTwoEndedConnection( UIObjectConnector.wrap( from ),
+        return new RectilinearTwoEndedConnection( UIObjectConnector.wrap( from ),
                                                                                       UIObjectConnector.wrap( to ) );
-
-        return connection;
     }
 }

@@ -16,11 +16,14 @@
 
 package org.drools.guvnor.client.rpc;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Returned by the builder.
  */
-public class BuilderResultLine extends AbstractPageRow {
+public class BuilderResultLine
+        extends AbstractPageRow
+        implements IsSerializable {
 
     private String assetFormat;
     private String assetName;
@@ -65,17 +68,17 @@ public class BuilderResultLine extends AbstractPageRow {
 
     public String toString() {
         return "Asset: "
-               + assetName
-               + "."
-               + assetFormat
-               + "\n"
-               + // NON-NLS
-               "Message: "
-               + message
-               + "\n"
-               + // NON-NLS
-               "UUID: "
-               + uuid; // NON-NLS
+                + assetName
+                + "."
+                + assetFormat
+                + "\n"
+                + // NON-NLS
+                "Message: "
+                + message
+                + "\n"
+                + // NON-NLS
+                "UUID: "
+                + uuid; // NON-NLS
     }
 
 }

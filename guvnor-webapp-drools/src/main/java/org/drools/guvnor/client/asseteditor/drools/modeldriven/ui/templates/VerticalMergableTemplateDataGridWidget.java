@@ -30,9 +30,11 @@ public class VerticalMergableTemplateDataGridWidget extends AbstractVerticalMerg
 
     public VerticalMergableTemplateDataGridWidget(ResourcesProvider<TemplateDataColumn> resources,
                                                   TemplateDataCellValueFactory cellValueFactory,
+                                                  boolean isReadOnly,
                                                   EventBus eventBus) {
         super( resources,
                cellValueFactory,
+               isReadOnly,
                eventBus );
 
         //Wire-up event handlers

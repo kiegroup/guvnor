@@ -60,21 +60,21 @@ public class RuleTemplateEditor extends DirtyableComposite
     @SuppressWarnings("unused")
     private EventBus                   globalEventBus;
 
-    public RuleTemplateEditor(Asset asset,
-                              RuleViewer viewer,
-                              ClientFactory clientFactory,
-                              EventBus globalEventBus) {
+    public RuleTemplateEditor(final Asset asset,
+                              final RuleViewer viewer,
+                              final ClientFactory clientFactory,
+                              final EventBus globalEventBus) {
 
         this.globalEventBus = globalEventBus;
-        model = (TemplateModel) asset.getContent();
-        ruleModeller = new RuleModeller( asset,
-                                         null,
-                                         clientFactory,
-                                         eventBus,
-                                         new TemplateModellerWidgetFactory() );
+        this.model = (TemplateModel) asset.getContent();
+        this.ruleModeller = new RuleModeller( asset,
+                                              null,
+                                              clientFactory,
+                                              eventBus,
+                                              new TemplateModellerWidgetFactory() );
 
         String packageName = asset.getMetaData().getModuleName();
-        sce = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
+        this.sce = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();
         tPanel.setWidth( "100%" );
@@ -92,6 +92,7 @@ public class RuleTemplateEditor extends DirtyableComposite
 
                                         //Initialise table to edit data
                                         table = new TemplateDataTableWidget( sce,
+                                                                             asset.readonly,
                                                                              eventBus );
                                         table.setPixelSize( width,
                                                             height );

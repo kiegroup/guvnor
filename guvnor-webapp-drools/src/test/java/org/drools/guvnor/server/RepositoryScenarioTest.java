@@ -15,9 +15,15 @@
  */
 package org.drools.guvnor.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -33,10 +39,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RulesRepository;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RepositoryScenarioTest extends GuvnorTestBase {
 
@@ -333,7 +336,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         AssetItem asset = pkg.addAsset( "testRule",
                                         "" );
         asset.updateFormat(AssetFormats.DRL);
-        asset.updateContent("rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end" );
+        asset.updateContent("rule 'MyGoodRule' \n when Board() then System.err.println(42); \n end" );
         asset.checkin("");
         rulesRepository.save();
 
@@ -395,7 +398,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
         model.updateFormat(AssetFormats.MODEL);
-        model.updateBinaryContentAttachment(this.getClass().getResourceAsStream("/jarWithSourceFiles.jar" ) );
+        model.updateBinaryContentAttachment(this.getClass().getResourceAsStream("jarWithSourceFiles.jar" ) );
         model.checkin("");
 
         DroolsHeader.updateDroolsHeader("import org.test.Person; \n import org.test.Banana; \n ",

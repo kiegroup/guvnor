@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.messages.Constants;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,72 +24,75 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import org.drools.guvnor.client.messages.Constants;
 
 /**
  * Simple container for controls to manipulate a Decision Table
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    protected static final Constants messages = GWT.create(Constants.class);
+    protected static final Constants    messages = GWT.create( Constants.class );
 
     private AbstractDecisionTableWidget dtable;
 
-    private Button addRowButton;
-    private Button otherwiseButton;
-    private Button analyzeButton;
+    private Button                      addRowButton;
+    private Button                      otherwiseButton;
+    private Button                      analyzeButton;
 
     public DecisionTableControlsWidget() {
+        this( false );
+    }
+
+    public DecisionTableControlsWidget(final boolean isReadOnly) {
         Panel panel = new HorizontalPanel();
 
         // Add row button
-        addRowButton = new Button(messages.AddRow(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.appendRow();
-                        }
-                    }
-                });
-        panel.add(addRowButton);
+        addRowButton = new Button( messages.AddRow(),
+                                   new ClickHandler() {
+                                       public void onClick(ClickEvent event) {
+                                           if ( dtable != null ) {
+                                               dtable.appendRow();
+                                           }
+                                       }
+                                   } );
+        addRowButton.setEnabled( !isReadOnly );
+        panel.add( addRowButton );
 
-        otherwiseButton = new Button(messages.Otherwise(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.makeOtherwiseCell();
-                        }
-                    }
-                });
-        otherwiseButton.setEnabled(false);
-        panel.add(otherwiseButton);
+        otherwiseButton = new Button( messages.Otherwise(),
+                                      new ClickHandler() {
+                                          public void onClick(ClickEvent event) {
+                                              if ( dtable != null ) {
+                                                  dtable.makeOtherwiseCell();
+                                              }
+                                          }
+                                      } );
+        otherwiseButton.setEnabled( false );
+        panel.add( otherwiseButton );
 
         // Add row button
-        analyzeButton = new Button(messages.Analyze(),
-                new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if (dtable != null) {
-                            dtable.analyze();
-                        }
-                    }
-                });
-        panel.add(analyzeButton);
+        analyzeButton = new Button( messages.Analyze(),
+                                    new ClickHandler() {
+                                        public void onClick(ClickEvent event) {
+                                            if ( dtable != null ) {
+                                                dtable.analyze();
+                                            }
+                                        }
+                                    } );
+        analyzeButton.setEnabled( !isReadOnly );
+        panel.add( analyzeButton );
 
-        initWidget(panel);
+        initWidget( panel );
     }
 
     /**
-     * Retrieve "otherwise" button
-     *
-     * @return
+     * Enable the "Otherwise" button
      */
-    Button getOtherwiseButton() {
-        return this.otherwiseButton;
+    void setEnableOtherwiseButton(boolean isEnabled) {
+        otherwiseButton.setEnabled( isEnabled );
     }
 
     /**
      * Inject DecisionTable to which these controls relate
-     *
+     * 
      * @param dtable
      */
     void setDecisionTableWidget(AbstractDecisionTableWidget dtable) {

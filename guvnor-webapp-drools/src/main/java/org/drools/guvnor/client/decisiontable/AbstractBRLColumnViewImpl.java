@@ -68,6 +68,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     protected int                    MIN_WIDTH  = 500;
     protected int                    MIN_HEIGHT = 200;
 
+    protected final boolean          isReadOnly;
+
     @UiField(provided = true)
     RuleModeller                     ruleModeller;
 
@@ -114,6 +116,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.isNew = isNew;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
+        this.isReadOnly = asset.readonly;
 
         this.originalCol = column;
         this.editingCol = cloneBRLColumn( column );
@@ -138,6 +141,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.brlEditorContainer.setHeight( (getPopupHeight() - 120) + "px" );
         this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
+        this.txtColumnHeader.setEnabled( !isReadOnly );
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
     }
 

@@ -154,7 +154,7 @@ public class GuvnorSimplePager extends AbstractPager {
      * The location of the text relative to the paging buttons.
      */
     public static enum TextLocation {
-        CENTER, LEFT, RIGHT;
+        CENTER, LEFT, RIGHT
     }
 
     /**

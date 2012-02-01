@@ -32,6 +32,7 @@ public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedD
     public VerticalDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
+                                                    boolean isReadOnly,
                                                     EventBus eventBus) {
         super( resources,
                cellFactory,
@@ -41,10 +42,13 @@ public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedD
                new VerticalPanel(),
                new VerticalMergableDecisionTableGridWidget( resources,
                                                             cellValueFactory,
+                                                            isReadOnly,
                                                             eventBus ),
                new VerticalDecisionTableHeaderWidget( resources,
+                                                      isReadOnly,
                                                       eventBus ),
                new VerticalDecisionTableSidebarWidget( resources,
+                                                       isReadOnly,
                                                        eventBus ) );
     }
 

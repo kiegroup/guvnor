@@ -110,6 +110,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected DecisionTableCellValueFactory               cellValueFactory;
     protected DecisionTableControlsWidget                 dtableCtrls;
     protected final EventBus                              eventBus;
+    protected final boolean                               isReadOnly;
     private BRLRuleModel                                  rm;
 
     //Rows that have been copied in a copy-paste operation
@@ -124,6 +125,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public AbstractDecisionTableWidget(DecisionTableControlsWidget dtableCtrls,
                                        SuggestionCompletionEngine sce,
+                                       boolean isReadOnly,
                                        EventBus eventBus) {
 
         if ( dtableCtrls == null ) {
@@ -139,6 +141,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
         this.eventBus = eventBus;
+        this.isReadOnly = isReadOnly;
 
         //Wire-up the events
         eventBus.addHandler( InsertRowEvent.TYPE,
@@ -2114,11 +2117,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     public void onSelectedCellChange(SelectedCellChangeEvent event) {
         if ( event.getCellSelectionDetail() == null ) {
-            dtableCtrls.getOtherwiseButton().setEnabled( false );
+            dtableCtrls.setEnableOtherwiseButton( false );
         } else {
             Coordinate c = event.getCellSelectionDetail().getCoordinate();
             BaseColumn column = model.getExpandedColumns().get( c.getCol() );
-            dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( column ) );
+            dtableCtrls.setEnableOtherwiseButton( canAcceptOtherwiseValues( column ) && !this.isReadOnly );
         }
     }
 

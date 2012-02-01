@@ -45,9 +45,8 @@ public class AdminTree extends Tree {
                 {constants.About(), images.information(), "6"}
         };
 
-        for (int i = 0; i < adminStructure.length; i++) {
+        for (Object[] packageData : adminStructure) {
 
-            Object[] packageData = adminStructure[i];
             TreeItem localChildNode = new TreeItem(Util.getHeader((ImageResource) packageData[1], (String) packageData[0]));
             itemWidgets.put(localChildNode, (String) packageData[2]);
 

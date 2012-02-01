@@ -40,7 +40,6 @@ public class WSDLParser {
 
     //private String portTypesOperations[][] = new String[][];
     private Document document = null;
-    private Element rootElement = null;
 
     public WSDLParser() {
     }
@@ -132,7 +131,7 @@ public class WSDLParser {
     }
 
     public void createRootElement(String root) {
-        rootElement = (Element) document.createElement("node");
+        Element rootElement = (Element) document.createElement("node");
         rootElement.setAttribute("label", root);
         document.appendChild(rootElement);
     }

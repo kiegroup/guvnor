@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 public class ModulesTreeTest {
 
     private ModulesTreeView view;
-    private ModulesTree presenter;
+   ;
 
     @Before
     public void setUp() throws Exception {
@@ -99,7 +99,7 @@ public class ModulesTreeTest {
         );
         EventBus eventBus = mock( EventBus.class );
 
-        presenter = new ModulesTree( clientFactory ,eventBus, "AuthorPerspective");
+        new ModulesTree( clientFactory ,eventBus, "AuthorPerspective");
     }
 
     private void setUpUserCapabilities( boolean canMakeNewAssets ) {

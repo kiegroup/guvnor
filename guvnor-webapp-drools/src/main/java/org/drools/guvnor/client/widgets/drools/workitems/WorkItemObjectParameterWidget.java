@@ -49,7 +49,8 @@ public class WorkItemObjectParameterWidget extends WorkItemParameterWidget {
     private static WorkItemObjectParameterWidgetBinder uiBinder = GWT.create( WorkItemObjectParameterWidgetBinder.class );
 
     public WorkItemObjectParameterWidget(PortableObjectParameterDefinition ppd,
-                                         IBindingProvider bindingProvider) {
+                                         IBindingProvider bindingProvider,
+                                         boolean isReadOnly) {
         super( ppd,
                bindingProvider );
 
@@ -59,7 +60,7 @@ public class WorkItemObjectParameterWidget extends WorkItemParameterWidget {
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );
-            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;
             for ( String binding : bindings ) {

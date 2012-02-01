@@ -164,9 +164,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
         TitledTextColumn<QueryPageRow> titleColumn = new TitledTextColumn<QueryPageRow>() {
             public TitledText getValue(QueryPageRow row) {
-                TitledText tt = new TitledText( row.getName(),
+                return new TitledText( row.getName(),
                                                 row.getAbbreviatedDescription() );
-                return tt;
             }
         };
         columnPicker.addColumn( titleColumn,

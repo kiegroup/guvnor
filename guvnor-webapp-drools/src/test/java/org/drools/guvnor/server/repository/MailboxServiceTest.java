@@ -17,16 +17,13 @@
 package org.drools.guvnor.server.repository;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
-import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.junit.Test;
 
@@ -37,37 +34,36 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testMailbox() throws Exception {
-        // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
         AssetItem asset = rulesRepository.loadDefaultModule().addAsset( "testMailbox",
-                                                              "" );
+                                                                        "" );
 
         UserInbox mailman = new UserInbox( rulesRepository,
                                            GuvnorBootstrapConfiguration.MAILMAN_USERNAME_DEFAULT );
-        assertEquals(0,
-                mailman.loadIncoming().size());
+        assertEquals( 0,
+                      mailman.loadIncoming().size() );
 
         UserInbox ib = new UserInbox( rulesRepository,
                                       "mic" );
-        ib.addToRecentEdited(asset.getUUID(),
-                "hey");
+        ib.addToRecentEdited( asset.getUUID(),
+                              "hey" );
         assertEquals( 0,
                       ib.loadIncoming().size() );
 
         UserInbox ib2 = new UserInbox( rulesRepository,
                                        "mic2" );
-        ib2.addToRecentEdited(asset.getUUID(),
-                "hey");
+        ib2.addToRecentEdited( asset.getUUID(),
+                               "hey" );
         assertEquals( 0,
                       ib2.loadIncoming().size() );
 
-        mailboxService.recordItemUpdated(asset);
+        mailboxService.recordItemUpdated( asset );
 
-        Thread.sleep(300);
+        Thread.sleep( 300 );
 
         List<InboxEntry> es = ib.loadIncoming();
-        assertEquals(1,
-                es.size());
+        assertEquals( 1,
+                      es.size() );
         assertEquals( asset.getUUID(),
                       es.get( 0 ).assetUUID );
 
@@ -81,7 +77,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
                       mailman.loadIncoming().size() );
 
         AssetItem ass2 = rulesRepository.loadDefaultModule().addAsset( "testMailbox2",
-                                                             "XX" );
+                                                                       "XX" );
 
         ib2.addToRecentEdited( ass2.getUUID(),
                                "hey" );
@@ -99,8 +95,8 @@ public class MailboxServiceTest extends GuvnorTestBase {
                       ib2.loadIncoming().size() );
         assertEquals( 0,
                       mailman.loadIncoming().size() );
-        assertEquals(1,
-                ib.loadIncoming().size());
+        assertEquals( 1,
+                      ib.loadIncoming().size() );
 
         mailboxService.wakeUp();
         assertEquals( 2,
@@ -114,11 +110,11 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testOneToMany() throws Exception {
-        // TODO this tests fails because rulesRepository.getSession().getUserID() is "guest" because rulesRepository is created before loginAsAdmin()
 
         String sender = rulesRepository.getSession().getUserID();
         AssetItem asset = rulesRepository.loadDefaultModule().addAsset( "testMailboxOneToMany",
-                                                              "" );
+                                                                        "" );
+
         UserInbox ib1 = new UserInbox( rulesRepository,
                                        sender );
         UserInbox ib2 = new UserInbox( rulesRepository,
@@ -144,7 +140,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
         assertEquals( 0,
                       ib3.loadIncoming().size() );
 
-        mailboxService.recordItemUpdated(asset);
+        mailboxService.recordItemUpdated( asset );
 
         Thread.sleep( 250 );
 
@@ -154,7 +150,6 @@ public class MailboxServiceTest extends GuvnorTestBase {
                       ib2.loadIncoming().size() );
         assertEquals( 1,
                       ib3.loadIncoming().size() );
-
     }
 
 }

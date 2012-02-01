@@ -62,14 +62,16 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
-     * @param model
-     *            The Decision Table model to assist data-type derivation
+     * @param isReadOnly
+     *            Should cells be created for a read-only mode of operation
      * @param eventBus
      *            An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
+                                    boolean isReadOnly,
                                     EventBus eventBus) {
         super( sce,
+               isReadOnly,
                eventBus );
     }
 
@@ -207,7 +209,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         }
 
         //Drop down of possible patterns
-        PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus );
+        PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus,
+                                                                                        isReadOnly );
         BRLRuleModel rm = new BRLRuleModel( model );
         pudd.setFactBindings( rm.getLHSBoundFacts() );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
@@ -242,7 +245,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         } else {
 
             // Columns with lists of values, enums etc are always Text (for now)
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
             pudd.setItems( vals );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );
@@ -252,7 +255,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
     // Make a new Cell for Dialect columns
     private DecoratedGridCellValueAdaptor<String> makeDialectCell() {
-        PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+        PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
         pudd.setItems( DIALECTS );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );

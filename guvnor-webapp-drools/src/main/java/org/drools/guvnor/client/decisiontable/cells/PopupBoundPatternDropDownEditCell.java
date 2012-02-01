@@ -37,8 +37,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * PatternsChangedEvents so that it's content can be maintained as and when
  * Patterns are added, deleted or edited.
  */
-public class PopupBoundPatternDropDownEditCell extends
-        AbstractPopupEditCell<String, String>
+public class PopupBoundPatternDropDownEditCell extends AbstractPopupEditCell<String, String>
     implements
     BoundFactsChangedEvent.Handler {
 
@@ -46,8 +45,9 @@ public class PopupBoundPatternDropDownEditCell extends
 
     private final ListBox listBox;
 
-    public PopupBoundPatternDropDownEditCell(EventBus eventBus) {
-        super();
+    public PopupBoundPatternDropDownEditCell(EventBus eventBus,
+                                             boolean isReadOnly) {
+        super( isReadOnly );
         this.listBox = new ListBox();
 
         // Tabbing out of the ListBox commits changes

@@ -23,26 +23,15 @@ import java.util.Date;
 
 @XmlRootElement(name="metadata")
 public class AssetMetadata {
-
     private String Uuid;
-
-    private String title;
-
     private String[] categories;
-
-    private Date lastModified;
-
     private String note;
-
     private Date created;
-
-    private String createdBy;
-
     private String format;
-
-    private boolean disabled;
-    
+    private boolean disabled;    
     private String state;
+    private long versionNumber;
+    private String checkInComment;
     
     @XmlElement
     public String getUuid() {
@@ -54,30 +43,12 @@ public class AssetMetadata {
     }
 
     @XmlElement
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @XmlElement
     public String[] getCategories() {
         return categories;
     }
 
     public void setCategories(String[] categories) {
         this.categories = categories;
-    }
-
-    @XmlElement
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
     }
 
     @XmlElement
@@ -96,15 +67,6 @@ public class AssetMetadata {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    @XmlElement
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     @XmlElement
@@ -132,5 +94,23 @@ public class AssetMetadata {
 
 	public void setState(String state) {
 		this.state = state;
-	}  
+	}  	
+
+    @XmlElement
+    public long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+    @XmlElement
+    public String getCheckInComment() {
+        return checkInComment;
+    }
+
+    public void setCheckInComment(String checkInComment) {
+        this.checkInComment = checkInComment;
+    } 
 }

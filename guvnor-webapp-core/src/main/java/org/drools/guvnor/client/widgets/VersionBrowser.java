@@ -150,14 +150,13 @@ public class VersionBrowser extends Composite {
 
                         final ListBox history = new ListBox( true );
 
-                        for (int i = 0; i < rows.length; i++) {
-                            TableDataRow row = rows[i];
+                        for (TableDataRow row : rows) {
                             String s = constants.property0ModifiedOn1By23(row.values[0],
-                                                                          row.values[2],
-                                                                          row.values[4],
-                                                                          row.values[1] );
-                            history.addItem( s,
-                                             row.id );
+                                    row.values[2],
+                                    row.values[4],
+                                    row.values[1]);
+                            history.addItem(s,
+                                    row.id);
                         }
 
                         layout.setWidget( 1,
@@ -211,7 +210,7 @@ public class VersionBrowser extends Composite {
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                     constants.VersionNumber0Of1( conf.getVersionNumber(),
                                             conf.getName() ),
-                                    new Integer( 800 ) );
+                                    800);
 
                             ModuleEditorWrapper ed = new ModuleEditorWrapper(
                                     conf,
@@ -238,7 +237,7 @@ public class VersionBrowser extends Composite {
                                     constants.VersionNumber0Of1(
                                             asset.getVersionNumber(),
                                             asset.getName() ),
-                                    new Integer( 800 ) );
+                                    800);
 
                             Button restore = new Button( constants.RestoreThisVersion() );
                             restore.addClickHandler( new ClickHandler() {

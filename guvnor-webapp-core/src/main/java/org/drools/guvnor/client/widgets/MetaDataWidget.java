@@ -427,12 +427,10 @@ public class MetaDataWidget extends Composite {
 
     static String getVersionFeed(Artifact artifact) {
         if ( artifact instanceof Module ) {
-            String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
-            return hurl;
+            return getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((Asset) artifact).getMetaData().getModuleName()
+            return getRESTBaseURL() + "packages/" + ((Asset) artifact).getMetaData().getModuleName()
                     + "/assets/" + artifact.getName() + "/versions";
-            return hurl;
         }
     }
 

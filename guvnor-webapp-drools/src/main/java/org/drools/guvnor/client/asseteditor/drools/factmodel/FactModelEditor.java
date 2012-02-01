@@ -38,52 +38,48 @@ import java.util.List;
 
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
-    private static Images images = (Images) GWT.create(Images.class);
+    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static Images    images    = (Images) GWT.create( Images.class );
 
     interface FactModelEditorBinder
             extends
             UiBinder<Widget, FactModelEditor> {
     }
 
-    private static FactModelEditorBinder uiBinder = GWT.create(FactModelEditorBinder.class);
+    private static FactModelEditorBinder uiBinder = GWT.create( FactModelEditorBinder.class );
 
     @UiField
-    Image icon;
+    Image                                icon;
     @UiField
-    Label titleLabel;
+    Label                                titleLabel;
     @UiField
-    Image editIcon;
+    Image                                editIcon;
     @UiField
-    Image moveUpIcon;
+    Image                                moveUpIcon;
     @UiField
-    Image moveDownIcon;
+    Image                                moveDownIcon;
     @UiField
-    Image deleteIcon;
+    Image                                deleteIcon;
 
-    private final FactMetaModel factMetaModel;
-    private final List<FactMetaModel> factModels;
-    private Command deleteEvent;
+    private final FactMetaModel          factMetaModel;
+    private final List<FactMetaModel>    superTypeFactModels;
+    private final ModelNameHelper        modelNameHelper;
 
-    private Command moveUpCommand;
-    private Command moveDownCommand;
-
-    private ModelNameHelper modelNameHelper;
-
-    public void setDeleteEvent(Command deleteEvent) {
-
-        this.deleteEvent = deleteEvent;
-    }
+    private Command                      deleteEvent;
+    private Command                      moveUpCommand;
+    private Command                      moveDownCommand;
 
     public FactModelEditor(FactMetaModel factMetaModel,
-                           List<FactMetaModel> factModels) {
+                           List<FactMetaModel> superTypeFactModels,
+                           ModelNameHelper modelNameHelper) {
 
-        this.factModels = factModels;
         this.factMetaModel = factMetaModel;
+        this.superTypeFactModels = superTypeFactModels;
+        this.modelNameHelper = modelNameHelper;
 
-        add(uiBinder.createAndBindUi(this));
+        add( uiBinder.createAndBindUi( this ) );
 
-        titleLabel.setText(getTitleText());
+        titleLabel.setText( getTitleText() );
 
         ClickHandler expandClickHandler = new ClickHandler() {
 
@@ -91,51 +87,51 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
                 onTitleClicked();
             }
         };
-        icon.addClickHandler(expandClickHandler);
-        titleLabel.addClickHandler(expandClickHandler);
+        icon.addClickHandler( expandClickHandler );
+        titleLabel.addClickHandler( expandClickHandler );
 
         setIconImage();
 
-        moveUpIcon.setTitle(constants.MoveUp());
-        moveDownIcon.setTitle(constants.MoveDown());
-        deleteIcon.setTitle(constants.RemoveThisFactType());
+        moveUpIcon.setTitle( constants.MoveUp() );
+        moveDownIcon.setTitle( constants.MoveDown() );
+        deleteIcon.setTitle( constants.RemoveThisFactType() );
 
-        addOpenHandler(new OpenHandler<AbstractLazyStackPanelHeader>() {
+        addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
             public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = true;
                 setIconImage();
             }
-        });
+        } );
 
-        addCloseHandler(new CloseHandler<AbstractLazyStackPanelHeader>() {
+        addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
             public void onClose(CloseEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = false;
                 setIconImage();
             }
-        });
+        } );
     }
 
     private String getTitleText() {
         StringBuilder sb = new StringBuilder();
-        sb.append(factMetaModel.getName());
-        if (factMetaModel.hasSuperType()) {
-            sb.append(" extends ");
-            sb.append(factMetaModel.getSuperType());
+        sb.append( factMetaModel.getName() );
+        if ( factMetaModel.hasSuperType() ) {
+            sb.append( " extends " );
+            sb.append( factMetaModel.getSuperType() );
         }
         return sb.toString();
     }
 
     @UiHandler("editIcon")
     void editIconClick(ClickEvent event) {
-        final FactEditorPopup popup = new FactEditorPopup(factMetaModel,
-                factModels,
-                modelNameHelper);
+        final FactEditorPopup popup = new FactEditorPopup( factMetaModel,
+                                                           superTypeFactModels,
+                                                           modelNameHelper );
 
-        popup.setOkCommand(new Command() {
+        popup.setOkCommand( new Command() {
             public void execute() {
-                titleLabel.setText(getTitleText());
+                titleLabel.setText( getTitleText() );
             }
-        });
+        } );
 
         popup.show();
     }
@@ -152,22 +148,30 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     @UiHandler("deleteIcon")
     void deleteClick(ClickEvent event) {
-        if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFact())) {
+        //Check if the Fact is a super type of any other facts
+        for ( FactMetaModel fmm : superTypeFactModels ) {
+            if ( fmm.hasSuperType() ) {
+                if ( fmm.getSuperType().equals( factMetaModel.getName() ) ) {
+                    Window.confirm( constants.CannotDeleteADeclarationThatIsASuperType() );
+                    return;
+                }
+            }
+        }
+        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFact() ) ) {
             deleteEvent.execute();
         }
     }
 
-    public void setModelNameHelper(ModelNameHelper modelNameHelper) {
-        this.modelNameHelper = modelNameHelper;
+    private void setIconImage() {
+        if ( expanded ) {
+            icon.setResource( images.collapse() );
+        } else {
+            icon.setResource( images.expand() );
+        }
     }
 
-    private void setIconImage() {
-        if (expanded) {
-            icon.setResource(images.collapse());
-        } else {
-            icon.setResource(images.expand());
-        }
-
+    public void setDeleteEvent(Command deleteEvent) {
+        this.deleteEvent = deleteEvent;
     }
 
     public void setMoveDownCommand(Command moveDownCommand) {
@@ -179,32 +183,32 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     public void setUpVisible(boolean visible) {
-        moveUpIcon.setVisible(visible);
+        moveUpIcon.setVisible( visible );
     }
 
     public void setDownVisible(boolean visible) {
-        moveDownIcon.setVisible(visible);
+        moveDownIcon.setVisible( visible );
     }
 
     public void expand() {
-        if (!expanded) {
+        if ( !expanded ) {
             onTitleClicked();
         }
     }
 
     public void collapse() {
-        if (expanded) {
+        if ( expanded ) {
             onTitleClicked();
         }
     }
 
     private void onTitleClicked() {
-        if (expanded) {
-            CloseEvent.fire(this,
-                    this);
+        if ( expanded ) {
+            CloseEvent.fire( this,
+                             this );
         } else {
-            OpenEvent.fire(this,
-                    this);
+            OpenEvent.fire( this,
+                            this );
         }
     }
 
@@ -213,8 +217,8 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     public Widget getContent() {
-        return new FactFieldsEditor(factMetaModel.getFields(),
-                factMetaModel.getAnnotations(),
-                modelNameHelper);
+        return new FactFieldsEditor( factMetaModel.getFields(),
+                                     factMetaModel.getAnnotations(),
+                                     modelNameHelper );
     }
 }

@@ -105,9 +105,8 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 
         TitledTextColumn<AssetPageRow> titleColumn = new TitledTextColumn<AssetPageRow>() {
             public TitledText getValue(AssetPageRow row) {
-                TitledText tt = new TitledText( row.getName(),
+                return new TitledText( row.getName(),
                                                 row.getAbbreviatedDescription() );
-                return tt;
             }
         };
         columnPicker.addColumn( titleColumn,

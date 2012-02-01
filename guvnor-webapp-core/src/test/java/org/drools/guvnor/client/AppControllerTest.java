@@ -34,7 +34,6 @@ import static org.mockito.Mockito.*;
 
 public class AppControllerTest {
 
-    private ClientFactory clientFactory;
     private PlaceHistoryHandler placeHistoryHandler;
     private PlaceController placeController;
     private EventBus eventBus;
@@ -42,7 +41,7 @@ public class AppControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        clientFactory = mock( ClientFactory.class );
+        final ClientFactory clientFactory = mock( ClientFactory.class );
         NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
         PerspectivesPanelView perspectivesPanelView = mock( PerspectivesPanelView.class );
         when(

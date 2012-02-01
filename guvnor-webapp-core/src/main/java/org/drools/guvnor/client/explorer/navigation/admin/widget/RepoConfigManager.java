@@ -57,8 +57,6 @@ public class RepoConfigManager extends Composite {
 
     private RepositoryServiceAsync service            = RepositoryServiceFactory.getService();
     private RdbmsConfigurable      rdbmsConf          = new RdbmsConfigurable();
-    private VerticalPanel          dataInputPanel     = new VerticalPanel();
-    private HorizontalPanel        hPanel1            = new HorizontalPanel();
     private VerticalPanel          vPanel2            = new VerticalPanel();
     private RichTextArea           repoDisplayArea    = new RichTextArea();
     private FlexTable              layoutB            = new FlexTable();
@@ -77,8 +75,10 @@ public class RepoConfigManager extends Composite {
         DockPanel dock = new DockPanel();
         dock.setSpacing( 4 );
         dock.setHorizontalAlignment( DockPanel.ALIGN_CENTER );
-        hPanel1.add( getDbTypePanel() );
-        dataInputPanel.add( hPanel1 );
+        HorizontalPanel hPanel1 = new HorizontalPanel();
+        hPanel1.add(getDbTypePanel());
+        VerticalPanel dataInputPanel = new VerticalPanel();
+        dataInputPanel.add(hPanel1);
         SimplePanel divider = new SimplePanel();
         divider.setSize( "100px",
                          "30px" );
@@ -86,8 +86,8 @@ public class RepoConfigManager extends Composite {
         vPanel2.add( noJndiInfo );
         vPanel2.add( jndiInfo );
         vPanel2.setVisible( false );
-        dataInputPanel.add( vPanel2 );
-        dock.add( dataInputPanel,
+        dataInputPanel.add(vPanel2);
+        dock.add(dataInputPanel,
                   DockPanel.WEST );
 
         repoDisplayArea.setSize( "740px",

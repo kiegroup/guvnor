@@ -118,18 +118,17 @@ public class ExplorerNodeConfig {
             }
 
             private void createChildNodes( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets, String[] value ) {
-                for (int i = 0; i < value.length; i++) {
+                for (final String current : value) {
 
-                    final String current = value[i];
-                    final TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), current ) );
+                    final TreeItem childNode = new TreeItem(Util.getHeader(images.categorySmall(), current));
 
                     //ID for category tabs. 
-                    String widgetId = CATEGORY_ID + "-" + ((path.equals( "/" )) ? current : path + "/" + current);
-                    itemWidgets.put( childNode, widgetId );
-                    treeItem.addItem( childNode );
+                    String widgetId = CATEGORY_ID + "-" + ((path.equals("/")) ? current : path + "/" + current);
+                    itemWidgets.put(childNode, widgetId);
+                    treeItem.addItem(childNode);
 
-                    childNode.addItem( new TreeItem( Util.getHeader( images.categorySmall(), constants.PleaseWaitDotDotDot() ) ) );
-                    childNode.getTree().addOpenHandler( createOpenHandlerForTree( itemWidgets, childNode ) );
+                    childNode.addItem(new TreeItem(Util.getHeader(images.categorySmall(), constants.PleaseWaitDotDotDot())));
+                    childNode.getTree().addOpenHandler(createOpenHandlerForTree(itemWidgets, childNode));
                 }
             }
 

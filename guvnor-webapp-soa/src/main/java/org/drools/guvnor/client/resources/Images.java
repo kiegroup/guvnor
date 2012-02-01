@@ -18,6 +18,7 @@ package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 
 public interface Images
     extends
@@ -347,4 +348,6 @@ public interface Images
     @Source("images/mandatory.png")
     ImageResource mandatory();
 
+    @Source("images/info-large.png")
+    ImageResource infoLarge();
 }

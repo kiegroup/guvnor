@@ -11,12 +11,11 @@ import static org.mockito.Mockito.*;
 public class TasksNavigationItemBuilderTest {
 
     private TasksNavigationItemBuilder builder;
-    private NavigationViewFactory navigationViewFactory;
     private TasksHeaderView tasksHeaderView;
 
     @Before
     public void setUp() throws Exception {
-        navigationViewFactory = mock(NavigationViewFactory.class);
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
         tasksHeaderView = mock(TasksHeaderView.class);
         when(
                 navigationViewFactory.getTasksHeaderView()

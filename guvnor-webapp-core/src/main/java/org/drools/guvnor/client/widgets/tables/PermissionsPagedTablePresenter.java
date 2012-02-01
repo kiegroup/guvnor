@@ -385,7 +385,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                                                                 final Panel vp,
                                                                                 final FormStylePopup pop,
                                                                                 final String sel) {
-                        CategoryExplorerWidget cat = new CategoryExplorerWidget( new CategorySelectHandler() {
+                        return new CategoryExplorerWidget( new CategorySelectHandler() {
                             public void selected(String selectedPath) {
                                 if ( perms.containsKey( sel ) ) {
                                     perms.get( sel ).add( "category="
@@ -402,7 +402,6 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                 pop.hide();
                             }
                         } );
-                        return cat;
                     }
 
                     private void createButtonsAndHandlersForAdmin(final Map<String, List<String>> perms,

@@ -89,14 +89,12 @@ public class RulePackageSelector extends Composite {
      */
     public String getSelectedPackage() {
         int index = packageList.getSelectedIndex();
-        String value = packageList.getItemText( index );
-        return value;
+        return packageList.getItemText( index );
     }
     
     public String getSelectedPackageUUID() {
         int index = packageList.getSelectedIndex();
-        String UUID = packageList.getValue(index);
-        return UUID;
+        return packageList.getValue(index);
     }
 
 }

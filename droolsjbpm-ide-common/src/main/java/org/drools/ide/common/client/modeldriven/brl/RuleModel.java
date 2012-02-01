@@ -242,10 +242,11 @@ public class RuleModel
     }
 
     /**
-     * This will get a list of all bound variables, including bound fields..
+     * This will get a list of all LHS bound variables, including bound fields..
      */
-    public List<String> getAllVariables() {
+    public List<String> getAllLHSVariables(){
         List<String> result = new ArrayList<String>();
+        
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = this.lhs[i];
             if ( pat instanceof FactPattern ) {
@@ -273,7 +274,16 @@ public class RuleModel
                 }
             }
         }
-
+        
+        return result;
+    }
+    
+    /**
+     * This will get a list of all RHS bound variables.
+     */
+    public List<String> getAllRHSVariables() {
+        List<String> result = new ArrayList<String>();
+        
         for ( int i = 0; i < this.rhs.length; i++ ) {
             IAction pat = this.rhs[i];
             if ( pat instanceof ActionInsertFact ) {
@@ -283,6 +293,18 @@ public class RuleModel
                 }
             }
         }
+        
+        return result;
+    }
+    
+    /**
+     * This will get a list of all bound variables (LHS and RHS), including bound fields..
+     */
+    public List<String> getAllVariables() {
+        List<String> result = new ArrayList<String>();
+        
+        result.addAll(this.getAllLHSVariables());
+        result.addAll(this.getAllRHSVariables());
 
         return result;
     }

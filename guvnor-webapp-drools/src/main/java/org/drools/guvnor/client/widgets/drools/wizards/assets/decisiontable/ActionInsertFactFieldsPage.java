@@ -89,7 +89,8 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         }
         view.setPresenter( this );
         view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
-                                                                        sce ) );
+                                                                        sce,
+                                                                        false ) );
 
         //Available types
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );

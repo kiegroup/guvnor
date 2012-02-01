@@ -24,6 +24,4 @@ public enum Capability {
     SHOW_QA, //if they have any package perms
     SHOW_DEPLOYMENT,  //if they are package admin??
     SHOW_DEPLOYMENT_NEW //can create a new depl, rename etc...
-    ;
-
 }

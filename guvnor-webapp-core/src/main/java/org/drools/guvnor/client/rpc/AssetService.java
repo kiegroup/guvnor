@@ -17,7 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -44,7 +43,6 @@ public interface AssetService
      * @param numRows
      * @return
      * @throws SerializationException
-     * 
      * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
      */
     public TableDataResult queryFullText(String text,
@@ -152,8 +150,8 @@ public interface AssetService
                                String comment);
 
     /**
-     * This will load the history of the given asset or package, in a summary format
-     * suitable for display in a table.
+     * This will load the history of the given asset or package, in a summary
+     * format suitable for display in a table.
      */
     public TableDataResult loadItemHistory(String uuid) throws SerializationException;
 
@@ -308,4 +306,15 @@ public interface AssetService
      * @return
      */
     public long getAssetCount(AssetPageRequest request) throws SerializationException;
+
+    /**
+     * Convert an Asset to a target asset format
+     * 
+     * @param uuid
+     * @param targetFormat
+     * @return
+     */
+    public ConversionResult convertAsset(String uuid,
+                                         String targetFormat) throws SerializationException;
+
 }

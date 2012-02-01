@@ -223,7 +223,10 @@ public class PackageResource extends Resource {
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         try {
             ModuleItem p = rulesRepository.loadModule(packageName);
-            String fileName = packageName + ".pkg";
+            
+            ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
+
+            String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
             byte[] result;
             if (p.isBinaryUpToDate()) {
                 result = p.getCompiledBinaryBytes();
@@ -312,7 +315,8 @@ public class PackageResource extends Resource {
         ModuleItem p = rulesRepository.loadModule(packageName, versionNumber);
         byte[] result = p.getCompiledBinaryBytes();
         if (result != null) {
-            String fileName = packageName + ".pkg";
+            ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
+            String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(p.getLastModified()).getTime())).build();
         } else {
@@ -324,29 +328,35 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updatePackageFromAtom(@PathParam("packageName") String packageName, Entry entry) {
-        try {
-            ModuleItem p = rulesRepository.loadModule(packageName);
-            p.checkout();
-            // TODO: support rename package.
-            // p.updateTitle(entry.getTitle());
+       try {
+            ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
+            
+            //Rename:
+            if(!existingModuleItem.getTitle().equalsIgnoreCase(entry.getTitle())) {
+                rulesRepository.renameModule(existingModuleItem.getUUID(), entry.getTitle());
+            }
 
             if (entry.getSummary() != null) {
-                p.updateDescription(entry.getSummary());
+                existingModuleItem.updateDescription(entry.getSummary());
             }
+            
             // TODO: support LastContributor
             if (entry.getAuthor() != null) {
             }
 
-            ExtensibleElement metadataExtension = entry
-                    .getExtension(Translator.METADATA);
+            String checkinComment = "";
+            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
             if (metadataExtension != null) {
-                ExtensibleElement archivedExtension = metadataExtension
-                        .getExtension(Translator.ARCHIVED);
+                ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);
                 if (archivedExtension != null) {
-                    p.archiveItem(Boolean.getBoolean(archivedExtension
-                            .getSimpleExtension(Translator.VALUE)));
+                    existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
                 }
 
+                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+                if (checkinCommentExtension != null) {
+                    checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
+                }
+                
                 // TODO: Package state is not fully supported yet
                 /*
                  * ExtensibleElement stateExtension =
@@ -357,7 +367,7 @@ public class PackageResource extends Resource {
                  */
             }
 
-            p.checkin("Updated from ATOM.");
+            existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -367,14 +377,19 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package p) {
+    public void updatePackageFromJAXB(@PathParam("packageName") String packageName, Package module) {
         try {
-            ModuleItem item = rulesRepository.loadModule(packageName);
-            item.checkout();
-            item.updateDescription(p.getDescription());
-            item.updateTitle(p.getTitle());
+            ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
+            
+            //Rename:
+            if(!existingModuleItem.getTitle().equalsIgnoreCase(module.getTitle())) {
+                rulesRepository.renameModule(existingModuleItem.getUUID(), module.getTitle());
+            }
+            
+            existingModuleItem.updateDescription(module.getDescription());
+            
             /* TODO: add more updates to package item from JSON */
-            item.checkin(p.getCheckInComment());
+            existingModuleItem.checkin(module.getMetadata().getCheckinComment());
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -638,9 +653,9 @@ public class PackageResource extends Resource {
             AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
             /* Update asset */
             ai.checkout();
-            ai.updateTitle(asset.getMetadata().getTitle());
+            ai.updateTitle(asset.getTitle());
             ai.updateDescription(asset.getDescription());
-            ai.checkin(asset.getCheckInComment());
+            ai.checkin(asset.getMetadata().getCheckInComment());
             rulesRepository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
