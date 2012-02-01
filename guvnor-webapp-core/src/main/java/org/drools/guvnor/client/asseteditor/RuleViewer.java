@@ -105,7 +105,7 @@ public class RuleViewer extends GuvnorEditor {
             }
         }
         if ( editor instanceof FormEditor ) {
-            if ( this.ruleViewerSettings.isStandalone() ) {
+            if ( ruleViewerSettings1.isStandalone() ) {
                 // standalone bigger dimensions"
                 editor.setWidth( "100%" );
                 editor.setHeight( "1000px" );
