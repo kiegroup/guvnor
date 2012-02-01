@@ -180,11 +180,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-testutils</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- This is needed by CXF to work with JBoss AS -->
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

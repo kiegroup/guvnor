@@ -408,11 +408,6 @@
       <version>1.1.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-testutils</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
