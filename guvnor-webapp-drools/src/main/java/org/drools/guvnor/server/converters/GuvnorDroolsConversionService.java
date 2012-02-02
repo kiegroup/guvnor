@@ -16,6 +16,7 @@
 package org.drools.guvnor.server.converters;
 
 import javax.enterprise.inject.Specializes;
+import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
 
@@ -27,14 +28,17 @@ public class GuvnorDroolsConversionService extends GuvnorCoreConversionService
     implements
     ConversionService {
 
+    @Inject
+    private DecisionTableXLSToDecisionTableGuidedConverter decisionTableXLSToDecisionTableGuidedConverter;
+
     @Override
     public void registration() {
         //Add Converters in the core service
         super.registration();
-        
+
         //Add Converters specific to Drools
         register( AssetFormats.DECISION_SPREADSHEET_XLS,
-                  new DecisionTableXLSToDecisionTableGuidedConverter() );
+                  decisionTableXLSToDecisionTableGuidedConverter );
     }
 
 }

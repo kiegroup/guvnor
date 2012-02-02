@@ -24,7 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.client.rpc.ConversionResult;
-import org.drools.guvnor.client.rpc.NoConverterResult;
+import org.drools.guvnor.client.rpc.ConversionResultNoConverter;
 import org.drools.repository.AssetItem;
 
 /**
@@ -37,7 +37,7 @@ public class GuvnorCoreConversionService
 
     private final Map<String, List<AbstractConverter>> converters  = new HashMap<String, List<AbstractConverter>>();
 
-    private final ConversionResult                     NULL_RESULT = new NoConverterResult();
+    private final ConversionResult                     NULL_RESULT = new ConversionResultNoConverter();
 
     @PostConstruct
     public void registration() {

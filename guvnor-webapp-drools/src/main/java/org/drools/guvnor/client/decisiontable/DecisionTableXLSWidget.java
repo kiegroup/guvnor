@@ -19,6 +19,7 @@ import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
@@ -72,6 +73,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
                                                                   public void onSuccess(ConversionResult result) {
                                                                       if ( result.isConverted() ) {
                                                                           Window.alert( result.getNewAssetUUID() );
+                                                                          openEditor( result.getNewAssetUUID() );
                                                                       } else {
                                                                           StringBuilder sb = new StringBuilder();
                                                                           for ( ConversionMessage message : result.getMessages() ) {
@@ -85,6 +87,10 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
             }
 
         };
+    }
+
+    private void openEditor(String uuid) {
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ) );
     }
 
     private Widget makeDescriptionWidget() {

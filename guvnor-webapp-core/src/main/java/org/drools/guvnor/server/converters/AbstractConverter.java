@@ -23,7 +23,10 @@ import org.drools.repository.AssetItem;
  */
 public abstract class AbstractConverter {
 
-    private final String targetFormat;
+    private String targetFormat;
+
+    public AbstractConverter() {
+    }
 
     public AbstractConverter(String targetFormat) {
         this.targetFormat = targetFormat;
@@ -38,6 +41,6 @@ public abstract class AbstractConverter {
         return this.targetFormat.equals( targetFormat );
     }
 
-    abstract ConversionResult convert(AssetItem item);
+    abstract ConversionResult convert(final AssetItem item);
 
 }
