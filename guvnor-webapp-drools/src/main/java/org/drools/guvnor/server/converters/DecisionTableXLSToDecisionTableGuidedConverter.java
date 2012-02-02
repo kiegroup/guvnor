@@ -15,14 +15,16 @@
  */
 package org.drools.guvnor.server.converters;
 
+import java.util.Calendar;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
-import org.drools.guvnor.client.rpc.ConversionResultDuplicate;
-import org.drools.guvnor.client.rpc.ConversionResultErrorCreating;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -51,7 +53,22 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
     @Override
     ConversionResult convert(final AssetItem item) {
-        final String assetName = "Import - " + item.getName();
+
+        ConversionResult result = new ConversionResult();
+
+        //Check Asset has binary content
+        if ( !item.isBinary() ) {
+            result.addMessage( "Asset has no binary content.",
+                               ConversionMessageType.ERROR );
+            return result;
+        }
+
+        //Perform conversion!
+        GuidedDecisionTable52 dtable = createGuidedDecisionTable( item,
+                                                                  result );
+
+        //Create new asset from Guided Decision Table
+        final String assetName = makeNewAssetName( item );
         final String packageName = item.getModule().getName();
         final String packageUUID = item.getModule().getUUID();
         final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
@@ -61,38 +78,69 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
                                                                         description,
                                                                         null,
                                                                         FORMAT );
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
-        return createNewAsset( item,
-                               config,
-                               dtable );
+        createNewAsset( item,
+                        config,
+                        dtable,
+                        result );
+        return result;
     }
 
-    protected ConversionResult createNewAsset(final AssetItem item,
-                                              final NewAssetConfiguration config,
-                                              final GuidedDecisionTable52 content) {
+    private GuidedDecisionTable52 createGuidedDecisionTable(AssetItem item,
+                                                            ConversionResult result) {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        return dtable;
+    }
+
+    private String makeNewAssetName(AssetItem item) {
+        Calendar now = Calendar.getInstance();
+        StringBuilder sb = new StringBuilder( item.getName() );
+        sb.append( " (converted on " );
+        sb.append( DateUtils.format( now.getTime() ) );
+        sb.append( " " );
+        sb.append( now.get( Calendar.HOUR_OF_DAY ) );
+        sb.append( ":" );
+        sb.append( now.get( Calendar.MINUTE ) );
+        sb.append( ":" );
+        sb.append( now.get( Calendar.SECOND ) );
+        sb.append( ")" );
+        return sb.toString();
+    }
+
+    protected void createNewAsset(final AssetItem item,
+                                  final NewAssetConfiguration config,
+                                  final GuidedDecisionTable52 content,
+                                  final ConversionResult result) {
 
         try {
 
+            //Create new asset
             String uuid = serviceImplementation.createNewRule( config );
+
+            //If there was an error creating the asset return
             if ( uuid.startsWith( "DUPLICATE" ) ) {
-                return new ConversionResultDuplicate();
-            } else {
-                Asset newAsset = repositoryAssetService.loadRuleAsset( uuid );
-                newAsset.setContent( content );
-                newAsset.setCheckinComment( "Converted from '" + item.getName() + "'." );
-                uuid = repositoryAssetService.checkinVersion( newAsset );
-                if ( uuid == null ) {
-                    return new ConversionResultErrorCreating();
-                }
-                if ( uuid.startsWith( "ERR" ) ) {
-                    final String message = uuid.substring( 3 );
-                    return new ConversionResultErrorCreating( message );
-                }
+                result.addMessage( uuid,
+                                   ConversionMessageType.ERROR );
+                return;
             }
-            return new ConversionResult( uuid );
+
+            //Check-in asset with content
+            Asset newAsset = repositoryAssetService.loadRuleAsset( uuid );
+            newAsset.setContent( content );
+            newAsset.setCheckinComment( "Converted from '" + item.getName() + "'." );
+            uuid = repositoryAssetService.checkinVersion( newAsset );
+
+            //If there was an error checking-in new asset return
+            if ( uuid.startsWith( "ERR" ) ) {
+                result.addMessage( uuid,
+                                   ConversionMessageType.ERROR );
+                return;
+            }
+
+            result.setUUID( uuid );
 
         } catch ( SerializationException se ) {
-            return new ConversionResultErrorCreating( se.getMessage() );
+            result.addMessage( se.getMessage(),
+                               ConversionMessageType.ERROR );
         }
     }
 
