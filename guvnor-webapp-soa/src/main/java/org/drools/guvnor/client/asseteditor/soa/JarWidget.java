@@ -15,34 +15,32 @@
  */
 package org.drools.guvnor.client.asseteditor.soa;
 
+import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.Asset;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 
-import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.Asset;
-
 /**
- * This widget deals with JAR file containing Java classes as a service artifact.
+ * This widget deals with JAR file containing Java classes as a service
+ * artifact.
  */
 public class JarWidget extends AssetAttachmentFileWidget {
 
-    private static Images images = (Images) GWT.create( Images.class );
-
-    public JarWidget( Asset asset,
-                                  RuleViewer viewer,
-                                  ClientFactory clientFactory,
-                                  EventBus eventBus) {
+    public JarWidget(Asset asset,
+                      RuleViewer viewer,
+                      ClientFactory clientFactory,
+                      EventBus eventBus) {
         super( asset,
-                viewer,
-                clientFactory,
-                eventBus );
-        super.addDescription( new HTML( ((Constants) GWT.create( Constants.class )).JarWidgetDescription() ) );
+               viewer,
+               clientFactory,
+               eventBus );
+        super.addSupplementaryWidget( new HTML( ((Constants) GWT.create( Constants.class )).JarWidgetDescription() ) );
     }
 
     public ImageResource getIcon() {

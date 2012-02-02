@@ -55,12 +55,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         final String packageName = item.getModule().getName();
         final String packageUUID = item.getModule().getUUID();
         final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
-        final String initialCategory = item.getCategorySummary();
         final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
                                                                         packageName,
                                                                         packageUUID,
                                                                         description,
-                                                                        initialCategory,
+                                                                        null,
                                                                         FORMAT );
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
         return createNewAsset( item,
