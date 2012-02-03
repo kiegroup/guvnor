@@ -729,9 +729,9 @@ public class RepositoryModuleService
         //Run Test Scenario
         try {
             AuditLogReporter logger = new AuditLogReporter(workingMemory);
-            new ScenarioRunner(scenario,
+            new ScenarioRunner(
                     classTypeResolver,
-                    workingMemory);
+                    workingMemory).run(scenario);
             SingleScenarioResult singleScenarioresult = new SingleScenarioResult();
             singleScenarioresult.auditLog = logger.buildReport();
             singleScenarioresult.result = new ScenarioRunResult(null,

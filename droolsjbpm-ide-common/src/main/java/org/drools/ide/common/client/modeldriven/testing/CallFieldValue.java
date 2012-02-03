@@ -47,7 +47,7 @@ public class CallFieldValue implements  FieldNature,PortableObject {
     /**
      * This will return true if the value is really a "formula" - in the sense
      * of like an excel spreadsheet.
-     *
+     * <p/>
      * If it IS a formula, then the value should never be turned into a string,
      * always left as-is.
      */
@@ -85,5 +85,9 @@ public class CallFieldValue implements  FieldNature,PortableObject {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean hasValue() {
+        return value != null && !value.equals("");
     }
 }

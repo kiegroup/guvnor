@@ -77,7 +77,7 @@ import org.drools.type.DateFormats;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
-    List<Object> facts = new ArrayList<Object>();
+    public List<Object> facts = new ArrayList<Object>();
     AgendaEventListener agendaEventListener;
     Map<String, Object> globals = new HashMap<String, Object>();
     private SessionClock clock = new JDKTimerService();
