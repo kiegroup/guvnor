@@ -90,19 +90,6 @@ public class FactPatternWidget extends RuleModellerWidget {
               null );
     }
 
-    public FactPatternWidget(RuleModeller mod,
-                             EventBus eventBus,
-                             IPattern p,
-                             boolean isAll0WithLabel,
-                             boolean canBind) {
-        this( mod,
-              eventBus,
-              p,
-              isAll0WithLabel,
-              canBind,
-              null );
-    }
-
     /**
      * Creates a new FactPatternWidget
      * 
