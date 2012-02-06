@@ -20,19 +20,26 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * This widget deals with JAR file containing Java classes as a service
  * artifact.
  */
-public class JarWidget extends AssetAttachmentFileWidget {
+public class JarFileWidget extends AssetAttachmentFileWidget {
 
-    public JarWidget(Asset asset,
+    private final TextArea        text;
+    private String data = "";
+    
+    public JarFileWidget(Asset asset,
                       RuleViewer viewer,
                       ClientFactory clientFactory,
                       EventBus eventBus) {
@@ -40,7 +47,30 @@ public class JarWidget extends AssetAttachmentFileWidget {
                viewer,
                clientFactory,
                eventBus );
-        super.addSupplementaryWidget( new HTML( ((Constants) GWT.create( Constants.class )).JarWidgetDescription() ) );
+        
+        //super.addSupplementaryWidget( new HTML( ((Constants) GWT.create( Constants.class )).JarWidgetDescription() ) );
+        
+        RuleContentText ruleContentText = (RuleContentText) asset.getContent();
+
+        if ( ruleContentText != null && ruleContentText.content != null ) {
+            data = ruleContentText.content;
+        }
+
+        text = new TextArea();
+        text.setWidth( "100%" );
+        text.setVisibleLines( 16 );
+        text.setText( data );
+        text.setReadOnly(true);
+
+        text.setStyleName( "default-text-Area" );
+
+/*        text.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                data.content = text.getText();
+            }
+        } );*/
+
+        addSupplementaryWidget( text );        
     }
 
     public ImageResource getIcon() {
@@ -50,5 +80,4 @@ public class JarWidget extends AssetAttachmentFileWidget {
     public String getOverallStyleName() {
         return "decision-Table-upload"; //NON-NLS
     }
-
 }
