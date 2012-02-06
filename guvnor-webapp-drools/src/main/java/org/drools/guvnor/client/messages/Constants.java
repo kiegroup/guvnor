@@ -2621,4 +2621,10 @@ public interface Constants
 
     String ConvertTo0(String convertTo);
 
+    String YouMustEnterAColumnPattern();
+    
+    String YouMustEnterAColumnFact();
+
+    String YouMustEnterAColumnField();
+
 }

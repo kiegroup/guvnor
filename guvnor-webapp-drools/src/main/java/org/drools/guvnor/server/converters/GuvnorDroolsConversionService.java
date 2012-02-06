@@ -15,26 +15,65 @@
  */
 package org.drools.guvnor.server.converters;
 
-import javax.enterprise.inject.Specializes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResultNoConverter;
+import org.drools.repository.AssetItem;
 
 /**
  * A ConversionService implementation for Drools assets
  */
-@Specializes
-public class GuvnorDroolsConversionService extends GuvnorCoreConversionService
+@ApplicationScoped
+public class GuvnorDroolsConversionService
     implements
     ConversionService {
 
-    @Override
+    @Inject
+    private DecisionTableXLSToDecisionTableGuidedConverter decisionTableXLSToDecisionTableGuidedConverter;
+
+    private final Map<String, List<AbstractConverter>>     CONVERTERS  = new HashMap<String, List<AbstractConverter>>();
+
+    private final ConversionResult                         NULL_RESULT = new ConversionResultNoConverter();
+
+    @PostConstruct
     public void registration() {
-        //Add Converters in the core service
-        super.registration();
-        
         //Add Converters specific to Drools
         register( AssetFormats.DECISION_SPREADSHEET_XLS,
-                  new DecisionTableXLSToDecisionTableGuidedConverter() );
+                  decisionTableXLSToDecisionTableGuidedConverter );
+    }
+
+    public void register(String sourceFormat,
+                         AbstractConverter converter) {
+        List<AbstractConverter> registeredConverters = CONVERTERS.get( sourceFormat );
+        if ( registeredConverters == null ) {
+            registeredConverters = new ArrayList<AbstractConverter>();
+            CONVERTERS.put( sourceFormat,
+                            registeredConverters );
+        }
+        registeredConverters.add( converter );
+    }
+
+    public ConversionResult convert(AssetItem item,
+                                    String targetFormat) {
+        final String sourceFormat = item.getFormat();
+        if ( !CONVERTERS.containsKey( sourceFormat ) ) {
+            return NULL_RESULT;
+        }
+        for ( AbstractConverter converter : CONVERTERS.get( sourceFormat ) ) {
+            if ( converter.isTargetFormatSupported( targetFormat ) ) {
+                return converter.convert( item );
+            }
+        }
+        return NULL_RESULT;
     }
 
 }

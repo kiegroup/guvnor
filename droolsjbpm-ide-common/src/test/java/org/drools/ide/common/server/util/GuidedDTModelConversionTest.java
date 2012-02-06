@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
@@ -132,6 +133,9 @@ public class GuidedDTModelConversionTest {
 
         assertEquals( "michael",
                       tsdt.getTableName() );
+
+        assertEquals( TableFormat.EXTENDED_ENTRY,
+                      tsdt.getTableFormat() );
 
         assertEquals( 1,
                       tsdt.getMetadataCols().size() );

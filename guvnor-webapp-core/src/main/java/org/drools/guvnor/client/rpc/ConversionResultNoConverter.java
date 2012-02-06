@@ -18,11 +18,11 @@ package org.drools.guvnor.client.rpc;
 /**
  * A Result when there is no registered converter
  */
-public class NoConverterResult extends ConversionResult {
+public class ConversionResultNoConverter extends ConversionResult {
 
     private static final long serialVersionUID = 540L;
 
-    public NoConverterResult() {
+    public ConversionResultNoConverter() {
         getMessages().add( new ConversionMessage( "No converter found." ) );
     }
 

@@ -26,6 +26,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelect
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -69,7 +70,7 @@ public class ConditionPopup extends FormStylePopup {
     private static Constants           constants                        = ((Constants) GWT.create( Constants.class ));
     private static Images              images                           = (Images) GWT.create( Images.class );
 
-    private Label                      patternLabel                     = new Label();
+    private SmallLabel                 patternLabel                     = new SmallLabel();
     private TextBox                    fieldLabel                       = getFieldLabel();
     private TextBox                    binding                          = new BindingTextBox();
     private Label                      operatorLabel                    = new Label();

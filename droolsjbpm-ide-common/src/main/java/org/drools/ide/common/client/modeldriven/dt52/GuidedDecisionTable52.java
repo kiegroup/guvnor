@@ -852,7 +852,8 @@ public class GuidedDecisionTable52
     }
 
     public TableFormat getTableFormat() {
-        return tableFormat;
+        //GUVNOR-1820: Not possible to give default value to action columns
+        return tableFormat == null ? TableFormat.EXTENDED_ENTRY : tableFormat;
     }
 
     public void setTableFormat(TableFormat tableFormat) {

@@ -153,7 +153,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                       header );
 
         //Logical insertion
-        addAttribute( constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved(),
+        addAttribute( constants.LogicallyInsertColon(),
                       doInsertLogical() );
 
         //Bind field to a WorkItem result parameter
@@ -183,6 +183,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+                if ( !isValidFactType() ) {
+                    Window.alert( constants.YouMustEnterAColumnPattern() );
+                    return;
+                }
+                if ( !isValidFactField() ) {
+                    Window.alert( constants.YouMustEnterAColumnField() );
+                    return;
+                }
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
@@ -415,6 +423,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         return true;
     }
 
+    private boolean isValidFactType() {
+        return !(editingCol.getFactType() == null || "".equals( editingCol.getFactType() ));
+    }
+
+    private boolean isValidFactField() {
+        return !(editingCol.getFactField() == null || "".equals( editingCol.getFactField() ));
+    }
+
     private Widget doInsertLogical() {
         HorizontalPanel hp = new HorizontalPanel();
 
@@ -435,8 +451,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants.UpdateDescription() ) );
+        hp.add( new InfoPopup( constants.LogicallyInsertANewFact(),
+                               constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 

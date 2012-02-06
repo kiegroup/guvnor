@@ -35,7 +35,7 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <!-- The default profile needs to be fast, so we only build 1 permutation
             { -->
-          <module>org.drools.guvnor.FastCompiledGuvnorDrools</module>
+          <module>org.drools.guvnor.FastCompiledGuvnor</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>

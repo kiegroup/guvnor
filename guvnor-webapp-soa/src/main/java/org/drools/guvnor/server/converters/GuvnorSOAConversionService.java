@@ -15,32 +15,25 @@
  */
 package org.drools.guvnor.server.converters;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResultNoConverter;
 import org.drools.repository.AssetItem;
 
 /**
- * A converter from one format to another
+ * A ConversionService implementation for SOA assets
  */
-public abstract class AbstractConverter {
+@ApplicationScoped
+public class GuvnorSOAConversionService
+    implements
+    ConversionService {
 
-    private String targetFormat;
+    private final ConversionResult NULL_RESULT = new ConversionResultNoConverter();
 
-    public AbstractConverter() {
+    public ConversionResult convert(AssetItem item,
+                                    String targetFormat) {
+        return NULL_RESULT;
     }
-
-    public AbstractConverter(String targetFormat) {
-        this.targetFormat = targetFormat;
-    }
-
-    /**
-     * Does this Converter handle the specified format
-     * 
-     * @param targetFormat
-     */
-    boolean isTargetFormatSupported(String targetFormat) {
-        return this.targetFormat.equals( targetFormat );
-    }
-
-    abstract ConversionResult convert(final AssetItem item);
 
 }
