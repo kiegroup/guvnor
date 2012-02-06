@@ -15,12 +15,17 @@
  */
 package org.drools.guvnor.server.converters;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.core.util.DateUtils;
+import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
@@ -30,6 +35,7 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.AssetItem;
+import org.drools.template.parser.DataListener;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -87,7 +93,26 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
     private GuidedDecisionTable52 createGuidedDecisionTable(AssetItem item,
                                                             ConversionResult result) {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener();
+        listeners.add( listener );
+
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream stream = item.getBinaryContentAttachment();
+        try {
+            parser.parseFile( stream );
+        } finally {
+            try {
+                stream.close();
+            } catch ( IOException ioe ) {
+                result.addMessage( ioe.getMessage(),
+                                   ConversionMessageType.ERROR );
+            }
+        }
+        //TODO {manstis} Handle multiple Decision Tables
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTable();
+        GuidedDecisionTable52 dtable = dtables.get(0);
         return dtable;
     }
 
