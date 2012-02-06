@@ -1,4 +1,3 @@
-#created on: Oct 30, 2006
 package test
 
 rule "Your First Rule"
