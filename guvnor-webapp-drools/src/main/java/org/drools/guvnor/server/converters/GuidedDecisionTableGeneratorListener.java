@@ -35,6 +35,22 @@ import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
+import org.drools.guvnor.server.converters.decisiontable.builders.DefaultDescriptionBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableActivationGroupBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAgendaGroupBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAutoFocusBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDescriptionBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDurationBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableLHSBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableLockonActiveBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableMetadataBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableNameBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableNoLoopBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRHSBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRuleflowGroupBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSalienceBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.RowNumberBuilder;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.template.model.Global;
@@ -325,27 +341,92 @@ public class GuidedDecisionTableGeneratorListener
         switch ( actionType.getCode() ) {
             case CONDITION :
                 //SourceBuilders for CONDITIONs are set when processing the Object row
+
             case ACTION :
                 //SourceBuilders for ACTIONs are set when processing the Object row
                 break;
+
+            case NAME :
+                sb = new GuidedDecisionTableNameBuilder( row - 1,
+                                                         column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
             case DESCRIPTION :
                 //Remove default Description Column builder and add that provided
                 this._sourceBuilders.remove( DEFAULT_DESCRIPTION_BUILDER );
-                sb = new GuidedDecisionTableGenericBuilder( row - 1,
-                                                            column,
-                                                            actionType.getCode() );
+                sb = new GuidedDecisionTableDescriptionBuilder( row - 1,
+                                                                column );
 
                 //Description column must always be at position 1
                 this._sourceBuilders.add( DESCRIPTION_COLUMN_INDEX,
                                           sb );
                 actionType.setSourceBuilder( sb );
                 break;
-            default :
-                sb = new GuidedDecisionTableGenericBuilder( row - 1,
-                                                            column,
-                                                            actionType.getCode() );
-                this._sourceBuilders.add( sb );
+
+            case SALIENCE :
+                sb = new GuidedDecisionTableSalienceBuilder( row - 1,
+                                                             column );
                 actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case DURATION :
+                sb = new GuidedDecisionTableDurationBuilder( row - 1,
+                                                             column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case NOLOOP :
+                sb = new GuidedDecisionTableNoLoopBuilder( row - 1,
+                                                           column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case LOCKONACTIVE :
+                sb = new GuidedDecisionTableLockonActiveBuilder( row - 1,
+                                                                 column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case AUTOFOCUS :
+                sb = new GuidedDecisionTableAutoFocusBuilder( row - 1,
+                                                              column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case ACTIVATIONGROUP :
+                sb = new GuidedDecisionTableActivationGroupBuilder( row - 1,
+                                                                    column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case AGENDAGROUP :
+                sb = new GuidedDecisionTableAgendaGroupBuilder( row - 1,
+                                                                column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case RULEFLOWGROUP :
+                sb = new GuidedDecisionTableRuleflowGroupBuilder( row - 1,
+                                                                  column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case METADATA :
+                sb = new GuidedDecisionTableMetadataBuilder( row - 1,
+                                                             column );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
         }
 
     }

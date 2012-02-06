@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.server.converters;
+package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * 
+ * Builder for Condition columns
  */
 public class GuidedDecisionTableLHSBuilder
     implements

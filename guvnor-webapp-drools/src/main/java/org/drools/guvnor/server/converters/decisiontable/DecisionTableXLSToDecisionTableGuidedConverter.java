@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.server.converters;
+package org.drools.guvnor.server.converters.decisiontable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +33,8 @@ import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.converters.AbstractConverter;
+import org.drools.guvnor.server.converters.GuidedDecisionTableGeneratorListener;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.AssetItem;
 import org.drools.template.parser.DataListener;
@@ -58,7 +60,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
     }
 
     @Override
-    ConversionResult convert(final AssetItem item) {
+    public ConversionResult convert(final AssetItem item) {
 
         ConversionResult result = new ConversionResult();
 

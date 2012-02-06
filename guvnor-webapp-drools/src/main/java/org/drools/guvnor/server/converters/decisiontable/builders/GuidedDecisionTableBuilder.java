@@ -13,18 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.server.converters;
+package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import org.drools.decisiontable.parser.SourceBuilder;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 /**
- * 
+ * Interface for additional responsibilities for Guided Decision Table builders
  */
 public interface GuidedDecisionTableBuilder
     extends
     SourceBuilder {
 
+    /**
+     * Populate the given Decision Table with details of the parsed column.
+     * Actions should include adding applicable columns and data to the
+     * underlying model.
+     * 
+     * @param dtable
+     */
     public void populateDecisionTable(GuidedDecisionTable52 dtable);
 
 }

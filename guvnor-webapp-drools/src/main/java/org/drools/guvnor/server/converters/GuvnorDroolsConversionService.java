@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResultNoConverter;
+import org.drools.guvnor.server.converters.decisiontable.DecisionTableXLSToDecisionTableGuidedConverter;
 import org.drools.repository.AssetItem;
 
 /**

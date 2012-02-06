@@ -13,37 +13,38 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.server.converters;
+package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 /**
- * 
+ * Default description builder for when an explicit column has not been defined
+ * in the XLS file. Descriptions are empty Strings.
  */
-public class RowNumberBuilder
+public class DefaultDescriptionBuilder
     implements
     GuidedDecisionTableBuilder {
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 
     public Code getActionTypeCode() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement an ActionType.Code" );
+        return ActionType.Code.DESCRIPTION;
     }
 
     public String getResult() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does not return DRL." );
+        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does not return DRL." );
     }
 
     public void addTemplate(int row,
                             int col,
                             String content) {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement code snippets." );
+        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does implement code snippets." );
     }
 
     public void addCellValue(int row,
@@ -62,11 +63,8 @@ public class RowNumberBuilder
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
-            dtable.getData().add( new ArrayList<DTCellValue52>() );
-            DTCellValue52 dcv = this.values.get( iRow );
-            dcv.setNumericValue( new BigDecimal( iRow + 1 ) );
-            dtable.getData().get( iRow ).add( 0,
-                                              dcv );
+            dtable.getData().get( iRow ).add( 1,
+                                              this.values.get( iRow ) );
         }
     }
 
