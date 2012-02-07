@@ -599,7 +599,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             //Nothing needed
                         } else if ( cc instanceof BRLConditionVariableColumn ) {
                             BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
-                            label.append( brl.getFactField() );
+                            String field = brl.getFactField();
+                            label.append( field == null ? "" : field );
                         } else if ( cc instanceof ConditionCol52 ) {
                             String factField = cc.getFactField();
                             if ( factField != null && factField.length() > 0 ) {
@@ -662,7 +663,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             label.append( "[" + constants.WorkItemAction() + "]" );
                         } else if ( ac instanceof BRLActionVariableColumn ) {
                             BRLActionVariableColumn brl = (BRLActionVariableColumn) ac;
-                            label.append( brl.getFactField() );
+                            String field = brl.getFactField();
+                            label.append( field == null ? "" : field );
                         }
 
                         tce.appendChild( makeLabel( label.toString(),
