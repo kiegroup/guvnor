@@ -535,6 +535,187 @@ public class GuidedDTModelConversionTest {
         }
     }
 
+    @Test
+    public void testConversionPatternGrouping2() {
+
+        GuidedDecisionTable dt = new GuidedDecisionTable();
+        dt.tableName = "michael";
+
+        ConditionCol con = new ConditionCol();
+        con.boundName = "z1";
+        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con.factField = "age";
+        con.factType = "Driver";
+        con.header = "Driver z1 age";
+        con.operator = "==";
+        dt.conditionCols.add( con );
+
+        ConditionCol con2 = new ConditionCol();
+        con2.boundName = "f1";
+        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con2.factField = "name";
+        con2.factType = "Person";
+        con2.header = "Person f1 name";
+        con2.operator = "==";
+        dt.conditionCols.add( con2 );
+
+        ConditionCol con3 = new ConditionCol();
+        con3.boundName = "z1";
+        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
+        con3.factField = "rating";
+        con3.factType = "Driver";
+        con3.header = "Driver rating";
+        con3.operator = "==";
+        dt.conditionCols.add( con3 );
+
+        ConditionCol con4 = new ConditionCol();
+        con4.boundName = "f2";
+        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
+        con4.factType = "Person2";
+        con4.header = "Person2 f2 not needed";
+        con4.factField = "(not needed)";
+        dt.conditionCols.add( con4 );
+
+        dt.data = new String[][]{
+                new String[]{"1", "desc", "z1c1r1", "f1c1r1", "z1c2r1", "f2c1r1"},
+                new String[]{"2", "desc", "z1c1r2", "f1c1r2", "z1c2r2", "f2c1r2"}
+        };
+
+        String[][] expected = new String[][]{
+                                             new String[]{"1", "desc", "z1c1r1", "z1c2r1", "f1c1r1", "f2c1r1"},
+                                             new String[]{"2", "desc", "z1c1r2", "z1c2r2", "f1c1r2", "f2c1r2"}
+                                             };
+
+        GuidedDecisionTable52 tsdt = upgrader.upgrade( dt );
+
+        assertEquals( "michael",
+                      tsdt.getTableName() );
+
+        assertEquals( 0,
+                      tsdt.getMetadataCols().size() );
+
+        assertEquals( 0,
+                      tsdt.getAttributeCols().size() );
+
+        assertEquals( 3,
+                      tsdt.getConditionPatterns().size() );
+
+        assertEquals( "z1",
+                      tsdt.getConditionPattern( "z1" ).getBoundName() );
+        assertEquals( "Driver",
+                      tsdt.getConditionPattern( "z1" ).getFactType() );
+
+        assertEquals( "f1",
+                      tsdt.getConditionPattern( "f1" ).getBoundName() );
+        assertEquals( "Person",
+                      tsdt.getConditionPattern( "f1" ).getFactType() );
+
+        assertEquals( "f2",
+                      tsdt.getConditionPattern( "f2" ).getBoundName() );
+        assertEquals( "Person2",
+                      tsdt.getConditionPattern( "f2" ).getFactType() );
+
+        assertEquals( 2,
+                      tsdt.getConditionPattern( "z1" ).getConditions().size() );
+
+        assertEquals( 1,
+                      tsdt.getConditionPattern( "f1" ).getConditions().size() );
+
+        assertEquals( 1,
+                      tsdt.getConditionPattern( "f2" ).getConditions().size() );
+
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 0 ).getConstraintValueType() );
+        assertEquals( "age",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 0 ).getFactField() );
+        assertEquals( "Driver",
+                      tsdt.getPattern( tsdt.getConditionPattern( "z1" ).getConditions().get( 0 ) ).getFactType() );
+        assertEquals( "Driver z1 age",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 0 ).getHeader() );
+        assertEquals( "==",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 0 ).getOperator() );
+
+        assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 1 ).getConstraintValueType() );
+        assertEquals( "rating",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 1 ).getFactField() );
+        assertEquals( "Driver",
+                      tsdt.getPattern( tsdt.getConditionPattern( "z1" ).getConditions().get( 1 ) ).getFactType() );
+        assertEquals( "Driver rating",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 1 ).getHeader() );
+        assertEquals( "==",
+                      tsdt.getConditionPattern( "z1" ).getConditions().get( 1 ).getOperator() );
+
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getConstraintValueType() );
+        assertEquals( "name",
+                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactField() );
+        assertEquals( "Person",
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ) ).getFactType() );
+        assertEquals( "Person f1 name",
+                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getHeader() );
+        assertEquals( "==",
+                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getOperator() );
+
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getConstraintValueType() );
+        assertEquals( "(not needed)",
+                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactField() );
+        assertEquals( "Person2",
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ) ).getFactType() );
+        assertEquals( "Person2 f2 not needed",
+                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getHeader() );
+        assertEquals( null,
+                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getOperator() );
+
+        assertEquals( 2,
+                      tsdt.getData().size() );
+
+        for ( int i = 0; i < 2; i++ ) {
+            System.out.println( "Row-" + i );
+            StringBuilder sb = new StringBuilder();
+            for ( DTCellValue52 c : tsdt.getData().get( i ) ) {
+                sb.append( c.getStringValue() + ", " );
+            }
+            sb.delete( sb.lastIndexOf( "," ),
+                       sb.length() );
+            System.out.println( sb.toString() );
+        }
+
+        assertEquals( new BigDecimal( 1 ),
+                      tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
+        assertEquals( "desc",
+                      tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
+        assertEquals( "z1c1r1",
+                      tsdt.getData().get( 0 ).get( 2 ).getStringValue() );
+        assertEquals( "z1c2r1",
+                      tsdt.getData().get( 0 ).get( 3 ).getStringValue() );
+        assertEquals( "f1c1r1",
+                      tsdt.getData().get( 0 ).get( 4 ).getStringValue() );
+        assertEquals( "f2c1r1",
+                      tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
+
+        assertEquals( new BigDecimal( 2 ),
+                      tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
+        assertEquals( "desc",
+                      tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
+        assertEquals( "z1c1r2",
+                      tsdt.getData().get( 1 ).get( 2 ).getStringValue() );
+        assertEquals( "z1c2r2",
+                      tsdt.getData().get( 1 ).get( 3 ).getStringValue() );
+        assertEquals( "f1c1r2",
+                      tsdt.getData().get( 1 ).get( 4 ).getStringValue() );
+        assertEquals( "f2c1r2",
+                      tsdt.getData().get( 1 ).get( 5 ).getStringValue() );
+
+        isRowEquivalent( tsdt.getData().get( 0 ),
+                         expected[0] );
+        isRowEquivalent( tsdt.getData().get( 1 ),
+                         expected[1] );
+
+    }
+
+    
     private boolean isEqualOrNull(Object v1,
                                   Object v2) {
         if ( v1 == null && v2 == null ) {

@@ -83,24 +83,26 @@ public class GuidedDecisionTableModelUpgradeHelper
 
         //Legacy decision tables did not have Condition field data-types. Set all Condition 
         //fields to a *sensible* default of String (as this matches legacy behaviour).
-        Map<String, Pattern52> patterns = new HashMap<String, Pattern52>();
+        List<Pattern52> patterns = new ArrayList<Pattern52>();
+        Map<String, Pattern52> uniquePatterns = new HashMap<String, Pattern52>();
         for ( int i = 0; i < legacyDTModel.conditionCols.size(); i++ ) {
             ConditionCol c = legacyDTModel.conditionCols.get( i );
             String boundName = c.boundName;
-            Pattern52 p = patterns.get( boundName );
+            Pattern52 p = uniquePatterns.get( boundName );
             if ( p == null ) {
                 p = new Pattern52();
                 p.setBoundName( boundName );
                 p.setFactType( c.factType );
-                patterns.put( boundName,
-                              p );
+                patterns.add( p );
+                uniquePatterns.put( boundName,
+                                    p );
             }
             if ( p.getFactType() != null && !p.getFactType().equals( c.factType ) ) {
                 throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
             }
             p.getConditions().add( makeNewColumn( c ) );
         }
-        for ( Pattern52 p : patterns.values() ) {
+        for ( Pattern52 p : patterns ) {
             newDTModel.getConditionPatterns().add( p );
         }
 
@@ -129,7 +131,8 @@ public class GuidedDecisionTableModelUpgradeHelper
 
         // Offset into Model's data array
         final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
-        Map<String, List<ConditionColData>> groups = new TreeMap<String, List<ConditionColData>>();
+        Map<String, List<ConditionColData>> uniqueGroups = new TreeMap<String, List<ConditionColData>>();
+        List<List<ConditionColData>> groups = new ArrayList<List<ConditionColData>>();
         final int DATA_ROWS = model.data.length;
 
         // Copy conditions and related data into temporary groups
@@ -137,12 +140,13 @@ public class GuidedDecisionTableModelUpgradeHelper
 
             ConditionCol col = model.conditionCols.get( iCol );
             String pattern = col.boundName + "";
-            if ( !groups.containsKey( pattern ) ) {
-                List<ConditionColData> groupCols = new ArrayList<ConditionColData>();
-                groups.put( pattern,
-                            groupCols );
+            List<ConditionColData> groupCols = uniqueGroups.get( pattern );
+            if ( groupCols == null ) {
+                groupCols = new ArrayList<ConditionColData>();
+                groups.add( groupCols );
+                uniqueGroups.put( pattern,
+                                  groupCols );
             }
-            List<ConditionColData> groupCols = groups.get( pattern );
 
             // Make a ConditionColData object
             ConditionColData ccd = new ConditionColData();
@@ -154,14 +158,13 @@ public class GuidedDecisionTableModelUpgradeHelper
             }
             ccd.col = col;
             groupCols.add( ccd );
-
         }
 
         // Copy temporary groups back into the model
         int iCol = 0;
         model.conditionCols.clear();
-        for ( Map.Entry<String, List<ConditionColData>> me : groups.entrySet() ) {
-            for ( ConditionColData ccd : me.getValue() ) {
+        for ( List<ConditionColData> me : groups ) {
+            for ( ConditionColData ccd : me ) {
                 model.conditionCols.add( ccd.col );
                 int colIndex = DATA_COLUMN_OFFSET + iCol;
                 for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
