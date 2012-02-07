@@ -345,13 +345,14 @@ public class BRDRLPersistence
         }
 
         public void visitFreeFormLine(FreeFormLine ffl) {
-
-            this.buf.append( indentation );
-            if ( isDSLEnhanced ) {
-                buf.append( ">" );
+            String[] lines = ffl.text.split( "\\n|\\r\\n" );
+            for ( String line : lines ) {
+                this.buf.append( indentation );
+                if ( isDSLEnhanced ) {
+                    buf.append( ">" );
+                }
+                this.buf.append( line + "\n" );
             }
-            this.buf.append( ffl.text );
-            this.buf.append( "\n" );
         }
 
         public void visitCompositeFactPattern(CompositeFactPattern pattern) {
@@ -888,13 +889,14 @@ public class BRDRLPersistence
         }
 
         public void visitFreeFormLine(FreeFormLine ffl) {
-
-            this.buf.append( indentation );
-            if ( isDSLEnhanced ) {
-                buf.append( ">" );
+            String[] lines = ffl.text.split( "\\n|\\r\\n" );
+            for ( String line : lines ) {
+                this.buf.append( indentation );
+                if ( isDSLEnhanced ) {
+                    buf.append( ">" );
+                }
+                this.buf.append( line + "\n" );
             }
-            this.buf.append( ffl.text );
-            this.buf.append( "\n" );
         }
 
         private void generateInsertCall(final ActionInsertFact action,

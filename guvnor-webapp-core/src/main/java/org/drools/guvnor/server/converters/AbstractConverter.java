@@ -37,10 +37,10 @@ public abstract class AbstractConverter {
      * 
      * @param targetFormat
      */
-    boolean isTargetFormatSupported(String targetFormat) {
+    public boolean isTargetFormatSupported(String targetFormat) {
         return this.targetFormat.equals( targetFormat );
     }
 
-    abstract ConversionResult convert(final AssetItem item);
+    public abstract ConversionResult convert(final AssetItem item);
 
 }

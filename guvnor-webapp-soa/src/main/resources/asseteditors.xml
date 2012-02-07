@@ -71,7 +71,7 @@
         <title>constants.WSDLs()</title>    
     </asseteditor>
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.soa.JarWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.soa.JarFileWidget</class> 
         <format>jar</format>
         <icon>images.modelAsset()</icon>
         <title>constants.Jar()</title>    

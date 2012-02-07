@@ -29,49 +29,89 @@ public class ConversionResult
 
     private static final long       serialVersionUID = 540L;
 
-    private String                  newAssetUUID;
-
-    private boolean                 isConverted      = false;
+    private String                  uuid;
 
     private List<ConversionMessage> messages         = new ArrayList<ConversionMessage>();
 
-    public ConversionResult() {
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
-    public ConversionResult(String newAssetUUID) {
-        this.newAssetUUID = newAssetUUID;
-        this.isConverted = true;
-    }
-
-    public String getNewAssetUUID() {
-        return this.newAssetUUID;
+    public String getUUID() {
+        return this.uuid;
     }
 
     public boolean isConverted() {
-        return isConverted;
+        for ( ConversionMessage message : messages ) {
+            if ( message.getMessageType() == ConversionMessageType.ERROR ) {
+                return false;
+            }
+        }
+        return true;
     }
 
+    public void addMessage(String message,
+                           ConversionMessageType messageType) {
+        messages.add( new ConversionMessage( message,
+                                             messageType ) );
+    }
+
+    /**
+     * Get all messages of all types
+     * 
+     * @return
+     */
     public List<ConversionMessage> getMessages() {
         return messages;
+    }
+
+    /**
+     * Get all messages of a particular type
+     * 
+     * @param messageType
+     * @return
+     */
+    public List<ConversionMessage> getMessages(ConversionMessageType messageType) {
+        List<ConversionMessage> messages = new ArrayList<ConversionMessage>();
+        for ( ConversionMessage message : this.messages ) {
+            if ( message.getMessageType() == messageType ) {
+                messages.add( message );
+            }
+        }
+        return messages;
+    }
+
+    public enum ConversionMessageType {
+        INFO,
+        WARNING,
+        ERROR
     }
 
     public static class ConversionMessage
         implements
         PortableObject {
 
-        private static final long serialVersionUID = 540L;
+        private static final long     serialVersionUID = 540L;
 
-        private String            message;
+        private String                message;
+
+        private ConversionMessageType messageType;
 
         public ConversionMessage() {
         }
 
-        public ConversionMessage(String message) {
+        public ConversionMessage(String message,
+                                 ConversionMessageType messageType) {
             this.message = message;
+            this.messageType = messageType;
         }
 
         public String getMessage() {
             return this.message;
+        }
+
+        public ConversionMessageType getMessageType() {
+            return this.messageType;
         }
 
     }

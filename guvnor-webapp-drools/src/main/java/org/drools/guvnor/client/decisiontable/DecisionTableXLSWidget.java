@@ -19,6 +19,7 @@ import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
@@ -50,11 +51,12 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
         //Set-up supplementary widgets
         if ( !asset.isReadonly() ) {
-            //TODO {manstis} super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
+            //TODO {manstis} Uncomment - super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
         }
         super.addSupplementaryWidget( makeDescriptionWidget() );
     }
 
+    //Button to convert XLS- to Guided Decision Table
     private Widget makeConvertToGuidedDecisionTableWidget(Asset asset) {
         Button convertButton = new Button( constants.ConvertTo0( constants.DecisionTableWebGuidedEditor() ) );
         convertButton.setEnabled( asset.versionNumber > 0 );
@@ -66,27 +68,39 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
+                LoadingPopup.showMessage( constants.SavingPleaseWait() );
                 clientFactory.getAssetService().convertAsset( asset.getUuid(),
                                                               AssetFormats.DECISION_TABLE_GUIDED,
                                                               new GenericCallback<ConversionResult>() {
 
                                                                   public void onSuccess(ConversionResult result) {
-                                                                      if ( result.isConverted() ) {
-                                                                          Window.alert( result.getNewAssetUUID() );
-                                                                          openEditor( result.getNewAssetUUID() );
-                                                                      } else {
-                                                                          StringBuilder sb = new StringBuilder();
-                                                                          for ( ConversionMessage message : result.getMessages() ) {
-                                                                              sb.append( message.getMessage() ).append( "\n" );
-                                                                          }
-                                                                          Window.alert( sb.toString() );
-                                                                      }
+                                                                      postConversion( result );
                                                                   }
 
                                                               } );
             }
 
         };
+    }
+
+    //Handle post-conversion operations.
+    private void postConversion(ConversionResult result) {
+        LoadingPopup.close();
+        showConversionMessages( result );
+        if ( result.isConverted() ) {
+            openEditor( result.getUUID() );
+        }
+    }
+
+    //TODO {manstis} A nicely formatted list would be much nicer
+    private void showConversionMessages(ConversionResult result) {
+        if ( result.getMessages().size() > 0 ) {
+            StringBuilder sb = new StringBuilder();
+            for ( ConversionMessage message : result.getMessages() ) {
+                sb.append( message.getMessage() ).append( "\n" );
+            }
+            Window.alert( sb.toString() );
+        }
     }
 
     private void openEditor(String uuid) {

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 
 /**
@@ -96,6 +97,30 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
             buf.append( " " );
         }
 
+        @Override
+        public void visitFreeFormLine(FreeFormLine ffl) {
+            String text = ffl.text;
+            int pos = 0;
+            while ( (pos = text.indexOf( "@{",
+                                         pos )) != -1 ) {
+                int end = text.indexOf( '}',
+                                        pos + 2 );
+                if ( end != -1 ) {
+                    String varName = text.substring( pos + 2,
+                                                     end );
+                    String value = rowDataProvider.getTemplateKeyValue( varName );
+                    text = text.substring( 0,
+                                           pos ) + value + text.substring( end + 1 );
+                    pos = end + 1;
+                }
+            }
+
+            //Don't update the original FreeFormLine object
+            FreeFormLine fflClone = new FreeFormLine();
+            fflClone.text = text;
+            super.visitFreeFormLine( fflClone );
+        }
+
     }
 
     //Substitutes Template Keys for values
@@ -123,6 +148,30 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
             DRLConstraintValueBuilder.buildRHSFieldValue( buf,
                                                           fieldValue.type,
                                                           rowDataProvider.getTemplateKeyValue( fieldValue.value ) );
+        }
+
+        @Override
+        public void visitFreeFormLine(FreeFormLine ffl) {
+            String text = ffl.text;
+            int pos = 0;
+            while ( (pos = text.indexOf( "@{",
+                                         pos )) != -1 ) {
+                int end = text.indexOf( '}',
+                                        pos + 2 );
+                if ( end != -1 ) {
+                    String varName = text.substring( pos + 2,
+                                                     end );
+                    String value = rowDataProvider.getTemplateKeyValue( varName );
+                    text = text.substring( 0,
+                                           pos ) + value + text.substring( end + 1 );
+                    pos = end + 1;
+                }
+            }
+
+            //Don't update the original FreeFormLine object
+            FreeFormLine fflClone = new FreeFormLine();
+            fflClone.text = text;
+            super.visitFreeFormLine( fflClone );
         }
 
     }

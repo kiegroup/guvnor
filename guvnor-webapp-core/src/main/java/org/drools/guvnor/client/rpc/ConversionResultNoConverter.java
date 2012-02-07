@@ -23,7 +23,8 @@ public class ConversionResultNoConverter extends ConversionResult {
     private static final long serialVersionUID = 540L;
 
     public ConversionResultNoConverter() {
-        getMessages().add( new ConversionMessage( "No converter found." ) );
+        addMessage( "No converter found.",
+                    ConversionMessageType.ERROR );
     }
 
 }
