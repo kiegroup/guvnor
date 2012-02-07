@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
+import java.math.BigDecimal;
+
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
@@ -27,16 +29,31 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTableBuilder {
 
+    private final boolean isSequential;
+
     public GuidedDecisionTableSalienceBuilder(int row,
-                                              int column) {
+                                              int column,
+                                              boolean isSequential) {
         super( row,
                column,
                ActionType.Code.SALIENCE );
+        this.isSequential = isSequential;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.SALIENCE_ATTR );
+        
+        //If sequential set column to use reverse row number
+        if ( isSequential ) {
+            column.setUseRowNumber( true );
+            column.setReverseOrder( true );
+            final int maxRow = this.values.size();
+            for(int iRow = 0; iRow < maxRow; iRow++) {
+                DTCellValue52 dcv = this.values.get(iRow);
+                dcv.setNumericValue( new BigDecimal(maxRow-iRow) );
+            }
+        }
         addColumn( dtable,
                    column );
         addColumnData( dtable,

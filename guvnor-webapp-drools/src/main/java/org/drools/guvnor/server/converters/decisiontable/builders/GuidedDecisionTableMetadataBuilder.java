@@ -37,6 +37,7 @@ public class GuidedDecisionTableMetadataBuilder extends AbstractGuidedDecisionTa
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         MetadataCol52 column = new MetadataCol52();
         String value = this.definitions.get( headerCol );
+        column.setHideColumn( true );
         column.setMetadata( value );
         addColumn( dtable,
                    column );

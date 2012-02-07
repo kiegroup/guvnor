@@ -34,7 +34,6 @@ import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.converters.AbstractConverter;
-import org.drools.guvnor.server.converters.GuidedDecisionTableGeneratorListener;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.AssetItem;
 import org.drools.template.parser.DataListener;

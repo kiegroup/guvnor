@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.server.converters;
+package org.drools.guvnor.server.converters.decisiontable;
 
 import static org.drools.decisiontable.parser.DefaultRuleSheetListener.DECLARES_TAG;
 import static org.drools.decisiontable.parser.DefaultRuleSheetListener.ESCAPE_QUOTES_FLAG;
@@ -184,6 +184,10 @@ public class GuidedDecisionTableGeneratorListener
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;
 
+        // setup stuff for the rules to come.. (the order of these steps are important !)
+        this._currentSequentialFlag = getSequentialFlag();
+        this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
+
         //Setup new Decision Table
         this._dtable = new GuidedDecisionTable52();
         this._dtable.setTableFormat( TableFormat.EXTENDED_ENTRY );
@@ -195,10 +199,6 @@ public class GuidedDecisionTableGeneratorListener
                                   ROW_NUMBER_BUILDER );
         this._sourceBuilders.add( DESCRIPTION_COLUMN_INDEX,
                                   DEFAULT_DESCRIPTION_BUILDER );
-
-        // setup stuff for the rules to come.. (the order of these steps are important !)
-        this._currentSequentialFlag = getSequentialFlag();
-        this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
 
         postInitRuleTable( row,
                            column,
@@ -367,7 +367,8 @@ public class GuidedDecisionTableGeneratorListener
 
             case SALIENCE :
                 sb = new GuidedDecisionTableSalienceBuilder( row - 1,
-                                                             column );
+                                                             column,
+                                                             this._currentSequentialFlag);
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;

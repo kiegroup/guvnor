@@ -30,12 +30,12 @@ public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionT
                                                   int column) {
         super( row,
                column,
-               ActionType.Code.NOLOOP );
+               ActionType.Code.AUTOFOCUS );
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( GuidedDecisionTable52.NO_LOOP_ATTR );
+        column.setAttribute( GuidedDecisionTable52.AUTO_FOCUS_ATTR );
         addColumn( dtable,
                    column );
         addColumnData( dtable,
