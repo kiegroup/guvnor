@@ -630,6 +630,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
+            bUpdateColumnDefinition = true;
             bUpdateColumnData = updateCellsForOptionValueList( editColumn,
                                                                origColumn );
         }
@@ -724,6 +725,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
+            bUpdateColumnDefinition = true;
             bUpdateColumnData = updateCellsForOptionValueList( editColumn,
                                                                origColumn );
         }
@@ -1273,6 +1275,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             // Update column's cell content if the Optional Value list has changed
             if ( !isEqualOrNull( origColumn.getValueList(),
                                  editColumn.getValueList() ) ) {
+                bUpdateColumnDefinition = true;
                 bUpdateColumnData = updateCellsForOptionValueList( editColumn,
                                                                    origColumn );
             }
