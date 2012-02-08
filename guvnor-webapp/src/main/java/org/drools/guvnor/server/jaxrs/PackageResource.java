@@ -850,6 +850,14 @@ public class PackageResource extends Resource {
 		repositoryPackageOperations.createPackageSnapshot(packageName,
 				snapshotName, true, "REST API Snapshot");
 	}
+    
+    @GET
+    @Path("{packageName}/exists")
+    public boolean packageExists(@PathParam("packageName") final String packageName){
+    	/* Determine if package exists in repository */    	
+    	final boolean packageExists = repository.containsPackage(packageName);    	
+    	return packageExists;   	
+    }
 }
 
 
