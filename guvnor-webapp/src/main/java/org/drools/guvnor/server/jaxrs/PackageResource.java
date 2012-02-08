@@ -16,7 +16,36 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Element;
@@ -26,6 +55,7 @@ import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.server.RepositoryPackageOperations;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
@@ -37,18 +67,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.jboss.seam.annotations.Name;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.drools.guvnor.server.jaxrs.Translator.*;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -67,6 +86,18 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
 public class PackageResource extends Resource {
     private HttpHeaders headers;
 
+    /* Handles common package operations */
+	private final RepositoryPackageOperations repositoryPackageOperations;
+
+	/**
+	 * Constructor initialising all required properties/members
+	 */
+	public PackageResource() {
+		super();
+		repositoryPackageOperations = new RepositoryPackageOperations();
+		repositoryPackageOperations.setRulesRepository(repository);
+	}
+	
     @Context
     public void setHttpHeaders(HttpHeaders theHeaders) {
         headers = theHeaders;
@@ -810,6 +841,15 @@ public class PackageResource extends Resource {
 
         return null;
     }
+    
+    @POST
+	@Path("{packageName}/snapshot/{snapshotName}")
+	public void createPacakageSnapshot(
+			@PathParam("packageName") final String packageName,
+			@PathParam("snapshotName") final String snapshotName) {
+		repositoryPackageOperations.createPackageSnapshot(packageName,
+				snapshotName, true, "REST API Snapshot");
+	}
 }
 
 
