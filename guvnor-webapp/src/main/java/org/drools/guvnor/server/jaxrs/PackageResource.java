@@ -858,6 +858,20 @@ public class PackageResource extends Resource {
     	final boolean packageExists = repository.containsPackage(packageName);    	
     	return packageExists;   	
     }
+    
+    @GET
+    @Path("{packageName}/assets/{assetName}/exists")
+    public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
+    	/* Asset does not exist if package does not exist */    	
+    	final boolean packageExists = repository.containsPackage(packageName);    	
+    	if(!packageExists){
+    		return false;
+    	}
+    	
+    	/* Load package and determine if it contains an asset */
+    	final PackageItem packageItem = repository.loadPackage(packageName);
+    	return packageItem.containsAsset(assetName);
+    }
 }
 
 
