@@ -305,8 +305,6 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
-        //TODO: See JIRA https://issues.jboss.org/browse/GUVNOR-1814
-        //assertEquals("admin", pm.getLastContributor());
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
