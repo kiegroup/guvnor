@@ -66,15 +66,15 @@ public class AssetMetadata {
     
     @XmlElement
     public String getBinaryContentAttachmentFileName() {
-		return binaryContentAttachmentFileName;
-	}
+        return binaryContentAttachmentFileName;
+    }
 
-	public void setBinaryContentAttachmentFileName(
-			String binaryContentAttachmentFileName) {
-		this.binaryContentAttachmentFileName = binaryContentAttachmentFileName;
-	}
+    public void setBinaryContentAttachmentFileName(
+            String binaryContentAttachmentFileName) {
+        this.binaryContentAttachmentFileName = binaryContentAttachmentFileName;
+    }
 
-	@XmlElement
+    @XmlElement
     public String[] getCategories() {
         return categories;
     }
@@ -138,11 +138,11 @@ public class AssetMetadata {
     }    
     
     @XmlElement
-	public String getState() {
-		return state;
-	}
+    public String getState() {
+        return state;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}  
+    public void setState(String state) {
+        this.state = state;
+    }  
 }

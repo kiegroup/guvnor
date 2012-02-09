@@ -88,17 +88,17 @@ public class PackageResource extends Resource {
     private HttpHeaders headers;
 
     /* Handles common package operations */
-	private final RepositoryPackageOperations repositoryPackageOperations;
+    private final RepositoryPackageOperations repositoryPackageOperations;
 
-	/**
-	 * Constructor initialising all required properties/members
-	 */
-	public PackageResource() {
-		super();
-		repositoryPackageOperations = new RepositoryPackageOperations();
-		repositoryPackageOperations.setRulesRepository(repository);
-	}
-	
+    /**
+     * Constructor initialising all required properties/members
+     */
+    public PackageResource() {
+        super();
+        repositoryPackageOperations = new RepositoryPackageOperations();
+        repositoryPackageOperations.setRulesRepository(repository);
+    }
+
     @Context
     public void setHttpHeaders(HttpHeaders theHeaders) {
         headers = theHeaders;
@@ -582,7 +582,7 @@ public class PackageResource extends Resource {
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             } else {
-            	assetName = URLDecoder.decode(assetName, "UTF-8");
+                assetName = URLDecoder.decode(assetName, "UTF-8");
             }
             String fileName = null;
             String extension = null;
@@ -776,7 +776,7 @@ public class PackageResource extends Resource {
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
-    }
+    }    
 
     @GET
     @Path("{packageName}/assets/{assetName}/versions/{versionNumber}")
@@ -844,34 +844,34 @@ public class PackageResource extends Resource {
     }
     
     @POST
-	@Path("{packageName}/snapshot/{snapshotName}")
-	public void createPacakageSnapshot(
-			@PathParam("packageName") final String packageName,
-			@PathParam("snapshotName") final String snapshotName) {
-		repositoryPackageOperations.createPackageSnapshot(packageName,
-				snapshotName, true, "REST API Snapshot");
-	}
+    @Path("{packageName}/snapshot/{snapshotName}")
+    public void createPacakageSnapshot(
+            @PathParam("packageName") final String packageName,
+            @PathParam("snapshotName") final String snapshotName) {
+        repositoryPackageOperations.createPackageSnapshot(packageName,
+                snapshotName, true, "REST API Snapshot");
+    }
     
     @GET
     @Path("{packageName}/exists")
     public boolean packageExists(@PathParam("packageName") final String packageName){
-    	/* Determine if package exists in repository */    	
-    	final boolean packageExists = repository.containsPackage(packageName);    	
-    	return packageExists;   	
+        /* Determine if package exists in repository */
+        final boolean packageExists = repository.containsPackage(packageName);
+        return packageExists;
     }
     
     @GET
     @Path("{packageName}/assets/{assetName}/exists")
     public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
-    	/* Asset does not exist if package does not exist */    	
-    	final boolean packageExists = repository.containsPackage(packageName);    	
-    	if(!packageExists){
-    		return false;
-    	}
-    	
-    	/* Load package and determine if it contains an asset */
-    	final PackageItem packageItem = repository.loadPackage(packageName);
-    	return packageItem.containsAsset(assetName);
+        /* Asset does not exist if package does not exist */
+        final boolean packageExists = repository.containsPackage(packageName);
+        if(!packageExists){
+            return false;
+        }
+        
+        /* Load package and determine if it contains an asset */
+        final PackageItem packageItem = repository.loadPackage(packageName);
+        return packageItem.containsAsset(assetName);
     }
     
     @POST
@@ -880,13 +880,13 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
             @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
-    	/* Verify passed in asset object */
-    	if(asset == null || asset.getMetadata() == null ){
-    		throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
-    	}
-    	final String assetName = asset.getMetadata().getTitle();
-    	
-    	/* Check for existence of asset name */
+        /* Verify passed in asset object */
+        if(asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+        final String assetName = asset.getMetadata().getTitle();
+        
+        /* Check for existence of asset name */
         if (assetName == null) {
             throw new WebApplicationException(Response.status(500).entity("Asset name must be specified (Asset.metadata.title)").build());
         } 
@@ -908,15 +908,15 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
             @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
-    	/* Verify passed in asset object */
-    	if(asset == null || asset.getMetadata() == null ){
-    		throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
-    	}
-    	
-    	/* Asset must exist to update */
-    	if(!assetExists(packageName, assetName)){
-    		throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
-    	}
+        /* Verify passed in asset object */
+        if(asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+        
+        /* Asset must exist to update */
+        if(!assetExists(packageName, assetName)){
+            throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
+        }
         
         AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
         ai.checkout();
