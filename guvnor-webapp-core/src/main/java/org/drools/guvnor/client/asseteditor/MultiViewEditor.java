@@ -309,7 +309,7 @@ public class MultiViewEditor extends GuvnorEditor {
 
                         //showInfoMessage( constants.SavedOK() );
                         if ( !closeAfter ) {
-                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                            eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid ) );
                         }
                         
                         //fire after check-in event

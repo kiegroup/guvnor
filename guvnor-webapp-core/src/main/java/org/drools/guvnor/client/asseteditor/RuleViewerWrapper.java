@@ -123,7 +123,8 @@ public class RuleViewerWrapper extends GuvnorEditor
     }
 
     public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-        if ( refreshAssetEditorEvent.getUuid().equals( asset.getUuid() ) ) {
+        //AssetUUID == null means to refresh all asset editors contained by the specified module. 
+        if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getModuleName().equals(refreshAssetEditorEvent.getModuleName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
             LoadingPopup.showMessage( constants.RefreshingItem() );
             RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
                                                                       new GenericCallback<Asset>() {

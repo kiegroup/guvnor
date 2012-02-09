@@ -158,7 +158,6 @@ public class AssetEditorActionToolbar extends Composite {
         this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
         
         initActionToolBar();
-        setRefreshHandler();
     }
 
     /**
@@ -408,12 +407,6 @@ public class AssetEditorActionToolbar extends Composite {
             public void execute() {
                 doCheckin( pop.getCheckinComment(),
                         closeAfter );
-                if ( afterCheckinEvent != null ) {
-                    afterCheckinEvent.execute();
-                }
-                if ( closeAfter ) {
-                    close();
-                }
             }
         } );
         pop.show();
@@ -426,14 +419,9 @@ public class AssetEditorActionToolbar extends Composite {
         }
         performCheckIn( comment,
                 closeAfter );
-        if ( editor instanceof SaveEventListener ) {
-            ((SaveEventListener) editor).onAfterSave();
+        if ( closeAfter ) {
+            close();
         }
-
-        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
-        //TODO: JLIU
-        //lastSaved = System.currentTimeMillis();
-        //resetDirty();
     }
 
     private void doVerify() {
@@ -546,13 +534,20 @@ public class AssetEditorActionToolbar extends Composite {
                         saved[0] = true;
 
                         //showInfoMessage( constants.SavedOK() );
-                        if ( !closeAfter ) {
-                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
-                        }
                         
                         //fire after check-in event
                         if (editor instanceof GuvnorEditor){
                             eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, (GuvnorEditor) editor));
+                        }
+                        
+                        if ( editor instanceof SaveEventListener ) {
+                            ((SaveEventListener) editor).onAfterSave();
+                        }
+
+                        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
+                        
+                        if ( afterCheckinEvent != null ) {
+                            afterCheckinEvent.execute();
                         }
                     }
                 } );
@@ -563,15 +558,17 @@ public class AssetEditorActionToolbar extends Composite {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache(final String packageName) {
+    public void flushSuggestionCompletionCache(final String moduleName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().loadPackage( packageName,
+            SuggestionCompletionCache.getInstance().loadPackage( moduleName,
                     new Command() {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
                             //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
-                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
+                            
+                            //set assetUUID to null means to refresh all asset editors contained by the specified package. 
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(moduleName, null));
                             LoadingPopup.close();
                         }
                     } );
@@ -680,7 +677,7 @@ public class AssetEditorActionToolbar extends Composite {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -713,7 +710,7 @@ public class AssetEditorActionToolbar extends Composite {
                             flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
                             flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                         }
 
                         @Override
@@ -731,18 +728,4 @@ public class AssetEditorActionToolbar extends Composite {
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }    
-    
-    private void setRefreshHandler() {
-        eventBus.addHandler(RefreshSuggestionCompletionEngineEvent.TYPE,
-                new RefreshSuggestionCompletionEngineEvent.Handler() {
-                    public void onRefreshModule(
-                            RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
-                        String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
-                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getModuleName())) {
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
-                        }
-                    
-                    }
-                });
-    }
 }

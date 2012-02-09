@@ -230,7 +230,7 @@ public class VersionBrowser extends Composite {
             RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                     new GenericCallback<Asset>() {
 
-                        public void onSuccess( Asset asset ) {
+                        public void onSuccess(final Asset asset ) {
                             asset.setReadonly( true );
                             //asset.metaData.name = metaData.name;
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
@@ -247,7 +247,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid) );
                                                     //fire after check-in event
                                                     eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, null));
                                                     pop.hide();

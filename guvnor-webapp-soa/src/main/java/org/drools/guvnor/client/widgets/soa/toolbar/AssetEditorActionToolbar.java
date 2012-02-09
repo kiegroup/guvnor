@@ -147,7 +147,6 @@ public class AssetEditorActionToolbar extends Composite {
         this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
         
         initActionToolBar();
-        setRefreshHandler();
     }
 
     /**
@@ -397,12 +396,6 @@ public class AssetEditorActionToolbar extends Composite {
             public void execute() {
                 doCheckin( pop.getCheckinComment(),
                         closeAfter );
-                if ( afterCheckinEvent != null ) {
-                    afterCheckinEvent.execute();
-                }
-                if ( closeAfter ) {
-                    close();
-                }
             }
         } );
         pop.show();
@@ -415,14 +408,9 @@ public class AssetEditorActionToolbar extends Composite {
         }
         performCheckIn( comment,
                 closeAfter );
-        if ( editor instanceof SaveEventListener ) {
-            ((SaveEventListener) editor).onAfterSave();
+        if ( closeAfter ) {
+            close();
         }
-
-        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
-        //TODO: JLIU
-        //lastSaved = System.currentTimeMillis();
-        //resetDirty();
     }
 
 /*    private void doVerify() {
@@ -535,10 +523,19 @@ public class AssetEditorActionToolbar extends Composite {
                         saved[0] = true;
 
                         //showInfoMessage( constants.SavedOK() );
-                        if ( !closeAfter ) {
-                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+
+                        eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid ) );
+                        
+                        if ( editor instanceof SaveEventListener ) {
+                            ((SaveEventListener) editor).onAfterSave();
                         }
-                    }
+                        
+                        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
+                       
+                        if ( afterCheckinEvent != null ) {
+                            afterCheckinEvent.execute();
+                        }
+                     }
                 } );
     }
 
@@ -664,7 +661,7 @@ public class AssetEditorActionToolbar extends Composite {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -697,7 +694,7 @@ public class AssetEditorActionToolbar extends Composite {
                             //flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             //flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                         }
 
                         @Override
@@ -715,18 +712,4 @@ public class AssetEditorActionToolbar extends Composite {
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }    
-    
-    private void setRefreshHandler() {
-/*        eventBus.addHandler(RefreshSuggestionCompletionEngineEvent.TYPE,
-                new RefreshSuggestionCompletionEngineEvent.Handler() {
-                    public void onRefreshModule(
-                            RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
-                        String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
-                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
-                            closeAndReopen(asset.getUuid());                                
-                        }
-                    
-                    }
-                });*/
-    }
 }

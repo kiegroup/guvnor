@@ -292,7 +292,7 @@ public class MetaDataWidget extends Composite {
                         constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(uuid));
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(sel.getSelectedPackage(), uuid));
                                 pop.hide();
                             }
 
