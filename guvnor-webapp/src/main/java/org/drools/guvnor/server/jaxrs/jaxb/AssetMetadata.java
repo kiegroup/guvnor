@@ -27,6 +27,8 @@ public class AssetMetadata {
     private String Uuid;
 
     private String title;
+    
+    private String binaryContentAttachmentFileName;
 
     private String[] categories;
 
@@ -61,8 +63,18 @@ public class AssetMetadata {
     public void setTitle(String title) {
         this.title = title;
     }
-
+    
     @XmlElement
+    public String getBinaryContentAttachmentFileName() {
+		return binaryContentAttachmentFileName;
+	}
+
+	public void setBinaryContentAttachmentFileName(
+			String binaryContentAttachmentFileName) {
+		this.binaryContentAttachmentFileName = binaryContentAttachmentFileName;
+	}
+
+	@XmlElement
     public String[] getCategories() {
         return categories;
     }
