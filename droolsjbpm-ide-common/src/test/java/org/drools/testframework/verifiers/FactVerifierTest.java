@@ -1,17 +1,18 @@
 package org.drools.testframework.verifiers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.drools.Cheese;
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.testframework.MockWorkingMemory;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /*
 * Copyright 2011 JBoss Inc
@@ -30,10 +31,18 @@ import static org.mockito.Mockito.mock;
 */
 public class FactVerifierTest {
 
+    private MockWorkingMemory workingMemory;
+
+    @Before
+    public void setUp() throws Exception {
+        workingMemory = new MockWorkingMemory();
+
+    }
+
     @Test
     public void testVerifyAnonymousFacts() throws Exception {
-
-        MockWorkingMemory workingMemory = new MockWorkingMemory();
+        TypeResolver typeResolver = mock(TypeResolver.class);
+        FactVerifier factVerifier = new FactVerifier(new HashMap<String, Object>(), typeResolver, workingMemory, new HashMap<String, Object>());
 
         Cheese c = new Cheese();
         c.setPrice(42);
@@ -50,10 +59,6 @@ public class FactVerifierTest {
         vf.getFieldValues().add(new VerifyField("type",
                 "stilton",
                 "=="));
-
-        TypeResolver typeResolver = mock(TypeResolver.class);
-
-        FactVerifier factVerifier = new FactVerifier(new HashMap<String, Object>(), typeResolver, workingMemory, new HashMap<String, Object>());
 
         factVerifier.verify(vf);
         assertTrue(vf.wasSuccessful());
@@ -96,4 +101,122 @@ public class FactVerifierTest {
                 vf.getFieldValues().get(0).getSuccessResult());
 
     }
+
+    @Test
+    public void testVerifyFactsWithOperator() throws Exception {
+        TypeResolver typeResolver = mock(TypeResolver.class);
+
+        Cheese f1 = new Cheese("cheddar",
+                42);
+        HashMap<String, Object> populatedData = new HashMap<String, Object>();
+        populatedData.put("f1", f1);
+        workingMemory.facts.add(f1);
+
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+
+        // test all true
+        VerifyFact vf = new VerifyFact();
+        vf.setName("f1");
+        vf.getFieldValues().add(new VerifyField("type",
+                "cheddar",
+                "=="));
+        vf.getFieldValues().add(new VerifyField("price",
+                "4777",
+                "!="));
+
+        factVerifier.verify(vf);
+
+        for (int i = 0; i < vf.getFieldValues().size(); i++) {
+            assertTrue(vf.getFieldValues().get(i).getSuccessResult());
+        }
+
+        vf = new VerifyFact();
+        vf.setName("f1");
+        vf.getFieldValues().add(new VerifyField("type",
+                "cheddar",
+                "!="));
+        factVerifier.verify(vf);
+        assertFalse(vf.getFieldValues().get(0).getSuccessResult());
+
+    }
+
+    @Test
+    public void testVerifyFactsWithExpression() throws Exception {
+        TypeResolver typeResolver = mock(TypeResolver.class);
+        Cheese f1 = new Cheese("cheddar",
+                42);
+        f1.setPrice(42);
+
+        HashMap<String, Object> populatedData = new HashMap<String, Object>();
+        populatedData.put("f1", f1);
+        workingMemory.facts.add(f1);
+
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+
+        // test all true
+        VerifyFact vf = new VerifyFact();
+        vf.setName("f1");
+        vf.getFieldValues().add(new VerifyField("price",
+                "= 40 + 2",
+                "=="));
+        factVerifier.verify(vf);
+
+        assertTrue(vf.getFieldValues().get(0).getSuccessResult());
+    }
+
+    @Test
+    public void testVerifyFactExplanation() throws Exception {
+        Cheese f1 = new Cheese();
+        f1.setType(null);
+
+        TypeResolver typeResolver = mock(TypeResolver.class);
+        HashMap<String, Object> populatedData = new HashMap<String, Object>();
+        populatedData.put("f1", f1);
+        workingMemory.facts.add(f1);
+
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+
+        VerifyFact vf = new VerifyFact();
+        vf.setName("f1");
+        vf.getFieldValues().add(new VerifyField("type",
+                "boo",
+                "!="));
+
+        factVerifier.verify(vf);
+        VerifyField vfl = vf.getFieldValues().get(0);
+        assertEquals("[f1] field [type] was not [boo].",
+                vfl.getExplanation());
+
+    }
+
+    @Test
+    public void testVerifyFieldAndActualIsNull() throws Exception {
+        Cheese f1 = new Cheese();
+        f1.setType(null);
+
+        TypeResolver typeResolver = mock(TypeResolver.class);
+        HashMap<String, Object> populatedData = new HashMap<String, Object>();
+        populatedData.put("f1", f1);
+        workingMemory.facts.add(f1);
+
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+
+        VerifyFact vf = new VerifyFact();
+        vf.setName("f1");
+        vf.getFieldValues().add(new VerifyField("type",
+                "boo",
+                "=="));
+
+        factVerifier.verify(vf);
+        VerifyField vfl =  vf.getFieldValues().get(0);
+
+        assertEquals("[f1] field [type] was [] expected [boo].",
+                vfl.getExplanation());
+        assertEquals("boo",
+                vfl.getExpected());
+        assertEquals("",
+                vfl.getActualResult());
+
+    }
+
 }

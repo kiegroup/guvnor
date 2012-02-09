@@ -16,26 +16,53 @@
 
 package org.drools.testframework.populators;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CheeseType;
 import org.drools.FactHandle;
-import org.drools.OuterFact;
-import org.drools.Person;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.testframework.MockWorkingMemory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class NewFactPopulatorTest {
 
+    @Test
+    public void testDummyRunNoRules() throws Exception {
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),
+                Thread.currentThread().getContextClassLoader());
+        typeResolver.addImport("org.drools.Cheese");
+
+        HashMap<String, Object> populatedData = new HashMap<String, Object>();
+
+        List<FieldData> fieldData = new ArrayList<FieldData>();
+        fieldData.add(new FieldData("type",
+                "cheddar"));
+        fieldData.add(new FieldData("price",
+                "42"));
+        FactData fact = new FactData("Cheese",
+                "c1",
+                fieldData,
+                false);
+
+        NewFactPopulator newFactPopulator = new NewFactPopulator(
+                populatedData,
+                typeResolver,
+                fact);
+
+        MockWorkingMemory workingMemory = new MockWorkingMemory();
+        newFactPopulator.populate(workingMemory, new HashMap<String, FactHandle>());
+
+        assertTrue(populatedData.containsKey("c1"));
+        assertNotNull(populatedData.get("c1"));
+        assertEquals(populatedData.get("c1"),
+                workingMemory.facts.get(0));
+
+    }
 }
