@@ -893,7 +893,35 @@ public class PackageResource extends Resource {
         
         AssetItem ai = repository.loadPackage(packageName).addAsset(assetName, asset.getDescription());
         ai.checkout();
-        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getTitle());
+        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getBinaryContentAttachmentFileName());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getPackage().updateBinaryUpToDate(false);
+        ai.checkin(asset.getCheckInComment());
+        repository.save();
+        return asset;
+    }
+    
+    @POST
+    @Path("{packageName}/assets/{assetName}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+            @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
+    	/* Verify passed in asset object */
+    	if(asset == null || asset.getMetadata() == null ){
+    		throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+    	}
+    	
+    	/* Asset must exist to update */
+    	if(!assetExists(packageName, assetName)){
+    		throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
+    	}
+        
+        AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+        ai.checkout();
+        ai.updateDescription(asset.getDescription());
+        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getBinaryContentAttachmentFileName());
         ai.updateFormat(asset.getMetadata().getFormat());
         ai.updateBinaryContentAttachment(is);
         ai.getPackage().updateBinaryUpToDate(false);
