@@ -126,7 +126,8 @@ public class RuleViewerWrapper extends GuvnorEditor
     }
 
     public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-        if ( refreshAssetEditorEvent.getUuid().equals( asset.getUuid() ) ) {
+    	//AssetUUID == null means to refresh all asset editors contained by the specified package. 
+        if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getPackageName().equals(refreshAssetEditorEvent.getPackageName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
             LoadingPopup.showMessage( constants.RefreshingItem() );
 
             //When refreshing the Asset ensure the SuggestionCompletionEngine has been cached.

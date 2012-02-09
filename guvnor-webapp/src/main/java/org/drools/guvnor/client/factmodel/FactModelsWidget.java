@@ -207,13 +207,14 @@ public class FactModelsWidget extends Composite
     }
 
     public void onAfterSave() {
-        LoadingPopup.showMessage( constants.RefreshingModel() );
+    	//Refresh  SuggestionCompletionCache is done by RuleViewer.flushSuggestionCompletionCache(). No need to refresh it twice here.
+/*        LoadingPopup.showMessage( constants.RefreshingModel() );
         SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getPackageName(),
                                                              new Command() {
                                                                  public void execute() {
                                                                      LoadingPopup.close();
                                                                  }
-                                                             } );
+                                                             } );*/
     }
 
     public void onSave() {

@@ -153,7 +153,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                     //Reload asset as the upload operation commits the asset's content. If we don't 
                     //reload the asset we receive a optimistic lock error appearing as "Unable to save 
                     //this asset, as it has been recently updated" message to users
-                    eventBus.fireEvent( new RefreshAssetEditorEvent( asset.getUuid() ) );
+                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getPackageName(),  asset.getUuid() ) );
                 } else {
                     ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
                 }

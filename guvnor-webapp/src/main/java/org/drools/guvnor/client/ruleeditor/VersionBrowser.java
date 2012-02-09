@@ -227,7 +227,7 @@ public class VersionBrowser extends Composite {
             RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                     new GenericCallback<RuleAsset>() {
 
-                        public void onSuccess( RuleAsset asset ) {
+                        public void onSuccess( final RuleAsset asset ) {
                             asset.setReadonly( true );
                             //asset.metaData.name = metaData.name;
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
@@ -244,7 +244,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getPackageName(), uuid) );
                                                     pop.hide();
                                                 }
                                             } );

@@ -178,7 +178,6 @@ public class RuleViewer extends GuvnorEditor {
         setWidth( "100%" );
 
         initActionToolBar();
-        setRefreshHandler();
         LoadingPopup.close();
     }
 
@@ -379,13 +378,6 @@ public class RuleViewer extends GuvnorEditor {
         }
         performCheckIn( comment,
                 closeAfter );
-        if ( editor instanceof SaveEventListener ) {
-            ((SaveEventListener) editor).onAfterSave();
-        }
-
-        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getPackageUUID()));
-        lastSaved = System.currentTimeMillis();
-        resetDirty();
     }
 
     private void doVerify() {
@@ -483,18 +475,20 @@ public class RuleViewer extends GuvnorEditor {
                         }
 
                         flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
-                        if ( editor instanceof DirtyableComposite ) {
-                            ((DirtyableComposite) editor).resetDirty();
-                        }
 
                         LoadingPopup.close();
                         saved[0] = true;
 
                         eventBus.fireEvent( new ShowMessageEvent( constants.SavedOK(),
                                                                   MessageType.INFO ) );
-                        if ( !closeAfter ) {
-                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                        
+                        if ( editor instanceof SaveEventListener ) {
+                            ((SaveEventListener) editor).onAfterSave();
                         }
+
+                        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getPackageUUID()));
+                        lastSaved = System.currentTimeMillis();
+                        resetDirty();
                     }
                 } );
     }
@@ -512,7 +506,9 @@ public class RuleViewer extends GuvnorEditor {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the
                             //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
-                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
+                           
+                            //set assetUUID to null means to refresh all asset editors contained by the specified package. 
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(packageName, null));
                             LoadingPopup.close();
                         }
                     } );
@@ -621,7 +617,7 @@ public class RuleViewer extends GuvnorEditor {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getPackageName(), asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -654,7 +650,7 @@ public class RuleViewer extends GuvnorEditor {
                             flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getPackageName(), asset.getUuid()));
                         }
 
                         @Override
@@ -679,18 +675,5 @@ public class RuleViewer extends GuvnorEditor {
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }    
-    
-    private void setRefreshHandler() {
-        eventBus.addHandler(RefreshSuggestionCompletionEngineEvent.TYPE,
-                new RefreshSuggestionCompletionEngineEvent.Handler() {
-                    public void onRefreshModule(
-                            RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
-                        String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
-                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
-                        }
-                    
-                    }
-                });
-    }
+
 }
