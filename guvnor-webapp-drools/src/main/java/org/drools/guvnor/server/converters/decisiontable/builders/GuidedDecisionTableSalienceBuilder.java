@@ -27,7 +27,7 @@ import org.drools.template.parser.DecisionTableParseException;
 /**
  * Builder for Salience Attribute columns
  */
-public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     private final boolean isSequential;
 
@@ -43,19 +43,18 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.SALIENCE_ATTR );
-        
+
         //If sequential set column to use reverse row number
         if ( isSequential ) {
             column.setUseRowNumber( true );
             column.setReverseOrder( true );
             final int maxRow = this.values.size();
-            for(int iRow = 0; iRow < maxRow; iRow++) {
-                DTCellValue52 dcv = this.values.get(iRow);
-                dcv.setNumericValue( new BigDecimal(maxRow-iRow) );
+            for ( int iRow = 0; iRow < maxRow; iRow++ ) {
+                DTCellValue52 dcv = this.values.get( iRow );
+                dcv.setNumericValue( new BigDecimal( maxRow - iRow ) );
             }
         }
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

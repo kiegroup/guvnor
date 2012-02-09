@@ -389,6 +389,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             visibleActionCols.clear();
             multiRowColumnOffset = -1;
             multiRowColumnActionsOffset = -1;
+            int iColumnCount = 0;
             for ( int iCol = 0; iCol < sortableColumns.size(); iCol++ ) {
                 DynamicColumn<BaseColumn> col = sortableColumns.get( iCol );
                 if ( col.isVisible() ) {
@@ -396,19 +397,20 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                     BaseColumn modelCol = col.getModelColumn();
                     if ( modelCol instanceof ConditionCol52 ) {
                         if ( multiRowColumnOffset == -1 ) {
-                            multiRowColumnOffset = iCol;
+                            multiRowColumnOffset = iColumnCount;
                         }
                         visibleConditionCols.add( col );
                     }
                     if ( modelCol instanceof ActionCol52 ) {
                         if ( multiRowColumnOffset == -1 ) {
-                            multiRowColumnOffset = iCol;
+                            multiRowColumnOffset = iColumnCount;
                         }
                         if ( multiRowColumnActionsOffset == -1 ) {
-                            multiRowColumnActionsOffset = iCol;
+                            multiRowColumnActionsOffset = iColumnCount;
                         }
                         visibleActionCols.add( col );
                     }
+                    iColumnCount++;
                 }
             }
 

@@ -15,23 +15,23 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import org.drools.decisiontable.parser.SourceBuilder;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import java.util.List;
+
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
- * Interface for additional responsibilities for Guided Decision Table builders
+ * Something that can convert a String value into one or more DTCellValue52's
  */
-public interface GuidedDecisionTableBuilder
-    extends
-    SourceBuilder {
+public interface ParameterizedValueBuilder {
 
-    /**
-     * Populate the given Decision Table with details of the parsed column.
-     * Actions should include adding applicable columns and data to the
-     * underlying model.
-     * 
-     * @param dtable
-     */
-    public void populateDecisionTable(GuidedDecisionTable52 dtable);
+    public String getTemplate();
+
+    public List<String> getParameters();
+
+    public List<List<DTCellValue52>> getColumnData();
+
+    public void addCellValue(int row,
+                             int column,
+                             String value);
 
 }

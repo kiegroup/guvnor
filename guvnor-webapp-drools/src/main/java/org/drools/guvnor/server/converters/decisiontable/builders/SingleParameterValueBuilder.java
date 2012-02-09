@@ -17,38 +17,49 @@ package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
- * 
+ * A ValueBuilder for templates with a single parameter; $param
  */
 public class SingleParameterValueBuilder
-        extends
-        ValueBuilder {
+        implements
+        ParameterizedValueBuilder {
 
-    private static final Pattern p = Pattern.compile( "\\$param" );
+    private final String              template;
 
-    public SingleParameterValueBuilder(String template) {
-        super( template );
+    private final List<String>        parameters = new ArrayList<String>();
+
+    private List<List<DTCellValue52>> values     = new ArrayList<List<DTCellValue52>>();
+
+    public SingleParameterValueBuilder(final String template,
+                                       final ParameterUtilities parameterUtilities) {
+        this.template = parameterUtilities.convertSingleParameterToTemplateKey( template );
+        this.parameters.addAll( parameterUtilities.extractTemplateKeys( this.template ) );
+    }
+
+    public void addCellValue(int row,
+                             int column,
+                             String value) {
+        final List<DTCellValue52> rowValues = new ArrayList<DTCellValue52>();
+        rowValues.add( new DTCellValue52( value ) );
+        values.add( rowValues );
     }
 
     @Override
-    public List<String> extractParameters(String template) {
-        final List<String> parameters = new ArrayList<String>();
-        final Matcher m = p.matcher( template );
-        if ( m.find() ) {
-            parameters.add( m.group() );
-        }
-        return parameters;
+    public String getTemplate() {
+        return this.template;
     }
 
-    public List<DTCellValue52> build(String value) {
-        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
-        values.add( new DTCellValue52( value ) );
-        return values;
+    @Override
+    public List<String> getParameters() {
+        return this.parameters;
+    }
+
+    @Override
+    public List<List<DTCellValue52>> getColumnData() {
+        return this.values;
     }
 
 }

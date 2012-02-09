@@ -23,27 +23,45 @@ import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
- * 
+ * A ValueBuilder for literal values (i.e. no parameters)
  */
-public class SimpleValueBuilder
-        extends
-        ValueBuilder {
+public class LiteralValueBuilder
+        implements
+        ParameterizedValueBuilder {
 
-    private static final List<String> NO_PARAMETERS = Collections.emptyList();
+    private static final List<String>       NO_PARAMETERS = Collections.emptyList();
 
-    public SimpleValueBuilder(String template) {
-        super( template );
+    private final String                    template;
+
+    private final List<String>              parameters    = new ArrayList<String>();
+
+    private final List<List<DTCellValue52>> values        = new ArrayList<List<DTCellValue52>>();
+
+    public LiteralValueBuilder(String template) {
+        this.template = template;
+        this.parameters.addAll( NO_PARAMETERS );
+    }
+
+    public void addCellValue(int row,
+                             int column,
+                             String value) {
+        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
+        values.add( new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( value ) ) );
     }
 
     @Override
-    public List<String> extractParameters(String template) {
-        return NO_PARAMETERS;
+    public String getTemplate() {
+        return this.template;
     }
 
-    public List<DTCellValue52> build(String value) {
-        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
-        values.add( new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( value ) ) );
-        return values;
+    @Override
+    public List<String> getParameters() {
+        return this.parameters;
+    }
+
+    @Override
+    public List<List<DTCellValue52>> getColumnData() {
+        return this.values;
     }
 
 }

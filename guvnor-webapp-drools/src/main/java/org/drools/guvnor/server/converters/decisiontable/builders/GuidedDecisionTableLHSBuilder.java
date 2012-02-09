@@ -31,20 +31,22 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class GuidedDecisionTableLHSBuilder
     implements
-    GuidedDecisionTableBuilder {
+    GuidedDecisionTableSourceBuilder {
 
-    private int                  headerRow;
-    private int                  headerCol;
-    private Map<Integer, String> constraints;
-    private List<DTCellValue52>  values;
+    private final int                  headerRow;
+    private final int                  headerCol;
+    private final Map<Integer, String> constraints = new HashMap<Integer, String>();
+    private final List<DTCellValue52>  values      = new ArrayList<DTCellValue52>();
+
+    private final ParameterUtilities   parameterUtilities;
 
     public GuidedDecisionTableLHSBuilder(int row,
                                          int column,
-                                         String colDefinition) {
+                                         String colDefinition,
+                                         ParameterUtilities parameterUtilities) {
         this.headerRow = row;
         this.headerCol = column;
-        this.constraints = new HashMap<Integer, String>();
-        this.values = new ArrayList<DTCellValue52>();
+        this.parameterUtilities = parameterUtilities;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {

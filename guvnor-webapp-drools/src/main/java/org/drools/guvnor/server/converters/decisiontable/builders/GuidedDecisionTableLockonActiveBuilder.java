@@ -24,7 +24,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for LockOnActive Attribute columns
  */
-public class GuidedDecisionTableLockonActiveBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableLockonActiveBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableLockonActiveBuilder(int row,
                                                   int column) {
@@ -36,8 +36,7 @@ public class GuidedDecisionTableLockonActiveBuilder extends AbstractGuidedDecisi
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR );
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add(column);
         addColumnData( dtable,
                        column );
     }

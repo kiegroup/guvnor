@@ -29,7 +29,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
  */
 public class DefaultDescriptionBuilder
     implements
-    GuidedDecisionTableBuilder {
+    GuidedDecisionTableSourceBuilder {
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 
@@ -37,18 +37,15 @@ public class DefaultDescriptionBuilder
         return ActionType.Code.DESCRIPTION;
     }
 
-    public String getResult() {
-        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does not return DRL." );
-    }
-
-    public void addTemplate(int row,
-                            int col,
-                            String content) {
-        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does implement code snippets." );
+    public void populateDecisionTable(GuidedDecisionTable52 dtable) {
+        for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
+            dtable.getData().get( iRow ).add( 1,
+                                              this.values.get( iRow ) );
+        }
     }
 
     public void addCellValue(int row,
-                             int col,
+                             int column,
                              String value) {
         this.values.add( new DTCellValue52() );
     }
@@ -61,11 +58,14 @@ public class DefaultDescriptionBuilder
         return this.values.size() > 0;
     }
 
-    public void populateDecisionTable(GuidedDecisionTable52 dtable) {
-        for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
-            dtable.getData().get( iRow ).add( 1,
-                                              this.values.get( iRow ) );
-        }
+    public String getResult() {
+        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does not return DRL." );
+    }
+
+    public void addTemplate(int row,
+                            int col,
+                            String content) {
+        throw new UnsupportedOperationException( "DefaultDescriptionBuilder does implement code snippets." );
     }
 
 }

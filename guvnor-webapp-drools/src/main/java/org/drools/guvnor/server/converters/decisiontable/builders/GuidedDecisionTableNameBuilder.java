@@ -21,7 +21,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for Name Attribute columns
  */
-public class GuidedDecisionTableNameBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableNameBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableNameBuilder(int row,
                                           int column) {

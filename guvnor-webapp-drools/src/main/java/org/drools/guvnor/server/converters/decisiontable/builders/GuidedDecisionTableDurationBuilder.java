@@ -25,7 +25,7 @@ import org.drools.template.parser.DecisionTableParseException;
 /**
  * Builder for Duration Attribute columns
  */
-public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableDurationBuilder(int row,
                                               int column) {
@@ -37,8 +37,7 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.DURATION_ATTR );
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

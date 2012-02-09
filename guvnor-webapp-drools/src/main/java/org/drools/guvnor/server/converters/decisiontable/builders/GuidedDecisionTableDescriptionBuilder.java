@@ -23,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for Description Attribute columns
  */
-public class GuidedDecisionTableDescriptionBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableDescriptionBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableDescriptionBuilder(int row,
                                                  int column) {
@@ -34,8 +34,7 @@ public class GuidedDecisionTableDescriptionBuilder extends AbstractGuidedDecisio
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         DescriptionCol52 column = new DescriptionCol52();
-        addColumn( dtable,
-                   column );
+        dtable.setDescriptionCol( column );
         addColumnData( dtable,
                        column );
     }

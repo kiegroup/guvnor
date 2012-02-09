@@ -23,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for ActivationGroup Attribute columns
  */
-public class GuidedDecisionTableActivationGroupBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableActivationGroupBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableActivationGroupBuilder(int row,
                                                      int column) {
@@ -35,8 +35,7 @@ public class GuidedDecisionTableActivationGroupBuilder extends AbstractGuidedDec
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.ACTIVATION_GROUP_ATTR );
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

@@ -113,7 +113,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         }
         //TODO {manstis} Handle multiple Decision Tables
         List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTable();
-        GuidedDecisionTable52 dtable = dtables.get(0);
+        GuidedDecisionTable52 dtable = dtables.get( 0 );
         return dtable;
     }
 

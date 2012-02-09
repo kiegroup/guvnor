@@ -24,7 +24,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for AutoFocus Attribute columns
  */
-public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableAutoFocusBuilder(int row,
                                                   int column) {
@@ -36,8 +36,7 @@ public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionT
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.AUTO_FOCUS_ATTR );
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

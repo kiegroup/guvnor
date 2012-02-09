@@ -23,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for RuleflowGroup Attribute columns
  */
-public class GuidedDecisionTableRuleflowGroupBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableRuleflowGroupBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableRuleflowGroupBuilder(int row,
                                                  int column) {
@@ -35,8 +35,7 @@ public class GuidedDecisionTableRuleflowGroupBuilder extends AbstractGuidedDecis
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.RULEFLOW_GROUP_ATTR );
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add(column);
         addColumnData( dtable,
                        column );
     }
