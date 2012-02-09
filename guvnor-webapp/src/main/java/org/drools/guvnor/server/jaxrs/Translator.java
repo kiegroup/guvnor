@@ -225,7 +225,7 @@ public class Translator {
         
         Content c = new Content();
         c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        c.setSrc(base.clone().path("binary").build());       	
+        c.setSrc(base.clone().path("binary").build());
         e.setContent(c);
         
         return e;
