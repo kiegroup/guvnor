@@ -12,16 +12,22 @@ public class RefreshAssetEditorEvent extends GwtEvent<RefreshAssetEditorEvent.Ha
 
     public static Type<Handler> TYPE = new Type<Handler>();
 
-    private final String uuid;
+    private final String assetUUID;
+    private final String packageName;
 
-    public RefreshAssetEditorEvent( String uuid ) {
-        this.uuid = uuid;
+    public RefreshAssetEditorEvent(String pacakgeName, String uuid ) {
+    	this.packageName = pacakgeName;
+        this.assetUUID = uuid;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getAssetUUID() {
+        return assetUUID;
     }
-
+    
+    public String getPackageName() {
+        return packageName;
+    }
+    
     @Override
     public Type<RefreshAssetEditorEvent.Handler> getAssociatedType() {
         return TYPE;
