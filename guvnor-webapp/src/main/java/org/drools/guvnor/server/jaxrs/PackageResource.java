@@ -53,6 +53,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.RepositoryPackageOperations;
@@ -871,6 +872,34 @@ public class PackageResource extends Resource {
     	/* Load package and determine if it contains an asset */
     	final PackageItem packageItem = repository.loadPackage(packageName);
     	return packageItem.containsAsset(assetName);
+    }
+    
+    @POST
+    @Path("{packageName}/assets")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+            @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
+    	/* Verify passed in asset object */
+    	if(asset == null || asset.getMetadata() == null ){
+    		throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+    	}
+    	final String assetName = asset.getMetadata().getTitle();
+    	
+    	/* Check for existence of asset name */
+        if (assetName == null) {
+            throw new WebApplicationException(Response.status(500).entity("Asset name must be specified (Asset.metadata.title)").build());
+        } 
+        
+        AssetItem ai = repository.loadPackage(packageName).addAsset(assetName, asset.getDescription());
+        ai.checkout();
+        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getTitle());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getPackage().updateBinaryUpToDate(false);
+        ai.checkin(asset.getCheckInComment());
+        repository.save();
+        return asset;
     }
 }
 
