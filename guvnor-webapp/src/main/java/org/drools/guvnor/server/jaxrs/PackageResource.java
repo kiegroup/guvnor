@@ -845,7 +845,7 @@ public class PackageResource extends Resource {
     
     @POST
     @Path("{packageName}/snapshot/{snapshotName}")
-    public void createPacakageSnapshot(
+    public void createPackageSnapshot(
             @PathParam("packageName") final String packageName,
             @PathParam("snapshotName") final String snapshotName) {
         repositoryPackageOperations.createPackageSnapshot(packageName,
