@@ -92,6 +92,10 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
         view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION, clientFactory, eventBus );
     }
 
+    public void onNewFormDefinition() {
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory, eventBus );
+    }
+
     public void onNewEnumeration() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.ENUMERATION, clientFactory, eventBus );
     }

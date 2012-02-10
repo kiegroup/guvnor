@@ -104,8 +104,18 @@ public class RuleViewer extends GuvnorEditor {
                 editor.setHeight( "580px" );
             }
         }
-
-        initWidget( uiBinder.createAndBindUi( this ) );
+        if ( editor instanceof FormEditor ) {
+            if ( ruleViewerSettings1.isStandalone() ) {
+                // standalone bigger dimensions"
+                editor.setWidth( "100%" );
+                editor.setHeight( "1000px" );
+            } else {
+                // normal dimensions inside guvnor
+                editor.setWidth( "100%" );
+                editor.setHeight( "580px" );
+            }
+        }
+  initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
 
         LoadingPopup.close();

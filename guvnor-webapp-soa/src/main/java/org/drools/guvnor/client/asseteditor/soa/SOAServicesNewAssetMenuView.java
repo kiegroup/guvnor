@@ -31,6 +31,8 @@ public interface SOAServicesNewAssetMenuView extends IsWidget {
 
         void onNewBPMN2Process();
 
+        void onNewFormDefinition();
+
         void onNewFile();
 
     }

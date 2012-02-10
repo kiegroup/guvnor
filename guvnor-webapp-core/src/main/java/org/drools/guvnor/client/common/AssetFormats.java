@@ -73,6 +73,11 @@ public class AssetFormats {
     public static final String RULE_FLOW_RF = "rf";
     public static final String BPMN_PROCESS = "bpmn";
     public static final String BPMN2_PROCESS = "bpmn2";
+
+    /**
+     * Use a form definition.
+     */
+    public static final String FORM_DEFINITION = "formdef";
     
     /**
      * For WorkItems

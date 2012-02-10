@@ -55,6 +55,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         addNewRuleFlowMenuItem();
         addNewBPMN2ProcessMenuItem();
         addNewWorkItemDefinitionMenuItem();
+        addNewFormDefinitionMenuItem();
         addNewEnumerationMenuItem();
         addNewTestScenarioMenuItem();
         addNewFileMenuItem();
@@ -117,6 +118,16 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
                         presenter.onNewBPMN2Process();
                     }
                 } );
+    }
+
+    private void addNewFormDefinitionMenuItem() {
+        createNewMenu.addItem( Util.getHeader( images.formDefIcon(), constants.FormDefinition() ).asString(),
+                true,
+                new Command() {
+                    public void execute() {
+                        presenter.onNewFormDefinition();
+                    }
+                });
     }
 
     private void addNewRuleFlowMenuItem() {
