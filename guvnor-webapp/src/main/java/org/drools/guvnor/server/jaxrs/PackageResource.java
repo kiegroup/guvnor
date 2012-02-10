@@ -16,7 +16,36 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Element;
@@ -24,8 +53,10 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.server.RepositoryPackageOperations;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
@@ -37,18 +68,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.jboss.seam.annotations.Name;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.drools.guvnor.server.jaxrs.Translator.*;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -66,6 +86,18 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
 @Path("/packages")
 public class PackageResource extends Resource {
     private HttpHeaders headers;
+
+    /* Handles common package operations */
+    private final RepositoryPackageOperations repositoryPackageOperations;
+
+    /**
+     * Constructor initialising all required properties/members
+     */
+    public PackageResource() {
+        super();
+        repositoryPackageOperations = new RepositoryPackageOperations();
+        repositoryPackageOperations.setRulesRepository(repository);
+    }
 
     @Context
     public void setHttpHeaders(HttpHeaders theHeaders) {
@@ -550,7 +582,7 @@ public class PackageResource extends Resource {
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             } else {
-            	assetName = URLDecoder.decode(assetName, "UTF-8");
+                assetName = URLDecoder.decode(assetName, "UTF-8");
             }
             String fileName = null;
             String extension = null;
@@ -744,7 +776,7 @@ public class PackageResource extends Resource {
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
-    }
+    }    
 
     @GET
     @Path("{packageName}/assets/{assetName}/versions/{versionNumber}")
@@ -809,6 +841,93 @@ public class PackageResource extends Resource {
         }
 
         return null;
+    }
+    
+    @POST
+    @Path("{packageName}/snapshot/{snapshotName}")
+    public void createPackageSnapshot(
+            @PathParam("packageName") final String packageName,
+            @PathParam("snapshotName") final String snapshotName) {
+        repositoryPackageOperations.createPackageSnapshot(packageName,
+                snapshotName, true, "REST API Snapshot");
+    }
+    
+    @GET
+    @Path("{packageName}/exists")
+    public boolean packageExists(@PathParam("packageName") final String packageName){
+        /* Determine if package exists in repository */
+        final boolean packageExists = repository.containsPackage(packageName);
+        return packageExists;
+    }
+    
+    @GET
+    @Path("{packageName}/assets/{assetName}/exists")
+    public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
+        /* Asset does not exist if package does not exist */
+        final boolean packageExists = repository.containsPackage(packageName);
+        if(!packageExists){
+            return false;
+        }
+        
+        /* Load package and determine if it contains an asset */
+        final PackageItem packageItem = repository.loadPackage(packageName);
+        return packageItem.containsAsset(assetName);
+    }
+    
+    @POST
+    @Path("{packageName}/assets")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+            @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
+        /* Verify passed in asset object */
+        if(asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+        final String assetName = asset.getMetadata().getTitle();
+        
+        /* Check for existence of asset name */
+        if (assetName == null) {
+            throw new WebApplicationException(Response.status(500).entity("Asset name must be specified (Asset.metadata.title)").build());
+        } 
+        
+        AssetItem ai = repository.loadPackage(packageName).addAsset(assetName, asset.getDescription());
+        ai.checkout();
+        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getBinaryContentAttachmentFileName());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getPackage().updateBinaryUpToDate(false);
+        ai.checkin(asset.getCheckInComment());
+        repository.save();
+        return asset;
+    }
+    
+    @POST
+    @Path("{packageName}/assets/{assetName}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+            @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
+        /* Verify passed in asset object */
+        if(asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+        
+        /* Asset must exist to update */
+        if(!assetExists(packageName, assetName)){
+            throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
+        }
+        
+        AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+        ai.checkout();
+        ai.updateDescription(asset.getDescription());
+        ai.updateBinaryContentAttachmentFileName(asset.getMetadata().getBinaryContentAttachmentFileName());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getPackage().updateBinaryUpToDate(false);
+        ai.checkin(asset.getCheckInComment());
+        repository.save();
+        return asset;
     }
 }
 

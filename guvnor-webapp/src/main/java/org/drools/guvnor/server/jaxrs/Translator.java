@@ -67,6 +67,7 @@ public class Translator {
         metadata.setCreatedBy(a.getCreator());
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
+        metadata.setBinaryContentAttachmentFileName(a.getBinaryContentAttachmentFileName());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         List<CategoryItem> categories = a.getCategories();
         String[] cats = new String[categories.size()];
@@ -224,7 +225,7 @@ public class Translator {
         
         Content c = new Content();
         c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        c.setSrc(base.clone().path("binary").build());       	
+        c.setSrc(base.clone().path("binary").build());
         e.setContent(c);
         
         return e;

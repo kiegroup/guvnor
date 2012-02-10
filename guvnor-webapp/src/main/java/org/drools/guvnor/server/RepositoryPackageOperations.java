@@ -416,7 +416,7 @@ public class RepositoryPackageOperations {
         return res;
     }
 
-    protected void createPackageSnapshot(String packageName,
+    public void createPackageSnapshot(String packageName,
                                          String snapshotName,
                                          boolean replaceExisting,
                                          String comment) {
