@@ -3,12 +3,12 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.CallFixtureMap;
+import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 

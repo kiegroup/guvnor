@@ -655,7 +655,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient 
     public void testRenamePackageFromAtom(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for testing
+        //create a package for fixtures
         Abdera abdera = new Abdera();
         AbderaClient client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
@@ -742,7 +742,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient 
     public void testRenamePackageFromXML(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for testing
+        //create a package for fixtures
         Package p = createTestPackage("testRenamePackageFromXML");
         p.setDescription("desc for testRenamePackageFromXML");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
@@ -908,7 +908,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testUpdatePackageFromJAXB(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for testing
+        //create a package for fixtures
         Package p = createTestPackage("testUpdatePackageFromJAXB");
         p.setDescription("desc for testUpdatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());

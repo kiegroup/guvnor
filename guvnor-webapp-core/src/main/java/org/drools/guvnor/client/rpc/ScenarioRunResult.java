@@ -18,7 +18,7 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

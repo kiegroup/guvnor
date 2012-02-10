@@ -22,18 +22,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.client.testscenarios.fixtures.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.testscenarios.fixtures.CallFixtureMap;
+import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.FactData;
+import org.drools.ide.common.client.testscenarios.fixtures.FieldData;
+import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
+import org.drools.ide.common.client.testscenarios.fixtures.FixturesMap;
+import org.drools.ide.common.client.testscenarios.fixtures.RetractFact;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
 
 /**
  * Some utility methods as the display logic is a bit hairy.

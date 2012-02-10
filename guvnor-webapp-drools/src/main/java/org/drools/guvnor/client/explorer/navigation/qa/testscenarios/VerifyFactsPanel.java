@@ -21,11 +21,11 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyFactWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

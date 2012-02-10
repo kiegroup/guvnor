@@ -140,15 +140,15 @@ public class PopulateDataTest extends GuvnorTestBase {
         repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "TEST",
                 false,
-                "The testing region.");
+                "The fixtures region.");
         repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION",
                 false,
-                "The testing region.");
+                "The fixtures region.");
         repositoryPackageService.createModuleSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION ROLLBACK",
                 false,
-                "The testing region.");
+                "The fixtures region.");
 
     }
 

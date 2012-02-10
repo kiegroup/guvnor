@@ -114,7 +114,7 @@ public class FactPattern
     }
 
     /**
-     * WARNING! This method should only be used for testing purposes!
+     * WARNING! This method should only be used for fixtures purposes!
      * 
      * @param factType
      */

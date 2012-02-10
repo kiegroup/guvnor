@@ -94,7 +94,7 @@ public class SuggestionCompletionCacheTest {
     class ConstantsProxy implements InvocationHandler {
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            return "testing";
+            return "fixtures";
         }
     }
 

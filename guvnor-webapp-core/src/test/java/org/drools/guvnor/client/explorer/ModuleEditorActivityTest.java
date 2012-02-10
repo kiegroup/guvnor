@@ -84,7 +84,7 @@ public class ModuleEditorActivityTest {
 //
 //        verify( acceptsOneWidget ).setWidget( Matchers.<PackageEditorWrapper>any() );
 //
-    // TODO: Make currentlySelectedPackage better for testing -Rikkola-
+    // TODO: Make currentlySelectedPackage better for fixtures -Rikkola-
 //        assertEquals( "mockUuid", RulePackageSelector.currentlySelectedPackage );
 //
 //    }

@@ -20,10 +20,10 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
+import org.drools.ide.common.client.testscenarios.fixtures.RetractFact;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

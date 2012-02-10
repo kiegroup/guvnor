@@ -180,7 +180,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( packages[0].getUuid() == null );
         assertFalse( packages[0].getUuid().equals( "" ) );
 
-        // just for performance testing with scaling up numbers of rules
+        // just for performance fixtures with scaling up numbers of rules
         // for (int i=1; i <= 1000; i++) {
         // impl.createNewRule( "somerule_" + i, "description",
         // "testAddRule", "another", "drl" );
@@ -512,7 +512,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createModule( "testQuickFind",
-                                                "for testing quick find.",
+                                                "for fixtures quick find.",
                                                 "package" );
         String uuid = serviceImplementation.createNewRule( "testQuickFindmyRule1",
                                                            "desc",
@@ -566,7 +566,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createModule( "testTextSearch",
-                                                "for testing search.",
+                                                "for fixtures search.",
                                                 "package" );
         @SuppressWarnings("unused")
         String uuid = serviceImplementation.createNewRule( "testTextRule1",

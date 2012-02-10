@@ -16,11 +16,11 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
-import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.CallFieldValue;
+import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.FactData;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;

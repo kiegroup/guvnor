@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
 
 
 public class ModifyFactWidget extends FactWidget {

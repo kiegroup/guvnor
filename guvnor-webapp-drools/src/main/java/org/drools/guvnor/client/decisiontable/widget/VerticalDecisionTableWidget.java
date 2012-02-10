@@ -43,7 +43,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                                          eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce );
 
-        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        //Date converter is injected so a GWT compatible one can be used here and another in fixtures
         DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         // Construct the widget from which we're composed

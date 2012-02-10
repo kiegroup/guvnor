@@ -23,11 +23,11 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.testscenarios.fixtures.CallFixtureMap;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
+import org.drools.ide.common.client.testscenarios.fixtures.FixturesMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;

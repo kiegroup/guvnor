@@ -31,6 +31,7 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
@@ -306,7 +307,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0,
-                                                                         org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
+                                                                         Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.runScenario( p0,
                 p1 );
     }

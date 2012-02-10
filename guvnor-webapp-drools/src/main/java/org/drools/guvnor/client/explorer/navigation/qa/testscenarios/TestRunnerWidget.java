@@ -30,11 +30,11 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.util.PercentageBar;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyField;
+import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
