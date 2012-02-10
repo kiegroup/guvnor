@@ -400,6 +400,12 @@ public class GuidedDecisionTable52
 
     private String getType(BRLActionVariableColumn col,
                            SuggestionCompletionEngine sce) {
+
+        //If the parameter is not bound to a Fact or FactField use the explicit type
+        if ( col.getFactType() == null && col.getFactField() == null ) {
+            return col.getFieldType();
+        }
+
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,
@@ -410,6 +416,12 @@ public class GuidedDecisionTable52
 
     private String getType(BRLConditionVariableColumn col,
                            SuggestionCompletionEngine sce) {
+
+        //If the parameter is not bound to a Fact or FactField use the explicit type
+        if ( col.getFactType() == null && col.getFactField() == null ) {
+            return col.getFieldType();
+        }
+
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,

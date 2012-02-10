@@ -15,9 +15,7 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.parser.ActionType;
@@ -31,14 +29,23 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class GuidedDecisionTableLHSBuilder
     implements
+    HasColumnHeadings,
     GuidedDecisionTableSourceBuilder {
 
-    private final int                  headerRow;
-    private final int                  headerCol;
-    private final Map<Integer, String> constraints = new HashMap<Integer, String>();
-    private final List<DTCellValue52>  values      = new ArrayList<DTCellValue52>();
+    private final int                                     headerRow;
+    private final int                                     headerCol;
 
-    private final ParameterUtilities   parameterUtilities;
+    //Map of column constraints (code snippets), keyed on XLS column index
+    private final Map<Integer, String>                    constraints   = new HashMap<Integer, String>();
+
+    //Map of column headers, keyed on XLS column index
+    private final Map<Integer, String>                    columnHeaders = new HashMap<Integer, String>();
+
+    //Map of column value parsers, keyed on XLS column index
+    private final Map<Integer, ParameterizedValueBuilder> valueBuilders = new HashMap<Integer, ParameterizedValueBuilder>();
+
+    //Utility class to convert XLS parameters to BRLFragment Template keys
+    private final ParameterUtilities                      parameterUtilities;
 
     public GuidedDecisionTableLHSBuilder(int row,
                                          int column,
@@ -63,6 +70,13 @@ public class GuidedDecisionTableLHSBuilder
                               content.trim() );
     }
 
+    @Override
+    public void setColumnHeader(int column,
+                                String value) {
+        this.columnHeaders.put( column,
+                                value.trim() );
+    }
+
     public void addCellValue(int row,
                              int column,
                              String value) {
@@ -74,7 +88,7 @@ public class GuidedDecisionTableLHSBuilder
         }
 
         DTCellValue52 dcv = new DTCellValue52( value );
-        this.values.add( dcv );
+        //this.values.add( dcv );
     }
 
     public ActionType.Code getActionTypeCode() {
@@ -86,11 +100,11 @@ public class GuidedDecisionTableLHSBuilder
     }
 
     public void clearValues() {
-        this.values.clear();
+        throw new UnsupportedOperationException();
     }
 
     public boolean hasValues() {
-        return this.values.size() > 0;
+        throw new UnsupportedOperationException();
     }
 
 }

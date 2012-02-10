@@ -35,6 +35,7 @@ import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.decisiontable.parser.SourceBuilder;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.guvnor.server.converters.decisiontable.builders.DefaultDescriptionBuilder;
@@ -52,6 +53,7 @@ import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecision
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRuleflowGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSalienceBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSourceBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.HasColumnHeadings;
 import org.drools.guvnor.server.converters.decisiontable.builders.ParameterUtilities;
 import org.drools.guvnor.server.converters.decisiontable.builders.RowNumberBuilder;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -83,8 +85,10 @@ public class GuidedDecisionTableGeneratorListener
 
     //State machine variables for this parser
     private boolean                                 _isInRuleTable              = false;
+    private boolean                                 _haveColumnsBeenIdentified  = false;
     private int                                     _ruleRow;
     private int                                     _ruleStartColumn;
+    private int                                     _ruleEndColumn;
     private int                                     _ruleStartRow;
     private boolean                                 _currentSequentialFlag      = false;                                 // indicates that we are in sequential mode
     private boolean                                 _currentEscapeQuotesFlag    = true;                                  // indicates that we are escaping quotes
@@ -92,7 +96,6 @@ public class GuidedDecisionTableGeneratorListener
 
     //Accumulated output
     private Map<Integer, ActionType>                _actions;
-    private final HashMap<Integer, String>          _cellComments               = new HashMap<Integer, String>();
     private final List<GuidedDecisionTable52>       _dtables                    = new ArrayList<GuidedDecisionTable52>();
     private List<GuidedDecisionTableSourceBuilder>  _sourceBuilders;
 
@@ -157,7 +160,12 @@ public class GuidedDecisionTableGeneratorListener
                         final int column,
                         final String value,
                         int mergedColStart) {
-        if ( isCellValueEmpty( value ) ) {
+        //Ignore empty cells unless we've identified all columns
+        if ( isCellValueEmpty( value ) && !this._haveColumnsBeenIdentified ) {
+            return;
+        }
+        //Ignore cells beyond the extent of the defined columns
+        if ( column > this._ruleEndColumn && this._haveColumnsBeenIdentified ) {
             return;
         }
         if ( _isInRuleTable && row == this._ruleStartRow ) {
@@ -187,6 +195,7 @@ public class GuidedDecisionTableGeneratorListener
         this._isInRuleTable = true;
         this._actions = new HashMap<Integer, ActionType>();
         this._ruleStartColumn = column;
+        this._ruleEndColumn = column;
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;
 
@@ -218,6 +227,7 @@ public class GuidedDecisionTableGeneratorListener
             this._dtables.add( this._dtable );
             this._currentSequentialFlag = false;
             this._isInRuleTable = false;
+            this._haveColumnsBeenIdentified = false;
         }
     }
 
@@ -300,6 +310,7 @@ public class GuidedDecisionTableGeneratorListener
         switch ( row - this._ruleStartRow ) {
             case ACTION_ROW :
                 //CONDITION, ACTION, ATTRIBUTE etc...
+                this._ruleEndColumn = column;
                 doActionTypeCell( row,
                                   column,
                                   trimVal );
@@ -307,6 +318,7 @@ public class GuidedDecisionTableGeneratorListener
 
             case OBJECT_TYPE_ROW :
                 //Pattern definition ("Driver", "Smurf" etc...)
+                this._haveColumnsBeenIdentified = true;
                 doObjectTypeCell( row,
                                   column,
                                   trimVal,
@@ -524,14 +536,10 @@ public class GuidedDecisionTableGeneratorListener
                              final String value) {
         final ActionType actionType = getActionForColumn( row,
                                                           column );
-
-        if ( !value.trim().equals( "" ) && (actionType.getCode() == Code.ACTION || actionType.getCode() == Code.CONDITION) ) {
-            this._cellComments.put( column,
-                                    value );
-        } else {
-            this._cellComments.put( column,
-                                    "From cell: " + RuleSheetParserUtil.rc2name( row,
-                                                                                 column ) );
+        SourceBuilder sb = actionType.getSourceBuilder();
+        if ( sb instanceof HasColumnHeadings ) {
+            ((HasColumnHeadings) sb).setColumnHeader( column,
+                                                      value );
         }
     }
 

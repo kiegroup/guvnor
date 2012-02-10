@@ -45,8 +45,9 @@ public class LiteralValueBuilder
     public void addCellValue(int row,
                              int column,
                              String value) {
-        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
-        values.add( new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( value ) ) );
+        List<DTCellValue52> rowValues = new ArrayList<DTCellValue52>();
+        rowValues.add( new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( value ) ) );
+        values.add( rowValues );
     }
 
     @Override

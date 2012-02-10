@@ -23,6 +23,7 @@ import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
@@ -37,6 +38,7 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class GuidedDecisionTableRHSBuilder
         implements
+        HasColumnHeadings,
         GuidedDecisionTableSourceBuilder {
 
     private final int                                     headerRow;
@@ -46,9 +48,13 @@ public class GuidedDecisionTableRHSBuilder
     //Map of column definitions (code snippets), keyed on XLS column index
     private final Map<Integer, String>                    definitions   = new HashMap<Integer, String>();
 
+    //Map of column headers, keyed on XLS column index
+    private final Map<Integer, String>                    columnHeaders = new HashMap<Integer, String>();
+
     //Map of column value parsers, keyed on XLS column index
     private final Map<Integer, ParameterizedValueBuilder> valueBuilders = new HashMap<Integer, ParameterizedValueBuilder>();
 
+    //Utility class to convert XLS parameters to BRLFragment Template keys
     private final ParameterUtilities                      parameterUtilities;
 
     public GuidedDecisionTableRHSBuilder(int row,
@@ -63,40 +69,84 @@ public class GuidedDecisionTableRHSBuilder
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
 
-        //Sort column builders by column index
+        //Sort column builders by column index to ensure Actions are added in the correct sequence
         Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
 
         for ( Integer index : sortedIndexes ) {
-
             ParameterizedValueBuilder vb = this.valueBuilders.get( index );
-
-            //Create column - Everything is a BRL fragment (for now)
-            BRLActionColumn column = new BRLActionColumn();
-            FreeFormLine ffl = new FreeFormLine();
-            ffl.text = vb.getTemplate();
-            column.getDefinition().add( ffl );
-
-            for ( String parameter : vb.getParameters() ) {
-                BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( parameter,
-                                                                                       null,
-                                                                                       null,
-                                                                                       null );
-                column.getChildColumns().add( parameterColumn );
-            }
-            column.setHeader( "Smurf[" + index + "] - needs to come from XLS" );
-            dtable.getActionCols().add( column );
-
-            //Add column data
-            List<List<DTCellValue52>> columnData = vb.getColumnData();
-            int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
-            for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-                List<DTCellValue52> rowData = dtable.getData().get( iRow );
-                rowData.addAll( iColIndex,
-                                columnData.get( iRow ) );
-            }
-
+            addColumn( dtable,
+                       vb,
+                       index );
         }
 
+    }
+
+    private void addColumn(GuidedDecisionTable52 dtable,
+                           ParameterizedValueBuilder vb,
+                           int index) {
+        if ( vb instanceof LiteralValueBuilder ) {
+            addLiteralColumn( dtable,
+                              (LiteralValueBuilder) vb,
+                              index );
+        } else {
+            addBRLFragmentColumn( dtable,
+                                  vb,
+                                  index );
+        }
+    }
+
+    private void addLiteralColumn(GuidedDecisionTable52 dtable,
+                                  LiteralValueBuilder vb,
+                                  int index) {
+        //Create column - Everything is a BRL fragment (for now)
+        BRLActionColumn column = new BRLActionColumn();
+        FreeFormLine ffl = new FreeFormLine();
+        ffl.text = vb.getTemplate();
+        column.getDefinition().add( ffl );
+        BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( "",
+                                                                               SuggestionCompletionEngine.TYPE_BOOLEAN );
+        column.getChildColumns().add( parameterColumn );
+        column.setHeader( this.columnHeaders.get( index ) );
+        dtable.getActionCols().add( column );
+
+        //Add column data
+        List<List<DTCellValue52>> columnData = vb.getColumnData();
+        int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            List<DTCellValue52> rowData = dtable.getData().get( iRow );
+            rowData.addAll( iColIndex,
+                            columnData.get( iRow ) );
+        }
+
+    }
+
+    private void addBRLFragmentColumn(GuidedDecisionTable52 dtable,
+                                      ParameterizedValueBuilder vb,
+                                      int index) {
+        //Create column - Everything is a BRL fragment (for now)
+        BRLActionColumn column = new BRLActionColumn();
+        FreeFormLine ffl = new FreeFormLine();
+        ffl.text = vb.getTemplate();
+        column.getDefinition().add( ffl );
+
+        for ( String parameter : vb.getParameters() ) {
+            BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( parameter,
+                                                                                   SuggestionCompletionEngine.TYPE_STRING );
+            column.getChildColumns().add( parameterColumn );
+        }
+        column.setHeader( this.columnHeaders.get( index ) );
+        dtable.getActionCols().add( column );
+
+        //Add column data
+        List<List<DTCellValue52>> columnData = vb.getColumnData();
+
+        //We can use the index of the first child column to add all data
+        int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            List<DTCellValue52> rowData = dtable.getData().get( iRow );
+            rowData.addAll( iColIndex,
+                            columnData.get( iRow ) );
+        }
     }
 
     public void addTemplate(int row,
@@ -108,13 +158,23 @@ public class GuidedDecisionTableRHSBuilder
 
         content = content.trim();
         if ( isBoundVar() ) {
-            content = variable + "." + content + ";";
+            content = variable + "." + content;
+        }
+        if ( !content.endsWith( ";" ) ) {
+            content = content + ";";
         }
         this.definitions.put( column,
                               content );
         this.valueBuilders.put( column,
                                 getValueBuilder( content ) );
 
+    }
+
+    @Override
+    public void setColumnHeader(int column,
+                                String value) {
+        this.columnHeaders.put( column,
+                                value.trim() );
     }
 
     private boolean isBoundVar() {
@@ -125,9 +185,11 @@ public class GuidedDecisionTableRHSBuilder
         final SnippetType type = SnippetBuilder.getType( template );
         switch ( type ) {
             case INDEXED :
-                return new IndexedParametersValueBuilder( template, parameterUtilities );
+                return new IndexedParametersValueBuilder( template,
+                                                          parameterUtilities );
             case PARAM :
-                return new SingleParameterValueBuilder( template, parameterUtilities );
+                return new SingleParameterValueBuilder( template,
+                                                        parameterUtilities );
             case SINGLE :
                 return new LiteralValueBuilder( template );
         }

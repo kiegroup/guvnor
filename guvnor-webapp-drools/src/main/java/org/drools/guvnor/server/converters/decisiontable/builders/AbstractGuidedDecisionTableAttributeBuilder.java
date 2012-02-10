@@ -39,8 +39,8 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
     protected List<DTCellValue52>  values;
 
     public AbstractGuidedDecisionTableAttributeBuilder(int row,
-                                              int column,
-                                              ActionType.Code actionType) {
+                                                       int column,
+                                                       ActionType.Code actionType) {
         this.headerRow = row;
         this.headerCol = column;
         this.actionType = actionType;

@@ -36,7 +36,7 @@ public class GuidedDecisionTableLockonActiveBuilder extends AbstractGuidedDecisi
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR );
-        dtable.getAttributeCols().add(column);
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

@@ -27,7 +27,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableAutoFocusBuilder(int row,
-                                                  int column) {
+                                               int column) {
         super( row,
                column,
                ActionType.Code.AUTOFOCUS );
