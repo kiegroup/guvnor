@@ -16,19 +16,39 @@
 
 package org.drools.guvnor.client.rpc;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class SingleScenarioResult implements IsSerializable {
 
-    public ScenarioRunResult result;
+    private ScenarioRunResult result;
 
     /**
      * Maps from event type to message to display.
      */
-    public List<String[]> auditLog = new ArrayList<String[]>();
+    private List<String[]> auditLog = new ArrayList<String[]>();
+
+    public SingleScenarioResult() {
+    }
+
+    public SingleScenarioResult(ScenarioRunResult scenarioRunResult) {
+        result = scenarioRunResult;
+    }
+
+    public SingleScenarioResult(ScenarioRunResult scenarioRunResult, List<String[]> auditLog) {
+        this(scenarioRunResult);
+        this.auditLog = auditLog;
+    }
+
+    public ScenarioRunResult getResult() {
+        return result;
+    }
+
+    public List<String[]> getAuditLog() {
+        return auditLog;
+    }
 
 
 }

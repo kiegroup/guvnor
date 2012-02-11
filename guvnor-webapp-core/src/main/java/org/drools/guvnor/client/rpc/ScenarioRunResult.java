@@ -16,30 +16,31 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.drools.ide.common.client.testscenarios.Scenario;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.List;
 
 /**
  * This is essentially a "Either" class.
  * It will either be a list of rule compiler errors (should it have to compile), or the scenario run results.
  */
 public class ScenarioRunResult
-    implements
-    IsSerializable {
+        implements
+        IsSerializable {
 
-    private List<BuilderResultLine> errors;
-    private Scenario            scenario;
+    private List<BuilderResultLine> errors = null;
+    private Scenario scenario = null;
 
     public ScenarioRunResult() {
     }
 
-    public ScenarioRunResult(List<BuilderResultLine> errors,
-                             Scenario scenario) {
-
+    public ScenarioRunResult(List<BuilderResultLine> errors) {
         this.errors = errors;
+    }
+
+    public ScenarioRunResult(Scenario scenario) {
+
         this.scenario = scenario;
     }
 
@@ -51,4 +52,7 @@ public class ScenarioRunResult
         return errors;
     }
 
+    public boolean hasErrors() {
+        return errors != null;
+    }
 }

@@ -70,7 +70,7 @@ public class ScenarioRunner {
         factPopulator = new FactPopulator(workingMemory, populatedData);
     }
 
-    public void run(Scenario scenario) throws ClassNotFoundException {
+    public void run(Scenario scenario) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.setLastRunResult(new Date());
 
@@ -87,7 +87,7 @@ public class ScenarioRunner {
         return scenarioSettings;
     }
 
-    private void applyFixtures(List<Fixture> fixtures, ScenarioSettings scenarioSettings) throws ClassNotFoundException {
+    private void applyFixtures(List<Fixture> fixtures, ScenarioSettings scenarioSettings) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         for (Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
@@ -128,7 +128,7 @@ public class ScenarioRunner {
         factPopulator.populate();
     }
 
-    private void populateGlobals(List<FactData> globals) throws ClassNotFoundException {
+    private void populateGlobals(List<FactData> globals) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         for (final FactData fact : globals) {
             factPopulator.add(

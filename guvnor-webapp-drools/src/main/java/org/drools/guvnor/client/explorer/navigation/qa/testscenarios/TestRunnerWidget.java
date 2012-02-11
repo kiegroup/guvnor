@@ -90,8 +90,8 @@ public class TestRunnerWidget extends Composite {
                                                                            layout.add( actions );
                                                                            layout.add( results );
                                                                            actions.setVisible( true );
-                                                                           ScenarioRunResult result = data.result;
-                                                                           if ( result.getErrors() != null ) {
+                                                                           ScenarioRunResult result = data.getResult();
+                                                                           if ( result.hasErrors() ) {
                                                                                showErrors( result.getErrors() );
                                                                            } else {
                                                                                showResults( parent,
@@ -144,7 +144,7 @@ public class TestRunnerWidget extends Composite {
         results.clear();
         results.setVisible( true );
 
-        parent.setScenario( data.result.getScenario() );
+        parent.setScenario( data.getResult().getScenario() );
 
         parent.setShowResults( true );
         parent.renderEditor();
@@ -153,7 +153,7 @@ public class TestRunnerWidget extends Composite {
         int total = 0;
         VerticalPanel resultsDetail = new VerticalPanel();
 
-        for ( Iterator<Fixture> fixturesIterator = data.result.getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
+        for ( Iterator<Fixture> fixturesIterator = data.getResult().getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
             Fixture fixture = fixturesIterator.next();
             if ( fixture instanceof VerifyRuleFired ) {
 
@@ -186,9 +186,9 @@ public class TestRunnerWidget extends Composite {
 
             } else if ( fixture instanceof ExecutionTrace ) {
                 ExecutionTrace ex = (ExecutionTrace) fixture;
-                if ( ex.getNumberOfRulesFired() == data.result.getScenario().getMaxRuleFirings() ) {
+                if ( ex.getNumberOfRulesFired() == data.getResult().getScenario().getMaxRuleFirings() ) {
                     Window.alert( constants.MaxRuleFiringsReachedWarning(
-                            data.result.getScenario().getMaxRuleFirings() ) );
+                            data.getResult().getScenario().getMaxRuleFirings() ) );
                 }
             }
 
@@ -239,7 +239,7 @@ public class TestRunnerWidget extends Composite {
                 showExp.setVisible( false );
                 results.setWidget( 2,
                                    1,
-                                   doAuditView( data.auditLog ) );
+                                   doAuditView(data.getAuditLog()) );
             }
         } );
 

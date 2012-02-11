@@ -34,7 +34,7 @@ class GlobalFactPopulator extends FactPopulatorBase {
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
             FactData fact,
-            Map<String, Object> globalData) throws ClassNotFoundException {
+            Map<String, Object> globalData) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         super(
                 populatedData,
                 typeResolver,
@@ -46,13 +46,8 @@ class GlobalFactPopulator extends FactPopulatorBase {
                 factObject);
     }
 
-    protected Object resolveFactObject() throws ClassNotFoundException {
-        return eval(
-                String.format(
-                        "new %s()",
-                        getTypeName(
-                                typeResolver,
-                                fact)));
+    protected Object resolveFactObject() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return typeResolver.resolveType(getTypeName(typeResolver, fact)).newInstance();
     }
 
     @Override

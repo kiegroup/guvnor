@@ -89,23 +89,23 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
                 "42"));
         sc.getGlobals().add( cheese );
 
-        ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                                      sc ).result;
+        ScenarioRunResult res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
         assertTrue(vr.wasSuccessful() );
 
         RuleBaseCache.getInstance().clearCache();
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
@@ -120,8 +120,8 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         RuleBaseCache.getInstance().clearCache();
         pkg.updateBinaryUpToDate(false);
         rulesRepository.save();
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNotNull( res.getErrors() );
         assertNull(res.getScenario());
 
@@ -194,13 +194,13 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         SingleScenarioResult res_ = repositoryPackageService.runScenario( pkg.getName(),
                                                                           sc );
-        assertTrue( res_.auditLog.size() > 0 );
+        assertTrue( res_.getAuditLog().size() > 0 );
 
-        String[] logEntry = res_.auditLog.get( 0 );
+        String[] logEntry = res_.getAuditLog().get(0);
         assertNotNull( logEntry[0],
                        logEntry[1] );
 
-        ScenarioRunResult res = res_.result;
+        ScenarioRunResult res = res_.getResult();
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -362,16 +362,16 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
                                                   "==" ) );
         sc.getFixtures().add( vf );
 
-        ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                                      sc ).result;
+        ScenarioRunResult res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
 
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -381,8 +381,8 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         RuleBaseCache.getInstance().clearCache();
 
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
@@ -425,8 +425,8 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         ScenarioRunResult res = null;
         try {
-            res = repositoryPackageService.runScenario( pkg.getName(),
-                                                        sc ).result;
+            res = repositoryPackageService.runScenario(pkg.getName(),
+                    sc).getResult();
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
         }
@@ -435,8 +435,8 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -444,8 +444,8 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         RuleBaseCache.getInstance().clearCache();
 
-        res = repositoryPackageService.runScenario( pkg.getName(),
-                                                    sc ).result;
+        res = repositoryPackageService.runScenario(pkg.getName(),
+                sc).getResult();
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );

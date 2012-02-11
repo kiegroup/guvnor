@@ -33,15 +33,15 @@ class NewFactPopulator extends FactPopulatorBase {
     public NewFactPopulator(
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
-            FactData fact) throws ClassNotFoundException {
+            FactData fact) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         super(populatedData,
                 typeResolver,
                 fact);
         factObject = resolveFactObject();
     }
 
-    protected Object resolveFactObject() throws ClassNotFoundException {
-        Object factObject = eval("new " + getTypeName(typeResolver, fact) + "()");
+    protected Object resolveFactObject() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        Object factObject = typeResolver.resolveType(getTypeName(typeResolver, fact)).newInstance();
         populatedData.put(
                 fact.getName(),
                 factObject);

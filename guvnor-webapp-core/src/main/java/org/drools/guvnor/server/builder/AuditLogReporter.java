@@ -29,8 +29,8 @@ import org.drools.audit.event.LogEvent;
  */
 public class AuditLogReporter extends WorkingMemoryInMemoryLogger {
 
-    public AuditLogReporter(WorkingMemory wm) {
-        super(wm);
+    public AuditLogReporter(WorkingMemory workingMemory) {
+        super(workingMemory);
     }
 
     public List<String[]> buildReport() {

@@ -33,7 +33,7 @@ public class FactPopulatorFactory {
         this.typeResolver = typeResolver;
     }
 
-    public Populator createFactPopulator(FactData fact) throws ClassNotFoundException {
+    public Populator createFactPopulator(FactData fact) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         if (fact.isModify()) {
             return new ExistingFactPopulator(
                     populatedData,
@@ -47,7 +47,7 @@ public class FactPopulatorFactory {
         }
     }
 
-    public Populator createGlobalFactPopulator(FactData fact) throws ClassNotFoundException {
+    public Populator createGlobalFactPopulator(FactData fact) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         return new GlobalFactPopulator(
                 populatedData,
                 typeResolver,

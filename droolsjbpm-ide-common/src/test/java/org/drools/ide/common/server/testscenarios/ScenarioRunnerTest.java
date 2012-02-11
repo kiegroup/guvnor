@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.server.testscenarios;
 
-import org.drools.Cheesery;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -276,7 +275,6 @@ public class ScenarioRunnerTest extends RuleUnit {
     }
 
 
-
     /**
      * Check if global list is empty.
      */
@@ -352,7 +350,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         //                      tm.getNow().getTimeInMillis() );
 
     }
-
 
 
     /**
@@ -518,7 +515,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     @Test
     public void testIntegrationWithDeclaredTypes() throws Exception {
-        Scenario sc = new Scenario();
+        Scenario scenario = new Scenario();
         FactData[] facts = new FactData[]{new FactData("Coolness",
                 "c",
                 ls(new FieldData("num",
@@ -528,13 +525,13 @@ public class ScenarioRunnerTest extends RuleUnit {
                 false)
 
         };
-        sc.getFixtures().addAll(Arrays.asList(facts));
+        scenario.getFixtures().addAll(Arrays.asList(facts));
 
         ExecutionTrace executionTrace = new ExecutionTrace();
 
-        sc.getRules().add("rule1");
-        sc.setInclusive(true);
-        sc.getFixtures().add(executionTrace);
+        scenario.getRules().add("rule1");
+        scenario.setInclusive(true);
+        scenario.getFixtures().add(executionTrace);
 
         Expectation[] assertions = new Expectation[2];
 
@@ -549,19 +546,15 @@ public class ScenarioRunnerTest extends RuleUnit {
                 1,
                 null);
 
-        sc.getFixtures().addAll(Arrays.asList(assertions));
+        scenario.getFixtures().addAll(Arrays.asList(assertions));
 
-        WorkingMemory wm = getWorkingMemory("test_rules3.drl");
-        ClassLoader cl = ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader();
+        WorkingMemory workingMemory = getWorkingMemory("test_rules3.drl");
+        ClassLoader cl = ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");
 
-        TypeResolver resolver = new ClassTypeResolver(imports,
-                cl);
-
-        Class cls = cl.loadClass("foo.bar.Coolness");
-        assertNotNull(cls);
+        assertNotNull(cl.loadClass("foo.bar.Coolness"));
 
         ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
@@ -569,14 +562,16 @@ public class ScenarioRunnerTest extends RuleUnit {
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
         ScenarioRunner run = new ScenarioRunner(
-                resolver,
-                (InternalWorkingMemory) wm);
-        run.run(sc);
+                new ClassTypeResolver(
+                        imports,
+                        cl),
+                (InternalWorkingMemory) workingMemory);
+        run.run(scenario);
 
         assertEquals(1,
                 executionTrace.getNumberOfRulesFired().intValue());
 
-        assertTrue(sc.wasSuccessful());
+        assertTrue(scenario.wasSuccessful());
 
         Thread.currentThread().setContextClassLoader(cl_);
 
@@ -820,7 +815,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         VerifyFact vf = (VerifyFact) assertions[1];
         assertFalse((vf.getFieldValues().get(0)).getSuccessResult());
         assertEquals("XXX",
-                 vf.getFieldValues().get(0).getExpected());
+                vf.getFieldValues().get(0).getExpected());
         assertEquals("rule1",
                 vf.getFieldValues().get(0).getActualResult());
         assertNotNull(vf.getFieldValues().get(0).getExplanation());
@@ -891,7 +886,7 @@ public class ScenarioRunnerTest extends RuleUnit {
     }
 
     private <T> List<T> ls
-    (T... objects) {
+            (T... objects) {
         return Arrays.asList(objects);
     }
 

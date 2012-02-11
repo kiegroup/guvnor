@@ -16,13 +16,13 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.testscenarios.fixtures.FactData;
 import org.drools.ide.common.client.testscenarios.fixtures.FieldData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 abstract class FactPopulatorBase implements Populator {
 
@@ -77,7 +77,8 @@ abstract class FactPopulatorBase implements Populator {
         return fieldPopulators;
     }
 
-    protected String getTypeName(TypeResolver resolver,
+    protected String getTypeName(
+            TypeResolver resolver,
             FactData fact) throws ClassNotFoundException {
 
         String fullName = resolver.getFullTypeName(fact.getType());

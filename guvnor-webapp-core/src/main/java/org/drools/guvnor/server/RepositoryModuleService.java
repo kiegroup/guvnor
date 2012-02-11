@@ -15,25 +15,9 @@
  */
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.io.IOUtils;
-import org.drools.ClockType;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
+import org.drools.*;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -41,20 +25,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.ModuleService;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotDiffs;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -66,12 +37,7 @@ import org.drools.ide.common.server.testscenarios.ScenarioRunner;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.ModuleItem;
-import org.drools.repository.RepositoryFilter;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.*;
 import org.drools.rule.Package;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
@@ -80,6 +46,14 @@ import org.drools.runtime.rule.ConsequenceException;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.IOException;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 @ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.PackageService")
@@ -191,7 +165,7 @@ public class RepositoryModuleService
 
     @WebRemote
     public String copyModule(String sourceModuleName,
-            String destModuleName) throws SerializationException {
+                             String destModuleName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.copyModules(sourceModuleName,
                 destModuleName);
@@ -207,7 +181,7 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public String renameModule(String uuid,
-            String newName) {
+                               String newName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid(uuid);
 
         return repositoryModuleOperations.renameModule(uuid,
@@ -224,15 +198,15 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public void importPackages(byte[] byteArray,
-            boolean importAsNew) {
+                               boolean importAsNew) {
         repositoryModuleOperations.importPackages(byteArray,
                 importAsNew);
     }
 
     @WebRemote
     public String createModule(String name,
-            String description,
-            String format) throws RulesRepositoryException {
+                               String description,
+                               String format) throws RulesRepositoryException {
         return repositoryModuleOperations.createModule(name,
                 description,
                 format);
@@ -240,9 +214,9 @@ public class RepositoryModuleService
 
     @WebRemote
     public String createModule(String name,
-            String description,
-            String format,
-            String[] workspace) throws RulesRepositoryException {
+                               String description,
+                               String format,
+                               String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.createModule(name,
                 description,
@@ -264,8 +238,8 @@ public class RepositoryModuleService
      */
     @WebRemote
     public String createSubModule(String name,
-            String description,
-            String parentNode) throws SerializationException {
+                                  String description,
+                                  String parentNode) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.createSubModule(name,
                 description,
@@ -300,7 +274,7 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
-            boolean force) throws SerializationException {
+                                      boolean force) throws SerializationException {
         return buildPackage(packageUUID,
                 force,
                 null,
@@ -316,15 +290,15 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
-            boolean force,
-            String buildMode,
-            String statusOperator,
-            String statusDescriptionValue,
-            boolean enableStatusSelector,
-            String categoryOperator,
-            String category,
-            boolean enableCategorySelector,
-            String customSelectorName) throws SerializationException {
+                                      boolean force,
+                                      String buildMode,
+                                      String statusOperator,
+                                      String statusDescriptionValue,
+                                      boolean enableStatusSelector,
+                                      String categoryOperator,
+                                      String category,
+                                      boolean enableCategorySelector,
+                                      String customSelectorName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(packageUUID);
         return repositoryModuleOperations.buildModule(packageUUID,
                 force,
@@ -341,9 +315,9 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public void createModuleSnapshot(String moduleName,
-            String snapshotName,
-            boolean replaceExisting,
-            String comment) {
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
         repositoryModuleOperations.createModuleSnapshot(moduleName,
                 snapshotName,
@@ -355,9 +329,9 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public void copyOrRemoveSnapshot(String moduleName,
-            String snapshotName,
-            boolean delete,
-            String newSnapshotName) throws SerializationException {
+                                     String snapshotName,
+                                     boolean delete,
+                                     String newSnapshotName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
         repositoryModuleOperations.copyOrRemoveSnapshot(moduleName,
                 snapshotName,
@@ -419,7 +393,7 @@ public class RepositoryModuleService
 
     @LoggedIn
     public SnapshotInfo loadSnapshotInfo(String packageName,
-            String snapshotName) {
+                                         String snapshotName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(packageName);
 
         return moduleItemToSnapshotItem(
@@ -430,7 +404,7 @@ public class RepositoryModuleService
     }
 
     private SnapshotInfo moduleItemToSnapshotItem(String snapshotName,
-            ModuleItem packageItem) {
+                                                  ModuleItem packageItem) {
         SnapshotInfo snapshotInfo = new SnapshotInfo();
         snapshotInfo.setComment(packageItem.getCheckinComment());
         snapshotInfo.setName(snapshotName);
@@ -478,7 +452,7 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public void updateDependency(String uuid,
-            String dependencyPath) {
+                                 String dependencyPath) {
         ModuleItem item = rulesRepository.loadModuleByUUID(uuid);
         item.updateDependency(dependencyPath);
         item.checkin("Update dependency");
@@ -490,7 +464,7 @@ public class RepositoryModuleService
     }
 
     private JarInputStream typesForModel(List<String> res,
-            AssetItem asset) throws IOException {
+                                         AssetItem asset) throws IOException {
         if (!asset.isBinary()) {
             return null;
         }
@@ -512,7 +486,7 @@ public class RepositoryModuleService
     }
 
     private void typesForOthers(List<String> res,
-            AssetItem asset) {
+                                AssetItem asset) {
         // its delcared model
         DrlParser parser = new DrlParser();
         try {
@@ -539,8 +513,8 @@ public class RepositoryModuleService
      *             {@link #compareSnapshots(SnapshotComparisonPageRequest)}
      */
     public SnapshotDiffs compareSnapshots(String moduleName,
-            String firstSnapshotName,
-            String secondSnapshotName) {
+                                          String firstSnapshotName,
+                                          String secondSnapshotName) {
         return repositoryModuleOperations.compareSnapshots(moduleName,
                 firstSnapshotName,
                 secondSnapshotName);
@@ -560,7 +534,7 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public SingleScenarioResult runScenario(String packageName,
-            Scenario scenario) throws SerializationException {
+                                            Scenario scenario) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(packageName);
 
         return runScenario(packageName,
@@ -572,28 +546,18 @@ public class RepositoryModuleService
             String packageName,
             Scenario scenario,
             RuleCoverageListener coverage) throws SerializationException {
-
-        ModuleItem item = this.rulesRepository.loadModule(packageName);
-
         try {
-            //Load cache before retrieving ClassLoader
-            RuleBase rulebase = loadCacheRuleBase(item);
-            ClassLoader classLoader=((InternalRuleBase) RuleBaseCache.getInstance().get(item.getUUID())).getRootClassLoader();
-            return runScenario(scenario,
-                               item,
-                               classLoader,
-                               rulebase,
-                               coverage);
+            return runScenario(
+                    scenario,
+                    this.rulesRepository.loadModule(packageName),
+                    coverage);
         } catch (Exception e) {
             if (e instanceof DetailedSerializationException) {
-                DetailedSerializationException err = (DetailedSerializationException) e;
-                SingleScenarioResult result = new SingleScenarioResult();
-                if (err.getErrs() != null) {
-                    result.result = new ScenarioRunResult(err.getErrs(),
-                            null);
-                    return result;
+                DetailedSerializationException exception = (DetailedSerializationException) e;
+                if (exception.getErrs() != null) {
+                    return new SingleScenarioResult(new ScenarioRunResult(exception.getErrs()));
                 } else {
-                    throw err;
+                    throw exception;
                 }
             } else {
                 throw new DetailedSerializationException("Unable to run the scenario.",
@@ -606,28 +570,25 @@ public class RepositoryModuleService
      * Set the Rule base in a cache
      */
     private RuleBase loadCacheRuleBase(ModuleItem packageItem) throws DetailedSerializationException {
-        RuleBase rb = null;
+
         if (packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains(packageItem.getUUID())) {
-            rb = RuleBaseCache.getInstance().get(packageItem.getUUID());
+            return RuleBaseCache.getInstance().get(packageItem.getUUID());
         } else {
-            // load up the classloader we are going to use
-            ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
-            ClassLoader buildCl = classLoaderBuilder.buildClassLoader();
 
             // we have to build the package, and try again.
             if (packageItem.isBinaryUpToDate()) {
-                rb = loadRuleBase(packageItem,
-                        buildCl);
+                RuleBase ruleBase = loadRuleBase(packageItem);
                 RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                        rb);
+                        ruleBase);
+                return ruleBase;
             } else {
                 BuilderResult result = repositoryModuleOperations.buildModule(packageItem,
                         false);
                 if (result == null || result.getLines().size() == 0) {
-                    rb = loadRuleBase(packageItem,
-                            buildCl);
+                    RuleBase ruleBase = loadRuleBase(packageItem);
                     RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                            rb);
+                            ruleBase);
+                    return ruleBase;
                 } else {
                     throw new DetailedSerializationException("Build error",
                             result.getLines());
@@ -635,94 +596,44 @@ public class RepositoryModuleService
             }
 
         }
-        return rb;
     }
 
-    private RuleBase loadRuleBase(ModuleItem item,
-            ClassLoader cl) throws DetailedSerializationException {
-        try {
-            return deserKnowledgebase(item,
-                    cl);
-        } catch (ClassNotFoundException e) {
-            log.error("Unable to load rule base.",
-                    e);
-            throw new DetailedSerializationException("A required class was not found.",
-                    e.getMessage());
-        } catch (Exception e) {
-            log.error("Unable to load rule base.",
-                    e);
-            log.info("...but trying to rebuild binaries...");
-            try {
-                BuilderResult res = repositoryModuleOperations.buildModule(item,
-                        true);
-                if (res != null && res.getLines().size() > 0) {
-                    log.error("There were errors when rebuilding the knowledgebase.");
-                    throw new DetailedSerializationException("There were errors when rebuilding the knowledgebase.",
-                            "");
-                }
-            } catch (Exception e1) {
-                log.error("Unable to rebuild the rulebase: " + e.getMessage());
-                throw new DetailedSerializationException("Unable to rebuild the rulebase.",
-                        e.getMessage());
-            }
-            try {
-                return deserKnowledgebase(item,
-                        cl);
-            } catch (Exception e2) {
-                log.error("Unable to reload knowledgebase: " + e.getMessage());
-                throw new DetailedSerializationException("Unable to reload knowledgebase.",
-                        e.getMessage());
-            }
-
-        }
+    private ClassLoaderBuilder createClassLoaderBuilder(ModuleItem packageItem) {
+        return new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
     }
 
     private RuleBase deserKnowledgebase(ModuleItem item,
-            ClassLoader classloader) throws IOException,
-            ClassNotFoundException {
+                                        ClassLoader classloader) throws IOException, ClassNotFoundException {
         RuleBase rulebase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(classloader));
-        Package bin = (Package) DroolsStreamUtils.streamIn(item.getCompiledBinaryBytes(),
-                classloader);
-        rulebase.addPackage(bin);
+        rulebase.addPackage(
+                (Package) DroolsStreamUtils.streamIn(
+                        item.getCompiledBinaryBytes(),
+                        classloader));
         return rulebase;
     }
 
     private SingleScenarioResult runScenario(Scenario scenario,
-            ModuleItem item,
-            ClassLoader classLoader,
-            RuleBase rulebase,
-            RuleCoverageListener coverage) throws DetailedSerializationException {
+                                             ModuleItem item,
+                                             RuleCoverageListener coverage) throws DetailedSerializationException {
 
-        Package bin = rulebase.getPackages()[0];
+        RuleBase ruleBase = loadCacheRuleBase(item);
+        Package aPackage = ruleBase.getPackages()[0];
 
-        Set<String> imps = bin.getImports().keySet();
-        Set<String> allImps = new HashSet<String>(imps);
-
-        if (bin.getGlobals() != null) {
-            for (Object o : bin.getGlobals().keySet()) {
-                allImps.add(bin.getGlobals().get(o));
-            }
-        }
-        // need this for Generated beans to work
-        allImps.add(bin.getName() + ".*");
-
-        ClassTypeResolver classTypeResolver = new ClassTypeResolver(allImps,
-                classLoader);
         SessionConfiguration sessionConfiguration = new SessionConfiguration();
         sessionConfiguration.setClockType(ClockType.PSEUDO_CLOCK);
         sessionConfiguration.setKeepReference(false);
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession(sessionConfiguration,
+        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession(
+                sessionConfiguration,
                 null);
+
         if (coverage != null) {
             workingMemory.addEventListener(coverage);
         }
 
         //Add stub Work Item Handlers
-        String packageUUID = item.getUUID();
-        Set<PortableWorkDefinition> workItems = serviceImplementation.loadWorkItemDefinitions(packageUUID);
         WorkItemHandler workItemHandlerStub = getWorkItemHandlerStub();
-        for (PortableWorkDefinition pwd : workItems) {
-            workingMemory.getWorkItemManager().registerWorkItemHandler(pwd.getName(),
+        for (PortableWorkDefinition portableWorkDefinition : serviceImplementation.loadWorkItemDefinitions(item.getUUID())) {
+            workingMemory.getWorkItemManager().registerWorkItemHandler(portableWorkDefinition.getName(),
                     workItemHandlerStub);
         }
 
@@ -730,13 +641,15 @@ public class RepositoryModuleService
         try {
             AuditLogReporter logger = new AuditLogReporter(workingMemory);
             new ScenarioRunner(
-                    classTypeResolver,
-                    workingMemory).run(scenario);
-            SingleScenarioResult singleScenarioresult = new SingleScenarioResult();
-            singleScenarioresult.auditLog = logger.buildReport();
-            singleScenarioresult.result = new ScenarioRunResult(null,
-                    scenario);
-            return singleScenarioresult;
+                    new ClassTypeResolver(
+                            getAllImports(aPackage),
+                            ((InternalRuleBase) ruleBase).getRootClassLoader()),
+                    workingMemory
+            ).run(scenario);
+
+            return new SingleScenarioResult(
+                    new ScenarioRunResult(scenario),
+                    logger.buildReport());
         } catch (ClassNotFoundException e) {
             log.error("Unable to load a required class.",
                     e);
@@ -761,6 +674,19 @@ public class RepositoryModuleService
         }
     }
 
+    private Set<String> getAllImports(Package aPackage) {
+        Set<String> allImports = new HashSet<String>(aPackage.getImports().keySet());
+
+        if (aPackage.getGlobals() != null) {
+            for (Object o : aPackage.getGlobals().keySet()) {
+                allImports.add(aPackage.getGlobals().get(o));
+            }
+        }
+        // need this for Generated beans to work
+        allImports.add(aPackage.getName() + ".*");
+        return allImports;
+    }
+
     @WebRemote
     @LoggedIn
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
@@ -772,21 +698,21 @@ public class RepositoryModuleService
     public BulkTestRunResult runScenariosInPackage(ModuleItem packageItem) throws SerializationException {
 
         if (!packageItem.isBinaryUpToDate() || !RuleBaseCache.getInstance().contains(packageItem.getUUID())) {
-            ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
 
             if (packageItem.isBinaryUpToDate()) {
-                RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                        loadRuleBase(packageItem,
-                                classLoaderBuilder.buildClassLoader()));
+                RuleBaseCache.getInstance().put(
+                        packageItem.getUUID(),
+                        loadRuleBase(packageItem));
             } else {
                 BuilderResult result = repositoryModuleOperations.buildModule(packageItem,
                         false);
                 if (result == null || result.getLines().size() == 0) {
-                    RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                            loadRuleBase(packageItem,
-                                    classLoaderBuilder.buildClassLoader()));
+                    RuleBaseCache.getInstance().put(
+                            packageItem.getUUID(),
+                            loadRuleBase(packageItem));
                 } else {
-                    return new BulkTestRunResult(result,
+                    return new BulkTestRunResult(
+                            result,
                             null,
                             0,
                             null);
@@ -836,23 +762,64 @@ public class RepositoryModuleService
         return h;
     }
 
-    //Creates a stub Work Item Handler that does nothing. A problem is that if the *real* Work Item Handler 
-    //sets a Result Parameter that is used in other rules the results of running the Test Scenario could (or 
-    //more likely would) be different than those expected. We can't use the *real* Work Item Handler as we 
+    //Creates a stub Work Item Handler that does nothing. A problem is that if the *real* Work Item Handler
+    //sets a Result Parameter that is used in other rules the results of running the Test Scenario could (or
+    //more likely would) be different than those expected. We can't use the *real* Work Item Handler as we
     //have no control what code it executes unless we look into using SecurityManagers...
     private WorkItemHandler getWorkItemHandlerStub() {
         return new WorkItemHandler() {
 
             public void executeWorkItem(WorkItem workItem,
-                    WorkItemManager manager) {
-                //Does absolute nothing, however could log execution if needed 
+                                        WorkItemManager manager) {
+                //Does absolute nothing, however could log execution if needed
             }
 
             public void abortWorkItem(WorkItem workItem,
-                    WorkItemManager manager) {
+                                      WorkItemManager manager) {
             }
 
         };
+    }
+
+    private RuleBase loadRuleBase(ModuleItem item) throws DetailedSerializationException {
+        try {
+            return deserKnowledgebase(
+                    item,
+                    createClassLoaderBuilder(item).buildClassLoader());
+        } catch (ClassNotFoundException e) {
+            log.error("Unable to load rule base.",
+                    e);
+            throw new DetailedSerializationException("A required class was not found.",
+                    e.getMessage());
+        } catch (Exception e) {
+            log.error("Unable to load rule base.",
+                    e);
+            log.info("...but trying to rebuild binaries...");
+            try {
+                BuilderResult builderResult = repositoryModuleOperations.buildModule(
+                        item,
+                        true);
+                if (builderResult != null && builderResult.getLines().size() > 0) {
+                    log.error("There were errors when rebuilding the knowledgebase.");
+                    throw new DetailedSerializationException("There were errors when rebuilding the knowledgebase.",
+                            "");
+                }
+            } catch (Exception e1) {
+                log.error("Unable to rebuild the rulebase: " + e.getMessage());
+                throw new DetailedSerializationException("Unable to rebuild the rulebase.",
+                        e.getMessage());
+            }
+            try {
+                return deserKnowledgebase(
+                        item,
+                        createClassLoaderBuilder(item).buildClassLoader());
+            } catch (Exception e2) {
+                log.error("Unable to reload knowledgebase: " + e.getMessage());
+                throw new DetailedSerializationException("Unable to reload knowledgebase.",
+                        e.getMessage());
+            }
+
+        }
     }
 
 }
