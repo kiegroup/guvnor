@@ -51,7 +51,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
         //Set-up supplementary widgets
         if ( !asset.isReadonly() ) {
-            //TODO {manstis} Uncomment - super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
+            //TODO {manstis} super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
         }
         super.addSupplementaryWidget( makeDescriptionWidget() );
     }

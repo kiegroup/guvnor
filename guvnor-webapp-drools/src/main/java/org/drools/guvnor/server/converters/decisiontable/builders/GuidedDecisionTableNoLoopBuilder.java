@@ -17,6 +17,7 @@ package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -27,16 +28,18 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 public class GuidedDecisionTableNoLoopBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableNoLoopBuilder(int row,
-                                                  int column) {
+                                            int column,
+                                            ConversionResult conversionResult) {
         super( row,
                column,
-               ActionType.Code.NOLOOP );
+               ActionType.Code.NOLOOP,
+               conversionResult );
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.NO_LOOP_ATTR );
-        dtable.getAttributeCols().add(column);
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }

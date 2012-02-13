@@ -1025,14 +1025,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
             }
-            origColumnVariables.put( key.toString(),
+            origColumnVariables.put( key,
                                      columnData );
         }
 
         int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLConditionColumnKey( variable );
-            List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
+            List<DTCellValue52> columnData = origColumnVariables.get( key );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
             }

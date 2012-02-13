@@ -15,12 +15,15 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
+import java.math.BigDecimal;
+
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builder for Duration Attribute columns
@@ -28,10 +31,12 @@ import org.drools.template.parser.DecisionTableParseException;
 public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableDurationBuilder(int row,
-                                              int column) {
+                                              int column,
+                                              ConversionResult conversionResult) {
         super( row,
                column,
-               ActionType.Code.DURATION );
+               ActionType.Code.DURATION,
+               conversionResult );
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
@@ -45,13 +50,16 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void addCellValue(int row,
                              int column,
                              String value) {
+        DTCellValue52 dcv = new DTCellValue52();
         try {
-            DTCellValue52 dcv = new DTCellValue52( new Integer( value ) );
-            this.values.add( dcv );
+            dcv.setNumericValue( new BigDecimal( value ) );
         } catch ( NumberFormatException nfe ) {
-            throw new DecisionTableParseException( "Duration is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
-                                                                                                                                 column ) );
+            final String message = "Duration is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
+                                                                                                                 column );
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.WARNING );
         }
+        this.values.add( dcv );
     }
 
 }

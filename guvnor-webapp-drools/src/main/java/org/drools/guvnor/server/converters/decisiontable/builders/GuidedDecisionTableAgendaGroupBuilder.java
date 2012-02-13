@@ -16,6 +16,7 @@
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import org.drools.decisiontable.parser.ActionType;
+import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -26,10 +27,12 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 public class GuidedDecisionTableAgendaGroupBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableAgendaGroupBuilder(int row,
-                                                 int column) {
+                                                 int column,
+                                                 ConversionResult conversionResult) {
         super( row,
                column,
-               ActionType.Code.AGENDAGROUP );
+               ActionType.Code.AGENDAGROUP,
+               conversionResult );
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {

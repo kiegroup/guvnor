@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.parser.ActionType;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -38,14 +40,18 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
     protected Map<Integer, String> definitions;
     protected List<DTCellValue52>  values;
 
+    protected ConversionResult     conversionResult;
+
     public AbstractGuidedDecisionTableAttributeBuilder(int row,
                                                        int column,
-                                                       ActionType.Code actionType) {
+                                                       ActionType.Code actionType,
+                                                       ConversionResult conversionResult) {
         this.headerRow = row;
         this.headerCol = column;
         this.actionType = actionType;
         this.definitions = new HashMap<Integer, String>();
         this.values = new ArrayList<DTCellValue52>();
+        this.conversionResult = conversionResult;
     }
 
     protected void addColumnData(GuidedDecisionTable52 dtable,
@@ -77,7 +83,12 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
     public void addTemplate(int row,
                             int column,
                             String content) {
-        throw new IllegalArgumentException( "Internal error: ActionType '" + actionType.getColHeader() + "' does not need a code snippet." );
+        if ( content == null || content.trim().equals( "" ) ) {
+            return;
+        }
+        final String message = "Internal error: ActionType '" + actionType.getColHeader() + "' does not need a code snippet.";
+        this.conversionResult.addMessage( message,
+                                          ConversionMessageType.ERROR );
     }
 
     public String getResult() {

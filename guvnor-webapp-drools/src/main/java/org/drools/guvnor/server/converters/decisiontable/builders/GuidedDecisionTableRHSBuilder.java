@@ -23,6 +23,8 @@ import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
@@ -45,9 +47,6 @@ public class GuidedDecisionTableRHSBuilder
     private final int                                     headerCol;
     private final String                                  variable;
 
-    //Map of column definitions (code snippets), keyed on XLS column index
-    private final Map<Integer, String>                    definitions   = new HashMap<Integer, String>();
-
     //Map of column headers, keyed on XLS column index
     private final Map<Integer, String>                    columnHeaders = new HashMap<Integer, String>();
 
@@ -57,18 +56,21 @@ public class GuidedDecisionTableRHSBuilder
     //Utility class to convert XLS parameters to BRLFragment Template keys
     private final ParameterUtilities                      parameterUtilities;
 
+    private ConversionResult                              conversionResult;
+
     public GuidedDecisionTableRHSBuilder(int row,
                                          int column,
                                          String boundVariable,
-                                         ParameterUtilities parameterUtilities) {
+                                         ParameterUtilities parameterUtilities,
+                                         ConversionResult conversionResult) {
         this.headerRow = row;
         this.headerCol = column;
         this.variable = boundVariable == null ? "" : boundVariable.trim();
         this.parameterUtilities = parameterUtilities;
+        this.conversionResult = conversionResult;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
-
         //Sort column builders by column index to ensure Actions are added in the correct sequence
         Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
 
@@ -78,7 +80,6 @@ public class GuidedDecisionTableRHSBuilder
                        vb,
                        index );
         }
-
     }
 
     private void addColumn(GuidedDecisionTable52 dtable,
@@ -131,7 +132,7 @@ public class GuidedDecisionTableRHSBuilder
 
         for ( String parameter : vb.getParameters() ) {
             BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( parameter,
-                                                                                   SuggestionCompletionEngine.TYPE_STRING );
+                                                                                   SuggestionCompletionEngine.TYPE_OBJECT );
             column.getChildColumns().add( parameterColumn );
         }
         column.setHeader( this.columnHeaders.get( index ) );
@@ -151,23 +152,34 @@ public class GuidedDecisionTableRHSBuilder
 
     public void addTemplate(int row,
                             int column,
-                            String content) {
-        if ( definitions.containsKey( column ) ) {
-            throw new IllegalArgumentException( "Internal error: Can't have a code snippet added twice to one spreadsheet col." );
+                            String template) {
+        //Validate column template
+        if ( valueBuilders.containsKey( column ) ) {
+            final String message = "Internal error: Can't have a code snippet added twice to one spreadsheet column.";
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
+            return;
         }
 
-        content = content.trim();
+        //Add new template
+        template = template.trim();
         if ( isBoundVar() ) {
-            content = variable + "." + content;
+            template = variable + "." + template;
         }
-        if ( !content.endsWith( ";" ) ) {
-            content = content + ";";
+        if ( !template.endsWith( ";" ) ) {
+            template = template + ";";
         }
-        this.definitions.put( column,
-                              content );
-        this.valueBuilders.put( column,
-                                getValueBuilder( content ) );
+        try {
+            this.valueBuilders.put( column,
+                                    getValueBuilder( template ) );
+        } catch ( DecisionTableParseException pe ) {
+            this.conversionResult.addMessage( pe.getMessage(),
+                                              ConversionMessageType.WARNING );
+        }
+    }
 
+    private boolean isBoundVar() {
+        return !("".equals( variable ));
     }
 
     @Override
@@ -175,10 +187,6 @@ public class GuidedDecisionTableRHSBuilder
                                 String value) {
         this.columnHeaders.put( column,
                                 value.trim() );
-    }
-
-    private boolean isBoundVar() {
-        return !("".equals( variable ));
     }
 
     private ParameterizedValueBuilder getValueBuilder(String template) {
@@ -193,25 +201,21 @@ public class GuidedDecisionTableRHSBuilder
             case SINGLE :
                 return new LiteralValueBuilder( template );
         }
-        throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported." );
+        throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported. The column will not be added." );
     }
 
     public void addCellValue(int row,
                              int column,
                              String value) {
-        String definition = this.definitions.get( column );
-        if ( definition == null ) {
-            throw new DecisionTableParseException( "No code snippet for ACTION, above cell " +
-                                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                                                this.headerCol ) );
-        }
-
         //Add new row to column data
         ParameterizedValueBuilder vb = this.valueBuilders.get( column );
         if ( vb == null ) {
-            throw new DecisionTableParseException( "No ValueBuilder for ACTION, above cell " +
-                                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                                                this.headerCol ) );
+            final String message = "No code snippet for ACTION, above cell " +
+                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
+                                                                this.headerCol );
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
+            return;
         }
         vb.addCellValue( row,
                          column,

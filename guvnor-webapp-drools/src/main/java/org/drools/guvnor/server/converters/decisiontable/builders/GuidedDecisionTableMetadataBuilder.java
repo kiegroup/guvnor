@@ -22,11 +22,12 @@ import java.util.Map;
 
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builder for Metadata columns
@@ -35,17 +36,19 @@ public class GuidedDecisionTableMetadataBuilder
     implements
     GuidedDecisionTableSourceBuilder {
 
-    protected int                  headerRow;
-    protected int                  headerCol;
-    protected Map<Integer, String> definitions;
-    protected List<DTCellValue52>  values;
+    private int                  headerRow;
+    private int                  headerCol;
+    private Map<Integer, String> definitions = new HashMap<Integer, String>();
+    private List<DTCellValue52>  values      = new ArrayList<DTCellValue52>();
+
+    private ConversionResult     conversionResult;
 
     public GuidedDecisionTableMetadataBuilder(int row,
-                                              int column) {
+                                              int column,
+                                              ConversionResult conversionResult) {
         this.headerRow = row;
         this.headerCol = column;
-        this.definitions = new HashMap<Integer, String>();
-        this.values = new ArrayList<DTCellValue52>();
+        this.conversionResult = conversionResult;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
@@ -76,7 +79,9 @@ public class GuidedDecisionTableMetadataBuilder
                             int column,
                             String content) {
         if ( definitions.containsKey( column ) ) {
-            throw new IllegalArgumentException( "Internal error: Can't have a code snippet added twice to one spreadsheet column." );
+            final String message = "Internal error: Can't have a code snippet added twice to one spreadsheet column.";
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
         }
         definitions.put( column,
                          content.trim() );
@@ -87,8 +92,10 @@ public class GuidedDecisionTableMetadataBuilder
                              String value) {
         String content = this.definitions.get( column );
         if ( content == null ) {
-            throw new DecisionTableParseException( "No code snippet for METADATA in cell " + RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                                                                                          this.headerCol ) );
+            final String message = "No code snippet for METADATA in cell " + RuleSheetParserUtil.rc2name( this.headerRow + 2,
+                                                                                                          this.headerCol );
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
         }
         DTCellValue52 dcv = new DTCellValue52( value );
         this.values.add( dcv );

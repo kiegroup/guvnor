@@ -96,7 +96,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
                                                             ConversionResult result) {
 
         final List<DataListener> listeners = new ArrayList<DataListener>();
-        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener(result);
         listeners.add( listener );
 
         final ExcelParser parser = new ExcelParser( listeners );
@@ -112,7 +112,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             }
         }
         //TODO {manstis} Handle multiple Decision Tables
-        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTable();
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
         GuidedDecisionTable52 dtable = dtables.get( 0 );
         return dtable;
     }
