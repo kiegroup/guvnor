@@ -37,7 +37,7 @@ public class ModulesNewAssetMenuTest {
 //    private ClientFactory clientFactory;
 //
 //    @Before
-//    public void getFieldPopulators() throws Exception {
+//    public void setUp() throws Exception {
 //        view = mock( ModulesNewAssetMenuView.class );
 //        packageService = mock( PackageServiceAsync.class );
 //

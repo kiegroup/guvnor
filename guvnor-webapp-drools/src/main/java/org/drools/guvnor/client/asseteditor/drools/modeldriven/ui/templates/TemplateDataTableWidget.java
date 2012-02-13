@@ -97,7 +97,7 @@ public class TemplateDataTableWidget extends Composite
                                                               isReadOnly,
                                                               eventBus );
 
-        //Date converter is injected so a GWT compatible one can be used here and another in fixtures
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
         TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         //Wire-up event handlers

@@ -55,7 +55,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
 
         rulesRepository.createModule(dynamicPackage,
-                "test-action package for fixtures");
+                "test-action package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
@@ -83,7 +83,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
 
         rulesRepository.createModule(dynamicPackage,
-                "test-snapshot package for fixtures");
+                "test-snapshot package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",

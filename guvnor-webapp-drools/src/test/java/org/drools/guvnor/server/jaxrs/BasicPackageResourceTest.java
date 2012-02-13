@@ -59,7 +59,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
 //    @BeforeClass
     // Unreliable HACK
-    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    // Fixable after this is testing: https://issues.jboss.org/browse/ARQ-540
     @Test
     public void startServers() throws Exception {
         loginAs("admin");
@@ -655,7 +655,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient 
     public void testRenamePackageFromAtom(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for fixtures
+        //create a package for testing
         Abdera abdera = new Abdera();
         AbderaClient client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
@@ -742,7 +742,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient 
     public void testRenamePackageFromXML(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for fixtures
+        //create a package for testing
         Package p = createTestPackage("testRenamePackageFromXML");
         p.setDescription("desc for testRenamePackageFromXML");
         JAXBContext context = JAXBContext.newInstance(p.getClass());

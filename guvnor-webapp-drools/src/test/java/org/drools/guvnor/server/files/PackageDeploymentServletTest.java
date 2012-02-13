@@ -213,7 +213,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
             xml += "</change-set>";
 
             FileManager fileManager = new FileManager();
-            fileManager.getFieldPopulators();
+            fileManager.setUp();
 
             File fxml = fileManager.newFile( "changeset.xml" );
             Writer output = new BufferedWriter( new FileWriter( fxml ) );

@@ -30,7 +30,7 @@ import org.drools.compiler.PackageBuilder;
 import static org.junit.Assert.*;
 
 /**
- * A class with some utilities for fixtures rules.
+ * A class with some utilities for testing rules.
  */
 public abstract class RuleUnit {
 
