@@ -47,7 +47,7 @@ public class DefaultDescriptionBuilder
     public void addCellValue(int row,
                              int column,
                              String value) {
-        this.values.add( new DTCellValue52() );
+        this.values.add( new DTCellValue52( "Created from row " + row ) );
     }
 
     public void clearValues() {

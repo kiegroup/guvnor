@@ -52,7 +52,7 @@ public class GuidedDecisionTableLHSBuilder
     //DRL generation parameters
     private String                                        colDefPrefix;
     private String                                        colDefSuffix;
-    private boolean                                       hasObjectDefinition;
+    private boolean                                       hasPattern;
     private String                                        andop;
 
     //Operators used to detect whether a template contains an operator or implies "=="
@@ -109,11 +109,11 @@ public class GuidedDecisionTableLHSBuilder
         String colDef = colDefinition == null ? "" : colDefinition;
         if ( "".equals( colDef ) ) {
             colDefPrefix = colDefSuffix = "";
-            hasObjectDefinition = false;
+            hasPattern = false;
             andop = "";
             return;
         }
-        hasObjectDefinition = true;
+        hasPattern = true;
 
         // ...eval
         Matcher matEval = patEval.matcher( colDef );
@@ -160,16 +160,17 @@ public class GuidedDecisionTableLHSBuilder
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
-        if ( !hasObjectDefinition ) {
+        if ( !hasPattern ) {
             //Add separate columns for each ValueBuilder
-            addSeparateColumns( dtable );
+            addExplicitColumns( dtable );
         } else {
             //Add a single column for all ValueBuilders
-            addMergedColumn( dtable );
+            addPatternColumn( dtable );
         }
     }
 
-    private void addSeparateColumns(GuidedDecisionTable52 dtable) {
+    //An explicit column does not add constraints to a Pattern. It is does not have a value in the OBJECT row
+    private void addExplicitColumns(GuidedDecisionTable52 dtable) {
 
         //Sort column builders by column index to ensure Actions are added in the correct sequence
         Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
@@ -242,10 +243,19 @@ public class GuidedDecisionTableLHSBuilder
         }
     }
 
-    private void addMergedColumn(GuidedDecisionTable52 dtable) {
+    //A Pattern column adds constraints to a Pattern. It has a value in the OBJECT row
+    private void addPatternColumn(GuidedDecisionTable52 dtable) {
 
         //Sort column builders by column index to ensure Actions are added in the correct sequence
-        Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+        TreeSet<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+
+        //If the Pattern spans multiple columns create a column header
+        String columnHeader = this.columnHeaders.get( sortedIndexes.first() );
+        if ( sortedIndexes.size() > 1 ) {
+            columnHeader = "Converted from cell [" +
+                           RuleSheetParserUtil.rc2name( this.headerRow + 1,
+                                                        this.headerCol ) + "]";
+        }
 
         //Create column - Everything is a BRL fragment (for now)
         BRLConditionColumn column = new BRLConditionColumn();
@@ -291,9 +301,7 @@ public class GuidedDecisionTableLHSBuilder
         ffl.text = drl.toString();
 
         //Set header after children have been added as it's copied into them
-        column.setHeader( "Converted from cell [" +
-                          RuleSheetParserUtil.rc2name( this.headerRow + 3,
-                                                       this.headerCol ) + "]" );
+        column.setHeader( columnHeader );
     }
 
     public void addTemplate(int row,

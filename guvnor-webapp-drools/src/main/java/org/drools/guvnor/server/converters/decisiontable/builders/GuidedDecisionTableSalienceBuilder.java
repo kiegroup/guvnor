@@ -69,7 +69,7 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
             value = value.substring( 1,
                                      value.lastIndexOf( ")" ) - 1 );
         }
-        DTCellValue52 dcv = new DTCellValue52();
+        DTCellValue52 dcv = new DTCellValue52( "" );
         try {
             dcv.setNumericValue( new BigDecimal( value ) );
         } catch ( NumberFormatException nfe ) {

@@ -50,7 +50,7 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void addCellValue(int row,
                              int column,
                              String value) {
-        DTCellValue52 dcv = new DTCellValue52();
+        DTCellValue52 dcv = new DTCellValue52( "" );
         try {
             dcv.setNumericValue( new BigDecimal( value ) );
         } catch ( NumberFormatException nfe ) {
