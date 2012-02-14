@@ -73,7 +73,7 @@ public class AssetFormats {
     public static final String RULE_FLOW_RF = "rf";
     public static final String BPMN_PROCESS = "bpmn";
     public static final String BPMN2_PROCESS = "bpmn2";
-    
+
     /**
      * For WorkItems
      */
@@ -143,4 +143,22 @@ public class AssetFormats {
         }
         return false;
     }
+
+    public static String convertAssetFormatToResourceType(final String format) {
+        if (format.equals(BUSINESS_RULE)
+                || format.equals(DRL)
+                || format.equals(DECISION_TABLE_GUIDED)
+                || format.equals(RULE_TEMPLATE)) {
+            return "DRL";
+        } else if (format.equals(DSL)) {
+            return "DSL";
+        } else if (format.equals(BPMN2_PROCESS)) {
+            return "BPMN2";
+        } else if (format.equals(CHANGE_SET)) {
+            return "CHANGE_SET";
+        }
+
+        return null;
+    }
+
 }

@@ -18,7 +18,13 @@
 package org.drools.guvnor.client.asseteditor.drools.changeset;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,6 +37,10 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
+import org.drools.guvnor.client.widgets.drools.explorer.PackageResourceExplorerWidget;
+import org.drools.guvnor.client.widgets.drools.explorer.PackageReadyCommand;
+import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -40,58 +50,64 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.RESTUtil;
 
+import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
+import static org.drools.guvnor.client.common.AssetFormats.*;
+
 /**
  * This is the default Change Set editor widget - more to come later.
  */
 public class ChangeSetEditor extends DirtyableComposite
         implements
         EditorWidget,
-    SaveEventListener {
+        SaveEventListener {
 
     // UI
     interface ChangeSetEditorBinder
             extends
             UiBinder<Widget, ChangeSetEditor> {
+
     }
 
-    private static ChangeSetEditorBinder uiBinder  = GWT.create( ChangeSetEditorBinder.class );
-    @UiField
-    protected TextArea                   editorArea;
-    @UiField
-    protected Button                     btnAssetResource;
-    @UiField
-    protected Button                     btnPackageResource;
-    @UiField
-    protected HorizontalPanel            pnlURL;
+    private static final String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
 
-    private ClientFactory                clientFactory;
-    final private RuleContentText        data;
-    final private String                 assetPackageName;
-    final private String                 assetPackageUUID;
-    final private String                 assetName;
-    private final int                    visibleLines;
-    private Constants                    constants = GWT.create( Constants.class );
+    private static ChangeSetEditorBinder uiBinder = GWT.create(ChangeSetEditorBinder.class);
+    @UiField
+    protected TextArea editorArea;
+    @UiField
+    protected Button btnAssetResource;
+    @UiField
+    protected Button btnPackageResource;
+    @UiField
+    protected HorizontalPanel pnlURL;
+
+    private ClientFactory clientFactory;
+    final private RuleContentText data;
+    final private String assetPackageName;
+    final private String assetPackageUUID;
+    final private String assetName;
+    private final int visibleLines;
+    private Constants constants = GWT.create(Constants.class);
 
     public ChangeSetEditor(Asset a,
-                           RuleViewer v,
-                           ClientFactory clientFactory,
-                           EventBus eventBus) {
-        this( a,
-              clientFactory );
+            RuleViewer v,
+            ClientFactory clientFactory,
+            EventBus eventBus) {
+        this(a,
+                clientFactory);
     }
 
     public ChangeSetEditor(Asset a,
-                           ClientFactory clientFactory) {
-        this( a,
-              clientFactory,
-              -1 );
+            ClientFactory clientFactory) {
+        this(a,
+                clientFactory,
+                -1);
     }
 
     public ChangeSetEditor(Asset asset,
-                           ClientFactory clientFactory,
-                           int visibleLines) {
+            ClientFactory clientFactory,
+            int visibleLines) {
 
-        this.initWidget( uiBinder.createAndBindUi( this ) );
+        this.initWidget(uiBinder.createAndBindUi(this));
 
         this.clientFactory = clientFactory;
 
@@ -101,7 +117,7 @@ public class ChangeSetEditor extends DirtyableComposite
 
         data = (RuleContentText) asset.getContent();
 
-        if ( data.content == null ) {
+        if (data.content == null) {
             data.content = "Empty!";
         }
 
@@ -112,65 +128,65 @@ public class ChangeSetEditor extends DirtyableComposite
 
     private void customizeUIElements() {
 
-        pnlURL.add( this.createChangeSetLink() );
+        pnlURL.add(this.createChangeSetLink());
 
-        editorArea.setStyleName( "default-text-Area" ); //NON-NLS
-        editorArea.setVisibleLines( (visibleLines == -1) ? 25 : visibleLines );
-        editorArea.setText( data.content );
-        editorArea.getElement().setAttribute( "spellcheck",
-                                              "false" ); //NON-NLS
+        editorArea.setStyleName("default-text-Area"); //NON-NLS
+        editorArea.setVisibleLines((visibleLines == -1) ? 25 : visibleLines);
+        editorArea.setText(data.content);
+        editorArea.getElement().setAttribute("spellcheck",
+                "false"); //NON-NLS
 
-        editorArea.addChangeHandler( new ChangeHandler() {
+        editorArea.addChangeHandler(new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
                 data.content = editorArea.getText();
                 makeDirty();
             }
-        } );
+        });
 
-        editorArea.addKeyDownHandler( new KeyDownHandler() {
+        editorArea.addKeyDownHandler(new KeyDownHandler() {
 
             public void onKeyDown(KeyDownEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
                     event.preventDefault();
                     event.stopPropagation();
                     int pos = editorArea.getCursorPos();
-                    insertText( "\t",
-                                false );
-                    editorArea.setCursorPos( pos + 1 );
+                    insertText("\t",
+                            false);
+                    editorArea.setCursorPos(pos + 1);
                     editorArea.cancelKey();
-                    editorArea.setFocus( true );
+                    editorArea.setFocus(true);
                 }
             }
-        } );
+        });
 
     }
 
     void insertText(String ins,
-                    boolean isSpecialPaste) {
+            boolean isSpecialPaste) {
 
-        editorArea.setFocus( true );
+        editorArea.setFocus(true);
 
         int i = editorArea.getCursorPos();
-        String left = editorArea.getText().substring( 0,
-                                                      i );
-        String right = editorArea.getText().substring( i,
-                                                       editorArea.getText().length() );
+        String left = editorArea.getText().substring(0,
+                i);
+        String right = editorArea.getText().substring(i,
+                editorArea.getText().length());
         int cursorPosition = left.toCharArray().length;
-        if ( isSpecialPaste ) {
-            int p = ins.indexOf( "|" );
-            if ( p > -1 ) {
+        if (isSpecialPaste) {
+            int p = ins.indexOf("|");
+            if (p > -1) {
                 cursorPosition += p;
-                ins = ins.replaceAll( "\\|",
-                                      "" );
+                ins = ins.replaceAll("\\|",
+                        "");
             }
 
         }
 
-        editorArea.setText( left + ins + right );
+        editorArea.setText(left + ins + right);
         this.data.content = editorArea.getText();
 
-        editorArea.setCursorPos( cursorPosition );
+        editorArea.setCursorPos(cursorPosition);
     }
 
     public void onSave() {
@@ -183,45 +199,142 @@ public class ChangeSetEditor extends DirtyableComposite
 
     @UiHandler("btnPackageResource")
     public void addNewPackageResource(ClickEvent e) {
-        addNewResource( new CreatePackageResourceWidget( assetPackageUUID,
-                                                         assetPackageName,
-                                                         clientFactory ) );
+        addNewResourcePackage(new PackageResourceExplorerWidget(assetPackageUUID,
+                assetPackageName,
+                clientFactory, DISPLAY_NAME_AND_DESCRIPTION));
+    }
+
+    private void addNewResourcePackage(final PackageResourceExplorerWidget widget) {
+        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
+
+        popup.addOkButtonClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                try {
+                    widget.processSelectedPackage(new PackageReadyCommand() {
+
+                        public void onSuccess(final String packageRef, final String name, final String description) {
+
+                            String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
+                            String result = resourceXMLElementTemplate;
+
+                            String nameString = "";
+                            if (name.length() != 0) {
+                                nameString = "name=\"" + name.trim() + "\"";
+                            }
+                            result = result.replace("{name}",
+                                    nameString);
+
+                            String descriptionString = "";
+                            if (description.length() != 0) {
+                                descriptionString = "description=\"" + description.trim() + "\"";
+                            }
+
+                            result = result.replace("{description}", descriptionString);
+                            result = result.replace("{type}", "PKG");
+                            result = result.replace("{source}", packageRef);
+
+                            insertText(result.toString(), false);
+                        }
+
+                        public void onFailure(Throwable cause) {
+                            ErrorPopup.showMessage(cause.getMessage());
+                        }
+                    });
+
+                } catch (Exception e) {
+                    ErrorPopup.showMessage(e.getMessage());
+                }
+                popup.hide();
+            }
+        });
+        popup.show();
     }
 
     @UiHandler("btnAssetResource")
     public void addNewAssetResource(ClickEvent e) {
-        addNewResource( new CreateAssetResourceWidget( assetPackageUUID,
-                                                       assetPackageName,
-                                                       clientFactory ) );
+        addNewResource(new AssetResourceExplorerWidget(assetPackageUUID,
+                assetPackageName,
+                clientFactory,
+                DISPLAY_NAME_AND_DESCRIPTION));
     }
 
-    private void addNewResource(final AbstractXMLResourceDefinitionCreatorWidget editor) {
+    private void addNewResource(final AssetResourceExplorerWidget widget) {
 
-        final NewResourcePopup popup = new NewResourcePopup( editor.asWidget() );
+        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
 
-        popup.addOkButtonClickHandler( new ClickHandler() {
+        popup.addOkButtonClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 try {
-                    editor.getResourceElement( new ResourceElementReadyCommand() {
+                    widget.processSelectedResources(new ResourceElementReadyCommand() {
 
-                        public void onSuccess(String resource) {
-                            insertText( resource,
-                                        false );
+                        public void onSuccess(final String packageRef, final Asset[] assets, final String name, final String description) {
+                            //for each selcted resource we are going to add a xml entry
+                            final StringBuilder result = new StringBuilder("");
+
+                            for (int i = 0; i < assets.length; i++) {
+                                final Asset asset = assets[i];
+
+                                String partialResult = resourceXMLElementTemplate;
+
+                                String nameString = "";
+                                if (name.length() != 0) {
+                                    if (assets.length == 1) {
+                                        nameString = "name=\"" + name.trim() + "\"";
+                                    } else {
+                                        //add index to the name to avoid duplication
+                                        nameString = "name=\"" + name.trim() + i + "\"";
+                                    }
+                                }
+                                partialResult = partialResult.replace("{name}",
+                                        nameString);
+
+                                String descriptionString = "";
+                                if (description.length() != 0) {
+                                    descriptionString = "description=\"" + description.trim() + "\"";
+                                }
+                                partialResult = partialResult.replace("{description}",
+                                        descriptionString);
+
+                                String type = convertAssetFormatToResourceType(asset.getFormat());
+                                if (type == null) {
+                                    throw new IllegalArgumentException(constants.UnknownResourceFormat(asset.getFormat()));
+                                }
+
+                                partialResult = partialResult.replace("{type}",
+                                        type);
+
+                                partialResult = partialResult.replace("{source}", getDownloadLink(asset, packageRef));
+
+                                result.append(partialResult).append('\n');
+                            }
+                            insertText(result.toString(), false);
                         }
 
                         public void onFailure(Throwable cause) {
-                            ErrorPopup.showMessage( cause.getMessage() );
+                            ErrorPopup.showMessage(cause.getMessage());
                         }
-                    } );
+                    });
 
-                } catch ( Exception e ) {
-                    ErrorPopup.showMessage( e.getMessage() );
+                } catch (Exception e) {
+                    ErrorPopup.showMessage(e.getMessage());
                 }
                 popup.hide();
             }
-        } );
+        });
         popup.show();
+    }
+
+    private String getDownloadLink(final Asset asset, final String packageRef) {
+        String url = RESTUtil.getRESTBaseURL();
+        url += "packages/";
+        url += packageRef;
+        url += "/assets/";
+        url += asset.name;
+        url += "/source";
+
+        return url;
     }
 
     private Widget createChangeSetLink() {
@@ -232,39 +345,38 @@ public class ChangeSetEditor extends DirtyableComposite
         url += this.assetName;
         url += "/source";
 
-        return new HTML( this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>" );
+        return new HTML(this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>");
     }
-
 }
 
 class NewResourcePopup extends FormStylePopup {
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
-    public Button     ok        = new Button( constants.OK() );
-    public Button     cancel    = new Button( constants.Cancel() );
+    public Button ok = new Button(constants.OK());
+    public Button cancel = new Button(constants.Cancel());
 
     public NewResourcePopup(Widget content) {
-        setTitle( constants.NewResource() );
+        setTitle(constants.NewResource());
 
         HorizontalPanel hor = new HorizontalPanel();
-        hor.add( ok );
-        hor.add( cancel );
+        hor.add(ok);
+        hor.add(cancel);
 
-        addRow( content );
-        addRow( hor );
+        addRow(content);
+        addRow(hor);
 
-        cancel.addClickHandler( new ClickHandler() {
+        cancel.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 hide();
             }
-        } );
+        });
 
     }
 
     public void addOkButtonClickHandler(ClickHandler okClickHandler) {
-        ok.addClickHandler( okClickHandler );
+        ok.addClickHandler(okClickHandler);
     }
 
 }

@@ -26,20 +26,28 @@
   <gwt:HTMLPanel width="100%">
     <table style='width:100%; border-collapse:collapse;'>
         <tr>
-            <td style="text-align:right;"><b><gwt:Label text="{i18n.Name}:"></gwt:Label></b></td>
+            <td style="text-align:right;"><b><gwt:Label ui:field="labelName" text="{i18n.Name}:"></gwt:Label></b></td>
             <td><gwt:TextBox ui:field="txtName"></gwt:TextBox></td>
         </tr>
         <tr>
-            <td style="text-align:right;"><b><gwt:Label text="{i18n.Description}:"></gwt:Label></b></td>
+            <td style="text-align:right;"><b><gwt:Label ui:field="labelDescr" text="{i18n.Description}:"></gwt:Label></b></td>
             <td><gwt:TextBox ui:field="txtDescription"></gwt:TextBox></td>
         </tr>
         <tr>
-            <td colspan="2"><b><gwt:Label text="{i18n.Packages}:"></gwt:Label></b></td>
+            <td style="text-align:right;"><b><gwt:Label text="{i18n.Package}:"></gwt:Label></b></td>
+            <td><gwt:ListBox ui:field="lstPackage"></gwt:ListBox></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;"><b><gwt:Label text="{i18n.Format}:"></gwt:Label></b></td>
+            <td><gwt:ListBox ui:field="lstFormat"></gwt:ListBox></td>
+        </tr>
+        <tr>
+            <td colspan="2"><b><gwt:Label text="{i18n.Assets}:"></gwt:Label></b></td>
         </tr>
         <tr width="100%" height="100%">
             <td colspan="2" width="100%" height="100%">
-                <gwt:ScrollPanel ui:field="sclTreePanel" width="100%" height="150px">
-                  <gwt:Tree ui:field="packageTree"></gwt:Tree>
+              <gwt:ScrollPanel ui:field="sclTreePanel" width="100%" height="150px">
+                    
               </gwt:ScrollPanel>
             </td>
         </tr>

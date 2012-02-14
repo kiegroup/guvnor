@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.changeset;
+package org.drools.guvnor.client.widgets.drools.explorer;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
 
 /**
- * The creation of a new <resource> element (unfortunately) is not always
- * synchronous (see
- * {@link CreateAssetResourceWidget#getResourceElement(ResourceElementReadyCommand)}
- * This command is used to be notified when the <resource> element is ready to
- * be used.
+ *
  */
-public interface ResourceElementReadyCommand {
-    void onSuccess(String resource);
+public abstract class AbstractResourceDefinitionExplorerWidget extends DirtyableComposite
+    implements
+        ResourceDefinitionExplorer {
 
-    void onFailure(Throwable cause);
 }

@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.changeset;
+package org.drools.guvnor.client.widgets.drools.explorer;
 
-/**
- * Defines the interface of XMLReourceDefinitionCreator like: <resource
- * type="DRL" name="someName" description="some Descr" source="..."/>
- */
-public interface XMLResourceDefinitionCreator {
+import org.drools.guvnor.client.rpc.Asset;
 
-    public String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
+public interface ResourceElementReadyCommand {
 
-    /**
-     * Return an xml <resource> element.
-     * 
-     * @return an xml <resource> element
-     */
-    void getResourceElement(ResourceElementReadyCommand resourceElementReadyCommand);
+    void onSuccess(String packageRef, Asset[] result, String name, String description);
 
+    void onFailure(Throwable cause);
 }
