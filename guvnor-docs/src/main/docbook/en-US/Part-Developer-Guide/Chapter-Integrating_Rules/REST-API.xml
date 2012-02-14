@@ -640,6 +640,67 @@
               <entry>Deletes the rule asset {assetName} contained in package
               {packageName}.</entry>
             </row>
+
+            <row>
+              <entry>/packages/{packageName}/snapshot/{snapshotName}</entry>
+
+              <entry>POST</entry>
+
+              <entry>none</entry>
+
+              <entry>none</entry>
+
+              <entry>Creates a snapshot {assetName} snapshotName for the package
+              {packageName}.</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/exists</entry>
+
+              <entry>GET</entry>
+
+              <entry>none</entry>
+
+              <entry>none</entry>
+
+              <entry>Determines if the {packageName} exists.</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/exists</entry>
+
+              <entry>GET</entry>
+
+              <entry>none</entry>
+
+              <entry>none</entry>
+
+              <entry>Determines if the asset {assetName} in the {packageName} exists.</entry>
+            </row>
+
+            <row>
+              <entry>{packageName}/assets</entry>
+
+              <entry>POST</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>multipart/form-data</entry>
+
+              <entry>Creates the asset {assetName} in the {packageName}.</entry>
+            </row>
+
+            <row>
+              <entry>{packageName}/assets/{assetName}</entry>
+
+              <entry>PUT</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>multipart/form-data</entry>
+
+              <entry>Updates the asset {assetName} in the {packageName}.</entry>
+            </row>
           </tbody>
         </tgroup>
       </table>
