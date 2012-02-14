@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
-import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
-import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
-
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -69,6 +64,11 @@ import org.drools.repository.PackageIterator;
 import org.jboss.seam.annotations.Name;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+
+import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -348,7 +348,7 @@ public class PackageResource extends Resource {
             PackageItem existingPackage = repository.loadPackage(packageName);
             
             //Rename:
-            if(!existingPackage.getTitle().equalsIgnoreCase(entry.getTitle())) {
+            if (!existingPackage.getTitle().equalsIgnoreCase(entry.getTitle())) {
                 repository.renamePackage(existingPackage.getUUID(), entry.getTitle());
             }
 
@@ -378,7 +378,7 @@ public class PackageResource extends Resource {
                 /*
                  * ExtensibleElement stateExtension =
                  * metadataExtension.getExtension(Translator.STATE);
-                 * if(stateExtension != null) {
+                 * if (stateExtension != null) {
                  * p.updateState(stateExtension.getSimpleExtension
                  * (Translator.STATE)); }
                  */
@@ -399,7 +399,7 @@ public class PackageResource extends Resource {
             PackageItem existingPackage = repository.loadPackage(packageName);
             
             //Rename:
-            if(!existingPackage.getTitle().equalsIgnoreCase(newPackage.getTitle())) {
+            if (!existingPackage.getTitle().equalsIgnoreCase(newPackage.getTitle())) {
                 repository.renamePackage(existingPackage.getUUID(), newPackage.getTitle());
             }            
 
@@ -407,7 +407,7 @@ public class PackageResource extends Resource {
 
             /* TODO: add more updates to package item from JSON */
             String checkInComment = "";
-            if(newPackage.getCheckInComment() != null) {
+            if (newPackage.getCheckInComment() != null) {
                 checkInComment = newPackage.getCheckInComment();
             }
             existingPackage.checkin(checkInComment);
@@ -586,7 +586,7 @@ public class PackageResource extends Resource {
             }
             String fileName = null;
             String extension = null;
-            if(assetName.lastIndexOf(".") != -1) {
+            if (assetName.lastIndexOf(".") != -1) {
                 fileName = assetName.substring(0, assetName.lastIndexOf("."));                
                 extension = assetName.substring(assetName.lastIndexOf(".")+1); 
             } else {
@@ -596,7 +596,7 @@ public class PackageResource extends Resource {
             AssetItem ai = repository.loadPackage(packageName).addAsset(fileName, "");
             ai.checkout();
             ai.updateBinaryContentAttachmentFileName(fileName);
-            if(extension != null) {
+            if (extension != null) {
                 ai.updateFormat(extension);
             }
             ai.updateBinaryContentAttachment(is);
@@ -865,7 +865,7 @@ public class PackageResource extends Resource {
     public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
         /* Asset does not exist if package does not exist */
         final boolean packageExists = repository.containsPackage(packageName);
-        if(!packageExists){
+        if (!packageExists){
             return false;
         }
         
@@ -881,7 +881,7 @@ public class PackageResource extends Resource {
     public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
             @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
         /* Verify passed in asset object */
-        if(asset == null || asset.getMetadata() == null ){
+        if (asset == null || asset.getMetadata() == null ){
             throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
         }
         final String assetName = asset.getMetadata().getTitle();
@@ -909,12 +909,12 @@ public class PackageResource extends Resource {
     public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
             @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
         /* Verify passed in asset object */
-        if(asset == null || asset.getMetadata() == null ){
+        if (asset == null || asset.getMetadata() == null ){
             throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
         }
         
         /* Asset must exist to update */
-        if(!assetExists(packageName, assetName)){
+        if (!assetExists(packageName, assetName)){
             throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
         }
         
