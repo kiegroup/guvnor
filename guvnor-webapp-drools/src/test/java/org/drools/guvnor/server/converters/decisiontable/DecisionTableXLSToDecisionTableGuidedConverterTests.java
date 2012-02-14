@@ -147,6 +147,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                       attrCol9.getAttribute() );
 
         //Check data
+        assertEquals( 2,
+                      dtable.getData().size() );
         assertTrue( isRowEquivalent( new String[]{"1", "Specific rule 1", "1", "g1", "100", "TRUE", "TRUE", "TRUE", "AG1", "RFG1"},
                                      dtable.getData().get( 0 ) ) );
         assertTrue( isRowEquivalent( new String[]{"2", "Specific rule 2", "2", "g2", "200", "FALSE", "FALSE", "FALSE", "AG2", "RFG2"},
@@ -211,9 +213,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertTrue( attrCol2.isReverseOrder() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "2"},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 8", "2"},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "1"},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 9", "1"},
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -281,9 +285,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertFalse( attrCol2.isReverseOrder() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 6", ""},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", ""},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 7", ""},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", ""},
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -351,9 +357,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertFalse( attrCol2.isReverseOrder() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 6", ""},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", ""},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 7", ""},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", ""},
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -413,9 +421,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                       mdCol2.getMetadata() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 6", "cheddar"},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "cheddar"},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 7", "edam"},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "edam"},
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -601,9 +611,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertNull( actionCol3param0.getFactField() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 6", "10", "20", "30", "hello", "TRUE"},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "10", "20", "30", "hello", "TRUE"},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 7", "50", "60", "70", "goodbye", "FALSE"},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "50", "60", "70", "goodbye", "FALSE"},
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -755,10 +767,204 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertNull( conditionCol1param1.getFactField() );
 
         //Check data
-        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 6", "20", "Mike", "Brown", "BMW", "M3"},
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3"},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 7", "30", "Jason", "Grey", "Audi", "S4"},
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "30", "Jason", "Grey", "Audi", "S4"},
                                      dtable.getData().get( 1 ) ) );
+    }
+
+    @Test
+    public void testMultipleRuleTables() {
+
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "MultipleRuleTables.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check basics
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+
+        assertNotNull( dtables );
+        assertEquals( 2,
+                      dtables.size() );
+
+        GuidedDecisionTable52 dtable0 = dtables.get( 0 );
+        assertEquals( "Table1",
+                      dtable0.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable0.getTableFormat() );
+
+        GuidedDecisionTable52 dtable1 = dtables.get( 1 );
+        assertEquals( "Table2",
+                      dtable1.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable1.getTableFormat() );
+
+        //Check expanded columns
+        List<BaseColumn> columns0 = dtable0.getExpandedColumns();
+        assertNotNull( columns0 );
+        assertEquals( 6,
+                      columns0.size() );
+        assertTrue( columns0.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns0.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns0.get( 2 ) instanceof AttributeCol52 );
+        assertTrue( columns0.get( 3 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns0.get( 4 ) instanceof BRLActionVariableColumn );
+        assertTrue( columns0.get( 5 ) instanceof AnalysisCol52 );
+
+        AttributeCol52 attrCol0_2 = ((AttributeCol52) columns0.get( 2 ));
+        assertEquals( GuidedDecisionTable52.AGENDA_GROUP_ATTR,
+                      attrCol0_2.getAttribute() );
+
+        //Check individual condition columns
+        assertEquals( 1,
+                      dtable0.getConditions().size() );
+        assertTrue( dtable0.getConditions().get( 0 ) instanceof BRLConditionColumn );
+
+        //Column 1
+        BRLConditionColumn conditionCol0_0 = ((BRLConditionColumn) dtable0.getConditions().get( 0 ));
+        assertEquals( "Person's name",
+                      conditionCol0_0.getHeader() );
+        assertEquals( 1,
+                      conditionCol0_0.getChildColumns().size() );
+
+        List<IPattern> conditionCol0_0definition = conditionCol0_0.getDefinition();
+        assertEquals( 1,
+                      conditionCol0_0definition.size() );
+        assertTrue( conditionCol0_0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine conditionCol0_0ffl = (FreeFormLine) conditionCol0_0definition.get( 0 );
+        assertEquals( "Person(name == \"@{param1}\")",
+                      conditionCol0_0ffl.text );
+
+        //Column 1 - Variable 1
+        BRLConditionVariableColumn conditionCol0_0param0 = conditionCol0_0.getChildColumns().get( 0 );
+        assertEquals( "param1",
+                      conditionCol0_0param0.getVarName() );
+        assertEquals( "Person's name",
+                      conditionCol0_0param0.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol0_0param0.getFieldType() );
+        assertNull( conditionCol0_0param0.getFactType() );
+        assertNull( conditionCol0_0param0.getFactField() );
+
+        //Column 2
+        BRLActionColumn actionCol0_0 = ((BRLActionColumn) dtable0.getActionCols().get( 0 ));
+        assertEquals( "Salutation",
+                      actionCol0_0.getHeader() );
+        assertEquals( 1,
+                      actionCol0_0.getChildColumns().size() );
+
+        List<IAction> actionCol0_0definition = actionCol0_0.getDefinition();
+        assertEquals( 1,
+                      actionCol0_0definition.size() );
+        assertTrue( actionCol0_0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine actionCol0_0ffl = (FreeFormLine) actionCol0_0definition.get( 0 );
+        assertEquals( "System.out.println(\"@{param2}\");",
+                      actionCol0_0ffl.text );
+
+        //Column 1 - Variable 1
+        BRLActionVariableColumn actionCol0_0param0 = actionCol0_0.getChildColumns().get( 0 );
+        assertEquals( "param2",
+                      actionCol0_0param0.getVarName() );
+        assertEquals( "Salutation",
+                      actionCol0_0param0.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      actionCol0_0param0.getFieldType() );
+        assertNull( actionCol0_0param0.getFactType() );
+        assertNull( actionCol0_0param0.getFactField() );
+
+        //Check data
+        assertEquals( 2,
+                      dtable0.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "AG1", "John", "Hello Sir"},
+                                     dtable0.getData().get( 0 ) ) );
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "AG2", "Jane", "Hello Madam"},
+                                     dtable0.getData().get( 1 ) ) );
+
+        //Check expanded columns
+        List<BaseColumn> columns1 = dtable1.getExpandedColumns();
+        assertNotNull( columns1 );
+        assertEquals( 5,
+                      columns1.size() );
+        assertTrue( columns1.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns1.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns1.get( 2 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns1.get( 3 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns1.get( 4 ) instanceof AnalysisCol52 );
+
+        //Check individual condition columns
+        assertEquals( 1,
+                      dtable0.getConditions().size() );
+        assertTrue( dtable0.getConditions().get( 0 ) instanceof BRLConditionColumn );
+
+        //Column 1
+        BRLConditionColumn conditionCol1_0 = ((BRLConditionColumn) dtable1.getConditions().get( 0 ));
+        assertEquals( "Converted from cell [C12]",
+                      conditionCol1_0.getHeader() );
+        assertEquals( 2,
+                      conditionCol1_0.getChildColumns().size() );
+
+        List<IPattern> conditionCol1_0definition = conditionCol1_0.getDefinition();
+        assertEquals( 1,
+                      conditionCol1_0definition.size() );
+        assertTrue( conditionCol1_0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine conditionCol1_0ffl = (FreeFormLine) conditionCol1_0definition.get( 0 );
+        assertEquals( "Person(name == \"@{param1}\", age == \"@{param2}\")",
+                      conditionCol1_0ffl.text );
+
+        //Column 1 - Variable 1
+        BRLConditionVariableColumn conditionCol1_0param0 = conditionCol1_0.getChildColumns().get( 0 );
+        assertEquals( "param1",
+                      conditionCol1_0param0.getVarName() );
+        assertEquals( "Converted from cell [C12]",
+                      conditionCol1_0param0.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol1_0param0.getFieldType() );
+        assertNull( conditionCol1_0param0.getFactType() );
+        assertNull( conditionCol1_0param0.getFactField() );
+
+        //Column 1 - Variable 2
+        BRLConditionVariableColumn conditionCol1_0param1 = conditionCol1_0.getChildColumns().get( 1 );
+        assertEquals( "param2",
+                      conditionCol1_0param1.getVarName() );
+        assertEquals( "Converted from cell [C12]",
+                      conditionCol1_0param1.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol1_0param1.getFieldType() );
+        assertNull( conditionCol1_0param1.getFactType() );
+        assertNull( conditionCol1_0param1.getFactField() );
+
+        //Check data
+        assertEquals( 2,
+                      dtable1.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 15", "John", "25"},
+                                     dtable1.getData().get( 0 ) ) );
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 16", "Jane", "29"},
+                                     dtable1.getData().get( 1 ) ) );
+
     }
 
     private boolean isRowEquivalent(String[] expected,

@@ -94,6 +94,7 @@ public class GuidedDecisionTableGeneratorListener
     private boolean                                 _currentSequentialFlag      = false;                                 // indicates that we are in sequential mode
     private boolean                                 _currentEscapeQuotesFlag    = true;                                  // indicates that we are escaping quotes
     private GuidedDecisionTable52                   _dtable;
+    private boolean                                 _isNewDataRow               = false;
 
     //Accumulated output
     private Map<Integer, ActionType>                _actions;
@@ -155,12 +156,7 @@ public class GuidedDecisionTableGeneratorListener
     public void newRow(final int rowNumber,
                        final int columns) {
         if ( rowNumber > this._ruleStartRow + LABEL_ROW ) {
-            ROW_NUMBER_BUILDER.addCellValue( rowNumber,
-                                             0,
-                                             "" );
-            DEFAULT_DESCRIPTION_BUILDER.addCellValue( rowNumber,
-                                                      1,
-                                                      "" );
+            this._isNewDataRow = true;
         }
     }
 
@@ -206,6 +202,7 @@ public class GuidedDecisionTableGeneratorListener
         this._ruleEndColumn = column;
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;
+        this._isNewDataRow = false;
 
         // setup stuff for the rules to come.. (the order of these steps are important !)
         this._currentSequentialFlag = getSequentialFlag();
@@ -236,6 +233,7 @@ public class GuidedDecisionTableGeneratorListener
             this._currentSequentialFlag = false;
             this._isInRuleTable = false;
             this._haveColumnsBeenIdentified = false;
+            this._isNewDataRow = false;
         }
     }
 
@@ -348,6 +346,15 @@ public class GuidedDecisionTableGeneratorListener
                 break;
 
             default :
+                if ( this._isNewDataRow ) {
+                    this._isNewDataRow = false;
+                    ROW_NUMBER_BUILDER.addCellValue( row,
+                                                     0,
+                                                     "" );
+                    DEFAULT_DESCRIPTION_BUILDER.addCellValue( row,
+                                                              1,
+                                                              "" );
+                }
                 doDataCell( row,
                             column,
                             trimVal );
