@@ -900,7 +900,7 @@ public class PackageResource extends Resource {
         return asset;
     }
 
-    @POST
+    @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
