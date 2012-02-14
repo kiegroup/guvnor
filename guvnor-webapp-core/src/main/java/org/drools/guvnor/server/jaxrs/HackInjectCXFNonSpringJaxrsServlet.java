@@ -23,10 +23,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
-import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.RepositoryCategoryService;
-import org.drools.guvnor.server.RepositoryModuleService;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.security.Credentials;
@@ -42,6 +39,8 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
     protected RepositoryAssetService repositoryAssetService;
     @Inject
     protected RepositoryCategoryService repositoryCategoryService;
+    @Inject
+    protected RepositoryModuleOperations repositoryModuleOperations;
     @Inject
     protected RulesRepository rulesRepository;
     @Inject
@@ -71,7 +70,7 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
         if (singletonInstance instanceof Resource) {
             Resource resource = (Resource) singletonInstance;
             resource.inject(serviceImplementation, repositoryPackageService, repositoryAssetService,
-                    repositoryCategoryService, rulesRepository,
+                    repositoryCategoryService, repositoryModuleOperations, rulesRepository,
                     fileManagerService);
         }
         return singletonInstance;

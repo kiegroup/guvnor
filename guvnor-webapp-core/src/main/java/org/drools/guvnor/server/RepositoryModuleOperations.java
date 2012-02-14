@@ -413,7 +413,7 @@ public class RepositoryModuleOperations {
         return res;
     }
 
-    protected void createModuleSnapshot(String moduleName,
+    public void createModuleSnapshot(String moduleName,
                                          String snapshotName,
                                          boolean replaceExisting,
                                          String comment) {

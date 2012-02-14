@@ -24,6 +24,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.builder.ModuleAssembler;
@@ -39,8 +40,22 @@ import org.drools.repository.ModuleIterator;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -56,7 +71,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static org.drools.guvnor.server.jaxrs.Translator.*;
+import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
+import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -332,7 +350,7 @@ public class PackageResource extends Resource {
             ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
             
             //Rename:
-            if(!existingModuleItem.getTitle().equalsIgnoreCase(entry.getTitle())) {
+            if (!existingModuleItem.getTitle().equalsIgnoreCase(entry.getTitle())) {
                 rulesRepository.renameModule(existingModuleItem.getUUID(), entry.getTitle());
             }
 
@@ -361,7 +379,7 @@ public class PackageResource extends Resource {
                 /*
                  * ExtensibleElement stateExtension =
                  * metadataExtension.getExtension(Translator.STATE);
-                 * if(stateExtension != null) {
+                 * if (stateExtension != null) {
                  * p.updateState(stateExtension.getSimpleExtension
                  * (Translator.STATE)); }
                  */
@@ -382,7 +400,7 @@ public class PackageResource extends Resource {
             ModuleItem existingModuleItem = rulesRepository.loadModule(packageName);
             
             //Rename:
-            if(!existingModuleItem.getTitle().equalsIgnoreCase(module.getTitle())) {
+            if (!existingModuleItem.getTitle().equalsIgnoreCase(module.getTitle())) {
                 rulesRepository.renameModule(existingModuleItem.getUUID(), module.getTitle());
             }
             
@@ -565,7 +583,7 @@ public class PackageResource extends Resource {
             }
             String fileName = null;
             String extension = null;
-            if(assetName.lastIndexOf(".") != -1) {
+            if (assetName.lastIndexOf(".") != -1) {
                 fileName = assetName.substring(0, assetName.lastIndexOf("."));                
                 extension = assetName.substring(assetName.lastIndexOf(".")+1); 
             } else {
@@ -575,7 +593,7 @@ public class PackageResource extends Resource {
             AssetItem ai = rulesRepository.loadModule(packageName).addAsset(fileName, "");
             ai.checkout();
             ai.updateBinaryContentAttachmentFileName(fileName);
-            if(extension != null) {
+            if (extension != null) {
                 ai.updateFormat(extension);
             }
             ai.updateBinaryContentAttachment(is);
@@ -821,6 +839,93 @@ public class PackageResource extends Resource {
         }
 
         return null;
+    }
+
+    @POST
+    @Path("{packageName}/snapshot/{snapshotName}")
+    public void createPackageSnapshot(
+            @PathParam("packageName") final String packageName,
+            @PathParam("snapshotName") final String snapshotName) {
+        repositoryModuleOperations.createModuleSnapshot(packageName,
+                snapshotName, true, "REST API Snapshot");
+    }
+
+    @GET
+    @Path("{packageName}/exists")
+    public boolean packageExists(@PathParam("packageName") final String packageName){
+        /* Determine if package exists in repository */
+        final boolean packageExists = rulesRepository.containsModule(packageName);
+        return packageExists;
+    }
+
+    @GET
+    @Path("{packageName}/assets/{assetName}/exists")
+    public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
+        /* Asset does not exist if package does not exist */
+        final boolean packageExists = rulesRepository.containsModule(packageName);
+        if (!packageExists){
+            return false;
+        }
+
+        /* Load module and determine if it contains an asset */
+        final ModuleItem packageItem = rulesRepository.loadModule(packageName);
+        return packageItem.containsAsset(assetName);
+    }
+
+    @POST
+    @Path("{packageName}/assets")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+                                              @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
+        /* Verify passed in asset object */
+        if (asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+        final String assetName = asset.getTitle();
+
+        /* Check for existence of asset name */
+        if (assetName == null) {
+            throw new WebApplicationException(Response.status(500).entity("Asset name must be specified (Asset.metadata.title)").build());
+        }
+
+        AssetItem ai = rulesRepository.loadModule(packageName).addAsset(assetName, asset.getDescription());
+        ai.checkout();
+        ai.updateBinaryContentAttachmentFileName(asset.getBinaryContentAttachmentFileName());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getModule().updateBinaryUpToDate(false);
+        ai.checkin(asset.getMetadata().getCheckInComment());
+        rulesRepository.save();
+        return asset;
+    }
+
+    @POST
+    @Path("{packageName}/assets/{assetName}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
+                                              @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
+        /* Verify passed in asset object */
+        if (asset == null || asset.getMetadata() == null ){
+            throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
+        }
+
+        /* Asset must exist to update */
+        if (!assetExists(packageName, assetName)){
+            throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
+        }
+
+        AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
+        ai.checkout();
+        ai.updateDescription(asset.getDescription());
+        ai.updateBinaryContentAttachmentFileName(asset.getBinaryContentAttachmentFileName());
+        ai.updateFormat(asset.getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(is);
+        ai.getModule().updateBinaryUpToDate(false);
+        ai.checkin(asset.getMetadata().getCheckInComment());
+        rulesRepository.save();
+        return asset;
     }
     
     private DateFormat createDateFormat(){

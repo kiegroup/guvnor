@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement()
 public class Asset {
     private String title;
+    private String binaryContentAttachmentFileName;
     private String description;
     private String author;    
     private Date published;
@@ -58,6 +59,16 @@ public class Asset {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @XmlElement
+    public String getBinaryContentAttachmentFileName() {
+        return binaryContentAttachmentFileName;
+    }
+
+    public void setBinaryContentAttachmentFileName(String binaryContentAttachmentFileName) {
+        this.binaryContentAttachmentFileName = binaryContentAttachmentFileName;
+    }
+
     @XmlElement()
     public String getDescription() {
         return description;
