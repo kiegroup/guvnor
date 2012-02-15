@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
@@ -464,7 +465,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
             if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
-                divGroup.setTitle( messages.groupCells() );
+                divGroup.setTitle(Constants.INSTANCE.groupCells());
                 divGroup.addClassName( resources.cellTableGroupDiv() );
                 if ( cellData.isGrouped() ) {
                     divGroup.setInnerHTML( selectorUngroupedCellsHtml );
