@@ -593,6 +593,8 @@ public class PackageResource extends Resource {
             AssetItem ai = rulesRepository.loadModule(packageName).addAsset(fileName, "");
             ai.checkout();
             ai.updateBinaryContentAttachmentFileName(fileName);
+            
+            //TODO: this is wrong. Should not change the asset format. Asset format and asset file extension are 2 different things. 
             if (extension != null) {
                 ai.updateFormat(extension);
             }
