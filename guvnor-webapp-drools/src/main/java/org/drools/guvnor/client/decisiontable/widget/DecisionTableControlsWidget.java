@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import org.drools.guvnor.client.messages.Constants;
 
 /**
  * Simple container for controls to manipulate a Decision Table
@@ -42,7 +43,7 @@ public class DecisionTableControlsWidget extends Composite {
         Panel panel = new HorizontalPanel();
 
         // Add row button
-        addRowButton = new Button( messages.AddRow(),
+        addRowButton = new Button( Constants.INSTANCE.AddRow(),
                                    new ClickHandler() {
                                        public void onClick(ClickEvent event) {
                                            if ( dtable != null ) {
@@ -53,7 +54,7 @@ public class DecisionTableControlsWidget extends Composite {
         addRowButton.setEnabled( !isReadOnly );
         panel.add( addRowButton );
 
-        otherwiseButton = new Button( messages.Otherwise(),
+        otherwiseButton = new Button( Constants.INSTANCE.Otherwise(),
                                       new ClickHandler() {
                                           public void onClick(ClickEvent event) {
                                               if ( dtable != null ) {
@@ -65,7 +66,7 @@ public class DecisionTableControlsWidget extends Composite {
         panel.add( otherwiseButton );
 
         // Add row button
-        analyzeButton = new Button( messages.Analyze(),
+        analyzeButton = new Button( Constants.INSTANCE.Analyze(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent event) {
                                             if ( dtable != null ) {
