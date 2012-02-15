@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.util.PercentageBar;

@@ -64,7 +64,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
      */
     public void onAfterSave() {
         //Refresh  SuggestionCompletionCache is done by RuleViewer.flushSuggestionCompletionCache(). No need to refresh it twice here.
-/*        LoadingPopup.showMessage( ((ConstantsCore) GWT.create( ConstantsCore.class )).RefreshingModel() );
+/*        LoadingPopup.showMessage( ((Constants) GWT.create( Constants.class )).RefreshingModel() );
         SuggestionCompletionCache.getInstance().loadPackage( packageName,
                 new Command() {
                     public void execute() {

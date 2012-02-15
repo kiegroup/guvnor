@@ -29,7 +29,6 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
@@ -41,7 +40,6 @@ import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -69,7 +67,6 @@ public class ExpressionBuilder extends RuleModellerWidget
     private static final String          GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
     private static final String          METHOD_VALUE_PREFIX          = "mt";
     private final SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
-    private ConstantsCore constants                    = ((ConstantsCore) GWT.create( ConstantsCore.class ));
     private HorizontalPanel              panel                        = new HorizontalPanel();
     private ExpressionFormLine           expression;
     private boolean                      readOnly;

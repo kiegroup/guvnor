@@ -36,7 +36,6 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.RESTUtil;
@@ -71,7 +70,6 @@ public class ChangeSetEditor extends DirtyableComposite
     final private String                 assetPackageUUID;
     final private String                 assetName;
     private final int                    visibleLines;
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     public ChangeSetEditor(Asset a,
                            RuleViewer v,

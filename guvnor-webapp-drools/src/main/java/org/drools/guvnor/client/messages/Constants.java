@@ -26,7 +26,7 @@ import com.google.gwt.i18n.client.Messages;
  * http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-
  * toolkit-doc-1-5&t=DevGuideInternationalization (for more information).
  * <p/>
- * Each method name matches up with a key in ConstantsCore.properties (the
+ * Each method name matches up with a key in Constants.properties (the
  * properties file can still be used on the server). To use this, use
  * <code>GWT.create(Constants.class)</code>.
  */

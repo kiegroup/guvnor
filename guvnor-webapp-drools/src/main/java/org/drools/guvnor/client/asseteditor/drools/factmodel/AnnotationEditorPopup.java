@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,8 +37,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * A pop-up editor for a single Fact annotation
  */
 public class AnnotationEditorPopup {
-
-    private static ConstantsCore constants  = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     // A valid Annotation name
     private static final RegExp             VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d]*$" );

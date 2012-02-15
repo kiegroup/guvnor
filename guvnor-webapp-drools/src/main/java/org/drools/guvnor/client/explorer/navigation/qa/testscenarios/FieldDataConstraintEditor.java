@@ -31,7 +31,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -113,8 +112,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
-            String m = ((ConstantsCore) GWT.create( ConstantsCore.class )).ValueFor0( field.getName() );
-            datePicker.setTitle( m );
+            datePicker.setTitle( Constants.INSTANCE.ValueFor0( field.getName() ) );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
                     field.setValue( newValue );
@@ -177,8 +175,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                            String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
-        String m = ((ConstantsCore) GWT.create( ConstantsCore.class )).ValueFor0( fieldName );
-        tb.setTitle( m );
+        tb.setTitle( Constants.INSTANCE.ValueFor0( fieldName ) );
         tb.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {

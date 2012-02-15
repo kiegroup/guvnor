@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.LazyStackPanel;
@@ -36,8 +35,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 public class FactModelsEditor extends Composite {
-
-    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     interface FactModelsEditorBinder
         extends

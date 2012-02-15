@@ -16,9 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven;
 
-import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import java.util.HashMap;
 import java.util.Map;

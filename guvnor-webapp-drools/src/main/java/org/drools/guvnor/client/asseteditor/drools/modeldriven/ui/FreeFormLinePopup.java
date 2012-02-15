@@ -17,7 +17,6 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,8 +38,6 @@ import com.google.gwt.user.client.ui.Widget;
  * A pop-up in which to edit 'free-form DRL'
  */
 public class FreeFormLinePopup extends Popup {
-
-    private static final ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private static FreeFormLinePopupBinder uiBinder  = GWT.create( FreeFormLinePopupBinder.class );
 

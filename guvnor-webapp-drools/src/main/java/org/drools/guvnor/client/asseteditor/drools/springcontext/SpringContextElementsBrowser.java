@@ -17,10 +17,8 @@ package org.drools.guvnor.client.asseteditor.drools.springcontext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;

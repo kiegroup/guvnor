@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools.standalone;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -24,7 +23,6 @@ import com.google.gwt.user.client.ui.MenuBar;
 import org.drools.guvnor.client.asseteditor.DefaultMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 /**
  * Creates a default menu bar with an additional "Cancel" button.

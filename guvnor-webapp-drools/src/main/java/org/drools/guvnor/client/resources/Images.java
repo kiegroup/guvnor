@@ -24,7 +24,7 @@ public interface Images
     extends
     ClientBundle {
 
-    ImagesCore INSTANCE = GWT.create(ImagesCore.class);
+    Images INSTANCE = GWT.create(Images.class);
 
     @Source("images/package.gif")
     ImageResource packageImage();

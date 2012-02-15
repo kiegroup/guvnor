@@ -20,7 +20,6 @@ import java.util.List;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Asset;
@@ -30,7 +29,6 @@ import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
 import org.drools.ide.common.client.testscenarios.fixtures.FixturesMap;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;

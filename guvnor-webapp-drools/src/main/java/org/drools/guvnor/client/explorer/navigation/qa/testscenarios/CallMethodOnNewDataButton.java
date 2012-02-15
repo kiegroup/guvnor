@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
@@ -34,8 +33,6 @@ import com.google.gwt.core.client.GWT;
  * context.
  */
 public class CallMethodOnNewDataButton extends TestScenarioButton {
-
-    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     private final ExecutionTrace currentEx;
 

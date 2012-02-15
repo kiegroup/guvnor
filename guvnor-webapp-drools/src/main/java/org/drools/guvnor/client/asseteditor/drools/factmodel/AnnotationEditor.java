@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,8 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
  * A line on the Declarative Modelling screen representing a Fact annotation
  */
 public class AnnotationEditor extends Composite {
-
-    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     interface AnnotationEditorBinder
         extends

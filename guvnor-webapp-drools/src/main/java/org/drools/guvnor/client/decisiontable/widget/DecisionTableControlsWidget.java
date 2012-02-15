@@ -15,9 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.messages.ConstantsCore;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -29,8 +27,6 @@ import com.google.gwt.user.client.ui.Panel;
  * Simple container for controls to manipulate a Decision Table
  */
 public class DecisionTableControlsWidget extends Composite {
-
-    protected static final ConstantsCore messages = GWT.create( ConstantsCore.class );
 
     private AbstractDecisionTableWidget dtable;
 

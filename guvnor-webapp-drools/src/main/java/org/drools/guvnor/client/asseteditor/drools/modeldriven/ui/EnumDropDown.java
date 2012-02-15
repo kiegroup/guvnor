@@ -24,12 +24,10 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IDirtyable;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -42,8 +40,6 @@ import com.google.gwt.user.client.ui.ListBox;
 public class EnumDropDown extends ListBox
         implements
         IDirtyable {
-
-    private static final ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private final DropDownValueChanged valueChangedCommand;
 

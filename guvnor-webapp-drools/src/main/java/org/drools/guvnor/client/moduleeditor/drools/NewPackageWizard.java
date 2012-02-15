@@ -33,15 +33,12 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
  * This is the wizard used when creating new packages or importing them.
  */
 public class NewPackageWizard extends FormStylePopup {
-
-    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     private TextBox nameBox;
     private TextBox descBox;

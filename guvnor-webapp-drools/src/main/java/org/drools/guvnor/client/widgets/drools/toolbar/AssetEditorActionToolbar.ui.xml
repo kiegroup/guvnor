@@ -13,7 +13,7 @@
   <ui:with field='roundCornersResource'
     type='org.drools.guvnor.client.resources.RoundedCornersResource' />
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <ui:style>
     .menu-bar {

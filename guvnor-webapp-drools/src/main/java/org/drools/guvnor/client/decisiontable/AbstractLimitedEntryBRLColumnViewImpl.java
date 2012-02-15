@@ -23,7 +23,6 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerWi
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -51,8 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends Popup
     implements
     RuleModelEditor {
-
-    protected static final ConstantsCore constants  = GWT.create( ConstantsCore.class );
 
     protected int                    MIN_WIDTH  = 500;
     protected int                    MIN_HEIGHT = 200;

@@ -18,7 +18,6 @@ package org.drools.guvnor.client.asseteditor.drools.factmodel;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.AddButton;
 
 import com.google.gwt.core.client.GWT;
@@ -33,8 +32,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class FactFieldsEditor extends Composite {
-
-    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     interface FactFieldsEditorBinder
         extends

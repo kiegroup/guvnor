@@ -25,7 +25,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.widgets.drools.workitems.WorkItemParametersWidget;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
@@ -40,7 +39,6 @@ import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;

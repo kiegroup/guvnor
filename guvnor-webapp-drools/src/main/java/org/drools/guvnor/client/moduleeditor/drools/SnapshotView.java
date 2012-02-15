@@ -52,7 +52,6 @@ import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -63,8 +62,6 @@ import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTab
  * This is the new snapshot view.
  */
 public class SnapshotView extends Composite {
-
-    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public static final String LATEST_SNAPSHOT = "LATEST";
 

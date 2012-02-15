@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -36,8 +35,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class FieldEditorPopup {
-
-    private static ConstantsCore constants      = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     // A valid Fact, Field or Annotation name
     private static final RegExp        VALID_NAME     = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );

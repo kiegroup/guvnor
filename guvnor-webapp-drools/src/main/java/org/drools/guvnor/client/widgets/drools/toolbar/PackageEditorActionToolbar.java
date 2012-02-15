@@ -29,7 +29,6 @@ import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
@@ -56,8 +55,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PackageEditorActionToolbar extends Composite {
 
-    private static ImagesCore images = GWT.create( ImagesCore.class );
-    
     interface PackageEditorActionToolbarBinder
             extends
             UiBinder<Widget, PackageEditorActionToolbar> {

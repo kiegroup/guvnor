@@ -27,14 +27,12 @@ import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -47,8 +45,6 @@ public class FactModelsWidget extends Composite
     implements
     SaveEventListener,
     EditorWidget {
-
-    private static final ConstantsCore constants           = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private final Asset               asset;
     private final ClientFactory       clientFactory;

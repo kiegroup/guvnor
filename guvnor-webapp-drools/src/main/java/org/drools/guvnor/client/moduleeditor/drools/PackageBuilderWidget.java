@@ -27,9 +27,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -46,8 +44,6 @@ import java.util.List;
  * or wraps a rule editor widget with buttons for this purpose.
  */
 public class PackageBuilderWidget extends Composite {
-
-    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     private Module conf;
 

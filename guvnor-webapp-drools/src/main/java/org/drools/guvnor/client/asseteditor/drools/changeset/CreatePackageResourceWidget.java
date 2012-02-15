@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -40,7 +39,6 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
  */
 public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCreatorWidget {
 
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private boolean             globalArea;
 
     //Services

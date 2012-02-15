@@ -21,7 +21,6 @@ import java.util.List;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;

@@ -19,13 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
-
-import com.google.gwt.core.client.GWT;
 
 public class ModelNameHelper {
-
-    private static ConstantsCore constants         = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
                                                              private static final long serialVersionUID = 510l;

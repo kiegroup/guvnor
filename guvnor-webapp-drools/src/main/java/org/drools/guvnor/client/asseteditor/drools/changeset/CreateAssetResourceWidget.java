@@ -31,7 +31,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -44,7 +43,7 @@ import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
  * to a change-set
  */
 public class CreateAssetResourceWidget extends AbstractXMLResourceDefinitionCreatorWidget {
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+
     private boolean                 globalArea;
 
     //Services

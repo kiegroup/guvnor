@@ -25,7 +25,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
 public class CustomFormPopUp extends FormStylePopup {

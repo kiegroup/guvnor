@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +24,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.gwt.user.client.Command;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 public class SuggestionCompletionCacheTest {
 

@@ -41,7 +41,6 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -78,8 +77,6 @@ import org.drools.guvnor.client.asseteditor.GuvnorEditor;
  */
 public class AssetEditorActionToolbar extends Composite {
 
-    private static ImagesCore images = GWT.create( ImagesCore.class );
-    
     interface ActionToolbarBinder
             extends
             UiBinder<Widget, AssetEditorActionToolbar> {

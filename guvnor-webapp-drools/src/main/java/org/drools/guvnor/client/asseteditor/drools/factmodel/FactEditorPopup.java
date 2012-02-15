@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -39,8 +38,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class FactEditorPopup {
-
-    private static ConstantsCore constants                 = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     //Convenience comparator
     public static final Comparator<FactMetaModel> byNameAscendingComparator = new Comparator<FactMetaModel>() {
