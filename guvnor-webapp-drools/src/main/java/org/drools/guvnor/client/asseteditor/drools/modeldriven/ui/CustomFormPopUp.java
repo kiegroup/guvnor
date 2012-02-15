@@ -25,6 +25,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
 public class CustomFormPopUp extends FormStylePopup {
@@ -50,11 +51,10 @@ public class CustomFormPopUp extends FormStylePopup {
         vp.setHeight("100%");
         vp.add(this.externalFrame);
 
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        okButton = new Button(constants.OK());
+        okButton = new Button(Constants.INSTANCE.OK());
 
         //cancel button with default handler
-        cancelButton = new Button(constants.Cancel(),
+        cancelButton = new Button(Constants.INSTANCE.Cancel(),
                 new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         hide();

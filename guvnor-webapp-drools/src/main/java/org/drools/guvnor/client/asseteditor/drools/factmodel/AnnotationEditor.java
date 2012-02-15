@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class AnnotationEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     interface AnnotationEditorBinder
         extends
@@ -77,8 +78,8 @@ public class AnnotationEditor extends Composite {
 
         setControlValues( annotation );
 
-        editAnnotationIcon.setTitle( constants.Rename() );
-        deleteAnnotationIcon.setTitle( constants.Delete() );
+        editAnnotationIcon.setTitle( Constants.INSTANCE.Rename() );
+        deleteAnnotationIcon.setTitle( Constants.INSTANCE.Delete() );
     }
 
     //This is a simplified annotation editor and thus we only

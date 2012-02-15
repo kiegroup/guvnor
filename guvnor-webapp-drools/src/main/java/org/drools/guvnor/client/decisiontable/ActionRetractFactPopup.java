@@ -28,7 +28,6 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.Table
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,8 +42,6 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ActionRetractFactPopup extends FormStylePopup {
 
-    private static Constants       constants = GWT.create( Constants.class );
-
     private ActionRetractFactCol52 editingCol;
     private GuidedDecisionTable52  model;
     private BRLRuleModel           rm;
@@ -58,7 +55,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
 
-        setTitle( constants.ColumnConfigurationRetractAFact() );
+        setTitle( Constants.INSTANCE.ColumnConfigurationRetractAFact() );
         setModal( false );
 
         //Show available pattern bindings, if Limited Entry
@@ -78,7 +75,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
                 } );
             }
-            addAttribute( constants.FactToRetractColon(),
+            addAttribute( Constants.INSTANCE.FactToRetractColon(),
                           patterns );
         }
 
@@ -93,31 +90,31 @@ public class ActionRetractFactPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -156,7 +153,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts(String binding) {
         ListBox listBox = new ListBox();
-        listBox.addItem( constants.Choose() );
+        listBox.addItem( Constants.INSTANCE.Choose() );
         List<String> factBindings = rm.getLHSBoundFacts();
 
         for ( int index = 0; index < factBindings.size(); index++ ) {
@@ -172,7 +169,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         listBox.setEnabled( listBox.getItemCount() > 1 );
         if ( listBox.getItemCount() == 1 ) {
             listBox.clear();
-            listBox.addItem( constants.NoPatternBindingsAvailable() );
+            listBox.addItem( Constants.INSTANCE.NoPatternBindingsAvailable() );
         }
         return listBox;
     }

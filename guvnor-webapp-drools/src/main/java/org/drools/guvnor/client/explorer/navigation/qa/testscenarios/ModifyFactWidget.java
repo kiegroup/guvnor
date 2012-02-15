@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
@@ -33,6 +34,6 @@ public class ModifyFactWidget extends FactWidget {
                scenario,
                parent,
                executionTrace,
-               constants.modifyForScenario( factType ) );
+               Constants.INSTANCE.modifyForScenario( factType ) );
     }
 }

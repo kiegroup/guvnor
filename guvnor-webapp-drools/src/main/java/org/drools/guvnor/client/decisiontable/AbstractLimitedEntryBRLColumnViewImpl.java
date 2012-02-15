@@ -23,6 +23,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerWi
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -51,7 +52,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
     implements
     RuleModelEditor {
 
-    protected static final Constants constants  = GWT.create( Constants.class );
+    protected static final ConstantsCore constants  = GWT.create( ConstantsCore.class );
 
     protected int                    MIN_WIDTH  = 500;
     protected int                    MIN_HEIGHT = 200;
@@ -194,32 +195,32 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
 
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-            Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+            Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
         }
         if ( isNew ) {
             if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
             if ( isDefined() ) {
                 doInsertColumn();
             } else {
-                Window.alert( constants.DecisionTableBRLFragmentNothingDefined() );
+                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
                 return;
             }
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                    Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
                 }
             }
             if ( isDefined() ) {
                 doUpdateColumn();
             } else {
-                Window.alert( constants.DecisionTableBRLFragmentNothingDefined() );
+                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
                 return;
             }
 

@@ -34,6 +34,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -48,7 +49,7 @@ public class RuleTemplateEditor extends DirtyableComposite
 
     private TemplateModel              model;
     private RuleModeller               ruleModeller;
-    private Constants                  constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private SuggestionCompletionEngine sce;
 
     private TemplateDataTableWidget    table;
@@ -79,7 +80,7 @@ public class RuleTemplateEditor extends DirtyableComposite
         final VerticalPanel tPanel = new VerticalPanel();
         tPanel.setWidth( "100%" );
 
-        tPanel.add( new Button( constants.LoadTemplateData(),
+        tPanel.add( new Button( Constants.INSTANCE.LoadTemplateData(),
                                 new ClickHandler() {
 
                                     public void onClick(ClickEvent event) {
@@ -87,7 +88,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         int width = (int) (Window.getClientWidth() * 0.7);
 
                                         final FormStylePopup popUp = new FormStylePopup( null,
-                                                                                         constants.TemplateData(),
+                                                                                         Constants.INSTANCE.TemplateData(),
                                                                                          width );
 
                                         //Initialise table to edit data
@@ -100,14 +101,14 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         popUp.addAttribute( "",
                                                             table );
 
-                                        Button btnSaveAndClose = new Button( constants.SaveAndClose(),
+                                        Button btnSaveAndClose = new Button( Constants.INSTANCE.SaveAndClose(),
                                                                              new ClickHandler() {
                                                                                  public void onClick(ClickEvent event) {
                                                                                      popUp.hide();
                                                                                  }
                                                                              } );
 
-                                        Button btnAddRow = new Button( constants.AddRow(),
+                                        Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),
                                                                        new ClickHandler() {
 
                                                                            public void onClick(ClickEvent event) {

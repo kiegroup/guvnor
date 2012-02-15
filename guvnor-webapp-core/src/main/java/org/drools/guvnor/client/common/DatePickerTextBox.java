@@ -24,14 +24,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 import java.util.Date;
 
 public class DatePickerTextBox extends DatePicker {
-    private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public DatePickerTextBox(String selectedDate) {
         this(selectedDate,

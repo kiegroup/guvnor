@@ -19,7 +19,7 @@ package org.drools.guvnor.client.widgets.categorynav;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -41,7 +41,7 @@ public class CategoryEditor extends FormStylePopup {
     private TextBox   name        = new TextBox();
     private TextArea  description = new TextArea();
     private Command   refresh;
-    private Constants constants   = ((Constants) GWT.create( Constants.class ));
+    private ConstantsCore constants   = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     public CategoryEditor(String catPath,
                           Command refresh) {
@@ -70,9 +70,9 @@ public class CategoryEditor extends FormStylePopup {
 
     private static String getTitle(String catPath) {
         if ( catPath == null ) {
-            return ((Constants) GWT.create( Constants.class )).CreateANewTopLevelCategory();
+            return ((ConstantsCore) GWT.create( ConstantsCore.class )).CreateANewTopLevelCategory();
         } else {
-            return ((Constants) GWT.create( Constants.class )).CreateNewCategoryUnder0(catPath);
+            return ((ConstantsCore) GWT.create( ConstantsCore.class )).CreateNewCategoryUnder0(catPath);
         }
     }
 

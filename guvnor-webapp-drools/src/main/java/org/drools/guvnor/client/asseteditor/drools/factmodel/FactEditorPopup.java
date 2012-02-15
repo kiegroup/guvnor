@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -39,7 +40,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class FactEditorPopup {
 
-    private static Constants                      constants                 = ((Constants) GWT.create( Constants.class ));
+    private static ConstantsCore constants                 = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     //Convenience comparator
     public static final Comparator<FactMetaModel> byNameAscendingComparator = new Comparator<FactMetaModel>() {
@@ -87,14 +88,14 @@ public class FactEditorPopup {
     public void show() {
 
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( constants.Name() );
+        pop.setTitle( Constants.INSTANCE.Name() );
         HorizontalPanel changeName = new HorizontalPanel();
         final TextBox name = new TextBox();
         name.setText( factModel.getName() );
         changeName.add( name );
 
         int selectedIndex = 0;
-        lstSuperTypes.addItem( constants.DoesNotExtend() );
+        lstSuperTypes.addItem( Constants.INSTANCE.DoesNotExtend() );
 
         //Sort Super Types by name
         Collections.sort( superTypeFactModels,
@@ -124,7 +125,7 @@ public class FactEditorPopup {
                     String newSuperType = lstSuperTypes.getItemText( lstSuperTypes.getSelectedIndex() );
                     factModel.setSuperType( newSuperType );
                     if ( createsCircularDependency( newSuperType ) ) {
-                        Window.alert( constants.CreatesCircularDependency( name.getText() ) );
+                        Window.alert( Constants.INSTANCE.CreatesCircularDependency( name.getText() ) );
                         factModel.setSuperType( oldSuperType );
                         lstSuperTypes.setSelectedIndex( getSelectedIndex( oldSuperType ) );
                         return;
@@ -137,7 +138,7 @@ public class FactEditorPopup {
 
         } );
 
-        Button nameButton = new Button( constants.OK() );
+        Button nameButton = new Button( Constants.INSTANCE.OK() );
 
         nameButton.addKeyPressHandler( new NoSpaceKeyPressHandler() );
 
@@ -146,11 +147,11 @@ public class FactEditorPopup {
             public void onClick(ClickEvent event) {
                 String factName = name.getText();
                 if ( !isNameValid( factName ) ) {
-                    Window.alert( constants.InvalidModelName( factName ) );
+                    Window.alert( Constants.INSTANCE.InvalidModelName( factName ) );
                     return;
                 }
                 if ( doesTheNameExist( factName ) ) {
-                    Window.alert( constants.NameTakenForModel( factName ) );
+                    Window.alert( Constants.INSTANCE.NameTakenForModel( factName ) );
                     return;
                 }
                 if ( factModelAlreadyHasAName( factName ) ) {
@@ -187,7 +188,7 @@ public class FactEditorPopup {
             }
 
             private boolean isTheUserSureHeWantsToChangeTheName() {
-                return Window.confirm( constants.ModelNameChangeWarning() );
+                return Window.confirm( Constants.INSTANCE.ModelNameChangeWarning() );
             }
 
             private boolean doesTheNameExist(String name) {
@@ -199,9 +200,9 @@ public class FactEditorPopup {
             }
         } );
 
-        pop.addAttribute( constants.Name(),
+        pop.addAttribute( Constants.INSTANCE.Name(),
                           changeName );
-        pop.addAttribute( constants.TypeExtends(),
+        pop.addAttribute( Constants.INSTANCE.TypeExtends(),
                           lstSuperTypes );
         pop.addRow( nameButton );
 

@@ -3,6 +3,7 @@ package org.drools.guvnor.client.asseteditor.drools;
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -14,14 +15,12 @@ import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
  * Default implementation for Oryx that includes "Save All Changes" button
  */
 public class DefaultOryxMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
-    private Constants constants = GWT.create(Constants.class);
-    private EventBus eventBus;
+
 
     public MenuBar createMenuBar(final MultiViewEditor editor,final EventBus eventBus) {
-        this.eventBus = eventBus;
         MenuBar toolbar = new MenuBar();
 
-        toolbar.addItem(constants.SaveAllChanges(),
+        toolbar.addItem(Constants.INSTANCE.SaveAllChanges(),
                 new Command() {
 
                     public void execute() {

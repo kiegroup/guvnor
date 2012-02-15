@@ -17,8 +17,8 @@
 package org.drools.guvnor.client.widgets.categorynav;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -51,8 +51,8 @@ public class CategoryExplorerWidget extends Composite
     SelectionHandler<TreeItem>,
     OpenHandler<TreeItem> {
 
-    private static Images         images          = (Images) GWT.create( Images.class );
-    private static Constants      constants       = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images          = (ImagesCore) GWT.create( ImagesCore.class );
+    private static ConstantsCore constants       = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private Tree                  navTreeWidget   = new Tree();
     private VerticalPanel         panel           = new VerticalPanel();

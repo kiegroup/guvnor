@@ -34,7 +34,6 @@ import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.messages.Constants;
@@ -42,6 +41,7 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -78,8 +78,7 @@ import org.drools.guvnor.client.asseteditor.GuvnorEditor;
  */
 public class AssetEditorActionToolbar extends Composite {
 
-    private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create( Images.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
     
     interface ActionToolbarBinder
             extends
@@ -164,7 +163,7 @@ public class AssetEditorActionToolbar extends Composite {
      * Sets the visible status display.
      */
     public void setState(String newStatus) {
-        status.setText(constants.statusIs(newStatus));
+        status.setText(Constants.INSTANCE.statusIs(newStatus));
     }
 
     private void applyToolBarConfiguration() {
@@ -228,7 +227,7 @@ public class AssetEditorActionToolbar extends Composite {
         archive.setCommand(new Command() {
 
             public void execute() {
-                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem())) {
+                if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToArchiveThisItem())) {
                     archiveCommand.execute();
                 }
             }
@@ -247,7 +246,7 @@ public class AssetEditorActionToolbar extends Composite {
         delete.setCommand(new Command() {
 
             public void execute() {
-                if (Window.confirm(constants.DeleteAreYouSure())) {
+                if (Window.confirm(Constants.INSTANCE.DeleteAreYouSure())) {
                     deleteCommand.execute();
                 }
             }
@@ -308,7 +307,7 @@ public class AssetEditorActionToolbar extends Composite {
             setViewSourceCommand( new Command() {
                 public void execute() {
                     onSave();
-                    LoadingPopup.showMessage( constants.CalculatingSource() );
+                    LoadingPopup.showMessage( Constants.INSTANCE.CalculatingSource() );
                     RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
                             new GenericCallback<String>() {
 
@@ -329,7 +328,7 @@ public class AssetEditorActionToolbar extends Composite {
             setValidateCommand( new Command() {
                 public void execute() {
                     onSave();
-                    LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
+                    LoadingPopup.showMessage( Constants.INSTANCE.ValidatingItemPleaseWait() );
                     RepositoryServiceFactory.getAssetService().validateAsset( asset,
                             new GenericCallback<BuilderResult>() {
 
@@ -384,7 +383,7 @@ public class AssetEditorActionToolbar extends Composite {
                 public void execute() {
                     if ( ((RuleModeller) editor).hasVerifierErrors()
                             || ((RuleModeller) editor).hasVerifierWarnings() ) {
-                        if ( !Window.confirm( constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue() ) ) {
+                        if ( !Window.confirm( Constants.INSTANCE.theRuleHasErrorsOrWarningsDotDoYouWantToContinue() ) ) {
                             return;
                         }
                     }
@@ -401,7 +400,7 @@ public class AssetEditorActionToolbar extends Composite {
      * close this whole thing after saving it.
      */
     protected void doCheckinConfirm(final boolean closeAfter) {
-        final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
+        final CheckinPopup pop = new CheckinPopup( Constants.INSTANCE.CheckInChanges() );
         pop.setCommand( new Command() {
 
             public void execute() {
@@ -426,7 +425,7 @@ public class AssetEditorActionToolbar extends Composite {
 
     private void doVerify() {
         onSave();
-        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
+        LoadingPopup.showMessage( Constants.INSTANCE.VerifyingItemPleaseWait() );
         Set<String> activeWorkingSets = null;
         activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().getModuleName() );
 
@@ -438,8 +437,8 @@ public class AssetEditorActionToolbar extends Composite {
 
                     public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
-                        final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
-                                constants.VerificationReport() );
+                        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+                                Constants.INSTANCE.VerificationReport() );
                         ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                 false ) );
                         scrollPanel.setWidth( "800px" );
@@ -510,13 +509,13 @@ public class AssetEditorActionToolbar extends Composite {
         this.asset.setCheckinComment( comment );
         final boolean[] saved = {false};
 
-        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+        if ( !saved[0] ) LoadingPopup.showMessage( Constants.INSTANCE.SavingPleaseWait() );
         RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
                 new GenericCallback<String>() {
 
                     public void onSuccess(String uuid) {
                         if ( uuid == null ) {
-                            ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
+                            ErrorPopup.showMessage( Constants.INSTANCE.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
                             return;
                         }
 
@@ -533,7 +532,7 @@ public class AssetEditorActionToolbar extends Composite {
                         LoadingPopup.close();
                         saved[0] = true;
 
-                        //showInfoMessage( constants.SavedOK() );
+                        //showInfoMessage( Constants.INSTANCE.SavedOK() );
                         
                         //fire after check-in event
                         if (editor instanceof GuvnorEditor){
@@ -560,7 +559,7 @@ public class AssetEditorActionToolbar extends Composite {
      */
     public void flushSuggestionCompletionCache(final String moduleName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
-            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+            LoadingPopup.showMessage( Constants.INSTANCE.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().loadPackage( moduleName,
                     new Command() {
                         public void execute() {
@@ -579,16 +578,16 @@ public class AssetEditorActionToolbar extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup( images.warningLarge(),
-                constants.WARNINGUnCommittedChanges() );
-        Button dis = new Button( constants.Discard() );
-        Button can = new Button( constants.Cancel() );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.warningLarge(),
+                Constants.INSTANCE.WARNINGUnCommittedChanges() );
+        Button dis = new Button( Constants.INSTANCE.Discard() );
+        Button can = new Button( Constants.INSTANCE.Cancel() );
         HorizontalPanel hor = new HorizontalPanel();
 
         hor.add( dis );
         hor.add( can );
 
-        pop.addRow( new HTML( constants.AreYouSureYouWantToDiscardChanges() ) );
+        pop.addRow( new HTML( Constants.INSTANCE.AreYouSureYouWantToDiscardChanges() ) );
         pop.addRow( hor );
 
         dis.addClickHandler( new ClickHandler() {
@@ -608,22 +607,22 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doCopy() {
-        final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
-                constants.CopyThisItem() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+                Constants.INSTANCE.CopyThisItem() );
         final TextBox newName = new TextBox();
-        form.addAttribute( constants.NewName(),
+        form.addAttribute( Constants.INSTANCE.NewName(),
                 newName );
         final RulePackageSelector sel = new RulePackageSelector();
-        form.addAttribute( constants.NewPackage(),
+        form.addAttribute( Constants.INSTANCE.NewPackage(),
                 sel );
 
-        Button ok = new Button( constants.CreateCopy() );
+        Button ok = new Button( Constants.INSTANCE.CreateCopy() );
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 if ( newName.getText() == null
                         || newName.getText().equals( "" ) ) {
-                    Window.alert( constants.AssetNameMustNotBeEmpty() );
+                    Window.alert( Constants.INSTANCE.AssetNameMustNotBeEmpty() );
                     return;
                 }
                 String name = newName.getText().trim();
@@ -643,7 +642,7 @@ public class AssetEditorActionToolbar extends Composite {
                             @Override
                             public void onFailure(Throwable t) {
                                 if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
-                                    Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
+                                    Window.alert( Constants.INSTANCE.ThatNameIsInUsePleaseTryAnother() );
                                 } else {
                                     super.onFailure( t );
                                 }
@@ -660,13 +659,13 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
-                constants.RenameThisItem() );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.packageLarge(),
+                Constants.INSTANCE.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( asset.getName() );
-        pop.addAttribute( constants.NewNameAsset(),
+        pop.addAttribute( Constants.INSTANCE.NewNameAsset(),
                 box );
-        Button ok = new Button( constants.RenameItem() );
+        Button ok = new Button( Constants.INSTANCE.RenameItem() );
         pop.addAttribute( "",
                 ok );
         ok.addClickHandler( new ClickHandler() {
@@ -675,7 +674,7 @@ public class AssetEditorActionToolbar extends Composite {
                         box.getText(),
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
-                                Window.alert( constants.ItemHasBeenRenamed() );
+                                Window.alert( Constants.INSTANCE.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                                 pop.hide();
@@ -684,7 +683,7 @@ public class AssetEditorActionToolbar extends Composite {
                             @Override
                             public void onFailure(Throwable t) {
                                 if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
-                                    Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
+                                    Window.alert( Constants.INSTANCE.ThatNameIsInUsePleaseTryAnother() );
                                 } else {
                                     super.onFailure( t );
                                 }
@@ -698,14 +697,14 @@ public class AssetEditorActionToolbar extends Composite {
 
     private void doPromptToGlobal() {
         if ( asset.getMetaData().getModuleName().equals( "globalArea" ) ) {
-            Window.alert( constants.ItemAlreadyInGlobalArea() );
+            Window.alert( Constants.INSTANCE.ItemAlreadyInGlobalArea() );
             return;
         }
-        if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
+        if ( Window.confirm( Constants.INSTANCE.PromoteAreYouSure() ) ) {
             RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
-                            Window.alert( constants.Promoted() );
+                            Window.alert( Constants.INSTANCE.Promoted() );
 
                             flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
                             flushSuggestionCompletionCache("globalArea");
@@ -724,7 +723,7 @@ public class AssetEditorActionToolbar extends Composite {
     private void completedCopying(String name,
                                   String pkg,
                                   String newAssetUUID) {
-        Window.alert( constants.CreatedANewItemSuccess( name,
+        Window.alert( Constants.INSTANCE.CreatedANewItemSuccess( name,
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }    

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
@@ -55,7 +56,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 
 public class ExpressionBuilder extends RuleModellerWidget
     implements
@@ -69,7 +69,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     private static final String          GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
     private static final String          METHOD_VALUE_PREFIX          = "mt";
     private final SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
-    private Constants                    constants                    = ((Constants) GWT.create( Constants.class ));
+    private ConstantsCore constants                    = ((ConstantsCore) GWT.create( ConstantsCore.class ));
     private HorizontalPanel              panel                        = new HorizontalPanel();
     private ExpressionFormLine           expression;
     private boolean                      readOnly;
@@ -137,7 +137,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         ListBox startPoint = new ListBox();
         panel.add( startPoint );
 
-        startPoint.addItem( constants.ChooseDotDotDot(),
+        startPoint.addItem( Constants.INSTANCE.ChooseDotDotDot(),
                             "" );
 
         // TODO {baunax} uncomment when global collections is implemented.
@@ -230,9 +230,9 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         ListBox lb = new ListBox();
         lb.setVisibleItemCount( 1 );
-        lb.addItem( constants.ChooseDotDotDot(),
+        lb.addItem( Constants.INSTANCE.ChooseDotDotDot(),
                     "" );
-        lb.addItem( "<==" + constants.DeleteItem(),
+        lb.addItem( "<==" + Constants.INSTANCE.DeleteItem(),
                     DELETE_VALUE );
         for ( Map.Entry<String, String> entry : getCompletionsForCurrentType( expression.getParts().size() > 1 ).entrySet() ) {
             lb.addItem( entry.getKey(),
@@ -469,8 +469,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.setWidth( 500 + "px" );
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
-        Button ok = new Button( constants.Set() );
-        vn.add( new Label( constants.BindTheExpressionToAVariable() ) );
+        Button ok = new Button( Constants.INSTANCE.Set() );
+        vn.add( new Label( Constants.INSTANCE.BindTheExpressionToAVariable() ) );
         vn.add( varName );
         vn.add( ok );
 
@@ -478,7 +478,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) ) {
-                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 expression.setBinding( var );

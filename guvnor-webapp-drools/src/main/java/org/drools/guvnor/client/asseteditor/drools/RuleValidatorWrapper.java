@@ -42,9 +42,6 @@ public class RuleValidatorWrapper extends DirtyableComposite
         SaveEventListener,
         EditorWidget {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
-
     private Widget editor;
 
     public RuleValidatorWrapper(Asset asset,
@@ -70,15 +67,15 @@ public class RuleValidatorWrapper extends DirtyableComposite
         if (result == null || result.getLines() == null || result.getLines().size() == 0) {
             FormStylePopup pop = new FormStylePopup();
             pop.setWidth(200 + "px");
-            pop.setTitle(constants.ValidationResultsDotDot());
+            pop.setTitle(Constants.INSTANCE.ValidationResultsDotDot());
             HorizontalPanel h = new HorizontalPanel();
-            h.add(new SmallLabel(AbstractImagePrototype.create(images.greenTick()).getHTML() + "<i>"
-                    + constants.ItemValidatedSuccessfully() + "</i>"));
+            h.add(new SmallLabel(AbstractImagePrototype.create(Images.INSTANCE.greenTick()).getHTML() + "<i>"
+                    + Constants.INSTANCE.ItemValidatedSuccessfully() + "</i>"));
             pop.addRow(h);
             pop.show();
         } else {
-            FormStylePopup pop = new FormStylePopup(images.packageBuilder(),
-                    constants.ValidationResults());
+            FormStylePopup pop = new FormStylePopup(Images.INSTANCE.packageBuilder(),
+                    Constants.INSTANCE.ValidationResults());
             FlexTable errTable = new FlexTable();
             errTable.setStyleName("build-Results"); //NON-NLS
             for (int i = 0; i < result.getLines().size(); i++) {
@@ -86,11 +83,11 @@ public class RuleValidatorWrapper extends DirtyableComposite
                 final BuilderResultLine res = result.getLines().get(i);
                 errTable.setWidget(row,
                         0,
-                        new Image(images.error()));
+                        new Image(Images.INSTANCE.error()));
                 if (res.getAssetFormat().equals("package")) {
                     errTable.setText(row,
                             1,
-                            constants.packageConfigurationProblem() + res.getMessage());
+                            Constants.INSTANCE.packageConfigurationProblem() + res.getMessage());
                 } else {
                     errTable.setText(row,
                             1,

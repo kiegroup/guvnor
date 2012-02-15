@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
@@ -323,7 +324,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof DescriptionCol52 ) {
-                tce.appendChild( makeLabel( constants.Description(),
+                tce.appendChild( makeLabel( Constants.INSTANCE.Description(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
@@ -361,7 +362,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof AnalysisCol52 ) {
-                tce.appendChild( makeLabel( constants.Analysis(),
+                tce.appendChild( makeLabel( Constants.INSTANCE.Analysis(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
@@ -520,7 +521,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             String boundName = ccPattern.getBoundName();
                             if ( factType != null && factType.length() > 0 ) {
                                 if ( ccPattern.isNegated() ) {
-                                    label.append( constants.negatedPattern() ).append( " " ).append( factType );
+                                    label.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
                                 } else {
                                     label.append( factType ).append( " [" ).append( boundName ).append( "]" );
                                 }
@@ -660,9 +661,9 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                 label.append( "]" );
                             }
                         } else if ( ac instanceof ActionRetractFactCol52 ) {
-                            label.append( "[" + constants.Retract() + "]" );
+                            label.append( "[" + Constants.INSTANCE.Retract() + "]" );
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
-                            label.append( "[" + constants.WorkItemAction() + "]" );
+                            label.append( "[" + Constants.INSTANCE.WorkItemAction() + "]" );
                         } else if ( ac instanceof BRLActionVariableColumn ) {
                             BRLActionVariableColumn brl = (BRLActionVariableColumn) ac;
                             String field = brl.getFactField();

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class WorkitemDefinitionElementsBrowser extends Composite {
-    private Constants constants = GWT.create(Constants.class);
+
     private Map<String, String> workitemDefinitionElements;
     private WorkitemDefinitionElementSelectedListener elementSelectedItem;
     private final VerticalPanel mainPanel;
@@ -96,7 +97,7 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
         }
         
         final ListBox importsList = new ListBox();
-        importsList.addItem( constants.ChooseImportClass() );
+        importsList.addItem( Constants.INSTANCE.ChooseImportClass() );
         importsList.addItem( "BooleanDataType", "import org.drools.process.core.datatype.impl.type.BooleanDataType;" );
         importsList.addItem( "EnumDataType", "import org.drools.process.core.datatype.impl.type.EnumDataType;" );
         importsList.addItem( "FloatDataType", "import org.drools.process.core.datatype.impl.type.FloatDataType;" );
@@ -121,7 +122,7 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
         mainPanel.add(importsList);
         
         final ListBox imagesList = new ListBox();
-        imagesList.addItem( constants.ChooseIcon() );
+        imagesList.addItem( Constants.INSTANCE.ChooseIcon() );
         imagesList.setVisibleItemCount( 1 );
         imagesList.setSelectedIndex( 0 );
         

@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AcceptItem;
@@ -10,8 +9,6 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 public class TestScenarioListActivity extends Activity {
-
-    private Constants constants = GWT.create( Constants.class );
 
     private final ClientFactory clientFactory;
     private final String moduleUuid;
@@ -35,7 +32,7 @@ public class TestScenarioListActivity extends Activity {
                     public void onSuccess(Module packageConfigData) {
 
                         tabbedPanel.add(
-                                constants.ScenariosForPackage( packageConfigData.getName() ),
+                                Constants.INSTANCE.ScenariosForPackage( packageConfigData.getName() ),
                                 new ScenarioPackageScreen(
                                         packageConfigData.getUuid(),
                                         packageConfigData.getName(),

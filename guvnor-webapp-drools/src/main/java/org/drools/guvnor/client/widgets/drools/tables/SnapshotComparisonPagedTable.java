@@ -21,10 +21,10 @@ import java.util.Set;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
-import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.client.widgets.tables.ColumnPicker;
 import org.drools.guvnor.client.widgets.tables.SelectionColumn;
@@ -107,9 +107,9 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
                                                                                      response.isTotalRowSizeExact() );
                                                                      updateRowData( response.getStartRowIndex(),
                                                                                     response.getPageRowList() );
-                                                                     lhsSnapshotHeader.setValue( constants.Older0(
+                                                                     lhsSnapshotHeader.setValue( Constants.INSTANCE.Older0(
                                                                                                                 response.getLeftSnapshotName() ) );
-                                                                     rhsSnapshotHeader.setValue( constants.Newer0(
+                                                                     rhsSnapshotHeader.setValue( Constants.INSTANCE.Newer0(
                                                                                                                 response.getRightSnapshotName() ) );
                                                                  }
                                                              } );
@@ -142,7 +142,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         columnPicker.addColumn( uuidNumberColumn,
                                 new SortableHeader<SnapshotComparisonPageRow, String>(
                                                                                        sortableHeaderGroup,
-                                                                                       constants.uuid(),
+                                                                                       Constants.INSTANCE.uuid(),
                                                                                        uuidNumberColumn ),
                                 false );
 
@@ -153,7 +153,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         // Add "Open" button column
         Column<SnapshotComparisonPageRow, String> openColumn = new Column<SnapshotComparisonPageRow, String>( new ButtonCell() ) {
             public String getValue(SnapshotComparisonPageRow row) {
-                return constants.Open();
+                return Constants.INSTANCE.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<SnapshotComparisonPageRow, String>() {
@@ -164,7 +164,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
             }
         } );
         columnPicker.addColumn( openColumn,
-                                new TextHeader( constants.Open() ),
+                                new TextHeader( Constants.INSTANCE.Open() ),
                                 true );
 
         cellTable.setWidth( "100%" );
@@ -197,7 +197,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         columnPicker.addColumn( comparisonTypeColumn,
                                 new SortableHeader<SnapshotComparisonPageRow, String>(
                                                                                        sortableHeaderGroup,
-                                                                                       constants.Type(),
+                                                                                       Constants.INSTANCE.Type(),
                                                                                        comparisonTypeColumn ),
                                 true );
 

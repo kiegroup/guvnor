@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
@@ -41,7 +42,7 @@ public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
     }
 
     private Widget makeDescriptionWidget() {
-        return new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" );
+        return new HTML( "<small><i>" + ConstantsCore.INSTANCE.RuleFlowUploadTip() + "</i></small>" );
     }
 
     public ImageResource getIcon() {

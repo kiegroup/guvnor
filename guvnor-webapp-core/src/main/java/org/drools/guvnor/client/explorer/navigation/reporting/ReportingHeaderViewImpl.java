@@ -18,11 +18,11 @@ package org.drools.guvnor.client.explorer.navigation.reporting;
 
 import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 public class ReportingHeaderViewImpl extends StackItemHeaderViewImpl implements ReportingHeaderView {
 
-    private static Constants constants = GWT.create(Constants.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     public ReportingHeaderViewImpl() {
         setText(constants.Reporting());

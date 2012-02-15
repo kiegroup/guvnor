@@ -24,16 +24,12 @@ import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
 import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public abstract class FactWidget extends HorizontalPanel {
-
-    protected static Constants     constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final ScenarioWidget parent;
     protected final Scenario       scenario;
@@ -59,7 +55,7 @@ public abstract class FactWidget extends HorizontalPanel {
     }
 
     protected void onDelete() {
-        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
+        if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
             for ( Fixture f : definitionList )
                 scenario.removeFixture( f );
             parent.renderEditor();
@@ -68,8 +64,8 @@ public abstract class FactWidget extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final FixtureList definitionList) {
-            super( images.deleteItemSmall(),
-                   constants.RemoveThisBlockOfData() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.RemoveThisBlockOfData() );
 
             addClickHandler( new ClickHandler() {
 

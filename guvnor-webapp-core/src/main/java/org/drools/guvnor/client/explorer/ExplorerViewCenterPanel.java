@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.navigation.CloseAllPlacesEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabbedPanel;
@@ -94,7 +94,7 @@ public class ExplorerViewCenterPanel extends Composite
     }
 
     private Button createCloseAllButton() {
-        Constants constants = GWT.create( Constants.class );
+        ConstantsCore constants = GWT.create( ConstantsCore.class );
         Button button = new Button( constants.CloseAllItems() );
         button.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {

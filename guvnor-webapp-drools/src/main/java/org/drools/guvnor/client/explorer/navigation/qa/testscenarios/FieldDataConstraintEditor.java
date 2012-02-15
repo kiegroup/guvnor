@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -61,9 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 
 public class FieldDataConstraintEditor extends DirtyableComposite {
-
-    private Constants                  constants = GWT.create( Constants.class );
-    private static Images              images    = GWT.create( Images.class );
 
     private String                     factType;
     private FieldData                  field;
@@ -115,7 +113,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
-            String m = ((Constants) GWT.create( Constants.class )).ValueFor0( field.getName() );
+            String m = ((ConstantsCore) GWT.create( ConstantsCore.class )).ValueFor0( field.getName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
@@ -152,7 +150,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
-                    Image clickme = new Image( images.edit() );
+                    Image clickme = new Image( Images.INSTANCE.edit() );
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
                             showTypeChoice( w,
@@ -179,7 +177,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                            String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
-        String m = ((Constants) GWT.create( Constants.class )).ValueFor0( fieldName );
+        String m = ((ConstantsCore) GWT.create( ConstantsCore.class )).ValueFor0( fieldName );
         tb.setTitle( m );
         tb.addChangeHandler( new ChangeHandler() {
 
@@ -198,12 +196,12 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         final ListBox box = new ListBox();
 
         if ( this.field.getValue() == null ) {
-            box.addItem( constants.Choose() );
+            box.addItem( Constants.INSTANCE.Choose() );
         }
         int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
-            String var = (String) vars.get( i );
-            FactData f = (FactData) this.scenario.getFactTypes().get( var );
+            String var =  vars.get( i );
+            FactData f = this.scenario.getFactTypes().get( var );
             String fieldType = null;
             if ( field.collectionType == null ) {
                 fieldType = sce.getFieldType( this.factType,
@@ -259,8 +257,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                                                                     executionTrace );
             hpanel.add( fieldElement );
             final int index = i;
-            Image del = new ImageButton( images.deleteItemSmall(),
-                                         constants.AElementToDelInCollectionList(),
+            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+                                         Constants.INSTANCE.AElementToDelInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  field.collectionFieldList.remove( index );
@@ -271,8 +269,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             hpanel.add( del );
 
-            Image addPattern = new ImageButton( images.newItemBelow() );
-            addPattern.setTitle( constants.AddElementBelow() );
+            Image addPattern = new ImageButton( Images.INSTANCE.newItemBelow() );
+            addPattern.setTitle( Constants.INSTANCE.AddElementBelow() );
 
             addPattern.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -286,8 +284,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 }
             } );
             hpanel.add( addPattern );
-            Image moveDown = new ImageButton( images.shuffleDown() );
-            moveDown.setTitle( constants.MoveDownListMove() );
+            Image moveDown = new ImageButton( Images.INSTANCE.shuffleDown() );
+            moveDown.setTitle( Constants.INSTANCE.MoveDownListMove() );
             moveDown.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( index < field.collectionFieldList.size() - 1 ) {
@@ -304,8 +302,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             } );
             hpanel.add( moveDown );
 
-            Image moveUp = new ImageButton( images.shuffleUp() );
-            moveUp.setTitle( constants.MoveUpList() );
+            Image moveUp = new ImageButton( Images.INSTANCE.shuffleUp() );
+            moveUp.setTitle( Constants.INSTANCE.MoveUpList() );
             moveUp.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( index > 0 ) {
@@ -326,8 +324,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
 
         if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( images.newItem(),
-                                         constants.AElementToAddInCollectionList(),
+            Image add = new ImageButton( Images.INSTANCE.newItem(),
+                                         Constants.INSTANCE.AElementToAddInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  FieldData newFieldData = new FieldData();
@@ -360,10 +358,10 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(ClickEvent w,
                                 final FieldData con) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
 
-        Button lit = new Button( constants.LiteralValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 con.setNature( FieldData.TYPE_LITERAL );
@@ -371,31 +369,31 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             }
 
         } );
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.LiteralValue(),
-                                                   constants.LiteralValTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.LiteralValue(),
+                                                   Constants.INSTANCE.LiteralValTip() ) ) );
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
 
         // If we are here, then there must be a bound variable compatible with
         // me
         if ( isThereABoundVariableToSet() == true ) {
-            Button variable = new Button( constants.BoundVariable() );
+            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
             variable.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     con.setNature( FieldData.TYPE_VARIABLE );
                     doTypeChosen( form );
                 }
             } );
-            form.addAttribute( constants.AVariable(),
+            form.addAttribute( Constants.INSTANCE.AVariable(),
                                widgets( variable,
-                                        new InfoPopup( constants.ABoundVariable(),
-                                                       constants.BoundVariableTip() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.ABoundVariable(),
+                                                       Constants.INSTANCE.BoundVariableTip() ) ) );
         }
         if ( isItAList() == true ) {
-            Button variable = new Button( constants.GuidedList() );
+            Button variable = new Button( Constants.INSTANCE.GuidedList() );
             variable.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     String factCollectionType = sce.getParametricFieldType( factType,
@@ -405,10 +403,10 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     doTypeChosen( form );
                 }
             } );
-            form.addAttribute( constants.AVariable(),
+            form.addAttribute( Constants.INSTANCE.AVariable(),
                                widgets( variable,
-                                        new InfoPopup( constants.AGuidedList(),
-                                                       constants.AGuidedListTip() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.AGuidedList(),
+                                                       Constants.INSTANCE.AGuidedListTip() ) ) );
         }
         form.show();
     }

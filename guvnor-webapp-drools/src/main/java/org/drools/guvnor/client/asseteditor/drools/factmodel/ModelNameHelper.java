@@ -19,26 +19,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 
 public class ModelNameHelper {
 
-    private static Constants           constants         = ((Constants) GWT.create( Constants.class ));
+    private static ConstantsCore constants         = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
                                                              private static final long serialVersionUID = 510l;
                                                              {
                                                                  put( "Integer",
-                                                                      constants.WholeNumberInteger() );
+                                                                      Constants.INSTANCE.WholeNumberInteger() );
                                                                  put( "Boolean",
-                                                                      constants.TrueOrFalse() );
+                                                                      Constants.INSTANCE.TrueOrFalse() );
                                                                  put( "String",
-                                                                      constants.Text() );
+                                                                      Constants.INSTANCE.Text() );
                                                                  put( "java.util.Date",
-                                                                      constants.Date() );
+                                                                      Constants.INSTANCE.Date() );
                                                                  put( "java.math.BigDecimal",
-                                                                      constants.DecimalNumber() );
+                                                                      Constants.INSTANCE.DecimalNumber() );
 
                                                              }
                                                          };

@@ -16,15 +16,12 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.decisiontable.Validator;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,9 +32,6 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AbstractGuidedDecisionTableWizardPage
     implements
     WizardPage {
-
-    protected static Constants           constants       = GWT.create( Constants.class );
-    protected static Images              images          = GWT.create( Images.class );
 
     protected static final String        NEW_FACT_PREFIX = "f";
 

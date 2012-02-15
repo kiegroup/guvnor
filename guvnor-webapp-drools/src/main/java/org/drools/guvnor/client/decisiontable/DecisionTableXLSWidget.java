@@ -22,6 +22,9 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
@@ -58,7 +61,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
     //Button to convert XLS- to Guided Decision Table
     private Widget makeConvertToGuidedDecisionTableWidget(Asset asset) {
-        Button convertButton = new Button( constants.ConvertTo0( constants.DecisionTableWebGuidedEditor() ) );
+        Button convertButton = new Button( Constants.INSTANCE.ConvertTo0( Constants.INSTANCE.DecisionTableWebGuidedEditor() ) );
         convertButton.setEnabled( asset.versionNumber > 0 );
         convertButton.addClickHandler( getConvertButtonClickHandler() );
         return convertButton;
@@ -68,7 +71,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                LoadingPopup.showMessage( constants.SavingPleaseWait() );
+                LoadingPopup.showMessage( Constants.INSTANCE.SavingPleaseWait() );
                 clientFactory.getAssetService().convertAsset( asset.getUuid(),
                                                               AssetFormats.DECISION_TABLE_GUIDED,
                                                               new GenericCallback<ConversionResult>() {
@@ -108,11 +111,11 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     }
 
     private Widget makeDescriptionWidget() {
-        return new HTML( constants.DecisionTableWidgetDescription() );
+        return new HTML( Constants.INSTANCE.DecisionTableWidgetDescription() );
     }
 
     public ImageResource getIcon() {
-        return images.decisionTable();
+        return Images.INSTANCE.decisionTable();
     }
 
     public String getOverallStyleName() {

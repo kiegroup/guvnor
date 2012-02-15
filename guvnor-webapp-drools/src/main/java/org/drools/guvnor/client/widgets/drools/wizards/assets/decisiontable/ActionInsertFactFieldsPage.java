@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
@@ -80,7 +81,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardActionInsertFacts();
+        return Constants.INSTANCE.DecisionTableWizardActionInsertFacts();
     }
 
     public void initialise() {

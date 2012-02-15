@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -52,9 +53,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This is used when asserting a new fact into working memory.
  */
 public class ActionInsertFactWidget extends RuleModellerWidget {
-
-    private Constants                constants = GWT.create( Constants.class );
-    private static Images            images    = GWT.create( Images.class );
 
     private final DirtyableFlexTable layout;
     private final ActionInsertFact   model;
@@ -119,10 +117,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                              1 + col,
                              valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( images.deleteItemSmall() );
+            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
@@ -203,8 +201,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(Widget w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
-                                                         constants.AddAField() );
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                         Constants.INSTANCE.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -214,7 +212,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( constants.AddField(),
+        popup.addAttribute( Constants.INSTANCE.AddField(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
@@ -237,7 +235,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         if ( this.model.getBoundName() != null ) {
             varName.setText( this.model.getBoundName() );
         }
-        final Button ok = new Button( constants.Set() );
+        final Button ok = new Button( Constants.INSTANCE.Set() );
         vn.add( varName );
         vn.add( ok );
         ok.addClickHandler( new ClickHandler() {
@@ -245,7 +243,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
-                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 model.setBoundName( var );
@@ -255,7 +253,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             }
         } );
 
-        popup.addAttribute( constants.BoundVariable(),
+        popup.addAttribute( Constants.INSTANCE.BoundVariable(),
                             vn );
         popup.show();
 

@@ -25,8 +25,8 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
@@ -42,8 +42,8 @@ import com.google.gwt.user.client.ui.TreeItem;
  */
 public class ExplorerNodeConfig {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     // Browse
      public static final String CATEGORY_ID = "category";                                 // NON-NLS

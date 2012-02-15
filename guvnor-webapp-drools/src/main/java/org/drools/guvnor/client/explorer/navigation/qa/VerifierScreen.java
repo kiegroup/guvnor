@@ -34,9 +34,6 @@ import org.drools.guvnor.client.rpc.VerificationServiceAsync;
  */
 public class VerifierScreen extends Composite {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
-
     private final VerticalPanel layout = new VerticalPanel();
     private final String packageUUID;
 
@@ -47,9 +44,9 @@ public class VerifierScreen extends Composite {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        String m = constants.AnalysingPackage( packageName );
+        String m = Constants.INSTANCE.AnalysingPackage( packageName );
         vert.add( new HTML( m ) );
-        Button run = new Button( constants.RunAnalysis() );
+        Button run = new Button( Constants.INSTANCE.RunAnalysis() );
         run.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 runAnalysis();
@@ -57,7 +54,7 @@ public class VerifierScreen extends Composite {
         } );
         vert.add( run );
 
-        pf.addHeader( images.analyzeLarge(),
+        pf.addHeader( Images.INSTANCE.analyzeLarge(),
                 vert );
         layout.add( pf );
 
@@ -69,7 +66,7 @@ public class VerifierScreen extends Composite {
     }
 
     private void runAnalysis() {
-        LoadingPopup.showMessage( constants.AnalysingPackageRunning() );
+        LoadingPopup.showMessage( Constants.INSTANCE.AnalysingPackageRunning() );
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
         verificationService.analysePackage( packageUUID,

@@ -28,7 +28,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,9 +49,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This is for managing imports etc.
  */
 public class PackageHeaderWidget extends Composite {
-
-    private Constants         constants            = GWT.create( Constants.class );
-    private static Images     images               = GWT.create( Images.class );
 
     private Module conf;
     private SimplePanel       layout;
@@ -84,7 +80,7 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel main = new HorizontalPanel();
 
         VerticalPanel imports = new VerticalPanel();
-        imports.add( new Label( constants.ImportedTypes() ) );
+        imports.add( new Label( Constants.INSTANCE.ImportedTypes() ) );
         importList = new ListBox( true );
 
         doImports( t );
@@ -92,37 +88,37 @@ public class PackageHeaderWidget extends Composite {
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton( Images.INSTANCE.newItem(),
+                                                         Images.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() );
+            ImageButton trashButton = new ImageButton( Images.INSTANCE.trash(),
+                                                       Images.INSTANCE.trashDisabled() );
             trashButton.setEnabled( false );
             importActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( Images.INSTANCE.newItem(),
+                                                         Images.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             showTypeQuestion( (Widget) event.getSource(),
                                               t,
                                               false,
-                                              constants.FactTypesJarTip() );
+                                              Constants.INSTANCE.FactTypesJarTip() );
                         }
                     } );
                 }
             };
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( Images.INSTANCE.trash(),
+                                                       Images.INSTANCE.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
-                            if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFactType() ) ) {
+                            if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisFactType() ) ) {
                                 if ( importList.getSelectedIndex() > -1 ) {
                                     for ( int i = 0; i < importList.getItemCount(); i++ ) {
                                         if ( importList.isItemSelected( i ) ) {
@@ -145,44 +141,44 @@ public class PackageHeaderWidget extends Composite {
         imports.add( importCols );
 
         VerticalPanel globals = new VerticalPanel();
-        globals.add( new Label( constants.Globals() ) );
+        globals.add( new Label( Constants.INSTANCE.Globals() ) );
         globalList = new ListBox( true );
         doGlobals( t );
         HorizontalPanel globalCols = new HorizontalPanel();
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton( Images.INSTANCE.newItem(),
+                                                         Images.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() );
+            ImageButton trashButton = new ImageButton( Images.INSTANCE.trash(),
+                                                       Images.INSTANCE.trashDisabled() );
             trashButton.setEnabled( false );
             globalActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( Images.INSTANCE.newItem(),
+                                                         Images.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             showTypeQuestion( (Widget) event.getSource(),
                                               t,
                                               true,
-                                              constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
+                                              Constants.INSTANCE.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
                         }
                     } );
                 }
             };
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( Images.INSTANCE.trash(),
+                                                       Images.INSTANCE.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
-                            if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisGlobal() ) ) {
+                            if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisGlobal() ) ) {
                                 if ( globalList.getSelectedIndex() > -1 ) {
                                     for ( int i = 0; i < globalList.getItemCount(); i++ ) {
                                         if ( globalList.isItemSelected( i ) ) {
@@ -209,11 +205,11 @@ public class PackageHeaderWidget extends Composite {
 
         Button advanced = new Button() {
             {
-                setText( constants.AdvancedView() );
-                setTitle( constants.SwitchToTextModeEditing() );
+                setText( Constants.INSTANCE.AdvancedView() );
+                setTitle( Constants.INSTANCE.SwitchToTextModeEditing() );
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        if ( Window.confirm( constants.SwitchToAdvancedTextModeForPackageEditing() ) ) {
+                        if ( Window.confirm( Constants.INSTANCE.SwitchToAdvancedTextModeForPackageEditing() ) ) {
                             textEditorVersion();
                         }
                     }
@@ -257,8 +253,8 @@ public class PackageHeaderWidget extends Composite {
     private Button createBasicModeButton(final TextArea area) {
         Button basicMode = new Button() {
             {
-                setText( constants.BasicView() );
-                setTitle( constants.SwitchToGuidedModeEditing() );
+                setText( Constants.INSTANCE.BasicView() );
+                setTitle( Constants.INSTANCE.SwitchToGuidedModeEditing() );
                 addClickHandler( createClickHanderForBasicModeButton( area ) );
             }
 
@@ -279,16 +275,16 @@ public class PackageHeaderWidget extends Composite {
     private void handleCasesForBasicModeButton() {
         final Types types = PackageHeaderHelper.parseHeader( conf.getHeader() );
         if ( types == null ) {
-            Window.alert( constants.CanNotSwitchToBasicView() );
+            Window.alert( Constants.INSTANCE.CanNotSwitchToBasicView() );
         } else {
             if ( types.hasDeclaredTypes ) {
-                Window.alert( constants.CanNotSwitchToBasicViewDeclaredTypes() );
+                Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewDeclaredTypes() );
             } else if ( types.hasFunctions ) {
-                Window.alert( constants.CanNotSwitchToBasicViewFunctions() );
+                Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewFunctions() );
             } else if ( types.hasRules ) {
-                Window.alert( constants.CanNotSwitchToBasicViewRules() );
+                Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewRules() );
             } else {
-                if ( Window.confirm( constants.SwitchToGuidedModeForPackageEditing() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.SwitchToGuidedModeForPackageEditing() ) ) {
                     basicEditorVersion( types );
                 }
             }
@@ -299,35 +295,35 @@ public class PackageHeaderWidget extends Composite {
                                   final Types t,
                                   final boolean global,
                                   String headerMessage) {
-        final FormStylePopup pop = new FormStylePopup( images.homeIcon(),
-                                                       constants.ChooseAFactType() );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.homeIcon(),
+                                                       Constants.INSTANCE.ChooseAFactType() );
         pop.addRow( new HTML( "<small><i>" + headerMessage + " </i></small>" ) ); //NON-NLS
         final ListBox factList = new ListBox();
-        factList.addItem( constants.loadingList() );
+        factList.addItem( Constants.INSTANCE.loadingList() );
 
         RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.getUuid(),
                                                                          createGenericCallbackForListTypesInPackage( global,
                                                                                                                      factList ) );
 
-        InfoPopup info = new InfoPopup( constants.TypesInThePackage(),
-                                        constants.IfNoTypesTip() );
+        InfoPopup info = new InfoPopup( Constants.INSTANCE.TypesInThePackage(),
+                                        Constants.INSTANCE.IfNoTypesTip() );
 
-        pop.addAttribute( constants.ChooseClassType(),
+        pop.addAttribute( Constants.INSTANCE.ChooseClassType(),
                           createHorizontalPanel( factList,
                                                  info ) );
         final TextBox globalName = new TextBox();
         if ( global ) {
-            pop.addAttribute( constants.GlobalName(),
+            pop.addAttribute( Constants.INSTANCE.GlobalName(),
                               globalName );
         }
         final TextBox className = new TextBox();
-        InfoPopup infoClass = new InfoPopup( constants.EnteringATypeClassName(),
-                                             constants.EnterTypeNameTip() );
-        pop.addAttribute( constants.advancedClassName(),
+        InfoPopup infoClass = new InfoPopup( Constants.INSTANCE.EnteringATypeClassName(),
+                                             Constants.INSTANCE.EnterTypeNameTip() );
+        pop.addAttribute( Constants.INSTANCE.advancedClassName(),
                           createHorizontalPanel( className,
                                                  infoClass ) );
 
-        Button ok = new Button( constants.OK() ) {
+        Button ok = new Button( Constants.INSTANCE.OK() ) {
             {
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -337,7 +333,7 @@ public class PackageHeaderWidget extends Composite {
                             doImports( t );
                         } else {
                             if ( "".equals( globalName.getText() ) ) {
-                                Window.alert( constants.YouMustEnterAGlobalVariableName() );
+                                Window.alert( Constants.INSTANCE.YouMustEnterAGlobalVariableName() );
                                 return;
                             }
                             t.globals.add( new Global( type,
@@ -351,7 +347,7 @@ public class PackageHeaderWidget extends Composite {
             }
         };
 
-        Button cancel = new Button( constants.Cancel() ) {
+        Button cancel = new Button( Constants.INSTANCE.Cancel() ) {
             {
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {

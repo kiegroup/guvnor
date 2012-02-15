@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -39,7 +40,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
  */
 public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCreatorWidget {
 
-    private Constants           constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private boolean             globalArea;
 
     //Services
@@ -196,7 +197,7 @@ public class CreatePackageResourceWidget extends AbstractXMLResourceDefinitionCr
             //source is mandatory!
             TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
             if ( selectedPackageItem == null || selectedPackageItem.getChildCount() != 0 ) {
-                throw new IllegalStateException( constants.NoPackageSeleced() );
+                throw new IllegalStateException( Constants.INSTANCE.NoPackageSeleced() );
             }
 
             String result = resourceXMLElementTemplate;

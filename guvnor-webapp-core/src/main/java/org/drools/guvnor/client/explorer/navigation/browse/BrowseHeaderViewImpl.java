@@ -18,13 +18,13 @@ package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 public class BrowseHeaderViewImpl extends StackItemHeaderViewImpl implements BrowseHeaderView {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public BrowseHeaderViewImpl() {
         setText(constants.Browse());

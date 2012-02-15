@@ -28,8 +28,8 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -61,8 +61,8 @@ import com.google.gwt.view.client.HasData;
 
 
 public class PermissionsPagedTablePresenter implements Presenter {
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
-    private static Images         images    = (Images) GWT.create( Images.class );  
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
     protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
     private final PermissionsPagedTableView view;
    

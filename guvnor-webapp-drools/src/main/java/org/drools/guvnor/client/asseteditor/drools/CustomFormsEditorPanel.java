@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -77,15 +78,14 @@ public class CustomFormsEditorPanel extends Composite {
         final FlexTable table = new FlexTable();
 
         VerticalPanel vp = new VerticalPanel();
-        Constants constants = GWT.create(Constants.class);
-        vp.add(new SmallLabel(constants.FactTypes()));
+        vp.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
         vp.add(factsCombo);
         table.setWidget(0,
                 0,
                 vp);
 
         vp = new VerticalPanel();
-        vp.add(new SmallLabel(constants.Field()));
+        vp.add(new SmallLabel(Constants.INSTANCE.Field()));
         vp.add(fieldsCombo);
         table.setWidget(1,
                 0,
@@ -94,7 +94,7 @@ public class CustomFormsEditorPanel extends Composite {
         vp = new VerticalPanel();
         vp.add(new SmallLabel("Custom Form URL:")); //TODO i18n
 
-        Button btnUpdateURL = new Button(constants.OK(),
+        Button btnUpdateURL = new Button(Constants.INSTANCE.OK(),
                 new ClickHandler() {
                     public void onClick(ClickEvent event) {
 

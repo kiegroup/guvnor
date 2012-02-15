@@ -20,38 +20,35 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
+import org.drools.guvnor.client.resources.Images;
 
 /**
  * This controls category administration.
  */
 public class RuleVerifierManager extends Composite {
 
-    private static Images images    = (Images) GWT.create( Images.class );
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
 
     public VerticalPanel  layout    = new VerticalPanel();
 
     public RuleVerifierManager() {
 
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.ruleVerification(),
-                        new HTML( constants.EditRulesVerificationConfiguration() ) );
-        form.startSection( constants.AutomaticVerification() );
+        form.addHeader( Images.INSTANCE.ruleVerification(),
+                        new HTML( Constants.INSTANCE.EditRulesVerificationConfiguration() ) );
+        form.startSection( Constants.INSTANCE.AutomaticVerification() );
 
         final CheckBox enableOnlineValidator = new CheckBox();
         enableOnlineValidator.setValue( WorkingSetManager.getInstance().isAutoVerifierEnabled() );
-        form.addAttribute( constants.Enabled(),
+        form.addAttribute( Constants.INSTANCE.Enabled(),
                            enableOnlineValidator );
 
         HorizontalPanel actions = new HorizontalPanel();
@@ -59,12 +56,12 @@ public class RuleVerifierManager extends Composite {
         form.addAttribute( "",
                            actions );
 
-        Button btnSave = new Button( constants.SaveChanges() );
-        btnSave.setTitle( constants.SaveAllChanges() );
+        Button btnSave = new Button( Constants.INSTANCE.SaveChanges() );
+        btnSave.setTitle( Constants.INSTANCE.SaveAllChanges() );
         btnSave.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 WorkingSetManager.getInstance().setAutoVerifierEnabled( enableOnlineValidator.getValue() );
-                Window.alert( constants.AllChangesHaveBeenSaved() );
+                Window.alert( Constants.INSTANCE.AllChangesHaveBeenSaved() );
             }
         } );
 

@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.util.PercentageBar;
@@ -50,8 +51,6 @@ public class BulkRunResultViewImpl extends Composite
     }
 
     private static BulkRunResultViewImplBinder uiBinder = GWT.create(BulkRunResultViewImplBinder.class);
-
-    private Constants constants = GWT.create(Constants.class);
 
     private Presenter presenter;
 
@@ -105,7 +104,7 @@ public class BulkRunResultViewImpl extends Composite
 
         SummaryTable.Row row = new SummaryTable.Row();
 
-        row.setMessage(constants.TestFailureBulkFailures(totalFailures, grandTotal));
+        row.setMessage(Constants.INSTANCE.TestFailureBulkFailures(totalFailures, grandTotal));
         row.setScenarioName(scenarioName);
         row.setUuid(uuid);
         row.setPercentage(percentage);
@@ -118,7 +117,7 @@ public class BulkRunResultViewImpl extends Composite
 
         SummaryTable.Row row = new SummaryTable.Row();
 
-        row.setMessage(constants.MissingExpectations());
+        row.setMessage(Constants.INSTANCE.MissingExpectations());
         row.setScenarioName(scenarioName);
         row.setUuid(uuid);
         row.setPercentage(0);
@@ -141,7 +140,7 @@ public class BulkRunResultViewImpl extends Composite
 
     public void setFailuresOutOfExpectation(int totalFailures,
             int grandTotal) {
-        failuresOutOfExpectations.setText(constants.failuresOutOFExpectations(totalFailures, grandTotal));
+        failuresOutOfExpectations.setText(Constants.INSTANCE.failuresOutOFExpectations(totalFailures, grandTotal));
     }
 
     public void setResultsPercent(int i) {
@@ -150,7 +149,7 @@ public class BulkRunResultViewImpl extends Composite
 
     public void setRulesCoveredPercent(int percentCovered) {
         coveredPercentBar.setValue(percentCovered);
-        ruleCoveragePercent.setText(constants.RuleCoveragePercent(percentCovered));
+        ruleCoveragePercent.setText(Constants.INSTANCE.RuleCoveragePercent(percentCovered));
     }
 
     public void addUncoveredRules(String uncoveredRule) {

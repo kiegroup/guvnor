@@ -67,9 +67,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConditionPopup extends FormStylePopup {
 
-    private static Constants           constants                        = ((Constants) GWT.create( Constants.class ));
-    private static Images              images                           = (Images) GWT.create( Images.class );
-
     private SmallLabel                 patternLabel                     = new SmallLabel();
     private TextBox                    fieldLabel                       = getFieldLabel();
     private TextBox                    binding                          = new BindingTextBox();
@@ -115,7 +112,7 @@ public class ConditionPopup extends FormStylePopup {
 
         validator = new Validator( model.getConditions() );
 
-        setTitle( constants.ConditionColumnConfiguration() );
+        setTitle( Constants.INSTANCE.ConditionColumnConfiguration() );
         setModal( false );
 
         HorizontalPanel pattern = new HorizontalPanel();
@@ -123,9 +120,9 @@ public class ConditionPopup extends FormStylePopup {
         doPatternLabel();
 
         //Pattern selector
-        ImageButton changePattern = new ImageButton( images.edit(),
-                                                     images.editDisabled(),
-                                                     constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
+        ImageButton changePattern = new ImageButton( Images.INSTANCE.edit(),
+                                                     Images.INSTANCE.editDisabled(),
+                                                     Constants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              showChangePattern( w );
@@ -134,24 +131,24 @@ public class ConditionPopup extends FormStylePopup {
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
 
-        addAttribute( constants.Pattern(),
+        addAttribute( Constants.INSTANCE.Pattern(),
                       pattern );
 
         //Radio buttons for Calculation Type
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY :
                 RadioButton literal = new RadioButton( "constraintValueType",
-                                                       constants.LiteralValue() );// NON-NLS
+                                                       Constants.INSTANCE.LiteralValue() );// NON-NLS
                 RadioButton formula = new RadioButton( "constraintValueType",
-                                                       constants.Formula() ); // NON-NLS
+                                                       Constants.INSTANCE.Formula() ); // NON-NLS
                 RadioButton predicate = new RadioButton( "constraintValueType",
-                                                         constants.Predicate() ); // NON-NLS
+                                                         Constants.INSTANCE.Predicate() ); // NON-NLS
 
                 HorizontalPanel valueTypes = new HorizontalPanel();
                 valueTypes.add( literal );
                 valueTypes.add( formula );
                 valueTypes.add( predicate );
-                addAttribute( constants.CalculationType(),
+                addAttribute( Constants.INSTANCE.CalculationType(),
                               valueTypes );
 
                 switch ( editingCol.getConstraintValueType() ) {
@@ -208,9 +205,9 @@ public class ConditionPopup extends FormStylePopup {
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( images.edit(),
-                                          images.editDisabled(),
-                                          constants.EditTheFieldThatThisColumnOperatesOn(),
+        this.editField = new ImageButton( Images.INSTANCE.edit(),
+                                          Images.INSTANCE.editDisabled(),
+                                          Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                           new ClickHandler() {
                                               public void onClick(ClickEvent w) {
                                                   showFieldChange();
@@ -218,16 +215,16 @@ public class ConditionPopup extends FormStylePopup {
                                           } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( constants.Field(),
+        addAttribute( Constants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        this.editOp = new ImageButton( images.edit(),
-                                       images.editDisabled(),
-                                       constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
+        this.editOp = new ImageButton( Images.INSTANCE.edit(),
+                                       Images.INSTANCE.editDisabled(),
+                                       Constants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                        new ClickHandler() {
                                            public void onClick(ClickEvent w) {
                                                showOperatorChange();
@@ -235,13 +232,13 @@ public class ConditionPopup extends FormStylePopup {
                                        } );
         editOp.setEnabled( !isReadOnly );
         operator.add( editOp );
-        addAttribute( constants.Operator(),
+        addAttribute( Constants.INSTANCE.Operator(),
                       operator );
         doOperatorLabel();
         doImageButtons();
 
         //Add CEP fields for patterns containing Facts declared as Events
-        cepWindowRowIndex = addAttribute( constants.DTLabelOverCEPWindow(),
+        cepWindowRowIndex = addAttribute( Constants.INSTANCE.DTLabelOverCEPWindow(),
                                           createCEPWindowWidget( editingPattern ) );
         displayCEPOperators();
 
@@ -256,7 +253,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.DTLabelFromEntryPoint(),
+        addAttribute( Constants.INSTANCE.DTLabelFromEntryPoint(),
                       entryPointName );
 
         //Column header
@@ -270,7 +267,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Optional value list
@@ -287,21 +284,21 @@ public class ConditionPopup extends FormStylePopup {
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueList );
-            vl.add( new InfoPopup( constants.ValueList(),
-                                   constants.ValueListsExplanation() ) );
-            addAttribute( constants.optionalValueList(),
+            vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
+                                   Constants.INSTANCE.ValueListsExplanation() ) );
+            addAttribute( Constants.INSTANCE.optionalValueList(),
                           vl );
         }
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            addAttribute( constants.DefaultValue(),
+            addAttribute( Constants.INSTANCE.DefaultValue(),
                           DTCellValueWidgetFactory.getDefaultEditor( editingCol,
                                                                      isReadOnly ) );
         }
 
         //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( constants.LimitedEntryValue(),
+        limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
                                                         limitedEntryValueWidgetContainer );
         makeLimitedValueWidget();
 
@@ -314,32 +311,32 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.Binding(),
+        addAttribute( Constants.INSTANCE.Binding(),
                       binding );
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
 
                     //Field mandatory for Literals and Formulae
                     if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
-                        Window.alert( constants.PleaseSelectOrEnterField() );
+                        Window.alert( Constants.INSTANCE.PleaseSelectOrEnterField() );
                         return;
                     }
 
                     //Operator optional for Literals and Formulae
                     if ( null == editingCol.getOperator() || "".equals( editingCol.getOperator() ) ) {
-                        Window.alert( constants.NotifyNoSelectedOperator() );
+                        Window.alert( Constants.INSTANCE.NotifyNoSelectedOperator() );
                     }
 
                 } else {
@@ -350,20 +347,20 @@ public class ConditionPopup extends FormStylePopup {
 
                 //Check for unique binding
                 if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
 
                 //Check column header is unique
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -476,16 +473,16 @@ public class ConditionPopup extends FormStylePopup {
     private void doFieldLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             if ( this.editingCol.getFactField() == null || this.editingCol.getFactField().equals( "" ) ) {
-                fieldLabel.setText( constants.notNeededForPredicate() );
+                fieldLabel.setText( Constants.INSTANCE.notNeededForPredicate() );
             } else {
                 fieldLabel.setText( this.editingCol.getFactField() );
             }
             fieldLabelInterpolationInfo.setVisible( true );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
+            fieldLabel.setText( Constants.INSTANCE.pleaseSelectAPatternFirst() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else if ( nil( editingCol.getFactField() ) ) {
-            fieldLabel.setText( constants.pleaseSelectAField() );
+            fieldLabel.setText( Constants.INSTANCE.pleaseSelectAField() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else {
             fieldLabel.setText( this.editingCol.getFactField() );
@@ -494,13 +491,13 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            operatorLabel.setText( constants.notNeededForPredicate() );
+            operatorLabel.setText( Constants.INSTANCE.notNeededForPredicate() );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            operatorLabel.setText( constants.pleaseSelectAPatternFirst() );
+            operatorLabel.setText( Constants.INSTANCE.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
-            operatorLabel.setText( constants.pleaseChooseAFieldFirst() );
+            operatorLabel.setText( Constants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setText( constants.pleaseSelectAField() );
+            operatorLabel.setText( Constants.INSTANCE.pleaseSelectAField() );
         } else {
             operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
@@ -513,7 +510,7 @@ public class ConditionPopup extends FormStylePopup {
             String boundName = editingPattern.getBoundName();
             if ( factType != null && factType.length() > 0 ) {
                 if ( editingPattern.isNegated() ) {
-                    patternLabel.append( constants.negatedPattern() ).append( " " ).append( factType );
+                    patternLabel.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
                 } else {
                     patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
                 }
@@ -535,8 +532,8 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private InfoPopup getPredicateHint() {
-        return new InfoPopup( constants.Predicates(),
-                              constants.PredicatesInfo() );
+        return new InfoPopup( Constants.INSTANCE.Predicates(),
+                              Constants.INSTANCE.PredicatesInfo() );
     }
 
     private ListBox loadPatterns() {
@@ -544,7 +541,7 @@ public class ConditionPopup extends FormStylePopup {
         ListBox patterns = new ListBox();
         for ( Pattern52 p : model.getPatterns() ) {
             if ( !vars.contains( p.getBoundName() ) ) {
-                patterns.addItem( (p.isNegated() ? constants.negatedPattern() + " " : "")
+                patterns.addItem( (p.isNegated() ? Constants.INSTANCE.negatedPattern() + " " : "")
                                           + p.getFactType()
                                           + " [" + p.getBoundName() + "]",
                                   p.getFactType()
@@ -564,7 +561,7 @@ public class ConditionPopup extends FormStylePopup {
 
     private void showOperatorChange() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( constants.SetTheOperator() );
+        pop.setTitle( Constants.INSTANCE.SetTheOperator() );
         pop.setModal( false );
         String[] ops = this.sce.getOperatorCompletions( editingPattern.getFactType(),
                                                         editingCol.getFactField() );
@@ -576,11 +573,11 @@ public class ConditionPopup extends FormStylePopup {
                          "in" );
         }
 
-        box.addItem( constants.noOperator(),
+        box.addItem( Constants.INSTANCE.noOperator(),
                      "" );
-        pop.addAttribute( constants.Operator(),
+        pop.addAttribute( Constants.INSTANCE.Operator(),
                           box );
-        Button b = new Button( constants.OK() );
+        Button b = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -612,17 +609,17 @@ public class ConditionPopup extends FormStylePopup {
             return;
         }
         final FormStylePopup pop = new FormStylePopup();
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( pats );
         hp.add( ok );
 
-        pop.addAttribute( constants.ChooseExistingPatternToAddColumnTo(),
+        pop.addAttribute( Constants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
                           hp );
         pop.addAttribute( "",
-                          new HTML( constants.ORwithEmphasis() ) );
+                          new HTML( Constants.INSTANCE.ORwithEmphasis() ) );
 
-        Button createPattern = new Button( constants.CreateNewFactPattern() );
+        Button createPattern = new Button( Constants.INSTANCE.CreateNewFactPattern() );
         createPattern.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 pop.hide();
@@ -666,9 +663,9 @@ public class ConditionPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
         }
-        pop.addAttribute( constants.Field(),
+        pop.addAttribute( Constants.INSTANCE.Field(),
                           box );
-        Button b = new Button( constants.OK() );
+        Button b = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -693,12 +690,12 @@ public class ConditionPopup extends FormStylePopup {
 
     protected void showNewPatternDialog() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( constants.CreateANewFactPattern() );
+        pop.setTitle( Constants.INSTANCE.CreateANewFactPattern() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < sce.getFactTypes().length; i++ ) {
             types.addItem( sce.getFactTypes()[i] );
         }
-        pop.addAttribute( constants.FactType(),
+        pop.addAttribute( Constants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
         binding.addChangeHandler( new ChangeHandler() {
@@ -707,7 +704,7 @@ public class ConditionPopup extends FormStylePopup {
                                                             "" ) );
             }
         } );
-        pop.addAttribute( constants.Binding(),
+        pop.addAttribute( Constants.INSTANCE.Binding(),
                           binding );
 
         //Patterns can be negated, i.e. "not Pattern(...)"
@@ -720,10 +717,10 @@ public class ConditionPopup extends FormStylePopup {
             }
 
         } );
-        pop.addAttribute( constants.negatePattern(),
+        pop.addAttribute( Constants.INSTANCE.negatePattern(),
                           chkNegated );
 
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
 
@@ -732,13 +729,13 @@ public class ConditionPopup extends FormStylePopup {
                 String fn = isPatternNegated ? "" : binding.getText();
                 if ( !isPatternNegated ) {
                     if ( fn.equals( "" ) ) {
-                        Window.alert( constants.PleaseEnterANameForFact() );
+                        Window.alert( Constants.INSTANCE.PleaseEnterANameForFact() );
                         return;
                     } else if ( fn.equals( ft ) ) {
-                        Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                        Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                         return;
                     } else if ( !isBindingUnique( fn ) ) {
-                        Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                        Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                         return;
                     }
                 }
@@ -774,7 +771,7 @@ public class ConditionPopup extends FormStylePopup {
     //Widget for CEP 'windows'
     private Widget createCEPWindowWidget(final HasCEPWindow c) {
         HorizontalPanel hp = new HorizontalPanel();
-        Label lbl = new Label( constants.OverCEPWindow() );
+        Label lbl = new Label( Constants.INSTANCE.OverCEPWindow() );
         lbl.setStyleName( "paddedLabel" );
         hp.add( lbl );
 

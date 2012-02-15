@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.util;
 
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
-    private static Images images = GWT.create( Images.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     interface LazyStackPanelHeaderBinder
         extends

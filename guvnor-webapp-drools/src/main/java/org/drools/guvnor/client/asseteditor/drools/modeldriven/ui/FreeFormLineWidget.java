@@ -21,7 +21,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,10 +36,6 @@ import com.google.gwt.user.client.ui.Widget;
  * Free form DRL line widget
  */
 public class FreeFormLineWidget extends RuleModellerWidget {
-
-    private static final Constants constants = ((Constants) GWT.create( Constants.class ));
-
-    private static Images          images    = GWT.create( Images.class );
 
     private FreeFormLine           action;
     private DirtyableFlexTable     layout    = new DirtyableFlexTable();
@@ -111,7 +106,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     }
 
     private Widget createTextBox() {
-        textArea.setTitle( constants.ThisIsADrlExpressionFreeForm() );
+        textArea.setTitle( Constants.INSTANCE.ThisIsADrlExpressionFreeForm() );
         textArea.setText( this.action.text );
         textArea.addValueChangeHandler( new ValueChangeHandler<String>() {
 
@@ -128,11 +123,11 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
         Image btn;
         if ( !this.readOnly ) {
-            btn = new Image( images.edit() );
+            btn = new Image( Images.INSTANCE.edit() );
             btn.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    final FreeFormLinePopup popup = new FreeFormLinePopup( constants.FreeFormDrl(),
+                    final FreeFormLinePopup popup = new FreeFormLinePopup( Constants.INSTANCE.FreeFormDrl(),
                                                                            action.text );
                     popup.addOKClickHandler( new ClickHandler() {
 
@@ -149,7 +144,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
             } );
         } else {
-            btn = new Image( images.editDisabled() );
+            btn = new Image( Images.INSTANCE.editDisabled() );
         }
 
         return btn;

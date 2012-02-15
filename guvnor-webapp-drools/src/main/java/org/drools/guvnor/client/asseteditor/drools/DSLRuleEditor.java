@@ -38,8 +38,6 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
 public class DSLRuleEditor extends DirtyableComposite {
 
-    private static Images images = GWT.create(Images.class);
-
     private TextArea text;
     final private RuleContentText data;
     private DSLSentence[] conditions;
@@ -96,9 +94,8 @@ public class DSLRuleEditor extends DirtyableComposite {
 
         VerticalPanel vert = new VerticalPanel();
 
-        Image lhsOptions = new ImageButton(images.newDSLPattern());
-        Constants constants = GWT.create(Constants.class);
-        final String msg = constants.AddANewCondition();
+        Image lhsOptions = new ImageButton(Images.INSTANCE.newDSLPattern());
+        final String msg = Constants.INSTANCE.AddANewCondition();
         lhsOptions.setTitle(msg);
         lhsOptions.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -106,8 +103,8 @@ public class DSLRuleEditor extends DirtyableComposite {
             }
         });
 
-        Image rhsOptions = new ImageButton(images.newDSLAction());
-        final String msg2 = constants.AddAnAction();
+        Image rhsOptions = new ImageButton(Images.INSTANCE.newDSLAction());
+        final String msg2 = Constants.INSTANCE.AddAnAction();
         rhsOptions.setTitle(msg2);
         rhsOptions.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {

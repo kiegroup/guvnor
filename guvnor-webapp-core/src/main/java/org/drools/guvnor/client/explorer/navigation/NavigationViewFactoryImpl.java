@@ -50,12 +50,12 @@ import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeViewImpl;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityViewImpl;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
@@ -70,8 +70,8 @@ public class NavigationViewFactoryImpl
     implements
     NavigationViewFactory {
 
-    private static Constants        constants = GWT.create( Constants.class );
-    private static Images           images    = GWT.create( Images.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
 
     private final ClientFactory     clientFactory;
     private final EventBus          eventBus;

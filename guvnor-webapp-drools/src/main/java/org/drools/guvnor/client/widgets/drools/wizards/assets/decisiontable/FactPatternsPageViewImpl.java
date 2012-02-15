@@ -71,10 +71,6 @@ public class FactPatternsPageViewImpl extends Composite
     private Set<Pattern52>                  chosenPatternSelections;
     private MinimumWidthCellList<Pattern52> chosenPatternWidget;
 
-    private static final Constants          constants   = GWT.create( Constants.class );
-
-    private static final Images             images      = GWT.create( Images.class );
-
     @UiField
     ScrollPanel                             availableTypesContainer;
 
@@ -109,10 +105,10 @@ public class FactPatternsPageViewImpl extends Composite
     HorizontalPanel                         msgDuplicateBindings;
 
     @UiField(provided = true)
-    PushButton                              btnMoveUp   = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                              btnMoveUp   = new PushButton( AbstractImagePrototype.create( Images.INSTANCE.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                              btnMoveDown = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                              btnMoveDown = new PushButton( AbstractImagePrototype.create( Images.INSTANCE.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends
@@ -142,7 +138,7 @@ public class FactPatternsPageViewImpl extends Composite
         availableTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableTypesWidget.setMinimumWidth( 275 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableTypesWidget.setEmptyListWidget( lstEmpty );
 
@@ -164,7 +160,7 @@ public class FactPatternsPageViewImpl extends Composite
         chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenPatternWidget.setMinimumWidth( 275 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenPatterns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenPatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenPatternWidget.setEmptyListWidget( lstEmpty );
 

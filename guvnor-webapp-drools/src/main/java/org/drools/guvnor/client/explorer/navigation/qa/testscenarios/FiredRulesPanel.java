@@ -19,7 +19,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -28,8 +27,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 public class FiredRulesPanel extends HorizontalPanel {
-
-    private Constants            constants = ((Constants) GWT.create( Constants.class ));
 
     private final ExecutionTrace executionTrace;
 
@@ -41,12 +38,12 @@ public class FiredRulesPanel extends HorizontalPanel {
     }
 
     private HTML createText() {
-        return new HTML( "<i><small>" + constants.property0RulesFiredIn1Ms(
+        return new HTML( "<i><small>" + Constants.INSTANCE.property0RulesFiredIn1Ms(
                 executionTrace.getNumberOfRulesFired(), executionTrace.getExecutionTimeResult() ) + "</small></i>" );
     }
 
     private Button createShowButton() {
-        final Button show = new Button( constants.ShowRulesFired() );
+        final Button show = new Button( Constants.INSTANCE.ShowRulesFired() );
         show.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -54,7 +51,7 @@ public class FiredRulesPanel extends HorizontalPanel {
                 for ( String ruleName : executionTrace.getRulesFired() ) {
                     rules.addItem( ruleName );
                 }
-                add( new SmallLabel( "&nbsp:" + constants.RulesFired() ) );
+                add( new SmallLabel( "&nbsp:" + Constants.INSTANCE.RulesFired() ) );
                 add( rules );
                 show.setVisible( false );
             }

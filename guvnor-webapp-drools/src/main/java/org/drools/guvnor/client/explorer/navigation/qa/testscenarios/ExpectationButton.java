@@ -18,7 +18,9 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.ArrayList;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
@@ -31,16 +33,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ExpectationButton extends TestScenarioButton {
 
-    private static Images images = GWT.create( Images.class );
-
     private final String  packageName;
 
     public ExpectationButton(final String packageName,
                              final ExecutionTrace previousEx,
                              final Scenario scenario,
                              ScenarioWidget scenarioWidget) {
-        super( images.newItem(),
-               constants.AddANewExpectation(),
+        super( Images.INSTANCE.newItem(),
+               Constants.INSTANCE.AddANewExpectation(),
                previousEx,
                scenario,
                scenarioWidget );
@@ -55,8 +55,8 @@ public class ExpectationButton extends TestScenarioButton {
 
     class NewExpectationPopup extends TestScenarioButtonPopup {
         public NewExpectationPopup() {
-            super( images.ruleAsset(),
-                   constants.NewExpectation() );
+            super( Images.INSTANCE.ruleAsset(),
+                   Constants.INSTANCE.NewExpectation() );
 
             Widget selectRule = parent.getRuleSelectionWidget( packageName,
                                                                new RuleSelectionEvent() {
@@ -72,14 +72,14 @@ public class ExpectationButton extends TestScenarioButton {
                                                                    }
                                                                } );
 
-            addAttribute( constants.Rule(),
+            addAttribute( Constants.INSTANCE.Rule(),
                           selectRule );
 
-            addAttribute( constants.FactValue(),
+            addAttribute( Constants.INSTANCE.FactValue(),
                           new FactsPanel() );
 
             //add in list box for anon facts
-            addAttribute( constants.AnyFactThatMatches(),
+            addAttribute( Constants.INSTANCE.AnyFactThatMatches(),
                           new AnyFactThatMatchesPanel() );
 
         }

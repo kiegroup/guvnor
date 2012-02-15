@@ -36,6 +36,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.RESTUtil;
@@ -70,7 +71,7 @@ public class ChangeSetEditor extends DirtyableComposite
     final private String                 assetPackageUUID;
     final private String                 assetName;
     private final int                    visibleLines;
-    private Constants                    constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     public ChangeSetEditor(Asset a,
                            RuleViewer v,
@@ -232,20 +233,18 @@ public class ChangeSetEditor extends DirtyableComposite
         url += this.assetName;
         url += "/source";
 
-        return new HTML( this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>" );
+        return new HTML( Constants.INSTANCE.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>" );
     }
 
 }
 
 class NewResourcePopup extends FormStylePopup {
 
-    private Constants constants = GWT.create( Constants.class );
-
-    public Button     ok        = new Button( constants.OK() );
-    public Button     cancel    = new Button( constants.Cancel() );
+    public Button     ok        = new Button( Constants.INSTANCE.OK() );
+    public Button     cancel    = new Button( Constants.INSTANCE.Cancel() );
 
     public NewResourcePopup(Widget content) {
-        setTitle( constants.NewResource() );
+        setTitle( Constants.INSTANCE.NewResource() );
 
         HorizontalPanel hor = new HorizontalPanel();
         hor.add( ok );

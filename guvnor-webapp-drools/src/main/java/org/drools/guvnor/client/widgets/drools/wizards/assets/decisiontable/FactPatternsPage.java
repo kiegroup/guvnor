@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.PatternRemovedEvent;
@@ -54,7 +55,7 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardFactPatterns();
+        return Constants.INSTANCE.DecisionTableWizardFactPatterns();
     }
 
     public void initialise() {

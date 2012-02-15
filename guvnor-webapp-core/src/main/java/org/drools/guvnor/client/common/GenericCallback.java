@@ -17,9 +17,9 @@
 package org.drools.guvnor.client.common;
 
 
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.SessionExpiredException;
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,7 +39,7 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
         } else {
             String message = t.getMessage();
             if (t.getMessage()!=null && t.getMessage().trim().equals("0")){
-                message = ((Constants) GWT.create(Constants.class)).CommunicationError();
+                message = ((ConstantsCore) GWT.create(ConstantsCore.class)).CommunicationError();
             }
             ErrorPopup.showMessage(message);
         }
@@ -51,7 +51,7 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
         url = url.substring(0, url.lastIndexOf('/'));
 
         FormStylePopup pop = new FormStylePopup();
-        String m = ((Constants) GWT.create(Constants.class)).SessionExpiredMessage(url);
+        String m = ((ConstantsCore) GWT.create(ConstantsCore.class)).SessionExpiredMessage(url);
         pop.addRow(new HTML(m));
         pop.show();
         LoadingPopup.close();

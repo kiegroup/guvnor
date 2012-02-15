@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.explorer.navigation.deployment;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -14,8 +13,6 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.util.Activity;
 
 public class SnapshotActivity extends Activity {
-
-    private Constants constants = GWT.create( Constants.class );
 
     private final ClientFactory clientFactory;
     private final String moduleName;
@@ -43,12 +40,12 @@ public class SnapshotActivity extends Activity {
 
     private void showTab(final AcceptItem tabbedPanel, final SnapshotInfo snapshotInfo, final EventBus eventBus) {
 
-        LoadingPopup.showMessage( constants.LoadingSnapshot() );
+        LoadingPopup.showMessage( Constants.INSTANCE.LoadingSnapshot() );
 
         RepositoryServiceFactory.getPackageService().loadModule( snapshotInfo.getUuid(),
                 new GenericCallback<Module>() {
                     public void onSuccess(Module conf) {
-                        tabbedPanel.add( constants.SnapshotLabel( snapshotInfo.getName() ),
+                        tabbedPanel.add( Constants.INSTANCE.SnapshotLabel( snapshotInfo.getName() ),
                                 new SnapshotView(
                                         clientFactory,
                                         eventBus,

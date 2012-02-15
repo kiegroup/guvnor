@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
-    protected static final Constants     constants              = GWT.create( Constants.class );
+    protected static final ConstantsCore constants              = GWT.create( ConstantsCore.class );
 
     protected static final String        SECTION_SEPARATOR      = "..................";
 

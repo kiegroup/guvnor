@@ -72,9 +72,6 @@ public class RuleModeller extends DirtyableComposite
     implements
     RuleModelEditor {
 
-    private static final Constants    constants               = GWT.create( Constants.class );
-    private static final Images       images                  = GWT.create( Images.class );
-
     private DirtyableFlexTable        layout;
     private RuleModel                 model;
     private RuleModellerConfiguration configuration;
@@ -156,8 +153,8 @@ public class RuleModeller extends DirtyableComposite
         layout.clear();
         this.currentLayoutRow = 0;
 
-        Image addPattern = new ImageButton( images.newItem() );
-        addPattern.setTitle( constants.AddAConditionToThisRule() );
+        Image addPattern = new ImageButton( Images.INSTANCE.newItem() );
+        addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -175,7 +172,7 @@ public class RuleModeller extends DirtyableComposite
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
-                              new SmallLabel( "<b>" + constants.WHEN() + "</b>" ) );
+                              new SmallLabel( "<b>" + Constants.INSTANCE.WHEN() + "</b>" ) );
 
             if ( !lockLHS() ) {
                 layout.setWidget( currentLayoutRow,
@@ -190,10 +187,10 @@ public class RuleModeller extends DirtyableComposite
         if ( this.showRHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
-                              new SmallLabel( "<b>" + constants.THEN() + "</b>" ) );
+                              new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
 
-            Image addAction = new ImageButton( images.newItem() );
-            addAction.setTitle( constants.AddAnActionToThisRule() );
+            Image addAction = new ImageButton( Images.INSTANCE.newItem() );
+            addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -225,7 +222,7 @@ public class RuleModeller extends DirtyableComposite
                                                                              showingOptions = true;
                                                                              layout.setWidget( tmp1,
                                                                                                0,
-                                                                                               new SmallLabel( constants.optionsRuleModeller() ) );
+                                                                                               new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
                                                                              layout.setWidget( tmp1,
                                                                                                2,
                                                                                                getAddAttribute() );
@@ -241,7 +238,7 @@ public class RuleModeller extends DirtyableComposite
             } else {
                 layout.setWidget( tmp1,
                                   0,
-                                  new SmallLabel( constants.optionsRuleModeller() ) );
+                                  new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
                 layout.setWidget( tmp1,
                                   2,
                                   getAddAttribute() );
@@ -316,8 +313,8 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton( images.newItem() );
-        add.setTitle( constants.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
+        Image add = new ImageButton( Images.INSTANCE.newItem() );
+        add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
 
@@ -368,13 +365,13 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton( images.deleteItemSmall() );
-            remove.setTitle( constants.RemoveThisAction() );
+            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                         model.removeRhsItem( idx );
                         refreshWidget();
 
@@ -422,7 +419,7 @@ public class RuleModeller extends DirtyableComposite
 
             final int index = i;
             if ( !(this.lockRHS() || w.isReadOnly()) ) {
-                this.addActionsButtonsToLayout( constants.AddAnActionBelow(),
+                this.addActionsButtonsToLayout( Constants.INSTANCE.AddAnActionBelow(),
                                                 new ClickHandler() {
 
                                                     public void onClick(ClickEvent event) {
@@ -524,7 +521,7 @@ public class RuleModeller extends DirtyableComposite
 
             final int index = i;
             if ( !(this.lockLHS() || w.isReadOnly()) ) {
-                this.addActionsButtonsToLayout( constants.AddAConditionBelow(),
+                this.addActionsButtonsToLayout( Constants.INSTANCE.AddAConditionBelow(),
                                                 new ClickHandler() {
 
                                                     public void onClick(ClickEvent event) {
@@ -567,13 +564,13 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( images.deleteItemSmall() );
-        remove.setTitle( constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
+        final Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
                     if ( model.removeLhsItem( idx ) ) {
                         refreshWidget();
 
@@ -582,7 +579,7 @@ public class RuleModeller extends DirtyableComposite
                         eventBus.fireEventFromSource( tvce,
                                                       model );
                     } else {
-                        ErrorPopup.showMessage( constants.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule() );
+                        ErrorPopup.showMessage( Constants.INSTANCE.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule() );
                     }
                 }
             }
@@ -653,16 +650,16 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = new ImageButton( images.newItemBelow() );
+        Image addPattern = new ImageButton( Images.INSTANCE.newItemBelow() );
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = new ImageButton( images.shuffleDown() );
-        moveDown.setTitle( constants.MoveDown() );
+        Image moveDown = new ImageButton( Images.INSTANCE.shuffleDown() );
+        moveDown.setTitle( Constants.INSTANCE.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = new ImageButton( images.shuffleUp() );
-        moveUp.setTitle( constants.MoveUp() );
+        Image moveUp = new ImageButton( Images.INSTANCE.shuffleUp() );
+        moveUp.setTitle( Constants.INSTANCE.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
         hp.add( addPattern );
@@ -724,7 +721,7 @@ public class RuleModeller extends DirtyableComposite
             return;
         }
 
-        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
+        LoadingPopup.showMessage( Constants.INSTANCE.VerifyingItemPleaseWait() );
         Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets( asset.getMetaData().getModuleName() );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
@@ -773,7 +770,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
                     this.addLineIcon( warning.patternOrderNumber + 1,
-                                      images.warning(),
+                                      Images.INSTANCE.warning(),
                                       warning.description );
                 }
             }
@@ -782,7 +779,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.patternOrderNumber != null ) {
                     this.addLineIcon( error.patternOrderNumber + 1,
-                                      images.error(),
+                                      Images.INSTANCE.error(),
                                       error.description );
                 }
             }

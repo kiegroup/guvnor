@@ -18,6 +18,7 @@ package org.drools.guvnor.client.messages;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 /**
@@ -25,13 +26,15 @@ import com.google.gwt.i18n.client.Messages;
  * http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-
  * toolkit-doc-1-5&t=DevGuideInternationalization (for more information).
  * <p/>
- * Each method name matches up with a key in Constants.properties (the
+ * Each method name matches up with a key in ConstantsCore.properties (the
  * properties file can still be used on the server). To use this, use
- * <code>GWT.create(Constants.class)</code>.
+ * <code>GWT.create(ConstantsCore.class)</code>.
  */
-public interface Constants
+public interface ConstantsCore
         extends
         Messages {
+
+    ConstantsCore INSTANCE = GWT.create(ConstantsCore.class);
 
     String ActionColumnConfigurationInsertingANewFact();
 

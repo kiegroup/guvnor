@@ -65,8 +65,6 @@ public class ColumnExpansionPageViewImpl extends Composite
 
     private boolean                              isExandInFull           = true;
 
-    private static final Constants               constants               = GWT.create( Constants.class );
-
     @UiField
     CheckBox                                     chkExpandInFull;
 
@@ -112,7 +110,7 @@ public class ColumnExpansionPageViewImpl extends Composite
         availableColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableColumnsWidget.setMinimumWidth( 275 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableColumns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableColumnsWidget.setEmptyListWidget( lstEmpty );
 
@@ -133,7 +131,7 @@ public class ColumnExpansionPageViewImpl extends Composite
         chosenColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenColumnsWidget.setMinimumWidth( 275 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenColumns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenColumnsWidget.setEmptyListWidget( lstEmpty );
 

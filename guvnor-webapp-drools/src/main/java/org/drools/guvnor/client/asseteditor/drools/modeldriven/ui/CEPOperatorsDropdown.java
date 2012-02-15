@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -52,7 +53,7 @@ public class CEPOperatorsDropdown extends Composite
     implements
     HasValueChangeHandlers<OperatorSelection> {
 
-    private static final Constants         constants                        = ((Constants) GWT.create( Constants.class ));
+    private static final ConstantsCore constants                        = ((ConstantsCore) GWT.create( ConstantsCore.class ));
     private static final OperatorsResource resources                        = GWT.create( OperatorsResource.class );
     private static final OperatorsCss      css                              = resources.operatorsCss();
 
@@ -233,7 +234,7 @@ public class CEPOperatorsDropdown extends Composite
         String selectedText = "";
         box = new ListBox();
 
-        box.addItem( constants.pleaseChoose(),
+        box.addItem( Constants.INSTANCE.pleaseChoose(),
                          "" );
         for ( int i = 0; i < operators.length; i++ ) {
             String op = operators[i];

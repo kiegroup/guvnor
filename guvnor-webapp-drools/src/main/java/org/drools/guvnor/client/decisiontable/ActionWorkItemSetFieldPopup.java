@@ -57,9 +57,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
-    private static Constants               constants                   = GWT.create( Constants.class );
-    private static Images                  images                      = (Images) GWT.create( Images.class );
-
     private SmallLabel                     bindingLabel                = new SmallLabel();
     private TextBox                        fieldLabel                  = getFieldLabel();
     private ListBox                        workItemResultParameters    = new ListBox();
@@ -95,7 +92,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         this.sce = sce;
         this.isReadOnly = isReadOnly;
 
-        setTitle( constants.ColumnConfigurationWorkItemSetField() );
+        setTitle(Constants.INSTANCE.ColumnConfigurationWorkItemSetField());
         setModal( false );
 
         //Fact on which field will be set
@@ -103,9 +100,9 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        ImageButton changePattern = new ImageButton( images.edit(),
-                                                     images.editDisabled(),
-                                                     constants.ChooseABoundFactThatThisColumnPertainsTo(),
+        ImageButton changePattern = new ImageButton( Images.INSTANCE.edit(),
+                                                     Images.INSTANCE.editDisabled(),
+                                                     Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              showChangeFact( w );
@@ -113,16 +110,16 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( constants.Fact(),
+        addAttribute( Constants.INSTANCE.Fact(),
                       pattern );
 
         //Fact Field being set
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( images.edit(),
-                                                 images.editDisabled(),
-                                                 constants.EditTheFieldThatThisColumnOperatesOn(),
+        ImageButton editField = new ImageButton( Images.INSTANCE.edit(),
+                                                 Images.INSTANCE.editDisabled(),
+                                                 Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {
                                                          showFieldChange();
@@ -130,7 +127,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( constants.Field(),
+        addAttribute( Constants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
@@ -145,15 +142,15 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Update Engine with changes
-        addAttribute( constants.UpdateEngineWithChanges(),
+        addAttribute( Constants.INSTANCE.UpdateEngineWithChanges(),
                       doUpdate() );
 
         //Bind field to a WorkItem result parameter
-        addAttribute( constants.BindActionFieldToWorkItem(),
+        addAttribute( Constants.INSTANCE.BindActionFieldToWorkItem(),
                       doBindFieldToWorkItem() );
         if ( !isReadOnly ) {
             workItemResultParameters.addChangeHandler( new ChangeHandler() {
@@ -173,34 +170,34 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( !isValidFactType() ) {
-                    Window.alert( constants.YouMustEnterAColumnFact() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnFact() );
                     return;
                 }
                 if ( !isValidFactField() ) {
-                    Window.alert( constants.YouMustEnterAColumnField() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnField() );
                     return;
                 }
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -236,7 +233,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         if ( this.editingCol.getBoundName() != null ) {
             this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
         } else {
-            this.bindingLabel.setText( constants.pleaseChooseABoundFactForThisColumn() );
+            this.bindingLabel.setText( Constants.INSTANCE.pleaseChooseABoundFactForThisColumn() );
         }
     }
 
@@ -244,7 +241,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         if ( this.editingCol.getFactField() != null ) {
             this.fieldLabel.setText( this.editingCol.getFactField() );
         } else {
-            this.fieldLabel.setText( constants.pleaseChooseAFactPatternFirst() );
+            this.fieldLabel.setText( Constants.INSTANCE.pleaseChooseAFactPatternFirst() );
         }
     }
 
@@ -268,8 +265,8 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants.UpdateDescription() ) );
+        hp.add( new InfoPopup( Constants.INSTANCE.UpdateFact(),
+                               Constants.INSTANCE.UpdateDescription() ) );
         return hp;
     }
 
@@ -290,7 +287,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         //Populate list of available result parameters
         if ( actionWorkItems.size() == 0 ) {
             workItemResultParameters.setEnabled( false );
-            workItemResultParameters.addItem( constants.NoWorkItemsAvailable() );
+            workItemResultParameters.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
             editingCol.setWorkItemName( null );
             editingCol.setWorkItemResultParameterName( null );
             editingCol.setParameterClassName( null );
@@ -320,7 +317,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
             //Disable selection if no suitable parameters were found
             if ( workItemResultParameters.getItemCount() == 0 ) {
                 workItemResultParameters.setEnabled( false );
-                workItemResultParameters.addItem( constants.NoWorkItemsAvailable() );
+                workItemResultParameters.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
                 editingCol.setWorkItemName( null );
                 editingCol.setWorkItemResultParameterName( null );
                 editingCol.setParameterClassName( null );
@@ -411,9 +408,9 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
 
         final ListBox pats = this.loadBoundFacts();
-        pop.addAttribute( constants.ChooseFact(),
+        pop.addAttribute( Constants.INSTANCE.ChooseFact(),
                           pats );
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           ok );
 
@@ -443,9 +440,9 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
         }
-        pop.addAttribute( constants.Field(),
+        pop.addAttribute( Constants.INSTANCE.Field(),
                           box );
-        Button b = new Button( constants.OK() );
+        Button b = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {

@@ -17,6 +17,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FreeFormLinePopup extends Popup {
 
-    private static final Constants         constants = ((Constants) GWT.create( Constants.class ));
+    private static final ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private static FreeFormLinePopupBinder uiBinder  = GWT.create( FreeFormLinePopupBinder.class );
 
@@ -56,10 +57,10 @@ public class FreeFormLinePopup extends Popup {
     protected DynamicTextArea textArea  = new DynamicTextArea();
 
     @UiField()
-    protected Button          btnOK     = new Button( constants.OK() );
+    protected Button          btnOK     = new Button( Constants.INSTANCE.OK() );
 
     @UiField()
-    protected Button          btnCancel = new Button( constants.Cancel() );
+    protected Button          btnCancel = new Button( Constants.INSTANCE.Cancel() );
 
     @UiField()
     protected VerticalPanel   content   = new VerticalPanel();

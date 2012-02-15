@@ -43,9 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
-    protected Constants                constants = ((Constants) GWT.create( Constants.class ));
-    private static Images              images    = GWT.create( Images.class );
-
     protected FromCompositeFactPattern pattern;
     protected DirtyableFlexTable       layout;
     protected boolean                  readOnly;
@@ -134,7 +131,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
                     setModified( true );
                     pattern.setFactPattern( null );
                     getModeller().refreshWidget();
@@ -163,7 +160,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
                                                  click,
                                                  !this.readOnly ) );
             r++;
@@ -196,7 +193,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
-        box.addItem( constants.Choose() );
+        box.addItem( Constants.INSTANCE.Choose() );
 
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
@@ -204,8 +201,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.NewFactPattern() );
-        popup.addAttribute( constants.chooseFactType(),
+        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
+        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -224,8 +221,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                                      ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( images.deleteItemSmall() );
-        remove.setTitle( constants.RemoveThisBlockOfData() );
+        final Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
 
         horiz.setWidth( "100%" );

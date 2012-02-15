@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -34,7 +33,7 @@ import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.LazyStackPanel;
@@ -46,7 +45,7 @@ import java.util.*;
 
 public class MultiViewEditor extends GuvnorEditor {
 
-    private Constants constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private final ClientFactory clientFactory;
     private VerticalPanel viewsPanel = new VerticalPanel();

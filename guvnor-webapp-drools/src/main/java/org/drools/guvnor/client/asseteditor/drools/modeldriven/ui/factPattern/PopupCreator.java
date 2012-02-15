@@ -47,9 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PopupCreator {
 
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
-    private static Images              images    = (Images) GWT.create( Images.class );
-
     private FactPattern                pattern;
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
@@ -130,7 +127,7 @@ public class PopupCreator {
         if ( con.getFieldBinding() != null ) {
             varName.setText( con.getFieldBinding() );
         }
-        final Button ok = new Button( constants.Set() );
+        final Button ok = new Button( Constants.INSTANCE.Set() );
         vn.add( varName );
         vn.add( ok );
 
@@ -138,7 +135,7 @@ public class PopupCreator {
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( modeller.isVariableNameUsed( var ) ) {
-                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 con.setFieldBinding( var );
@@ -146,13 +143,13 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( constants.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
+        popup.addAttribute( Constants.INSTANCE.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
                             vn );
 
         //Show the sub-field selector is there are applicable sub-fields
         if ( hasApplicableFields( fields ) ) {
-            Button sub = new Button( constants.ShowSubFields() );
-            popup.addAttribute( constants.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
+            Button sub = new Button( Constants.INSTANCE.ShowSubFields() );
+            popup.addAttribute( Constants.INSTANCE.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
                                 sub );
             sub.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -187,8 +184,8 @@ public class PopupCreator {
      */
     public void showPatternPopupForComposite(Widget w,
                                              final HasConstraints hasConstraints) {
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
-                                                         constants.AddFieldsToThisConstraint() );
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                         Constants.INSTANCE.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -211,14 +208,14 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( constants.AddARestrictionOnAField(),
+        popup.addAttribute( Constants.INSTANCE.AddARestrictionOnAField(),
                             box );
 
         final ListBox composites = new ListBox();
         composites.addItem( "..." ); //NON-NLS
-        composites.addItem( constants.AllOfAnd(),
+        composites.addItem( Constants.INSTANCE.AllOfAnd(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( constants.AnyOfOr(),
+        composites.addItem( Constants.INSTANCE.AnyOfOr(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
@@ -232,18 +229,18 @@ public class PopupCreator {
             }
         } );
 
-        InfoPopup infoComp = new InfoPopup( constants.MultipleFieldConstraints(),
-                                            constants.MultipleConstraintsTip() );
+        InfoPopup infoComp = new InfoPopup( Constants.INSTANCE.MultipleFieldConstraints(),
+                                            Constants.INSTANCE.MultipleConstraintsTip() );
 
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( constants.MultipleFieldConstraint(),
+        popup.addAttribute( Constants.INSTANCE.MultipleFieldConstraint(),
                             horiz );
 
         //Include Expression Editor
-        popup.addRow( new SmallLabel( "<i>" + constants.AdvancedOptionsColon() + "</i>" ) );
-        Button ebBtn = new Button( constants.ExpressionEditor() );
+        popup.addRow( new SmallLabel( "<i>" + Constants.INSTANCE.AdvancedOptionsColon() + "</i>" ) );
+        Button ebBtn = new Button( Constants.INSTANCE.ExpressionEditor() );
 
         ebBtn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -255,7 +252,7 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( constants.ExpressionEditor(),
+        popup.addAttribute( Constants.INSTANCE.ExpressionEditor(),
                             ebBtn );
 
         popup.show();
@@ -274,8 +271,8 @@ public class PopupCreator {
         final String factType = getFactType( fp,
                                              con );
 
-        String title = (con == null) ? constants.ModifyConstraintsFor0( fp.getFactType() ) : constants.AddSubFieldConstraint();
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
+        String title = (con == null) ? Constants.INSTANCE.ModifyConstraintsFor0( fp.getFactType() ) : Constants.INSTANCE.AddSubFieldConstraint();
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
                                                          title );
 
         final ListBox box = new ListBox();
@@ -306,14 +303,14 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( constants.AddARestrictionOnAField(),
+        popup.addAttribute( Constants.INSTANCE.AddARestrictionOnAField(),
                             box );
 
         final ListBox composites = new ListBox();
         composites.addItem( "..." );
-        composites.addItem( constants.AllOfAnd(),
+        composites.addItem( Constants.INSTANCE.AllOfAnd(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( constants.AnyOfOr(),
+        composites.addItem( Constants.INSTANCE.AnyOfOr(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
@@ -327,21 +324,21 @@ public class PopupCreator {
             }
         } );
 
-        InfoPopup infoComp = new InfoPopup( constants.MultipleFieldConstraints(),
-                                            constants.MultipleConstraintsTip1() );
+        InfoPopup infoComp = new InfoPopup( Constants.INSTANCE.MultipleFieldConstraints(),
+                                            Constants.INSTANCE.MultipleConstraintsTip1() );
 
         HorizontalPanel horiz = new HorizontalPanel();
 
         horiz.add( composites );
         horiz.add( infoComp );
         if ( con == null ) {
-            popup.addAttribute( constants.MultipleFieldConstraint(),
+            popup.addAttribute( Constants.INSTANCE.MultipleFieldConstraint(),
                                 horiz );
         }
 
         if ( con == null ) {
-            popup.addRow( new SmallLabel( "<i>" + constants.AdvancedOptionsColon() + "</i>" ) ); //NON-NLS
-            Button predicate = new Button( constants.NewFormula() );
+            popup.addRow( new SmallLabel( "<i>" + Constants.INSTANCE.AdvancedOptionsColon() + "</i>" ) ); //NON-NLS
+            Button predicate = new Button( Constants.INSTANCE.NewFormula() );
             predicate.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
@@ -351,10 +348,10 @@ public class PopupCreator {
                     popup.hide();
                 }
             } );
-            popup.addAttribute( constants.AddANewFormulaStyleExpression(),
+            popup.addAttribute( Constants.INSTANCE.AddANewFormulaStyleExpression(),
                                 predicate );
 
-            Button ebBtn = new Button( constants.ExpressionEditor() );
+            Button ebBtn = new Button( Constants.INSTANCE.ExpressionEditor() );
 
             ebBtn.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -366,7 +363,7 @@ public class PopupCreator {
                     popup.hide();
                 }
             } );
-            popup.addAttribute( constants.ExpressionEditor(),
+            popup.addAttribute( Constants.INSTANCE.ExpressionEditor(),
                                 ebBtn );
 
             doBindingEditor( popup );
@@ -416,12 +413,12 @@ public class PopupCreator {
             varTxt.setVisibleLength( 6 );
             varName.add( varTxt );
 
-            Button bindVar = new Button( constants.Set() );
+            Button bindVar = new Button( Constants.INSTANCE.Set() );
             bindVar.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     String var = varTxt.getText();
                     if ( modeller.isVariableNameUsed( var ) ) {
-                        Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
+                        Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
                         return;
                     }
                     pattern.setBoundName( varTxt.getText() );
@@ -431,7 +428,7 @@ public class PopupCreator {
             } );
 
             varName.add( bindVar );
-            popup.addAttribute( constants.VariableName(),
+            popup.addAttribute( Constants.INSTANCE.VariableName(),
                                 varName );
 
         }

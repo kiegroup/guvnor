@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -35,13 +35,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * To be shown when the user opens repo for the first time.
  */
 public class NewRepoDialog extends FormStylePopup {
-    private Constants constants;
+    private ConstantsCore constants;
 
     public NewRepoDialog() {
-        setTitle( ((Constants) GWT.create( Constants.class )).WelcomeToGuvnor() );
+        setTitle( ((ConstantsCore) GWT.create( ConstantsCore.class )).WelcomeToGuvnor() );
         setWidth( 300 + "px" );
 
-        constants = ((Constants) GWT.create( Constants.class ));
+        constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
         addAttribute( "",
                       new HTML( "<div class='highlight'>" + constants.BrandNewRepositoryNote() + "</div>" ) ); //NON-NLS
 

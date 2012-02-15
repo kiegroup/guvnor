@@ -50,9 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleAttributeWidget extends Composite {
 
-    private Constants           constants             = GWT.create( Constants.class );
-    private static Images       images                = GWT.create( Images.class );
-
     /**
      * These are the names of all of the rule attributes for this widget
      */
@@ -90,7 +87,7 @@ public class RuleAttributeWidget extends Composite {
         RuleMetadata[] meta = model.metadataList;
         if ( meta.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( constants.Metadata2() ) );
+            hp.add( new SmallLabel( Constants.INSTANCE.Metadata2() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < meta.length; i++ ) {
@@ -102,7 +99,7 @@ public class RuleAttributeWidget extends Composite {
         RuleAttribute[] attrs = model.attributes;
         if ( attrs.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( constants.Attributes1() ) );
+            hp.add( new SmallLabel( Constants.INSTANCE.Attributes1() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < attrs.length; i++ ) {
@@ -121,9 +118,8 @@ public class RuleAttributeWidget extends Composite {
      * @return
      */
     public static ListBox getAttributeList() {
-        Constants cons = ((Constants) GWT.create( Constants.class ));
         ListBox list = new ListBox();
-        list.addItem( cons.Choose() );
+        list.addItem( Constants.INSTANCE.Choose() );
 
         list.addItem( SALIENCE_ATTR );
         list.addItem( ENABLED_ATTR );
@@ -163,8 +159,8 @@ public class RuleAttributeWidget extends Composite {
         Widget editor;
 
         if ( rm.attributeName.equals( LOCK_LHS ) || rm.attributeName.equals( LOCK_RHS ) ) {
-            editor = new InfoPopup( constants.FrozenAreas(),
-                                    constants.FrozenExplanation() );
+            editor = new InfoPopup( Constants.INSTANCE.FrozenAreas(),
+                                    Constants.INSTANCE.FrozenExplanation() );
         } else {
             editor = textBoxEditor( rm );
         }
@@ -236,10 +232,10 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( images.deleteItemSmall() );
+        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
                     model.removeAttribute( idx );
                     parent.refreshWidget();
                 }
@@ -249,10 +245,10 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( images.deleteItemSmall() );
+        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
                     model.removeMetadata( idx );
                     parent.refreshWidget();
                 }

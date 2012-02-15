@@ -65,9 +65,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FactPatternWidget extends RuleModellerWidget {
 
-    private Constants                         constants              = ((Constants) GWT.create( Constants.class ));
-    private static Images                     images                 = GWT.create( Images.class );
-
     private FactPattern                       pattern;
     private DirtyableFlexTable                layout                 = new DirtyableFlexTable();
     private Connectives                       connectives;
@@ -204,8 +201,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( images.deleteItemSmall() );
-            clear.setTitle( constants.RemoveThisWholeRestriction() );
+            Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
             if ( !this.readOnly ) {
@@ -222,7 +219,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                     setModified( true );
                     pattern.removeConstraint( currentRow );
                     getModeller().refreshWidget();
@@ -370,9 +367,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         };
 
         if ( constraint.compositeJunctionType.equals( CompositeFieldConstraint.COMPOSITE_TYPE_AND ) ) {
-            desc = constants.AllOf() + ":";
+            desc = Constants.INSTANCE.AllOf() + ":";
         } else {
-            desc = constants.AnyOf() + ":";
+            desc = Constants.INSTANCE.AnyOf() + ":";
         }
 
         t.setWidget( 0,
@@ -396,12 +393,12 @@ public class FactPatternWidget extends RuleModellerWidget {
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( images.deleteItemSmall() );
-                clear.setTitle( constants.RemoveThisNestedRestriction() );
+                Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+                clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
-                        if ( Window.confirm( constants.RemoveThisItemFromNestedConstraint() ) ) {
+                        if ( Window.confirm( Constants.INSTANCE.RemoveThisItemFromNestedConstraint() ) ) {
                             setModified( true );
                             constraint.removeConstraint( currentRow );
                             getModeller().refreshWidget();
@@ -504,8 +501,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Image createAddConnectiveImageButton(final RuleModeller modeller,
                                                  final SingleFieldConstraint constraint) {
-        Image addConnective = new ImageButton( images.addConnective() );
-        addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
+        Image addConnective = new ImageButton( Images.INSTANCE.addConnective() );
+        addConnective.setTitle( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -522,7 +519,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          final HasCEPWindow c) {
         if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
             HorizontalPanel hp = new HorizontalPanel();
-            Label lbl = new Label( constants.OverCEPWindow() );
+            Label lbl = new Label( Constants.INSTANCE.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
             hp.add( lbl );
             CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
@@ -586,8 +583,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         HorizontalPanel pred = new HorizontalPanel();
         pred.setWidth( "100%" );
-        Image img = new Image( images.functionAssets() );
-        img.setTitle( constants.FormulaBooleanTip() );
+        Image img = new Image( Images.INSTANCE.functionAssets() );
+        img.setTitle( Constants.INSTANCE.FormulaBooleanTip() );
 
         pred.add( img );
         if ( c.getValue() == null ) {
@@ -633,12 +630,12 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         String desc;
         if ( isAll0WithLabel ) {
-            desc = constants.All0with( patternName );
+            desc = Constants.INSTANCE.All0with( patternName );
         } else {
             if ( pattern.getNumberOfConstraints() > 0 ) {
-                desc = constants.ThereIsAAn0With( patternName );
+                desc = Constants.INSTANCE.ThereIsAAn0With( patternName );
             } else {
-                desc = constants.ThereIsAAn0( patternName );
+                desc = Constants.INSTANCE.ThereIsAAn0( patternName );
             }
             desc = anA( desc,
                         patternName );
@@ -728,7 +725,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
                     }
-                    if ( selectedText.equals( constants.isEqualToNull() ) || selectedText.equals( constants.isNotEqualToNull() ) ) {
+                    if ( selectedText.equals( Constants.INSTANCE.isEqualToNull() ) || selectedText.equals( Constants.INSTANCE.isNotEqualToNull() ) ) {
                         if ( inner != null ) {
                             inner.getWidget( row,
                                              col ).setVisible( false );
@@ -746,7 +743,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             return w;
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
             return sl;
         }
 

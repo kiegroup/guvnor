@@ -22,13 +22,13 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.DecoratedTextArea;
 
 public class CommentWidget extends DirtyableComposite {
-    private Constants constants = GWT.create(Constants.class);
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
     private final DecoratedTextArea text;
 
     public CommentWidget(final Artifact artifact,

@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    protected static final Constants    messages = GWT.create( Constants.class );
+    protected static final ConstantsCore messages = GWT.create( ConstantsCore.class );
 
     private AbstractDecisionTableWidget dtable;
 

@@ -20,6 +20,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Asset;
@@ -43,7 +44,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidgetComponentCreator {
 
-    private Constants            constants = GWT.create( Constants.class );
     private final ScenarioWidget scenarioWidget;
     private final Asset      asset;
 
@@ -61,12 +61,12 @@ public class ScenarioWidgetComponentCreator {
     protected HorizontalPanel createHorizontalPanel() {
         HorizontalPanel h = new HorizontalPanel();
         h.add( new GlobalButton( getScenario(), this.scenarioWidget ) );
-        h.add( new SmallLabel( this.constants.globals() ) );
+        h.add( new SmallLabel( Constants.INSTANCE.globals() ) );
         return h;
     }
 
     protected SmallLabel createSmallLabel() {
-        return new SmallLabel( this.constants.configuration() );
+        return new SmallLabel( Constants.INSTANCE.configuration() );
     }
 
     protected ConfigWidget createConfigWidget() {
@@ -115,7 +115,7 @@ public class ScenarioWidgetComponentCreator {
             return new GivenPanel( listExecutionTrace, executionTraceLine, given, getScenario(), this.scenarioWidget );
 
         } else {
-            return new HTML( "<i><small>" + this.constants.AddInputDataAndExpectationsHere() + "</small></i>" );
+            return new HTML( "<i><small>" + Constants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
@@ -125,18 +125,18 @@ public class ScenarioWidgetComponentCreator {
             return new CallMethodOnGivenPanel( listExecutionTrace, executionTraceLine, given, getScenario(), this.scenarioWidget );
 
         } else {
-            return new HTML( "<i><small>" + this.constants.AddInputDataAndExpectationsHere() + "</small></i>" );
+            return new HTML( "<i><small>" + Constants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
     protected TextBox createRuleNameTextBox() {
         final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle( this.constants.EnterRuleNameScenario() );
+        ruleNameTextBox.setTitle( Constants.INSTANCE.EnterRuleNameScenario() );
         return ruleNameTextBox;
     }
 
     protected Button createOkButton(final RuleSelectionEvent selected, final TextBox ruleNameTextBox) {
-        Button ok = new Button( this.constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 selected.ruleSelected( ruleNameTextBox.getText() );
@@ -157,7 +157,7 @@ public class ScenarioWidgetComponentCreator {
 
     protected ListBox createAvailableRulesBox(String[] list) {
         final ListBox availableRulesBox = new ListBox();
-        availableRulesBox.addItem( this.constants.pleaseChoose1() );
+        availableRulesBox.addItem( Constants.INSTANCE.pleaseChoose1() );
         for ( int i = 0; i < list.length; i++ ) {
             availableRulesBox.addItem( list[i] );
         }

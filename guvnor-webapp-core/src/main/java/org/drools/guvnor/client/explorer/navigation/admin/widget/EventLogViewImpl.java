@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.widgets.tables.LogPagedTable;
 
@@ -36,7 +36,7 @@ public class EventLogViewImpl extends Composite
         implements
         EventLogPresenter.EventLogView {
 
-    private static Images images = (Images) GWT.create(Images.class);
+    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
 
     private VerticalPanel layout;
     private LogPagedTable table;
@@ -46,7 +46,7 @@ public class EventLogViewImpl extends Composite
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        Constants constants = ((Constants) GWT.create(Constants.class));
+        ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
         Label caption = new Label(constants.ShowRecentLogTip());
         caption.getElement().getStyle().setFontWeight(FontWeight.BOLD);
         header.add(caption);

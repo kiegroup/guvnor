@@ -63,8 +63,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     RuleModelEditor,
     TemplateVariablesChangedEvent.Handler {
 
-    protected static final Constants constants  = GWT.create( Constants.class );
-
     protected int                    MIN_WIDTH  = 500;
     protected int                    MIN_HEIGHT = 200;
 
@@ -226,26 +224,26 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-            Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+            Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
         }
         if ( isNew ) {
             if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
             //Ensure variables reflect (name) changes made in RuleModeller
             if ( getDefinedVariables( this.ruleModel ) ) {
                 doInsertColumn();
             } else {
-                Window.alert( constants.DecisionTableBRLFragmentNoTemplateKeysFound() );
+                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNoTemplateKeysFound() );
                 return;
             }
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                    Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
                 }
             }
@@ -253,7 +251,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
             if ( getDefinedVariables( this.ruleModel ) ) {
                 doUpdateColumn();
             } else {
-                Window.alert( constants.DecisionTableBRLFragmentNoTemplateKeysFound() );
+                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNoTemplateKeysFound() );
                 return;
             }
         }

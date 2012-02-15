@@ -27,7 +27,9 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -45,8 +47,7 @@ import java.util.List;
  */
 public class PackageBuilderWidget extends Composite {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     private Module conf;
 
@@ -68,11 +69,11 @@ public class PackageBuilderWidget extends Composite {
         final VerticalPanel buildResults = new VerticalPanel();
 
         RadioButton wholePackageRadioButton = new RadioButton("action",
-                constants.BuildWholePackage());
+                Constants.INSTANCE.BuildWholePackage());
         RadioButton builtInSelectorRadioButton = new RadioButton("action",
-                constants.BuildPackageUsingBuiltInSelector());
+                Constants.INSTANCE.BuildPackageUsingBuiltInSelector());
         RadioButton customSelectorRadioButton = new RadioButton("action",
-                constants.BuildPackageUsingCustomSelector());
+                Constants.INSTANCE.BuildPackageUsingCustomSelector());
         wholePackageRadioButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 buildWholePackageLayout.setVisible(true);
@@ -102,20 +103,20 @@ public class PackageBuilderWidget extends Composite {
 
         HorizontalPanel wholePackageRadioButtonPanel = new HorizontalPanel();
         wholePackageRadioButtonPanel.add(wholePackageRadioButton);
-        wholePackageRadioButtonPanel.add(new InfoPopup(constants.BuildWholePackage(),
-                constants.BuildWholePackageTip()));
+        wholePackageRadioButtonPanel.add(new InfoPopup(Constants.INSTANCE.BuildWholePackage(),
+                Constants.INSTANCE.BuildWholePackageTip()));
         verticalPanel.add(wholePackageRadioButtonPanel);
 
         HorizontalPanel builtInSelectorRadioButtonPanel = new HorizontalPanel();
         builtInSelectorRadioButtonPanel.add(builtInSelectorRadioButton);
-        builtInSelectorRadioButtonPanel.add(new InfoPopup(constants.BuiltInSelector(),
-                constants.BuiltInSelectorTip()));
+        builtInSelectorRadioButtonPanel.add(new InfoPopup(Constants.INSTANCE.BuiltInSelector(),
+                Constants.INSTANCE.BuiltInSelectorTip()));
         verticalPanel.add(builtInSelectorRadioButtonPanel);
 
         HorizontalPanel customSelectorRadioButtonPanel = new HorizontalPanel();
         customSelectorRadioButtonPanel.add(customSelectorRadioButton);
-        customSelectorRadioButtonPanel.add(new InfoPopup(constants.CustomSelector(),
-                constants.SelectorTip()));
+        customSelectorRadioButtonPanel.add(new InfoPopup(Constants.INSTANCE.CustomSelector(),
+                Constants.INSTANCE.SelectorTip()));
         verticalPanel.add(customSelectorRadioButtonPanel);
 
         layout.addAttribute("",
@@ -131,7 +132,7 @@ public class PackageBuilderWidget extends Composite {
 
         // Built-in selector layout
         builtInSelectorLayout.addRow(new HTML("&nbsp;&nbsp;<i>"
-                + constants.BuildPackageUsingFollowingAssets()
+                + Constants.INSTANCE.BuildPackageUsingFollowingAssets()
                 + "</i>"));
 
         HorizontalPanel builtInSelectorStatusPanel = new HorizontalPanel();
@@ -139,7 +140,7 @@ public class PackageBuilderWidget extends Composite {
         enableStatusCheckBox.setValue(false);
         builtInSelectorStatusPanel.add(enableStatusCheckBox);
         builtInSelectorStatusPanel.add(new HTML("&nbsp;&nbsp;<i>"
-                + constants.BuildPackageUsingBuiltInSelectorStatus()
+                + Constants.INSTANCE.BuildPackageUsingBuiltInSelectorStatus()
                 + " </i>"));
         final ListBox statusOperator = new ListBox();
         String[] vals = new String[]{"=", "!="};
@@ -150,7 +151,7 @@ public class PackageBuilderWidget extends Composite {
         builtInSelectorStatusPanel.add(statusOperator);
 
         final TextBox statusValue = new TextBox();
-        statusValue.setTitle(constants.WildCardsSearchTip());
+        statusValue.setTitle(Constants.INSTANCE.WildCardsSearchTip());
         builtInSelectorStatusPanel.add(statusValue);
 
         builtInSelectorLayout.addRow(builtInSelectorStatusPanel);
@@ -160,7 +161,7 @@ public class PackageBuilderWidget extends Composite {
         enableCategoryCheckBox.setValue(false);
         builtInSelectorCatPanel.add(enableCategoryCheckBox);
         builtInSelectorCatPanel.add(new HTML("&nbsp;&nbsp;<i>"
-                + constants.BuildPackageUsingBuiltInSelectorCat()
+                + Constants.INSTANCE.BuildPackageUsingBuiltInSelectorCat()
                 + " </i>"));
         final ListBox catOperator = new ListBox();
         String[] catVals = new String[]{"=", "!="};
@@ -187,19 +188,19 @@ public class PackageBuilderWidget extends Composite {
         customSelectorLayout.setVisible(false);
         HorizontalPanel customSelectorPanel = new HorizontalPanel();
         customSelectorPanel.add(new HTML("&nbsp;&nbsp;<i>"
-                + constants.BuildPackageUsingCustomSelectorSelector()
+                + Constants.INSTANCE.BuildPackageUsingCustomSelectorSelector()
                 + " </i>")); // NON-NLS
 
         final ListBox customSelector = new ListBox();
-        customSelector.setTitle(constants.WildCardsSearchTip());
+        customSelector.setTitle(Constants.INSTANCE.WildCardsSearchTip());
         customSelectorPanel.add(customSelector);
         loadCustomSelectorList(customSelector);
 
         customSelectorLayout.addRow(customSelectorPanel);
         layout.addRow(customSelectorLayout);
 
-        final Button b = new Button(constants.BuildPackage());
-        b.setTitle(constants.ThisWillValidateAndCompileAllTheAssetsInAPackage());
+        final Button b = new Button(Constants.INSTANCE.BuildPackage());
+        b.setTitle(Constants.INSTANCE.ThisWillValidateAndCompileAllTheAssetsInAPackage());
         b.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 doBuild(buildResults,
@@ -215,10 +216,10 @@ public class PackageBuilderWidget extends Composite {
         HorizontalPanel buildStuff = new HorizontalPanel();
         buildStuff.add(b);
 
-        layout.addAttribute(constants.BuildBinaryPackage(),
+        layout.addAttribute(Constants.INSTANCE.BuildBinaryPackage(),
                 buildStuff);
         layout.addRow(new HTML("<i><small>"
-                + constants.BuildingPackageNote()
+                + Constants.INSTANCE.BuildingPackageNote()
                 + "</small></i>"));// NON-NLS
         container.add(layout);
 
@@ -227,14 +228,14 @@ public class PackageBuilderWidget extends Composite {
 
         // UI below the results table
         layout = new FormStyleLayout();
-        Button snap = new Button(constants.CreateSnapshotForDeployment());
+        Button snap = new Button(Constants.INSTANCE.CreateSnapshotForDeployment());
         snap.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showSnapshotDialog(conf.getName(),
                         null);
             }
         });
-        layout.addAttribute(constants.TakeSnapshot(),
+        layout.addAttribute(Constants.INSTANCE.TakeSnapshot(),
                 snap);
         container.add(layout);
 
@@ -264,8 +265,8 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
 
         final HorizontalPanel busy = new HorizontalPanel();
-        busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
-        busy.add(new Image(images.redAnime()));
+        busy.add(new Label(Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait()));
+        busy.add(new Image(Images.INSTANCE.redAnime()));
 
         buildResults.add(busy);
 
@@ -309,7 +310,7 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void doBuildSource(final String uuid,
                                      final String name) {
-        LoadingPopup.showMessage(constants.AssemblingPackageSource());
+        LoadingPopup.showMessage(Constants.INSTANCE.AssemblingPackageSource());
 
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
@@ -330,11 +331,10 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showSource(final String content,
                                   String name) {
-        Constants constants = GWT.create( Constants.class );
         int windowWidth = Window.getClientWidth() / 2;
         int windowHeight = Window.getClientHeight() / 2;
-        final FormStylePopup pop = new FormStylePopup( images.viewSource(),
-                                                       constants.ViewingSourceFor0( name ),
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.viewSource(),
+                                                       Constants.INSTANCE.ViewingSourceFor0( name ),
                                                        windowWidth );
 
         String[] rows = content.split( "\n" );
@@ -447,9 +447,9 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add(new HTML(AbstractImagePrototype.create(images.greenTick()).getHTML()
+        vert.add(new HTML(AbstractImagePrototype.create(Images.INSTANCE.greenTick()).getHTML()
                 + "<i>"
-                + constants.PackageBuiltSuccessfully()
+                + Constants.INSTANCE.PackageBuiltSuccessfully()
                 + " "
                 + conf.getLastModified()
                 + "</i>"));
@@ -459,7 +459,7 @@ public class PackageBuilderWidget extends Composite {
         HTML html = new HTML("<a href='"
                 + hyp
                 + "' target='_blank'>"
-                + constants.DownloadBinaryPackage()
+                + Constants.INSTANCE.DownloadBinaryPackage()
                 + "</a>");
 
         vert.add(html);
@@ -506,17 +506,17 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
-        LoadingPopup.showMessage(constants.LoadingExistingSnapshots());
-        final FormStylePopup form = new FormStylePopup(images.snapshot(),
-                constants.CreateASnapshotForDeployment());
-        form.addRow(new HTML(constants.SnapshotDescription()));
+        LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
+        final FormStylePopup form = new FormStylePopup(Images.INSTANCE.snapshot(),
+                Constants.INSTANCE.CreateASnapshotForDeployment());
+        form.addRow(new HTML(Constants.INSTANCE.SnapshotDescription()));
 
         final VerticalPanel vert = new VerticalPanel();
-        form.addAttribute(constants.ChooseOrCreateSnapshotName(),
+        form.addAttribute(Constants.INSTANCE.ChooseOrCreateSnapshotName(),
                 vert);
         final List<RadioButton> radioList = new ArrayList<RadioButton>();
         final TextBox newName = new TextBox();
-        final String newSnapshotText = constants.NEW()
+        final String newSnapshotText = Constants.INSTANCE.NEW()
                 + ": ";
 
         RepositoryServiceFactory.getPackageService().listSnapshots(packageName,
@@ -550,10 +550,10 @@ public class PackageBuilderWidget extends Composite {
                 });
 
         final TextBox comment = new TextBox();
-        form.addAttribute(constants.Comment(),
+        form.addAttribute(Constants.INSTANCE.Comment(),
                 comment);
 
-        Button create = new Button(constants.CreateNewSnapshot());
+        Button create = new Button(Constants.INSTANCE.CreateNewSnapshot());
         form.addAttribute("",
                 create);
 
@@ -576,18 +576,18 @@ public class PackageBuilderWidget extends Composite {
                 }
 
                 if (name.equals("")) {
-                    Window.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
+                    Window.alert(Constants.INSTANCE.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
                     return;
                 }
 
-                LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+                LoadingPopup.showMessage(Constants.INSTANCE.PleaseWaitDotDotDot());
                 RepositoryServiceFactory.getPackageService().createModuleSnapshot(packageName,
                         name,
                         replace,
                         comment.getText(),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
-                                Window.alert(constants.TheSnapshotCalled0WasSuccessfullyCreated(name));
+                                Window.alert(Constants.INSTANCE.TheSnapshotCalled0WasSuccessfullyCreated(name));
                                 form.hide();
                                 if (refreshCmd != null) {
                                     refreshCmd.execute();

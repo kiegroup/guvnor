@@ -69,9 +69,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private Constants                        constants        = ((Constants) GWT.create( Constants.class ));
-    private static Images                    images           = GWT.create( Images.class );
-
     private final FactPattern                pattern;
     private String                           fieldName;
     private String                           qualifiedFieldName;
@@ -168,7 +165,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            Image clickme = new Image( images.edit() );
+            Image clickme = new Image( Images.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -207,13 +204,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( images.deleteItemSmall() );
-        clear.setTitle( constants.RemoveConstraintValueDefinition() );
+        Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( constants.RemoveConstraintValueDefinitionQuestion() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveConstraintValueDefinitionQuestion() ) ) {
                     constraint.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
                     constraint.setValue( null );
                     constraint.clearParameters();
@@ -323,7 +320,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         final ListBox box = new ListBox();
-        box.addItem( constants.Choose() );
+        box.addItem( Constants.INSTANCE.Choose() );
 
         List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
         List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
@@ -360,8 +357,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return new SmallLabel( box.getText() );
         }
 
-        String msg = constants.FormulaEvaluateToAValue();
-        Image img = new Image( images.functionAssets() );
+        String msg = Constants.INSTANCE.FormulaEvaluateToAValue();
+        Image img = new Image( Images.INSTANCE.functionAssets() );
         img.setTitle( msg );
         box.setTitle( msg );
         box.addChangeHandler( new ChangeHandler() {
@@ -415,8 +412,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 Window.alert( "Unexpected constraint type!" );
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( images.newexWiz(),
-                                                                         constants.FieldValue(),
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( Images.INSTANCE.newexWiz(),
+                                                                         Constants.INSTANCE.FieldValue(),
                                                                          customFormConfiguration );
 
             final SingleFieldConstraint sfc = (SingleFieldConstraint) con;
@@ -436,10 +433,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
 
-        Button lit = new Button( constants.LiteralValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 con.setConstraintValueType( isDropDownDataEnum && dropDownData != null ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL );
@@ -469,14 +466,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         if ( showLiteralOrFormula ) {
-            form.addAttribute( constants.LiteralValue() + ":",
+            form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                                widgets( lit,
-                                        new InfoPopup( constants.LiteralValue(),
-                                                       constants.LiteralValTip() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.LiteralValue(),
+                                                       Constants.INSTANCE.LiteralValTip() ) ) );
         }
 
         if ( modeller.isTemplate() ) {
-            String templateKeyLabel = constants.TemplateKey();
+            String templateKeyLabel = Constants.INSTANCE.TemplateKey();
             Button templateKeyButton = new Button( templateKeyLabel );
             templateKeyButton.addClickHandler( new ClickHandler() {
 
@@ -489,12 +486,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
             form.addAttribute( templateKeyLabel + ":",
                                widgets( templateKeyButton,
                                         new InfoPopup( templateKeyLabel,
-                                                       constants.LiteralValTip() ) ) );
+                                                       Constants.INSTANCE.LiteralValTip() ) ) );
         }
 
         if ( showLiteralOrFormula ) {
             form.addRow( new HTML( "<hr/>" ) );
-            form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
+            form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
         }
 
         //only want to show variables if we have some !
@@ -505,7 +502,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
             if ( applicableBindingsInScope.size() > 0 ) {
 
-                Button variable = new Button( constants.BoundVariable() );
+                Button variable = new Button( Constants.INSTANCE.BoundVariable() );
                 variable.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
@@ -513,15 +510,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
                         doTypeChosen( form );
                     }
                 } );
-                form.addAttribute( constants.AVariable(),
+                form.addAttribute( Constants.INSTANCE.AVariable(),
                                        widgets( variable,
-                                                new InfoPopup( constants.ABoundVariable(),
-                                                               constants.BoundVariableTip() ) ) );
+                                                new InfoPopup( Constants.INSTANCE.ABoundVariable(),
+                                                               Constants.INSTANCE.BoundVariableTip() ) ) );
             }
         }
 
         if ( showLiteralOrFormula ) {
-            Button formula = new Button( constants.NewFormula() );
+            Button formula = new Button( Constants.INSTANCE.NewFormula() );
             formula.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -530,13 +527,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 }
             } );
 
-            form.addAttribute( constants.AFormula() + ":",
+            form.addAttribute( Constants.INSTANCE.AFormula() + ":",
                                widgets( formula,
-                                        new InfoPopup( constants.AFormula(),
-                                                       constants.FormulaExpressionTip() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.AFormula(),
+                                                       Constants.INSTANCE.FormulaExpressionTip() ) ) );
         }
 
-        Button expression = new Button( constants.ExpressionEditor() );
+        Button expression = new Button( Constants.INSTANCE.ExpressionEditor() );
         expression.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -545,10 +542,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         } );
 
-        form.addAttribute( constants.ExpressionEditor() + ":",
+        form.addAttribute( Constants.INSTANCE.ExpressionEditor() + ":",
                            widgets( expression,
-                                    new InfoPopup( constants.ExpressionEditor(),
-                                                   constants.ExpressionEditor() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.ExpressionEditor(),
+                                                   Constants.INSTANCE.ExpressionEditor() ) ) );
 
         form.show();
     }

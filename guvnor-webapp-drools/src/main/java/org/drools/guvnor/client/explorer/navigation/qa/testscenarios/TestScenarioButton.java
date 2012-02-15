@@ -27,7 +27,6 @@ import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -37,8 +36,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 abstract class TestScenarioButton extends ImageButton {
-
-    protected static Constants                 constants = GWT.create( Constants.class );
 
     protected final Scenario                   scenario;
     protected final ScenarioWidget             parent;
@@ -76,7 +73,7 @@ abstract class TestScenarioButton extends ImageButton {
 
         protected abstract class BasePanel<T extends Widget> extends HorizontalPanel {
             protected final T      valueWidget;
-            protected final Button add = new Button( constants.Add() );
+            protected final Button add = new Button( Constants.INSTANCE.Add() );
 
             public BasePanel() {
                 valueWidget = getWidget();

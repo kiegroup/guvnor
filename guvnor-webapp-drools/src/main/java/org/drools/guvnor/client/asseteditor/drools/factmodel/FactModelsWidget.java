@@ -26,10 +26,8 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -38,7 +36,6 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,7 +48,7 @@ public class FactModelsWidget extends Composite
     SaveEventListener,
     EditorWidget {
 
-    private static final Constants    constants           = ((Constants) GWT.create( Constants.class ));
+    private static final ConstantsCore constants           = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private final Asset               asset;
     private final ClientFactory       clientFactory;
@@ -208,7 +205,7 @@ public class FactModelsWidget extends Composite
 
     public void onAfterSave() {
         //Refresh  SuggestionCompletionCache is done by RuleViewer.flushSuggestionCompletionCache(). No need to refresh it twice here.
-/*        LoadingPopup.showMessage( constants.RefreshingModel() );
+/*        LoadingPopup.showMessage( Constants.INSTANCE.RefreshingModel() );
         SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().getModuleName(),
                                                              new Command() {
                                                                  public void execute() {

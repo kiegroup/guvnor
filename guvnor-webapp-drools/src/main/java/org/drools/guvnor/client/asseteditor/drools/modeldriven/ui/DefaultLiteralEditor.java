@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 /**
@@ -31,12 +32,11 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
  */
 public class DefaultLiteralEditor extends Composite {
 
-    private Constants constants = ((Constants) GWT.create(Constants.class));
     private BaseSingleFieldConstraint constraint;
 
     private Label textWidget = new Label();
 
-    private final Button okButton = new Button(constants.OK());
+    private final Button okButton = new Button(Constants.INSTANCE.OK());
     private final ValueChanged valueChanged = new ValueChanged() {
         public void valueChanged(String newValue) {
             constraint.setValue(newValue);
@@ -64,7 +64,7 @@ public class DefaultLiteralEditor extends Composite {
         if (constraint.getValue() != null && !"".equals(constraint.getValue())) {
             textWidget.setText(constraint.getValue());
         } else {
-            textWidget.setText(constants.Value());
+            textWidget.setText(Constants.INSTANCE.Value());
         }
 
         initWidget(textWidget);
@@ -134,14 +134,14 @@ public class DefaultLiteralEditor extends Composite {
 
         });
 
-        box.setTitle(constants.LiteralValueTip());
+        box.setTitle(Constants.INSTANCE.LiteralValueTip());
 
         return box;
     }
 
     private boolean isValueEmpty(String s) {
         if (s == null || "".equals(s.trim())) {
-            ErrorPopup.showMessage(constants.ValueCanNotBeEmpty());
+            ErrorPopup.showMessage(Constants.INSTANCE.ValueCanNotBeEmpty());
             return true;
         } else {
             return false;

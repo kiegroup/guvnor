@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.PropertyHolder;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable.PropertyHolderAdaptor;
 import org.drools.guvnor.client.widgets.tables.AbstractSimpleTable;
@@ -165,7 +166,7 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         columnPicker.addColumn( propertyNameColumn,
                                 new SortableHeader<PropertyHolderAdaptor, String>(
                                                                                    sortableHeaderGroup,
-                                                                                   constants.Item(),
+                                                                                   Constants.INSTANCE.Item(),
                                                                                    propertyNameColumn ),
                                 true );
 
@@ -189,7 +190,7 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         columnPicker.addColumn( propertyValueColumn,
                                 new SortableHeader<PropertyHolderAdaptor, String>(
                                                                                    sortableHeaderGroup,
-                                                                                   constants.Value(),
+                                                                                   Constants.INSTANCE.Value(),
                                                                                    propertyValueColumn ),
                                 true );
 

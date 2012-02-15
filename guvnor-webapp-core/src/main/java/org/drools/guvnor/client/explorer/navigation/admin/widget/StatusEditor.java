@@ -20,9 +20,9 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -37,8 +37,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class StatusEditor extends FormStylePopup {
 
-    private static Images    images    = (Images) GWT.create( Images.class );
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
+    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private TextBox          name      = new TextBox();
     private Command          refresh;

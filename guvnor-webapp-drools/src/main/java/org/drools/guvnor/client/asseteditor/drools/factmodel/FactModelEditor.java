@@ -37,10 +37,7 @@ import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
 import java.util.List;
 
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
-
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-    private static Images    images    = (Images) GWT.create( Images.class );
-
+    
     interface FactModelEditorBinder
             extends
             UiBinder<Widget, FactModelEditor> {
@@ -92,9 +89,9 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
         setIconImage();
 
-        moveUpIcon.setTitle( constants.MoveUp() );
-        moveDownIcon.setTitle( constants.MoveDown() );
-        deleteIcon.setTitle( constants.RemoveThisFactType() );
+        moveUpIcon.setTitle( Constants.INSTANCE.MoveUp() );
+        moveDownIcon.setTitle( Constants.INSTANCE.MoveDown() );
+        deleteIcon.setTitle( Constants.INSTANCE.RemoveThisFactType() );
 
         addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
             public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
@@ -152,21 +149,21 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
         for ( FactMetaModel fmm : superTypeFactModels ) {
             if ( fmm.hasSuperType() ) {
                 if ( fmm.getSuperType().equals( factMetaModel.getName() ) ) {
-                    Window.confirm( constants.CannotDeleteADeclarationThatIsASuperType() );
+                    Window.confirm( Constants.INSTANCE.CannotDeleteADeclarationThatIsASuperType() );
                     return;
                 }
             }
         }
-        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFact() ) ) {
+        if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisFact() ) ) {
             deleteEvent.execute();
         }
     }
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( images.collapse() );
-        } else {
-            icon.setResource( images.expand() );
+            icon.setResource( Images.INSTANCE.collapse() );
+        } else {               
+            icon.setResource( Images.INSTANCE.expand() );
         }
     }
 

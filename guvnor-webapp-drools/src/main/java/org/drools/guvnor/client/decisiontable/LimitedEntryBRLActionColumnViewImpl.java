@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
@@ -59,7 +60,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
                clientFactory,
                eventBus );
 
-        setTitle( constants.ActionBRLFragmentConfiguration() );
+        setTitle( Constants.INSTANCE.ActionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique(String header) {

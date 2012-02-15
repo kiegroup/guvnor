@@ -24,7 +24,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.FactData;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -36,9 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 class GlobalButton extends ImageButton {
 
-    private static Constants                 constants = GWT.create( Constants.class );
-    private static Images                    images    = GWT.create( Images.class );
-
     private final Scenario                   scenario;
     private final ScenarioWidget             parent;
 
@@ -46,8 +42,8 @@ class GlobalButton extends ImageButton {
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioWidget parent) {
-        super( images.newItem(),
-               constants.AddANewGlobalToThisScenario() );
+        super( Images.INSTANCE.newItem(),
+               Constants.INSTANCE.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;
         this.parent = parent;
@@ -72,8 +68,8 @@ class GlobalButton extends ImageButton {
         private Widget warning;
 
         public NewGlobalPopup() {
-            super( images.ruleAsset(),
-                   constants.NewGlobal() );
+            super( Images.INSTANCE.ruleAsset(),
+                   Constants.INSTANCE.NewGlobal() );
 
             factTypes = new ListBox();
             addButton = new AddButton();
@@ -83,7 +79,7 @@ class GlobalButton extends ImageButton {
 
             addRow( warning );
 
-            addAttribute( constants.GlobalColon(),
+            addAttribute( Constants.INSTANCE.GlobalColon(),
                           getHorizontalPanel() );
         }
 
@@ -112,7 +108,7 @@ class GlobalButton extends ImageButton {
         class AddButton extends Button {
 
             public AddButton() {
-                super( constants.Add() );
+                super( Constants.INSTANCE.Add() );
                 addAddClickHandler();
             }
 
@@ -122,7 +118,7 @@ class GlobalButton extends ImageButton {
                     public void onClick(ClickEvent event) {
                         String text = factTypes.getItemText( factTypes.getSelectedIndex() );
                         if ( scenario.isFactNameReserved( text ) ) {
-                            Window.alert( constants.TheName0IsAlreadyInUsePleaseChooseAnotherName( text ) );
+                            Window.alert( Constants.INSTANCE.TheName0IsAlreadyInUsePleaseChooseAnotherName( text ) );
                         } else {
                             FactData factData = new FactData( suggestionCompletionEngine.getGlobalVariable( text ),
                                                               text,
@@ -141,7 +137,7 @@ class GlobalButton extends ImageButton {
 
     //A simple banner to alert users that no Globals have been defined
     private Widget getMissingGlobalsWarning() {
-        HTML warning = new HTML( constants.missingGlobalsWarning() );
+        HTML warning = new HTML( Constants.INSTANCE.missingGlobalsWarning() );
         warning.getElement().setClassName( "missingGlobalsWarning" );
         return warning;
     }

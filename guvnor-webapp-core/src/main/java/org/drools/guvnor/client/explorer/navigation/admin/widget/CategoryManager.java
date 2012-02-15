@@ -18,12 +18,12 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.categorynav.CategoryEditor;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -42,8 +42,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class CategoryManager extends Composite {
 
-    private static Images          images    = (Images) GWT.create( Images.class );
-    private Constants              constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     public VerticalPanel           layout    = new VerticalPanel();
     //public String selectedPath;

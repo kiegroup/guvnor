@@ -21,6 +21,7 @@ import java.util.Set;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.widgets.tables.AbstractSimpleTable;
@@ -109,7 +110,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         columnPicker.addColumn( uuidColumn,
                                 new SortableHeader<BuilderResultLine, String>(
                                                                                sortableHeaderGroup,
-                                                                               constants.uuid(),
+                                                                               Constants.INSTANCE.uuid(),
                                                                                uuidColumn ),
                                 false );
 
@@ -120,7 +121,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         };
         columnPicker.addColumn( assetNameColumn,
                                 new SortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
-                                                                               constants.Name(),
+                                                                               Constants.INSTANCE.Name(),
                                                                                assetNameColumn ),
                                 true );
 
@@ -134,7 +135,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         columnPicker.addColumn( formatColumn,
                                 new SortableHeader<BuilderResultLine, RuleFormatImageResource>(
                                                                                                 sortableHeaderGroup,
-                                                                                                constants.Format(),
+                                                                                                Constants.INSTANCE.Format(),
                                                                                                 formatColumn ),
                                 true );
 
@@ -145,14 +146,14 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         };
         columnPicker.addColumn( messageColumn,
                                 new SortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
-                                                                               constants.Message1(),
+                                                                               Constants.INSTANCE.Message1(),
                                                                                messageColumn ),
                                 true );
 
         // Add "Open" button column
         Column<BuilderResultLine, String> openColumn = new Column<BuilderResultLine, String>( new ButtonCell() ) {
             public String getValue(BuilderResultLine row) {
-                return constants.Open();
+                return Constants.INSTANCE.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<BuilderResultLine, String>() {
@@ -163,7 +164,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
             }
         } );
         columnPicker.addColumn( openColumn,
-                                new TextHeader( constants.Open() ),
+                                new TextHeader( Constants.INSTANCE.Open() ),
                                 true );
 
     }

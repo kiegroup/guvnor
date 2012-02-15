@@ -18,8 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field='images' type='org.drools.guvnor.client.resources.Images' />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
+  <ui:with field='images' type='org.drools.guvnor.client.resources.ImagesCore' />
 
   <gwt:DockLayoutPanel>
     <gwt:north size="25">

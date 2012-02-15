@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 /**
  * Creates a menu bar with 2 buttons: "Done" and "Cancel".
@@ -32,7 +33,6 @@ public class TemporalAssetsMultiViewEditorMenuBarCreator implements MultiViewEdi
 
     private Command doneCommand;
     private Command cancelCommand;
-    private Constants constants = GWT.create(Constants.class);
 
     public TemporalAssetsMultiViewEditorMenuBarCreator(Command doneCommand, Command cancelCommand) {
         this.doneCommand = doneCommand;
@@ -49,8 +49,8 @@ public class TemporalAssetsMultiViewEditorMenuBarCreator implements MultiViewEdi
     public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
         MenuBar toolbar = new MenuBar();
 
-        toolbar.addItem(constants.Done(), doneCommand);
-        toolbar.addItem(constants.Cancel(), cancelCommand);
+        toolbar.addItem(Constants.INSTANCE.Done(), doneCommand);
+        toolbar.addItem(Constants.INSTANCE.Cancel(), cancelCommand);
 
         return toolbar;
     }

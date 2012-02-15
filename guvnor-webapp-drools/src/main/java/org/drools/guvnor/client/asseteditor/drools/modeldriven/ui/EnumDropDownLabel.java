@@ -18,6 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class EnumDropDownLabel extends Composite {
 
-    protected Constants                  constants = ((Constants) GWT.create( Constants.class ));
+    protected ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     protected final Label                textWidget;
     protected final EnumDropDown               enumDropDown;
@@ -67,7 +68,7 @@ public class EnumDropDownLabel extends Composite {
 
         textWidget = createTextLabel();
         enumDropDown = createEnumDropDown();
-        okButton = new Button( constants.OK() );
+        okButton = new Button( Constants.INSTANCE.OK() );
         panel.add( textWidget );
 
         updateTextWidget();

@@ -23,6 +23,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
@@ -102,7 +103,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
                                                  leftPatternclick,
                                                  !this.readOnly ) );
         }
@@ -114,7 +115,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         if ( this.getFromCollectPattern().getRightPattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
                                                  rightPatternclick,
                                                  !this.readOnly ) );
         } else {
@@ -164,7 +165,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                               new ClickHandler() {
 
                                                   public void onClick(ClickEvent event) {
-                                                      if ( Window.confirm( constants
+                                                      if ( Window.confirm( Constants.INSTANCE
                                                               .RemoveThisBlockOfData() ) ) {
                                                           setModified( true );
                                                           getFromCollectPattern().setRightPattern( null );
@@ -181,11 +182,11 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     protected void showFactTypeSelector(final Widget w) {
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.NewFactPattern() );
+        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
 
         final ListBox box = new ListBox();
 
-        box.addItem( constants.Choose() );
+        box.addItem( Constants.INSTANCE.Choose() );
 
         for ( Map.Entry<String, String> entry : this.getExtraLeftSidePatternFactTypes().entrySet() ) {
             box.addItem( entry.getKey(),
@@ -207,7 +208,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         } );
 
-        popup.addAttribute( constants.chooseFactType(),
+        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
                             box );
 
         popup.show();
@@ -221,15 +222,15 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
-        box.addItem( constants.Choose() );
+        box.addItem( Constants.INSTANCE.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
         }
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.NewFactPattern() );
-        popup.addAttribute( constants.chooseFactType(),
+        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
+        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -245,10 +246,10 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         } );
 
-        final Button freeFormDRLBtn = new Button( constants.FreeFormDrl() );
-        final Button fromBtn = new Button( constants.From() );
-        final Button fromAccumulateBtn = new Button( constants.FromAccumulate() );
-        final Button fromCollectBtn = new Button( constants.FromCollect() );
+        final Button freeFormDRLBtn = new Button( Constants.INSTANCE.FreeFormDrl() );
+        final Button fromBtn = new Button( Constants.INSTANCE.From() );
+        final Button fromAccumulateBtn = new Button( Constants.INSTANCE.FromAccumulate() );
+        final Button fromCollectBtn = new Button( Constants.INSTANCE.FromCollect() );
 
         ClickHandler btnsClickHandler = new ClickHandler() {
 

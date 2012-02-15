@@ -17,6 +17,7 @@ package org.drools.guvnor.client.asseteditor.drools.springcontext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 
 import com.google.gwt.core.client.GWT;
@@ -40,8 +41,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
 public class SpringContextElementsBrowser extends Composite {
-
-    private Constants constants = GWT.create(Constants.class);
     
     private Map<String,String> springContextElements;
     
@@ -114,7 +113,7 @@ public class SpringContextElementsBrowser extends Composite {
         final Tree resourcesTree = new Tree();
         mainPanel.add(resourcesTree);
 
-        final TreeItem rootItem = new TreeItem(constants.Packages());
+        final TreeItem rootItem = new TreeItem(Constants.INSTANCE.Packages());
 
         //Global Area Data
         RepositoryServiceFactory.getPackageService().loadGlobalModule(new AsyncCallback<Module>()   {

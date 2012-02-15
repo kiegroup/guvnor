@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -35,7 +35,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
  * This is the module editor.
  */
 public class ModuleEditorWrapper extends Composite {
-    private Constants constants = GWT.create(Constants.class);
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     private Module packageConfigData;
     private boolean isHistoricalReadOnly = false;

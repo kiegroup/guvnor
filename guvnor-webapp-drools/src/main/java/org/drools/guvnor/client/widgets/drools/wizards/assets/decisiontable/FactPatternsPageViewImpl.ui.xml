@@ -20,8 +20,8 @@
   xmlns:guvnor="urn:import:org.drools.guvnor.client.asseteditor.drools.modeldriven.ui"
   xmlns:c="urn:import:org.drools.guvnor.client.common">
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.ImagesCore" />
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">

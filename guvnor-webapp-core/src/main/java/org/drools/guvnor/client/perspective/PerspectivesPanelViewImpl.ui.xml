@@ -12,9 +12,9 @@
              xmlns:guvnor-explorer='urn:import:org.drools.guvnor.client.explorer'
              xmlns:guvnor-navigation='urn:import:org.drools.guvnor.client.explorer.navigation'>
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants"/>
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore"/>
   <ui:with field='guvnorResources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
-  <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
+  <ui:with field='images' type='org.drools.guvnor.client.resources.ImagesCore'/>
   <ui:with field='titlePanelHeight'
            type='org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl.TitlePanelHeight'/>
 

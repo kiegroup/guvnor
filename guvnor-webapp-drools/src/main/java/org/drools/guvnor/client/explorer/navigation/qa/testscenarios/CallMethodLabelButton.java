@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 
@@ -30,8 +31,7 @@ public class CallMethodLabelButton extends HorizontalPanel {
 
         add(new CallMethodOnNewDataButton(previousEx, scenario, executionTrace,
                 scenarioWidget));
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        add(new SmallLabel(constants.CALL()));
+        add(new SmallLabel(Constants.INSTANCE.CALL()));
 
     }
 

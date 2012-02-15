@@ -24,13 +24,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.PercentageBar;
 
 public class SummaryTableViewImpl extends Composite
         implements
         SummaryTableView {
-
-    private Constants constants = GWT.create(Constants.class);
 
     private FlexTable flexTable = new FlexTable();
 
@@ -85,7 +84,7 @@ public class SummaryTableViewImpl extends Composite
         }
 
         private Button createOpenButton(final String uuid) {
-            Button open = new Button(constants.Open());
+            Button open = new Button(Constants.INSTANCE.Open());
 
             open.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {

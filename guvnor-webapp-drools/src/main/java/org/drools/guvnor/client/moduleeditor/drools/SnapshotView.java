@@ -52,6 +52,7 @@ import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -63,8 +64,7 @@ import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTab
  */
 public class SnapshotView extends Composite {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public static final String LATEST_SNAPSHOT = "LATEST";
 
@@ -91,7 +91,7 @@ public class SnapshotView extends Composite {
         this.parentConf = parentPackage;
         PrettyFormLayout head = new PrettyFormLayout();
 
-        head.addHeader(images.snapshot(),
+        head.addHeader(Images.INSTANCE.snapshot(),
                 header());
 
         vert.add(head);
@@ -117,7 +117,7 @@ public class SnapshotView extends Composite {
 
         ft.setWidget(0,
                 0,
-                new Label(constants.ViewingSnapshot()));
+                new Label(Constants.INSTANCE.ViewingSnapshot()));
         ft.setWidget(0,
                 1,
                 new HTML("<b>"
@@ -129,7 +129,7 @@ public class SnapshotView extends Composite {
 
         ft.setWidget(1,
                 0,
-                new Label(constants.ForPackage()));
+                new Label(Constants.INSTANCE.ForPackage()));
         ft.setWidget(1,
                 1,
                 new Label(this.parentConf.getName()));
@@ -140,11 +140,11 @@ public class SnapshotView extends Composite {
         HTML dLink = new HTML("<a href='"
                 + PackageBuilderWidget.getDownloadLink(this.parentConf)
                 + "' target='_blank'>"
-                + constants.clickHereToDownloadBinaryOrCopyURLForDeploymentAgent()
+                + Constants.INSTANCE.clickHereToDownloadBinaryOrCopyURLForDeploymentAgent()
                 + "</a>");
         ft.setWidget(2,
                 0,
-                new Label(constants.DeploymentURL()));
+                new Label(Constants.INSTANCE.DeploymentURL()));
         ft.setWidget(2,
                 1,
                 dLink);
@@ -154,7 +154,7 @@ public class SnapshotView extends Composite {
 
         ft.setWidget(3,
                 0,
-                new Label(constants.SnapshotCreatedOn()));
+                new Label(Constants.INSTANCE.SnapshotCreatedOn()));
         ft.setWidget(3,
                 1,
                 new Label(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.getLastModified())));
@@ -164,7 +164,7 @@ public class SnapshotView extends Composite {
 
         ft.setWidget(4,
                 0,
-                new Label(constants.CommentColon()));
+                new Label(Constants.INSTANCE.CommentColon()));
         ft.setWidget(4,
                 1,
                 new Label(parentConf.getCheckinComment()));
@@ -236,17 +236,17 @@ public class SnapshotView extends Composite {
 
     private Button getDeleteButton(final String snapshotName,
             final String moduleName) {
-        Button btn = new Button(constants.Delete());
+        Button btn = new Button(Constants.INSTANCE.Delete());
         btn.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if (Window.confirm(constants.SnapshotDeleteConfirm(snapshotName, moduleName))) {
+                if (Window.confirm(Constants.INSTANCE.SnapshotDeleteConfirm(snapshotName, moduleName))) {
                     RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot(moduleName,
                             snapshotName,
                             true,
                             null,
                             new GenericCallback<java.lang.Void>() {
                                 public void onSuccess(Void v) {
-                                    Window.alert(constants.SnapshotWasDeleted());
+                                    Window.alert(Constants.INSTANCE.SnapshotWasDeleted());
 
                                     eventBus.fireEvent(getCloseEvent(moduleName));
                                 }
@@ -265,7 +265,7 @@ public class SnapshotView extends Composite {
     private Button getCopyButton(final String snapshotName,
             final String packageName) {
         final ModuleServiceAsync serv = RepositoryServiceFactory.getPackageService();
-        Button btn = new Button(constants.Copy());
+        Button btn = new Button(Constants.INSTANCE.Copy());
         btn.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 serv.listSnapshots(packageName,
@@ -282,8 +282,8 @@ public class SnapshotView extends Composite {
             final ModuleServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
-                final FormStylePopup copy = new FormStylePopup(images.snapshot(),
-                        constants.CopySnapshotText(snapshotName));
+                final FormStylePopup copy = new FormStylePopup(Images.INSTANCE.snapshot(),
+                        Constants.INSTANCE.CopySnapshotText(snapshotName));
                 final List<RadioButton> options = new ArrayList<RadioButton>();
                 VerticalPanel vert = new VerticalPanel();
                 for (int i = 0; i < snaps.length; i++) {
@@ -298,7 +298,7 @@ public class SnapshotView extends Composite {
 
                 HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
                 final TextBox newNameTextBox = new TextBox();
-                final String newNameText = constants.NEW()
+                final String newNameText = Constants.INSTANCE.NEW()
                         + ": ";
 
                 final RadioButton newNameRadioButton = new RadioButton("snapshotNameGroup",
@@ -315,16 +315,16 @@ public class SnapshotView extends Composite {
                 options.add(newNameRadioButton);
                 vert.add(newNameHorizontalPanel);
 
-                copy.addAttribute(constants.ExistingSnapshots(),
+                copy.addAttribute(Constants.INSTANCE.ExistingSnapshots(),
                         vert);
 
-                Button ok = new Button(constants.OK());
+                Button ok = new Button(Constants.INSTANCE.OK());
                 copy.addAttribute("",
                         ok);
                 ok.addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         if (!isOneButtonSelected(options)) {
-                            Window.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
+                            Window.alert(Constants.INSTANCE.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
                             return;
                         }
 
@@ -338,7 +338,7 @@ public class SnapshotView extends Composite {
                                         new GenericCallback<java.lang.Void>() {
                                             public void onSuccess(Void v) {
                                                 copy.hide();
-                                                Window.alert(constants.CreatedSnapshot0ForPackage1(
+                                                Window.alert(Constants.INSTANCE.CreatedSnapshot0ForPackage1(
                                                         newNameTextBox.getText(),
                                                         packageName));
                                             }
@@ -355,7 +355,7 @@ public class SnapshotView extends Composite {
                                             new GenericCallback<java.lang.Void>() {
                                                 public void onSuccess(Void v) {
                                                     copy.hide();
-                                                    Window.alert(constants.Snapshot0ForPackage1WasCopiedFrom2(
+                                                    Window.alert(Constants.INSTANCE.Snapshot0ForPackage1WasCopiedFrom2(
                                                             newName,
                                                             packageName,
                                                             snapshotName));
@@ -381,7 +381,7 @@ public class SnapshotView extends Composite {
                             String name) {
                         for (SnapshotInfo sn : snaps) {
                             if (sn.getName().equals(name)) {
-                                Window.alert(constants.PleaseEnterANonExistingSnapshotName());
+                                Window.alert(Constants.INSTANCE.PleaseEnterANonExistingSnapshotName());
                                 return false;
                             }
                         }
@@ -394,13 +394,13 @@ public class SnapshotView extends Composite {
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {
-        final FormStylePopup pop = new FormStylePopup(images.snapshot(),
-                constants.NewSnapshot());
+        final FormStylePopup pop = new FormStylePopup(Images.INSTANCE.snapshot(),
+                Constants.INSTANCE.NewSnapshot());
         final RulePackageSelector sel = new RulePackageSelector();
 
-        pop.addAttribute(constants.ForPackage(),
+        pop.addAttribute(Constants.INSTANCE.ForPackage(),
                 sel);
-        Button ok = new Button(constants.OK());
+        Button ok = new Button(Constants.INSTANCE.OK());
         pop.addAttribute("",
                 ok);
         pop.show();
@@ -417,12 +417,12 @@ public class SnapshotView extends Composite {
     }
 
     public static void rebuildBinaries() {
-        if (Window.confirm(constants.SnapshotRebuildWarning())) {
-            LoadingPopup.showMessage(constants.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime());
+        if (Window.confirm(Constants.INSTANCE.SnapshotRebuildWarning())) {
+            LoadingPopup.showMessage(Constants.INSTANCE.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime());
             RepositoryServiceFactory.getPackageService().rebuildSnapshots(new GenericCallback<java.lang.Void>() {
                 public void onSuccess(Void v) {
                     LoadingPopup.close();
-                    Window.alert(constants.SnapshotsWereRebuiltSuccessfully());
+                    Window.alert(Constants.INSTANCE.SnapshotsWereRebuiltSuccessfully());
                 }
             });
         }

@@ -41,8 +41,6 @@ public class DeploymentTree extends NavigationItemBuilderOld
         implements
         OpenHandler<TreeItem> {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
     private final ClientFactory clientFactory;
 
     public DeploymentTree(ClientFactory clientFactory) {
@@ -69,11 +67,11 @@ public class DeploymentTree extends NavigationItemBuilderOld
     }
 
     public String getName() {
-        return constants.PackageSnapshots();
+        return Constants.INSTANCE.PackageSnapshots();
     }
 
     public ImageResource getImage() {
-        return images.deploy();
+        return Images.INSTANCE.deploy();
     }
 
     public IsWidget createContent() {

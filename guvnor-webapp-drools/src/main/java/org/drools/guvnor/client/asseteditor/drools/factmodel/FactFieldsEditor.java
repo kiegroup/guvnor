@@ -18,6 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.factmodel;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.AddButton;
 
 import com.google.gwt.core.client.GWT;
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FactFieldsEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     interface FactFieldsEditorBinder
         extends
@@ -70,11 +71,11 @@ public class FactFieldsEditor extends Composite {
         addAnnotationRows();
         addFieldRows();
 
-        addFieldIcon.setTitle( constants.AddField() );
-        addFieldIcon.setText( constants.AddField() );
+        addFieldIcon.setTitle( Constants.INSTANCE.AddField() );
+        addFieldIcon.setText( Constants.INSTANCE.AddField() );
 
-        addAnnotationIcon.setTitle( constants.AddAnnotation() );
-        addAnnotationIcon.setText( constants.AddAnnotation() );
+        addAnnotationIcon.setTitle( Constants.INSTANCE.AddAnnotation() );
+        addAnnotationIcon.setText( Constants.INSTANCE.AddAnnotation() );
 
     }
 
@@ -140,7 +141,7 @@ public class FactFieldsEditor extends Composite {
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
+                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
                     fieldsPanel.remove( editor );
                     fields.remove( field );
                 }
@@ -156,7 +157,7 @@ public class FactFieldsEditor extends Composite {
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
+                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
                     fieldsPanel.remove( editor );
                     annotations.remove( annotation );
                 }

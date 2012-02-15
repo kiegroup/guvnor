@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 /**
  * Default implementation of EditorMenuBarCreator that includes 2 button:
@@ -28,7 +28,7 @@ import org.drools.guvnor.client.messages.Constants;
  */
 public class DefaultMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
 
-    private Constants constants = GWT.create(Constants.class);
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
 
 
     public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {

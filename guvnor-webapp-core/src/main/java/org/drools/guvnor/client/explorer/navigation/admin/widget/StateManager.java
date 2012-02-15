@@ -19,8 +19,8 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -36,8 +36,8 @@ import com.google.gwt.user.client.ui.ListBox;
 
 public class StateManager extends Composite {
 
-    private static Images images    = (Images) GWT.create( Images.class );
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private ListBox       currentStatuses;
 

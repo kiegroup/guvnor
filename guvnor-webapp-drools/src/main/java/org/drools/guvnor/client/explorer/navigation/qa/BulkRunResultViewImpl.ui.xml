@@ -12,7 +12,7 @@
   xmlns:guvnor-common='urn:import:org.drools.guvnor.client.common'
   xmlns:guvnor-qa='urn:import:org.drools.guvnor.client.explorer.navigation.qa'>
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
 
   <ui:style>
     .bold {

@@ -56,9 +56,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MethodParameterValueEditor extends DirtyableComposite {
 
-    private Constants           constants            = GWT.create( Constants.class );
-    private static Images       images               = GWT.create( Images.class );
-
     private ActionFieldFunction methodParameter;
     private DropDownData        enums;
     private SimplePanel         root;
@@ -225,7 +222,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     private Widget choice() {
-        Image clickme = new Image( images.edit() );
+        Image clickme = new Image( Images.INSTANCE.edit() );
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -236,9 +233,9 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
-        Button lit = new Button( constants.LiteralValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -251,12 +248,12 @@ public class MethodParameterValueEditor extends DirtyableComposite {
 
         } );
 
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.Literal(),
-                                                   constants.LiteralValTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Literal(),
+                                                   Constants.INSTANCE.LiteralValTip() ) ) );
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedSection() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
 
         /*
          * If there is a bound variable that is the same type of the current
@@ -269,7 +266,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
         }
         for ( String v : vars ) {
             boolean createButton = false;
-            Button variable = new Button( constants.BoundVariable() );
+            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
             if ( vars2.contains( v ) == false ) {
                 FactPattern factPattern = model.getModel().getLHSBoundFact( v );
                 if ( factPattern.getFactType().equals( this.parameterType ) ) {
@@ -282,7 +279,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
                 }
             }
             if ( createButton == true ) {
-                form.addAttribute( constants.BoundVariable() + ":",
+                form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
                                    variable );
                 variable.addClickHandler( new ClickHandler() {
 

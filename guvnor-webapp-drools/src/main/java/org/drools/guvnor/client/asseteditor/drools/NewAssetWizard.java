@@ -65,9 +65,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NewAssetWizard extends FormStylePopup {
 
-    private static Constants                 constants                  = GWT.create( Constants.class );
-    private static Images                    images                     = GWT.create( Images.class );
-
     private TextBox                          name                       = new TextBox();
     private TextArea                         description                = new TextArea();
     private GuidedDecisionTableOptions       guidedDecisionTableOptions = new GuidedDecisionTableOptions();
@@ -75,9 +72,9 @@ public class NewAssetWizard extends FormStylePopup {
 
     private ListBox                          formatChooser              = getFormatChooser();
     private RadioButton                      createInPackageButton      = new RadioButton( "creatinpackagegroup",
-                                                                                           constants.CreateInPackage() );
+                                                                                           Constants.INSTANCE.CreateInPackage() );
     private RadioButton                      createInGlobalButton       = new RadioButton( "creatinpackagegroup",
-                                                                                           constants.CreateInGlobalArea() );
+                                                                                           Constants.INSTANCE.CreateInGlobalArea() );
 
     private RulePackageSelector              packageSelector            = new RulePackageSelector();
     private RulePackageSelector              importedPackageSelector    = new RulePackageSelector();
@@ -96,7 +93,7 @@ public class NewAssetWizard extends FormStylePopup {
                            String format,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
-        super( images.newWiz(),
+        super( Images.INSTANCE.newWiz(),
                getTitle( format,
                          clientFactory ) );
         this.format = format;
@@ -104,10 +101,10 @@ public class NewAssetWizard extends FormStylePopup {
         this.eventBus = eventBus;
 
         RadioButton newPackage = new RadioButton( "layoutgroup",
-                                                  constants.CreateNewAsset() ); // NON-NLS
+                                                  Constants.INSTANCE.CreateNewAsset() ); // NON-NLS
         newPackage.setValue( true );
         RadioButton importPackage = new RadioButton( "layoutgroup",
-                                                     constants.CreateLinkedAsset() ); // NON-NLS
+                                                     Constants.INSTANCE.CreateLinkedAsset() ); // NON-NLS
 
         newAssetLayout.setVisible( true );
 
@@ -120,13 +117,13 @@ public class NewAssetWizard extends FormStylePopup {
         addRow( newAssetLayout );
         addRow( importAssetLayout );
 
-        newAssetLayout.addAttribute( constants.NameColon(),
+        newAssetLayout.addAttribute( Constants.INSTANCE.NameColon(),
                                      name );
 
         setAfterShowCommand();
 
         if ( showCategories ) {
-            newAssetLayout.addAttribute( constants.InitialCategory(),
+            newAssetLayout.addAttribute( Constants.INSTANCE.InitialCategory(),
                                          getCatChooser() );
         }
 
@@ -144,26 +141,26 @@ public class NewAssetWizard extends FormStylePopup {
                                    ClientFactory cf) {
         //Just a quick temporary fix. 
         if ( format == null ) {
-            return constants.NewRule();
+            return Constants.INSTANCE.NewRule();
         }
         String title = cf.getAssetEditorFactory().getAssetEditorTitle( format );
-        return constants.New() + " " + title;
+        return Constants.INSTANCE.New() + " " + title;
     }
 
     private class ImportAssetFormStyleLayout extends FormStyleLayout {
         protected void buildImportAssetLayout() {
-            this.addAttribute( constants.AssetToImport(),
+            this.addAttribute( Constants.INSTANCE.AssetToImport(),
                                globalAreaAssetSelector );
-            this.addAttribute( constants.Package() + ":",
+            this.addAttribute( Constants.INSTANCE.Package() + ":",
                                importedPackageSelector );
             this.addAttribute( "",
                                createLinkedAssetOkButtonAndClickHandler() );
-            this.addRow( new HTML( "<br/><b>" + constants.NoteNewLinkedAsset() + "</b>" ) );
-            this.addRow( new HTML( constants.NewLinkedAssetDesc1() ) );
+            this.addRow( new HTML( "<br/><b>" + Constants.INSTANCE.NoteNewLinkedAsset() + "</b>" ) );
+            this.addRow( new HTML( Constants.INSTANCE.NewLinkedAssetDesc1() ) );
         }
 
         private Button createLinkedAssetOkButtonAndClickHandler() {
-            Button linkedAssetOKButton = new Button( constants.OK() );
+            Button linkedAssetOKButton = new Button( Constants.INSTANCE.OK() );
             linkedAssetOKButton.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     importOK();
@@ -181,7 +178,7 @@ public class NewAssetWizard extends FormStylePopup {
             this.addAttribute( "",
                                createInGlobalButton );
             buildDescriptionTextArea( format );
-            this.addAttribute( constants.InitialDescription(),
+            this.addAttribute( Constants.INSTANCE.InitialDescription(),
                                description );
             this.addAttribute( "",
                                createOkButtonAndClickHandler() );
@@ -191,24 +188,24 @@ public class NewAssetWizard extends FormStylePopup {
             description.setVisibleLines( 4 );
             description.setWidth( "100%" );
             if ( AssetFormats.DSL_TEMPLATE_RULE.equals( format ) ) {
-                description.setText( constants.DSLMappingTip() );
+                description.setText( Constants.INSTANCE.DSLMappingTip() );
             } else if ( AssetFormats.ENUMERATION.equals( format ) ) {
-                description.setText( constants.NewEnumDoco() );
+                description.setText( Constants.INSTANCE.NewEnumDoco() );
             } else if ( AssetFormats.SPRING_CONTEXT.equals(format)) {
-                description.setText( constants.DescSpringContext() );
+                description.setText( Constants.INSTANCE.DescSpringContext() );
             } else if ( AssetFormats.WORKITEM_DEFINITION.equals(format)) {
-                description.setText( constants.DeskWorkItemDefinition() );
+                description.setText( Constants.INSTANCE.DeskWorkItemDefinition() );
             }
         }
     }
 
     private Button createOkButtonAndClickHandler() {
-        Button ok = new Button( constants.OK() );
-        ok.addClickHandler( new ClickHandler() {
+        Button ok = new Button( Constants.INSTANCE.OK() );
+        ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 ok();
             }
-        } );
+        });
         return ok;
     }
 
@@ -221,11 +218,11 @@ public class NewAssetWizard extends FormStylePopup {
 
     private void handleLayoutForFormat(String format) {
         if ( format == null ) {
-            newAssetLayout.addAttribute( constants.TypeFormatOfRule(),
+            newAssetLayout.addAttribute( Constants.INSTANCE.TypeFormatOfRule(),
                                          this.formatChooser );
 
             //Add additional widget (when creating a new rule) to allow for use of a Wizard
-            final int useWizardRowIndex = newAssetLayout.addAttribute( constants.NewAssetWizardGuidedDecisionTableOptions(),
+            final int useWizardRowIndex = newAssetLayout.addAttribute( Constants.INSTANCE.NewAssetWizardGuidedDecisionTableOptions(),
                                                                        guidedDecisionTableOptions );
             newAssetLayout.setAttributeVisibility( useWizardRowIndex,
                                                    false );
@@ -248,7 +245,7 @@ public class NewAssetWizard extends FormStylePopup {
 
         } else if ( "".equals( format ) ) { //NON-NLS
             final TextBox fmt = new TextBox();
-            newAssetLayout.addAttribute( constants.FileExtensionTypeFormat(),
+            newAssetLayout.addAttribute( Constants.INSTANCE.FileExtensionTypeFormat(),
                                          fmt );
             fmt.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
@@ -300,9 +297,9 @@ public class NewAssetWizard extends FormStylePopup {
             }
         } );
         ScrollPanel scroll = new ScrollPanel( w );
-        scroll.setAlwaysShowScrollBars( true );
-        scroll.setSize( "300px",
-                        "130px" ); //NON-NLS
+        scroll.setAlwaysShowScrollBars(true);
+        scroll.setSize("300px",
+                "130px"); //NON-NLS
         return scroll;
 
     }
@@ -311,15 +308,15 @@ public class NewAssetWizard extends FormStylePopup {
 
         final ListBox box = new ListBox();
 
-        box.addItem( constants.BusinessRuleGuidedEditor(),
+        box.addItem( Constants.INSTANCE.BusinessRuleGuidedEditor(),
                      AssetFormats.BUSINESS_RULE );
-        box.addItem( constants.DSLBusinessRuleTextEditor(),
+        box.addItem( Constants.INSTANCE.DSLBusinessRuleTextEditor(),
                      AssetFormats.DSL_TEMPLATE_RULE );
-        box.addItem( constants.DRLRuleTechnicalRuleTextEditor(),
+        box.addItem( Constants.INSTANCE.DRLRuleTechnicalRuleTextEditor(),
                      AssetFormats.DRL );
-        box.addItem( constants.DecisionTableSpreadsheet(),
+        box.addItem( Constants.INSTANCE.DecisionTableSpreadsheet(),
                      AssetFormats.DECISION_SPREADSHEET_XLS );
-        box.addItem( constants.DecisionTableWebGuidedEditor(),
+        box.addItem( Constants.INSTANCE.DecisionTableWebGuidedEditor(),
                      AssetFormats.DECISION_TABLE_GUIDED );
 
         box.setSelectedIndex( 0 );
@@ -334,13 +331,13 @@ public class NewAssetWizard extends FormStylePopup {
 
         String assetFormat = getFormat();
         if ( "".equals( assetFormat ) ) {
-            Window.alert( constants.PleaseEnterAFormatFileType() );
+            Window.alert( Constants.INSTANCE.PleaseEnterAFormatFileType() );
             return;
         }
 
         String assetName = name.getText();
         if ( "".equals( assetName ) ) {
-            Window.alert( constants.InvalidModelName( assetName ) );
+            Window.alert( Constants.INSTANCE.InvalidModelName( assetName ) );
             return;
         }
 
@@ -417,7 +414,7 @@ public class NewAssetWizard extends FormStylePopup {
         final Command cmdCheckBeforeInvokingWizard = new Command() {
 
             public void execute() {
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getService().doesAssetExistInModule( assetName,
                                                                                packageName,
                                                                                createGenericCallBackForCheckingIfExists( cmdInvokeWizard ) );
@@ -456,7 +453,7 @@ public class NewAssetWizard extends FormStylePopup {
         final Command cmdCheckBeforeSaving = new Command() {
 
             public void execute() {
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
@@ -495,7 +492,7 @@ public class NewAssetWizard extends FormStylePopup {
         final Command cmdCheckBeforeSaving = new Command() {
 
             public void execute() {
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
@@ -510,7 +507,7 @@ public class NewAssetWizard extends FormStylePopup {
      * imported asset.
      */
     void importOK() {
-        LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+        LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
         RepositoryServiceFactory.getService().createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
                                                                      importedPackageSelector.getSelectedPackage(),
                                                                      createGenericCallbackForImportOk() );
@@ -521,9 +518,9 @@ public class NewAssetWizard extends FormStylePopup {
             public void onSuccess(String uuid) {
                 LoadingPopup.close();
                 if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
-                    Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+                    Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
-                    eventBus.fireEvent( new RefreshModuleEditorEvent( packageSelector.getSelectedPackageUUID() ) );
+                    eventBus.fireEvent(new RefreshModuleEditorEvent(packageSelector.getSelectedPackageUUID()));
                     openEditor( uuid );
                     hide();
                 }
@@ -537,11 +534,11 @@ public class NewAssetWizard extends FormStylePopup {
             public void onSuccess(String uuid) {
                 if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
                     LoadingPopup.close();
-                    Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+                    Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
                     eventBus.fireEvent( new RefreshModuleEditorEvent( importedPackageSelector.getSelectedPackageUUID() ) );
                     flushSuggestionCompletionCache();
-                    openEditor( uuid );
+                    openEditor(uuid);
                     hide();
                 }
             }
@@ -554,7 +551,7 @@ public class NewAssetWizard extends FormStylePopup {
             public void onSuccess(Boolean result) {
                 LoadingPopup.close();
                 if ( result == true ) {
-                    Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+                    Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
                     hide();
                     cmd.execute();
@@ -571,7 +568,7 @@ public class NewAssetWizard extends FormStylePopup {
      */
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( format ) ) {
-            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+            LoadingPopup.showMessage( Constants.INSTANCE.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().loadPackage( importedPackageSelector.getSelectedPackage(),
                                                                     new Command() {
                                                                         public void execute() {

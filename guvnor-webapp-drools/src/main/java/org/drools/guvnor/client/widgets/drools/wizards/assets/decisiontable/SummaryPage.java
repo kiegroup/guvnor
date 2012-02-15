@@ -20,7 +20,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 /**
@@ -29,8 +28,6 @@ import com.google.gwt.event.shared.EventBus;
 public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     implements
     SummaryPageView.Presenter {
-
-    private static Constants constants = GWT.create( Constants.class );
 
     private SummaryPageView  view      = new SummaryPageViewImpl();
 
@@ -45,7 +42,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardSummary();
+        return Constants.INSTANCE.DecisionTableWizardSummary();
     }
 
     public String getAssetName() {

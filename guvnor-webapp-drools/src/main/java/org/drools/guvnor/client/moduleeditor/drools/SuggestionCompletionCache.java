@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -49,8 +50,6 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
      * Fact Type Filter per package. A package can only have 1 filter at a time. 
      */
     Map<String, FactTypeFilter> filters = new HashMap<String, FactTypeFilter>();
-    private final Constants constants;
-    private EventBus eventBus;
 
 
     public static SuggestionCompletionCache getInstance() {
@@ -58,17 +57,6 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
             INSTANCE = new SuggestionCompletionCache();
         }
         return INSTANCE;
-    }
-
-    private SuggestionCompletionCache() {
-        constants = GWT.create(Constants.class);
-    }
-
-    /**
-     * This should only be used for tests !
-     */
-    SuggestionCompletionCache(Constants cs) {
-        constants = cs;
     }
     
     public void setEventBus(final EventBus eventBus) {   
@@ -82,7 +70,7 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
         SuggestionCompletionEngine eng = cache.get( packageName );
         if (eng == null) {
-            ErrorPopup.showMessage(constants.UnableToGetContentAssistanceForThisRule());
+            ErrorPopup.showMessage(Constants.INSTANCE.UnableToGetContentAssistanceForThisRule());
             return null;
         }
         return eng;
@@ -97,7 +85,7 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
      */
     public void refreshPackage(final String packageName, final Command done) {
 
-        LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
+        LoadingPopup.showMessage(Constants.INSTANCE.InitialisingInfoFor0PleaseWait(packageName));
         
         //removes any existing filter
         this.filters.remove(packageName);
@@ -110,7 +98,7 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
 
             public void onFailure(Throwable t) {
                 LoadingPopup.close();
-                ErrorPopup.showMessage(constants.UnableToValidatePackageForSCE(packageName));
+                ErrorPopup.showMessage(Constants.INSTANCE.UnableToValidatePackageForSCE(packageName));
                 done.execute();
             }
         });
@@ -133,13 +121,13 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
             public void execute() {
 
                 //applies any pre-existing filter.
-                if (filter != null){
+                if (filter != null) {
                     //set the filter again
                     filters.put(packageName, filter);
                     getEngineFromCache(packageName).setFactTypeFilter(filter);
                 }
-                
-                if (done != null){
+
+                if (done != null) {
                     done.execute();
                 }
             }

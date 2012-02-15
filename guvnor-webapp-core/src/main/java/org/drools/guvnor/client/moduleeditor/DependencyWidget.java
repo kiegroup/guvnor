@@ -31,8 +31,8 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.VersionChooser;
@@ -44,8 +44,8 @@ import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
  */
 public class DependencyWidget extends Composite {
 
-    private static Images images = (Images) GWT.create(Images.class);
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
+    private ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
 
     private DependenciesPagedTable table;
 

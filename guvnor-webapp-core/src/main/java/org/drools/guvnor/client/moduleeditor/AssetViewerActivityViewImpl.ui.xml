@@ -18,8 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.ImagesCore" />
   <ui:with field="res" type="org.drools.guvnor.client.resources.GuvnorResources" />
 
   <gwt:VerticalPanel width="100%">

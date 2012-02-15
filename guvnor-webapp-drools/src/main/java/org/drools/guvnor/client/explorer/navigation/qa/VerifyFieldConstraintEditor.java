@@ -67,9 +67,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
-    private Constants                  constants = GWT.create( Constants.class );
-    private static Images              images    = GWT.create( Images.class );
-
     private String                     factType;
     private VerifyField                field;
     private final Panel                panel;
@@ -117,7 +114,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
-            String m = ((Constants) GWT.create( Constants.class )).ValueFor0( field.getFieldName() );
+            String m = Constants.INSTANCE.ValueFor0(field.getFieldName());
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
@@ -159,7 +156,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
-                    Image clickme = new Image( images.edit() );
+                    Image clickme = new Image( Images.INSTANCE.edit() );
                     clickme.addClickHandler( new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -187,12 +184,12 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         final ListBox box = new ListBox();
 
         if ( this.field.getExpected() == null ) {
-            box.addItem( constants.Choose() );
+            box.addItem( Constants.INSTANCE.Choose() );
         }
         int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = vars.get( i );
-            FactData f = (FactData) scenario.getFactTypes().get( var );
+            FactData f = scenario.getFactTypes().get( var );
             String fieldType = sce.getFieldType( this.factType,
                                                  field.getFieldName() );
             if ( f.getType().equals( fieldType ) ) {
@@ -223,7 +220,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                            String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
-        String m = ((Constants) GWT.create( Constants.class )).ValueFor0( fieldName );
+        String m = Constants.INSTANCE.ValueFor0( fieldName );
         tb.setTitle( m );
         tb.addChangeHandler( new ChangeHandler() {
 
@@ -237,10 +234,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(Widget w,
                                 final VerifyField con) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
 
-        Button lit = new Button( constants.LiteralValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -249,18 +246,18 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
             }
 
         } );
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.LiteralValue(),
-                                                   constants.LiteralValTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.LiteralValue(),
+                                                   Constants.INSTANCE.LiteralValTip() ) ) );
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
 
         // If we are here, then there must be a bound variable compatible with
         // me
 
-        Button variable = new Button( constants.BoundVariable() );
+        Button variable = new Button( Constants.INSTANCE.BoundVariable() );
         variable.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -268,10 +265,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                 doTypeChosen( form );
             }
         } );
-        form.addAttribute( constants.AVariable(),
+        form.addAttribute( Constants.INSTANCE.AVariable(),
                            widgets( variable,
-                                    new InfoPopup( constants.ABoundVariable(),
-                                                   constants.BoundVariableTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.ABoundVariable(),
+                                                   Constants.INSTANCE.BoundVariableTip() ) ) );
 
         form.show();
     }

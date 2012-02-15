@@ -28,7 +28,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -48,12 +47,10 @@ public class CopyPasteContextMenu extends AbstractContextMenu
     private final ContextMenuItem  itemPaste;
     private final EventBus         eventBus;
 
-    private static final Constants constants = GWT.create( Constants.class );
-
     public CopyPasteContextMenu(final EventBus eventBus) {
         this.eventBus = eventBus;
 
-        itemCopy = new ContextMenuItem( constants.Copy(),
+        itemCopy = new ContextMenuItem( Constants.INSTANCE.Copy(),
                                         true,
                                         new ClickHandler() {
 
@@ -67,7 +64,7 @@ public class CopyPasteContextMenu extends AbstractContextMenu
                                         } );
         addContextMenuItem( itemCopy );
 
-        itemPaste = new ContextMenuItem( constants.Paste(),
+        itemPaste = new ContextMenuItem( Constants.INSTANCE.Paste(),
                                          false,
                                          new ClickHandler() {
 

@@ -12,6 +12,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
@@ -33,7 +34,6 @@ import org.drools.guvnor.client.widgets.toolbar.StandaloneEditorIndividualAction
 public class StandaloneEditorManager {
 
     private final ClientFactory clientFactory;
-    private Constants constants = GWT.create(Constants.class);
     private MultiViewEditor editor;
     private StandaloneEditorServiceAsync standaloneEditorService = GWT.create(StandaloneEditorService.class);
     private Asset[] assets;
@@ -68,7 +68,7 @@ public class StandaloneEditorManager {
 
                 //no assets? This is an error!
                 if (parameters.getAssetsToBeEdited().length == 0) {
-                    Window.alert(constants.NoRulesFound());
+                    Window.alert(Constants.INSTANCE.NoRulesFound());
                     return;
                 }
 
@@ -320,7 +320,7 @@ public class StandaloneEditorManager {
     /**
      * Callback method invoked from getDRLs().
      *
-     * @param drl
+     * @param brl
      */
     public native void returnBRL(String brl)/*-{
         if ($wnd.guvnorEditorObject.brlCallbackFunction) {

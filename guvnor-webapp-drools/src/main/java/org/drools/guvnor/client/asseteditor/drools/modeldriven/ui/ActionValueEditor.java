@@ -64,9 +64,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionValueEditor extends DirtyableComposite {
 
-    private Constants        constants    = GWT.create( Constants.class );
-    private Images           images       = GWT.create( Images.class );
-
     private ActionFieldValue value;
     private DropDownData     enums;
     private SimplePanel      root;
@@ -184,13 +181,13 @@ public class ActionValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( images.deleteItemSmall() );
-        clear.setTitle( constants.RemoveActionValueDefinition() );
+        Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        clear.setTitle(Constants.INSTANCE.RemoveActionValueDefinition());
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( constants.RemoveActionValueDefinitionQuestion() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveActionValueDefinitionQuestion() ) ) {
                     value.setNature( FieldNature.TYPE_UNDEFINED );
                     value.setValue( null );
                     doTypeChosen();
@@ -220,7 +217,7 @@ public class ActionValueEditor extends DirtyableComposite {
     private Widget boundVariable(final FieldNature c) {
         // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
-        listVariable.addItem( constants.Choose() );
+        listVariable.addItem( Constants.INSTANCE.Choose() );
         List<String> bindings = getApplicableBindings();
         for ( String v : bindings ) {
             listVariable.addItem( v );
@@ -329,7 +326,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = new Image( images.edit() );
+            Image clickme = new Image( Images.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     showTypeChoice( (Widget) event.getSource() );
@@ -340,9 +337,9 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
-        Button lit = new Button( constants.LiteralValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -352,13 +349,13 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.Literal(),
-                                                   constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Literal(),
+                                                   Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
 
         if ( modeller.isTemplate() ) {
-            Button templateButton = new Button( constants.TemplateKey() );
+            Button templateButton = new Button( Constants.INSTANCE.TemplateKey() );
             templateButton.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     value.nature = FieldNature.TYPE_TEMPLATE;
@@ -366,16 +363,16 @@ public class ActionValueEditor extends DirtyableComposite {
                     doTypeChosen( form );
                 }
             } );
-            form.addAttribute( constants.TemplateKey() + ":",
+            form.addAttribute( Constants.INSTANCE.TemplateKey() + ":",
                                widgets( templateButton,
-                                        new InfoPopup( constants.Literal(),
-                                                       constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.Literal(),
+                                                       Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
         }
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedSection() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
 
-        Button formula = new Button( constants.Formula() );
+        Button formula = new Button( Constants.INSTANCE.Formula() );
         formula.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -388,8 +385,8 @@ public class ActionValueEditor extends DirtyableComposite {
         // If there is a bound Facts or Fields that are of the same type as the current variable type, then show a button
         List<String> bindings = getApplicableBindings();
         if ( bindings.size() > 0 ) {
-            Button variable = new Button( constants.BoundVariable() );
-            form.addAttribute( constants.BoundVariable() + ":",
+            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+            form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
                                variable );
             variable.addClickHandler( new ClickHandler() {
 
@@ -401,10 +398,10 @@ public class ActionValueEditor extends DirtyableComposite {
             } );
         }
 
-        form.addAttribute( constants.Formula() + ":",
+        form.addAttribute( Constants.INSTANCE.Formula() + ":",
                            widgets( formula,
-                                    new InfoPopup( constants.Formula(),
-                                                   constants.FormulaTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Formula(),
+                                                   Constants.INSTANCE.FormulaTip() ) ) );
 
         form.show();
     }

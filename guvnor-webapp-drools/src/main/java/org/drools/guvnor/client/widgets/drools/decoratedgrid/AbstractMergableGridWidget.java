@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
@@ -180,7 +180,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     protected TableSectionElement                            tbody;
 
     // Resources
-    protected static final Constants                         messages             = GWT.create( Constants.class );
+    protected static final ConstantsCore messages             = GWT.create( ConstantsCore.class );
     protected ResourcesProvider<T>                           resources;
     protected EventBus                                       eventBus;
 

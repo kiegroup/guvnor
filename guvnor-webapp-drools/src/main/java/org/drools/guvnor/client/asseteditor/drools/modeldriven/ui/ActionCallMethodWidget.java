@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
@@ -50,9 +51,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This widget is for modifying facts bound to a variable.
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
-
-    private Constants                constants   = GWT.create( Constants.class );
-    private static Images            images      = (Images) GWT.create( Images.class );
 
     final private ActionCallMethod   model;
     final private DirtyableFlexTable layout;
@@ -177,8 +175,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( model.state == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( images.addFieldToFact() );
-            edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
+            Image edit = new ImageButton( Images.INSTANCE.addFieldToFact() );
+            edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -202,8 +200,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
-                                                         constants.ChooseAMethodToInvoke() );
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                         Constants.INSTANCE.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -214,7 +212,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( constants.ChooseAMethodToInvoke(),
+        popup.addAttribute( Constants.INSTANCE.ChooseAMethodToInvoke(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 

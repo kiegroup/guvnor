@@ -30,8 +30,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 public class FactTypeBrowser extends Composite {
 
-    private static Images images = GWT.create(Images.class);
-
     public FactTypeBrowser(SuggestionCompletionEngine sce,
                            final ClickEvent ev) {
         Tree tree = new Tree();
@@ -40,9 +38,8 @@ public class FactTypeBrowser extends Composite {
 
         HorizontalPanel hp = new HorizontalPanel();
 
-        Constants constants = GWT.create(Constants.class);
-        hp.add(new SmallLabel(constants.FactTypes()));
-        hp.add(new ClickableLabel(constants.hide(),
+        hp.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
+        hp.add(new ClickableLabel(Constants.INSTANCE.hide(),
                 new ClickHandler() {
                     public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
                         panel.setVisible(false);
@@ -54,7 +51,7 @@ public class FactTypeBrowser extends Composite {
         if (sce.getFactTypes() != null) {
             for (String type : sce.getFactTypes()) {
                 TreeItem it = new TreeItem();
-                it.setHTML(AbstractImagePrototype.create(images.classImage()).getHTML() 
+                it.setHTML(AbstractImagePrototype.create(Images.INSTANCE.classImage()).getHTML()
                         + "<small>"
                         + type + "</small>");
                 it.setUserObject(type + "( )");
@@ -64,7 +61,7 @@ public class FactTypeBrowser extends Composite {
                 if (fields != null) {
                     for (String field : fields) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML(AbstractImagePrototype.create(images.field()).getHTML() 
+                        fi.setHTML(AbstractImagePrototype.create(Images.INSTANCE.field()).getHTML()
                                 + "<small>"
                                 + field + "</small>");
                         fi.setUserObject(field);

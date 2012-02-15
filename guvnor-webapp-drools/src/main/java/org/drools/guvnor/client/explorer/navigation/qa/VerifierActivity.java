@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AcceptItem;
@@ -10,8 +9,6 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 public class VerifierActivity extends Activity {
-
-    private Constants constants = GWT.create( Constants.class );
 
     private final String moduleUuid;
     private final ClientFactory clientFactory;
@@ -34,7 +31,7 @@ public class VerifierActivity extends Activity {
                 new GenericCallback<Module>() {
                     public void onSuccess(Module packageConfigData) {
                         tabbedPanel.add(
-                                constants.AnalysisForPackage( packageConfigData.getName() ),
+                                Constants.INSTANCE.AnalysisForPackage( packageConfigData.getName() ),
                                 new VerifierScreen(
                                         packageConfigData.getUuid(),
                                         packageConfigData.getName() ) );

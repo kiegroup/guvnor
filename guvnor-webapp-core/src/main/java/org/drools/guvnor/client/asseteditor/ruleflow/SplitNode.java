@@ -18,7 +18,7 @@ package org.drools.guvnor.client.asseteditor.ruleflow;
 
 import java.util.Map;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -38,7 +38,7 @@ public class SplitNode extends RuleFlowBaseNode {
     SplitTransferNode.Type                type;
 
     public Map<ConnectionRef, Constraint> constraints;
-    private Constants                     constants = ((Constants) GWT.create( Constants.class ));
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     @Override
     public Corners getCorners() {

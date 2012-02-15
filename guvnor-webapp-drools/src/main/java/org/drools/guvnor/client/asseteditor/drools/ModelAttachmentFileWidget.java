@@ -19,16 +19,12 @@ package org.drools.guvnor.client.asseteditor.drools;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Command;
 
 import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 
@@ -42,10 +38,6 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
         SaveEventListener,
         EditorWidget {
 
-    private static Images images = GWT.create( Images.class );
-
-    private String packageName;
-
     public ModelAttachmentFileWidget( Asset asset,
                                       RuleViewer viewer,
                                       ClientFactory clientFactory,
@@ -54,11 +46,10 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
                 viewer,
                 clientFactory,
                 eventBus );
-        this.packageName = asset.getMetaData().getModuleName();
     }
 
     public ImageResource getIcon() {
-        return images.modelLarge();
+        return Images.INSTANCE.modelLarge();
     }
 
     public String getOverallStyleName() {
@@ -73,7 +64,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
      */
     public void onAfterSave() {
         //Refresh  SuggestionCompletionCache is done by RuleViewer.flushSuggestionCompletionCache(). No need to refresh it twice here.
-/*        LoadingPopup.showMessage( ((Constants) GWT.create( Constants.class )).RefreshingModel() );
+/*        LoadingPopup.showMessage( ((ConstantsCore) GWT.create( ConstantsCore.class )).RefreshingModel() );
         SuggestionCompletionCache.getInstance().loadPackage( packageName,
                 new Command() {
                     public void execute() {

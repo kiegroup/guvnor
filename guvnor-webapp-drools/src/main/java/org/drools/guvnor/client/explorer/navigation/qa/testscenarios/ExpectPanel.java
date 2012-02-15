@@ -23,16 +23,12 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.testscenarios.Scenario;
 import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class ExpectPanel extends HorizontalPanel {
-
-    private Constants              constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final Scenario       scenario;
     protected final ScenarioWidget parent;
@@ -50,18 +46,18 @@ public class ExpectPanel extends HorizontalPanel {
                                     previousEx,
                                     scenario,
                                     parent ) );
-        add( new SmallLabel( constants.EXPECT() ) );
+        add( new SmallLabel( Constants.INSTANCE.EXPECT() ) );
         add( new DeleteButton() );
     }
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( images.deleteItemSmall(),
-                   constants.DeleteItem() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.DeleteItem() );
             addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisItem() ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisItem() ) ) {
                         scenario.removeExecutionTrace( previousEx );
                         parent.renderEditor();
                     }

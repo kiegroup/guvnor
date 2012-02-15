@@ -47,9 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Connectives {
 
-    private Constants          constants = ((Constants) GWT.create( Constants.class ));
-    private static Images      images    = GWT.create( Images.class );
-
     private final RuleModeller modeller;
     private final EventBus     eventBus;
     private final FactPattern  pattern;
@@ -96,8 +93,8 @@ public class Connectives {
                                                c.getFieldName() ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = new ImageButton( images.deleteItemSmall() );
-                    clear.setTitle( constants.RemoveThisRestriction() );
+                    Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+                    clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                   i ) );
                     hp.add( clear );
@@ -157,7 +154,7 @@ public class Connectives {
             return w;
 
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + (cc.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() )) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + (cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() )) + "</b>" );
             return sl;
         }
     }
@@ -167,7 +164,7 @@ public class Connectives {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                     sfc.removeConnective( index );
                     modeller.makeDirty();
                     modeller.refreshWidget();

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
@@ -46,8 +47,7 @@ public class WorkingSetSelectorPopup {
         this.asset = a;
 
         pop = new FormStylePopup();
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        pop.setTitle(constants.SelectWorkingSets());
+        pop.setTitle(Constants.INSTANCE.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
         RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().getModuleUUID(),
@@ -68,7 +68,7 @@ public class WorkingSetSelectorPopup {
                     }
                 });
 
-        Button save = new Button(constants.SaveAndClose());
+        Button save = new Button(Constants.INSTANCE.SaveAndClose());
         save.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 String[] wsUUIDs = new String[selectedFacts.getItemCount()];

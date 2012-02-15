@@ -30,8 +30,8 @@ import org.drools.guvnor.client.asseteditor.ShowMessageEvent.MessageType;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 /**
@@ -43,9 +43,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         implements
         EditorWidget {
 
-    protected static final Images    images    = (Images) GWT.create( Images.class );
-
-    protected static final Constants constants = GWT.create( Constants.class );
+    protected static final ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
     private FormPanel                form;
     private FormStyleLayout          layout;
@@ -79,7 +77,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_UUID,
                                     uuid ) );
 
-        Button ok = new Button( constants.Upload() );
+        Button ok = new Button( ConstantsCore.INSTANCE.Upload() );
 
         fields.add( up );
         fields.add( ok );
@@ -89,10 +87,10 @@ public abstract class AssetAttachmentFileWidget extends Composite
         layout = new FormStyleLayout( getIcon(),
                                       formName );
 
-        if ( !this.asset.isReadonly() ) layout.addAttribute( constants.UploadNewVersion(),
+        if ( !this.asset.isReadonly() ) layout.addAttribute( ConstantsCore.INSTANCE.UploadNewVersion(),
                                                              form );
 
-        Button dl = new Button( constants.Download() );
+        Button dl = new Button( ConstantsCore.INSTANCE.Download() );
         dl.setEnabled( this.asset.versionNumber > 0 );
         dl.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -101,7 +99,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                              "resizable=no,scrollbars=yes,status=no" );
             }
         } );
-        layout.addAttribute( constants.DownloadCurrentVersion(),
+        layout.addAttribute( ConstantsCore.INSTANCE.DownloadCurrentVersion(),
                              dl );
 
         ok.addClickHandler( new ClickHandler() {
@@ -138,7 +136,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
 
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
                     //Raise an Event to show an information message
-                    eventBus.fireEvent( new ShowMessageEvent( constants.FileWasUploadedSuccessfully(),
+                    eventBus.fireEvent( new ShowMessageEvent( ConstantsCore.INSTANCE.FileWasUploadedSuccessfully(),
                                                               MessageType.INFO ) );
 
                     //Reload asset as the upload operation commits the asset's content. If we don't 
@@ -146,7 +144,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                     //this asset, as it has been recently updated" message to users
                     eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(),  asset.getUuid() ) );
                 } else {
-                    ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
+                    ErrorPopup.showMessage( ConstantsCore.INSTANCE.UnableToUploadTheFile() );
                 }
             }
 
@@ -158,7 +156,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
     }
 
     protected void showUploadingBusy() {
-        LoadingPopup.showMessage( constants.Uploading() );
+        LoadingPopup.showMessage( ConstantsCore.INSTANCE.Uploading() );
     }
 
     private TextBox getHiddenField(String name,

@@ -19,7 +19,7 @@
   xmlns:gwt="urn:import:com.google.gwt.user.client.ui" 
   xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>

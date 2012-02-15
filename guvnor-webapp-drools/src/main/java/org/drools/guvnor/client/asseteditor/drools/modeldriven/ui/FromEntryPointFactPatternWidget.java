@@ -19,6 +19,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -72,7 +73,7 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
                                                  click,
                                                  !this.readOnly ) );
             r++;

@@ -52,9 +52,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionSetFieldWidget extends RuleModellerWidget {
 
-    private Constants                constants   = GWT.create( Constants.class );
-    private static Images            images      = GWT.create( Images.class );
-
     final private ActionSetField     model;
     final private DirtyableFlexTable layout;
     private boolean                  isBoundFact = false;
@@ -98,7 +95,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         if ( this.variableClass == null ) {
             readOnly = true;
-            ErrorPopup.showMessage( constants.CouldNotFindTheTypeForVariable0( set.variable ) );
+            ErrorPopup.showMessage(Constants.INSTANCE.CouldNotFindTheTypeForVariable0(set.variable));
         }
 
         if ( readOnly == null ) {
@@ -132,11 +129,11 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( images.deleteItemSmall() );
+            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
@@ -160,8 +157,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( images.edit(),
-                                        constants.AddFirstNewField(),
+                h.add( new ImageButton( Images.INSTANCE.edit(),
+                                        Constants.INSTANCE.AddFirstNewField(),
                                         new ClickHandler() {
 
                                             public void onClick(ClickEvent sender) {
@@ -197,7 +194,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
-        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
+        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
                                            descFact );
         return new ClickableLabel( sl,
                                    clk,
@@ -206,8 +203,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
-                                                         constants.AddAField() );
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                         Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -218,7 +215,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( constants.AddField(),
+        popup.addAttribute( Constants.INSTANCE.AddField(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
