@@ -521,7 +521,15 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
-            String fileName = asset.getName() + "." + asset.getFormat();
+            String fileName = null;
+            String binaryContentAttachmentFileName = asset.getBinaryContentAttachmentFileName();                    
+            //Note the file extension name may not be same as asset format name in some cases.
+            if(binaryContentAttachmentFileName !=null && !"".equals(binaryContentAttachmentFileName)) {
+                fileName = binaryContentAttachmentFileName;
+            } else {
+                fileName = asset.getName() + "." + asset.getFormat();
+            }
+
             return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -594,10 +602,11 @@ public class PackageResource extends Resource {
             ai.checkout();
             ai.updateBinaryContentAttachmentFileName(fileName);
             
-            //TODO: this is wrong. Should not change the asset format. Asset format and asset file extension are 2 different things. 
-            if (extension != null) {
+            //Asset format and asset file extension are 2 different things. We simply do not have the asset type information available when the 
+            //asset is created from binary. The asset format needs to be filled by a following update operation.
+/*            if (extension != null) {
                 ai.updateFormat(extension);
-            }
+            }*/
             ai.updateBinaryContentAttachment(is);
             ai.getModule().updateBinaryUpToDate(false);
             ai.checkin("update binary");
@@ -817,7 +826,14 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName, versionNumber);
-            String fileName = asset.getName() + "." + asset.getFormat();
+            String fileName = null;
+            String binaryContentAttachmentFileName = asset.getBinaryContentAttachmentFileName();                    
+            //Note the file extension name may not be same as asset format name in some cases.
+            if(binaryContentAttachmentFileName !=null && !"".equals(binaryContentAttachmentFileName)) {
+                fileName = binaryContentAttachmentFileName;
+            } else {
+                fileName = asset.getName() + "." + asset.getFormat();
+            }
             return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
         } catch (Exception e) {
             throw new WebApplicationException(e);

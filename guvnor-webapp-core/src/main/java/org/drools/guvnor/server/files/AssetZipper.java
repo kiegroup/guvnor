@@ -48,7 +48,16 @@ public class AssetZipper {
 
                     zipFileElement = it.next();
                     inputZip = new BufferedInputStream(zipFileElement.getBinaryContentAttachment());
-                    outputZip.putNextEntry(new ZipEntry(zipFileElement.getName() + "." + zipFileElement.getFormat()));
+                    
+                    String fileName = null;
+                    String binaryContentAttachmentFileName = zipFileElement.getBinaryContentAttachmentFileName();                    
+                    //Note the file extension name may not be same as asset format name in some cases.
+                    if(binaryContentAttachmentFileName !=null && !"".equals(binaryContentAttachmentFileName)) {
+                        fileName = binaryContentAttachmentFileName;
+                    } else {
+                        fileName = zipFileElement.getName() + "." + zipFileElement.getFormat();
+                    }
+                    outputZip.putNextEntry(new ZipEntry(fileName));
 
                     while ((count = inputZip.read(data,
                             0,
