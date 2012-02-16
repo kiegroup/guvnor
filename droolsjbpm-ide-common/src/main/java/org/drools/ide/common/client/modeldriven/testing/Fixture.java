@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
-import java.util.ArrayList;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class FixtureList extends ArrayList<Fixture>
-    implements
-    Fixture {
-    private static final long serialVersionUID = 510l;
+/**
+ * All test fixtures implement this.
+ */
+public interface Fixture extends PortableObject {
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
 public class VerifyRuleFired
     implements

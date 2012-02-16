@@ -17,8 +17,8 @@
 package org.drools.ide.common.server.testscenarios.populators;
 
 import org.drools.base.TypeResolver;
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
-import org.drools.ide.common.client.testscenarios.fixtures.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 import java.util.ArrayList;
 import java.util.List;

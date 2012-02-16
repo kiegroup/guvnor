@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
-import java.util.HashMap;
 
-public class FixturesMap extends HashMap<String, FixtureList>
-    implements
-    Fixture {
+/**
+ * All assertions on results.
+ */
+public interface Expectation extends Fixture {
 
-    private static final long serialVersionUID = 510l;
+    /**
+     * Return false if the assertion
+     * @return
+     */
+    boolean wasSuccessful();
+
+
 
 }

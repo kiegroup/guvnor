@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
-import org.drools.ide.common.client.testscenarios.fixtures.RetractFact;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyField;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 public class ScenarioTest {
 

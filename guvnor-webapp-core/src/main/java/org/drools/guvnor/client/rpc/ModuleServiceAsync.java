@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 public interface ModuleServiceAsync {
     /** PLACE THE FOLLOWING IN PackageServiceAsync.java **/

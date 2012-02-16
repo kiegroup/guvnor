@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.testscenarios.Scenario;
-import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
-import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
-import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
 
 import com.google.gwt.core.client.GWT;
 

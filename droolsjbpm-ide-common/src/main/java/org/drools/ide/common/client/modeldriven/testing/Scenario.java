@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios;
+package org.drools.ide.common.client.modeldriven.testing;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
-import org.drools.ide.common.client.testscenarios.fixtures.*;
 
 /**
  * This represents a test scenario. It also encapsulates the result of a

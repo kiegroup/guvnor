@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
-import org.drools.ide.common.client.testscenarios.fixtures.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 public class FactDataTest {
     @Test
