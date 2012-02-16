@@ -46,6 +46,8 @@ import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
 import org.junit.Test;
 
@@ -1056,6 +1058,74 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                                      dtable.getData().get( 0 ) ) );
         assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "isLicensed"},
                                      dtable.getData().get( 1 ) ) );
+    }
+
+    @Test
+    public void testProperties() {
+
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "Properties.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check properties
+        List<String> functions = listener.getFunctions();
+        assertNotNull( functions );
+        assertEquals( 1,
+                      functions.size() );
+        assertEquals( "function a() { }",
+                      functions.get( 0 ) );
+
+        List<Global> globals = listener.getGlobals();
+        assertNotNull( globals );
+        assertEquals( 1,
+                      globals.size() );
+        assertEquals( "java.util.List",
+                      globals.get( 0 ).getClassName() );
+        assertEquals( "list",
+                      globals.get( 0 ).getIdentifier() );
+
+        List<Import> imports = listener.getImports();
+        assertNotNull( imports );
+        assertEquals( 2,
+                      imports.size() );
+        assertEquals( "org.yourco.model.*",
+                      imports.get( 0 ).getClassName() );
+        assertEquals( "java.util.Date",
+                      imports.get( 1 ).getClassName() );
+
+        List<String> queries = listener.getQueries();
+        assertNotNull( queries );
+        assertEquals( 1,
+                      queries.size() );
+        assertEquals( "A query",
+                      queries.get( 0 ) );
+
+        List<String> types = listener.getTypeDeclarations();
+        assertNotNull( types );
+        assertEquals( 1,
+                      types.size() );
+        assertEquals( "declare Smurf name : String end",
+                      types.get( 0 ) );
+
     }
 
     private boolean isRowEquivalent(String[] expected,

@@ -36,7 +36,6 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.Table
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;

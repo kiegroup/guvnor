@@ -2618,4 +2618,6 @@ public interface ConstantsCore
 
     String RemoveActionValueDefinitionQuestion();
 
+    String ConversionResults();
+    
 }

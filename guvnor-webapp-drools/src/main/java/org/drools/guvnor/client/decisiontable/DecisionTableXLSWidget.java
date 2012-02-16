@@ -22,19 +22,23 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
+import org.drools.guvnor.client.widgets.PopupListWidget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -86,27 +90,40 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     }
 
     //Handle post-conversion operations.
-    private void postConversion(ConversionResult result) {
+    private void postConversion(final ConversionResult result) {
         LoadingPopup.close();
-        showConversionMessages( result );
-        if ( result.isConverted() ) {
-            openEditor( result.getUUID() );
-        }
-    }
 
-    //TODO {manstis} A nicely formatted list would be much nicer
-    private void showConversionMessages(ConversionResult result) {
         if ( result.getMessages().size() > 0 ) {
-            StringBuilder sb = new StringBuilder();
+
+            //Show messages to user
+            PopupListWidget popup = new PopupListWidget( 400,
+                                                         200 );
             for ( ConversionMessage message : result.getMessages() ) {
-                sb.append( message.getMessage() ).append( "\n" );
+                popup.addListItem( new ConversionMessageWidget( message ) );
             }
-            Window.alert( sb.toString() );
+
+            //When closed open the new asset
+            popup.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+                @Override
+                public void onClose(CloseEvent<PopupPanel> event) {
+                    openEditor( result );
+                }
+
+            } );
+            popup.show();
+
+        } else {
+            //Otherwise just show the new asset
+            openEditor( result );
         }
     }
 
-    private void openEditor(String uuid) {
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ) );
+    private void openEditor(ConversionResult result) {
+        if ( result.isConverted() ) {
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( result.getUUID() ) );
+            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
+        }
     }
 
     private Widget makeDescriptionWidget() {

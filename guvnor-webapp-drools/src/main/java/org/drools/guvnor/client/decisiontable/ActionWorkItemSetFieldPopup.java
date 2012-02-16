@@ -38,7 +38,6 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;

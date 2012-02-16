@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.moduleeditor.drools;
+package org.drools.guvnor.shared.modules;
 
 import java.util.Iterator;
 
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Global;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Import;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Types;
+import org.drools.guvnor.shared.modules.ModuleHeader.Global;
+import org.drools.guvnor.shared.modules.ModuleHeader.Import;
 
-public class PackageHeaderHelper {
+/**
+ * Utility methods to parse a Module Header
+ */
+public class ModuleHeaderHelper {
 
     /**
-     * Attempt to parse out a model, if it can't, it will return null in which case an "advanced" editor should be used.
+     * Attempt to parse out a model, if it can't, it will return null in which
+     * case an "advanced" editor should be used.
      */
-    static Types parseHeader(String header) {
+    public static ModuleHeader parseHeader(String header) {
         if ( header == null || header.equals( "" ) ) {
-            Types t = new Types();
-            return t;
+            ModuleHeader mh = new ModuleHeader();
+            return mh;
         } else {
-            Types t = new Types();
+            ModuleHeader mh = new ModuleHeader();
 
             String[] lines = header.split( "\\n" );
 
@@ -45,7 +48,7 @@ public class PackageHeaderHelper {
                             tk = tk.substring( 0,
                                                tk.length() - 1 );
                         }
-                        t.imports.add( new Import( tk ) );
+                        mh.getImports().add( new Import( tk ) );
                     } else if ( tk.startsWith( "global" ) ) {
                         tk = tk.substring( 6 ).trim();
                         if ( tk.endsWith( ";" ) ) {
@@ -53,39 +56,45 @@ public class PackageHeaderHelper {
                                                tk.length() - 1 );
                         }
                         String[] gt = tk.split( "\\s+" );
-                        t.globals.add( new Global( gt[0],
-                                                   gt[1] ) );
+                        mh.getGlobals().add( new Global( gt[0],
+                                                         gt[1] ) );
                     } else if ( tk.startsWith( "rule" ) ) {
-                        t.hasRules = true;
-                        return t;
+                        mh.setHasRules( true );
+                        return mh;
                     } else if ( tk.startsWith( "declare" ) ) {
-                        t.hasDeclaredTypes = true;
-                        return t;
+                        mh.setHasDeclaredTypes( true );
+                        return mh;
                     } else if ( tk.startsWith( "function" ) ) {
-                        t.hasFunctions = true;
-                        return t;
+                        mh.setHasFunctions( true );
+                        return mh;
                     } else {
                         return null;
                     }
                 }
             }
 
-            return t;
+            return mh;
 
         }
 
     }
 
-    static String renderTypes(Types t) {
+    /**
+     * Render the ModuleHeader as a String
+     * 
+     * @param mh
+     * @return
+     */
+    public static String renderModuleHeader(ModuleHeader mh) {
         StringBuilder sb = new StringBuilder();
-        for ( Iterator iterator = t.imports.iterator(); iterator.hasNext(); ) {
-            Import i = (Import) iterator.next();
-            sb.append( "import " + i.type + "\n" );
+        for ( Iterator<Import> iterator = mh.getImports().iterator(); iterator.hasNext(); ) {
+            Import i = iterator.next();
+            sb.append( "import " + i.getType() + "\n" );
         }
 
-        for ( Iterator it = t.globals.iterator(); it.hasNext(); ) {
+        for ( Iterator<Global> it = mh.getGlobals().iterator(); it.hasNext(); ) {
             Global g = (Global) it.next();
-            sb.append( "global " + g.type + " " + g.name );
+            sb.append( "global " + g.getType() + " " + g.getName() );
             if ( it.hasNext() ) {
                 sb.append( '\n' );
             }

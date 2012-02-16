@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
@@ -27,6 +24,10 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.shared.modules.ModuleHeader;
+import org.drools.guvnor.shared.modules.ModuleHeader.Global;
+import org.drools.guvnor.shared.modules.ModuleHeader.Import;
+import org.drools.guvnor.shared.modules.ModuleHeaderHelper;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -50,11 +51,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PackageHeaderWidget extends Composite {
 
-    private Module conf;
-    private SimplePanel       layout;
-    private ListBox           importList;
-    private ListBox           globalList;
-    private boolean           isHistoricalReadOnly = false;
+    private Module      conf;
+    private SimplePanel layout;
+    private ListBox     importList;
+    private ListBox     globalList;
+    private boolean     isHistoricalReadOnly = false;
 
     public PackageHeaderWidget(Module conf,
                                boolean isHistoricalReadOnly) {
@@ -67,15 +68,15 @@ public class PackageHeaderWidget extends Composite {
     }
 
     private void render() {
-        final Types t = PackageHeaderHelper.parseHeader( conf.getHeader() );
-        if ( t == null ) {
+        final ModuleHeader mh = ModuleHeaderHelper.parseHeader( conf.getHeader() );
+        if ( mh == null ) {
             textEditorVersion();
         } else {
-            basicEditorVersion( t );
+            basicEditorVersion( mh );
         }
     }
 
-    private void basicEditorVersion(final Types t) {
+    private void basicEditorVersion(final ModuleHeader mh) {
         layout.clear();
         HorizontalPanel main = new HorizontalPanel();
 
@@ -83,7 +84,7 @@ public class PackageHeaderWidget extends Composite {
         imports.add( new Label( Constants.INSTANCE.ImportedTypes() ) );
         importList = new ListBox( true );
 
-        doImports( t );
+        doImports( mh );
         HorizontalPanel importCols = new HorizontalPanel();
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
@@ -104,7 +105,7 @@ public class PackageHeaderWidget extends Composite {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             showTypeQuestion( (Widget) event.getSource(),
-                                              t,
+                                              mh,
                                               false,
                                               Constants.INSTANCE.FactTypesJarTip() );
                         }
@@ -123,11 +124,11 @@ public class PackageHeaderWidget extends Composite {
                                     for ( int i = 0; i < importList.getItemCount(); i++ ) {
                                         if ( importList.isItemSelected( i ) ) {
                                             importList.removeItem( i );
-                                            t.imports.remove( i );
+                                            mh.getImports().remove( i );
                                             i--;
                                         }
                                     }
-                                    updateHeader( t );
+                                    updateHeader( mh );
                                 }
                             }
                         }
@@ -143,7 +144,7 @@ public class PackageHeaderWidget extends Composite {
         VerticalPanel globals = new VerticalPanel();
         globals.add( new Label( Constants.INSTANCE.Globals() ) );
         globalList = new ListBox( true );
-        doGlobals( t );
+        doGlobals( mh );
         HorizontalPanel globalCols = new HorizontalPanel();
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
@@ -164,7 +165,7 @@ public class PackageHeaderWidget extends Composite {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             showTypeQuestion( (Widget) event.getSource(),
-                                              t,
+                                              mh,
                                               true,
                                               Constants.INSTANCE.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
                         }
@@ -183,11 +184,11 @@ public class PackageHeaderWidget extends Composite {
                                     for ( int i = 0; i < globalList.getItemCount(); i++ ) {
                                         if ( globalList.isItemSelected( i ) ) {
                                             globalList.removeItem( i );
-                                            t.globals.remove( i );
+                                            mh.getGlobals().remove( i );
                                             i--;
                                         }
                                     }
-                                    updateHeader( t );
+                                    updateHeader( mh );
                                 }
                             }
                         }
@@ -273,26 +274,26 @@ public class PackageHeaderWidget extends Composite {
     }
 
     private void handleCasesForBasicModeButton() {
-        final Types types = PackageHeaderHelper.parseHeader( conf.getHeader() );
-        if ( types == null ) {
+        final ModuleHeader mh = ModuleHeaderHelper.parseHeader( conf.getHeader() );
+        if ( mh == null ) {
             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicView() );
         } else {
-            if ( types.hasDeclaredTypes ) {
+            if ( mh.hasDeclaredTypes() ) {
                 Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewDeclaredTypes() );
-            } else if ( types.hasFunctions ) {
+            } else if ( mh.hasFunctions() ) {
                 Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewFunctions() );
-            } else if ( types.hasRules ) {
+            } else if ( mh.hasRules() ) {
                 Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewRules() );
             } else {
                 if ( Window.confirm( Constants.INSTANCE.SwitchToGuidedModeForPackageEditing() ) ) {
-                    basicEditorVersion( types );
+                    basicEditorVersion( mh );
                 }
             }
         }
     }
 
     private void showTypeQuestion(Widget w,
-                                  final Types t,
+                                  final ModuleHeader mh,
                                   final boolean global,
                                   String headerMessage) {
         final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.homeIcon(),
@@ -329,18 +330,18 @@ public class PackageHeaderWidget extends Composite {
                     public void onClick(ClickEvent event) {
                         String type = (!"".equals( className.getText() )) ? className.getText() : factList.getItemText( factList.getSelectedIndex() );
                         if ( !global ) {
-                            t.imports.add( new Import( type ) );
-                            doImports( t );
+                            mh.getImports().add( new Import( type ) );
+                            doImports( mh );
                         } else {
                             if ( "".equals( globalName.getText() ) ) {
                                 Window.alert( Constants.INSTANCE.YouMustEnterAGlobalVariableName() );
                                 return;
                             }
-                            t.globals.add( new Global( type,
-                                                       globalName.getText() ) );
-                            doGlobals( t );
+                            mh.getGlobals().add( new Global( type,
+                                                             globalName.getText() ) );
+                            doGlobals( mh );
                         }
-                        updateHeader( t );
+                        updateHeader( mh );
                         pop.hide();
                     }
                 } );
@@ -392,48 +393,21 @@ public class PackageHeaderWidget extends Composite {
         };
     }
 
-    private void updateHeader(Types t) {
-        this.conf.setHeader( PackageHeaderHelper.renderTypes( t ) );
+    private void updateHeader(ModuleHeader mh) {
+        this.conf.setHeader( ModuleHeaderHelper.renderModuleHeader( mh ) );
     }
 
-    private void doGlobals(Types t) {
+    private void doGlobals(ModuleHeader mh) {
         globalList.clear();
-        for ( Global g : t.globals ) {
-            globalList.addItem( g.type + " [" + g.name + "]" );
+        for ( Global g : mh.getGlobals() ) {
+            globalList.addItem( g.getType() + " [" + g.getName() + "]" );
         }
     }
 
-    private void doImports(Types t) {
+    private void doImports(ModuleHeader mh) {
         importList.clear();
-        for ( Import i : t.imports ) {
-            importList.addItem( i.type );
-        }
-    }
-
-    static class Types {
-        List<Import> imports = new ArrayList<Import>();
-        List<Global> globals = new ArrayList<Global>();
-        boolean      hasDeclaredTypes;
-        boolean      hasFunctions;
-        boolean      hasRules;
-    }
-
-    static class Import {
-        String type;
-
-        Import(String t) {
-            this.type = t;
-        }
-    }
-
-    static class Global {
-        String type;
-        String name;
-
-        Global(String type,
-               String name) {
-            this.type = type;
-            this.name = name;
+        for ( Import i : mh.getImports() ) {
+            importList.addItem( i.getType() );
         }
     }
 

@@ -15,6 +15,9 @@
 
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
+  
+  <source path="client" />
+  <source path="shared" />
 
   <servlet path="/guvnorAPI" class="org.drools.guvnor.server.GuvnorAPIServlet"/>
   <servlet path="/guvnorService" class="org.drools.guvnor.server.RepositoryServiceServlet"/>

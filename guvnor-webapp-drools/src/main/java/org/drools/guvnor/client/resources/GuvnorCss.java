@@ -29,4 +29,9 @@ public interface GuvnorCss
     String warningMessage();
     
     String workItemParameter();
+    
+    String popupListWidgetButtonBar();
+    
+    String popupListWidgetCaption();
+
 }
