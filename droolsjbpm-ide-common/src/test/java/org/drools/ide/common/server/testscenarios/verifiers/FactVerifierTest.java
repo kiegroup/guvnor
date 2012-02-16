@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import org.drools.Cheese;
 import org.drools.base.TypeResolver;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.junit.Before;
 import org.junit.Test;
 

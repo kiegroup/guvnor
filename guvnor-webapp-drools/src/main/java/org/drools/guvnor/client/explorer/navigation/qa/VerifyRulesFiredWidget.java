@@ -21,9 +21,9 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.testscenarios.Scenario;
-import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;

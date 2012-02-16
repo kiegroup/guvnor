@@ -18,7 +18,7 @@ package org.drools.ide.common.server.testscenarios.verifiers;
 
 import java.util.Map;
 
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 public class RuleFiredVerifier {
 

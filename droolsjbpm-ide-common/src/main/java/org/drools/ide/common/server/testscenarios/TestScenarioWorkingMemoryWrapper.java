@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
-import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
-import org.drools.ide.common.client.testscenarios.fixtures.Expectation;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Expectation;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.testscenarios.executors.MethodExecutor;
 import org.drools.ide.common.server.testscenarios.verifiers.FactVerifier;
 import org.drools.ide.common.server.testscenarios.verifiers.RuleFiredVerifier;

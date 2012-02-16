@@ -19,7 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import org.drools.FactHandle;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
 
 import java.util.List;
 import java.util.Map;
