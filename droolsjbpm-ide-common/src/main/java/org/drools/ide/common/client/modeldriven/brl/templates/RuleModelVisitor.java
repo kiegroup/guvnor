@@ -133,8 +133,10 @@ public class RuleModelVisitor {
                                                                        afv.getType(),
                                                                        factType,
                                                                        afv.getField() );
-                vars.put( var,
-                          vars.size() );
+                if ( !vars.containsKey( var ) ) {
+                    vars.put( var,
+                              vars.size() );
+                }
             }
         }
     }
@@ -147,8 +149,10 @@ public class RuleModelVisitor {
                                                                        afv.getType(),
                                                                        factType,
                                                                        afv.getField() );
-                vars.put( var,
-                          vars.size() );
+                if ( !vars.containsKey( var ) ) {
+                    vars.put( var,
+                              vars.size() );
+                }
             }
         }
     }
@@ -161,8 +165,10 @@ public class RuleModelVisitor {
                                                                        afv.getType(),
                                                                        factType,
                                                                        afv.getField() );
-                vars.put( var,
-                          vars.size() );
+                if ( !vars.containsKey( var ) ) {
+                    vars.put( var,
+                              vars.size() );
+                }
             }
         }
     }
@@ -239,8 +245,10 @@ public class RuleModelVisitor {
                                                                    sfc.getFieldType(),
                                                                    factPattern.getFactType(),
                                                                    sfc.getFieldName() );
-            vars.put( var,
-                      vars.size() );
+            if ( !vars.containsKey( var ) ) {
+                vars.put( var,
+                          vars.size() );
+            }
         }
 
         //Visit Connection constraints
@@ -252,8 +260,10 @@ public class RuleModelVisitor {
                                                                            cc.getFieldType(),
                                                                            factPattern.getFactType(),
                                                                            cc.getFieldName() );
-                    vars.put( var,
-                              vars.size() );
+                    if ( !vars.containsKey( var ) ) {
+                        vars.put( var,
+                                  vars.size() );
+                    }
                 }
             }
         }
@@ -265,8 +275,10 @@ public class RuleModelVisitor {
                                                                    sfexp.getExpressionLeftSide().getGenericType(),
                                                                    factPattern.getFactType(),
                                                                    sfexp.getFieldName() );
-            vars.put( var,
-                      vars.size() );
+            if ( !vars.containsKey( var ) ) {
+                vars.put( var,
+                          vars.size() );
+            }
         }
 
         //Visit Connection constraints
@@ -278,8 +290,10 @@ public class RuleModelVisitor {
                                                                            sfexp.getExpressionLeftSide().getGenericType(),
                                                                            factPattern.getFactType(),
                                                                            cc.getFieldName() );
-                    vars.put( var,
-                              vars.size() );
+                    if ( !vars.containsKey( var ) ) {
+                        vars.put( var,
+                                  vars.size() );
+                    }
                 }
             }
         }

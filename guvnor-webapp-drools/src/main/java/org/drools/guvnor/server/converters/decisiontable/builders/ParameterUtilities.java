@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,17 +54,18 @@ public class ParameterUtilities {
         //Replace the single parameter place-holder
         StringBuffer result = new StringBuffer();
         final Matcher matcherSingleParameter = patternSingleParameter.matcher( xlsTemplate );
-        if ( matcherSingleParameter.find() ) {
+        while ( matcherSingleParameter.find() ) {
             matcherSingleParameter.appendReplacement( result,
-                                                      "@{" + PARAMETER_PREFIX + (parameterCounter++) + "}" );
+                                                      "@{" + PARAMETER_PREFIX + parameterCounter + "}" );
         }
+        parameterCounter++;
         matcherSingleParameter.appendTail( result );
         return result.toString();
     }
 
-    public List<String> extractTemplateKeys(String template) {
+    public Set<String> extractTemplateKeys(String template) {
         //Extract Template Keys
-        List<String> result = new ArrayList<String>();
+        Set<String> result = new HashSet<String>();
         final Matcher matcherTemplateKey = patternTemplateKey.matcher( template );
         while ( matcherTemplateKey.find() ) {
             String fullKey = matcherTemplateKey.group();
