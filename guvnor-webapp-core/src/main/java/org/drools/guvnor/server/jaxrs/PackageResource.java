@@ -604,9 +604,11 @@ public class PackageResource extends Resource {
             
             //Asset format and asset file extension are 2 different things. We simply do not have the asset type information available when the 
             //asset is created from binary. The asset format needs to be filled by a following update operation.
-/*            if (extension != null) {
+            //But we can do our best to guess the format here, i.e., assume the format is equal to the extension type. User can always update
+            //the format later on
+            if (extension != null) {
                 ai.updateFormat(extension);
-            }*/
+            }
             ai.updateBinaryContentAttachment(is);
             ai.getModule().updateBinaryUpToDate(false);
             ai.checkin("update binary");
