@@ -44,9 +44,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Displays a list of rule options (attributes).
- *
- *         <p/>
- *         Added support for metadata - Michael Rhoden 10/17/08
+ * <p/>
+ * Added support for metadata - Michael Rhoden 10/17/08
  */
 public class RuleAttributeWidget extends Composite {
 
@@ -56,24 +55,26 @@ public class RuleAttributeWidget extends Composite {
     /**
      * These are the names of all of the rule attributes for this widget
      */
-    public static final String SALIENCE_ATTR         = "salience";                   // needs to be public
-    public static final String ENABLED_ATTR          = "enabled";
-    public static final String DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String NO_LOOP_ATTR          = "no-loop";
-    public static final String AGENDA_GROUP_ATTR     = "agenda-group";
-    public static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String DURATION_ATTR         = "duration";
-    public static final String AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String DIALECT_ATTR          = "dialect";
-    public static final String LOCK_LHS              = "freeze_conditions";
-    public static final String LOCK_RHS              = "freeze_actions";
-    
+    public static final String  SALIENCE_ATTR         = "salience";                   // needs to be public
+    public static final String  ENABLED_ATTR          = "enabled";
+    public static final String  DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String  DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String  NO_LOOP_ATTR          = "no-loop";
+    public static final String  AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String  ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String  DURATION_ATTR         = "duration";
+    public static final String  TIMER_ATTR            = "timer";
+    public static final String  CALENDARS_ATTR        = "calendars";
+    public static final String  AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String  LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String  RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String  DIALECT_ATTR          = "dialect";
+    public static final String  LOCK_LHS              = "freeze_conditions";
+    public static final String  LOCK_RHS              = "freeze_actions";
+
     /**
-     * If the rule attribute is represented visually by a checkbox, these are the values that will
-     * be stored in the model when checked/unchecked
+     * If the rule attribute is represented visually by a checkbox, these are
+     * the values that will be stored in the model when checked/unchecked
      */
     private static final String TRUE_VALUE            = "true";
     private static final String FALSE_VALUE           = "false";
@@ -117,7 +118,7 @@ public class RuleAttributeWidget extends Composite {
 
     /**
      * Return a listbox of choices for rule attributes.
-     *
+     * 
      * @return
      */
     public static ListBox getAttributeList() {
@@ -133,6 +134,8 @@ public class RuleAttributeWidget extends Composite {
         list.addItem( AGENDA_GROUP_ATTR );
         list.addItem( ACTIVATION_GROUP_ATTR );
         list.addItem( DURATION_ATTR );
+        list.addItem( TIMER_ATTR );
+        list.addItem( CALENDARS_ATTR );
         list.addItem( AUTO_FOCUS_ATTR );
         list.addItem( LOCK_ON_ACTIVE_ATTR );
         list.addItem( RULEFLOW_GROUP_ATTR );
@@ -211,7 +214,8 @@ public class RuleAttributeWidget extends Composite {
 
         box.addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
-                box.setVisibleLength( box.getText().length() );
+                int length = box.getText().length();
+                box.setVisibleLength( length > 0 ? length : 1 );
             }
         } );
         return box;

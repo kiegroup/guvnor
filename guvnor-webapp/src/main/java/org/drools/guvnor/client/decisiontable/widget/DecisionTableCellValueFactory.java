@@ -254,6 +254,10 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
+            } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
             } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {

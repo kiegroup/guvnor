@@ -18,6 +18,7 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.math.BigDecimal;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
@@ -95,6 +96,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeBooleanCell();
             } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
                 cell = makeNumericCell();
+            } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+                cell = makeTimerCell();
+            } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+                cell = makeCalendarsCell();
             } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
                 cell = makeBooleanCell();
             } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {
@@ -136,7 +141,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         String[] vals = model.getValueList( col,
                                             sce );
         if ( vals.length == 0 ) {
-            
+
             //Null means the field is free-format
             if ( type == null ) {
                 return cell;
@@ -150,7 +155,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeDateCell();
             }
         } else {
-            
+
             // Columns with lists of values, enums etc are always Text (for now)
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
@@ -164,6 +169,16 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         PopupDropDownEditCell pudd = new PopupDropDownEditCell();
         pudd.setItems( DIALECTS );
         return new DecoratedGridCellValueAdaptor<String>( pudd );
+    }
+
+    // Make a new Cell for Timer columns
+    private DecoratedGridCellValueAdaptor<String> makeTimerCell() {
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell() );
+    }
+
+    // Make a new Cell for Calendars columns
+    private DecoratedGridCellValueAdaptor<String> makeCalendarsCell() {
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell() );
     }
 
     // Make a new Cell for Row Number columns

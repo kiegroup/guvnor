@@ -26,10 +26,8 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This is a decision table model for a guided editor. It is not template or XLS
  * based. (template could be done relatively easily by taking a template, as a
  * String, and then String[][] data and driving the SheetListener interface in
- * the decision tables module).
- * 
- * This works by taking the column definitions, and combining them with the
- * table of data to produce rule models.
+ * the decision tables module). This works by taking the column definitions, and
+ * combining them with the table of data to produce rule models.
  */
 public class GuidedDecisionTable52
     implements
@@ -53,6 +51,8 @@ public class GuidedDecisionTable52
     public static final String        AGENDA_GROUP_ATTR     = "agenda-group";
     public static final String        ACTIVATION_GROUP_ATTR = "activation-group";
     public static final String        DURATION_ATTR         = "duration";
+    public static final String        TIMER_ATTR            = "timer";
+    public static final String        CALENDARS_ATTR        = "calendars";
     public static final String        AUTO_FOCUS_ATTR       = "auto-focus";
     public static final String        LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
     public static final String        RULEFLOW_GROUP_ATTR   = "ruleflow-group";
@@ -221,6 +221,10 @@ public class GuidedDecisionTable52
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
+        } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {

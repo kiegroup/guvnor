@@ -23,12 +23,13 @@ public class RuleAttribute
     implements
     PortableObject {
 
-    private static final String NOLOOP   = "no-loop";
-    private static final String SALIENCE = "salience";
-    private static final String ENABLED  = "enabled";
-    private static final String DURATION = "duration";
+    private static final String NOLOOP         = "no-loop";
+    private static final String SALIENCE       = "salience";
+    private static final String ENABLED        = "enabled";
+    private static final String DURATION       = "duration";
+    private static final String TIMER          = "timer";
     private static final String LOCK_ON_ACTIVE = "lock-on-active";
-    private static final String AUTO_FOCUS = "auto-focus";
+    private static final String AUTO_FOCUS     = "auto-focus";
 
     public RuleAttribute(final String name,
                          final String value) {
@@ -42,30 +43,29 @@ public class RuleAttribute
     public RuleAttribute() {
     }
 
-
-
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append( this.attributeName );
-        if ( NOLOOP.equals( attributeName ) )
-        {
+        if ( NOLOOP.equals( attributeName ) ) {
             ret.append( " " );
             ret.append( this.value == null ? "true" : this.value );
-        }
-        else if (SALIENCE.equals( this.attributeName ) ||
-         DURATION.equals( this.attributeName ))
-        {
+        } else if ( SALIENCE.equals( this.attributeName ) ||
+                    DURATION.equals( this.attributeName ) ) {
             ret.append( " " );
             ret.append( this.value );
-        }
-        else if (ENABLED.equals( this.attributeName ) ||
-         AUTO_FOCUS.equals( this.attributeName ) ||
-         LOCK_ON_ACTIVE.equals( this.attributeName ))
-        {
+        } else if ( ENABLED.equals( this.attributeName ) ||
+                    AUTO_FOCUS.equals( this.attributeName ) ||
+                    LOCK_ON_ACTIVE.equals( this.attributeName ) ) {
             ret.append( " " );
-            ret.append( this.value.equals("true") ? "true" : "false" );
-        }
-        else if ( this.value != null ) {
+            ret.append( this.value.equals( "true" ) ? "true" : "false" );
+        } else if ( TIMER.equals( this.attributeName ) ) {
+            ret.append( " " );
+            if ( this.value.startsWith( "(" ) && this.value.endsWith( ")" ) ) {
+                ret.append( this.value );
+            } else {
+                ret.append( "(" ).append( this.value ).append( ")" );
+            }
+        } else if ( this.value != null ) {
             ret.append( " \"" );
             ret.append( this.value );
             ret.append( "\"" );
