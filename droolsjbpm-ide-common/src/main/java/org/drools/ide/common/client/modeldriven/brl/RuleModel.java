@@ -681,7 +681,10 @@ public class RuleModel
     public List<String> getBoundVariablesInScope(final BaseSingleFieldConstraint con) {
         final List<String> result = new ArrayList<String>();
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            final IPattern pat = this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
             if ( pat instanceof FactPattern ) {
                 final FactPattern fact = (FactPattern) pat;
 
