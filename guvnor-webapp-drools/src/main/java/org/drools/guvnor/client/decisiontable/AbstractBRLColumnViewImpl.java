@@ -63,27 +63,27 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     RuleModelEditor,
     TemplateVariablesChangedEvent.Handler {
 
-    protected int                    MIN_WIDTH  = 500;
-    protected int                    MIN_HEIGHT = 200;
+    protected int           MIN_WIDTH  = 500;
+    protected int           MIN_HEIGHT = 200;
 
-    protected final boolean          isReadOnly;
+    protected final boolean isReadOnly;
 
     @UiField(provided = true)
-    RuleModeller                     ruleModeller;
+    RuleModeller            ruleModeller;
 
     @UiField
-    TextBox                          txtColumnHeader;
+    TextBox                 txtColumnHeader;
 
     @UiField
-    CheckBox                         chkHideColumn;
+    CheckBox                chkHideColumn;
 
     @UiField
-    ScrollPanel                      brlEditorContainer;
+    ScrollPanel             brlEditorContainer;
 
     @UiField
-    Button                           cmdApplyChanges;
+    Button                  cmdApplyChanges;
 
-    Widget                           popupContent;
+    Widget                  popupContent;
 
     @SuppressWarnings("rawtypes")
     interface AbstractBRLColumnEditorBinder
@@ -233,12 +233,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                 return;
             }
             //Ensure variables reflect (name) changes made in RuleModeller
-            if ( getDefinedVariables( this.ruleModel ) ) {
-                doInsertColumn();
-            } else {
-                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNoTemplateKeysFound() );
-                return;
-            }
+            getDefinedVariables( this.ruleModel );
+            doInsertColumn();
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
@@ -248,12 +244,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                 }
             }
             //Ensure variables reflect (name) changes made in RuleModeller
-            if ( getDefinedVariables( this.ruleModel ) ) {
-                doUpdateColumn();
-            } else {
-                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNoTemplateKeysFound() );
-                return;
-            }
+            getDefinedVariables( this.ruleModel );
+            doUpdateColumn();
         }
 
         hide();

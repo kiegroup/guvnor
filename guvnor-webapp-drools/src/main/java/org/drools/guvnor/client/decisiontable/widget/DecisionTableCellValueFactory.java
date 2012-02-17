@@ -267,7 +267,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN :
-                dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
+                dcv.setBooleanValue( (text == null ? false : Boolean.valueOf( text )) );
                 break;
             case DATE :
                 Date d = null;

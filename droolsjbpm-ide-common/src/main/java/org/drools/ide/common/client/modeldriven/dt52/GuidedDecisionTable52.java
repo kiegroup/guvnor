@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
@@ -783,6 +784,16 @@ public class GuidedDecisionTable52
                 Pattern52 p = (Pattern52) cc;
                 if ( p.getBoundName().equals( boundName ) ) {
                     return p.getFactType();
+                }
+            } else if ( cc instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) cc;
+                for ( IPattern p : brl.getDefinition() ) {
+                    if ( p instanceof FactPattern ) {
+                        FactPattern fp = (FactPattern) p;
+                        if ( fp.isBound() && fp.getBoundName().equals( boundName ) ) {
+                            return fp.getFactType();
+                        }
+                    }
                 }
             }
         }
