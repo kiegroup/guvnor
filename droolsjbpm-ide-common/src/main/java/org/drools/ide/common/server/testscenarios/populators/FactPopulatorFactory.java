@@ -19,7 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
 
 public class FactPopulatorFactory {
 

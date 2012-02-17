@@ -17,8 +17,8 @@
 package org.drools.ide.common.server.testscenarios.executors;
 
 import org.drools.Cheesery;
-import org.drools.ide.common.client.testscenarios.fixtures.CallFieldValue;
-import org.drools.ide.common.client.testscenarios.fixtures.CallMethod;
+import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.junit.Test;
 
 import java.util.HashMap;

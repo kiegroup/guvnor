@@ -1,6 +1,6 @@
 package org.drools.ide.common.server.testscenarios.verifiers;
 
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.junit.Test;
 
 import java.util.HashMap;

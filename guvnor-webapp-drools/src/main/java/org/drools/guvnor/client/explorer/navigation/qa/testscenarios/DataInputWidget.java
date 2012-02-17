@@ -29,12 +29,12 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.testscenarios.Scenario;
-import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
-import org.drools.ide.common.client.testscenarios.fixtures.FactData;
-import org.drools.ide.common.client.testscenarios.fixtures.FieldData;
-import org.drools.ide.common.client.testscenarios.fixtures.Fixture;
-import org.drools.ide.common.client.testscenarios.fixtures.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

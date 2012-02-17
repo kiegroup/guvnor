@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
-public class ActivateRuleFlowGroup
+import java.util.HashMap;
+
+public class FixturesMap extends HashMap<String, FixtureList>
     implements
     Fixture {
 
     private static final long serialVersionUID = 510l;
-
-    private String            name;
-
-    public ActivateRuleFlowGroup() {
-    }
-
-    public ActivateRuleFlowGroup(String s) {
-        this.setName( s );
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 
 }

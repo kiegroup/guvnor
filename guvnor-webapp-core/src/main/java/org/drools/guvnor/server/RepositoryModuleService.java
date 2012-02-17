@@ -31,7 +31,7 @@ import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.testscenarios.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.server.testscenarios.RuleCoverageListener;
 import org.drools.ide.common.server.testscenarios.ScenarioRunner;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;

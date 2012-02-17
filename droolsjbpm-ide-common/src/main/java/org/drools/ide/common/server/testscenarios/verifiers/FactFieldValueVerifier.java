@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;

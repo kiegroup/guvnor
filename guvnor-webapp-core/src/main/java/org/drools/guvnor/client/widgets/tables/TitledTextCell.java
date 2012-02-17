@@ -1,15 +1,13 @@
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.TitledTextCellCss;
-import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
-
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
-
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.TitledTextCellCss;
+import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 /**
  * An extension to the normal TextCell that renders upto two rows of text; one
  * being the title and the other being narrative.

@@ -17,7 +17,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.testscenarios.fixtures.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

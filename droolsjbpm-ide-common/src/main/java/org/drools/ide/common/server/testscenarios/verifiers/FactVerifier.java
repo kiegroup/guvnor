@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyFact;
-import org.drools.ide.common.client.testscenarios.fixtures.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 
 public class FactVerifier {
 

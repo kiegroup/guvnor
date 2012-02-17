@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+public class ActivateRuleFlowGroup
+    implements
+    Fixture {
 
-/**
- * All test fixtures implement this.
- */
-public interface Fixture extends PortableObject {
+    private static final long serialVersionUID = 510l;
+
+    private String            name;
+
+    public ActivateRuleFlowGroup() {
+    }
+
+    public ActivateRuleFlowGroup(String s) {
+        this.setName( s );
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }

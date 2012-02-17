@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.testscenarios.fixtures;
+package org.drools.ide.common.client.modeldriven.testing;
 
+import java.util.ArrayList;
 
-/**
- * All assertions on results.
- */
-public interface Expectation extends Fixture {
-
-    /**
-     * Return false if the assertion
-     * @return
-     */
-    boolean wasSuccessful();
-
-
+public class FixtureList extends ArrayList<Fixture>
+    implements
+    Fixture {
+    private static final long serialVersionUID = 510l;
 
 }
