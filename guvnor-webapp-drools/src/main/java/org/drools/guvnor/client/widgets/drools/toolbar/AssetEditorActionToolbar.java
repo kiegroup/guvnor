@@ -522,7 +522,7 @@ public class AssetEditorActionToolbar extends Composite {
                             return;
                         }
 
-                        flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
+                        flushSuggestionCompletionCache(asset.getMetaData().getModuleName(), uuid);
                         if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }
@@ -555,7 +555,7 @@ public class AssetEditorActionToolbar extends Composite {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache(final String moduleName) {
+    public void flushSuggestionCompletionCache(final String moduleName, String uuid) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( Constants.INSTANCE.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().loadPackage( moduleName,
@@ -569,6 +569,9 @@ public class AssetEditorActionToolbar extends Composite {
                             LoadingPopup.close();
                         }
                     } );
+        } else {
+            //No need to refresh other asset editors, refresh the current asset editor only.
+            eventBus.fireEvent( new RefreshAssetEditorEvent(moduleName, uuid));
         }
     }
 
@@ -630,7 +633,7 @@ public class AssetEditorActionToolbar extends Composite {
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                                flushSuggestionCompletionCache(sel.getSelectedPackage());
+                                flushSuggestionCompletionCache(sel.getSelectedPackage(), null);
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
                                         data );
@@ -704,8 +707,8 @@ public class AssetEditorActionToolbar extends Composite {
                         public void onSuccess(Void data) {
                             Window.alert( Constants.INSTANCE.Promoted() );
 
-                            flushSuggestionCompletionCache(asset.getMetaData().getModuleName());
-                            flushSuggestionCompletionCache("globalArea");
+                            flushSuggestionCompletionCache(asset.getMetaData().getModuleName(), null);
+                            flushSuggestionCompletionCache("globalArea", null);
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                             eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                         }
