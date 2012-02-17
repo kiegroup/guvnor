@@ -44,6 +44,7 @@ import org.drools.guvnor.server.converters.decisiontable.builders.DefaultDescrip
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableActivationGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAgendaGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAutoFocusBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableCalendarsBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDescriptionBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDurationBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableLHSBuilder;
@@ -55,6 +56,7 @@ import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecision
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRuleflowGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSalienceBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSourceBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableTimerBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.HasColumnHeadings;
 import org.drools.guvnor.server.converters.decisiontable.builders.ParameterUtilities;
 import org.drools.guvnor.server.converters.decisiontable.builders.RowNumberBuilder;
@@ -414,6 +416,22 @@ public class GuidedDecisionTableGeneratorListener
                 sb = new GuidedDecisionTableDurationBuilder( row - 1,
                                                              column,
                                                              this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+                
+            case TIMER:
+                sb = new GuidedDecisionTableTimerBuilder( row - 1,
+                                                          column,
+                                                          this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case CALENDARS:
+                sb = new GuidedDecisionTableCalendarsBuilder( row - 1,
+                                                              column,
+                                                              this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;

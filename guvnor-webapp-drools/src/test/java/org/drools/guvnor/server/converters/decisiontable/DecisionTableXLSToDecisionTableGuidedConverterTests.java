@@ -99,7 +99,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 11,
+        assertEquals( 13,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
@@ -111,7 +111,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
         assertTrue( columns.get( 7 ) instanceof AttributeCol52 );
         assertTrue( columns.get( 8 ) instanceof AttributeCol52 );
         assertTrue( columns.get( 9 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 10 ) instanceof AnalysisCol52 );
+        assertTrue( columns.get( 10 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 11 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 12 ) instanceof AnalysisCol52 );
 
         //Check individual attributes
         AttributeCol52 attrCol2 = ((AttributeCol52) columns.get( 2 ));
@@ -129,31 +131,39 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                       attrCol4.getAttribute() );
 
         AttributeCol52 attrCol5 = ((AttributeCol52) columns.get( 5 ));
-        assertEquals( GuidedDecisionTable52.NO_LOOP_ATTR,
+        assertEquals( GuidedDecisionTable52.TIMER_ATTR,
                       attrCol5.getAttribute() );
 
         AttributeCol52 attrCol6 = ((AttributeCol52) columns.get( 6 ));
-        assertEquals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR,
+        assertEquals( GuidedDecisionTable52.CALENDARS_ATTR,
                       attrCol6.getAttribute() );
 
         AttributeCol52 attrCol7 = ((AttributeCol52) columns.get( 7 ));
-        assertEquals( GuidedDecisionTable52.AUTO_FOCUS_ATTR,
+        assertEquals( GuidedDecisionTable52.NO_LOOP_ATTR,
                       attrCol7.getAttribute() );
 
         AttributeCol52 attrCol8 = ((AttributeCol52) columns.get( 8 ));
-        assertEquals( GuidedDecisionTable52.AGENDA_GROUP_ATTR,
+        assertEquals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR,
                       attrCol8.getAttribute() );
 
         AttributeCol52 attrCol9 = ((AttributeCol52) columns.get( 9 ));
-        assertEquals( GuidedDecisionTable52.RULEFLOW_GROUP_ATTR,
+        assertEquals( GuidedDecisionTable52.AUTO_FOCUS_ATTR,
                       attrCol9.getAttribute() );
+
+        AttributeCol52 attrCol10 = ((AttributeCol52) columns.get( 10 ));
+        assertEquals( GuidedDecisionTable52.AGENDA_GROUP_ATTR,
+                      attrCol10.getAttribute() );
+
+        AttributeCol52 attrCol11 = ((AttributeCol52) columns.get( 11 ));
+        assertEquals( GuidedDecisionTable52.RULEFLOW_GROUP_ATTR,
+                      attrCol11.getAttribute() );
 
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{"1", "Specific rule 1", "1", "g1", "100", "TRUE", "TRUE", "TRUE", "AG1", "RFG1"},
+        assertTrue( isRowEquivalent( new String[]{"1", "Specific rule 1", "1", "g1", "100", "T1", "CAL1", "TRUE", "TRUE", "TRUE", "AG1", "RFG1"},
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{"2", "Specific rule 2", "2", "g2", "200", "FALSE", "FALSE", "FALSE", "AG2", "RFG2"},
+        assertTrue( isRowEquivalent( new String[]{"2", "Specific rule 2", "2", "g2", "200", "T2", "CAL2", "FALSE", "FALSE", "FALSE", "AG2", "RFG2"},
                                      dtable.getData().get( 1 ) ) );
     }
 
