@@ -49,13 +49,16 @@ public class SOAModuleAssemblertTest extends GuvnorTestBase {
         jar.updateBinaryContentAttachmentFileName("billasurf.jar");
         jar.checkin( "" );
 
-        AssetItem wsdl = module.addAsset( "wsdl1", "" );
+        AssetItem wsdl = module.addAsset( "CustomerService", "" );
         wsdl.updateFormat("wsdl");
-        wsdl.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );        wsdl.checkin( "" );
+        wsdl.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/CustomerService.wsdl" ) );        
+        wsdl.updateBinaryContentAttachmentFileName("CustomerService.wsdl");
+        wsdl.checkin( "" );
 
         AssetItem xsd = module.addAsset( "xsd1", "" );
         wsdl.updateFormat("xmlschema");
-        wsdl.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        wsdl.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/CustomerService.wsdl" ) );
+        wsdl.updateBinaryContentAttachmentFileName("CustomerService.wsdl");
         wsdl.checkin( "" );
 
         AssetItem rule3 = module.addAsset( "A file",
@@ -77,16 +80,21 @@ public class SOAModuleAssemblertTest extends GuvnorTestBase {
         ByteArrayInputStream bis = new ByteArrayInputStream(compiledBinary); 
         ZipInputStream zin = new ZipInputStream(bis);
         ZipEntry ze = null;
-        boolean jarNameFound = false;
+        boolean foundWsdl = false;
+        boolean foundJarClass = false;
         while ((ze = zin.getNextEntry()) != null) {
             String name = ze.getName();
             zin.closeEntry();
-            if("billasurf.jar".equals(name)) {
-                jarNameFound = true;
+            if("CustomerService.wsdl".equals(name)) {
+                foundWsdl = true;
             }
+            if("com/billasurf/Board.java".equals(name)) {
+                foundJarClass = true;
+            }    
         }
         zin.close();
-        assertTrue(jarNameFound);
+        assertTrue(foundWsdl);
+        assertTrue(foundJarClass);
     }
 
 }
