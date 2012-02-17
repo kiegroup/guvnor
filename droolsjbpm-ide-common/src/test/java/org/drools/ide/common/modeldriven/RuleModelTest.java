@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
@@ -909,5 +910,50 @@ public class RuleModelTest {
         assertEquals( c,
                       model.rhs[6] );
 
+    }
+
+    @Test
+    public void testBoundFromCompositeFactFinder() {
+        final RuleModel model = new RuleModel();
+
+        model.lhs = new IPattern[1];
+
+        final FromCompositeFactPattern fcfp = new FromCompositeFactPattern( );
+        final FactPattern x = new FactPattern( "Car" );
+        x.setBoundName( "x" );
+        final SingleFieldConstraint a = new SingleFieldConstraint( "name" );
+        a.setFieldBinding( "a" );
+        a.setFieldType( "String" );
+        x.addConstraint( a );
+        fcfp.setFactPattern(x);
+
+        model.lhs[0] = fcfp;
+
+        assertEquals( x, model.getLHSBoundFact( "x" ) );
+
+        assertEquals( 1, model.getLHSBoundFacts().size() );
+        assertEquals( "x", model.getLHSBoundFacts().get(0) );
+
+        assertEquals( a, model.getLHSBoundField( "a" ) );
+
+        assertEquals( "Car", model.getLHSBindingType( "x" ) );
+        assertEquals( "String", model.getLHSBindingType( "a" ) );
+
+        assertEquals( x, model.getLHSParentFactPatternForBinding( "a" ) );
+
+        assertEquals( 2, model.getAllLHSVariables().size() );
+        assertTrue( model.getAllLHSVariables().contains("x") );
+        assertTrue( model.getAllLHSVariables().contains("a") );
+
+        model.rhs = new IAction[1];
+        final ActionSetField set = new ActionSetField();
+        set.variable = "x";
+        model.rhs[0] = set;
+
+        assertTrue( model.isBoundFactUsed( "x" ) );
+
+        assertEquals( 1,  model.lhs.length );
+        assertFalse( model.removeLhsItem( 0 ) );
+        assertEquals( 1,  model.lhs.length );
     }
 }
