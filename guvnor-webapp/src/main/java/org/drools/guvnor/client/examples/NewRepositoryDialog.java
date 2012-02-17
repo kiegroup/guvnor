@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.examples;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -34,10 +34,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 /**
  * To be shown when the user opens repo for the first time.
  */
-public class NewRepoDialog extends FormStylePopup {
+public class NewRepositoryDialog extends FormStylePopup {
     private Constants constants;
 
-    public NewRepoDialog() {
+    public NewRepositoryDialog() {
         setTitle( ((Constants) GWT.create( Constants.class )).WelcomeToGuvnor() );
         setWidth( 300 + "px" );
 

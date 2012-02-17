@@ -110,7 +110,6 @@ public class ExplorerNodeConfig {
         return new GenericCallback<String[]>() {
             public void onSuccess( String[] value ) {
                 if ( value.length == 0 ) {
-                    newRepoDialogIfShowAdminAndPathMatches( path );
                     infanticide( treeItem );
                 } else {
                     createChildNodes( treeItem, path, itemWidgets, value );
@@ -133,22 +132,6 @@ public class ExplorerNodeConfig {
                 }
             }
 
-            private void newRepoDialogIfShowAdminAndPathMatches( final String path ) {
-                if ( path.equals( "/" ) && UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
-                    RepositoryServiceFactory.getPackageService().listPackages( createGenericCallbackForListPackages() );
-                }
-            }
-
-            private GenericCallback<PackageConfigData[]> createGenericCallbackForListPackages() {
-                return new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess( PackageConfigData[] result ) {
-                        if ( result.length == 1 ) {
-                            doNewRepoDialog();
-                        }
-                    }
-                };
-            }
-
             private OpenHandler<TreeItem> createOpenHandlerForTree( final Map<TreeItem, String> itemWidgets, final TreeItem childNode ) {
                 return new OpenHandler<TreeItem>() {
                     boolean expanding = false;
@@ -164,11 +147,6 @@ public class ExplorerNodeConfig {
                         }
                     }
                 };
-            }
-
-            private void doNewRepoDialog() {
-                NewRepoDialog diag = new NewRepoDialog();
-                diag.show();
             }
 
         };
