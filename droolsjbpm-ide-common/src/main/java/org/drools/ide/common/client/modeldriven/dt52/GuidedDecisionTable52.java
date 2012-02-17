@@ -56,6 +56,8 @@ public class GuidedDecisionTable52
     public static final String                           AGENDA_GROUP_ATTR     = "agenda-group";
     public static final String                           ACTIVATION_GROUP_ATTR = "activation-group";
     public static final String                           DURATION_ATTR         = "duration";
+    public static final String                           TIMER_ATTR            = "timer";
+    public static final String                           CALENDARS_ATTR        = "calendars";
     public static final String                           AUTO_FOCUS_ATTR       = "auto-focus";
     public static final String                           LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
     public static final String                           RULEFLOW_GROUP_ATTR   = "ruleflow-group";
@@ -329,6 +331,10 @@ public class GuidedDecisionTable52
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
+        } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
@@ -451,6 +457,10 @@ public class GuidedDecisionTable52
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
+            } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
             } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
