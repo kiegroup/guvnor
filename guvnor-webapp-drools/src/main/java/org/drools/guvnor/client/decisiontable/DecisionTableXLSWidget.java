@@ -20,25 +20,21 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
-import org.drools.guvnor.client.rpc.ConversionResult.ConversionAsset;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
 import org.drools.guvnor.client.widgets.PopupListWidget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -93,6 +89,9 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     private void postConversion(final ConversionResult result) {
         LoadingPopup.close();
 
+        //Refresh the Module editor to show new assets
+        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.metaData.moduleUUID ) );
+
         if ( result.getMessages().size() > 0 ) {
 
             //Show messages to user
@@ -101,32 +100,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
             for ( ConversionMessage message : result.getMessages() ) {
                 popup.addListItem( new ConversionMessageWidget( message ) );
             }
-
-            //When closed open the new asset
-            popup.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                @Override
-                public void onClose(CloseEvent<PopupPanel> event) {
-                    openEditors( result );
-                }
-
-            } );
             popup.show();
-
-        } else {
-            //Otherwise just show the new asset
-            openEditors( result );
-        }
-    }
-
-    private void openEditors(ConversionResult result) {
-        if ( result.isConverted() ) {
-            for ( ConversionAsset newAsset : result.getNewAssets() ) {
-                final String newAssetFormat = newAsset.getFormat();
-                if ( newAssetFormat.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
-                    clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAsset.getUUID() ) );
-                }
-            }
         }
     }
 
