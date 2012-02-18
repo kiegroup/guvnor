@@ -22,11 +22,11 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionAsset;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
 import org.drools.guvnor.client.widgets.PopupListWidget;
 
@@ -57,7 +57,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
         //Set-up supplementary widgets
         if ( !asset.isReadonly() ) {
-            //TODO {manstis} Uncomment - super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
+            super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
         }
         super.addSupplementaryWidget( makeDescriptionWidget() );
     }
@@ -96,7 +96,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
         if ( result.getMessages().size() > 0 ) {
 
             //Show messages to user
-            PopupListWidget popup = new PopupListWidget( 400,
+            PopupListWidget popup = new PopupListWidget( 600,
                                                          200 );
             for ( ConversionMessage message : result.getMessages() ) {
                 popup.addListItem( new ConversionMessageWidget( message ) );
@@ -107,7 +107,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
                 @Override
                 public void onClose(CloseEvent<PopupPanel> event) {
-                    openEditor( result );
+                    openEditors( result );
                 }
 
             } );
@@ -115,14 +115,18 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
         } else {
             //Otherwise just show the new asset
-            openEditor( result );
+            openEditors( result );
         }
     }
 
-    private void openEditor(ConversionResult result) {
+    private void openEditors(ConversionResult result) {
         if ( result.isConverted() ) {
-            clientFactory.getPlaceController().goTo( new AssetEditorPlace( result.getUUID() ) );
-            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
+            for ( ConversionAsset newAsset : result.getNewAssets() ) {
+                final String newAssetFormat = newAsset.getFormat();
+                if ( newAssetFormat.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
+                    clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAsset.getUUID() ) );
+                }
+            }
         }
     }
 

@@ -31,6 +31,7 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionAsset;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
@@ -112,11 +113,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
                                        result );
 
             //Add Web Guided Decision Tables
-            for ( GuidedDecisionTable52 dtable : listener.getGuidedDecisionTables() ) {
-                createNewDecisionTable( dtable,
-                                        item,
-                                        result );
-            }
+            createNewDecisionTables( listener.getGuidedDecisionTables(),
+                                     item,
+                                     result );
 
         } catch ( SerializationException se ) {
             result.addMessage( se.getMessage(),
@@ -168,6 +167,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             final String packageUUID = item.getModule().getUUID();
             final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
 
+            result.addMessage( "Created Function '" + assetName + "'",
+                               ConversionMessageType.INFO );
+
             final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
                                                                             packageName,
                                                                             packageUUID,
@@ -212,12 +214,14 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             for ( Global g : globals ) {
                 if ( !existingGlobals.containsKey( g.getIdentifier() ) ) {
                     isModified = true;
+                    result.addMessage( "Created Global '" + g.getIdentifier() + "' of type '" + g.getClassName() + "'.",
+                                       ConversionMessageType.INFO );
                     mh.getGlobals().add( new ModuleHeader.Global( g.getClassName(),
                                                                   g.getIdentifier() ) );
                 } else {
                     if ( !existingGlobals.get( g.getIdentifier() ).equals( g.getClassName() ) ) {
                         result.addMessage( "Global '" + g.getIdentifier() + "' is already declared. Type '" + existingGlobals.get( g.getIdentifier() ) + "'. Cannot create from Worksheet.",
-                                           ConversionMessageType.INFO );
+                                           ConversionMessageType.WARNING );
                     }
                 }
             }
@@ -228,6 +232,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             for ( Import i : imports ) {
                 if ( !existingImports.contains( i.getClassName() ) ) {
                     isModified = true;
+                    result.addMessage( "Created Import for '" + i.getClassName() + "'.",
+                                       ConversionMessageType.INFO );
                     mh.getImports().add( new ModuleHeader.Import( i.getClassName() ) );
                 }
             }
@@ -250,7 +256,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         //Queries are not supported in Guvnor. See https://issues.jboss.org/browse/GUVNOR-1532
         for ( String query : queries ) {
             result.addMessage( "Queries are not supported in Guvnor. Query '" + query + "' will not be added.",
-                               ConversionMessageType.INFO );
+                               ConversionMessageType.WARNING );
         }
     }
 
@@ -274,6 +280,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             final String packageUUID = item.getModule().getUUID();
             final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
 
+            result.addMessage( "Created Declarative Model '" + assetName + "'.",
+                               ConversionMessageType.INFO );
+
             final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
                                                                             packageName,
                                                                             packageUUID,
@@ -287,29 +296,36 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         }
     }
 
-    private void createNewDecisionTable(GuidedDecisionTable52 dtable,
-                                        AssetItem item,
-                                        ConversionResult result) throws SerializationException {
+    private void createNewDecisionTables(List<GuidedDecisionTable52> dtables,
+                                         AssetItem item,
+                                         ConversionResult result) throws SerializationException {
 
-        if ( dtable == null ) {
+        if ( dtables == null ) {
             return;
         }
 
-        //Create new asset from Guided Decision Table
-        final String assetName = makeNewAssetName( dtable.getTableName() );
-        final String packageName = item.getModule().getName();
-        final String packageUUID = item.getModule().getUUID();
-        final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
-        final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
-                                                                        packageName,
-                                                                        packageUUID,
-                                                                        description,
-                                                                        null,
-                                                                        FORMAT );
-        createNewAsset( item,
-                        config,
-                        dtable,
-                        result );
+        for ( GuidedDecisionTable52 dtable : dtables ) {
+
+            //Create new asset from Guided Decision Table
+            final String assetName = makeNewAssetName( dtable.getTableName() );
+            final String packageName = item.getModule().getName();
+            final String packageUUID = item.getModule().getUUID();
+            final String description = "Converted from XLS Decision Table '" + item.getName() + "'.";
+
+            result.addMessage( "Created Guided Decision Table '" + assetName + "'.",
+                               ConversionMessageType.INFO );
+
+            final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
+                                                                            packageName,
+                                                                            packageUUID,
+                                                                            description,
+                                                                            null,
+                                                                            FORMAT );
+            createNewAsset( item,
+                            config,
+                            dtable,
+                            result );
+        }
     }
 
     private String makeNewAssetName(String baseName) {
@@ -338,7 +354,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         //If there was an error creating the asset return
         if ( uuid.startsWith( "DUPLICATE" ) ) {
             result.addMessage( uuid,
-                                   ConversionMessageType.ERROR );
+                               ConversionMessageType.ERROR );
             return;
         }
 
@@ -351,11 +367,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
         //If there was an error checking-in new asset return
         if ( uuid.startsWith( "ERR" ) ) {
             result.addMessage( uuid,
-                                   ConversionMessageType.ERROR );
+                               ConversionMessageType.ERROR );
             return;
         }
 
-        result.setUUID( uuid );
+        result.addNewAsset( new ConversionAsset( uuid,
+                                                 config.getFormat() ) );
 
     }
 
