@@ -486,6 +486,7 @@ public class AssetEditorActionToolbar extends Composite {
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
+                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                         close();
                     }
                 } );
