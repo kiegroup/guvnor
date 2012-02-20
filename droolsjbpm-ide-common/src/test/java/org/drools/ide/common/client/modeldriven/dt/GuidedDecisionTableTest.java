@@ -247,7 +247,7 @@ public class GuidedDecisionTableTest {
                                 new ModelField( "age",
                                                 Integer.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                                 new ModelField( "name",
                                                 String.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -317,16 +317,16 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( at,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( c1_,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( a2,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( ins_,
                                   sce ) );
 
@@ -360,7 +360,7 @@ public class GuidedDecisionTableTest {
                                 new ModelField( "age",
                                                 Integer.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                                 new ModelField( "name",
                                                 String.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -444,7 +444,7 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( salienceAttribute,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
@@ -453,7 +453,7 @@ public class GuidedDecisionTableTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       dt.getType( conditionColName,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( conditionColAge,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_DATE,
@@ -465,13 +465,13 @@ public class GuidedDecisionTableTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       dt.getType( a,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( a2,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       dt.getType( ins,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( ins_,
                                   sce ) );
         assertEquals( null,
@@ -599,7 +599,7 @@ public class GuidedDecisionTableTest {
                                 new ModelField( "age",
                                                 Integer.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                                 new ModelField( "name",
                                                 String.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -660,7 +660,7 @@ public class GuidedDecisionTableTest {
                                 new ModelField( "age",
                                                 Integer.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                                 new ModelField( "name",
                                                 String.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -709,7 +709,7 @@ public class GuidedDecisionTableTest {
                                 new ModelField( "age",
                                                 Integer.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                                 new ModelField( "name",
                                                 String.class.getName(),
                                                 FIELD_CLASS_TYPE.REGULAR_CLASS,

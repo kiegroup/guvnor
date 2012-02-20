@@ -33,10 +33,10 @@ public class ActionSetFieldTest {
         set.fieldValues = new ActionFieldValue[2];
         final ActionFieldValue v0 = new ActionFieldValue( "x",
                                                           "42",
-                                                          SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                          SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         final ActionFieldValue v1 = new ActionFieldValue( "y",
                                                           "43",
-                                                          SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                          SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         set.fieldValues[0] = v0;
         set.fieldValues[1] = v1;
 
@@ -55,16 +55,16 @@ public class ActionSetFieldTest {
         set.fieldValues = new ActionFieldValue[2];
         final ActionFieldValue v0 = new ActionFieldValue( "x",
                                                           "42",
-                                                          SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                          SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         final ActionFieldValue v1 = new ActionFieldValue( "y",
                                                           "43",
-                                                          SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                          SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         set.fieldValues[0] = v0;
         set.fieldValues[1] = v1;
 
         final ActionFieldValue q = new ActionFieldValue( "q",
                                                          "q",
-                                                         SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                         SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         set.addFieldValue( q );
 
         assertEquals( 3,

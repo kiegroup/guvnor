@@ -729,6 +729,22 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                     return cv.getBooleanValue().toString();
                 case NUMERIC :
                     return cv.getNumericValue().toPlainString();
+                case NUMERIC_BIGDECIMAL :
+                    return cv.getBigDecimalValue().toPlainString();
+                case NUMERIC_BIGINTEGER :
+                    return cv.getBigIntegerValue().toString();
+                case NUMERIC_BYTE :
+                    return cv.getByteValue().toString();
+                case NUMERIC_DOUBLE :
+                    return cv.getDoubleValue().toString();
+                case NUMERIC_FLOAT :
+                    return cv.getFloatValue().toString();
+                case NUMERIC_INTEGER :
+                    return cv.getIntegerValue().toString();
+                case NUMERIC_LONG :
+                    return cv.getLongValue().toString();
+                case NUMERIC_SHORT :
+                    return cv.getShortValue().toString();
                 case DATE :
                     return format.format( cv.getDateValue() );
                 default :

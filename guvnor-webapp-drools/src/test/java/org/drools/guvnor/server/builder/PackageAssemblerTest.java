@@ -824,7 +824,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
                                                        "42",
-                                                       SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                       SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         action.addFieldValue( value );
 
         model.addLhsItem( pattern );
@@ -852,7 +852,7 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         action = new ActionSetField( "p" );
         value = new ActionFieldValue( "age",
                                       "42",
-                                      SuggestionCompletionEngine.TYPE_NUMERIC );
+                                      SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         action.addFieldValue( value );
 
         model.addLhsItem( pattern );

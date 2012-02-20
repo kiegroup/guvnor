@@ -39,7 +39,6 @@ import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -310,8 +309,9 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
+        //TODO {manstis} Need different editors for different Numeric values
         //Template TextBoxes are always Strings as they hold the template key for the actual value
-        if ( value.nature != FieldNature.TYPE_TEMPLATE && value.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        if ( value.nature != FieldNature.TYPE_TEMPLATE && SuggestionCompletionEngine.isNumeric( value.type ) ) {
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
         }
 

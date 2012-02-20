@@ -309,7 +309,7 @@ public class GuidedDecisionTable52
 
     private String getType(RowNumberCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        String type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         return type;
     }
 
@@ -324,13 +324,13 @@ public class GuidedDecisionTable52
         String type = null;
         String attrName = col.getAttribute();
         if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
@@ -444,19 +444,19 @@ public class GuidedDecisionTable52
         DTDataTypes52 dataType = DTDataTypes52.STRING;
 
         if ( column instanceof RowNumberCol52 ) {
-            dataType = DTDataTypes52.NUMERIC;
+            dataType = DTDataTypes52.NUMERIC_INTEGER;
 
         } else if ( column instanceof AttributeCol52 ) {
             AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
             } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
             } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
                 dataType = DTDataTypes52.STRING;
             } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
@@ -543,6 +543,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -573,6 +589,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -604,6 +636,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {

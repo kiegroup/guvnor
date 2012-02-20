@@ -193,7 +193,7 @@ public class BRDRLPersistenceTest {
         assertEquals( expected,
                       drl );
     }
-    
+
     @Test
     public void testEnumTypeStringInOperator() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
@@ -232,7 +232,7 @@ public class BRDRLPersistenceTest {
         con.setFieldName( "age" );
         con.setOperator( "==" );
         con.setValue( "100" );
-        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
         pat.addConstraint( con );
 
@@ -810,7 +810,7 @@ public class BRDRLPersistenceTest {
         con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "java.lang.Integer",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
         con.setOperator( "==" );
         con.setValue( "55" );
         con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -924,7 +924,7 @@ public class BRDRLPersistenceTest {
                                                                      SuggestionCompletionEngine.TYPE_OBJECT ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "age",
                                                                      "java.lang.Integer",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
         con.setOperator( "==" );
         con.setValue( "55" );
         con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1039,7 +1039,7 @@ public class BRDRLPersistenceTest {
 
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         con.setFieldName( "field1" );
         con.setOperator( "==" );
         con.setValue( "44" );
@@ -1459,7 +1459,7 @@ public class BRDRLPersistenceTest {
         FactPattern fp3 = new FactPattern( "Float" );
         fp3.setBoundName( "$f" );
         SingleFieldConstraint con3 = new SingleFieldConstraint();
-        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         con3.setFieldName( "this" );
         con3.setOperator( "==" );
         con3.setValue( "123.456f" );
@@ -1470,7 +1470,7 @@ public class BRDRLPersistenceTest {
         FactPattern fp4 = new FactPattern( "Integer" );
         fp4.setBoundName( "$i" );
         SingleFieldConstraint con4 = new SingleFieldConstraint();
-        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         con4.setFieldName( "this" );
         con4.setOperator( "==" );
         con4.setValue( "123" );
@@ -1567,7 +1567,7 @@ public class BRDRLPersistenceTest {
         FactPattern fp3 = new FactPattern( "Float" );
         fp3.setBoundName( "$f1" );
         SingleFieldConstraint con3 = new SingleFieldConstraint();
-        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         con3.setFieldName( "this" );
         con3.setOperator( "==" );
         con3.setValue( "123.456f" );
@@ -1578,7 +1578,7 @@ public class BRDRLPersistenceTest {
         FactPattern fp4 = new FactPattern( "Integer" );
         fp4.setBoundName( "$i1" );
         SingleFieldConstraint con4 = new SingleFieldConstraint();
-        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         con4.setFieldName( "this" );
         con4.setOperator( "==" );
         con4.setValue( "123" );
@@ -1754,13 +1754,13 @@ public class BRDRLPersistenceTest {
                                                                      Boolean.class.getName() );
         asf.addFieldValue( fv1 );
         ActionWorkItemFieldValue fv2 = new ActionWorkItemFieldValue( "ResultsFloatResult",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
                                                                      "WorkItem",
                                                                      "FloatResult",
                                                                      Float.class.getName() );
         asf.addFieldValue( fv2 );
         ActionWorkItemFieldValue fv3 = new ActionWorkItemFieldValue( "ResultsIntegerResult",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                      "WorkItem",
                                                                      "IntegerResult",
                                                                      Integer.class.getName() );
@@ -1820,7 +1820,7 @@ public class BRDRLPersistenceTest {
 
         ActionInsertFact aif = new ActionInsertFact();
         aif.setBoundName( "$r" );
-        aif.factType="Results";
+        aif.factType = "Results";
         ActionWorkItemFieldValue fv1 = new ActionWorkItemFieldValue( "ResultsBooleanResult",
                                                                      SuggestionCompletionEngine.TYPE_BOOLEAN,
                                                                      "WorkItem",
@@ -1828,13 +1828,13 @@ public class BRDRLPersistenceTest {
                                                                      Boolean.class.getName() );
         aif.addFieldValue( fv1 );
         ActionWorkItemFieldValue fv2 = new ActionWorkItemFieldValue( "ResultsFloatResult",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
                                                                      "WorkItem",
                                                                      "FloatResult",
                                                                      Float.class.getName() );
         aif.addFieldValue( fv2 );
         ActionWorkItemFieldValue fv3 = new ActionWorkItemFieldValue( "ResultsIntegerResult",
-                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                      "WorkItem",
                                                                      "IntegerResult",
                                                                      Integer.class.getName() );
@@ -1861,7 +1861,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "insert( $r );" ) != -1 );
 
     }
-    
+
     @Test
     public void testSubConstraints() {
 

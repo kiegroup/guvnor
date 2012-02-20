@@ -16,8 +16,18 @@
 package org.drools.guvnor.client.decisiontable;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.AbstractRestrictedEntryTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigIntegerTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericByteTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericDoubleTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericFloatTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericIntegerTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericLongTextBox;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
@@ -73,16 +83,7 @@ public class DTCellValueWidgetFactory {
     public DTCellValue52 makeNewValue(DTColumnConfig52 c) {
         DTDataTypes52 type = dtable.getTypeSafeType( c,
                                                      sce );
-        switch ( type ) {
-            case BOOLEAN :
-                return new DTCellValue52( false );
-            case DATE :
-                return new DTCellValue52( new Date() );
-            case NUMERIC :
-                return new DTCellValue52( 0 );
-            default :
-                return new DTCellValue52( "" );
-        }
+        return new DTCellValue52( type );
     }
 
     /**
@@ -109,6 +110,22 @@ public class DTCellValueWidgetFactory {
         switch ( type ) {
             case NUMERIC :
                 return makeNumericTextBox( value );
+            case NUMERIC_BIGDECIMAL :
+                return makeNumericBigDecimalTextBox( value );
+            case NUMERIC_BIGINTEGER :
+                return makeNumericBigIntegerTextBox( value );
+            case NUMERIC_BYTE :
+                return makeNumericByteTextBox( value );
+            case NUMERIC_DOUBLE :
+                return makeNumericDoubleTextBox( value );
+            case NUMERIC_FLOAT :
+                return makeNumericFloatTextBox( value );
+            case NUMERIC_INTEGER :
+                return makeNumericIntegerTextBox( value );
+            case NUMERIC_LONG :
+                return makeNumericLongTextBox( value );
+            case NUMERIC_SHORT :
+                return makeNumericShortTextBox( value );
             case BOOLEAN :
                 return makeBooleanSelector( value );
             case DATE :
@@ -133,16 +150,7 @@ public class DTCellValueWidgetFactory {
         DTDataTypes52 type = dtable.getTypeSafeType( p,
                                                      c,
                                                      sce );
-        switch ( type ) {
-            case BOOLEAN :
-                return new DTCellValue52( false );
-            case DATE :
-                return new DTCellValue52( new Date() );
-            case NUMERIC :
-                return new DTCellValue52( 0 );
-            default :
-                return new DTCellValue52( "" );
-        }
+        return new DTCellValue52( type );
     }
 
     /**
@@ -177,6 +185,22 @@ public class DTCellValueWidgetFactory {
         switch ( type ) {
             case NUMERIC :
                 return makeNumericTextBox( value );
+            case NUMERIC_BIGDECIMAL :
+                return makeNumericBigDecimalTextBox( value );
+            case NUMERIC_BIGINTEGER :
+                return makeNumericBigIntegerTextBox( value );
+            case NUMERIC_BYTE :
+                return makeNumericByteTextBox( value );
+            case NUMERIC_DOUBLE :
+                return makeNumericDoubleTextBox( value );
+            case NUMERIC_FLOAT :
+                return makeNumericFloatTextBox( value );
+            case NUMERIC_INTEGER :
+                return makeNumericIntegerTextBox( value );
+            case NUMERIC_LONG :
+                return makeNumericLongTextBox( value );
+            case NUMERIC_SHORT :
+                return makeNumericShortTextBox( value );
             case BOOLEAN :
                 return makeBooleanSelector( value );
             case DATE :
@@ -200,16 +224,7 @@ public class DTCellValueWidgetFactory {
         DTDataTypes52 type = dtable.getTypeSafeType( p,
                                                      c,
                                                      sce );
-        switch ( type ) {
-            case BOOLEAN :
-                return new DTCellValue52( false );
-            case DATE :
-                return new DTCellValue52( new Date() );
-            case NUMERIC :
-                return new DTCellValue52( 0 );
-            default :
-                return new DTCellValue52( "" );
-        }
+        return new DTCellValue52( type );
     }
 
     /**
@@ -243,6 +258,22 @@ public class DTCellValueWidgetFactory {
         switch ( type ) {
             case NUMERIC :
                 return makeNumericTextBox( value );
+            case NUMERIC_BIGDECIMAL :
+                return makeNumericBigDecimalTextBox( value );
+            case NUMERIC_BIGINTEGER :
+                return makeNumericBigIntegerTextBox( value );
+            case NUMERIC_BYTE :
+                return makeNumericByteTextBox( value );
+            case NUMERIC_DOUBLE :
+                return makeNumericDoubleTextBox( value );
+            case NUMERIC_FLOAT :
+                return makeNumericFloatTextBox( value );
+            case NUMERIC_INTEGER :
+                return makeNumericIntegerTextBox( value );
+            case NUMERIC_LONG :
+                return makeNumericLongTextBox( value );
+            case NUMERIC_SHORT :
+                return makeNumericShortTextBox( value );
             case BOOLEAN :
                 return makeBooleanSelector( value );
             case DATE :
@@ -315,8 +346,8 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private NumericTextBox makeNumericTextBox(final DTCellValue52 value) {
-        final NumericTextBox tb = new NumericTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericTextBox();
         tb.setValue( value.getNumericValue() == null ? "" : value.getNumericValue().toPlainString() );
 
         // Wire up update handler
@@ -331,6 +362,198 @@ public class DTCellValueWidgetFactory {
                     catch ( NumberFormatException nfe ) {
                         value.setNumericValue( BigDecimal.ZERO );
                         tb.setValue( BigDecimal.ZERO.toPlainString() );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericBigDecimalTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericBigDecimalTextBox();
+        tb.setValue( value.getBigDecimalValue() == null ? "" : value.getBigDecimalValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setBigDecimalValue( new BigDecimal( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setNumericValue( BigDecimal.ZERO );
+                        tb.setValue( BigDecimal.ZERO.toPlainString() );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericBigIntegerTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericBigIntegerTextBox();
+        tb.setValue( value.getBigIntegerValue() == null ? "" : value.getBigIntegerValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setBigIntegerValue( new BigInteger( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setBigIntegerValue( BigInteger.ZERO );
+                        tb.setValue( BigInteger.ZERO.toString() );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericByteTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericByteTextBox();
+        tb.setValue( value.getByteValue() == null ? "" : value.getByteValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setByteValue( new Byte( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setByteValue( new Byte( "0" ) );
+                        tb.setValue( "0" );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericDoubleTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericDoubleTextBox();
+        tb.setValue( value.getDoubleValue() == null ? "" : value.getDoubleValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setDoubleValue( new Double( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setDoubleValue( new Double( "0" ) );
+                        tb.setValue( "0" );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericFloatTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericFloatTextBox();
+        tb.setValue( value.getFloatValue() == null ? "" : value.getFloatValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setFloatValue( new Float( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setFloatValue( new Float( "0" ) );
+                        tb.setValue( "0" );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericIntegerTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericIntegerTextBox();
+        tb.setValue( value.getIntegerValue() == null ? "" : value.getIntegerValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setIntegerValue( new Integer( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setIntegerValue( new Integer( "0" ) );
+                        tb.setValue( "0" );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericLongTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericLongTextBox();
+        tb.setValue( value.getLongValue() == null ? "" : value.getLongValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setLongValue( new Long( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setLongValue( new Long( "0" ) );
+                        tb.setValue( "0" );
+                    }
+                }
+
+            } );
+        }
+        return tb;
+    }
+
+    private AbstractRestrictedEntryTextBox makeNumericShortTextBox(final DTCellValue52 value) {
+        final AbstractRestrictedEntryTextBox tb = new NumericShortTextBox();
+        tb.setValue( value.getShortValue() == null ? "" : value.getShortValue().toString() );
+
+        // Wire up update handler
+        tb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    try {
+                        value.setShortValue( new Short( event.getValue() ) );
+                    }
+                    catch ( NumberFormatException nfe ) {
+                        value.setShortValue( new Short( "0" ) );
+                        tb.setValue( "0" );
                     }
                 }
 

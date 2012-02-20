@@ -16,6 +16,7 @@
 package org.drools.ide.common.server.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.core.util.DateUtils;
@@ -41,8 +42,32 @@ public class GuidedDTDRLUtilities {
                 Date dateValue = dcv.getDateValue();
                 return (dateValue == null ? null : DateUtils.format( dcv.getDateValue() ));
             case NUMERIC :
-                BigDecimal bdValue = dcv.getNumericValue();
-                return (bdValue == null ? null : bdValue.toPlainString());
+                BigDecimal numericValue = dcv.getNumericValue();
+                return (numericValue == null ? null : numericValue.toPlainString());
+            case NUMERIC_BIGDECIMAL :
+                BigDecimal bigDecimalValue = dcv.getBigDecimalValue();
+                return (bigDecimalValue == null ? null : bigDecimalValue.toPlainString());
+            case NUMERIC_BIGINTEGER :
+                BigInteger bigIntegerValue = dcv.getBigIntegerValue();
+                return (bigIntegerValue == null ? null : bigIntegerValue.toString());
+            case NUMERIC_BYTE :
+                Byte byteValue = dcv.getByteValue();
+                return (byteValue == null ? null : byteValue.toString());
+            case NUMERIC_DOUBLE :
+                Double doubleValue = dcv.getDoubleValue();
+                return (doubleValue == null ? null : doubleValue.toString());
+            case NUMERIC_FLOAT :
+                Float floatValue = dcv.getFloatValue();
+                return (floatValue == null ? null : floatValue.toString());
+            case NUMERIC_INTEGER :
+                Integer integerValue = dcv.getIntegerValue();
+                return (integerValue == null ? null : integerValue.toString());
+            case NUMERIC_LONG :
+                Long longValue = dcv.getLongValue();
+                return (longValue == null ? null : longValue.toString());
+            case NUMERIC_SHORT :
+                Short shortValue = dcv.getShortValue();
+                return (shortValue == null ? null : shortValue.toString());
             default :
                 return dcv.getStringValue();
         }

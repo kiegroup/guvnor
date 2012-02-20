@@ -863,7 +863,7 @@ public class DecisionTableAnalyzerTest {
                                 new ModelField("age",
                                         Integer.class.getName(),
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                        SuggestionCompletionEngine.TYPE_NUMERIC),
+                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER),
                                 new ModelField("dateOfBirth",
                                         Date.class.getName(),
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,

@@ -35,12 +35,11 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -94,12 +93,15 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         String key = factType + "." + field.getName();
         String flType = sce.getFieldType( key );
         panel.clear();
-        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        
+        //TODO {manstis} Need different editors for different Numeric values
+        if ( flType != null && SuggestionCompletionEngine.isNumeric( flType ) ) {
             final TextBox box = editableTextBox( callback,
                                                  field.getName(),
                                                  field.getValue() );
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
             panel.add( new EnumDropDown( field.getValue(),
@@ -110,6 +112,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
             datePicker.setTitle( Constants.INSTANCE.ValueFor0( field.getName() ) );
@@ -118,8 +121,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     field.setValue( newValue );
                 }
             } );
-
             panel.add( datePicker );
+            
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             for (FieldData otherFieldData : givenFact.getFieldData()) {

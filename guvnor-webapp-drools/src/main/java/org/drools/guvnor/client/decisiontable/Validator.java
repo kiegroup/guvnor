@@ -218,16 +218,7 @@ public class Validator {
         if ( lec.getValue() == null ) {
             return false;
         }
-        switch ( lec.getValue().getDataType() ) {
-            case BOOLEAN :
-                return lec.getValue().getBooleanValue() != null;
-            case NUMERIC :
-                return lec.getValue().getNumericValue() != null;
-            case DATE :
-                return lec.getValue().getDateValue() != null;
-            default :
-                return true;
-        }
+        return lec.getValue().hasValue();
     }
 
 }

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -822,18 +824,46 @@ public class SuggestionCompletionLoader
     public String translateClassToGenericType(final Class< ? > type) {
         String fieldType = null; // if null, will use standard operators
         if ( type != null ) {
-            if ( type.isPrimitive() && (type != boolean.class) ) {
-                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
-            } else if ( Number.class.isAssignableFrom( type ) ) {
-                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
+            if ( type.isPrimitive() ) {
+                if ( type == byte.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_BYTE;
+                } else if ( type == double.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE;
+                } else if ( type == float.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT;
+                } else if ( type == int.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
+                } else if ( type == long.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_LONG;
+                } else if ( type == short.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_SHORT;
+                } else if ( type == boolean.class ) {
+                    fieldType = SuggestionCompletionEngine.TYPE_BOOLEAN;
+                }
+            } else if ( BigDecimal.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL;
+            } else if ( BigInteger.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER;
+            } else if ( Byte.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_BYTE;
+            } else if ( Double.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE;
+            } else if ( Float.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT;
+            } else if ( Integer.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
+            } else if ( Long.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_LONG;
+            } else if ( Short.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC_SHORT;
+            } else if ( Boolean.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_BOOLEAN;
             } else if ( String.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_STRING;
             } else if ( Collection.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
-            } else if ( Boolean.class.isAssignableFrom( type ) || boolean.class.isAssignableFrom( type ) ) {
-                fieldType = SuggestionCompletionEngine.TYPE_BOOLEAN;
             } else if ( Date.class.isAssignableFrom( type ) ) {
-                fieldType = SuggestionCompletionEngine.TYPE_DATE; // MN: wait until we support it.
+                fieldType = SuggestionCompletionEngine.TYPE_DATE;
             } else if ( Comparable.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
             } else {

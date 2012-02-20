@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -166,7 +167,71 @@ public abstract class AbstractCellValueFactory<C, V> {
     }
 
     protected CellValue<BigDecimal> makeNewNumericCellValue(BigDecimal initialValue) {
-        CellValue<BigDecimal> cv = makeNewNumericCellValue();
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<BigDecimal> makeNewBigDecimalCellValue(BigDecimal initialValue) {
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<BigInteger> makeNewBigIntegerCellValue(BigInteger initialValue) {
+        CellValue<BigInteger> cv = new CellValue<BigInteger>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Byte> makeNewByteCellValue(Byte initialValue) {
+        CellValue<Byte> cv = new CellValue<Byte>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Double> makeNewDoubleCellValue(Double initialValue) {
+        CellValue<Double> cv = new CellValue<Double>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Float> makeNewFloatCellValue(Float initialValue) {
+        CellValue<Float> cv = new CellValue<Float>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Integer> makeNewIntegerCellValue(Integer initialValue) {
+        CellValue<Integer> cv = new CellValue<Integer>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Long> makeNewLongCellValue(Long initialValue) {
+        CellValue<Long> cv = new CellValue<Long>( null );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Short> makeNewShortCellValue(Short initialValue) {
+        CellValue<Short> cv = new CellValue<Short>( null );
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }

@@ -43,6 +43,14 @@ public class SuggestionCompletionEngine
     public static final String                      TYPE_COMPARABLE          = "Comparable";
     public static final String                      TYPE_STRING              = "String";
     public static final String                      TYPE_NUMERIC             = "Numeric";
+    public static final String                      TYPE_NUMERIC_BIGDECIMAL  = "BigDecimal";
+    public static final String                      TYPE_NUMERIC_BIGINTEGER  = "BigIneger";
+    public static final String                      TYPE_NUMERIC_BYTE        = "Byte";
+    public static final String                      TYPE_NUMERIC_DOUBLE      = "Double";
+    public static final String                      TYPE_NUMERIC_FLOAT       = "Float";
+    public static final String                      TYPE_NUMERIC_INTEGER     = "Integer";
+    public static final String                      TYPE_NUMERIC_LONG        = "Long";
+    public static final String                      TYPE_NUMERIC_SHORT       = "Short";
     public static final String                      TYPE_BOOLEAN             = "Boolean";
     public static final String                      TYPE_DATE                = "Date";
     public static final String                      TYPE_OBJECT              = "Object";                                                                                                                                                      // for all other unknown
@@ -242,7 +250,7 @@ public class SuggestionCompletionEngine
             }
         } else if ( fieldType.equals( TYPE_STRING ) ) {
             return STRING_CONNECTIVES;
-        } else if ( fieldType.equals( TYPE_COMPARABLE ) || fieldType.equals( TYPE_NUMERIC ) ) {
+        } else if ( fieldType.equals( TYPE_COMPARABLE ) || isNumeric( fieldType ) ) {
             return COMPARABLE_CONNECTIVES;
         } else if ( fieldType.equals( TYPE_DATE ) ) {
             return joinArrays( COMPARABLE_CONNECTIVES,
@@ -283,7 +291,7 @@ public class SuggestionCompletionEngine
             }
         } else if ( fieldType.equals( TYPE_STRING ) ) {
             return STRING_OPERATORS;
-        } else if ( fieldType.equals( TYPE_COMPARABLE ) || fieldType.equals( TYPE_NUMERIC ) ) {
+        } else if ( fieldType.equals( TYPE_COMPARABLE ) || SuggestionCompletionEngine.isNumeric( fieldType ) ) {
             return COMPARABLE_OPERATORS;
         } else if ( fieldType.equals( TYPE_DATE ) ) {
             return joinArrays( COMPARABLE_OPERATORS,
@@ -293,6 +301,27 @@ public class SuggestionCompletionEngine
         } else {
             return STANDARD_OPERATORS;
         }
+    }
+
+    public static boolean isNumeric(String type) {
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            return true;
+        }
+        return false;
     }
 
     public String[] getFieldCompletionsForGlobalVariable(final String varName) {

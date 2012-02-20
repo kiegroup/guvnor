@@ -19,6 +19,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -77,6 +78,22 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
                 cell = makeDateCell();
             } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 cell = makeNumericCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                cell = makeNumericBigDecimalCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                cell = makeNumericBigIntegerCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                cell = makeNumericByteCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                cell = makeNumericDoubleCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                cell = makeNumericFloatCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                cell = makeNumericIntegerCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                cell = makeNumericLongCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                cell = makeNumericShortCell();
             } else {
                 cell = makeTextCell();
             }

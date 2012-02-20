@@ -43,7 +43,6 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -153,8 +152,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
         }
 
+        //TODO {manstis} Need different editors for different Numeric values
         //Set applicable flags and reference data depending upon type
-        this.isNumeric = SuggestionCompletionEngine.TYPE_NUMERIC.equals( this.fieldType );
+        this.isNumeric = SuggestionCompletionEngine.isNumeric( this.fieldType );
         if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( this.fieldType ) ) {
             this.isDropDownDataEnum = false;
             this.dropDownData = DropDownData.create( new String[]{"true", "false"} );

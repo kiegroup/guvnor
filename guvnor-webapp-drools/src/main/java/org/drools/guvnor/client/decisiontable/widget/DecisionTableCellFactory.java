@@ -242,6 +242,22 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 cell = makeNumericCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                cell = makeNumericBigDecimalCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                cell = makeNumericBigIntegerCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                cell = makeNumericByteCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                cell = makeNumericDoubleCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                cell = makeNumericFloatCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                cell = makeNumericIntegerCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                cell = makeNumericLongCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                cell = makeNumericShortCell();
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 cell = makeBooleanCell();
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {

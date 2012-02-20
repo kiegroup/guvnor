@@ -154,7 +154,7 @@ public class BRDRTPersistenceTest {
 
         ActionInsertFact aif = new ActionInsertFact("Person");
         ActionFieldValue afv = new ActionFieldValue("age", "age", "");
-        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         afv.nature = FieldNature.TYPE_TEMPLATE;
 
         aif.addFieldValue(afv);
@@ -213,7 +213,7 @@ public class BRDRTPersistenceTest {
         
         ActionInsertFact aif = new ActionInsertFact("Person");
         ActionFieldValue afv = new ActionFieldValue("age", "age", "");
-        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         afv.nature = FieldNature.TYPE_TEMPLATE;
         
         aif.addFieldValue(afv);
@@ -345,7 +345,7 @@ public class BRDRTPersistenceTest {
         fp.addConstraint(sfc);
         
         sfc = new SingleFieldConstraint("age");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        sfc.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         sfc.setFieldName("age");
         sfc.setValue("age");
         sfc.setOperator("==");

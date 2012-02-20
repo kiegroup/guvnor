@@ -189,8 +189,9 @@ public class ExpressionBuilder extends RuleModellerWidget
             } else {
                 //if the variable is not bound to a Fact Pattern then it must
                 //be boubd to a Field
-                String lhsBindingType = getRuleModel().getLHSBindingType(attrib);
-                variable = new ExpressionFieldVariable(attrib, lhsBindingType );
+                String lhsBindingType = getRuleModel().getLHSBindingType( attrib );
+                variable = new ExpressionFieldVariable( attrib,
+                                                        lhsBindingType );
             }
             expression.appendPart( variable );
 
@@ -243,7 +244,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( "size".contains( value ) ) {
             expression.appendPart( new ExpressionMethod( "size",
                                                          "int",
-                                                         SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                         SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
         } else if ( "isEmpty".equals( value ) ) {
             expression.appendPart( new ExpressionMethod( "isEmpty",
                                                          "boolean",
@@ -268,7 +269,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                 ExpressionFormLine index = new ExpressionFormLine( expression );
                 index.appendPart( new ExpressionMethod( "size",
                                                         "int",
-                                                        SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
                 index.appendPart( new ExpressionText( "-1" ) );
 
                 collectionIndex.putParam( "index",
@@ -290,11 +291,11 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( "size".equals( value ) ) {
                 expression.appendPart( new ExpressionMethod( "size",
                                                              "int",
-                                                             SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                             SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
             } else if ( "isEmpty".equals( value ) ) {
                 expression.appendPart( new ExpressionText( ".size() == 0",
                                                            "",
-                                                           SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                           SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
             }
         } else {
             int dotPos = value.indexOf( '.' );
@@ -354,8 +355,17 @@ public class ExpressionBuilder extends RuleModellerWidget
             return completions;
         }
 
-        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( getCurrentGenericType() ) || SuggestionCompletionEngine.TYPE_NUMERIC.equals( getCurrentGenericType() ) || SuggestionCompletionEngine.TYPE_DATE.equals( getCurrentGenericType() )
-             || SuggestionCompletionEngine.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
+        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BYTE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_LONG.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_SHORT.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_DATE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
             return completions;
         }
 

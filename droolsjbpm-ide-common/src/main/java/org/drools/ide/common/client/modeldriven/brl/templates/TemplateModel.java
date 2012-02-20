@@ -135,7 +135,7 @@ public class TemplateModel extends RuleModel
         new RuleModelVisitor( result ).visit( this );
 
         InterpolationVariable id = new InterpolationVariable( ID_COLUMN_NAME,
-                                                              SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                              SuggestionCompletionEngine.TYPE_NUMERIC_LONG );
         result.put( id,
                     result.size() );
         return result;

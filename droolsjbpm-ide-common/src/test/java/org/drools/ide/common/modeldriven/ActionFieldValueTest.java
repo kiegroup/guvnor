@@ -30,12 +30,12 @@ public class ActionFieldValueTest {
     @Test
     public void testFormula() {
         FieldNature val = new ActionFieldValue( "x",
-                                                     "y",
-                                                     SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                "y",
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         assertFalse( val.isFormula() );
         val = new ActionFieldValue( "x",
                                     "=y * 20",
-                                    SuggestionCompletionEngine.TYPE_NUMERIC );
+                                    SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         assertTrue( val.isFormula() );
     }
 

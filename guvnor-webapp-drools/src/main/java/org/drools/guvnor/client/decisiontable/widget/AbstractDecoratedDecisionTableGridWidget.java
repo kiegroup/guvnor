@@ -348,7 +348,8 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            DTCellValue52 dcv = new DTCellValue52( iRow + 1 );
+            DTCellValue52 dcv = new DTCellValue52();
+            dcv.setIntegerValue( iRow + 1 );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
                                                                                                dcv );
             columnData.add( cv );

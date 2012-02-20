@@ -244,20 +244,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         if ( dcv == null ) {
             return null;
         }
-        DTCellValue52 clone = new DTCellValue52();
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                clone.setBooleanValue( dcv.getBooleanValue() );
-                break;
-            case DATE :
-                clone.setDateValue( dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                clone.setNumericValue( dcv.getNumericValue() );
-                break;
-            case STRING :
-                clone.setStringValue( dcv.getStringValue() );
-        }
+        DTCellValue52 clone = new DTCellValue52( dcv );
         return clone;
     }
 

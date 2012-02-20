@@ -226,7 +226,7 @@ public class SuggestionCompletionEngineTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                             SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "rank",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -1174,7 +1174,7 @@ public class SuggestionCompletionEngineTest {
                         new ModelField( "age",
                                         Integer.class.getName(),
                                         FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                        SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ),
                 } );
 
                 put( "Vehicle",

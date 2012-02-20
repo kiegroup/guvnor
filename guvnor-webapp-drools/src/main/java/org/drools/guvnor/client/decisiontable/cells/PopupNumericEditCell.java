@@ -42,7 +42,7 @@ public class PopupNumericEditCell extends
     private static final RegExp VALID = RegExp.compile( "(^[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     public PopupNumericEditCell(boolean isReadOnly) {
-        super(isReadOnly);
+        super( isReadOnly );
         this.textBox = new TextBox();
 
         // Tabbing out of the TextBox commits changes
@@ -51,8 +51,7 @@ public class PopupNumericEditCell extends
             public void onKeyDown(KeyDownEvent event) {
                 boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
                 boolean keyEnter = event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-                if ( keyEnter
-                     || keyTab ) {
+                if ( keyEnter || keyTab ) {
                     commit();
                 }
             }

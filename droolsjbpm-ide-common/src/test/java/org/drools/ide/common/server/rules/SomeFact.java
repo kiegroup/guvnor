@@ -28,30 +28,34 @@ public class SomeFact {
     private static final long serialVersionUID = 510l;
     private String            name;
     private String            likes;
-    private int               age;
-    private BigDecimal        bigDecimal;
-    private BigInteger        bigInteger;
     private String            hair;
-
+    private int               age;
     private char              sex;
-
     private boolean           alive;
-
     private String            status;
-
     private Cheese            cheese;
-
     private Date              date;
-
     private Boolean           dead;
+    private List<SomeFact>    factList         = new ArrayList<SomeFact>();
+    private List<String>      factListString   = new ArrayList<String>();
 
-    private List<SomeFact> factList = new ArrayList<SomeFact>();
+    private EnumClass         anEnum;
 
-    private List<String> factListString = new ArrayList<String>();
+    private byte              primitiveByte;
+    private double            primitiveDouble;
+    private float             primitiveFloat;
+    private int               primitiveInteger;
+    private long              primitiveLong;
+    private short             primitiveShort;
 
-
-
-    private EnumClass anEnum;
+    private BigDecimal        objectBigDecimal;
+    private BigInteger        objectBigInteger;
+    private Byte              objectByte;
+    private Double            objectDouble;
+    private Float             objectFloat;
+    private Integer           objectInteger;
+    private Long              objectLong;
+    private Short             objectShort;
 
     public int getAge() {
         return age;
@@ -67,22 +71,6 @@ public class SomeFact {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
-    }
-
-    public BigDecimal getBigDecimal() {
-        return bigDecimal;
-    }
-
-    public void setBigDecimal(BigDecimal bigDecimal) {
-        this.bigDecimal = bigDecimal;
-    }
-
-    public BigInteger getBigInteger() {
-        return bigInteger;
-    }
-
-    public void setBigInteger(BigInteger bigInteger) {
-        this.bigInteger = bigInteger;
     }
 
     public Cheese getCheese() {
@@ -148,6 +136,7 @@ public class SomeFact {
     public void setStatus(String status) {
         this.status = status;
     }
+
     public List<SomeFact> getFactList() {
         return factList;
     }
@@ -163,6 +152,7 @@ public class SomeFact {
     public void setFactList(List<SomeFact> factList) {
         this.factList = factList;
     }
+
     public EnumClass getAnEnum() {
         return anEnum;
     }
@@ -170,8 +160,121 @@ public class SomeFact {
     public void setAnEnum(EnumClass anEnum) {
         this.anEnum = anEnum;
     }
-    
+
     public List<SomeFact> aMethod(int anInt) {
         return null;
     }
+
+    public byte getPrimitiveByte() {
+        return primitiveByte;
+    }
+
+    public void setPrimitiveByte(byte primitiveByte) {
+        this.primitiveByte = primitiveByte;
+    }
+
+    public double getPrimitiveDouble() {
+        return primitiveDouble;
+    }
+
+    public void setPrimitiveDouble(double primitiveDouble) {
+        this.primitiveDouble = primitiveDouble;
+    }
+
+    public float getPrimitiveFloat() {
+        return primitiveFloat;
+    }
+
+    public void setPrimitiveFloat(float primitiveFloat) {
+        this.primitiveFloat = primitiveFloat;
+    }
+
+    public int getPrimitiveInteger() {
+        return primitiveInteger;
+    }
+
+    public void setPrimitiveInteger(int primitiveInteger) {
+        this.primitiveInteger = primitiveInteger;
+    }
+
+    public long getPrimitiveLong() {
+        return primitiveLong;
+    }
+
+    public void setPrimitiveLong(long primitiveLong) {
+        this.primitiveLong = primitiveLong;
+    }
+
+    public short getPrimitiveShort() {
+        return primitiveShort;
+    }
+
+    public void setPrimitiveShort(short primitiveShort) {
+        this.primitiveShort = primitiveShort;
+    }
+
+    public BigDecimal getObjectBigDecimal() {
+        return objectBigDecimal;
+    }
+
+    public void setObjectBigDecimal(BigDecimal objectBigDecimal) {
+        this.objectBigDecimal = objectBigDecimal;
+    }
+
+    public BigInteger getObjectBigInteger() {
+        return objectBigInteger;
+    }
+
+    public void setObjectBigInteger(BigInteger objectBigInteger) {
+        this.objectBigInteger = objectBigInteger;
+    }
+
+    public Byte getObjectByte() {
+        return objectByte;
+    }
+
+    public void setObjectByte(Byte objectByte) {
+        this.objectByte = objectByte;
+    }
+
+    public Double getObjectDouble() {
+        return objectDouble;
+    }
+
+    public void setObjectDouble(Double objectDouble) {
+        this.objectDouble = objectDouble;
+    }
+
+    public Float getObjectFloat() {
+        return objectFloat;
+    }
+
+    public void setObjectFloat(Float objectFloat) {
+        this.objectFloat = objectFloat;
+    }
+
+    public Integer getObjectInteger() {
+        return objectInteger;
+    }
+
+    public void setObjectInteger(Integer objectInteger) {
+        this.objectInteger = objectInteger;
+    }
+
+    public Long getObjectLong() {
+        return objectLong;
+    }
+
+    public void setObjectLong(Long objectLong) {
+        this.objectLong = objectLong;
+    }
+
+    public Short getObjectShort() {
+        return objectShort;
+    }
+
+    public void setObjectShort(Short objectShort) {
+        this.objectShort = objectShort;
+    }
+
 }

@@ -96,12 +96,15 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         String key = factType + "." + field.getFieldName();
         String flType = sce.getFieldType( key );
         panel.clear();
-        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        
+        //TODO {manstis} Need different editors for different Numeric values
+        if ( flType != null && SuggestionCompletionEngine.isNumeric( flType ) ) {
             final TextBox box = editableTextBox( callback,
                                                  field.getFieldName(),
                                                  field.getExpected() );
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
             panel.add( new EnumDropDown( field.getExpected(),
@@ -112,6 +115,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
             String m = Constants.INSTANCE.ValueFor0(field.getFieldName());
@@ -121,8 +125,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     field.setExpected( newValue );
                 }
             } );
-
             panel.add( datePicker );
+            
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             // TODO fill currentValueMap with values of other VerifyFields (if any)

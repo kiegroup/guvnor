@@ -214,7 +214,8 @@ public class MethodParameterValueEditor extends DirtyableComposite {
             }
         } );
 
-        if ( methodParameter.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        //TODO {manstis} Need different editors for different Numeric values
+        if ( SuggestionCompletionEngine.isNumeric( methodParameter.type) ) {
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
         }
 

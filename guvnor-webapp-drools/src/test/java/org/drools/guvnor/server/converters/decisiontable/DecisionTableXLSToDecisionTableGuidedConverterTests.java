@@ -1154,6 +1154,46 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                         return false;
                     }
                     break;
+                case NUMERIC_BIGDECIMAL :
+                    if ( !expected[i].equals( dcv.getBigDecimalValue().toPlainString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_BIGINTEGER :
+                    if ( !expected[i].equals( dcv.getBigIntegerValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_BYTE :
+                    if ( !expected[i].equals( dcv.getByteValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_DOUBLE :
+                    if ( !expected[i].equals( dcv.getDoubleValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_FLOAT :
+                    if ( !expected[i].equals( dcv.getFloatValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_INTEGER :
+                    if ( !expected[i].equals( dcv.getIntegerValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_LONG :
+                    if ( !expected[i].equals( dcv.getLongValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
+                case NUMERIC_SHORT :
+                    if ( !expected[i].equals( dcv.getShortValue().toString() ) ) {
+                        return false;
+                    }
+                    break;
                 case BOOLEAN :
                     if ( Boolean.parseBoolean( expected[i] ) != dcv.getBooleanValue() ) {
                         return false;
