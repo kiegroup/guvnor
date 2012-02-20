@@ -182,7 +182,7 @@ public class DTCellValue52
     }
 
     public DTCellValue52(BigDecimal value) {
-        setNumericValue( value );
+        setBigDecimalValue( value );
     }
 
     public DTCellValue52(Boolean value) {

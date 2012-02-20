@@ -210,22 +210,22 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 cell = makeNewFloatCellValue( dcv.getFloatValue() );
                 break;
             case NUMERIC_INTEGER :
+                cell = makeNewIntegerCellValue( dcv.getIntegerValue() );
+                break;
+            case NUMERIC_LONG :
                 if ( column instanceof RowNumberCol52 ) {
-                    cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
+                    cell = makeNewRowNumberCellValue( dcv.getLongValue() );
                 } else {
-                    cell = makeNewNumericCellValue( dcv.getNumericValue() );
+                    cell = makeNewLongCellValue( dcv.getLongValue() );
                     if ( column instanceof AttributeCol52 ) {
                         AttributeCol52 at = (AttributeCol52) column;
                         if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                             if ( at.isUseRowNumber() ) {
-                                cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
+                                cell = makeNewRowNumberCellValue( dcv.getLongValue() );
                             }
                         }
                     }
                 }
-                break;
-            case NUMERIC_LONG :
-                cell = makeNewLongCellValue( dcv.getLongValue() );
                 break;
             case NUMERIC_SHORT :
                 cell = makeNewShortCellValue( dcv.getShortValue() );
@@ -401,9 +401,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
 
     }
 
-    public CellValue<BigDecimal> makeNewRowNumberCellValue(BigDecimal initialValue) {
+    public CellValue<Long> makeNewRowNumberCellValue(Long initialValue) {
         // Rows are 0-based internally but 1-based in the UI
-        CellValue<BigDecimal> cv = makeNewNumericCellValue();
+        CellValue<Long> cv = makeNewLongCellValue( initialValue );
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }

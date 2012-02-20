@@ -166,7 +166,7 @@ public class CellValueFactoryTests {
         c4.setFactField( "byteField" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        p2.getChildColumns().add( c3 );
+        p2.getChildColumns().add( c4 );
 
         c5 = new ConditionCol52();
         c5.setFactField( "doubleField" );
@@ -334,7 +334,7 @@ public class CellValueFactoryTests {
         assertEquals( cell5.getValue(),
                       null );
         assertEquals( cell6.getValue(),
-                      Boolean.FALSE );
+                      null );
         assertEquals( cell7.getValue(),
                       null );
         assertEquals( cell8.getValue(),
@@ -348,7 +348,7 @@ public class CellValueFactoryTests {
         assertEquals( cell12.getValue(),
                       null );
         assertEquals( cell13.getValue(),
-                      null );
+                      Boolean.FALSE );
         assertEquals( cell14.getValue(),
                       null );
         assertEquals( cell15.getValue(),
@@ -365,7 +365,7 @@ public class CellValueFactoryTests {
                   1 );
         Date dob = cdob.getTime();
 
-        DTCellValue52 dcv1 = new DTCellValue52( 1 );
+        DTCellValue52 dcv1 = new DTCellValue52( 1l );
         DTCellValue52 dcv2 = new DTCellValue52( Boolean.TRUE );
         DTCellValue52 dcv3 = new DTCellValue52( "Michael" );
         DTCellValue52 dcv4 = new DTCellValue52( new BigDecimal( 11 ) );
@@ -413,7 +413,7 @@ public class CellValueFactoryTests {
                                                                                       dcv15 );
 
         assertEquals( cell1.getValue(),
-                      new BigDecimal( 1 ) );
+                      1l );
         assertEquals( cell2.getValue(),
                       Boolean.TRUE );
         assertEquals( cell3.getValue(),
@@ -465,7 +465,7 @@ public class CellValueFactoryTests {
         DTCellValue52 dcv9 = new DTCellValue52( "11" );
         DTCellValue52 dcv10 = new DTCellValue52( "11" );
         DTCellValue52 dcv11 = new DTCellValue52( "11" );
-        DTCellValue52 dcv12 = new DTCellValue52( "01-01-2000" );
+        DTCellValue52 dcv12 = new DTCellValue52( "01-JAN-2000" );
         DTCellValue52 dcv13 = new DTCellValue52( "true" );
         DTCellValue52 dcv14 = new DTCellValue52( "Mike" );
         DTCellValue52 dcv15 = new DTCellValue52( "Mike" );
@@ -502,7 +502,7 @@ public class CellValueFactoryTests {
                                                                                       dcv15 );
 
         assertEquals( cell1.getValue(),
-                      new BigDecimal( 1 ) );
+                      1l );
         assertEquals( cell2.getValue(),
                       Boolean.TRUE );
         assertEquals( cell3.getValue(),
@@ -594,7 +594,7 @@ public class CellValueFactoryTests {
         assertEquals( cell5.getValue(),
                       null );
         assertEquals( cell6.getValue(),
-                      Boolean.FALSE );
+                      null );
         assertEquals( cell7.getValue(),
                       null );
         assertEquals( cell8.getValue(),
@@ -608,14 +608,14 @@ public class CellValueFactoryTests {
         assertEquals( cell12.getValue(),
                       null );
         assertEquals( cell13.getValue(),
-                      null );
+                      Boolean.FALSE );
         assertEquals( cell14.getValue(),
                       null );
         assertEquals( cell15.getValue(),
                       null );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes52.NUMERIC_INTEGER );
+                      DTDataTypes52.NUMERIC_LONG );
         assertEquals( dcv2.getDataType(),
                       DTDataTypes52.BOOLEAN );
         assertEquals( dcv3.getDataType(),
@@ -636,13 +636,13 @@ public class CellValueFactoryTests {
                       DTDataTypes52.NUMERIC_LONG );
         assertEquals( dcv11.getDataType(),
                       DTDataTypes52.NUMERIC_SHORT );
-        assertEquals( dcv5.getDataType(),
+        assertEquals( dcv12.getDataType(),
                       DTDataTypes52.DATE );
-        assertEquals( dcv6.getDataType(),
+        assertEquals( dcv13.getDataType(),
                       DTDataTypes52.BOOLEAN );
-        assertEquals( dcv7.getDataType(),
+        assertEquals( dcv14.getDataType(),
                       DTDataTypes52.STRING );
-        assertEquals( dcv8.getDataType(),
+        assertEquals( dcv15.getDataType(),
                       DTDataTypes52.STRING );
     }
 

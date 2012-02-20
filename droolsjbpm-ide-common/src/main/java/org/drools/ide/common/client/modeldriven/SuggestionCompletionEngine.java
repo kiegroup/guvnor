@@ -44,7 +44,7 @@ public class SuggestionCompletionEngine
     public static final String                      TYPE_STRING              = "String";
     public static final String                      TYPE_NUMERIC             = "Numeric";
     public static final String                      TYPE_NUMERIC_BIGDECIMAL  = "BigDecimal";
-    public static final String                      TYPE_NUMERIC_BIGINTEGER  = "BigIneger";
+    public static final String                      TYPE_NUMERIC_BIGINTEGER  = "BigInteger";
     public static final String                      TYPE_NUMERIC_BYTE        = "Byte";
     public static final String                      TYPE_NUMERIC_DOUBLE      = "Double";
     public static final String                      TYPE_NUMERIC_FLOAT       = "Float";
