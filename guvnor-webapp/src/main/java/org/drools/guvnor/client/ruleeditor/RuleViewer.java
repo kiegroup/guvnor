@@ -474,7 +474,7 @@ public class RuleViewer extends GuvnorEditor {
                             return;
                         }
 
-                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
+                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName(), uuid);
 
                         LoadingPopup.close();
                         saved[0] = true;
@@ -498,7 +498,7 @@ public class RuleViewer extends GuvnorEditor {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache(final String packageName) {
+    public void flushSuggestionCompletionCache(final String packageName, String assetUUID) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().refreshPackage( packageName,
@@ -512,6 +512,9 @@ public class RuleViewer extends GuvnorEditor {
                             LoadingPopup.close();
                         }
                     } );
+        } else {
+            //Refresh the current editor only.
+            eventBus.fireEvent(new RefreshAssetEditorEvent(packageName, assetUUID));
         }
     }
 
@@ -573,7 +576,7 @@ public class RuleViewer extends GuvnorEditor {
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                                flushSuggestionCompletionCache(sel.getSelectedPackage());
+                                flushSuggestionCompletionCache(sel.getSelectedPackage(), null);
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
                                         data );
@@ -647,8 +650,8 @@ public class RuleViewer extends GuvnorEditor {
                         public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );
 
-                            flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
-                            flushSuggestionCompletionCache("globalArea");
+                            flushSuggestionCompletionCache(asset.getMetaData().getPackageName(), null);
+                            flushSuggestionCompletionCache("globalArea", null);
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                             eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getPackageName(), asset.getUuid()));
                         }
