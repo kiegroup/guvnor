@@ -324,13 +324,13 @@ public class GuidedDecisionTable52
         String type = null;
         String attrName = col.getAttribute();
         if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_LONG;
         } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_LONG;
         } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
@@ -444,19 +444,19 @@ public class GuidedDecisionTable52
         DTDataTypes52 dataType = DTDataTypes52.STRING;
 
         if ( column instanceof RowNumberCol52 ) {
-            dataType = DTDataTypes52.NUMERIC_INTEGER;
+            dataType = DTDataTypes52.NUMERIC_LONG;
 
         } else if ( column instanceof AttributeCol52 ) {
             AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC_INTEGER;
+                dataType = DTDataTypes52.NUMERIC_LONG;
             } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC_INTEGER;
+                dataType = DTDataTypes52.NUMERIC_LONG;
             } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
                 dataType = DTDataTypes52.STRING;
             } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {

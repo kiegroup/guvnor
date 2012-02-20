@@ -15,7 +15,6 @@
  */
 package org.drools.ide.common.server.util;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +39,10 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
@@ -221,10 +220,10 @@ public class GuidedDecisionTableModelUpgradeHelper
 
         //Row numbers are numerical
         if ( oldRow[0] instanceof String ) {
-            DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( (String) oldRow[0] ) );
+            DTCellValue52 rowDcv = new DTCellValue52( new Long( (String) oldRow[0] ) );
             row.add( rowDcv );
         } else if ( oldRow[0] instanceof Long ) {
-            DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( (Long) oldRow[0] ) );
+            DTCellValue52 rowDcv = new DTCellValue52( new Long( (Long) oldRow[0] ) );
             row.add( rowDcv );
         } else {
             DTCellValue52 rowDcv = new DTCellValue52( oldRow[0] );

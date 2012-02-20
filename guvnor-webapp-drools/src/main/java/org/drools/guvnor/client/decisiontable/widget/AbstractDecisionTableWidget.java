@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

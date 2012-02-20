@@ -422,7 +422,7 @@ public class SuggestionCompletionEngineTest {
         assertEquals( 4,
                       c.length );
 
-        assertEquals( "Numeric",
+        assertEquals( "Integer",
                       com.getFieldType( "Person",
                                         "age" ) );
 

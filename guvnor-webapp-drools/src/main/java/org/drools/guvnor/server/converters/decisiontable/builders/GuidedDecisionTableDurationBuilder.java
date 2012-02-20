@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.math.BigDecimal;
-
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.guvnor.client.rpc.ConversionResult;
@@ -50,9 +48,9 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void addCellValue(int row,
                              int column,
                              String value) {
-        DTCellValue52 dcv = new DTCellValue52( "" );
+        DTCellValue52 dcv = new DTCellValue52( new Long( 0 ) );
         try {
-            dcv.setNumericValue( new BigDecimal( value ) );
+            dcv.setLongValue( new Long( value ) );
         } catch ( NumberFormatException nfe ) {
             final String message = "Duration is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
                                                                                                                  column );

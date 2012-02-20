@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
-import java.math.BigDecimal;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -24,7 +22,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 /**
  * A Cell that renders it's corresponding row index number only
  */
-public class RowNumberCell extends AbstractCell<BigDecimal> {
+public class RowNumberCell extends AbstractCell<Long> {
 
     public RowNumberCell() {
         // Good citizen: AbstractCell does not initialise an empty set of
@@ -34,10 +32,10 @@ public class RowNumberCell extends AbstractCell<BigDecimal> {
 
     @Override
     public void render(Context context,
-                       BigDecimal value,
+                       Long value,
                        SafeHtmlBuilder sb) {
         if ( value != null ) {
-            sb.append( SafeHtmlUtils.fromTrustedString( value.toPlainString() ) );
+            sb.append( SafeHtmlUtils.fromTrustedString( value.toString() ) );
         }
     }
 

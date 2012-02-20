@@ -508,8 +508,54 @@ public class SuggestionCompletionLoaderTest {
                       fields[2] );
         assertEquals( "anEnum",
                       fields[3] );
-        assertEquals( "bigDecimal",
+        assertEquals( "cheese",
                       fields[4] );
+        assertEquals( "date",
+                      fields[5] );
+        assertEquals( "dead",
+                      fields[6] );
+        assertEquals( "factList",
+                      fields[7] );
+        assertEquals( "factListString",
+                      fields[8] );
+        assertEquals( "hair",
+                      fields[9] );
+        assertEquals( "likes",
+                      fields[10] );
+        assertEquals( "name",
+                      fields[11] );
+        assertEquals( "objectBigDecimal",
+                      fields[12] );
+        assertEquals( "objectBigInteger",
+                      fields[13] );
+        assertEquals( "objectByte",
+                      fields[14] );
+        assertEquals( "objectDouble",
+                      fields[15] );
+        assertEquals( "objectFloat",
+                      fields[16] );
+        assertEquals( "objectInteger",
+                      fields[17] );
+        assertEquals( "objectLong",
+                      fields[18] );
+        assertEquals( "objectShort",
+                      fields[19] );
+        assertEquals( "primitiveByte",
+                      fields[20] );
+        assertEquals( "primitiveDouble",
+                      fields[21] );
+        assertEquals( "primitiveFloat",
+                      fields[22] );
+        assertEquals( "primitiveInteger",
+                      fields[23] );
+        assertEquals( "primitiveLong",
+                      fields[24] );
+        assertEquals( "primitiveShort",
+                      fields[25] );
+        assertEquals( "sex",
+                      fields[26] );
+        assertEquals( "status",
+                      fields[27] );
     }
 
     @Test

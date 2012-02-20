@@ -92,7 +92,7 @@ public class GuidedDTDRLPersistence {
             TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                      row );
 
-            BigDecimal num = row.get( 0 ).getNumericValue();
+            Long num = row.get( 0 ).getLongValue();
             String desc = row.get( 1 ).getStringValue();
 
             BRLRuleModel rm = new BRLRuleModel( dt );

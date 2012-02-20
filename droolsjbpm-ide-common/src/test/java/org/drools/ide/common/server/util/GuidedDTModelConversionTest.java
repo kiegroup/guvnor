@@ -16,10 +16,9 @@
 package org.drools.ide.common.server.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -470,8 +469,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( 1,
-                      (int) tsdt.getData().get( 0 ).get( 0 ).getIntegerValue() );
+        assertEquals( 1l,
+                      (long) tsdt.getData().get( 0 ).get( 0 ).getLongValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "metar1",
@@ -495,8 +494,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "a4r1",
                       tsdt.getData().get( 0 ).get( 11 ).getStringValue() );
 
-        assertEquals( 2,
-                      (int) tsdt.getData().get( 1 ).get( 0 ).getIntegerValue() );
+        assertEquals( 2l,
+                      (long) tsdt.getData().get( 1 ).get( 0 ).getLongValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "metar2",
@@ -532,8 +531,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( row.size(),
                       array.length );
 
-        int newRowNum = row.get( 0 ).getIntegerValue();
-        int oldRowNum = Integer.valueOf( array[0] );
+        long newRowNum = row.get( 0 ).getLongValue();
+        long oldRowNum = Long.valueOf( array[0] );
         assertEquals( newRowNum,
                       oldRowNum );
 
@@ -695,8 +694,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( 1,
-                      (int) tsdt.getData().get( 0 ).get( 0 ).getIntegerValue() );
+        assertEquals( 1l,
+                      (long) tsdt.getData().get( 0 ).get( 0 ).getLongValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r1",
@@ -708,8 +707,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "f2c1r1",
                       tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
 
-        assertEquals( 2,
-                      (int) tsdt.getData().get( 1 ).get( 0 ).getIntegerValue() );
+        assertEquals( 2l,
+                      (long) tsdt.getData().get( 1 ).get( 0 ).getLongValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r2",

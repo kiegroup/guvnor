@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.math.BigDecimal;
-
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
@@ -112,14 +110,14 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 if ( attrCol.isUseRowNumber() ) {
                     cell = makeRowNumberCell();
                 } else {
-                    cell = makeNumericCell();
+                    cell = makeNumericLongCell();
                 }
             } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 cell = makeBooleanCell();
             } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
                 cell = makeBooleanCell();
             } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-                cell = makeNumericCell();
+                cell = makeNumericLongCell();
             } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
                 cell = makeTimerCell();
             } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
@@ -283,8 +281,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     }
 
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor<BigDecimal> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal>( new RowNumberCell(),
+    private DecoratedGridCellValueAdaptor<Long> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<Long>( new RowNumberCell(),
                                                               eventBus );
     }
 
