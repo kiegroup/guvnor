@@ -169,5 +169,52 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
         assertTrue( selector6.isAssetAllowed( item3 ) );
         assertTrue( selector6.isAssetAllowed( item4 ) );
     }
+    
+    /* Test the built-in selector with following cases (https://bugzilla.redhat.com/show_bug.cgi?id=727137):
+    1. When the asset has not category
+    2. When the asset has more than one categories and the operator is "!=". */
+    @Test
+    public void testBuiltInSelectorWithAssetCategory() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        impl.getRulesRepository().loadDefaultPackage();
+        impl.getRulesRepository().createPackage( "testBuiltInSelectorWithAssetCategoryPackage",
+                                                 "woot" );
 
+        //we have following categories:  cat1, cat2, cat2/cat3
+        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat1 = cat.addCategory( "testBuiltInSelectorWithAssetCategoryCat1",
+                         "yeah" );
+        CategoryItem cat2 = cat.addCategory( "testBuiltInSelectorWithAssetCategoryCat2",
+                         "yeah" );
+        CategoryItem cat3 = cat2.addCategory( "testBuiltInSelectorWithAssetCategoryCat3",
+                "yeah" );
+        
+        //rule1 in cat1 and cat3
+        String uuid1 = impl.createNewRule( "test AddRule1",
+                                           "a description",
+                                           "testBuiltInSelectorWithAssetCategoryCat1",
+                                           "testBuiltInSelectorWithAssetCategoryPackage",
+                                           "txt" );
+        AssetItem item1 = impl.getRulesRepository().loadAssetByUUID( uuid1 );
+        item1.addCategory("testBuiltInSelectorWithAssetCategoryCat2/testBuiltInSelectorWithAssetCategoryCat3");
+        
+        //rule2 in no category
+        String uuid2 = impl.createNewRule( "test AddRule2",
+                                           "a description",
+                                           null,
+                                           "testBuiltInSelectorWithAssetCategoryPackage",
+                                           "txt" );
+        AssetItem item2 = impl.getRulesRepository().loadAssetByUUID( uuid2 );
+
+
+
+        //build a package with rules NOT in cat3:
+        BuiltInSelector selector1 = (BuiltInSelector) SelectorManager.getInstance().getSelector( "BuiltInSelector" );
+        selector1.setCategory( "testBuiltInSelectorWithAssetCategoryCat2/testBuiltInSelectorWithAssetCategoryCat3" );
+        selector1.setCategoryOperator( "!=" );
+        selector1.setEnableCategorySelector( true );
+
+        assertFalse( selector1.isAssetAllowed( item1 ) );
+        assertTrue( selector1.isAssetAllowed( item2 ) );
+     }
 }
