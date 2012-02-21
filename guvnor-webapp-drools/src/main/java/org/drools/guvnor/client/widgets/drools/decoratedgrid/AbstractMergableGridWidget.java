@@ -51,7 +51,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCellElement;

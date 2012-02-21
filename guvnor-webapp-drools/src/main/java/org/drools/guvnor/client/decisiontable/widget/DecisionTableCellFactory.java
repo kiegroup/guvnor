@@ -110,7 +110,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 if ( attrCol.isUseRowNumber() ) {
                     cell = makeRowNumberCell();
                 } else {
-                    cell = makeNumericLongCell();
+                    cell = makeNumericIntegerCell();
                 }
             } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 cell = makeBooleanCell();
@@ -281,9 +281,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     }
 
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor<Long> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<Long>( new RowNumberCell(),
-                                                              eventBus );
+    private DecoratedGridCellValueAdaptor<Integer> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<Integer>( new RowNumberCell(),
+                                                           eventBus );
     }
 
     // Make a new Cell for Timer columns

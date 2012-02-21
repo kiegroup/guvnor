@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class RowNumberBuilder
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
             dtable.getData().add( new ArrayList<DTCellValue52>() );
             DTCellValue52 dcv = this.values.get( iRow );
-            dcv.setNumericValue( new BigDecimal( iRow + 1 ) );
+            dcv.setNumericValue( new Integer( iRow + 1 ) );
             dtable.getData().get( iRow ).add( 0,
                                               dcv );
         }

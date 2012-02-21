@@ -220,10 +220,10 @@ public class GuidedDecisionTableModelUpgradeHelper
 
         //Row numbers are numerical
         if ( oldRow[0] instanceof String ) {
-            DTCellValue52 rowDcv = new DTCellValue52( new Long( (String) oldRow[0] ) );
+            DTCellValue52 rowDcv = new DTCellValue52( new Integer( (String) oldRow[0] ) );
             row.add( rowDcv );
-        } else if ( oldRow[0] instanceof Long ) {
-            DTCellValue52 rowDcv = new DTCellValue52( new Long( (Long) oldRow[0] ) );
+        } else if ( oldRow[0] instanceof Number ) {
+            DTCellValue52 rowDcv = new DTCellValue52( ((Number) oldRow[0]).intValue() );
             row.add( rowDcv );
         } else {
             DTCellValue52 rowDcv = new DTCellValue52( oldRow[0] );

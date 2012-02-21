@@ -192,43 +192,43 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 cell = makeNewDateCellValue( dcv.getDateValue() );
                 break;
             case NUMERIC :
-                cell = makeNewNumericCellValue( dcv.getNumericValue() );
+                cell = makeNewNumericCellValue( (BigDecimal) dcv.getNumericValue() );
                 break;
             case NUMERIC_BIGDECIMAL :
-                cell = makeNewBigDecimalCellValue( dcv.getBigDecimalValue() );
+                cell = makeNewBigDecimalCellValue( (BigDecimal) dcv.getNumericValue() );
                 break;
             case NUMERIC_BIGINTEGER :
-                cell = makeNewBigIntegerCellValue( dcv.getBigIntegerValue() );
+                cell = makeNewBigIntegerCellValue( (BigInteger) dcv.getNumericValue() );
                 break;
             case NUMERIC_BYTE :
-                cell = makeNewByteCellValue( dcv.getByteValue() );
+                cell = makeNewByteCellValue( (Byte) dcv.getNumericValue() );
                 break;
             case NUMERIC_DOUBLE :
-                cell = makeNewDoubleCellValue( dcv.getDoubleValue() );
+                cell = makeNewDoubleCellValue( (Double) dcv.getNumericValue() );
                 break;
             case NUMERIC_FLOAT :
-                cell = makeNewFloatCellValue( dcv.getFloatValue() );
+                cell = makeNewFloatCellValue( (Float) dcv.getNumericValue() );
                 break;
             case NUMERIC_INTEGER :
-                cell = makeNewIntegerCellValue( dcv.getIntegerValue() );
+                cell = makeNewIntegerCellValue( (Integer) dcv.getNumericValue() );
                 break;
             case NUMERIC_LONG :
                 if ( column instanceof RowNumberCol52 ) {
-                    cell = makeNewRowNumberCellValue( dcv.getLongValue() );
+                    cell = makeNewRowNumberCellValue( (Long) dcv.getNumericValue() );
                 } else {
-                    cell = makeNewLongCellValue( dcv.getLongValue() );
+                    cell = makeNewLongCellValue( (Long) dcv.getNumericValue() );
                     if ( column instanceof AttributeCol52 ) {
                         AttributeCol52 at = (AttributeCol52) column;
                         if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                             if ( at.isUseRowNumber() ) {
-                                cell = makeNewRowNumberCellValue( dcv.getLongValue() );
+                                cell = makeNewRowNumberCellValue( (Long) dcv.getNumericValue() );
                             }
                         }
                     }
                 }
                 break;
             case NUMERIC_SHORT :
-                cell = makeNewShortCellValue( dcv.getShortValue() );
+                cell = makeNewShortCellValue( (Short) dcv.getNumericValue() );
                 break;
             default :
                 cell = makeNewStringCellValue( dcv.getStringValue() );
@@ -325,7 +325,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setBigDecimalValue( bigDecimalValue );
+                dcv.setNumericValue( bigDecimalValue );
                 break;
             case NUMERIC_BIGINTEGER :
                 BigInteger bigIntegerValue = null;
@@ -335,7 +335,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setBigIntegerValue( bigIntegerValue );
+                dcv.setNumericValue( bigIntegerValue );
                 break;
             case NUMERIC_BYTE :
                 Byte byteValue = null;
@@ -345,7 +345,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setByteValue( byteValue );
+                dcv.setNumericValue( byteValue );
                 break;
             case NUMERIC_DOUBLE :
                 Double doubleValue = null;
@@ -355,7 +355,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setDoubleValue( doubleValue );
+                dcv.setNumericValue( doubleValue );
                 break;
             case NUMERIC_FLOAT :
                 Float floatValue = null;
@@ -365,7 +365,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setFloatValue( floatValue );
+                dcv.setNumericValue( floatValue );
                 break;
             case NUMERIC_INTEGER :
                 Integer integerValue = null;
@@ -375,7 +375,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setIntegerValue( integerValue );
+                dcv.setNumericValue( integerValue );
                 break;
             case NUMERIC_LONG :
                 Long longValue = null;
@@ -385,7 +385,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setLongValue( longValue );
+                dcv.setNumericValue( longValue );
                 break;
             case NUMERIC_SHORT :
                 Short shortValue = null;
@@ -395,7 +395,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                     }
                 } catch ( Exception e ) {
                 }
-                dcv.setShortValue( shortValue );
+                dcv.setNumericValue( shortValue );
                 break;
         }
 

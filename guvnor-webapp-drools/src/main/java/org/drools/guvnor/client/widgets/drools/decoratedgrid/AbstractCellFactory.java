@@ -119,37 +119,37 @@ public abstract class AbstractCellFactory<T> {
     // Make a new Cell for Byte columns
     protected DecoratedGridCellValueAdaptor<Byte> makeNumericByteCell() {
         return new DecoratedGridCellValueAdaptor<Byte>( new PopupNumericByteEditCell( isReadOnly ),
-                                                              eventBus );
+                                                        eventBus );
     }
 
     // Make a new Cell for Double columns
     protected DecoratedGridCellValueAdaptor<Double> makeNumericDoubleCell() {
         return new DecoratedGridCellValueAdaptor<Double>( new PopupNumericDoubleEditCell( isReadOnly ),
-                                                              eventBus );
+                                                          eventBus );
     }
 
     // Make a new Cell for Float columns
     protected DecoratedGridCellValueAdaptor<Float> makeNumericFloatCell() {
         return new DecoratedGridCellValueAdaptor<Float>( new PopupNumericFloatEditCell( isReadOnly ),
-                                                              eventBus );
+                                                         eventBus );
     }
 
     // Make a new Cell for Integer columns
     protected DecoratedGridCellValueAdaptor<Integer> makeNumericIntegerCell() {
         return new DecoratedGridCellValueAdaptor<Integer>( new PopupNumericIntegerEditCell( isReadOnly ),
-                                                              eventBus );
+                                                           eventBus );
     }
 
     // Make a new Cell for Long columns
     protected DecoratedGridCellValueAdaptor<Long> makeNumericLongCell() {
         return new DecoratedGridCellValueAdaptor<Long>( new PopupNumericLongEditCell( isReadOnly ),
-                                                              eventBus );
+                                                        eventBus );
     }
 
     // Make a new Cell for Short columns
     protected DecoratedGridCellValueAdaptor<Short> makeNumericShortCell() {
         return new DecoratedGridCellValueAdaptor<Short>( new PopupNumericShortEditCell( isReadOnly ),
-                                                              eventBus );
+                                                         eventBus );
     }
 
     // Make a new Cell for a Text columns

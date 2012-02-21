@@ -317,7 +317,7 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( at,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
@@ -444,7 +444,7 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( salienceAttribute,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,

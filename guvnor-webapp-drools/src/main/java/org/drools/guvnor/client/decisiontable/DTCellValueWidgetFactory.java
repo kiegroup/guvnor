@@ -348,7 +348,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericTextBox();
-        tb.setValue( value.getNumericValue() == null ? "" : value.getNumericValue().toPlainString() );
+        final BigDecimal numericValue = (BigDecimal) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toPlainString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -372,7 +373,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericBigDecimalTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericBigDecimalTextBox();
-        tb.setValue( value.getBigDecimalValue() == null ? "" : value.getBigDecimalValue().toString() );
+        final BigDecimal numericValue = (BigDecimal) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toPlainString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -381,7 +383,7 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setBigDecimalValue( new BigDecimal( event.getValue() ) );
+                        value.setNumericValue( new BigDecimal( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
                         value.setNumericValue( BigDecimal.ZERO );
@@ -396,7 +398,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericBigIntegerTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericBigIntegerTextBox();
-        tb.setValue( value.getBigIntegerValue() == null ? "" : value.getBigIntegerValue().toString() );
+        final BigInteger numericValue = (BigInteger) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -405,10 +408,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setBigIntegerValue( new BigInteger( event.getValue() ) );
+                        value.setNumericValue( new BigInteger( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setBigIntegerValue( BigInteger.ZERO );
+                        value.setNumericValue( BigInteger.ZERO );
                         tb.setValue( BigInteger.ZERO.toString() );
                     }
                 }
@@ -420,7 +423,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericByteTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericByteTextBox();
-        tb.setValue( value.getByteValue() == null ? "" : value.getByteValue().toString() );
+        final Byte numericValue = (Byte) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -429,10 +433,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setByteValue( new Byte( event.getValue() ) );
+                        value.setNumericValue( new Byte( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setByteValue( new Byte( "0" ) );
+                        value.setNumericValue( new Byte( "0" ) );
                         tb.setValue( "0" );
                     }
                 }
@@ -444,7 +448,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericDoubleTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericDoubleTextBox();
-        tb.setValue( value.getDoubleValue() == null ? "" : value.getDoubleValue().toString() );
+        final Double numericValue = (Double) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -453,10 +458,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setDoubleValue( new Double( event.getValue() ) );
+                        value.setNumericValue( new Double( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setDoubleValue( new Double( "0" ) );
+                        value.setNumericValue( new Double( "0" ) );
                         tb.setValue( "0" );
                     }
                 }
@@ -468,7 +473,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericFloatTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericFloatTextBox();
-        tb.setValue( value.getFloatValue() == null ? "" : value.getFloatValue().toString() );
+        final Float numericValue = (Float) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -477,10 +483,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setFloatValue( new Float( event.getValue() ) );
+                        value.setNumericValue( new Float( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setFloatValue( new Float( "0" ) );
+                        value.setNumericValue( new Float( "0" ) );
                         tb.setValue( "0" );
                     }
                 }
@@ -492,7 +498,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericIntegerTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericIntegerTextBox();
-        tb.setValue( value.getIntegerValue() == null ? "" : value.getIntegerValue().toString() );
+        final Integer numericValue = (Integer) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -501,10 +508,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setIntegerValue( new Integer( event.getValue() ) );
+                        value.setNumericValue( new Integer( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setIntegerValue( new Integer( "0" ) );
+                        value.setNumericValue( new Integer( "0" ) );
                         tb.setValue( "0" );
                     }
                 }
@@ -516,7 +523,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericLongTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericLongTextBox();
-        tb.setValue( value.getLongValue() == null ? "" : value.getLongValue().toString() );
+        final Long numericValue = (Long) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -525,10 +533,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setLongValue( new Long( event.getValue() ) );
+                        value.setNumericValue( new Long( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setLongValue( new Long( "0" ) );
+                        value.setNumericValue( new Long( "0" ) );
                         tb.setValue( "0" );
                     }
                 }
@@ -540,7 +548,8 @@ public class DTCellValueWidgetFactory {
 
     private AbstractRestrictedEntryTextBox makeNumericShortTextBox(final DTCellValue52 value) {
         final AbstractRestrictedEntryTextBox tb = new NumericShortTextBox();
-        tb.setValue( value.getShortValue() == null ? "" : value.getShortValue().toString() );
+        final Short numericValue = (Short) value.getNumericValue();
+        tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
         // Wire up update handler
         tb.setEnabled( !isReadOnly );
@@ -549,10 +558,10 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setShortValue( new Short( event.getValue() ) );
+                        value.setNumericValue( new Short( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setShortValue( new Short( "0" ) );
+                        value.setNumericValue( new Short( "0" ) );
                         tb.setValue( "0" );
                     }
                 }

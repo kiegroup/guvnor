@@ -469,8 +469,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( 1l,
-                      (long) tsdt.getData().get( 0 ).get( 0 ).getLongValue() );
+        assertEquals( new Integer( 1 ),
+                      (Integer) tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "metar1",
@@ -494,8 +494,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "a4r1",
                       tsdt.getData().get( 0 ).get( 11 ).getStringValue() );
 
-        assertEquals( 2l,
-                      (long) tsdt.getData().get( 1 ).get( 0 ).getLongValue() );
+        assertEquals( new Integer( 2 ),
+                      (Integer) tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "metar2",
@@ -531,8 +531,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( row.size(),
                       array.length );
 
-        long newRowNum = row.get( 0 ).getLongValue();
-        long oldRowNum = Long.valueOf( array[0] );
+        int newRowNum = (Integer) row.get( 0 ).getNumericValue();
+        int oldRowNum = Integer.valueOf( array[0] );
         assertEquals( newRowNum,
                       oldRowNum );
 
@@ -694,8 +694,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( 1l,
-                      (long) tsdt.getData().get( 0 ).get( 0 ).getLongValue() );
+        assertEquals( new Integer( 1 ),
+                      (Integer) tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r1",
@@ -707,8 +707,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "f2c1r1",
                       tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
 
-        assertEquals( 2l,
-                      (long) tsdt.getData().get( 1 ).get( 0 ).getLongValue() );
+        assertEquals( new Integer( 2 ),
+                      (Integer) tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r2",

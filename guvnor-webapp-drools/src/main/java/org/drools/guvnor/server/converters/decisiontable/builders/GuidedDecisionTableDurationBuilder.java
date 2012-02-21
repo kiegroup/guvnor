@@ -48,12 +48,12 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void addCellValue(int row,
                              int column,
                              String value) {
-        DTCellValue52 dcv = new DTCellValue52( new Long( 0 ) );
+        DTCellValue52 dcv = new DTCellValue52();
         try {
-            dcv.setLongValue( new Long( value ) );
+            dcv.setNumericValue( new Long( value ) );
         } catch ( NumberFormatException nfe ) {
-            final String message = "Duration is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
-                                                                                                                 column );
+            final String message = "Duration is not an long literal, in cell " + RuleSheetParserUtil.rc2name( row,
+                                                                                                              column );
             this.conversionResult.addMessage( message,
                                               ConversionMessageType.WARNING );
         }

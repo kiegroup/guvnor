@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1740,7 +1742,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         int rowNumber = 1;
         int iColIndex = model.getExpandedColumns().indexOf( column );
         for ( List<DTCellValue52> row : model.getData() ) {
-            row.get( iColIndex ).setIntegerValue( rowNumber );
+            row.get( iColIndex ).setNumericValue( rowNumber );
             rowNumber++;
         }
 
@@ -1774,7 +1776,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         //If Salience values are reverse order derive them and update column
         int salience = (column.isReverseOrder() ? model.getData().size() : 1);
         for ( List<DTCellValue52> row : model.getData() ) {
-            row.get( iColIndex ).setIntegerValue( salience );
+            row.get( iColIndex ).setNumericValue( salience );
             if ( column.isReverseOrder() ) {
                 salience--;
             } else {
@@ -2066,28 +2068,28 @@ public abstract class AbstractDecisionTableWidget extends Composite
                         targetCell.setNumericValue( sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_BIGDECIMAL :
-                        targetCell.setBigDecimalValue( sourceCell.getBigDecimalValue() );
+                        targetCell.setNumericValue( (BigDecimal) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_BIGINTEGER :
-                        targetCell.setBigIntegerValue( sourceCell.getBigIntegerValue() );
+                        targetCell.setNumericValue( (BigInteger) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_BYTE :
-                        targetCell.setByteValue( sourceCell.getByteValue() );
+                        targetCell.setNumericValue( (Byte) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_DOUBLE :
-                        targetCell.setDoubleValue( sourceCell.getDoubleValue() );
+                        targetCell.setNumericValue( (Double) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_FLOAT :
-                        targetCell.setFloatValue( sourceCell.getFloatValue() );
+                        targetCell.setNumericValue( (Float) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_INTEGER :
-                        targetCell.setIntegerValue( sourceCell.getIntegerValue() );
+                        targetCell.setNumericValue( (Integer) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_LONG :
-                        targetCell.setLongValue( sourceCell.getLongValue() );
+                        targetCell.setNumericValue( (Long) sourceCell.getNumericValue() );
                         break;
                     case NUMERIC_SHORT :
-                        targetCell.setShortValue( sourceCell.getShortValue() );
+                        targetCell.setNumericValue( (Short) sourceCell.getNumericValue() );
                         break;
                     default :
                         targetCell.setStringValue( sourceCell.getStringValue() );

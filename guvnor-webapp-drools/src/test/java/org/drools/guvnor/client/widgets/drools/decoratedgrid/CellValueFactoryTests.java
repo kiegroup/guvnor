@@ -365,7 +365,7 @@ public class CellValueFactoryTests {
                   1 );
         Date dob = cdob.getTime();
 
-        DTCellValue52 dcv1 = new DTCellValue52( 1l );
+        DTCellValue52 dcv1 = new DTCellValue52( new Integer( 1 ) );
         DTCellValue52 dcv2 = new DTCellValue52( Boolean.TRUE );
         DTCellValue52 dcv3 = new DTCellValue52( "Michael" );
         DTCellValue52 dcv4 = new DTCellValue52( new BigDecimal( 11 ) );
@@ -413,7 +413,7 @@ public class CellValueFactoryTests {
                                                                                       dcv15 );
 
         assertEquals( cell1.getValue(),
-                      1l );
+                      new Integer( 1 ) );
         assertEquals( cell2.getValue(),
                       Boolean.TRUE );
         assertEquals( cell3.getValue(),
@@ -502,7 +502,7 @@ public class CellValueFactoryTests {
                                                                                       dcv15 );
 
         assertEquals( cell1.getValue(),
-                      1l );
+                      new Integer( 1 ) );
         assertEquals( cell2.getValue(),
                       Boolean.TRUE );
         assertEquals( cell3.getValue(),
@@ -615,7 +615,7 @@ public class CellValueFactoryTests {
                       null );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes52.NUMERIC_LONG );
+                      DTDataTypes52.NUMERIC_INTEGER );
         assertEquals( dcv2.getDataType(),
                       DTDataTypes52.BOOLEAN );
         assertEquals( dcv3.getDataType(),

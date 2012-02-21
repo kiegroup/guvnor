@@ -349,7 +349,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             DTCellValue52 dcv = new DTCellValue52();
-            dcv.setIntegerValue( iRow + 1 );
+            dcv.setNumericValue( iRow + 1 );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
                                                                                                dcv );
             columnData.add( cv );

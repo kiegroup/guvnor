@@ -22,7 +22,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 /**
  * A Cell that renders it's corresponding row index number only
  */
-public class RowNumberCell extends AbstractCell<Long> {
+public class RowNumberCell extends AbstractCell<Integer> {
 
     public RowNumberCell() {
         // Good citizen: AbstractCell does not initialise an empty set of
@@ -32,7 +32,7 @@ public class RowNumberCell extends AbstractCell<Long> {
 
     @Override
     public void render(Context context,
-                       Long value,
+                       Integer value,
                        SafeHtmlBuilder sb) {
         if ( value != null ) {
             sb.append( SafeHtmlUtils.fromTrustedString( value.toString() ) );

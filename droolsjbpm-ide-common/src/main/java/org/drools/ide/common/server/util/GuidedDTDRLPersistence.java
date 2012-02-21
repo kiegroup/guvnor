@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.server.util;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +91,7 @@ public class GuidedDTDRLPersistence {
             TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                      row );
 
-            Long num = row.get( 0 ).getLongValue();
+            Integer num = (Integer) row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
 
             BRLRuleModel rm = new BRLRuleModel( dt );

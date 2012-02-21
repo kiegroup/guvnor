@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -728,23 +730,32 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 case BOOLEAN :
                     return cv.getBooleanValue().toString();
                 case NUMERIC :
-                    return cv.getNumericValue().toPlainString();
+                    final BigDecimal numeric = (BigDecimal) cv.getNumericValue();
+                    return numeric.toPlainString();
                 case NUMERIC_BIGDECIMAL :
-                    return cv.getBigDecimalValue().toPlainString();
+                    final BigDecimal numericBigDecimal = (BigDecimal) cv.getNumericValue();
+                    return numericBigDecimal.toPlainString();
                 case NUMERIC_BIGINTEGER :
-                    return cv.getBigIntegerValue().toString();
+                    final BigInteger numericBigInteger = (BigInteger) cv.getNumericValue();
+                    return numericBigInteger.toString();
                 case NUMERIC_BYTE :
-                    return cv.getByteValue().toString();
+                    final Byte numericByte = (Byte) cv.getNumericValue();
+                    return numericByte.toString();
                 case NUMERIC_DOUBLE :
-                    return cv.getDoubleValue().toString();
+                    final Double numericDouble = (Double) cv.getNumericValue();
+                    return numericDouble.toString();
                 case NUMERIC_FLOAT :
-                    return cv.getFloatValue().toString();
+                    final Float numericFloat = (Float) cv.getNumericValue();
+                    return numericFloat.toString();
                 case NUMERIC_INTEGER :
-                    return cv.getIntegerValue().toString();
+                    final Integer numericInteger = (Integer) cv.getNumericValue();
+                    return numericInteger.toString();
                 case NUMERIC_LONG :
-                    return cv.getLongValue().toString();
+                    final Long numericLong = (Long) cv.getNumericValue();
+                    return numericLong.toString();
                 case NUMERIC_SHORT :
-                    return cv.getShortValue().toString();
+                    final Short numericShort = (Short) cv.getNumericValue();
+                    return numericShort.toString();
                 case DATE :
                     return format.format( cv.getDateValue() );
                 default :

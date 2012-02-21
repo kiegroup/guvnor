@@ -42,31 +42,31 @@ public class GuidedDTDRLUtilities {
                 Date dateValue = dcv.getDateValue();
                 return (dateValue == null ? null : DateUtils.format( dcv.getDateValue() ));
             case NUMERIC :
-                BigDecimal numericValue = dcv.getNumericValue();
+                BigDecimal numericValue = (BigDecimal) dcv.getNumericValue();
                 return (numericValue == null ? null : numericValue.toPlainString());
             case NUMERIC_BIGDECIMAL :
-                BigDecimal bigDecimalValue = dcv.getBigDecimalValue();
+                BigDecimal bigDecimalValue = (BigDecimal) dcv.getNumericValue();
                 return (bigDecimalValue == null ? null : bigDecimalValue.toPlainString());
             case NUMERIC_BIGINTEGER :
-                BigInteger bigIntegerValue = dcv.getBigIntegerValue();
+                BigInteger bigIntegerValue = (BigInteger) dcv.getNumericValue();
                 return (bigIntegerValue == null ? null : bigIntegerValue.toString());
             case NUMERIC_BYTE :
-                Byte byteValue = dcv.getByteValue();
+                Byte byteValue = (Byte) dcv.getNumericValue();
                 return (byteValue == null ? null : byteValue.toString());
             case NUMERIC_DOUBLE :
-                Double doubleValue = dcv.getDoubleValue();
+                Double doubleValue = (Double) dcv.getNumericValue();
                 return (doubleValue == null ? null : doubleValue.toString());
             case NUMERIC_FLOAT :
-                Float floatValue = dcv.getFloatValue();
+                Float floatValue = (Float) dcv.getNumericValue();
                 return (floatValue == null ? null : floatValue.toString());
             case NUMERIC_INTEGER :
-                Integer integerValue = dcv.getIntegerValue();
+                Integer integerValue = (Integer) dcv.getNumericValue();
                 return (integerValue == null ? null : integerValue.toString());
             case NUMERIC_LONG :
-                Long longValue = dcv.getLongValue();
+                Long longValue = (Long) dcv.getNumericValue();
                 return (longValue == null ? null : longValue.toString());
             case NUMERIC_SHORT :
-                Short shortValue = dcv.getShortValue();
+                Short shortValue = (Short) dcv.getNumericValue();
                 return (shortValue == null ? null : shortValue.toString());
             default :
                 return dcv.getStringValue();

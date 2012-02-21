@@ -16,6 +16,8 @@
 
 package org.drools.ide.common.server.util;
 
+import java.math.BigDecimal;
+
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -38,9 +40,10 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
 
-    private XStream                                            xt;
-    private static final GuidedDecisionTableModelUpgradeHelper UPGRADER = new GuidedDecisionTableModelUpgradeHelper();
-    private static final GuidedDTXMLPersistence                INSTANCE = new GuidedDTXMLPersistence();
+    private XStream                                               xt;
+    private static final GuidedDecisionTableModelUpgradeHelper    modelVersionUpgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private static final GuidedDecisionTableDataTypeUpgradeHelper dataTypeUpgrader     = new GuidedDecisionTableDataTypeUpgradeHelper();
+    private static final GuidedDTXMLPersistence                   INSTANCE             = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
@@ -82,6 +85,11 @@ public class GuidedDTXMLPersistence {
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage( "org.drools.guvnor.client",
                          "org.drools.ide.common.client" );
+
+        //All numerical values are historically BigDecimal
+        xt.alias( "valueNumeric",
+                  Number.class,
+                  BigDecimal.class );
     }
 
     public static GuidedDTXMLPersistence getInstance() {
@@ -102,10 +110,14 @@ public class GuidedDTXMLPersistence {
         GuidedDecisionTable52 newDTModel;
         if ( model instanceof GuidedDecisionTable ) {
             GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
-            newDTModel = UPGRADER.upgrade( legacyDTModel );
+            newDTModel = modelVersionUpgrader.upgrade( legacyDTModel );
         } else {
             newDTModel = (GuidedDecisionTable52) model;
         }
+
+        //Ensure RowNumber, Salience and Duration data-types are correct
+        newDTModel = dataTypeUpgrader.upgrade( newDTModel );
+
         return newDTModel;
     }
 

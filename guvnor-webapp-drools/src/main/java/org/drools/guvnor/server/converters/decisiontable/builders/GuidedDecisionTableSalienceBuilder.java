@@ -52,7 +52,7 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
             final int maxRow = this.values.size();
             for ( int iRow = 0; iRow < maxRow; iRow++ ) {
                 DTCellValue52 dcv = this.values.get( iRow );
-                dcv.setLongValue( new Long( maxRow - iRow ) );
+                dcv.setNumericValue( new Integer( maxRow - iRow ) );
             }
         }
         dtable.getAttributeCols().add( column );
@@ -67,9 +67,9 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
             value = value.substring( 1,
                                      value.lastIndexOf( ")" ) - 1 );
         }
-        DTCellValue52 dcv = new DTCellValue52( new Long( 0 ) );
+        DTCellValue52 dcv = new DTCellValue52();
         try {
-            dcv.setLongValue( new Long( value ) );
+            dcv.setNumericValue( new Integer( value ) );
         } catch ( NumberFormatException nfe ) {
             final String message = "Priority is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
                                                                                                                  column );

@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +68,8 @@ public class DecisionTableAnalyzer {
         List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
         List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
         for ( List<DTCellValue52> row : data ) {
-            RowDetector rowDetector = new RowDetector( row.get( 0 ).getLongValue() - 1 );
+            final Long rowNumber = ((Long) row.get( 0 ).getNumericValue()) - 1;
+            RowDetector rowDetector = new RowDetector( rowNumber );
             for ( Pattern52 pattern : model.getPatterns() ) {
                 for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
                     int columnIndex = model.getExpandedColumns().indexOf( conditionCol );
@@ -155,47 +158,47 @@ public class DecisionTableAnalyzer {
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             newDetector = new NumericConditionDetector( pattern,
                                                         factField,
-                                                        realCellValue.getNumericValue(),
+                                                        (BigDecimal) realCellValue.getNumericValue(),
                                                         operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
             newDetector = new NumericBigDecimalConditionDetector( pattern,
                                                                   factField,
-                                                                  realCellValue.getBigDecimalValue(),
+                                                                  (BigDecimal) realCellValue.getNumericValue(),
                                                                   operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
             newDetector = new NumericBigIntegerConditionDetector( pattern,
                                                                   factField,
-                                                                  realCellValue.getBigIntegerValue(),
+                                                                  (BigInteger) realCellValue.getNumericValue(),
                                                                   operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
             newDetector = new NumericByteConditionDetector( pattern,
                                                             factField,
-                                                            realCellValue.getByteValue(),
+                                                            (Byte) realCellValue.getNumericValue(),
                                                             operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
             newDetector = new NumericDoubleConditionDetector( pattern,
                                                               factField,
-                                                              realCellValue.getDoubleValue(),
+                                                              (Double) realCellValue.getNumericValue(),
                                                               operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
             newDetector = new NumericFloatConditionDetector( pattern,
                                                              factField,
-                                                             realCellValue.getFloatValue(),
+                                                             (Float) realCellValue.getNumericValue(),
                                                              operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
             newDetector = new NumericIntegerConditionDetector( pattern,
                                                                factField,
-                                                               realCellValue.getIntegerValue(),
+                                                               (Integer) realCellValue.getNumericValue(),
                                                                operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
             newDetector = new NumericLongConditionDetector( pattern,
                                                             factField,
-                                                            realCellValue.getLongValue(),
+                                                            (Long) realCellValue.getNumericValue(),
                                                             operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
             newDetector = new NumericShortConditionDetector( pattern,
                                                              factField,
-                                                             realCellValue.getShortValue(),
+                                                             (Short) realCellValue.getNumericValue(),
                                                              operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             newDetector = new BooleanConditionDetector( pattern,

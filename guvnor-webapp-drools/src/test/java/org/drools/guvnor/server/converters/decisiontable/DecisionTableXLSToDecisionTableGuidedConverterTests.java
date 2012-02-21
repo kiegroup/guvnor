@@ -24,6 +24,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -332,10 +334,10 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
                       result.getMessages().size() );
         assertEquals( ConversionMessageType.WARNING,
                       result.getMessages().get( 0 ).getMessageType() );
-        assertFalse( result.getMessages().get( 0 ).getMessage().indexOf( "Duration is not an integer literal, in cell C7" ) == -1 );
+        assertFalse( result.getMessages().get( 0 ).getMessage().indexOf( "Duration is not an long literal, in cell C7" ) == -1 );
         assertEquals( ConversionMessageType.WARNING,
                       result.getMessages().get( 1 ).getMessageType() );
-        assertFalse( result.getMessages().get( 1 ).getMessage().indexOf( "Duration is not an integer literal, in cell C8" ) == -1 );
+        assertFalse( result.getMessages().get( 1 ).getMessage().indexOf( "Duration is not an long literal, in cell C8" ) == -1 );
 
         //Check basics
         List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
@@ -1150,47 +1152,56 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
             DTCellValue52 dcv = actual.get( i );
             switch ( dcv.getDataType() ) {
                 case NUMERIC :
-                    if ( !expected[i].equals( dcv.getNumericValue().toPlainString() ) ) {
+                    final BigDecimal numeric = (BigDecimal) dcv.getNumericValue();
+                    if ( !expected[i].equals( numeric.toPlainString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGDECIMAL :
-                    if ( !expected[i].equals( dcv.getBigDecimalValue().toPlainString() ) ) {
+                    final BigDecimal numericBigDecimal = (BigDecimal) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericBigDecimal.toPlainString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGINTEGER :
-                    if ( !expected[i].equals( dcv.getBigIntegerValue().toString() ) ) {
+                    final BigInteger numericBigInteger = (BigInteger) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericBigInteger.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BYTE :
-                    if ( !expected[i].equals( dcv.getByteValue().toString() ) ) {
+                    final Byte numericByte = (Byte) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericByte.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_DOUBLE :
-                    if ( !expected[i].equals( dcv.getDoubleValue().toString() ) ) {
+                    final Double numericDouble = (Double) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericDouble.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_FLOAT :
-                    if ( !expected[i].equals( dcv.getFloatValue().toString() ) ) {
+                    final Float numericFloat = (Float) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericFloat.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_INTEGER :
-                    if ( !expected[i].equals( dcv.getIntegerValue().toString() ) ) {
+                    final Integer numericInteger = (Integer) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericInteger.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_LONG :
-                    if ( !expected[i].equals( dcv.getLongValue().toString() ) ) {
+                    final Long numericLong = (Long) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericLong.toString() ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_SHORT :
-                    if ( !expected[i].equals( dcv.getShortValue().toString() ) ) {
+                    final Short numericShort = (Short) dcv.getNumericValue();
+                    if ( !expected[i].equals( numericShort.toString() ) ) {
                         return false;
                     }
                     break;
