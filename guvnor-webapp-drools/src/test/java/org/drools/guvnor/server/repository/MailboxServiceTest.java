@@ -45,6 +45,8 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
         UserInbox ib = new UserInbox( rulesRepository,
                                       "mic" );
+        ib.save();
+        
         ib.addToRecentEdited( asset.getUUID(),
                               "hey" );
         assertEquals( 0,
@@ -52,6 +54,8 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
         UserInbox ib2 = new UserInbox( rulesRepository,
                                        "mic2" );
+        ib2.save();
+        
         ib2.addToRecentEdited( asset.getUUID(),
                                "hey" );
         assertEquals( 0,
@@ -121,10 +125,13 @@ public class MailboxServiceTest extends GuvnorTestBase {
                                        "dave" );
         UserInbox ib3 = new UserInbox( rulesRepository,
                                        "phil" );
-
         ib1.clearAll();
         ib2.clearAll();
         ib3.clearAll();
+
+        ib1.save();
+        ib2.save();
+        ib3.save();
 
         ib1.addToRecentEdited( asset.getUUID(),
                                "hey" );
