@@ -116,7 +116,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewFormDefinitionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.formDefIcon(), constants.FormDefinition() ).asString(),
+        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.formDefIcon(), Constants.INSTANCE.FormDefinition() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
