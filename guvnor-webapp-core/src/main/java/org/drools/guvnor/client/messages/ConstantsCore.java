@@ -1243,6 +1243,10 @@ public interface ConstantsCore
 
     String CreateANewBPMN2Process();
 
+    String FormDefinition();
+  
+    String CreateANewFormDefinition();
+   
     String NewEnumeration();
 
     String CreateANewEnumerationDropDownMapping();

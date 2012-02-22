@@ -332,6 +332,9 @@ public interface Images
 
     @Source("images/user_permissions_large.png")
     ImageResource userPermissionsLarge();
+
+    @Source("images/form_def_icon.png")
+    ImageResource formDefIcon();
     
     @Source("images/flatView.gif")
     ImageResource flatView();
