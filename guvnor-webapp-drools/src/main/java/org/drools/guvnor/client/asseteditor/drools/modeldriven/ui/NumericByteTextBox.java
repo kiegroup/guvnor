@@ -23,13 +23,16 @@ import com.google.gwt.regexp.shared.RegExp;
 public class NumericByteTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?\\d+$)" );
+    private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
     @Override
     protected boolean isValidValue(String value) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
+        }
+        if ( "-".equals( value ) ) {
+            return true;
         }
         try {
             Byte.parseByte( value );

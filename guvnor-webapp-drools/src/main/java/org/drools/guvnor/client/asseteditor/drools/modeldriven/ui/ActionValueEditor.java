@@ -28,7 +28,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -181,7 +180,7 @@ public class ActionValueEditor extends DirtyableComposite {
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
-        clear.setTitle(Constants.INSTANCE.RemoveActionValueDefinition());
+        clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -197,7 +196,8 @@ public class ActionValueEditor extends DirtyableComposite {
 
         wrapper.add( w );
         wrapper.add( clear );
-        wrapper.setCellVerticalAlignment( clear, HasVerticalAlignment.ALIGN_MIDDLE );
+        wrapper.setCellVerticalAlignment( clear,
+                                          HasVerticalAlignment.ALIGN_MIDDLE );
         return wrapper;
     }
 
@@ -275,7 +275,10 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private Widget boundTextBox(final ActionFieldValue c) {
-        final TextBox box = new TextBox();
+
+        //Template TextBoxes are always Strings as they hold the template key for the actual value
+        final String dataType = value.nature == FieldNature.TYPE_TEMPLATE ? SuggestionCompletionEngine.TYPE_STRING : c.getType();
+        final TextBox box = TextBoxFactory.getTextBox( dataType );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -308,12 +311,6 @@ public class ActionValueEditor extends DirtyableComposite {
                 box.setVisibleLength( length > 0 ? length : 1 );
             }
         } );
-
-        //TODO {manstis} Need different editors for different Numeric values
-        //Template TextBoxes are always Strings as they hold the template key for the actual value
-        if ( value.nature != FieldNature.TYPE_TEMPLATE && SuggestionCompletionEngine.isNumeric( value.type ) ) {
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-        }
 
         if ( this.readOnly ) {
             return new SmallLabel( box.getText() );

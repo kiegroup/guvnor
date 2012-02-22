@@ -78,7 +78,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final RuleModeller               modeller;
     private final EventBus                   eventBus;
 
-    private boolean                          isNumeric;
+    //    private boolean                          isNumeric;
     private DropDownData                     dropDownData;
     private String                           fieldType;
     private boolean                          readOnly;
@@ -152,9 +152,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
         }
 
-        //TODO {manstis} Need different editors for different Numeric values
         //Set applicable flags and reference data depending upon type
-        this.isNumeric = SuggestionCompletionEngine.isNumeric( this.fieldType );
         if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( this.fieldType ) ) {
             this.isDropDownDataEnum = false;
             this.dropDownData = DropDownData.create( new String[]{"true", "false"} );
@@ -191,7 +189,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
                     constraintWidget = wrap( new DefaultLiteralEditor( this.constraint,
-                                                                       false ) );
+                                                                       this.fieldType ) );
                     break;
                 default :
                     break;
@@ -297,7 +295,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //Default editor
         if ( !this.readOnly ) {
             DefaultLiteralEditor dle = new DefaultLiteralEditor( this.constraint,
-                                                                 this.isNumeric );
+                                                                 this.fieldType );
             dle.setOnValueChangeCommand( new Command() {
 
                 public void execute() {

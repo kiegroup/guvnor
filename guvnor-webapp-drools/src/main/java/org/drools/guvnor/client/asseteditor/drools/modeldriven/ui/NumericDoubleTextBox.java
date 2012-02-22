@@ -23,13 +23,16 @@ import com.google.gwt.regexp.shared.RegExp;
 public class NumericDoubleTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
+    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*$)" );
 
     @Override
     protected boolean isValidValue(String value) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
+        }
+        if ( "-".equals( value ) ) {
+            return true;
         }
         try {
             Double.parseDouble( value );

@@ -17,15 +17,14 @@ package org.drools.guvnor.client.decisiontable.cells;
 
 import java.math.BigDecimal;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
@@ -36,14 +35,10 @@ import com.google.gwt.user.client.ui.TextBox;
 public class PopupNumericBigDecimalEditCell extends
         AbstractPopupEditCell<BigDecimal, BigDecimal> {
 
-    private final TextBox       textBox;
-
-    // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
+    private final TextBox textBox = new NumericBigDecimalTextBox();
 
     public PopupNumericBigDecimalEditCell(boolean isReadOnly) {
-        super(isReadOnly);
-        this.textBox = new TextBox();
+        super( isReadOnly );
 
         // Tabbing out of the TextBox commits changes
         textBox.addKeyDownHandler( new KeyDownHandler() {
@@ -58,41 +53,7 @@ public class PopupNumericBigDecimalEditCell extends
 
         } );
 
-        // Restrict entry to navigation and numerics
-        textBox.addKeyPressHandler( new KeyPressHandler() {
-
-            public void onKeyPress(KeyPressEvent event) {
-
-                // Permit navigation
-                int keyCode = event.getNativeEvent().getKeyCode();
-                if ( event.isControlKeyDown()
-                        || keyCode == KeyCodes.KEY_BACKSPACE
-                        || keyCode == KeyCodes.KEY_DELETE
-                        || keyCode == KeyCodes.KEY_LEFT
-                        || keyCode == KeyCodes.KEY_RIGHT
-                        || keyCode == KeyCodes.KEY_TAB ) {
-                    return;
-                }
-
-                // Get new value and validate
-                int charCode = event.getCharCode();
-                String oldValue = textBox.getValue();
-                String newValue = oldValue.substring( 0,
-                                                      textBox.getCursorPos() );
-                newValue = newValue
-                           + ((char) charCode);
-                newValue = newValue
-                           + oldValue.substring( textBox.getCursorPos()
-                                                 + textBox.getSelectionLength() );
-                if ( !VALID.test( String.valueOf( newValue ) ) ) {
-                    event.preventDefault();
-                }
-            }
-
-        } );
-
         vPanel.add( textBox );
-
     }
 
     @Override

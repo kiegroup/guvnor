@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
 import org.drools.guvnor.client.common.DatePickerTextBox;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -32,7 +33,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -93,16 +93,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         String key = factType + "." + field.getName();
         String flType = sce.getFieldType( key );
         panel.clear();
-        
-        //TODO {manstis} Need different editors for different Numeric values
-        if ( flType != null && SuggestionCompletionEngine.isNumeric( flType ) ) {
-            final TextBox box = editableTextBox( callback,
-                                                 field.getName(),
-                                                 field.getValue() );
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-            panel.add( box );
-            
-        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+
+        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
             panel.add( new EnumDropDown( field.getValue(),
                                          new DropDownValueChanged() {
@@ -112,7 +104,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
-            
+
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
             datePicker.setTitle( Constants.INSTANCE.ValueFor0( field.getName() ) );
@@ -122,13 +114,16 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 }
             } );
             panel.add( datePicker );
-            
+
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
-            for (FieldData otherFieldData : givenFact.getFieldData()) {
-                currentValueMap.put(otherFieldData.getName(), otherFieldData.getValue());
+            for ( FieldData otherFieldData : givenFact.getFieldData() ) {
+                currentValueMap.put( otherFieldData.getName(),
+                                     otherFieldData.getValue() );
             }
-            DropDownData dropDownData = sce.getEnums(factType, field.getName(), currentValueMap);
+            DropDownData dropDownData = sce.getEnums( factType,
+                                                      field.getName(),
+                                                      currentValueMap );
             if ( dropDownData != null ) {
                 field.setNature( FieldData.TYPE_ENUM );
                 panel.add( new EnumDropDown( field.getValue(),
@@ -165,6 +160,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     panel.add( listEditor( callback ) );
                 } else {
                     panel.add( editableTextBox( callback,
+                                                flType,
                                                 field.getName(),
                                                 field.getValue() ) );
                 }
@@ -174,9 +170,10 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     }
 
     private static TextBox editableTextBox(final ValueChanged changed,
+                                           final String dataType,
                                            String fieldName,
                                            String initialValue) {
-        final TextBox tb = new TextBox();
+        final TextBox tb = TextBoxFactory.getTextBox( dataType );
         tb.setText( initialValue );
         tb.setTitle( Constants.INSTANCE.ValueFor0( fieldName ) );
         tb.addChangeHandler( new ChangeHandler() {
@@ -200,7 +197,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
         int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
-            String var =  vars.get( i );
+            String var = vars.get( i );
             FactData f = this.scenario.getFactTypes().get( var );
             String fieldType = null;
             if ( field.collectionType == null ) {

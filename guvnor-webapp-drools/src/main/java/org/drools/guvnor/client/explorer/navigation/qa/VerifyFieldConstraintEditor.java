@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
 import org.drools.guvnor.client.common.DatePickerTextBox;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
@@ -38,16 +39,14 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -96,16 +95,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         String key = factType + "." + field.getFieldName();
         String flType = sce.getFieldType( key );
         panel.clear();
-        
-        //TODO {manstis} Need different editors for different Numeric values
-        if ( flType != null && SuggestionCompletionEngine.isNumeric( flType ) ) {
-            final TextBox box = editableTextBox( callback,
-                                                 field.getFieldName(),
-                                                 field.getExpected() );
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-            panel.add( box );
-            
-        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+
+        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
             panel.add( new EnumDropDown( field.getExpected(),
                                          new DropDownValueChanged() {
@@ -115,10 +106,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
-            
+
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
-            String m = Constants.INSTANCE.ValueFor0(field.getFieldName());
+            String m = Constants.INSTANCE.ValueFor0( field.getFieldName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
@@ -126,22 +117,24 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                 }
             } );
             panel.add( datePicker );
-            
+
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             // TODO fill currentValueMap with values of other VerifyFields (if any)
-            DropDownData dropDownData = sce.getEnums(factType, field.getFieldName(), currentValueMap);
+            DropDownData dropDownData = sce.getEnums( factType,
+                                                      field.getFieldName(),
+                                                      currentValueMap );
             if ( dropDownData != null ) {
                 //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
                 //The distinction here controls whether the EXPECTED value is handled as a true
                 //Java enum or a literal with a selection list (i.e. Guvnor enum)
                 String dataType = sce.getFieldType( key );
-                if(dataType.equals(SuggestionCompletionEngine.TYPE_COMPARABLE)) {
+                if ( dataType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
                     field.setNature( FieldData.TYPE_ENUM );
                 } else {
                     field.setNature( FieldData.TYPE_LITERAL );
                 }
-                
+
                 panel.add( new EnumDropDown( field.getExpected(),
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
@@ -173,6 +166,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     panel.add( variableEditor() );
                 } else {
                     panel.add( editableTextBox( callback,
+                                                flType,
                                                 field.getFieldName(),
                                                 field.getExpected() ) );
                 }
@@ -220,9 +214,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     }
 
     private static TextBox editableTextBox(final ValueChanged changed,
+                                           final String dataType,
                                            String fieldName,
                                            String initialValue) {
-        final TextBox tb = new TextBox();
+        final TextBox tb = TextBoxFactory.getTextBox( dataType );
         tb.setText( initialValue );
         String m = Constants.INSTANCE.ValueFor0( fieldName );
         tb.setTitle( m );

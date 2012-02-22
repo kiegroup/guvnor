@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -26,14 +27,13 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -167,7 +167,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     }
 
     private TextBox boundTextBox(final CallFieldValue c) {
-        final TextBox box = new TextBox();
+
+        final TextBox box = TextBoxFactory.getTextBox( methodParameter.type );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -202,11 +203,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                 box.setVisibleLength( box.getText().length() );
             }
         } );
-
-        //TODO {manstis} Need different editors for different Numeric values
-        if ( SuggestionCompletionEngine.isNumeric( methodParameter.type ) ) {
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-        }
 
         return box;
     }

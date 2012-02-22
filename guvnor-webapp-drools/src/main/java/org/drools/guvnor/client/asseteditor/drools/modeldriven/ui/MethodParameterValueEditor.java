@@ -25,7 +25,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -34,7 +33,6 @@ import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -178,7 +176,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     private TextBox boundTextBox(final ActionFieldValue c) {
-        final TextBox box = new TextBox();
+        final TextBox box = TextBoxFactory.getTextBox( methodParameter.type );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -213,11 +211,6 @@ public class MethodParameterValueEditor extends DirtyableComposite {
                 box.setVisibleLength( box.getText().length() );
             }
         } );
-
-        //TODO {manstis} Need different editors for different Numeric values
-        if ( SuggestionCompletionEngine.isNumeric( methodParameter.type) ) {
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-        }
 
         return box;
     }

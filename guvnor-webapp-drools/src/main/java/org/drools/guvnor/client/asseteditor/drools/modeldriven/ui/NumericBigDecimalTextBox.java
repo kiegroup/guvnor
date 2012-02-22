@@ -33,6 +33,9 @@ public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
         if ( !isValid ) {
             return isValid;
         }
+        if ( "-".equals( value ) ) {
+            return true;
+        }
         try {
             @SuppressWarnings("unused")
             BigDecimal check = new BigDecimal( value );

@@ -15,10 +15,14 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import java.math.BigDecimal;
+
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle numeric values
+ * A TextBox to handle numeric values. This is only for *LEGACY* support when
+ * all numerical data-types were handled as BigDecimals. Please refer to the
+ * sibling classes NumericXXXTextBox
  */
 public class NumericTextBox extends AbstractRestrictedEntryTextBox {
 
@@ -27,7 +31,17 @@ public class NumericTextBox extends AbstractRestrictedEntryTextBox {
 
     @Override
     protected boolean isValidValue(String value) {
-        return VALID.test( value );
+        boolean isValid = VALID.test( value );
+        if ( !isValid ) {
+            return isValid;
+        }
+        try {
+            @SuppressWarnings("unused")
+            BigDecimal check = new BigDecimal( value );
+        } catch ( NumberFormatException nfe ) {
+            isValid = false;
+        }
+        return isValid;
     }
 
 }
