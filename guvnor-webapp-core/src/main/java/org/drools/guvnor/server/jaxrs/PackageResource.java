@@ -515,16 +515,29 @@ public class PackageResource extends Resource {
     public Entry createAssetFromAtom(@PathParam("packageName") String packageName, Entry entry) {
         try {
             String format = null;
-            String initialCategory = null;
+            String[] categories = null;
             ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
             if (metadataExtension != null) {
                 ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
                 format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
+                
                 ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                initialCategory = formatExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;
+                if (categoryExtension != null) {
+                    List<Element> categoryValues = categoryExtension
+                            .getExtensions(Translator.VALUE);
+                    categories = new String[categoryValues.size()];
+                    for (int i=0; i< categoryValues.size(); i++) {
+                        String catgoryValue = categoryValues.get(i).getText();
+                        categories[i] = catgoryValue;
+                    }
+                }
             }
 
-            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), initialCategory, format);
+            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), null, format);
+
+            if (categories != null) {
+                ai.updateCategoryList(categories);
+            }
             
             //The categories are not saved by addAsset(). Need to force it here.
             rulesRepository.getSession().save();
