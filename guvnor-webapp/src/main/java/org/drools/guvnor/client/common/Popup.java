@@ -45,6 +45,7 @@ public abstract class Popup extends PopupPanel {
     private int     dragStartY;
 
     private Command afterShowEvent;
+    private Command afterCloseEvent;
     private boolean fixedLocation = false;
 
     public Popup() {
@@ -54,7 +55,11 @@ public abstract class Popup extends PopupPanel {
     public void setAfterShow(Command afterShowEvent) {
         this.afterShowEvent = afterShowEvent;
     }
-
+    
+    public void setAfterCloseEvent(Command afterCloseEvent) {
+        this.afterCloseEvent = afterCloseEvent;
+    }
+    
     @Override
     public void show() {
 
@@ -70,6 +75,9 @@ public abstract class Popup extends PopupPanel {
         titleBar.closeButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 hide();
+                if ( afterCloseEvent != null ) {
+                    afterCloseEvent.execute();
+                }    
             }
         } );
         titleBar.addMouseDownHandler( new MouseDownHandler() {
