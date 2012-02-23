@@ -6,7 +6,7 @@
     xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
 	<xi:include href="Book_Info.xml" />
-	<xi:include href="Chapter-Introduction.xml" />
+	<xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
 	<xi:include href="Part-User_Guide/Part-User-Guide.xml" />
 	<xi:include href="Part-Developer-Guide/Part-Developer-Guide.xml" />
 	<xi:include href="Part-Admin_Guide/Part-Admin_Guide.xml" />
