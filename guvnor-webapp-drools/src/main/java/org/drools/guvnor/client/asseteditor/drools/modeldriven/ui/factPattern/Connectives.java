@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.modeldriven.ui.factPattern;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPOperatorsDropdown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.ConstraintValueEditor;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
-import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
-import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -46,18 +47,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Connectives {
 
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
-    private static Images images    = GWT.create( Images.class );
-
-    private RuleModeller  modeller;
-    private FactPattern   pattern;
-    private Boolean       isReadOnly;
+    private final RuleModeller modeller;
+    private final EventBus     eventBus;
+    private final FactPattern  pattern;
+    private final Boolean      isReadOnly;
 
     public Connectives(RuleModeller modeller,
+                       EventBus eventBus,
                        FactPattern pattern,
                        Boolean isReadOnly) {
         this.pattern = pattern;
         this.modeller = modeller;
+        this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
     }
 
@@ -92,8 +93,8 @@ public class Connectives {
                                                c.getFieldName() ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = new ImageButton( images.deleteItemSmall() );
-                    clear.setTitle( constants.RemoveThisRestriction() );
+                    Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+                    clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                   i ) );
                     hp.add( clear );
@@ -109,11 +110,11 @@ public class Connectives {
                                          String factClass,
                                          String fieldName) {
 
-        return new ConstraintValueEditor( pattern.getFactType(),
-                                          pattern.constraintList,
+        return new ConstraintValueEditor( pattern,
                                           fieldName,
                                           con,
                                           this.modeller,
+                                          this.eventBus,
                                           isReadOnly );
     }
 
@@ -153,7 +154,7 @@ public class Connectives {
             return w;
 
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + (cc.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() )) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + (cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() )) + "</b>" );
             return sl;
         }
     }
@@ -163,7 +164,7 @@ public class Connectives {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                     sfc.removeConnective( index );
                     modeller.makeDirty();
                     modeller.refreshWidget();

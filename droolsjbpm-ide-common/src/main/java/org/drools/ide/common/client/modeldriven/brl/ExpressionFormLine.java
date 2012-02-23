@@ -20,48 +20,55 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ExpressionFormLine implements IAction, IPattern, Cloneable {
+public class ExpressionFormLine
+    implements
+    IAction,
+    IPattern,
+    Cloneable {
 
-    private String binding = null;
-    private LinkedList<ExpressionPart> parts = new LinkedList<ExpressionPart>() ;
-    
-    public ExpressionFormLine() {}
+    private String                     binding = null;
+    private LinkedList<ExpressionPart> parts   = new LinkedList<ExpressionPart>();
+
+    public ExpressionFormLine() {
+    }
 
     public ExpressionFormLine(ExpressionPart part) {
-        appendPart(part);
+        appendPart( part );
     }
-    
+
     public ExpressionFormLine(ExpressionFormLine other) {
         CopyExpressionVisitor copier = new CopyExpressionVisitor();
-
-        for (ExpressionPart exp = copier.copy(other.getRootExpression()); exp != null; exp = exp.getNext()) {
-            parts.add(exp);
+        if ( other.getParts().size() == 0 ) {
+            return;
+        }
+        for ( ExpressionPart exp = copier.copy( other.getRootExpression() ); exp != null; exp = exp.getNext() ) {
+            parts.add( exp );
         }
     }
 
     public String getText(boolean renderBindVariable) {
         return new ToStringVisitor().buildString(
-                renderBindVariable ? getBinding() : null,
-                        getRootExpression());
+                                                  renderBindVariable ? getBinding() : null,
+                                                  getRootExpression() );
     }
 
     public String getText() {
-        return getText(false);
+        return getText( false );
     }
 
     public void appendPart(ExpressionPart part) {
-        if (!parts.isEmpty()) {
-            parts.getLast().setNext(part);
+        if ( !parts.isEmpty() ) {
+            parts.getLast().setNext( part );
         }
-        parts.add(part);
+        parts.add( part );
     }
 
     public void removeLast() {
-        if (!parts.isEmpty()) {
+        if ( !parts.isEmpty() ) {
             ExpressionPart last = parts.removeLast();
-            if (last.getPrevious() != null) {
-                last.getPrevious().setNext(null);
-                last.setPrevious(null);
+            if ( last.getPrevious() != null ) {
+                last.getPrevious().setNext( null );
+                last.setPrevious( null );
             }
         }
     }
@@ -84,9 +91,17 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
     }
 
     public String getFieldName() {
-        return parts.isEmpty() ? null : parts.getLast().getName();
+        if ( parts.isEmpty() ) {
+            return null;
+        }
+        ExpressionPart last = parts.getLast();
+        ExpressionPart prev = getPreviousPart().getPrevious();
+        if ( prev == null ) {
+            prev = last;
+        }
+        return prev.getClassType() + "." + last.getName();
     }
-    
+
     public String getPreviousGenericType() {
         ExpressionPart prev = getPreviousPart().getPrevious();
         return prev == null ? null : prev.getGenericType();
@@ -124,102 +139,109 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
     public void setBinding(String binding) {
         this.binding = binding;
     }
-    
+
     public List<ExpressionPart> getParts() {
         return this.parts;
     }
 
-    private static class ToStringVisitor implements ExpressionVisitor {
+    private static class ToStringVisitor
+        implements
+        ExpressionVisitor {
         private StringBuilder str;
-        private boolean first;
+        private boolean       first;
 
-        public String buildString(String bindVariable, ExpressionPart exp) {
-            if (exp == null) {
+        public String buildString(String bindVariable,
+                                  ExpressionPart exp) {
+            if ( exp == null ) {
                 return "";
             }
-            str = new StringBuilder( );
+            str = new StringBuilder();
             first = true;
-            exp.accept(this);
+            exp.accept( this );
             return (bindVariable == null ? "" : bindVariable + ": ") + str.toString();
         }
 
         public void visit(ExpressionPart part) {
-            throw new IllegalStateException("can't generate text for: " + part.getClass().getName());
+            throw new IllegalStateException( "can't generate text for: " + part.getClass().getName() );
         }
 
         public void visit(ExpressionField part) {
-            if (!first) {
-                str.append('.');
+            if ( !first ) {
+                str.append( '.' );
             }
-            str.append(part.getName());
-            moveNext(part);
+            str.append( part.getName() );
+            moveNext( part );
         }
 
         public void visit(ExpressionMethod part) {
-            if (!first) {
-                str.append('.');
+            if ( !first ) {
+                str.append( '.' );
             }
-            str.append(part.getName())
-                .append('(')
-                .append(paramsToString(part.getParams()))
-                .append(')');
-            moveNext(part);
+            str.append( part.getName() )
+                    .append( '(' )
+                    .append( paramsToString( part.getParams() ) )
+                    .append( ')' );
+            moveNext( part );
         }
 
         public void visit(ExpressionVariable part) {
-            str.append(part.getName());
-            moveNext(part);
+            str.append( part.getName() );
+            moveNext( part );
         }
 
         public void visit(ExpressionUnboundFact part) {
-            moveNext(part, false);
+            moveNext( part,
+                      false );
         }
 
         public void visit(ExpressionGlobalVariable part) {
-            str.append(part.getName());
-            moveNext(part);
+            str.append( part.getName() );
+            moveNext( part );
         }
 
         public void visit(ExpressionCollection part) {
-            if (!first) {
-                str.append('.');
+            if ( !first ) {
+                str.append( '.' );
             }
-            str.append(part.getName());
-            moveNext(part);
+            str.append( part.getName() );
+            moveNext( part );
         }
 
         public void visit(ExpressionCollectionIndex part) {
-            str.append('[').append(paramsToString(part.getParams())).append(']');
-            moveNext(part);
+            str.append( '[' ).append( paramsToString( part.getParams() ) ).append( ']' );
+            moveNext( part );
         }
 
         public void visit(ExpressionText part) {
-            str.append(part.getName());
-            moveNext(part);
+            str.append( part.getName() );
+            moveNext( part );
         }
 
         private String paramsToString(Map<String, ExpressionFormLine> params) {
-            if (params.isEmpty()) {
+            if ( params.isEmpty() ) {
                 return "";
             }
             ToStringVisitor stringVisitor = new ToStringVisitor();
             StringBuilder strParams = new StringBuilder();
-            for (ExpressionFormLine param : params.values()) {
-                strParams.append(", ").append(stringVisitor.buildString(param.getBinding(), param.getRootExpression()));
+            for ( ExpressionFormLine param : params.values() ) {
+                strParams.append( ", " ).append( stringVisitor.buildString( param.getBinding(),
+                                                                            param.getRootExpression() ) );
             }
-            return strParams.substring(2);
+            return strParams.substring( 2 );
         }
 
         private void moveNext(ExpressionPart exp) {
-            moveNext(exp, true);
+            moveNext( exp,
+                      true );
         }
 
-        private void moveNext(ExpressionPart exp, boolean resetFirst) {
-            if (exp.getNext() != null) {
-                if (resetFirst) {
+        private void moveNext(ExpressionPart exp,
+                              boolean resetFirst) {
+            if ( exp.getNext() != null ) {
+                if ( resetFirst ) {
                     first = false;
                 }
-                exp.getNext().accept(this);
+                exp.getNext().accept( this );
             }
         }
     }

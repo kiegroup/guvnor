@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern.Connectives;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
-import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
@@ -45,6 +45,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -64,9 +65,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FactPatternWidget extends RuleModellerWidget {
 
-    private Constants                         constants              = ((Constants) GWT.create( Constants.class ));
-    private static Images                     images                 = GWT.create( Images.class );
-
     private FactPattern                       pattern;
     private DirtyableFlexTable                layout                 = new DirtyableFlexTable();
     private Connectives                       connectives;
@@ -78,22 +76,13 @@ public class FactPatternWidget extends RuleModellerWidget {
     private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
 
     public FactPatternWidget(RuleModeller mod,
+                             EventBus eventBus,
                              IPattern p,
                              boolean canBind) {
         this( mod,
+              eventBus,
               p,
               false,
-              canBind,
-              null );
-    }
-
-    public FactPatternWidget(RuleModeller mod,
-                             IPattern p,
-                             boolean isAll0WithLabel,
-                             boolean canBind) {
-        this( mod,
-              p,
-              isAll0WithLabel,
               canBind,
               null );
     }
@@ -107,10 +96,12 @@ public class FactPatternWidget extends RuleModellerWidget {
      *            the readOnly attribute is calculated.
      */
     public FactPatternWidget(RuleModeller ruleModeller,
+                             EventBus eventBus,
                              IPattern pattern,
                              boolean canBind,
                              Boolean readOnly) {
         this( ruleModeller,
+              eventBus,
               pattern,
               false,
               canBind,
@@ -118,11 +109,13 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     public FactPatternWidget(RuleModeller mod,
+                             EventBus eventBus,
                              IPattern p,
                              boolean isAll0WithLabel,
                              boolean canBind,
                              Boolean readOnly) {
-        super( mod );
+        super( mod,
+               eventBus );
         this.pattern = (FactPattern) p;
         this.bindable = canBind;
 
@@ -142,6 +135,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
 
         this.connectives = new Connectives( mod,
+                                            eventBus,
                                             pattern,
                                             this.readOnly );
 
@@ -207,8 +201,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( images.deleteItemSmall() );
-            clear.setTitle( constants.RemoveThisWholeRestriction() );
+            Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
             if ( !this.readOnly ) {
@@ -225,7 +219,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
                     setModified( true );
                     pattern.removeConstraint( currentRow );
                     getModeller().refreshWidget();
@@ -373,9 +367,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         };
 
         if ( constraint.compositeJunctionType.equals( CompositeFieldConstraint.COMPOSITE_TYPE_AND ) ) {
-            desc = constants.AllOf() + ":";
+            desc = Constants.INSTANCE.AllOf() + ":";
         } else {
-            desc = constants.AnyOf() + ":";
+            desc = Constants.INSTANCE.AnyOf() + ":";
         }
 
         t.setWidget( 0,
@@ -389,7 +383,6 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         FieldConstraint[] nested = constraint.constraints;
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        inner.setStyleName( "modeller-inner-nested-Constraints" ); //NON-NLS
         if ( nested != null ) {
             for ( int i = 0; i < nested.length; i++ ) {
                 this.renderFieldConstraint( inner,
@@ -400,12 +393,12 @@ public class FactPatternWidget extends RuleModellerWidget {
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( images.deleteItemSmall() );
-                clear.setTitle( constants.RemoveThisNestedRestriction() );
+                Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+                clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
-                        if ( Window.confirm( constants.RemoveThisItemFromNestedConstraint() ) ) {
+                        if ( Window.confirm( Constants.INSTANCE.RemoveThisItemFromNestedConstraint() ) ) {
                             setModified( true );
                             constraint.removeConstraint( currentRow );
                             getModeller().refreshWidget();
@@ -472,7 +465,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                2 + col ) );
             inner.setWidget( row,
                              2 + col,
-                             valueEditor( constraint ) );
+                             valueEditor( constraint,
+                                          constraint.getFieldType() ) );
             inner.setWidget( row,
                              3 + col,
                              connectives.connectives( constraint,
@@ -507,8 +501,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Image createAddConnectiveImageButton(final RuleModeller modeller,
                                                  final SingleFieldConstraint constraint) {
-        Image addConnective = new ImageButton( images.addConnective() );
-        addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
+        Image addConnective = new ImageButton( Images.INSTANCE.addConnective() );
+        addConnective.setTitle( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -525,21 +519,24 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          final HasCEPWindow c) {
         if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
             HorizontalPanel hp = new HorizontalPanel();
-            Label lbl = new Label( constants.OverCEPWindow() );
+            Label lbl = new Label( Constants.INSTANCE.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
             hp.add( lbl );
-            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c );
+            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
+                                                                             readOnly );
 
-            cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+            if ( !this.isReadOnly() ) {
+                cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                    setModified( true );
-                    OperatorSelection selection = event.getValue();
-                    String selected = selection.getValue();
-                    c.getWindow().setOperator( selected );
-                    getModeller().makeDirty();
-                }
-            } );
+                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                        setModified( true );
+                        OperatorSelection selection = event.getValue();
+                        String selected = selection.getValue();
+                        c.getWindow().setOperator( selected );
+                        getModeller().makeDirty();
+                    }
+                } );
+            }
 
             hp.add( cwo );
             return hp;
@@ -570,7 +567,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                     constraint.setValue( "" );
                     inner.setWidget( row,
                                      2 + col,
-                                     valueEditor( constraint ) );
+                                     valueEditor( constraint,
+                                                  constraint.getFieldType() ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -585,8 +583,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         HorizontalPanel pred = new HorizontalPanel();
         pred.setWidth( "100%" );
-        Image img = new Image( images.functionAssets() );
-        img.setTitle( constants.FormulaBooleanTip() );
+        Image img = new Image( Images.INSTANCE.functionAssets() );
+        img.setTitle( Constants.INSTANCE.FormulaBooleanTip() );
 
         pred.add( img );
         if ( c.getValue() == null ) {
@@ -632,12 +630,12 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         String desc;
         if ( isAll0WithLabel ) {
-            desc = constants.All0with( patternName );
+            desc = Constants.INSTANCE.All0with( patternName );
         } else {
             if ( pattern.getNumberOfConstraints() > 0 ) {
-                desc = constants.ThereIsAAn0With( patternName );
+                desc = Constants.INSTANCE.ThereIsAAn0With( patternName );
             } else {
-                desc = constants.ThereIsAAn0( patternName );
+                desc = Constants.INSTANCE.ThereIsAAn0( patternName );
             }
             desc = anA( desc,
                         patternName );
@@ -670,17 +668,13 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Widget valueEditor(final SingleFieldConstraint c) {
-        String factType = c.getFieldName();
-        if ( factType.indexOf( "." ) != -1 ) {
-            factType = factType.substring( 0,
-                                           factType.indexOf( "." ) );
-        }
-        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( factType,
-                                                                                 pattern.constraintList,
+    private Widget valueEditor(final SingleFieldConstraint c,
+                               String factType) {
+        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( pattern,
                                                                                  c.getFieldName(),
                                                                                  c,
                                                                                  this.getModeller(),
+                                                                                 this.getEventBus(),
                                                                                  this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
@@ -731,7 +725,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
                     }
-                    if ( selectedText.equals( constants.isEqualToNull() ) || selectedText.equals( constants.isNotEqualToNull() ) ) {
+                    if ( selectedText.equals( Constants.INSTANCE.isEqualToNull() ) || selectedText.equals( Constants.INSTANCE.isNotEqualToNull() ) ) {
                         if ( inner != null ) {
                             inner.getWidget( row,
                                              col ).setVisible( false );
@@ -749,7 +743,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             return w;
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
             return sl;
         }
 
@@ -764,12 +758,14 @@ public class FactPatternWidget extends RuleModellerWidget {
         if ( !con.isBound() ) {
             if ( bindable && showBinding && !this.readOnly ) {
                 ab.add( new ExpressionBuilder( getModeller(),
+                                               getEventBus(),
                                                con.getExpressionLeftSide() ) );
             } else {
                 ab.add( new SmallLabel( con.getExpressionLeftSide().getText() ) );
             }
         } else {
             ab.add( new ExpressionBuilder( getModeller(),
+                                           getEventBus(),
                                            con.getExpressionLeftSide() ) );
         }
         return ab;

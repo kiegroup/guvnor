@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -25,7 +28,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -39,25 +41,69 @@ public class EnumDropDown extends ListBox
         implements
         IDirtyable {
 
-    private static final Constants     constants = GWT.create( Constants.class );
-
     private final DropDownValueChanged valueChangedCommand;
 
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
-
+        this(currentValue, valueChanged, dropData, false);
+            
+    }
+    
+    public EnumDropDown(final String currentValue,
+            final DropDownValueChanged valueChanged,
+            final DropDownData dropData, 
+            boolean multipleSelect) {
+        super(multipleSelect);
         this.valueChangedCommand = valueChanged;
 
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
-                                                  getValue( getSelectedIndex() ) );
+                valueChangedCommand.valueChanged( getSelectedItemsText(),
+                        getSelectedValue() );
             }
         } );
 
         setDropDownData( currentValue,
-                         dropData );
+                dropData );
+    }
+    
+    String getSelectedItemsText() {
+        StringBuffer buffer = new StringBuffer();
+        boolean first = true;
+        for (int i=0; i < getItemCount(); i++) {
+            if (isItemSelected(i)) {
+                if (!first) {
+                    buffer.append(",");
+                }
+                first = false;
+                buffer.append(getItemText(i));
+            }
+        }
+        return buffer.toString();
+    }
+    
+    String getSelectedValue() {
+        StringBuffer buffer = new StringBuffer();
+        if (isMultipleSelect()) {
+            boolean first = true;
+            buffer.append("( ");
+            for (int i=0; i < getItemCount(); i++) {
+                if (isItemSelected(i)) {
+                    if (!first) {
+                        buffer.append(",");
+                    }
+                    first = false;
+                    buffer.append("\"");
+                    buffer.append(getValue(i));
+                    buffer.append("\"");
+                }
+            }
+            buffer.append(" )");
+        } else {
+            buffer.append(getValue(getSelectedIndex()));
+        }
+        return buffer.toString();
     }
 
     public void setDropDownData(final String currentValue,
@@ -67,7 +113,7 @@ public class EnumDropDown extends ListBox
         if ( dropData != null && dropData.fixedList == null && dropData.queryExpression != null ) {
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
-                    LoadingPopup.showMessage( constants.RefreshingList() );
+                    LoadingPopup.showMessage( Constants.INSTANCE.RefreshingList() );
                     RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
                                                                                   dropData.queryExpression,
                                                                                   new GenericCallback<String[]>() {
@@ -75,7 +121,7 @@ public class EnumDropDown extends ListBox
                                                                                           LoadingPopup.close();
 
                                                                                           if ( data.length == 0 ) {
-                                                                                              data = new String[]{constants.UnableToLoadList()};
+                                                                                              data = new String[]{Constants.INSTANCE.UnableToLoadList()};
                                                                                           }
 
                                                                                           fillDropDown( currentValue,
@@ -86,7 +132,7 @@ public class EnumDropDown extends ListBox
                                                                                           LoadingPopup.close();
                                                                                           //just do an empty drop down...
                                                                                           fillDropDown( currentValue,
-                                                                                                        new String[]{constants.UnableToLoadList()} );
+                                                                                                        new String[]{Constants.INSTANCE.UnableToLoadList()} );
                                                                                       }
                                                                                   } );
                 }
@@ -114,8 +160,21 @@ public class EnumDropDown extends ListBox
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
         clear();
-        //        addItem( constants.Choose() );
+        //        addItem( Constants.INSTANCE.Choose() );
         boolean selected = false;
+        HashSet<String> currentValues = new HashSet<String>();
+        String trimmedCurrentValue = currentValue;
+        if (isMultipleSelect() && trimmedCurrentValue != null) {
+            trimmedCurrentValue = currentValue.replace("\"", "");
+            trimmedCurrentValue = trimmedCurrentValue.replace("(", "");
+            trimmedCurrentValue = trimmedCurrentValue.replace(")", "");
+            trimmedCurrentValue = trimmedCurrentValue.trim();
+            if ( trimmedCurrentValue.indexOf(",") > 0) {
+                currentValues.addAll(Arrays.asList( trimmedCurrentValue.split(",") ));
+            }
+        } else {
+            currentValues.add( currentValue );
+        }
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
             String v = enumeratedValues[i];
@@ -132,8 +191,8 @@ public class EnumDropDown extends ListBox
                 addItem( v );
                 val = v;
             }
-            if ( currentValue != null && currentValue.equals( val ) ) {
-                setSelectedIndex( i );
+            if ( currentValue != null && currentValues.contains( val )) {
+                setItemSelected(i, true);
                 //                setSelectedIndex( i + 1 );
                 selected = true;
             }
@@ -141,8 +200,8 @@ public class EnumDropDown extends ListBox
 
         if ( !selected ) {
             setSelectedIndex( 0 );
-            valueChangedCommand.valueChanged( getItemText( 0 ),
-                                              getValue( 0 ) );
+            valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
+                                              getValue( getSelectedIndex() ) );
         }
     }
 }
