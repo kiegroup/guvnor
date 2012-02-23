@@ -44,7 +44,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/ModelChooseType.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -72,7 +72,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/ModelUploadJAR.png"
-                       format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -93,7 +93,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/ModelUploadJAR2.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -155,7 +155,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative1.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -175,7 +175,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative2.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -193,7 +193,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative3.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -205,7 +205,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative4.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -224,7 +224,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative5.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -252,7 +252,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative6.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -264,7 +264,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative7.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -292,7 +292,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative8.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -305,7 +305,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative9.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>

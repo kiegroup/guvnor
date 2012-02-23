@@ -16,7 +16,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/CatZoom.png"
-                   format="PNG" scalefit="0"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -42,7 +42,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/CatEdit.png"
-                   format="PNG" scalefit="0"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -74,8 +74,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/AdminCats.png" format="PNG"
-                   scalefit="1"></imagedata>
+                   fileref="images/Chapter-Guvnor/AdminCats.png" format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

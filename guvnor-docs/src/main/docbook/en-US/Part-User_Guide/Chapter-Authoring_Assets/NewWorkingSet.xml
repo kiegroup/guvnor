@@ -24,7 +24,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/WorkingSetCreation.png"
-                   format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -44,7 +44,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/WorkingSetConstraintCreation.png"
-                   format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -104,7 +104,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/WorkingSetFactConstraint.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -120,7 +120,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/WorkingSetFactConstraintRO.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -154,7 +154,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/WorkingSetFieldConstraintReport.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -179,7 +179,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/WorkingSetFieldConstraintRealTimeValidation.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

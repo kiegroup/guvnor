@@ -109,7 +109,7 @@
             <imageobject>
               <imagedata align="center"
                    fileref="images/Chapter-Guvnor/RepoConfigAdminSection.png"
-                   format="PNG" scalefit="0"></imagedata>
+                   format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
       </figure>      
@@ -124,7 +124,7 @@
             <imageobject>
               <imagedata align="center"
                    fileref="images/Chapter-Guvnor/RepoConfigManagerDBTypes.png"
-                   format="PNG" scalefit="0"></imagedata>
+                   format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
       </figure>  
@@ -138,7 +138,7 @@
             <imageobject>
               <imagedata align="center"
                    fileref="images/Chapter-Guvnor/RepoConfigManagerDBInfo.png"
-                   format="PNG" scalefit="0"></imagedata>
+                   format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
       </figure>
@@ -152,7 +152,7 @@
             <imageobject>
               <imagedata align="center"
                    fileref="images/Chapter-Guvnor/RepoConfigManagerGeneratedRepoXML.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
       </figure>

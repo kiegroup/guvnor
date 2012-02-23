@@ -31,8 +31,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/Packaging1.png" format="PNG"
-                   scalefit="0" xml:base="../../"></imagedata>
+                   fileref="images/Chapter-Guvnor/Packaging1.png" format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -43,8 +42,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/Packaging2.png" format="PNG"
-                   scalefit="1" xml:base="../../"></imagedata>
+                   fileref="images/Chapter-Guvnor/Packaging2.png" format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -55,8 +53,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/Packaging3.png" format="PNG"
-                   scalefit="1" xml:base="../../"></imagedata>
+                   fileref="images/Chapter-Guvnor/Packaging3.png" format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

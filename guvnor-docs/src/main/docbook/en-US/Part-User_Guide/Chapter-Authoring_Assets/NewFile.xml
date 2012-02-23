@@ -21,7 +21,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/NewFile1.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -35,7 +35,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/NewFile2.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -50,7 +50,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/NewFile-properties1.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -65,7 +65,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/NewFile-properties2.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

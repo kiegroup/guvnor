@@ -20,7 +20,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/NewSpringContext-editor.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -43,7 +43,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/NewSpringContext-properties-file.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -58,7 +58,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/NewSpringContext-urls.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

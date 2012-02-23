@@ -586,7 +586,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageUMLRepresentation.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -712,7 +712,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

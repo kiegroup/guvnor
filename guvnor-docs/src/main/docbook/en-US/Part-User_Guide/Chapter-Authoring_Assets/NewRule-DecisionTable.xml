@@ -52,7 +52,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-complete1.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -75,7 +75,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-complete2.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -107,7 +107,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/dtable-sections.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -157,7 +157,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-merged.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -180,7 +180,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-grouped.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -231,7 +231,7 @@ end</programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-rearranging-patterns.png"
-                       format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -243,7 +243,7 @@ end</programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/dtable-rearranging-columns.png"
-                       format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -282,7 +282,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-column-config.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -437,7 +437,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard1.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -456,7 +456,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard2.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -483,7 +483,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard3a.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -495,7 +495,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard3b.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -525,7 +525,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard4.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -554,7 +554,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard5.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -587,7 +587,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard6.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -617,7 +617,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard7a.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -630,7 +630,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard7b.png"
-                         format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -643,7 +643,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/dtable-wizard7c.png"
-                         format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                         format="PNG" xml:base="../../"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -668,7 +668,7 @@ end</programlisting>
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/dtable-body.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>

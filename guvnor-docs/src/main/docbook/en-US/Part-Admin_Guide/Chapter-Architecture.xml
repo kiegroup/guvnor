@@ -17,7 +17,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Guvnor/Architecture.png" format="PNG" scalefit="1"></imagedata>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/Architecture.png" format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

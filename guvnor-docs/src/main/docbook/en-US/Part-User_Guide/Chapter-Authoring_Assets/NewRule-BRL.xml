@@ -27,7 +27,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/GuidedEditor-overview.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -271,7 +271,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/EnumDropDown.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -309,7 +309,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/GuidedDSL.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -325,7 +325,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/GuidedComplex.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -403,7 +403,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/GuidedLHSPatterns.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -432,7 +432,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/GuidedLHSConstraints.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>

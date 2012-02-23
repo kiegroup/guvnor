@@ -18,7 +18,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/TestScenario.png"
-                     format="PNG" scalefit="0" ></imagedata>
+                     format="PNG" ></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -30,7 +30,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/TestScenarioAfterRunningIt.png"
-                     format="PNG" scalefit="0" ></imagedata>
+                     format="PNG" ></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -44,7 +44,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/GivenSection.png"
-              format="PNG" scalefit="0" ></imagedata>
+              format="PNG" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -75,7 +75,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/ExpectSection.png"
-              format="PNG" scalefit="0" ></imagedata>
+              format="PNG" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -102,7 +102,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/NewGlobal.png"
-              format="PNG" scalefit="0" ></imagedata>
+              format="PNG" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -122,7 +122,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/NewInput.png"
-              format="PNG" scalefit="0" ></imagedata>
+              format="PNG" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -142,7 +142,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/AuditLog.png"
-              format="PNG" scalefit="0" ></imagedata>
+              format="PNG" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

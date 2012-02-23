@@ -31,7 +31,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/PackageManagement1.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -43,7 +43,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/PackageManagement2.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -68,7 +68,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageManagement3.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -80,7 +80,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageManagement4b.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -102,7 +102,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageManagement4a.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -125,7 +125,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageManagement5.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                       format="PNG" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -145,7 +145,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/CategoryExplorer.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>

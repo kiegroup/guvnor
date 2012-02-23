@@ -19,7 +19,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AdminPermissions.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -44,7 +44,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AdminPermissionsList.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -70,7 +70,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AdminPermissionEdit.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -94,7 +94,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AdminAnalyst.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

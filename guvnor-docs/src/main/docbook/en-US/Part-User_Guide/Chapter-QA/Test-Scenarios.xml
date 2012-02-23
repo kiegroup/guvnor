@@ -16,7 +16,7 @@
       <imageobject>
         <imagedata align="center"
           fileref="images/Chapter-Guvnor/TestScenariosBeforeExecution.png"
-          format="PNG" scalefit="0" ></imagedata>
+          format="PNG" ></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -30,7 +30,7 @@
       <imageobject>
         <imagedata align="center"
           fileref="images/Chapter-Guvnor/TestScenariosAfterExecution.png"
-          format="PNG" scalefit="0" ></imagedata>
+          format="PNG" ></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
