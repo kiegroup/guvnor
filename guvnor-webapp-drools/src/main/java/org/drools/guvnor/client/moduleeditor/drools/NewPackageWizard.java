@@ -126,13 +126,19 @@ public class NewPackageWizard extends FormStylePopup {
         cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 hide();
+                LoadingPopup.close();
             }
         });
         hp.add(cancel);
 
         newPackageLayout.addAttribute("",
                 hp);
-
+        
+        setAfterCloseEvent(new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.close();                
+            }});
     }
 
     private void createPackageAction(final String name,
@@ -180,6 +186,7 @@ public class NewPackageWizard extends FormStylePopup {
         cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 parent.hide();
+                LoadingPopup.close();
             }
         });
         hp.add(cancel);

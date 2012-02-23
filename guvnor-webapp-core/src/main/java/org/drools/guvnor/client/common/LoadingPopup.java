@@ -33,6 +33,7 @@ public class LoadingPopup extends PopupPanel {
         add( messageLabel );
 
         setWidth( "200px" );
+        //setGlassEnabled( true );
         center();
     }
 
