@@ -128,15 +128,13 @@ public class RuleModelVisitor {
     private void visitActionFieldList(ActionInsertFact afl) {
         String factType = afl.factType;
         for ( ActionFieldValue afv : afl.fieldValues ) {
-            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
-                InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                       afv.getType(),
-                                                                       factType,
-                                                                       afv.getField() );
-                if ( !vars.containsKey( var ) ) {
-                    vars.put( var,
-                              vars.size() );
-                }
+            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
+                                                                   afv.getType(),
+                                                                   factType,
+                                                                   afv.getField() );
+            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
+                vars.put( var,
+                          vars.size() );
             }
         }
     }
@@ -144,15 +142,13 @@ public class RuleModelVisitor {
     private void visitActionFieldList(ActionSetField afl) {
         String factType = model.getLHSBindingType( afl.variable );
         for ( ActionFieldValue afv : afl.fieldValues ) {
-            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
-                InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                       afv.getType(),
-                                                                       factType,
-                                                                       afv.getField() );
-                if ( !vars.containsKey( var ) ) {
-                    vars.put( var,
-                              vars.size() );
-                }
+            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
+                                                                   afv.getType(),
+                                                                   factType,
+                                                                   afv.getField() );
+            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
+                vars.put( var,
+                          vars.size() );
             }
         }
     }
@@ -160,15 +156,14 @@ public class RuleModelVisitor {
     private void visitActionFieldList(ActionUpdateField afl) {
         String factType = model.getLHSBindingType( afl.variable );
         for ( ActionFieldValue afv : afl.fieldValues ) {
-            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
-                InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                       afv.getType(),
-                                                                       factType,
-                                                                       afv.getField() );
-                if ( !vars.containsKey( var ) ) {
-                    vars.put( var,
-                              vars.size() );
-                }
+            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
+                                                                   afv.getType(),
+                                                                   factType,
+                                                                   afv.getField() );
+            if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
+                vars.put( var,
+                          vars.size() );
+
             }
         }
     }
@@ -240,60 +235,53 @@ public class RuleModelVisitor {
     }
 
     private void visitSingleFieldConstraint(SingleFieldConstraint sfc) {
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey( sfc.getValue() ) ) {
-            InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
-                                                                   sfc.getFieldType(),
-                                                                   factPattern.getFactType(),
-                                                                   sfc.getFieldName() );
-            if ( !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
-            }
+        InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
+                                                               sfc.getFieldType(),
+                                                               factPattern.getFactType(),
+                                                               sfc.getFieldName() );
+        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey( var ) ) {
+            vars.put( var,
+                      vars.size() );
         }
 
         //Visit Connection constraints
         if ( sfc.connectives != null ) {
             for ( int i = 0; i < sfc.connectives.length; i++ ) {
                 final ConnectiveConstraint cc = sfc.connectives[i];
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( cc.getValue() ) ) {
-                    InterpolationVariable var = new InterpolationVariable( cc.getValue(),
-                                                                           cc.getFieldType(),
-                                                                           factPattern.getFactType(),
-                                                                           cc.getFieldName() );
-                    if ( !vars.containsKey( var ) ) {
-                        vars.put( var,
-                                  vars.size() );
-                    }
+                InterpolationVariable ccVar = new InterpolationVariable( cc.getValue(),
+                                                                         cc.getFieldType(),
+                                                                         factPattern.getFactType(),
+                                                                         cc.getFieldName() );
+                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
+                    vars.put( ccVar,
+                              vars.size() );
                 }
+
             }
         }
     }
 
     private void visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( sfexp.getValue() ) ) {
-            InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
-                                                                   sfexp.getExpressionLeftSide().getGenericType(),
-                                                                   factPattern.getFactType(),
-                                                                   sfexp.getFieldName() );
-            if ( !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
-            }
+        InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
+                                                               sfexp.getExpressionLeftSide().getGenericType(),
+                                                               factPattern.getFactType(),
+                                                               sfexp.getFieldName() );
+        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( var ) ) {
+            vars.put( var,
+                      vars.size() );
         }
 
         //Visit Connection constraints
         if ( sfexp.connectives != null ) {
             for ( int i = 0; i < sfexp.connectives.length; i++ ) {
                 final ConnectiveConstraint cc = sfexp.connectives[i];
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( cc.getValue() ) ) {
-                    InterpolationVariable var = new InterpolationVariable( cc.getValue(),
-                                                                           sfexp.getExpressionLeftSide().getGenericType(),
-                                                                           factPattern.getFactType(),
-                                                                           cc.getFieldName() );
-                    if ( !vars.containsKey( var ) ) {
-                        vars.put( var,
-                                  vars.size() );
-                    }
+                InterpolationVariable ccVar = new InterpolationVariable( cc.getValue(),
+                                                                         sfexp.getExpressionLeftSide().getGenericType(),
+                                                                         factPattern.getFactType(),
+                                                                         cc.getFieldName() );
+                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
+                    vars.put( ccVar,
+                              vars.size() );
                 }
             }
         }

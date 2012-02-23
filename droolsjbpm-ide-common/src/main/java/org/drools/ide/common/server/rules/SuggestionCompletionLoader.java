@@ -503,7 +503,7 @@ public class SuggestionCompletionLoader
                     }
                 }
 
-            } else if ( !method.getReturnType().equals( "void" ) ) {
+            } else if ( !method.getReturnType().getName().equals( "void" ) ) {
 
                 //Strip bare accessor name
                 if ( name.startsWith( "get" ) ) {
@@ -905,7 +905,8 @@ public class SuggestionCompletionLoader
         return this.errors;
     }
 
-    class WildCardException extends Exception {
-
+    @SuppressWarnings("serial")
+    private static class WildCardException extends Exception {
     }
+    
 }
