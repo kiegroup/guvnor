@@ -19,10 +19,10 @@ package org.drools.guvnor.client;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.RefreshModuleDataModelImpl;
 import org.drools.guvnor.client.explorer.soa.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
@@ -144,13 +144,10 @@ public class GuvnorSOAEntryPoint
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
         appController = new AppController(clientFactory,eventBus);
 
-/*        if (Window.Location.getPath().contains("StandaloneEditor.html")) {
-            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
-        } else {*/
+        RootLayoutPanel.get().add(appController.getMainPanel());
 
-            RootLayoutPanel.get().add(appController.getMainPanel());
-        //}
-
+        //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
+        clientFactory.getPlaceController().goTo(new FindPlace());
     }
 
     //Fade out the "Loading application" pop-up

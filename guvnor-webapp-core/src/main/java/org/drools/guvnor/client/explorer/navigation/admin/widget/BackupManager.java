@@ -93,8 +93,11 @@ public class BackupManager extends Composite {
 
         final FileUpload upload = new FileUpload();
         upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
+        upload.setHeight("30px");
         panel.add( upload );
 
+        panel.add(new HTML("&nbsp;&nbsp;&nbsp;"));
+        
         Button ok = new Button( constants.Import() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
