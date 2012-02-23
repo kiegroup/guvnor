@@ -92,7 +92,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                                 if (zipEntry != null) {
                                     is = zipInputStream;
                                 } else {
-                                    new RuntimeDroolsException("Invalid compressed reporitory");
+                                    throw new RuntimeDroolsException("Invalid compressed repository");
                                 }
                             }
 
