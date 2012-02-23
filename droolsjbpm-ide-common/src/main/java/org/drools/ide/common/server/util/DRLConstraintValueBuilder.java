@@ -62,7 +62,21 @@ public class DRLConstraintValueBuilder {
             buf.append( "\"" );
             buf.append( fieldValue );
             buf.append( "\"" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            buf.append( fieldValue + "B" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            buf.append( fieldValue + "I" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
             buf.append( "\"" );
@@ -116,7 +130,21 @@ public class DRLConstraintValueBuilder {
             buf.append( "sdf.parse(\"" );
             buf.append( fieldValue );
             buf.append( "\")" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            buf.append( fieldValue + "B" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            buf.append( fieldValue + "I" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
             buf.append( "\"" );

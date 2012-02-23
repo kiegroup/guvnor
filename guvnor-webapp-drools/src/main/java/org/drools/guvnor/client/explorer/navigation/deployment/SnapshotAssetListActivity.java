@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.explorer.navigation.deployment;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 
 public class SnapshotAssetListActivity extends Activity {
 
-    private Constants constants = GWT.create( Constants.class );
     private final ClientFactory clientFactory;
     private final SnapshotAssetListPlace place;
 
@@ -27,14 +25,14 @@ public class SnapshotAssetListActivity extends Activity {
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         tabbedPanel.add(
-                constants.SnapshotItems(),
+                Constants.INSTANCE.SnapshotItems(),
                 getPanel() );
     }
 
     public VerticalPanel getPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.add( new HTML( "<i><small>"
-                + constants.SnapshotListingFor()
+                + Constants.INSTANCE.SnapshotListingFor()
                 + place.getSnapshotName()
                 + "</small></i>" ) );
         verticalPanel.add(

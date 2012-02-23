@@ -52,19 +52,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:27:09
- * To change this template use File | Settings | File Templates.
- * 
- * Runs the test, plus shows a summary view of the results.
- */
 public class TestRunnerWidget extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
     private static AuditEventsImages auditEventsImages = (AuditEventsImages) GWT.create( AuditEventsImages.class );
 
     FlexTable             results   = new FlexTable();
@@ -75,12 +64,12 @@ public class TestRunnerWidget extends Composite {
     public TestRunnerWidget(final ScenarioWidget parent,
                             final String packageName) {
 
-        final Button run = new Button( constants.RunScenario() );
-        run.setTitle( constants.RunScenarioTip() );
+        final Button run = new Button( Constants.INSTANCE.RunScenario() );
+        run.setTitle( Constants.INSTANCE.RunScenarioTip() );
         run.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                LoadingPopup.showMessage( constants.BuildingAndRunningScenario() );
+                LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenario() );
                 RepositoryServiceFactory.getPackageService().runScenario( parent.getMetaData().getModuleName(),
                                                                    parent.getScenario(),
                                                                    new GenericCallback<SingleScenarioResult>() {
@@ -90,8 +79,8 @@ public class TestRunnerWidget extends Composite {
                                                                            layout.add( actions );
                                                                            layout.add( results );
                                                                            actions.setVisible( true );
-                                                                           ScenarioRunResult result = data.result;
-                                                                           if ( result.getErrors() != null ) {
+                                                                           ScenarioRunResult result = data.getResult();
+                                                                           if ( result.hasErrors() ) {
                                                                                showErrors( result.getErrors() );
                                                                            } else {
                                                                                showResults( parent,
@@ -118,11 +107,11 @@ public class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs.get(i);
             errTable.setWidget( row,
                                 0,
-                                new Image( images.error() ) );
+                                new Image( Images.INSTANCE.error() ) );
             if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
-                                  constants.packageConfigurationProblem1() + res.getMessage() );
+                                  Constants.INSTANCE.packageConfigurationProblem1() + res.getMessage() );
             } else {
                 errTable.setText( row,
                                   1,
@@ -144,7 +133,7 @@ public class TestRunnerWidget extends Composite {
         results.clear();
         results.setVisible( true );
 
-        parent.setScenario( data.result.getScenario() );
+        parent.setScenario( data.getResult().getScenario() );
 
         parent.setShowResults( true );
         parent.renderEditor();
@@ -153,17 +142,17 @@ public class TestRunnerWidget extends Composite {
         int total = 0;
         VerticalPanel resultsDetail = new VerticalPanel();
 
-        for ( Iterator<Fixture> fixturesIterator = data.result.getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
+        for ( Iterator<Fixture> fixturesIterator = data.getResult().getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
             Fixture fixture = fixturesIterator.next();
             if ( fixture instanceof VerifyRuleFired ) {
 
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
                 if ( !verifyRuleFired.getSuccessResult().booleanValue() ) {
-                    panel.add( new Image( images.warning() ) );
+                    panel.add( new Image( Images.INSTANCE.warning() ) );
                     failures++;
                 } else {
-                    panel.add( new Image( images.testPassed() ) );
+                    panel.add( new Image( Images.INSTANCE.testPassed() ) );
                 }
                 panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
@@ -175,10 +164,10 @@ public class TestRunnerWidget extends Composite {
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
                     if ( !verifyField.getSuccessResult().booleanValue() ) {
-                        panel.add( new Image( images.warning() ) );
+                        panel.add( new Image( Images.INSTANCE.warning() ) );
                         failures++;
                     } else {
-                        panel.add( new Image( images.testPassed() ) );
+                        panel.add( new Image( Images.INSTANCE.testPassed() ) );
                     }
                     panel.add( new SmallLabel( verifyField.getExplanation() ) );
                     resultsDetail.add( panel );
@@ -186,9 +175,9 @@ public class TestRunnerWidget extends Composite {
 
             } else if ( fixture instanceof ExecutionTrace ) {
                 ExecutionTrace ex = (ExecutionTrace) fixture;
-                if ( ex.getNumberOfRulesFired() == data.result.getScenario().getMaxRuleFirings() ) {
-                    Window.alert( constants.MaxRuleFiringsReachedWarning(
-                            data.result.getScenario().getMaxRuleFirings() ) );
+                if ( ex.getNumberOfRulesFired() == data.getResult().getScenario().getMaxRuleFirings() ) {
+                    Window.alert( Constants.INSTANCE.MaxRuleFiringsReachedWarning(
+                            data.getResult().getScenario().getMaxRuleFirings() ) );
                 }
             }
 
@@ -196,7 +185,7 @@ public class TestRunnerWidget extends Composite {
 
         results.setWidget( 0,
                            0,
-                           new SmallLabel( constants.Results() ) );
+                           new SmallLabel( Constants.INSTANCE.Results() ) );
         results.getFlexCellFormatter().setHorizontalAlignment( 0,
                                                                0,
                                                                HasHorizontalAlignment.ALIGN_RIGHT );
@@ -218,7 +207,7 @@ public class TestRunnerWidget extends Composite {
 
         results.setWidget( 1,
                            0,
-                           new SmallLabel( constants.SummaryColon() ) );
+                           new SmallLabel( Constants.INSTANCE.SummaryColon() ) );
         results.getFlexCellFormatter().setHorizontalAlignment( 1,
                                                                0,
                                                                HasHorizontalAlignment.ALIGN_RIGHT );
@@ -227,9 +216,9 @@ public class TestRunnerWidget extends Composite {
                            resultsDetail );
         results.setWidget( 2,
                            0,
-                           new SmallLabel( constants.AuditLogColon() ) );
+                           new SmallLabel( Constants.INSTANCE.AuditLogColon() ) );
 
-        final Button showExp = new Button( constants.ShowEventsButton() );
+        final Button showExp = new Button( Constants.INSTANCE.ShowEventsButton() );
         results.setWidget( 2,
                            1,
                            showExp );
@@ -239,7 +228,7 @@ public class TestRunnerWidget extends Composite {
                 showExp.setVisible( false );
                 results.setWidget( 2,
                                    1,
-                                   doAuditView( data.auditLog ) );
+                                   doAuditView(data.getAuditLog()) );
             }
         } );
 

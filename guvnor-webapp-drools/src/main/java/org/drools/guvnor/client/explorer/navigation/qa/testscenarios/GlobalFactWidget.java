@@ -16,9 +16,10 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 
 public class GlobalFactWidget extends FactWidget {
@@ -33,7 +34,7 @@ public class GlobalFactWidget extends FactWidget {
                sc,
                parent,
                executionTrace,
-               constants.globalForScenario( factType ) );
+               Constants.INSTANCE.globalForScenario( factType ) );
     }
 
 }

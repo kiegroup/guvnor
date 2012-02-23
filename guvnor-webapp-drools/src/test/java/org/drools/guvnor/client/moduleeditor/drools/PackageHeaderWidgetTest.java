@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderHelper;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Global;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Import;
-import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Types;
+import org.drools.guvnor.shared.modules.ModuleHeader;
+import org.drools.guvnor.shared.modules.ModuleHeader.Global;
+import org.drools.guvnor.shared.modules.ModuleHeader.Import;
+import org.drools.guvnor.shared.modules.ModuleHeaderHelper;
 import org.junit.Test;
 
 public class PackageHeaderWidgetTest {
@@ -31,105 +30,128 @@ public class PackageHeaderWidgetTest {
     @Test
     public void testEmpty() {
 
-        PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(null);
-        assertNotNull(t);
-        assertNotNull(t.globals);
-        assertNotNull(t.imports);
+        ModuleHeader mh = ModuleHeaderHelper.parseHeader( null );
+        assertNotNull( mh );
+        assertNotNull( mh.getGlobals() );
+        assertNotNull( mh.getImports() );
 
-        t = PackageHeaderHelper.parseHeader("");
-        assertNotNull(t);
-        assertNotNull(t.globals);
-        assertNotNull(t.imports);
+        mh = ModuleHeaderHelper.parseHeader( "" );
+        assertNotNull( mh );
+        assertNotNull( mh.getGlobals() );
+        assertNotNull( mh.getImports() );
 
     }
 
     @Test
     public void testImports() {
         String s = "import goo.bar.Whee;\n\nimport wee.waah.Foo\nimport nee.Nah";
-        PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
-        assertNotNull(t);
-        assertNotNull(t.globals);
-        assertNotNull(t.imports);
+        ModuleHeader mh = ModuleHeaderHelper.parseHeader( s );
+        assertNotNull( mh );
+        assertNotNull( mh.getGlobals() );
+        assertNotNull( mh.getImports() );
 
-        assertEquals(0, t.globals.size());
-        assertEquals(3, t.imports.size());
-        Import i = (Import) t.imports.get(0);
-        assertEquals("goo.bar.Whee", i.type);
+        assertEquals( 0,
+                      mh.getGlobals().size() );
+        assertEquals( 3,
+                      mh.getImports().size() );
+        Import i = mh.getImports().get( 0 );
+        assertEquals( "goo.bar.Whee",
+                      i.getType() );
 
-        i = (Import) t.imports.get(1);
-        assertEquals("wee.waah.Foo", i.type);
+        i = mh.getImports().get( 1 );
+        assertEquals( "wee.waah.Foo",
+                      i.getType() );
 
-        i = (Import) t.imports.get(2);
-        assertEquals("nee.Nah", i.type);
+        i = mh.getImports().get( 2 );
+        assertEquals( "nee.Nah",
+                      i.getType() );
 
     }
 
     @Test
     public void testGlobals() {
         String s = "global goo.bar.Whee x;\n\nglobal wee.waah.Foo asd\nglobal nee.Nah d";
-        PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
-        assertNotNull(t);
-        assertNotNull(t.globals);
-        assertNotNull(t.imports);
+        ModuleHeader mh = ModuleHeaderHelper.parseHeader( s );
+        assertNotNull( mh );
+        assertNotNull( mh.getGlobals() );
+        assertNotNull( mh.getImports() );
 
-        assertEquals(3, t.globals.size());
-        assertEquals(0, t.imports.size());
+        assertEquals( 3,
+                      mh.getGlobals().size() );
+        assertEquals( 0,
+                      mh.getImports().size() );
 
-        Global i = (Global) t.globals.get(0);
-        assertEquals("goo.bar.Whee", i.type);
-        assertEquals("x", i.name);
+        Global i = mh.getGlobals().get( 0 );
+        assertEquals( "goo.bar.Whee",
+                      i.getType() );
+        assertEquals( "x",
+                      i.getName() );
 
-        i = (Global) t.globals.get(1);
-        assertEquals("wee.waah.Foo", i.type);
-        assertEquals("asd", i.name);
+        i = mh.getGlobals().get( 1 );
+        assertEquals( "wee.waah.Foo",
+                      i.getType() );
+        assertEquals( "asd",
+                      i.getName() );
 
-        i = (Global) t.globals.get(2);
-        assertEquals("nee.Nah", i.type);
-        assertEquals("d", i.name);
+        i = mh.getGlobals().get( 2 );
+        assertEquals( "nee.Nah",
+                      i.getType() );
+        assertEquals( "d",
+                      i.getName() );
 
     }
 
     @Test
     public void testGlobalsImports() {
         String s = "import goo.bar.Whee;\n\nglobal wee.waah.Foo asd";
-        PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
-        assertNotNull(t);
-        assertEquals(1, t.imports.size());
-        assertEquals(1, t.globals.size());
+        ModuleHeader mh = ModuleHeaderHelper.parseHeader( s );
+        assertNotNull( mh );
+        assertEquals( 1,
+                      mh.getImports().size() );
+        assertEquals( 1,
+                      mh.getGlobals().size() );
 
-        Import i = (Import) t.imports.get(0);
-        assertEquals("goo.bar.Whee", i.type);
+        Import i = mh.getImports().get( 0 );
+        assertEquals( "goo.bar.Whee",
+                      i.getType() );
 
-        Global g = (Global) t.globals.get(0);
-        assertEquals("wee.waah.Foo", g.type);
-        assertEquals("asd", g.name);
-
+        Global g = mh.getGlobals().get( 0 );
+        assertEquals( "wee.waah.Foo",
+                      g.getType() );
+        assertEquals( "asd",
+                      g.getName() );
 
     }
 
     @Test
     public void testAdvanced() {
         String s = "import goo.bar.Whee;\nglobal Wee waa;\n \nsomething else maybe dialect !";
-        assertEquals(null, PackageHeaderHelper.parseHeader(s));
+        assertEquals( null,
+                      ModuleHeaderHelper.parseHeader( s ) );
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testRenderTypes() {
-        Types t = new Types();
-        t.imports.add(new Import("foo.bar.Baz"));
-        String h = PackageHeaderHelper.renderTypes(t);
-        assertNotNull(h);
-        assertEquals("import foo.bar.Baz", h.trim());
-        t = PackageHeaderHelper.parseHeader(h);
-        assertEquals(1, t.imports.size());
-        Import i = (Import) t.imports.get(0);
-        assertEquals("foo.bar.Baz", i.type);
+        ModuleHeader mh = new ModuleHeader();
+        mh.getImports().add( new Import( "foo.bar.Baz" ) );
+        String h = ModuleHeaderHelper.renderModuleHeader( mh );
+        assertNotNull( h );
+        assertEquals( "import foo.bar.Baz",
+                      h.trim() );
+        mh = ModuleHeaderHelper.parseHeader( h );
+        assertEquals( 1,
+                      mh.getImports().size() );
+        Import i = mh.getImports().get( 0 );
+        assertEquals( "foo.bar.Baz",
+                      i.getType() );
 
-        t.globals.add(new Global("foo.Bar", "xs"));
-        t.globals.add(new Global("whee.wah", "tt"));
-        h = PackageHeaderHelper.renderTypes(t);
-        assertEquals("import foo.bar.Baz\nglobal foo.Bar xs\nglobal whee.wah tt", h.trim());
+        mh.getGlobals().add( new Global( "foo.Bar",
+                                         "xs" ) );
+        mh.getGlobals().add( new Global( "whee.wah",
+                                         "tt" ) );
+        h = ModuleHeaderHelper.renderModuleHeader( mh );
+        assertEquals( "import foo.bar.Baz\nglobal foo.Bar xs\nglobal whee.wah tt",
+                      h.trim() );
 
     }
 

@@ -29,9 +29,9 @@ import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 
 import java.util.Arrays;
@@ -43,8 +43,8 @@ import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
  */
 public class VersionBrowser extends Composite {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     private Image refresh;
     private FlexTable layout;
@@ -230,7 +230,7 @@ public class VersionBrowser extends Composite {
             RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                     new GenericCallback<Asset>() {
 
-                        public void onSuccess( Asset asset ) {
+                        public void onSuccess(final Asset asset ) {
                             asset.setReadonly( true );
                             //asset.metaData.name = metaData.name;
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
@@ -247,7 +247,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid) );
                                                     //fire after check-in event
                                                     eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, null));
                                                     pop.hide();

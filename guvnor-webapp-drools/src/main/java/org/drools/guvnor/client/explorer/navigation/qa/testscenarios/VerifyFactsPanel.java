@@ -21,13 +21,12 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyFactWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -35,9 +34,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class VerifyFactsPanel extends VerticalPanel {
-
-    private Constants            constants = GWT.create( Constants.class );
-    private static Images        images    = GWT.create( Images.class );
 
     private final Scenario       scenario;
 
@@ -74,13 +70,13 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final VerifyFact verifyFact) {
-            super( images.deleteItemSmall(),
-                   constants.DeleteTheExpectationForThisFact() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.DeleteTheExpectationForThisFact() );
 
             addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisExpectation() ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisExpectation() ) ) {
                         scenario.removeFixture( verifyFact );
                         parent.renderEditor();
                     }

@@ -31,16 +31,15 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -63,8 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScenarioWidget extends Composite
     implements
     EditorWidget {
-    private Constants                          constants = GWT.create( Constants.class );
-    private static Images                      images    = GWT.create( Images.class );
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
@@ -259,14 +256,14 @@ public class ScenarioWidget extends Composite
 
         } else {
 
-            final Button showList = new Button( constants.showListButton() );
+            final Button showList = new Button( Constants.INSTANCE.showListButton() );
             horizontalPanel.add( showList );
             showList.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
-                    final Image busy = new Image( images.searching() );
-                    final Label loading = new SmallLabel( constants.loadingList1() );
+                    final Image busy = new Image( Images.INSTANCE.searching() );
+                    final Label loading = new SmallLabel( Constants.INSTANCE.loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 

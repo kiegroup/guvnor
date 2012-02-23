@@ -23,6 +23,7 @@ import java.util.Map;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ActionSetFieldsDefinedEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
@@ -92,7 +93,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardActionSetFields();
+        return Constants.INSTANCE.DecisionTableWizardActionSetFields();
     }
 
     public void initialise() {

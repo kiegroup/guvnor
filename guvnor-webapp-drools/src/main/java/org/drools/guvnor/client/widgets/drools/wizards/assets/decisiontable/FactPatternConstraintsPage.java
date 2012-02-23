@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
@@ -64,7 +65,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardFactPatternConstraints();
+        return Constants.INSTANCE.DecisionTableWizardFactPatternConstraints();
     }
 
     public void initialise() {
@@ -142,7 +143,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
         //Add predicates
         if ( dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            AvailableField field = new AvailableField( constants.DecisionTableWizardPredicate(),
+            AvailableField field = new AvailableField( Constants.INSTANCE.DecisionTableWizardPredicate(),
                                                            BaseSingleFieldConstraint.TYPE_PREDICATE );
             availableFields.add( field );
         }

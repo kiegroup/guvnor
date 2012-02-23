@@ -26,8 +26,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.util.Util;
 
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ import java.util.Collection;
 
 public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
     private TreeItem root;
     private TreeItem states;
     private TreeItem inbox;

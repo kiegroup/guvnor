@@ -90,10 +90,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private DTCellValueWidgetFactory             factory;
 
-    private static final Constants               constants   = GWT.create( Constants.class );
-
-    private static final Images                  images      = GWT.create( Images.class );
-
     @UiField
     protected ScrollPanel                        availablePatternsContainer;
 
@@ -167,10 +163,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     SimplePanel                                  limitedEntryValueWidgetContainer;
 
     @UiField(provided = true)
-    PushButton                                   btnMoveUp   = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                                   btnMoveUp   = new PushButton( AbstractImagePrototype.create( Images.INSTANCE.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                                   btnMoveDown = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                                   btnMoveDown = new PushButton( AbstractImagePrototype.create( Images.INSTANCE.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -205,7 +201,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 175 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
@@ -227,7 +223,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableFieldsWidget.setMinimumWidth( 175 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableFields() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableFieldsWidget.setEmptyListWidget( lstEmpty );
 
@@ -249,7 +245,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenConditionsWidget.setMinimumWidth( 175 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenFields() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenConditionsWidget.setEmptyListWidget( lstEmpty );
 

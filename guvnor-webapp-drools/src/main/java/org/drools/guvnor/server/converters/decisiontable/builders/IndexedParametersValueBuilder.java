@@ -16,7 +16,6 @@
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,35 +23,60 @@ import java.util.regex.Pattern;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
- * 
+ * A ValueBuilder for templates with multiple parameters; $1, $2...$n
  */
 public class IndexedParametersValueBuilder
-        extends
-        ValueBuilder {
+        implements
+        ParameterizedValueBuilder {
 
-    private static final Pattern p = Pattern.compile( "\\$\\d?" );
+    private static final Pattern      delimiter  = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
 
-    public IndexedParametersValueBuilder(String template) {
-        super( template );
+    private final String              template;
+
+    private final List<String>        parameters = new ArrayList<String>();
+
+    private List<List<DTCellValue52>> values     = new ArrayList<List<DTCellValue52>>();
+
+    public IndexedParametersValueBuilder(final String template,
+                                         final ParameterUtilities parameterUtilities) {
+        this.template = parameterUtilities.convertIndexedParametersToTemplateKeys( template );
+        this.parameters.addAll( parameterUtilities.extractTemplateKeys( this.template ) );
+    }
+
+    public void addCellValue(int row,
+                             int column,
+                             String value) {
+        final List<String> cellVals = split( value );
+        final List<DTCellValue52> rowValues = new ArrayList<DTCellValue52>();
+        for ( int parameterIndex = 0; parameterIndex < getParameters().size(); parameterIndex++ ) {
+            rowValues.add( new DTCellValue52( cellVals.get( parameterIndex ) ) );
+        }
+        this.values.add( rowValues );
+    }
+
+    private List<String> split(String input) {
+        Matcher m = delimiter.matcher( input );
+        List<String> result = new ArrayList<String>();
+        while ( m.find() ) {
+            result.add( m.group( 1 ).replaceAll( "\\\\,",
+                                                 "," ) );
+        }
+        return result;
     }
 
     @Override
-    public List<String> extractParameters(String template) {
-        final List<String> parameters = new ArrayList<String>();
-        final Matcher m = p.matcher( template );
-        while ( m.find() ) {
-            parameters.add( m.group() );
-        }
-        return parameters;
+    public String getTemplate() {
+        return this.template;
     }
 
-    public List<DTCellValue52> build(String value) {
-        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
-        for ( Iterator<String> i = parameters.iterator(); i.hasNext(); i.next() ) {
-            //TODO {manstis} Need to split values
-            values.add( new DTCellValue52( value ) );
-        }
-        return values;
+    @Override
+    public List<String> getParameters() {
+        return this.parameters;
+    }
+
+    @Override
+    public List<List<DTCellValue52>> getColumnData() {
+        return this.values;
     }
 
 }

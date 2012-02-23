@@ -39,7 +39,7 @@ import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             UiBinder<Widget, AbstractAssetPagedTable> {
     }
 
-    protected static final Constants constants = GWT.create( Constants.class );
+    protected static final ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private static AssetPagedTableBinder uiBinder = GWT.create( AssetPagedTableBinder.class );
 

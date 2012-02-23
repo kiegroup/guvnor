@@ -39,8 +39,6 @@ import java.util.*;
 
 public class FactsConstraintsEditorPanel extends Composite {
 
-    private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
 
     private static int idGenerator = 0;
     private ListBox factsCombo = new ListBox(false);
@@ -74,8 +72,8 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image addNewConstraint = new ImageButton(images.newItem());
-        addNewConstraint.setTitle(constants.AddNewConstraint());
+        Image addNewConstraint = new ImageButton(Images.INSTANCE.newItem());
+        addNewConstraint.setTitle(Constants.INSTANCE.AddNewConstraint());
 
         addNewConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -83,8 +81,8 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image removeConstraint = new Image(images.trash());
-        removeConstraint.setTitle(constants.removeConstraint());
+        Image removeConstraint = new Image(Images.INSTANCE.trash());
+        removeConstraint.setTitle(Constants.INSTANCE.removeConstraint());
         removeConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 removeConstraint();
@@ -94,14 +92,14 @@ public class FactsConstraintsEditorPanel extends Composite {
         final FlexTable table = new FlexTable();
 
         VerticalPanel vp = new VerticalPanel();
-        vp.add(new SmallLabel(constants.FactTypes()));
+        vp.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
         vp.add(factsCombo);
         table.setWidget(0,
                 0,
                 vp);
 
         vp = new VerticalPanel();
-        vp.add(new SmallLabel(constants.Field()));
+        vp.add(new SmallLabel(Constants.INSTANCE.Field()));
         vp.add(fieldsCombo);
         table.setWidget(1,
                 0,
@@ -109,7 +107,7 @@ public class FactsConstraintsEditorPanel extends Composite {
 
         vp = new VerticalPanel();
         HorizontalPanel hp = new HorizontalPanel();
-        vp.add(new SmallLabel(constants.Constraints()));
+        vp.add(new SmallLabel(Constants.INSTANCE.Constraints()));
         hp.add(constraintsCombo);
 
         VerticalPanel btnPanel = new VerticalPanel();
@@ -129,7 +127,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        vpConstraintConf.add(new SmallLabel(constants.ConstraintsParameters()));
+        vpConstraintConf.add(new SmallLabel(Constants.INSTANCE.ConstraintsParameters()));
         vpConstraintConf.add(new SmallLabel(""));
         table.setWidget(0,
                 1,
@@ -227,14 +225,15 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private void showNewConstrainPop() {
-        final FormStylePopup pop = new FormStylePopup(images.config(),
-                constants.AddNewConstraint());
-        final Button addbutton = new Button(constants.OK());
+        final FormStylePopup pop = new FormStylePopup(
+                Images.INSTANCE.config(),
+                Constants.INSTANCE.AddNewConstraint());
+        final Button addbutton = new Button(Constants.INSTANCE.OK());
         final ListBox consDefsCombo = new ListBox(false);
 
         consDefsCombo.setVisibleItemCount(5);
 
-        addbutton.setTitle(constants.AddNewConstraint());
+        addbutton.setTitle(Constants.INSTANCE.AddNewConstraint());
 
         List<String> names = new ArrayList<String>(ConstraintsContainer.getAllConfigurations().keySet());
         Collections.sort(names);
@@ -266,7 +265,8 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        pop.addAttribute(constants.WillExtendTheFollowingRuleCalled(),
+        pop.addAttribute(
+                Constants.INSTANCE.WillExtendTheFollowingRuleCalled(),
                 consDefsCombo);
         pop.addAttribute("",
                 addbutton);

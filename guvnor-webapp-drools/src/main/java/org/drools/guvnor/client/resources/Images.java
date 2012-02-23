@@ -16,12 +16,15 @@
 
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
 public interface Images
     extends
     ClientBundle {
+
+    Images INSTANCE = GWT.create(Images.class);
 
     @Source("images/package.gif")
     ImageResource packageImage();
@@ -101,6 +104,9 @@ public interface Images
     @Source("images/ruleflow_small.gif")
     ImageResource ruleflowSmall();
 
+    @Source("images/form_def_icon.png")
+    ImageResource formDefIcon();
+    
     @Source("images/new_enumeration.gif")
     ImageResource newEnumeration();
 

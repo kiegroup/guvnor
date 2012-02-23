@@ -16,10 +16,8 @@
 package org.drools.guvnor.client.widgets.drools.workitems;
 
 import org.drools.guvnor.client.common.IBindingProvider;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,8 +29,6 @@ public abstract class WorkItemParameterWidget extends Composite {
     protected PortableParameterDefinition ppd;
 
     protected IBindingProvider            bindingProvider;
-
-    protected static final Constants      constants = GWT.create( Constants.class );
 
     public WorkItemParameterWidget(PortableParameterDefinition ppd,
                                    IBindingProvider bindingProvider) {

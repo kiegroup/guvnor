@@ -20,12 +20,11 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,16 +33,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:29:06
- * To change this template use File | Settings | File Templates.
- */
 public class ActivateRuleFlowWidget extends Composite {
-    private Constants            constants = GWT.create( Constants.class );
-    private static Images        images    = GWT.create( Images.class );
 
     private final ScenarioWidget parent;
 
@@ -74,7 +64,7 @@ public class ActivateRuleFlowWidget extends Composite {
         outer.setStyleName( "modeller-fact-pattern-Widget" );
         outer.setWidget( 0,
                          0,
-                         new SmallLabel( constants.ActivateRuleFlowGroup() ) );
+                         new SmallLabel( Constants.INSTANCE.ActivateRuleFlowGroup() ) );
         outer.getFlexCellFormatter().setColSpan( 0,
                                                  0,
                                                  2 );
@@ -85,8 +75,8 @@ public class ActivateRuleFlowWidget extends Composite {
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
-            Image del = new ImageButton( images.deleteItemSmall(),
-                                         constants.RemoveThisRuleFlowActivation(),
+            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+                                         Constants.INSTANCE.RemoveThisRuleFlowActivation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  retList.remove( acticateRuleFlowGroup );

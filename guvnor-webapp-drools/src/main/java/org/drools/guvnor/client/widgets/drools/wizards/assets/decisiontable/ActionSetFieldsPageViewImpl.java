@@ -81,8 +81,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     private DTCellValueWidgetFactory                  factory;
 
-    private static final Constants                    constants = GWT.create( Constants.class );
-
     @UiField
     protected ScrollPanel                             availablePatternsContainer;
 
@@ -165,7 +163,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 180 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
@@ -187,7 +185,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableFieldsWidget.setMinimumWidth( 175 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableFields() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableFieldsWidget.setEmptyListWidget( lstEmpty );
 
@@ -209,7 +207,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         chosenFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenFieldsWidget.setMinimumWidth( 175 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenFields() );
+        Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenFieldsWidget.setEmptyListWidget( lstEmpty );
 

@@ -36,8 +36,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class AnnotationEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-
     interface AnnotationEditorBinder
         extends
         UiBinder<Widget, AnnotationEditor> {
@@ -77,8 +75,8 @@ public class AnnotationEditor extends Composite {
 
         setControlValues( annotation );
 
-        editAnnotationIcon.setTitle( constants.Rename() );
-        deleteAnnotationIcon.setTitle( constants.Delete() );
+        editAnnotationIcon.setTitle( Constants.INSTANCE.Rename() );
+        deleteAnnotationIcon.setTitle( Constants.INSTANCE.Delete() );
     }
 
     //This is a simplified annotation editor and thus we only

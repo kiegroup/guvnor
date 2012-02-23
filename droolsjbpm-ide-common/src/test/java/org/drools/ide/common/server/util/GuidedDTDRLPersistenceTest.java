@@ -132,7 +132,7 @@ public class GuidedDTDRLPersistenceTest {
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
-        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
@@ -297,7 +297,7 @@ public class GuidedDTDRLPersistenceTest {
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
-        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
@@ -381,7 +381,7 @@ public class GuidedDTDRLPersistenceTest {
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
-        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
@@ -1046,7 +1046,7 @@ public class GuidedDTDRLPersistenceTest {
         ConditionCol52 col = new ConditionCol52();
         col.setFactField( "age" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        col.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        col.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         col.setOperator( "==" );
         p1.getChildColumns().add( col );
         allColumns.add( col );
@@ -1059,7 +1059,7 @@ public class GuidedDTDRLPersistenceTest {
         ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        col2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        col2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         col2.setOperator( "!=" );
         p2.getChildColumns().add( col2 );
         allColumns.add( col2 );
@@ -1463,7 +1463,7 @@ public class GuidedDTDRLPersistenceTest {
         asf2.setBoundName( "a" );
         asf2.setFactField( "field2" );
         asf2.setUpdate( true );
-        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cols.add( asf2 );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
@@ -1473,14 +1473,14 @@ public class GuidedDTDRLPersistenceTest {
         ins1.setBoundName( "ins" );
         ins1.setFactType( "Cheese" );
         ins1.setFactField( "price" );
-        ins1.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        ins1.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cols.add( ins1 );
 
         ActionInsertFactCol52 ins2 = new ActionInsertFactCol52();
         ins2.setBoundName( "ins" );
         ins2.setFactType( "Cheese" );
         ins2.setFactField( "type" );
-        ins2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        ins2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cols.add( ins2 );
 
         RuleModel rm = new RuleModel();
@@ -1520,7 +1520,7 @@ public class GuidedDTDRLPersistenceTest {
                       a1.fieldValues[1].field );
         assertEquals( "actionsetfield2",
                       a1.fieldValues[1].value );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       a1.fieldValues[1].type );
 
         // examine the retract
@@ -1539,14 +1539,14 @@ public class GuidedDTDRLPersistenceTest {
                       a3.fieldValues[0].field );
         assertEquals( "actioninsertfact1",
                       a3.fieldValues[0].value );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       a3.fieldValues[0].type );
 
         assertEquals( "type",
                       a3.fieldValues[1].field );
         assertEquals( "actioninsertfact2",
                       a3.fieldValues[1].value );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       a3.fieldValues[1].type );
 
     }
@@ -1567,7 +1567,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
-        asf.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         asf.setUpdate( true );
 
         dt.getActionCols().add( asf );
@@ -1939,7 +1939,7 @@ public class GuidedDTDRLPersistenceTest {
 
         ConditionCol52 cc2 = new ConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cc2.setFactField( "age" );
         cc2.setOperator( "== null" );
         p1.getChildColumns().add( cc2 );
@@ -1988,7 +1988,7 @@ public class GuidedDTDRLPersistenceTest {
 
         ConditionCol52 cc2 = new ConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cc2.setFactField( "age" );
         cc2.setOperator( "!= null" );
         p1.getChildColumns().add( cc2 );
@@ -2037,7 +2037,7 @@ public class GuidedDTDRLPersistenceTest {
 
         LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cc2.setFactField( "age" );
         cc2.setOperator( "== null" );
         p1.getChildColumns().add( cc2 );
@@ -2086,7 +2086,7 @@ public class GuidedDTDRLPersistenceTest {
 
         LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
         cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         cc2.setFactField( "age" );
         cc2.setOperator( "!= null" );
         p1.getChildColumns().add( cc2 );
@@ -2349,7 +2349,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemSetFieldCol52 asf2 = new ActionWorkItemSetFieldCol52();
         asf2.setBoundName( "$r" );
         asf2.setFactField( "ResultFloatField" );
-        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         asf2.setWorkItemName( "WorkItem" );
         asf2.setWorkItemResultParameterName( "FloatResult" );
         asf2.setParameterClassName( Float.class.getName() );
@@ -2358,7 +2358,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemSetFieldCol52 asf3 = new ActionWorkItemSetFieldCol52();
         asf3.setBoundName( "$r" );
         asf3.setFactField( "ResultIntegerField" );
-        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         asf3.setWorkItemName( "WorkItem" );
         asf3.setWorkItemResultParameterName( "IntegerResult" );
         asf3.setParameterClassName( Integer.class.getName() );
@@ -2445,7 +2445,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemFieldValue wifv2 = (ActionWorkItemFieldValue) fv2;
         assertEquals( "ResultFloatField",
                       wifv2.field );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
                       wifv2.type );
         assertEquals( "WorkItem",
                       wifv2.getWorkItemName() );
@@ -2460,7 +2460,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemFieldValue wifv3 = (ActionWorkItemFieldValue) fv3;
         assertEquals( "ResultIntegerField",
                       wifv3.field );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       wifv3.type );
         assertEquals( "WorkItem",
                       wifv3.getWorkItemName() );
@@ -2524,7 +2524,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemSetFieldCol52 asf2 = new ActionWorkItemSetFieldCol52();
         asf2.setBoundName( "$r" );
         asf2.setFactField( "ResultFloatField" );
-        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         asf2.setWorkItemName( "WorkItem" );
         asf2.setWorkItemResultParameterName( "FloatResult" );
         asf2.setParameterClassName( Float.class.getName() );
@@ -2638,7 +2638,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemInsertFactCol52 asf2 = new ActionWorkItemInsertFactCol52();
         asf2.setBoundName( "$r" );
         asf2.setFactField( "ResultFloatField" );
-        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         asf2.setWorkItemName( "WorkItem" );
         asf2.setWorkItemResultParameterName( "FloatResult" );
         asf2.setParameterClassName( Float.class.getName() );
@@ -2647,7 +2647,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemInsertFactCol52 asf3 = new ActionWorkItemInsertFactCol52();
         asf3.setBoundName( "$r" );
         asf3.setFactField( "ResultIntegerField" );
-        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         asf3.setWorkItemName( "WorkItem" );
         asf3.setWorkItemResultParameterName( "IntegerResult" );
         asf3.setParameterClassName( Integer.class.getName() );
@@ -2734,7 +2734,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemFieldValue wifv2 = (ActionWorkItemFieldValue) fv2;
         assertEquals( "ResultFloatField",
                       wifv2.field );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
                       wifv2.type );
         assertEquals( "WorkItem",
                       wifv2.getWorkItemName() );
@@ -2749,7 +2749,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemFieldValue wifv3 = (ActionWorkItemFieldValue) fv3;
         assertEquals( "ResultIntegerField",
                       wifv3.field );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       wifv3.type );
         assertEquals( "WorkItem",
                       wifv3.getWorkItemName() );
@@ -2813,7 +2813,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionWorkItemInsertFactCol52 asf2 = new ActionWorkItemInsertFactCol52();
         asf2.setBoundName( "$r" );
         asf2.setFactField( "ResultFloatField" );
-        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT );
         asf2.setWorkItemName( "WorkItem" );
         asf2.setWorkItemResultParameterName( "FloatResult" );
         asf2.setParameterClassName( Float.class.getName() );
@@ -2930,7 +2930,7 @@ public class GuidedDTDRLPersistenceTest {
         brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint1 );
 
         SingleFieldConstraint brl1DefinitionFactPattern1Constraint2 = new SingleFieldConstraint();
-        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         brl1DefinitionFactPattern1Constraint2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
         brl1DefinitionFactPattern1Constraint2.setFieldName( "age" );
         brl1DefinitionFactPattern1Constraint2.setOperator( "==" );
@@ -2948,7 +2948,7 @@ public class GuidedDTDRLPersistenceTest {
                                                                                    "name" );
         brl1.getChildColumns().add( brl1Variable1 );
         BRLConditionVariableColumn brl1Variable2 = new BRLConditionVariableColumn( "$age",
-                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                                    "Person",
                                                                                    "age" );
         brl1.getChildColumns().add( brl1Variable2 );
@@ -3130,7 +3130,7 @@ public class GuidedDTDRLPersistenceTest {
         brl1DefinitionFactPattern1.addConstraint( brl1DefinitionFactPattern1Constraint1 );
 
         SingleFieldConstraint brl1DefinitionFactPattern1Constraint2 = new SingleFieldConstraint();
-        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        brl1DefinitionFactPattern1Constraint2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         brl1DefinitionFactPattern1Constraint2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
         brl1DefinitionFactPattern1Constraint2.setFieldName( "age" );
         brl1DefinitionFactPattern1Constraint2.setOperator( "==" );
@@ -3148,7 +3148,7 @@ public class GuidedDTDRLPersistenceTest {
                                                                                    "name" );
         brl1.getChildColumns().add( brl1Variable1 );
         BRLConditionVariableColumn brl1Variable2 = new BRLConditionVariableColumn( "$age",
-                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                                   SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                                    "Person",
                                                                                    "age" );
         brl1.getChildColumns().add( brl1Variable2 );
@@ -3237,7 +3237,7 @@ public class GuidedDTDRLPersistenceTest {
         brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue1 );
         ActionFieldValue brl1DefinitionAction1FieldValue2 = new ActionFieldValue( "age",
                                                                                   "$age",
-                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         brl1DefinitionAction1FieldValue2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
         brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue2 );
         brl1Definition.add( brl1DefinitionAction1 );
@@ -3250,7 +3250,7 @@ public class GuidedDTDRLPersistenceTest {
                                                                              "name" );
         brl1.getChildColumns().add( brl1Variable1 );
         BRLActionVariableColumn brl1Variable2 = new BRLActionVariableColumn( "$age",
-                                                                             SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                             SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                              "Person",
                                                                              "age" );
         brl1.getChildColumns().add( brl1Variable2 );
@@ -3306,7 +3306,7 @@ public class GuidedDTDRLPersistenceTest {
                       result0Action2FieldValue1.value );
 
         ActionFieldValue result0Action2FieldValue2 = (ActionFieldValue) result0Action2.fieldValues[1];
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       result0Action2FieldValue2.type );
         assertEquals( "age",
                       result0Action2FieldValue2.field );
@@ -3411,7 +3411,7 @@ public class GuidedDTDRLPersistenceTest {
         brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue1 );
         ActionFieldValue brl1DefinitionAction1FieldValue2 = new ActionFieldValue( "age",
                                                                                   "$age",
-                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC );
+                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
         brl1DefinitionAction1FieldValue2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
         brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue2 );
         brl1Definition.add( brl1DefinitionAction1 );
@@ -3424,7 +3424,7 @@ public class GuidedDTDRLPersistenceTest {
                                                                              "name" );
         brl1.getChildColumns().add( brl1Variable1 );
         BRLActionVariableColumn brl1Variable2 = new BRLActionVariableColumn( "$age",
-                                                                             SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                             SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                                                                              "Person",
                                                                              "age" );
         brl1.getChildColumns().add( brl1Variable2 );

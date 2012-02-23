@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.client.common;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -40,8 +40,8 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class StatusChangePopup extends FormStylePopup {
 
-    private static Images images    = (Images) GWT.create( Images.class );
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private boolean       isPackage;
     private String        uuid;

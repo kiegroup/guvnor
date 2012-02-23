@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.asseteditor;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
@@ -40,7 +41,7 @@ public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
     }
 
     private Widget makeDescriptionWidget() {
-        return new HTML( constants.POJOModelWidgetDescription() );
+        return new HTML( ConstantsCore.INSTANCE.POJOModelWidgetDescription() );
     }
 
     public ImageResource getIcon() {

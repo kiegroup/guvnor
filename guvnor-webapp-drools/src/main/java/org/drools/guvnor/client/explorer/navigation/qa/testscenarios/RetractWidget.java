@@ -20,29 +20,18 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:29:06
- * To change this template use File | Settings | File Templates.
- */
 public class RetractWidget extends FlexTable {
-
-    private Constants              constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final FixtureList    retractList;
     protected final Scenario       scenario;
@@ -73,7 +62,7 @@ public class RetractWidget extends FlexTable {
         setStyleName( "modeller-fact-pattern-Widget" );
         setWidget( 0,
                    0,
-                   new SmallLabel( constants.RetractFacts() ) );
+                   new SmallLabel( Constants.INSTANCE.RetractFacts() ) );
         getFlexCellFormatter().setColSpan( 0,
                                            0,
                                            2 );
@@ -97,8 +86,8 @@ public class RetractWidget extends FlexTable {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final RetractFact retractFact) {
-            super( images.deleteItemSmall(),
-                   constants.RemoveThisRetractStatement() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.RemoveThisRetractStatement() );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {

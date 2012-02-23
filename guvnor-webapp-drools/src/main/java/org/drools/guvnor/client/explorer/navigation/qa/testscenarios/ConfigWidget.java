@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,17 +30,7 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:33:37
- * To change this template use File | Settings | File Templates.
- */
 public class ConfigWidget extends Composite {
-
-    private final Constants constants = GWT.create( Constants.class );
-    private static Images   images    = GWT.create( Images.class );
 
     public ConfigWidget(final Scenario sc,
                         final String packageName,
@@ -54,8 +43,8 @@ public class ConfigWidget extends Composite {
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( images.newItem(),
-                                           constants.AddANewRule() );
+        final Image add = new ImageButton( Images.INSTANCE.newItem(),
+                                           Constants.INSTANCE.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showRulePopup( (Widget) event.getSource(),
@@ -66,12 +55,12 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( images.trash(),
-                                              constants.RemoveSelectedRule() );
+        final Image remove = new ImageButton( Images.INSTANCE.trash(),
+                                              Constants.INSTANCE.RemoveSelectedRule() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( box.getSelectedIndex() == -1 ) {
-                    Window.alert( constants.PleaseChooseARuleToRemove() );
+                    Window.alert( Constants.INSTANCE.PleaseChooseARuleToRemove() );
                 } else {
                     String r = box.getItemText( box.getSelectedIndex() );
                     sc.getRules().remove( r );
@@ -84,11 +73,11 @@ public class ConfigWidget extends Composite {
         actions.add( remove );
 
         final ListBox drop = new ListBox();
-        drop.addItem( constants.AllowTheseRulesToFire(),
+        drop.addItem( Constants.INSTANCE.AllowTheseRulesToFire(),
                       "inc" ); //NON-NLS
-        drop.addItem( constants.PreventTheseRulesFromFiring(),
+        drop.addItem( Constants.INSTANCE.PreventTheseRulesFromFiring(),
                       "exc" ); //NON-NLS
-        drop.addItem( constants.AllRulesMayFire() );
+        drop.addItem( Constants.INSTANCE.AllRulesMayFire() );
         drop.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 String s = drop.getValue( drop.getSelectedIndex() );
@@ -133,8 +122,8 @@ public class ConfigWidget extends Composite {
                                String packageName,
                                final List<String> filterList,
                                ScenarioWidget scw) {
-        final FormStylePopup pop = new FormStylePopup( images.ruleAsset(),
-                                                       constants.SelectRule() );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+                                                       Constants.INSTANCE.SelectRule() );
 
         Widget ruleSelector = scw.getRuleSelectionWidget( packageName,
                                                           new RuleSelectionEvent() {

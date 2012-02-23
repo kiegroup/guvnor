@@ -15,12 +15,11 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.math.BigDecimal;
-
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
@@ -111,23 +110,27 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 if ( attrCol.isUseRowNumber() ) {
                     cell = makeRowNumberCell();
                 } else {
-                    cell = makeNumericCell();
+                    cell = makeNumericIntegerCell();
                 }
-            } else if ( attrName.equals( RuleAttributeWidget.ENABLED_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 cell = makeBooleanCell();
-            } else if ( attrName.equals( RuleAttributeWidget.NO_LOOP_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
                 cell = makeBooleanCell();
-            } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
-                cell = makeNumericCell();
-            } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
+                cell = makeNumericLongCell();
+            } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+                cell = makeTimerCell();
+            } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+                cell = makeCalendarsCell();
+            } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
                 cell = makeBooleanCell();
-            } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
                 cell = makeBooleanCell();
-            } else if ( attrName.equals( RuleAttributeWidget.DATE_EFFECTIVE_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.DATE_EFFECTIVE_ATTR ) ) {
                 cell = makeDateCell();
-            } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.DATE_EXPIRES_ATTR ) ) {
                 cell = makeDateCell();
-            } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
                 cell = makeDialectCell();
             } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
                 cell = makeBooleanCell();
@@ -237,6 +240,22 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 cell = makeNumericCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                cell = makeNumericBigDecimalCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                cell = makeNumericBigIntegerCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                cell = makeNumericByteCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                cell = makeNumericDoubleCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                cell = makeNumericFloatCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                cell = makeNumericIntegerCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                cell = makeNumericLongCell();
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                cell = makeNumericShortCell();
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 cell = makeBooleanCell();
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -262,9 +281,21 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     }
 
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor<BigDecimal> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal>( new RowNumberCell(),
-                                                              eventBus );
+    private DecoratedGridCellValueAdaptor<Integer> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<Integer>( new RowNumberCell(),
+                                                           eventBus );
+    }
+
+    // Make a new Cell for Timer columns
+    private DecoratedGridCellValueAdaptor<String> makeTimerCell() {
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell( isReadOnly ),
+                                                          eventBus );
+    }
+
+    // Make a new Cell for Calendars columns
+    private DecoratedGridCellValueAdaptor<String> makeCalendarsCell() {
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell( isReadOnly ),
+                                                          eventBus );
     }
 
     // Make a new Cell for Rule Analysis columns

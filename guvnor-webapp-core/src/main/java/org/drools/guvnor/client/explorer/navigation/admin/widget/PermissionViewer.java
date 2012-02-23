@@ -21,14 +21,14 @@ import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTablePresenter;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTableView;
 
 public class PermissionViewer extends Composite {
-    private static Images images = (Images) GWT.create(Images.class);
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
+    private ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
 
     private VerticalPanel layout;
 

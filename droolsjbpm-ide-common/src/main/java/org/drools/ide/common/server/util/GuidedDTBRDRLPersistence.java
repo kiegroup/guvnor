@@ -16,6 +16,8 @@
 package org.drools.ide.common.server.util;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -29,6 +31,8 @@ import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
 
     private TemplateDataProvider rowDataProvider;
+
+    private static final Pattern patternTemplateKey = Pattern.compile( "@\\{(.+?)\\}" );
 
     public GuidedDTBRDRLPersistence(TemplateDataProvider rowDataProvider) {
         if ( rowDataProvider == null ) {
@@ -99,25 +103,18 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
 
         @Override
         public void visitFreeFormLine(FreeFormLine ffl) {
-            String text = ffl.text;
-            int pos = 0;
-            while ( (pos = text.indexOf( "@{",
-                                         pos )) != -1 ) {
-                int end = text.indexOf( '}',
-                                        pos + 2 );
-                if ( end != -1 ) {
-                    String varName = text.substring( pos + 2,
-                                                     end );
-                    String value = rowDataProvider.getTemplateKeyValue( varName );
-                    text = text.substring( 0,
-                                           pos ) + value + text.substring( end + 1 );
-                    pos = end + 1;
-                }
+            StringBuffer interpolatedResult = new StringBuffer();
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.text );
+            while ( matcherTemplateKey.find() ) {
+                String varName = matcherTemplateKey.group( 1 );
+                matcherTemplateKey.appendReplacement( interpolatedResult,
+                                                      rowDataProvider.getTemplateKeyValue( varName ) );
             }
+            matcherTemplateKey.appendTail( interpolatedResult );
 
             //Don't update the original FreeFormLine object
             FreeFormLine fflClone = new FreeFormLine();
-            fflClone.text = text;
+            fflClone.text = interpolatedResult.toString();
             super.visitFreeFormLine( fflClone );
         }
 
@@ -152,25 +149,19 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
 
         @Override
         public void visitFreeFormLine(FreeFormLine ffl) {
-            String text = ffl.text;
-            int pos = 0;
-            while ( (pos = text.indexOf( "@{",
-                                         pos )) != -1 ) {
-                int end = text.indexOf( '}',
-                                        pos + 2 );
-                if ( end != -1 ) {
-                    String varName = text.substring( pos + 2,
-                                                     end );
-                    String value = rowDataProvider.getTemplateKeyValue( varName );
-                    text = text.substring( 0,
-                                           pos ) + value + text.substring( end + 1 );
-                    pos = end + 1;
-                }
+
+            StringBuffer interpolatedResult = new StringBuffer();
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.text );
+            while ( matcherTemplateKey.find() ) {
+                String varName = matcherTemplateKey.group( 1 );
+                matcherTemplateKey.appendReplacement( interpolatedResult,
+                                                      rowDataProvider.getTemplateKeyValue( varName ) );
             }
+            matcherTemplateKey.appendTail( interpolatedResult );
 
             //Don't update the original FreeFormLine object
             FreeFormLine fflClone = new FreeFormLine();
-            fflClone.text = text;
+            fflClone.text = interpolatedResult.toString();
             super.visitFreeFormLine( fflClone );
         }
 

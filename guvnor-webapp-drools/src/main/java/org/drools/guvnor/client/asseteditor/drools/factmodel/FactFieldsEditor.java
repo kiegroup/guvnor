@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FactFieldsEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-
     interface FactFieldsEditorBinder
         extends
         UiBinder<Widget, FactFieldsEditor> {
@@ -70,11 +68,11 @@ public class FactFieldsEditor extends Composite {
         addAnnotationRows();
         addFieldRows();
 
-        addFieldIcon.setTitle( constants.AddField() );
-        addFieldIcon.setText( constants.AddField() );
+        addFieldIcon.setTitle( Constants.INSTANCE.AddField() );
+        addFieldIcon.setText( Constants.INSTANCE.AddField() );
 
-        addAnnotationIcon.setTitle( constants.AddAnnotation() );
-        addAnnotationIcon.setText( constants.AddAnnotation() );
+        addAnnotationIcon.setTitle( Constants.INSTANCE.AddAnnotation() );
+        addAnnotationIcon.setText( Constants.INSTANCE.AddAnnotation() );
 
     }
 
@@ -140,7 +138,7 @@ public class FactFieldsEditor extends Composite {
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
+                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
                     fieldsPanel.remove( editor );
                     fields.remove( field );
                 }
@@ -156,7 +154,7 @@ public class FactFieldsEditor extends Composite {
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
+                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
                     fieldsPanel.remove( editor );
                     annotations.remove( annotation );
                 }

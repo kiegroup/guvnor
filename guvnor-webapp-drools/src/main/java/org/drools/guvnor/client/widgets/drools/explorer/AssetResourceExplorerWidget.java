@@ -46,7 +46,6 @@ import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMod
  */
 public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplorerWidget {
 
-    private Constants constants = GWT.create(Constants.class);
     private boolean globalArea;
 
     //Services
@@ -239,7 +238,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
         //source is mandatory!
         final String[] selectedRowUUIDs = this.assetsTable.getSelectedRowUUIDs();
         if (selectedRowUUIDs == null || selectedRowUUIDs.length == 0) {
-            throw new IllegalStateException(constants.NoPackageSeleced());
+            throw new IllegalStateException(Constants.INSTANCE.NoPackageSeleced());
         }
 
         //load asset information

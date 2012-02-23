@@ -19,7 +19,7 @@ package org.drools.guvnor.client.asseteditor;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -39,7 +39,7 @@ public class RuleViewerWrapper extends GuvnorEditor
     implements
     RefreshAssetEditorEvent.Handler,
     ShowMessageEvent.Handler {
-    private Constants           constants            = GWT.create( Constants.class );
+    private ConstantsCore constants            = GWT.create( ConstantsCore.class );
 
     private Asset               asset;
     private boolean             isHistoricalReadOnly = false;
@@ -123,7 +123,8 @@ public class RuleViewerWrapper extends GuvnorEditor
     }
 
     public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-        if ( refreshAssetEditorEvent.getUuid().equals( asset.getUuid() ) ) {
+        //AssetUUID == null means to refresh all asset editors contained by the specified module. 
+        if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getModuleName().equals(refreshAssetEditorEvent.getModuleName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
             LoadingPopup.showMessage( constants.RefreshingItem() );
             RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
                                                                       new GenericCallback<Asset>() {

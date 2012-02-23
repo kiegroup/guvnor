@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -45,9 +44,9 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
     /**
      * Creates a new FactPatternWidget
      * 
-     * @param mod
+     * @param modeller
      * @param eventBus
-     * @param p
+     * @param action
      * @param readOnly
      *            if the widget should be in RO mode. If this parameter is null,
      *            the readOnly attribute is calculated.
@@ -69,8 +68,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
         sp.setStyleName( "model-builderInner-Background" ); //NON-NLS
-        Constants constants = ((Constants) GWT.create( Constants.class ));
-        sp.add( new SmallLabel( "&nbsp;" + constants.AddXToListY( gca.factName,
+        sp.add( new SmallLabel( "&nbsp;" + Constants.INSTANCE.AddXToListY( gca.factName,
                                                                   gca.globalName ) ) );
 
         if ( this.readOnly ) {

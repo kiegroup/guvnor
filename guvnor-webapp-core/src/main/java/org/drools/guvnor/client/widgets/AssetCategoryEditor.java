@@ -21,8 +21,8 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
@@ -44,8 +44,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class AssetCategoryEditor extends DirtyableComposite {
 
-    private Constants          constants = GWT.create( Constants.class );
-    private static Images      images    = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
 
     private MetaData           data;
     private DirtyableFlexTable layout    = new DirtyableFlexTable();

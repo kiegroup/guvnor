@@ -20,8 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 /**
@@ -29,8 +29,8 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
  */
 public class ErrorPopup extends Popup {
 
-    private static Images images = (Images) GWT.create( Images.class );
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
     private VerticalPanel body = new VerticalPanel();
 
     private ErrorPopup() {

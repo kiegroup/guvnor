@@ -33,8 +33,8 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
@@ -45,8 +45,8 @@ import java.util.Date;
  * edits, but it does not load or save anything itself.
  */
 public class MetaDataWidget extends Composite {
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     private final Artifact artifact;
     private final boolean readOnly;
@@ -292,7 +292,7 @@ public class MetaDataWidget extends Composite {
                         constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(uuid));
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(sel.getSelectedPackage(), uuid));
                                 pop.hide();
                             }
 

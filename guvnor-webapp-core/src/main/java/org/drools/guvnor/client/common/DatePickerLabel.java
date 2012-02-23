@@ -18,7 +18,7 @@ package org.drools.guvnor.client.common;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class DatePickerLabel extends DatePicker {
 
     protected Label   labelWidget = new Label();
-    private Constants constants   = ((Constants) GWT.create( Constants.class ));
+    private ConstantsCore constants   = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     public DatePickerLabel(String selectedDate) {
         this( selectedDate,

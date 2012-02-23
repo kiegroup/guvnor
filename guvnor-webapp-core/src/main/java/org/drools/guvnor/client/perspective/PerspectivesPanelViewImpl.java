@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanel;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanelViewImpl extends Composite
@@ -48,7 +48,7 @@ public class PerspectivesPanelViewImpl extends Composite
 
     private static PerspectivesPanelViewImplBinder uiBinder = GWT.create(PerspectivesPanelViewImplBinder.class);
 
-    private static Constants constants = GWT.create(Constants.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     private Presenter presenter;
 

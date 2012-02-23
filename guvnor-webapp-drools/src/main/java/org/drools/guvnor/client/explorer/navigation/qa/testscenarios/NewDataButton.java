@@ -19,14 +19,15 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,16 +42,14 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class NewDataButton extends TestScenarioButton {
 
-    private static Images        images = GWT.create( Images.class );
-
     private final ExecutionTrace currentEx;
 
     public NewDataButton(final ExecutionTrace previousEx,
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super( images.newItem(),
-               constants.AddANewDataInputToThisScenario(),
+        super( Images.INSTANCE.newItem(),
+               Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
                scenarioWidget );
@@ -65,25 +64,25 @@ public class NewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( images.ruleAsset(),
-                   constants.NewInput() );
+            super( Images.INSTANCE.ruleAsset(),
+                   Constants.INSTANCE.NewInput() );
 
-            addAttribute( constants.InsertANewFact1(),
+            addAttribute( Constants.INSTANCE.InsertANewFact1(),
                           new InsertFactPanel() );
 
             List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
                                                                      false );
             //now we do modifies & retracts
             if ( varsInScope.size() > 0 ) {
-                addAttribute( constants.ModifyAnExistingFactScenario(),
+                addAttribute( Constants.INSTANCE.ModifyAnExistingFactScenario(),
                               new ModifyFactPanel( varsInScope ) );
 
-                addAttribute( constants.RetractAnExistingFactScenario(),
+                addAttribute( Constants.INSTANCE.RetractAnExistingFactScenario(),
                               new ExtractFactPanel( varsInScope ) );
 
             }
 
-            addAttribute( constants.ActivateRuleFlowGroup(),
+            addAttribute( Constants.INSTANCE.ActivateRuleFlowGroup(),
                           new ActivateRuleFlowPanel() );
         }
 
@@ -146,10 +145,10 @@ public class NewDataButton extends TestScenarioButton {
                     public void onClick(ClickEvent event) {
                         String factName = ("" + factNameTextBox.getText()).trim();
                         if ( factName.equals( "" ) || factNameTextBox.getText().indexOf( ' ' ) > -1 ) {
-                            Window.alert( constants.YouMustEnterAValidFactName() );
+                            Window.alert( Constants.INSTANCE.YouMustEnterAValidFactName() );
                         } else {
                             if ( scenario.isFactNameReserved( factName ) ) {
-                                Window.alert( constants.TheFactName0IsAlreadyInUsePleaseChooseAnotherName( factName ) );
+                                Window.alert( Constants.INSTANCE.TheFactName0IsAlreadyInUsePleaseChooseAnotherName( factName ) );
                             } else {
                                 scenario.insertBetween( previousEx,
                                                         getFixture() );
@@ -168,7 +167,7 @@ public class NewDataButton extends TestScenarioButton {
                 factNameTextBox.setVisibleLength( 5 );
 
                 add( valueWidget );
-                add( new SmallLabel( constants.FactName() ) );
+                add( new SmallLabel( Constants.INSTANCE.FactName() ) );
                 add( factNameTextBox );
                 add( add );
             }

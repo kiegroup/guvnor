@@ -19,6 +19,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -60,18 +61,18 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     @Override
     protected String getPopupTitle() {
-        return constants.AddAConditionToTheRule();
+        return Constants.INSTANCE.AddAConditionToTheRule();
     }
 
     @Override
     public Widget getContent() {
         if ( position == null ) {
-            positionCbo.addItem( constants.Bottom(),
+            positionCbo.addItem( Constants.INSTANCE.Bottom(),
                                  String.valueOf( this.model.lhs.length ) );
-            positionCbo.addItem( constants.Top(),
+            positionCbo.addItem( Constants.INSTANCE.Top(),
                                  "0" );
             for ( int i = 1; i < model.lhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0( i ),
+                positionCbo.addItem( Constants.INSTANCE.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -81,16 +82,16 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         }
 
         if ( completions.getDSLConditions().length == 0 && completions.getFactTypes().length == 0 ) {
-            layoutPanel.addRow( new HTML( "<div class='highlight'>" + constants.NoModelTip() + "</div>" ) ); 
+            layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
         }
 
         //only show the drop down if we are not using fixed position.
         if ( position == null ) {
             HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( constants.PositionColon() ) );
+            hp0.add( new HTML( Constants.INSTANCE.PositionColon() ) );
             hp0.add( positionCbo );
-            hp0.add( new InfoPopup( constants.PositionColon(),
-                                    constants.ConditionPositionExplanation() ) );
+            hp0.add( new InfoPopup( Constants.INSTANCE.PositionColon(),
+                                    Constants.INSTANCE.ConditionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -99,7 +100,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         layoutPanel.addRow( choicesPanel );
 
         HorizontalPanel hp = new HorizontalPanel();
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         hp.add( ok );
         ok.addClickHandler( new ClickHandler() {
 
@@ -108,7 +109,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             }
         } );
 
-        Button cancel = new Button( constants.Cancel() );
+        Button cancel = new Button( Constants.INSTANCE.Cancel() );
         hp.add( cancel );
         cancel.addClickHandler( new ClickHandler() {
 
@@ -118,7 +119,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         } );
 
         CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( constants.OnlyDisplayDSLConditions() );
+        chkOnlyDisplayDSLConditions.setText( Constants.INSTANCE.OnlyDisplayDSLConditions() );
         chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
         chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
@@ -260,7 +261,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     private void addFreeFormDrl() {
         if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( constants.FreeFormDrl(),
+            choices.addItem( Constants.INSTANCE.FreeFormDrl(),
                              "FF" );
             cmds.put( "FF",
                       new Command() {

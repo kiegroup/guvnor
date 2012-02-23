@@ -22,21 +22,18 @@ import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 
 public class DeploymentNewMenu {
-    private static Constants constants = (Constants) GWT.create( Constants.class );
-    private static Images    images    = (Images) GWT.create( Images.class );
 
     public static MenuBar getMenu(final NavigationItemBuilderOld manager) {
 
         MenuBar createNewMenu = new MenuBar( true );
 
-        createNewMenu.addItem( Util.getHeader( images.snapshotSmall(),
-                                               constants.NewDeploymentSnapshot() ).asString(),
+        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.snapshotSmall(),
+                               Constants.INSTANCE.NewDeploymentSnapshot() ).asString(),
                                true,
                                new Command() {
                                    public void execute() {
@@ -49,8 +46,8 @@ public class DeploymentNewMenu {
                                    }
                                } );
 
-        createNewMenu.addItem( Util.getHeader( images.refresh(),
-                                               constants.RebuildAllSnapshotBinaries() ).asString(),
+        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.refresh(),
+                                               Constants.INSTANCE.RebuildAllSnapshotBinaries() ).asString(),
                                true,
                                new Command() {
                                    public void execute() {
@@ -62,7 +59,7 @@ public class DeploymentNewMenu {
         rootMenuBar.setAutoOpen( true );
         rootMenuBar.setAnimationEnabled( true );
 
-        rootMenuBar.addItem( new MenuItem( constants.CreateNew(),
+        rootMenuBar.addItem( new MenuItem( Constants.INSTANCE.CreateNew(),
                                            createNewMenu ) );
 
         return rootMenuBar;

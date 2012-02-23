@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,22 +27,18 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
  */
 public class RowNumberBuilder
     implements
-    GuidedDecisionTableBuilder {
+    GuidedDecisionTableSourceBuilder {
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 
-    public Code getActionTypeCode() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement an ActionType.Code" );
-    }
-
-    public String getResult() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does not return DRL." );
-    }
-
-    public void addTemplate(int row,
-                            int col,
-                            String content) {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement code snippets." );
+    public void populateDecisionTable(GuidedDecisionTable52 dtable) {
+        for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
+            dtable.getData().add( new ArrayList<DTCellValue52>() );
+            DTCellValue52 dcv = this.values.get( iRow );
+            dcv.setNumericValue( new Integer( iRow + 1 ) );
+            dtable.getData().get( iRow ).add( 0,
+                                              dcv );
+        }
     }
 
     public void addCellValue(int row,
@@ -60,14 +55,18 @@ public class RowNumberBuilder
         return this.values.size() > 0;
     }
 
-    public void populateDecisionTable(GuidedDecisionTable52 dtable) {
-        for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
-            dtable.getData().add( new ArrayList<DTCellValue52>() );
-            DTCellValue52 dcv = this.values.get( iRow );
-            dcv.setNumericValue( new BigDecimal( iRow + 1 ) );
-            dtable.getData().get( iRow ).add( 0,
-                                              dcv );
-        }
+    public Code getActionTypeCode() {
+        throw new UnsupportedOperationException( "RowNumberBuilder does implement an ActionType.Code" );
+    }
+
+    public String getResult() {
+        throw new UnsupportedOperationException( "RowNumberBuilder does not return DRL." );
+    }
+
+    public void addTemplate(int row,
+                            int col,
+                            String content) {
+        throw new UnsupportedOperationException( "RowNumberBuilder does implement code snippets." );
     }
 
 }

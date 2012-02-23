@@ -59,7 +59,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
 //    @BeforeClass
     // Unreliable HACK
-    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    // Fixable after this is testing: https://issues.jboss.org/browse/ARQ-540
     @Test
     public void startServers() throws Exception {
         loginAs("admin");
@@ -305,8 +305,6 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
-        //TODO: See JIRA https://issues.jboss.org/browse/GUVNOR-1814
-        //assertEquals("admin", pm.getLastContributor());
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
@@ -910,7 +908,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testUpdatePackageFromJAXB(@ArquillianResource URL baseURL) throws Exception {
-        //create a package for testing
+        //create a package for fixtures
         Package p = createTestPackage("testUpdatePackageFromJAXB");
         p.setDescription("desc for testUpdatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());

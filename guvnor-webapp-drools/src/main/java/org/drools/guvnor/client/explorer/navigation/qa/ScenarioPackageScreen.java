@@ -43,9 +43,6 @@ import java.util.Arrays;
  */
 public class ScenarioPackageScreen extends Composite {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
-
     private final VerticalPanel layout = new VerticalPanel();
 
     private AssetPagedTable table;
@@ -64,8 +61,8 @@ public class ScenarioPackageScreen extends Composite {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        vert.add( new HTML( "<b>" + constants.ScenariosForPackage1() + "</b>" + packageName ) );
-        Button run = new Button( constants.RunAllScenarios() );
+        vert.add( new HTML( "<b>" + Constants.INSTANCE.ScenariosForPackage1() + "</b>" + packageName ) );
+        Button run = new Button( Constants.INSTANCE.RunAllScenarios() );
         run.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 runAllScenarios( packageUUID );
@@ -74,7 +71,7 @@ public class ScenarioPackageScreen extends Composite {
 
         vert.add( run );
 
-        pf.addHeader( images.scenarioLarge(),
+        pf.addHeader( Images.INSTANCE.scenarioLarge(),
                 vert );
 
         layout.add( pf );
@@ -93,7 +90,7 @@ public class ScenarioPackageScreen extends Composite {
      * Run all the scenarios, obviously !
      */
     private void runAllScenarios(String uuid) {
-        LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
+        LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenarios() );
         RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
                 new GenericCallback<BulkTestRunResult>() {
                     public void onSuccess(BulkTestRunResult bulkTestRunResult) {

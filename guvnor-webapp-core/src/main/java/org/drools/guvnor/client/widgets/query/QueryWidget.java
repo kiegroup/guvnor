@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.widgets.tables.QueryPagedTable;
@@ -36,7 +36,7 @@ import java.util.*;
 
 public class QueryWidget extends Composite {
 
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private VerticalPanel layout;
     private final ClientFactory clientFactory;

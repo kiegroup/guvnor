@@ -19,11 +19,11 @@ package org.drools.guvnor.client.explorer.navigation.settings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.explorer.navigation.RuntimeBaseTree;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 public class SettingsTreeViewImpl extends RuntimeBaseTree implements SettingsTreeView {
 
-    private static Constants constants = GWT.create(Constants.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     private Presenter presenter;
     private final TreeItem preferencesTreeItem;

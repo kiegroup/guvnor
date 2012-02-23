@@ -18,17 +18,26 @@ package org.drools.ide.common.client.modeldriven.dt52;
 /**
  * A column representing a single BRL fragment variable
  */
-public class BRLActionVariableColumn extends ActionCol52 implements BRLVariableColumn {
+public class BRLActionVariableColumn extends ActionCol52
+    implements
+    BRLVariableColumn {
 
     private static final long serialVersionUID = 540l;
 
-    private String      varName;
-    private String      fieldType;
-    private String      factType;
-    private String      factField;
+    private String            varName;
+    private String            fieldType;
+    private String            factType;
+    private String            factField;
 
-    public BRLActionVariableColumn() {}
-    
+    public BRLActionVariableColumn() {
+    }
+
+    public BRLActionVariableColumn(String varName,
+                                   String fieldType) {
+        this.varName = varName;
+        this.fieldType = fieldType;
+    }
+
     public BRLActionVariableColumn(String varName,
                                    String fieldType,
                                    String factType,

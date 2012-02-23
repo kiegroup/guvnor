@@ -34,8 +34,8 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -45,8 +45,8 @@ public class RuleFlowWrapper extends Composite
         SaveEventListener,
         EditorWidget {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     private RuleViewer viewer;
     private Asset asset;

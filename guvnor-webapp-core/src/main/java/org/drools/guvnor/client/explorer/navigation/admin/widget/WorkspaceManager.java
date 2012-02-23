@@ -28,8 +28,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceManager extends Composite {
-    private static Images images    = (Images) GWT.create( Images.class );
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private ListBox       availableWorkspacesListBox;
     private ListBox       availableModulesListBox = new ListBox( true );

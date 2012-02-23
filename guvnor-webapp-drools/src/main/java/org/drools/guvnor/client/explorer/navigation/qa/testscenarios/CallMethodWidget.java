@@ -16,13 +16,12 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,9 +37,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CallMethodWidget extends DirtyableComposite {
-
-    protected static Constants               constants   = GWT.create( Constants.class );
-    private static Images                    images      = GWT.create( Images.class );
 
     protected final ScenarioWidget           parent;
     protected final Scenario                 scenario;
@@ -137,8 +133,8 @@ public class CallMethodWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( mCall.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( images.addFieldToFact() );
-            edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
+            Image edit = new ImageButton( Images.INSTANCE.addFieldToFact() );
+            edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
             edit.addClickHandler( new ClickHandler() {
 
@@ -160,8 +156,8 @@ public class CallMethodWidget extends DirtyableComposite {
 
     protected void showAddFieldPopup(Widget w) {
 
-        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
-                                                         constants.ChooseAMethodToInvoke() );
+        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                         Constants.INSTANCE.ChooseAMethodToInvoke() );
         ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -172,7 +168,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( constants.ChooseAMethodToInvoke(),
+        popup.addAttribute( Constants.INSTANCE.ChooseAMethodToInvoke(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -272,7 +268,7 @@ public class CallMethodWidget extends DirtyableComposite {
     }
 
     protected void onDelete() {
-        if ( Window.confirm( constants.AreYouSureToRemoveCallMethod() ) ) {
+        if ( Window.confirm( Constants.INSTANCE.AreYouSureToRemoveCallMethod() ) ) {
             scenario.removeFixture( mCall );
             parent.renderEditor();
         }
@@ -280,8 +276,8 @@ public class CallMethodWidget extends DirtyableComposite {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( images.deleteItemSmall(),
-                   constants.RemoveCallMethod() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {
 

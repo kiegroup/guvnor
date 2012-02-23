@@ -24,7 +24,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -37,17 +36,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:32:35
- * To change this template use File | Settings | File Templates.
- */
 public class ExecutionWidget extends Composite {
-
-    private Constants            constants = GWT.create( Constants.class );
-    private static Images        images    = GWT.create( Images.class );
 
     private final ExecutionTrace executionTrace;
 
@@ -61,8 +50,8 @@ public class ExecutionWidget extends Composite {
 
         final ListBox choice = new ListBox();
 
-        choice.addItem( constants.UseRealDateAndTime() );
-        choice.addItem( constants.UseASimulatedDateAndTime() );
+        choice.addItem( Constants.INSTANCE.UseRealDateAndTime() );
+        choice.addItem( Constants.INSTANCE.UseASimulatedDateAndTime() );
         choice.setSelectedIndex( (executionTrace.getScenarioSimulatedDate() == null) ? 0 : 1 );
         choice.addChangeHandler( new ChangeHandler() {
 
@@ -77,7 +66,7 @@ public class ExecutionWidget extends Composite {
         } );
 
         HorizontalPanel layout = new HorizontalPanel();
-        layout.add( new Image( images.executionTrace() ) );
+        layout.add( new Image( Images.INSTANCE.executionTrace() ) );
         layout.add( choice );
         layout.add( simulDatePanel );
 
@@ -128,7 +117,7 @@ public class ExecutionWidget extends Composite {
 
             public void onChange(ChangeEvent event) {
                 if ( textBox.getText().trim().equals( "" ) ) {
-                    textBox.setText( constants.currentDateAndTime() );
+                    textBox.setText( Constants.INSTANCE.currentDateAndTime() );
                 } else {
                     try {
                         //Date d1 = new Date();
@@ -137,7 +126,7 @@ public class ExecutionWidget extends Composite {
                         textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
-                        ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );
+                        ErrorPopup.showMessage( Constants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );
                     }
                 }
             }

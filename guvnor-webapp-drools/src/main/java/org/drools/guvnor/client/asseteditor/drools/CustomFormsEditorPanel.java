@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -77,15 +76,14 @@ public class CustomFormsEditorPanel extends Composite {
         final FlexTable table = new FlexTable();
 
         VerticalPanel vp = new VerticalPanel();
-        Constants constants = GWT.create(Constants.class);
-        vp.add(new SmallLabel(constants.FactTypes()));
+        vp.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
         vp.add(factsCombo);
         table.setWidget(0,
                 0,
                 vp);
 
         vp = new VerticalPanel();
-        vp.add(new SmallLabel(constants.Field()));
+        vp.add(new SmallLabel(Constants.INSTANCE.Field()));
         vp.add(fieldsCombo);
         table.setWidget(1,
                 0,
@@ -94,7 +92,7 @@ public class CustomFormsEditorPanel extends Composite {
         vp = new VerticalPanel();
         vp.add(new SmallLabel("Custom Form URL:")); //TODO i18n
 
-        Button btnUpdateURL = new Button(constants.OK(),
+        Button btnUpdateURL = new Button(Constants.INSTANCE.OK(),
                 new ClickHandler() {
                     public void onClick(ClickEvent event) {
 

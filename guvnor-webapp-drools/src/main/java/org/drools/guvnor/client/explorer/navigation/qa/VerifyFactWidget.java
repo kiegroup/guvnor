@@ -23,8 +23,8 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 
@@ -46,17 +46,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:31:47
- * To change this template use File | Settings | File Templates.
- */
 public class VerifyFactWidget extends Composite {
-
-    private Constants                  constants = GWT.create( Constants.class );
-    private static Images              images    = GWT.create( Images.class );
 
     private Grid                       outer;
     private boolean                    showResults;
@@ -86,27 +76,27 @@ public class VerifyFactWidget extends Composite {
         HorizontalPanel ab = new HorizontalPanel();
         if ( !vf.anonymous ) {
             type = (String) sc.getVariableTypes().get( vf.getName() );
-            ab.add( new SmallLabel( constants.scenarioFactTypeHasValues( type, vf.getName() ) ) );
+            ab.add( new SmallLabel( Constants.INSTANCE.scenarioFactTypeHasValues( type, vf.getName() ) ) );
         } else {
             type = vf.getName();
-            ab.add( new SmallLabel( constants.AFactOfType0HasValues( vf.getName() ) ) );
+            ab.add( new SmallLabel( Constants.INSTANCE.AFactOfType0HasValues( vf.getName() ) ) );
         }
         this.showResults = showResults;
 
-        Image add = new ImageButton( images.addFieldToFact(),
-                                     constants.AddAFieldToThisExpectation(),
+        Image add = new ImageButton( Images.INSTANCE.addFieldToFact(),
+                                     Constants.INSTANCE.AddAFieldToThisExpectation(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
 
                                              String[] fields = (String[]) sce.getModelFields( type );
-                                             final FormStylePopup pop = new FormStylePopup( images.ruleAsset(),
-                                                                                            constants.ChooseAFieldToAdd() );
+                                             final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+                                                                                            Constants.INSTANCE.ChooseAFieldToAdd() );
                                              final ListBox b = new ListBox();
                                              for ( int i = 0; i < fields.length; i++ ) {
                                                  b.addItem( fields[i] );
                                              }
                                              pop.addRow( b );
-                                             Button ok = new Button( constants.OK() );
+                                             Button ok = new Button( Constants.INSTANCE.OK() );
                                              ok.addClickHandler( new ClickHandler() {
                                                  public void onClick(ClickEvent w) {
                                                      String f = b.getItemText( b.getSelectedIndex() );
@@ -151,9 +141,9 @@ public class VerifyFactWidget extends Composite {
                                                                 HasHorizontalAlignment.ALIGN_RIGHT );
 
             final ListBox opr = new ListBox();
-            opr.addItem( constants.equalsScenario(),
+            opr.addItem( Constants.INSTANCE.equalsScenario(),
                          "==" );
-            opr.addItem( constants.doesNotEqualScenario(),
+            opr.addItem( Constants.INSTANCE.doesNotEqualScenario(),
                          "!=" );
             if ( fld.getOperator().equals( "==" ) ) {
                 opr.setSelectedIndex( 0 );
@@ -185,11 +175,11 @@ public class VerifyFactWidget extends Composite {
                             3,
                             cellEditor );
 
-            Image del = new ImageButton( images.deleteItemSmall(),
-                                         constants.RemoveThisFieldExpectation(),
+            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+                                         Constants.INSTANCE.RemoveThisFieldExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
-                                                 if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFieldExpectation(
+                                                 if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
                                                                                      fld.getFieldName() ) ) ) {
                                                      vf.getFieldValues().remove( fld );
                                                      FlexTable data = render( vf );
@@ -207,10 +197,10 @@ public class VerifyFactWidget extends Composite {
                 if ( !fld.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.warning() ) );
+                                    new Image( Images.INSTANCE.warning() ) );
                     data.setWidget( i,
                                     5,
-                                    new HTML( constants.ActualResult( fld.getActualResult() ) ) );
+                                    new HTML( Constants.INSTANCE.ActualResult( fld.getActualResult() ) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           5,
@@ -219,7 +209,7 @@ public class VerifyFactWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.testPassed() ) );
+                                    new Image( Images.INSTANCE.testPassed() ) );
                 }
             }
 

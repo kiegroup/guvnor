@@ -29,17 +29,9 @@ public class ConversionResult
 
     private static final long       serialVersionUID = 540L;
 
-    private String                  uuid;
+    private List<ConversionAsset>   newAssets        = new ArrayList<ConversionAsset>();
 
     private List<ConversionMessage> messages         = new ArrayList<ConversionMessage>();
-
-    public void setUUID(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUUID() {
-        return this.uuid;
-    }
 
     public boolean isConverted() {
         for ( ConversionMessage message : messages ) {
@@ -48,6 +40,14 @@ public class ConversionResult
             }
         }
         return true;
+    }
+
+    public void addNewAsset(ConversionAsset newAsset) {
+        this.newAssets.add( newAsset );
+    }
+
+    public List<ConversionAsset> getNewAssets() {
+        return this.newAssets;
     }
 
     public void addMessage(String message,
@@ -81,12 +81,18 @@ public class ConversionResult
         return messages;
     }
 
+    /**
+     * Types of message
+     */
     public enum ConversionMessageType {
         INFO,
         WARNING,
         ERROR
     }
 
+    /**
+     * A message resulting from the conversion process
+     */
     public static class ConversionMessage
         implements
         PortableObject {
@@ -112,6 +118,37 @@ public class ConversionResult
 
         public ConversionMessageType getMessageType() {
             return this.messageType;
+        }
+
+    }
+
+    /**
+     * A container for a new Asset created during the conversion process
+     */
+    public static class ConversionAsset
+        implements
+        PortableObject {
+
+        private static final long serialVersionUID = 540L;
+
+        private String            uuid;
+        private String            format;
+
+        public ConversionAsset() {
+        }
+
+        public ConversionAsset(final String uuid,
+                               final String format) {
+            this.uuid = uuid;
+            this.format = format;
+        }
+
+        public String getUUID() {
+            return uuid;
+        }
+
+        public String getFormat() {
+            return format;
         }
 
     }

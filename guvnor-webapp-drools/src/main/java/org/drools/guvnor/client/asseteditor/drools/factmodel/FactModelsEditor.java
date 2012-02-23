@@ -36,8 +36,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FactModelsEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-
     interface FactModelsEditorBinder
         extends
         UiBinder<Widget, FactModelsEditor> {
@@ -66,8 +64,8 @@ public class FactModelsEditor extends Composite {
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        addFactIcon.setTitle( constants.AddNewFactType() );
-        addFactIcon.setText( constants.AddNewFactType() );
+        addFactIcon.setTitle( Constants.INSTANCE.AddNewFactType() );
+        addFactIcon.setText( Constants.INSTANCE.AddNewFactType() );
 
         fillModels();
     }

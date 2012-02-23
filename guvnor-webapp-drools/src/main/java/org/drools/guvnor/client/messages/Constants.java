@@ -18,6 +18,7 @@ package org.drools.guvnor.client.messages;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 /**
@@ -32,6 +33,8 @@ import com.google.gwt.i18n.client.Messages;
 public interface Constants
         extends
         Messages {
+
+    Constants INSTANCE = GWT.create(Constants.class);
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -1240,6 +1243,8 @@ public interface Constants
 
     String CreateANewBPMN2Process();
 
+    String FormDefinition();
+    
     String NewEnumeration();
 
     String CreateANewEnumerationDropDownMapping();

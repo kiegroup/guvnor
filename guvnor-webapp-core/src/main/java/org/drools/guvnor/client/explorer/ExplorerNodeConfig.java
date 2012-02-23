@@ -25,8 +25,8 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
@@ -42,8 +42,8 @@ import com.google.gwt.user.client.ui.TreeItem;
  */
 public class ExplorerNodeConfig {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
     // Browse
      public static final String CATEGORY_ID = "category";                                 // NON-NLS
@@ -110,7 +110,6 @@ public class ExplorerNodeConfig {
         return new GenericCallback<String[]>() {
             public void onSuccess( String[] value ) {
                 if ( value.length == 0 ) {
-                    newRepoDialogIfShowAdminAndPathMatches( path );
                     infanticide( treeItem );
                 } else {
                     createChildNodes( treeItem, path, itemWidgets, value );
@@ -132,22 +131,6 @@ public class ExplorerNodeConfig {
                 }
             }
 
-            private void newRepoDialogIfShowAdminAndPathMatches( final String path ) {
-                if ( path.equals( "/" ) && UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
-                    RepositoryServiceFactory.getPackageService().listModules( createGenericCallbackForListPackages() );
-                }
-            }
-
-            private GenericCallback<Module[]> createGenericCallbackForListPackages() {
-                return new GenericCallback<Module[]>() {
-                    public void onSuccess( Module[] result ) {
-                        if ( result.length == 1 ) {
-                            doNewRepoDialog();
-                        }
-                    }
-                };
-            }
-
             private OpenHandler<TreeItem> createOpenHandlerForTree( final Map<TreeItem, String> itemWidgets, final TreeItem childNode ) {
                 return new OpenHandler<TreeItem>() {
                     boolean expanding = false;
@@ -163,11 +146,6 @@ public class ExplorerNodeConfig {
                         }
                     }
                 };
-            }
-
-            private void doNewRepoDialog() {
-                NewRepoDialog diag = new NewRepoDialog();
-                diag.show();
             }
 
         };

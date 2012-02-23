@@ -20,9 +20,9 @@
     xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
     xmlns:guvnor-pager="urn:import:org.drools.guvnor.client.widgets.tables">
 
-  <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
+  <ui:with field='images' type='org.drools.guvnor.client.resources.ImagesCore'/>
 	
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>

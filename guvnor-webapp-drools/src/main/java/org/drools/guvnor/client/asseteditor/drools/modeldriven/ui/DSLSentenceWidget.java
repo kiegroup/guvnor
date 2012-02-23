@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
@@ -47,7 +48,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.brl.DSLComplexVariableValue;
 import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
@@ -56,9 +56,6 @@ import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
  * This displays a widget to edit a DSL sentence.
  */
 public class DSLSentenceWidget extends RuleModellerWidget {
-
-    private Constants               constants   = ((Constants) GWT.create( Constants.class ));
-    private static Images           images      = GWT.create( Images.class );
     
     private final List<Widget>      widgets;
     private final List<DSLDropDown> dropDownWidgets;
@@ -369,7 +366,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         private String              oldValue  = "";
         private DSLVariableValue    oldVariableValue;
         private String              regex     = "";
-        private Constants constants = ((Constants) GWT.create( Constants.class ));
 
         public FieldEditor() {
             box = new TextBox();
@@ -379,7 +375,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     TextBox otherBox = (TextBox) event.getSource();
 
                     if ( !regex.equals( "" ) && !otherBox.getText().matches( regex ) ) {
-                        Window.alert( constants.TheValue0IsNotValidForThisField( otherBox.getText() ) );
+                        Window.alert( Constants.INSTANCE.TheValue0IsNotValidForThisField( otherBox.getText() ) );
                         box.setText( oldValue );
                     } else {
                         oldValue = otherBox.getText();
@@ -526,8 +522,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                     public void onClick(ClickEvent event) {
                         final CustomFormPopUp customFormPopUp = 
-                                new CustomFormPopUp( images.newexWiz(), 
-                                constants.FieldValue(),
+                                new CustomFormPopUp( Images.INSTANCE.newexWiz(),
+                                Constants.INSTANCE.FieldValue(),
                                 DSLCustomFormButton.this.customFormConfiguration );
                         
                         customFormPopUp.addOkButtonHandler( new ClickHandler() {

@@ -20,16 +20,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.util.Util;
 
 import java.util.Map;
 
 public class AdminTree extends Tree {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public AdminTree(Map<TreeItem, String> itemWidgets) {
         setAnimationEnabled(true);

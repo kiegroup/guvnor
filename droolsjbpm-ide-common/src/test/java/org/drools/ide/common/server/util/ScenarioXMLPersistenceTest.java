@@ -19,19 +19,16 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 
 public class ScenarioXMLPersistenceTest {
 

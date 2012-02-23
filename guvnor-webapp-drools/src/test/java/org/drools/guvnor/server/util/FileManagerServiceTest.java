@@ -116,12 +116,13 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     public void testGetFilebyUUID() throws Exception {
 
         AssetItem item = rulesRepository.loadDefaultModule().addAsset( "testGetFilebyUUID",
-                                                             "description" );
+                                                                       "description" );
         item.updateFormat("drl");
         rulesRepository.save();
 
         FormData upload = new FormData();
-        upload.setFile( new MockFile() );
+        MockFile file = new MockFile("testGetFilebyUUID.drl");
+        upload.setFile( file );
         upload.setUuid(item.getUUID());
         fileManagerService.attachFile( upload );
 
@@ -518,8 +519,18 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         private static final long serialVersionUID = 510l;
 
+        private final String      fileName;
+
         InputStream               stream           = new ByteArrayInputStream( "foo bar".getBytes() );
 
+        public MockFile() {
+            this.fileName = "foo.bar";
+        }
+        
+        public MockFile(final String fileName) {
+            this.fileName = fileName;
+        }
+        
         public void setInputStream(InputStream is) throws IOException {
             stream.close();
             stream = is;
@@ -548,7 +559,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         }
 
         public String getName() {
-            return "foo.bar";
+            return this.fileName;
         }
 
         public OutputStream getOutputStream() throws IOException {

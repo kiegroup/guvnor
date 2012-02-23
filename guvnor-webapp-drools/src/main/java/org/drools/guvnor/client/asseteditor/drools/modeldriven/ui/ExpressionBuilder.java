@@ -40,7 +40,6 @@ import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -55,7 +54,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 
 public class ExpressionBuilder extends RuleModellerWidget
     implements
@@ -69,7 +67,6 @@ public class ExpressionBuilder extends RuleModellerWidget
     private static final String          GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
     private static final String          METHOD_VALUE_PREFIX          = "mt";
     private final SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
-    private Constants                    constants                    = ((Constants) GWT.create( Constants.class ));
     private HorizontalPanel              panel                        = new HorizontalPanel();
     private ExpressionFormLine           expression;
     private boolean                      readOnly;
@@ -137,7 +134,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         ListBox startPoint = new ListBox();
         panel.add( startPoint );
 
-        startPoint.addItem( constants.ChooseDotDotDot(),
+        startPoint.addItem( Constants.INSTANCE.ChooseDotDotDot(),
                             "" );
 
         // TODO {baunax} uncomment when global collections is implemented.
@@ -192,8 +189,9 @@ public class ExpressionBuilder extends RuleModellerWidget
             } else {
                 //if the variable is not bound to a Fact Pattern then it must
                 //be boubd to a Field
-                String lhsBindingType = getRuleModel().getLHSBindingType(attrib);
-                variable = new ExpressionFieldVariable(attrib, lhsBindingType );
+                String lhsBindingType = getRuleModel().getLHSBindingType( attrib );
+                variable = new ExpressionFieldVariable( attrib,
+                                                        lhsBindingType );
             }
             expression.appendPart( variable );
 
@@ -230,9 +228,9 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         ListBox lb = new ListBox();
         lb.setVisibleItemCount( 1 );
-        lb.addItem( constants.ChooseDotDotDot(),
+        lb.addItem( Constants.INSTANCE.ChooseDotDotDot(),
                     "" );
-        lb.addItem( "<==" + constants.DeleteItem(),
+        lb.addItem( "<==" + Constants.INSTANCE.DeleteItem(),
                     DELETE_VALUE );
         for ( Map.Entry<String, String> entry : getCompletionsForCurrentType( expression.getParts().size() > 1 ).entrySet() ) {
             lb.addItem( entry.getKey(),
@@ -246,7 +244,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( "size".contains( value ) ) {
             expression.appendPart( new ExpressionMethod( "size",
                                                          "int",
-                                                         SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                         SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
         } else if ( "isEmpty".equals( value ) ) {
             expression.appendPart( new ExpressionMethod( "isEmpty",
                                                          "boolean",
@@ -271,7 +269,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                 ExpressionFormLine index = new ExpressionFormLine( expression );
                 index.appendPart( new ExpressionMethod( "size",
                                                         "int",
-                                                        SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
                 index.appendPart( new ExpressionText( "-1" ) );
 
                 collectionIndex.putParam( "index",
@@ -293,11 +291,11 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( "size".equals( value ) ) {
                 expression.appendPart( new ExpressionMethod( "size",
                                                              "int",
-                                                             SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                             SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
             } else if ( "isEmpty".equals( value ) ) {
                 expression.appendPart( new ExpressionText( ".size() == 0",
                                                            "",
-                                                           SuggestionCompletionEngine.TYPE_NUMERIC ) );
+                                                           SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
             }
         } else {
             int dotPos = value.indexOf( '.' );
@@ -357,8 +355,17 @@ public class ExpressionBuilder extends RuleModellerWidget
             return completions;
         }
 
-        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( getCurrentGenericType() ) || SuggestionCompletionEngine.TYPE_NUMERIC.equals( getCurrentGenericType() ) || SuggestionCompletionEngine.TYPE_DATE.equals( getCurrentGenericType() )
-             || SuggestionCompletionEngine.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
+        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_BYTE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_LONG.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_NUMERIC_SHORT.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_DATE.equals( getCurrentGenericType() )
+                || SuggestionCompletionEngine.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
             return completions;
         }
 
@@ -469,8 +476,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.setWidth( 500 + "px" );
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
-        Button ok = new Button( constants.Set() );
-        vn.add( new Label( constants.BindTheExpressionToAVariable() ) );
+        Button ok = new Button( Constants.INSTANCE.Set() );
+        vn.add( new Label( Constants.INSTANCE.BindTheExpressionToAVariable() ) );
         vn.add( varName );
         vn.add( ok );
 
@@ -478,7 +485,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) ) {
-                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 expression.setBinding( var );

@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.server.util;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,9 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
@@ -90,7 +91,7 @@ public class GuidedDTDRLPersistence {
             TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                      row );
 
-            BigDecimal num = row.get( 0 ).getNumericValue();
+            Integer num = (Integer) row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
 
             BRLRuleModel rm = new BRLRuleModel( dt );
@@ -234,12 +235,26 @@ public class GuidedDTDRLPersistence {
                                                              ivs );
                 rmv.visit( action );
 
-                //Ensure every key has a value and substitute keys for values
-                for ( InterpolationVariable variable : ivs.keySet() ) {
-                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                    if ( "".equals( value ) ) {
-                        addAction = false;
-                        break;
+                if ( ivs.size() > 0 ) {
+
+                    //Ensure every key has a value and substitute keys for values
+                    for ( InterpolationVariable variable : ivs.keySet() ) {
+                        String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                        if ( "".equals( value ) ) {
+                            addAction = false;
+                            break;
+                        }
+                    }
+                } else {
+
+                    //Check whether the parameter-less BRL fragment needs inclusion
+                    for ( BRLActionVariableColumn variableColumn : column.getChildColumns() ) {
+                        int index = allColumns.indexOf( variableColumn );
+                        DTCellValue52 dcv = row.get( index );
+                        if ( !dcv.getBooleanValue() ) {
+                            addAction = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -469,14 +484,29 @@ public class GuidedDTDRLPersistence {
                                                              ivs );
                 rmv.visit( pattern );
 
-                //Ensure every key has a value and substitute keys for values
-                for ( InterpolationVariable variable : ivs.keySet() ) {
-                    String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
-                    if ( "".equals( value ) ) {
-                        addPattern = false;
-                        break;
+                if ( ivs.size() > 0 ) {
+
+                    //Ensure every key has a value and substitute keys for values
+                    for ( InterpolationVariable variable : ivs.keySet() ) {
+                        String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                        if ( "".equals( value ) ) {
+                            addPattern = false;
+                            break;
+                        }
+                    }
+                } else {
+
+                    //Check whether the parameter-less BRL fragment needs inclusion
+                    for ( BRLConditionVariableColumn variableColumn : column.getChildColumns() ) {
+                        int index = allColumns.indexOf( variableColumn );
+                        DTCellValue52 dcv = row.get( index );
+                        if ( !dcv.getBooleanValue() ) {
+                            addPattern = false;
+                            break;
+                        }
                     }
                 }
+
             }
 
             if ( addPattern ) {

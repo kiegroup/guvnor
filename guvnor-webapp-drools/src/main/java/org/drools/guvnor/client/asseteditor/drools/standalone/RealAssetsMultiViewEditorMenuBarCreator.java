@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools.standalone;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -31,13 +30,11 @@ import org.drools.guvnor.client.messages.Constants;
 public class RealAssetsMultiViewEditorMenuBarCreator extends DefaultMultiViewEditorMenuBarCreator {
 
     private Command cancelCommand;
-    private Constants constants = GWT.create(Constants.class);
 
     /**
      * Constructor that takes 1 command as parameters for "Cancel" Button. 
      * If you want to add a command for "Save and Close" button you cold use
      * {@link MultiViewEditor#setCloseCommand(com.google.gwt.user.client.Command)}
-     * @param saveCommand
      * @param cancelCommand
      */
     public RealAssetsMultiViewEditorMenuBarCreator(Command cancelCommand) {
@@ -49,7 +46,7 @@ public class RealAssetsMultiViewEditorMenuBarCreator extends DefaultMultiViewEdi
     @Override
     public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
         MenuBar toolbar = super.createMenuBar(editor, eventBus);
-        toolbar.addItem(constants.Cancel(),this.cancelCommand);
+        toolbar.addItem(Constants.INSTANCE.Cancel(),this.cancelCommand);
         return toolbar;
     }
 

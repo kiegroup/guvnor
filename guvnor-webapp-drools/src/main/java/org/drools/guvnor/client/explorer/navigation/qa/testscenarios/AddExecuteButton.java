@@ -17,23 +17,20 @@
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 
 public class AddExecuteButton extends Button {
 
-    private final static Constants constants = ((Constants) GWT.create( Constants.class ));
-
     public AddExecuteButton(final Scenario scenario,
                             final ScenarioWidget parent) {
-        super( constants.MoreDotDot() );
+        super( Constants.INSTANCE.MoreDotDot() );
 
-        setTitle( constants.AddAnotherSectionOfDataAndExpectations() );
+        setTitle( Constants.INSTANCE.AddAnotherSectionOfDataAndExpectations() );
 
         addClickHandler( new ClickHandler() {
 

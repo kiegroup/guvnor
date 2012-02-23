@@ -20,17 +20,19 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
+import org.drools.guvnor.client.widgets.PopupListWidget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,14 +53,14 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
         //Set-up supplementary widgets
         if ( !asset.isReadonly() ) {
-            //TODO {manstis} Uncomment - super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
+            super.addSupplementaryWidget( makeConvertToGuidedDecisionTableWidget( asset ) );
         }
         super.addSupplementaryWidget( makeDescriptionWidget() );
     }
 
     //Button to convert XLS- to Guided Decision Table
     private Widget makeConvertToGuidedDecisionTableWidget(Asset asset) {
-        Button convertButton = new Button( constants.ConvertTo0( constants.DecisionTableWebGuidedEditor() ) );
+        Button convertButton = new Button( Constants.INSTANCE.ConvertTo0( Constants.INSTANCE.DecisionTableWebGuidedEditor() ) );
         convertButton.setEnabled( asset.versionNumber > 0 );
         convertButton.addClickHandler( getConvertButtonClickHandler() );
         return convertButton;
@@ -68,7 +70,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                LoadingPopup.showMessage( constants.SavingPleaseWait() );
+                LoadingPopup.showMessage( Constants.INSTANCE.SavingPleaseWait() );
                 clientFactory.getAssetService().convertAsset( asset.getUuid(),
                                                               AssetFormats.DECISION_TABLE_GUIDED,
                                                               new GenericCallback<ConversionResult>() {
@@ -84,35 +86,30 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     }
 
     //Handle post-conversion operations.
-    private void postConversion(ConversionResult result) {
+    private void postConversion(final ConversionResult result) {
         LoadingPopup.close();
-        showConversionMessages( result );
-        if ( result.isConverted() ) {
-            openEditor( result.getUUID() );
-        }
-    }
 
-    //TODO {manstis} A nicely formatted list would be much nicer
-    private void showConversionMessages(ConversionResult result) {
+        //Refresh the Module editor to show new assets
+        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.metaData.moduleUUID ) );
+
         if ( result.getMessages().size() > 0 ) {
-            StringBuilder sb = new StringBuilder();
-            for ( ConversionMessage message : result.getMessages() ) {
-                sb.append( message.getMessage() ).append( "\n" );
-            }
-            Window.alert( sb.toString() );
-        }
-    }
 
-    private void openEditor(String uuid) {
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ) );
+            //Show messages to user
+            PopupListWidget popup = new PopupListWidget( 600,
+                                                         200 );
+            for ( ConversionMessage message : result.getMessages() ) {
+                popup.addListItem( new ConversionMessageWidget( message ) );
+            }
+            popup.show();
+        }
     }
 
     private Widget makeDescriptionWidget() {
-        return new HTML( constants.DecisionTableWidgetDescription() );
+        return new HTML( Constants.INSTANCE.DecisionTableWidgetDescription() );
     }
 
     public ImageResource getIcon() {
-        return images.decisionTable();
+        return Images.INSTANCE.decisionTable();
     }
 
     public String getOverallStyleName() {

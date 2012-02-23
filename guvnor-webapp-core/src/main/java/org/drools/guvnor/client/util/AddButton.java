@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.util;
 
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,7 +31,7 @@ public class AddButton extends Composite
     implements
     HasClickHandlers {
 
-    private static Images images     = GWT.create( Images.class );
+    private static ImagesCore images     = GWT.create( ImagesCore.class );
 
     private Image         plusButton = new Image( images.newItem() );
 

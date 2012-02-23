@@ -16,6 +16,7 @@
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
 import org.drools.decisiontable.parser.ActionType;
+import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -23,19 +24,20 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 /**
  * Builder for Description Attribute columns
  */
-public class GuidedDecisionTableDescriptionBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableDescriptionBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     public GuidedDecisionTableDescriptionBuilder(int row,
-                                                 int column) {
+                                                 int column,
+                                                 ConversionResult conversionResult) {
         super( row,
                column,
-               ActionType.Code.DESCRIPTION );
+               ActionType.Code.DESCRIPTION,
+               conversionResult );
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         DescriptionCol52 column = new DescriptionCol52();
-        addColumn( dtable,
-                   column );
+        dtable.setDescriptionCol( column );
         addColumnData( dtable,
                        column );
     }

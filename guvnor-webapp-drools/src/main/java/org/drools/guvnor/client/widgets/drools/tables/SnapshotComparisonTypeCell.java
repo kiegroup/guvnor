@@ -21,7 +21,6 @@ import org.drools.guvnor.client.rpc.SnapshotDiff;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
@@ -29,8 +28,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * Cell to render the appropriate text and style for a Snapshot Comparison type
  */
 public class SnapshotComparisonTypeCell extends AbstractCell<String> {
-
-    private static Constants constants = GWT.create( Constants.class );
 
     interface Template
         extends
@@ -52,15 +49,15 @@ public class SnapshotComparisonTypeCell extends AbstractCell<String> {
 
     private String getTextToRender(String value) {
         if ( value.equals( SnapshotDiff.TYPE_ADDED ) ) {
-            return constants.TypeAdded();
+            return Constants.INSTANCE.TypeAdded();
         } else if ( value.equals( SnapshotDiff.TYPE_ARCHIVED ) ) {
-            return constants.TypeArchived();
+            return Constants.INSTANCE.TypeArchived();
         } else if ( value.equals( SnapshotDiff.TYPE_DELETED ) ) {
-            return constants.TypeDeleted();
+            return Constants.INSTANCE.TypeDeleted();
         } else if ( value.equals( SnapshotDiff.TYPE_RESTORED ) ) {
-            return constants.TypeRestored();
+            return Constants.INSTANCE.TypeRestored();
         } else if ( value.equals( SnapshotDiff.TYPE_UPDATED ) ) {
-            return constants.TypeUpdated();
+            return Constants.INSTANCE.TypeUpdated();
         }
         throw new IllegalArgumentException( "value of SnapshotComparison Type is unknown" );
     }

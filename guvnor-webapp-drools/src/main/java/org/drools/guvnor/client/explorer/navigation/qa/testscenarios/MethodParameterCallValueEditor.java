@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -26,7 +27,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -35,7 +35,6 @@ import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -56,9 +55,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This provides for editing of fields in the RHS of a rule.
  */
 public class MethodParameterCallValueEditor extends DirtyableComposite {
-
-    private Constants      constants            = GWT.create( Constants.class );
-    private static Images  images               = GWT.create( Images.class );
 
     private CallFieldValue methodParameter;
     private DropDownData   enums;
@@ -171,7 +167,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     }
 
     private TextBox boundTextBox(final CallFieldValue c) {
-        final TextBox box = new TextBox();
+
+        final TextBox box = TextBoxFactory.getTextBox( methodParameter.type );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -207,15 +204,11 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
             }
         } );
 
-        if ( methodParameter.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-        }
-
         return box;
     }
 
     private Widget choice() {
-        Image clickme = new Image( images.edit() );
+        Image clickme = new Image( Images.INSTANCE.edit() );
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -226,9 +219,9 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
-        Button lit = new Button( constants.LiteralValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -240,12 +233,12 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
             }
 
         } );
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.Literal(),
-                                                   constants.LiteralValTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Literal(),
+                                                   Constants.INSTANCE.LiteralValTip() ) ) );
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedSection() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
 
         /*
          * If there is a bound variable that is the same type of the current
@@ -256,13 +249,13 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                                        true );
         for ( String v : vars ) {
             boolean createButton = false;
-            Button variable = new Button( constants.BoundVariable() );
+            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
             FactData factData = (FactData) model.getFactTypes().get( v );
             if ( factData.getType().equals( this.parameterType ) ) {
                 createButton = true;
             }
             if ( createButton == true ) {
-                form.addAttribute( constants.BoundVariable() + ":",
+                form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
                                    variable );
                 variable.addClickHandler( new ClickHandler() {
 

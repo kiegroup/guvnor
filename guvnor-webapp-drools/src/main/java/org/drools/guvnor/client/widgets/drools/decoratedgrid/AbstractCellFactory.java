@@ -16,11 +16,20 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericBigDecimalEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericBigIntegerEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericByteEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericDoubleEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericFloatEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericIntegerEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericLongEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericShortEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
@@ -93,6 +102,54 @@ public abstract class AbstractCellFactory<T> {
     protected DecoratedGridCellValueAdaptor<BigDecimal> makeNumericCell() {
         return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell( isReadOnly ),
                                                               eventBus );
+    }
+
+    // Make a new Cell for BigDecimal columns
+    protected DecoratedGridCellValueAdaptor<BigDecimal> makeNumericBigDecimalCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericBigDecimalEditCell( isReadOnly ),
+                                                              eventBus );
+    }
+
+    // Make a new Cell for BigInteger columns
+    protected DecoratedGridCellValueAdaptor<BigInteger> makeNumericBigIntegerCell() {
+        return new DecoratedGridCellValueAdaptor<BigInteger>( new PopupNumericBigIntegerEditCell( isReadOnly ),
+                                                              eventBus );
+    }
+
+    // Make a new Cell for Byte columns
+    protected DecoratedGridCellValueAdaptor<Byte> makeNumericByteCell() {
+        return new DecoratedGridCellValueAdaptor<Byte>( new PopupNumericByteEditCell( isReadOnly ),
+                                                        eventBus );
+    }
+
+    // Make a new Cell for Double columns
+    protected DecoratedGridCellValueAdaptor<Double> makeNumericDoubleCell() {
+        return new DecoratedGridCellValueAdaptor<Double>( new PopupNumericDoubleEditCell( isReadOnly ),
+                                                          eventBus );
+    }
+
+    // Make a new Cell for Float columns
+    protected DecoratedGridCellValueAdaptor<Float> makeNumericFloatCell() {
+        return new DecoratedGridCellValueAdaptor<Float>( new PopupNumericFloatEditCell( isReadOnly ),
+                                                         eventBus );
+    }
+
+    // Make a new Cell for Integer columns
+    protected DecoratedGridCellValueAdaptor<Integer> makeNumericIntegerCell() {
+        return new DecoratedGridCellValueAdaptor<Integer>( new PopupNumericIntegerEditCell( isReadOnly ),
+                                                           eventBus );
+    }
+
+    // Make a new Cell for Long columns
+    protected DecoratedGridCellValueAdaptor<Long> makeNumericLongCell() {
+        return new DecoratedGridCellValueAdaptor<Long>( new PopupNumericLongEditCell( isReadOnly ),
+                                                        eventBus );
+    }
+
+    // Make a new Cell for Short columns
+    protected DecoratedGridCellValueAdaptor<Short> makeNumericShortCell() {
+        return new DecoratedGridCellValueAdaptor<Short>( new PopupNumericShortEditCell( isReadOnly ),
+                                                         eventBus );
     }
 
     // Make a new Cell for a Text columns

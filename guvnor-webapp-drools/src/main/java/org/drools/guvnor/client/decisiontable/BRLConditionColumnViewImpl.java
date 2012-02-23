@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
@@ -61,7 +62,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                clientFactory,
                eventBus );
 
-        setTitle( constants.ConditionBRLFragmentConfiguration() );
+        setTitle( Constants.INSTANCE.ConditionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique(String header) {
@@ -105,6 +106,17 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
 
     @Override
     protected List<BRLConditionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
+
+        //If there are no variables add a boolean column to specify whether the fragment should apply 
+        if ( ivs.size() == 0 ) {
+            BRLConditionVariableColumn variable = new BRLConditionVariableColumn( "",
+                                                                                  SuggestionCompletionEngine.TYPE_BOOLEAN );
+            variable.setHeader( editingCol.getHeader() );
+            variable.setHideColumn( editingCol.isHideColumn() );
+            List<BRLConditionVariableColumn> variables = new ArrayList<BRLConditionVariableColumn>();
+            variables.add( variable );
+            return variables;
+        }
 
         //Convert to columns for use in the Decision Table
         BRLConditionVariableColumn[] variables = new BRLConditionVariableColumn[ivs.size()];

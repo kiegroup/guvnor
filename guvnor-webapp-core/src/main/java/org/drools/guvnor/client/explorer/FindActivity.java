@@ -18,13 +18,13 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.widgets.query.QueryWidget;
 
 public class FindActivity extends Activity {
 
-    private Constants constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private final ClientFactory clientFactory;
 
     public FindActivity( ClientFactory clientFactory ) {

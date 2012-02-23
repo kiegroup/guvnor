@@ -18,7 +18,10 @@ package org.drools.guvnor.client;
 
 import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
+import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
@@ -34,7 +37,6 @@ import org.drools.guvnor.client.rpc.UserSecurityContext;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.shared.EventBus;
@@ -55,7 +57,6 @@ public class GuvnorDroolsEntryPoint
         implements
         EntryPoint {
 
-    private Constants constants = GWT.create(Constants.class);
     private AppController appController;
 
     public void onModuleLoad() {
@@ -104,7 +105,7 @@ public class GuvnorDroolsEntryPoint
 
     private void showMain(final String userName) {
 
-        Window.setStatus(constants.LoadingUserPermissions());
+        Window.setStatus(Constants.INSTANCE.LoadingUserPermissions());
 
         loadConfigurations(userName);
     }
@@ -152,6 +153,14 @@ public class GuvnorDroolsEntryPoint
             RootLayoutPanel.get().add(appController.getMainPanel());
         }
 
+        askToInstallSampleRepository();
+
+    }
+
+    private void askToInstallSampleRepository() {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
+            SampleRepositoryInstaller.askToInstall();
+        }
     }
 
     //Fade out the "Loading application" pop-up

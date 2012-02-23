@@ -18,11 +18,12 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.List;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
 
@@ -33,16 +34,14 @@ import com.google.gwt.core.client.GWT;
  */
 public class CallMethodOnNewDataButton extends TestScenarioButton {
 
-    private static Images        images = GWT.create( Images.class );
-
     private final ExecutionTrace currentEx;
 
     public CallMethodOnNewDataButton(final ExecutionTrace previousEx,
                                      final Scenario scenario,
                                      final ExecutionTrace currentEx,
                                      ScenarioWidget scenarioWidget) {
-        super( images.newItem(),
-               constants.AddANewDataInputToThisScenario(),
+        super( Images.INSTANCE.newItem(),
+               Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
                scenarioWidget );
@@ -57,13 +56,13 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( images.ruleAsset(),
-                   constants.NewInput() );
+            super( Images.INSTANCE.ruleAsset(),
+                   Constants.INSTANCE.NewInput() );
             List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
                                                                      false );
             // now we do modifies & retracts
             if ( varsInScope.size() > 0 ) {
-                addAttribute( constants.CallAMethodOnAFactScenario(),
+                addAttribute( Constants.INSTANCE.CallAMethodOnAFactScenario(),
                               new CallMethodFactPanel( varsInScope ) );
             }
         }

@@ -8,16 +8,16 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.util.Util;
 
 public abstract class ModulesTreeItemBaseViewImpl
     implements
     ModulesTreeItemBaseView {
 
-    protected static Constants constants = GWT.create( Constants.class );
-    protected static Images    images    = GWT.create( Images.class );
+    protected static ConstantsCore constants = GWT.create( ConstantsCore.class );
+    protected static ImagesCore images    = GWT.create( ImagesCore.class );
 
     protected final Tree       tree      = new Tree();
     protected Presenter          presenter;

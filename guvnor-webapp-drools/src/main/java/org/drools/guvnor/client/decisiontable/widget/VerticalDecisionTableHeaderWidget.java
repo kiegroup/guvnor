@@ -15,12 +15,15 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
@@ -323,7 +326,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof DescriptionCol52 ) {
-                tce.appendChild( makeLabel( constants.Description(),
+                tce.appendChild( makeLabel( Constants.INSTANCE.Description(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
@@ -361,7 +364,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof AnalysisCol52 ) {
-                tce.appendChild( makeLabel( constants.Analysis(),
+                tce.appendChild( makeLabel( Constants.INSTANCE.Analysis(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
@@ -389,6 +392,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             visibleActionCols.clear();
             multiRowColumnOffset = -1;
             multiRowColumnActionsOffset = -1;
+            int iColumnCount = 0;
             for ( int iCol = 0; iCol < sortableColumns.size(); iCol++ ) {
                 DynamicColumn<BaseColumn> col = sortableColumns.get( iCol );
                 if ( col.isVisible() ) {
@@ -396,19 +400,20 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                     BaseColumn modelCol = col.getModelColumn();
                     if ( modelCol instanceof ConditionCol52 ) {
                         if ( multiRowColumnOffset == -1 ) {
-                            multiRowColumnOffset = iCol;
+                            multiRowColumnOffset = iColumnCount;
                         }
                         visibleConditionCols.add( col );
                     }
                     if ( modelCol instanceof ActionCol52 ) {
                         if ( multiRowColumnOffset == -1 ) {
-                            multiRowColumnOffset = iCol;
+                            multiRowColumnOffset = iColumnCount;
                         }
                         if ( multiRowColumnActionsOffset == -1 ) {
-                            multiRowColumnActionsOffset = iCol;
+                            multiRowColumnActionsOffset = iColumnCount;
                         }
                         visibleActionCols.add( col );
                     }
+                    iColumnCount++;
                 }
             }
 
@@ -518,7 +523,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             String boundName = ccPattern.getBoundName();
                             if ( factType != null && factType.length() > 0 ) {
                                 if ( ccPattern.isNegated() ) {
-                                    label.append( constants.negatedPattern() ).append( " " ).append( factType );
+                                    label.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
                                 } else {
                                     label.append( factType ).append( " [" ).append( boundName ).append( "]" );
                                 }
@@ -658,9 +663,9 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                 label.append( "]" );
                             }
                         } else if ( ac instanceof ActionRetractFactCol52 ) {
-                            label.append( "[" + constants.Retract() + "]" );
+                            label.append( "[" + Constants.INSTANCE.Retract() + "]" );
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
-                            label.append( "[" + constants.WorkItemAction() + "]" );
+                            label.append( "[" + Constants.INSTANCE.WorkItemAction() + "]" );
                         } else if ( ac instanceof BRLActionVariableColumn ) {
                             BRLActionVariableColumn brl = (BRLActionVariableColumn) ac;
                             String field = brl.getFactField();
@@ -725,7 +730,32 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 case BOOLEAN :
                     return cv.getBooleanValue().toString();
                 case NUMERIC :
-                    return cv.getNumericValue().toPlainString();
+                    final BigDecimal numeric = (BigDecimal) cv.getNumericValue();
+                    return numeric.toPlainString();
+                case NUMERIC_BIGDECIMAL :
+                    final BigDecimal numericBigDecimal = (BigDecimal) cv.getNumericValue();
+                    return numericBigDecimal.toPlainString();
+                case NUMERIC_BIGINTEGER :
+                    final BigInteger numericBigInteger = (BigInteger) cv.getNumericValue();
+                    return numericBigInteger.toString();
+                case NUMERIC_BYTE :
+                    final Byte numericByte = (Byte) cv.getNumericValue();
+                    return numericByte.toString();
+                case NUMERIC_DOUBLE :
+                    final Double numericDouble = (Double) cv.getNumericValue();
+                    return numericDouble.toString();
+                case NUMERIC_FLOAT :
+                    final Float numericFloat = (Float) cv.getNumericValue();
+                    return numericFloat.toString();
+                case NUMERIC_INTEGER :
+                    final Integer numericInteger = (Integer) cv.getNumericValue();
+                    return numericInteger.toString();
+                case NUMERIC_LONG :
+                    final Long numericLong = (Long) cv.getNumericValue();
+                    return numericLong.toString();
+                case NUMERIC_SHORT :
+                    final Short numericShort = (Short) cv.getNumericValue();
+                    return numericShort.toString();
                 case DATE :
                     return format.format( cv.getDateValue() );
                 default :

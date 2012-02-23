@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.guvnor.server.files.AssetZipper;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
@@ -64,11 +63,11 @@ public class SOAModuleAssembler extends AssemblerBase {
         return null;
     }   
     public String getBinaryExtension() {
-        return "zip";
+        return "jar";
     }        
     protected InputStream generateZip() {
         List<AssetItem> jarAssets = new LinkedList<AssetItem>();
-        AssetZipper assetZipper = null;
+        ZipUtil zipperUtil = null;
         
         Iterator<AssetItem> assetItemIterator = getAssetItemIterator("jar", "wsdl", "xmlschema");
         while (assetItemIterator.hasNext()) {
@@ -78,9 +77,9 @@ public class SOAModuleAssembler extends AssemblerBase {
             }
         }
         if (jarAssets.size() != 0) {
-            assetZipper = new AssetZipper(jarAssets, null);
+            zipperUtil = new ZipUtil(jarAssets);
 
-            return assetZipper.zipAssets();
+            return zipperUtil.zipAssets();
         }
         
         //REVISIT: return an empty zip instead?

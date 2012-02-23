@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +23,13 @@ import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.template.model.SnippetBuilder;
 import org.drools.template.model.SnippetBuilder.SnippetType;
@@ -39,137 +40,186 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class GuidedDecisionTableRHSBuilder
         implements
-        GuidedDecisionTableBuilder {
+        HasColumnHeadings,
+        GuidedDecisionTableSourceBuilder {
 
-    private int                                     headerRow;
-    private int                                     headerCol;
-    private String                                  variable;
+    private final int                                     headerRow;
+    private final int                                     headerCol;
+    private final String                                  variable;
 
-    //Map of column definitions (code snippets), keyed on XLS column index
-    private Map<Integer, String>                    definitions   = new HashMap<Integer, String>();
+    //Map of column headers, keyed on XLS column index
+    private final Map<Integer, String>                    columnHeaders = new HashMap<Integer, String>();
 
     //Map of column value parsers, keyed on XLS column index
-    private Map<Integer, ValueBuilder>              valueBuilders = new HashMap<Integer, ValueBuilder>();
+    private final Map<Integer, ParameterizedValueBuilder> valueBuilders = new HashMap<Integer, ParameterizedValueBuilder>();
 
-    //Map of column data, keyed on XLS column index. Value is row/column(s)
-    private Map<Integer, List<List<DTCellValue52>>> values        = new HashMap<Integer, List<List<DTCellValue52>>>();
+    //Utility class to convert XLS parameters to BRLFragment Template keys
+    private final ParameterUtilities                      parameterUtilities;
+
+    private ConversionResult                              conversionResult;
 
     public GuidedDecisionTableRHSBuilder(int row,
                                          int column,
-                                         String boundVariable) {
+                                         String boundVariable,
+                                         ParameterUtilities parameterUtilities,
+                                         ConversionResult conversionResult) {
         this.headerRow = row;
         this.headerCol = column;
         this.variable = boundVariable == null ? "" : boundVariable.trim();
+        this.parameterUtilities = parameterUtilities;
+        this.conversionResult = conversionResult;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
-        //Create column
-        BRLActionColumn column = new BRLActionColumn();
-        column.setHeader( "Smurf - needs to come from XLS" );
-
-        //Define column
+        //Sort column builders by column index to ensure Actions are added in the correct sequence
         Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+
         for ( Integer index : sortedIndexes ) {
-            ValueBuilder vb = this.valueBuilders.get( index );
-
-            //Everything is a BRL fragment (for now)
-            FreeFormLine brlFragment = new FreeFormLine();
-            brlFragment.text = vb.template;
-            column.getDefinition().add( brlFragment );
-
-            for ( String parameter : vb.parameters ) {
-                BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( parameter,
-                                                                                       null,
-                                                                                       null,
-                                                                                       null );
-                column.getChildColumns().add( parameterColumn );
-            }
+            ParameterizedValueBuilder vb = this.valueBuilders.get( index );
+            addColumn( dtable,
+                       vb,
+                       index );
         }
+    }
+
+    private void addColumn(GuidedDecisionTable52 dtable,
+                           ParameterizedValueBuilder vb,
+                           int index) {
+        if ( vb instanceof LiteralValueBuilder ) {
+            addLiteralColumn( dtable,
+                              (LiteralValueBuilder) vb,
+                              index );
+        } else {
+            addBRLFragmentColumn( dtable,
+                                  vb,
+                                  index );
+        }
+    }
+
+    private void addLiteralColumn(GuidedDecisionTable52 dtable,
+                                  LiteralValueBuilder vb,
+                                  int index) {
+        //Create column - Everything is a BRL fragment (for now)
+        BRLActionColumn column = new BRLActionColumn();
+        FreeFormLine ffl = new FreeFormLine();
+        ffl.text = vb.getTemplate();
+        column.getDefinition().add( ffl );
+        BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( "",
+                                                                               SuggestionCompletionEngine.TYPE_BOOLEAN );
+        column.getChildColumns().add( parameterColumn );
+        column.setHeader( this.columnHeaders.get( index ) );
         dtable.getActionCols().add( column );
 
-        //Add data
-        //TODO {manstis} This looks up the number of columns. doh!
-        int rowCount = this.values.size();
-        for ( BRLActionVariableColumn parameterColumn : column.getChildColumns() ) {
-
-            int iColIndex = dtable.getExpandedColumns().indexOf( parameterColumn );
-
-            //Add column data
-            for ( int iRow = 0; iRow < rowCount; iRow++ ) {
-                List<DTCellValue52> rowData = dtable.getData().get( iRow );
-                while ( rowData.size() < iColIndex ) {
-                    rowData.add( new DTCellValue52() );
-                }
-                //TODO {manstis} Lookup value from this.values
-                rowData.add( iColIndex,
-                             new DTCellValue52() );
-            }
+        //Add column data
+        List<List<DTCellValue52>> columnData = vb.getColumnData();
+        int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            List<DTCellValue52> rowData = dtable.getData().get( iRow );
+            rowData.addAll( iColIndex,
+                            columnData.get( iRow ) );
         }
 
+    }
+
+    private void addBRLFragmentColumn(GuidedDecisionTable52 dtable,
+                                      ParameterizedValueBuilder vb,
+                                      int index) {
+        //Create column - Everything is a BRL fragment (for now)
+        BRLActionColumn column = new BRLActionColumn();
+        FreeFormLine ffl = new FreeFormLine();
+        ffl.text = vb.getTemplate();
+        column.getDefinition().add( ffl );
+
+        for ( String parameter : vb.getParameters() ) {
+            BRLActionVariableColumn parameterColumn = new BRLActionVariableColumn( parameter,
+                                                                                   SuggestionCompletionEngine.TYPE_OBJECT );
+            column.getChildColumns().add( parameterColumn );
+        }
+        column.setHeader( this.columnHeaders.get( index ) );
+        dtable.getActionCols().add( column );
+
+        //Add column data
+        List<List<DTCellValue52>> columnData = vb.getColumnData();
+
+        //We can use the index of the first child column to add all data
+        int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            List<DTCellValue52> rowData = dtable.getData().get( iRow );
+            rowData.addAll( iColIndex,
+                            columnData.get( iRow ) );
+        }
     }
 
     public void addTemplate(int row,
                             int column,
-                            String content) {
-        if ( definitions.containsKey( column ) ) {
-            throw new IllegalArgumentException( "Internal error: Can't have a code snippet added twice to one spreadsheet col." );
+                            String template) {
+        //Validate column template
+        if ( valueBuilders.containsKey( column ) ) {
+            final String message = "Internal error: Can't have a code snippet added twice to one spreadsheet column.";
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
+            return;
         }
 
-        content = content.trim();
+        //Add new template
+        template = template.trim();
         if ( isBoundVar() ) {
-            content = variable + "." + content + ";";
+            template = variable + "." + template;
         }
-        this.definitions.put( column,
-                              content );
-        this.valueBuilders.put( column,
-                                getValueBuilder( content ) );
-
+        if ( !template.endsWith( ";" ) ) {
+            template = template + ";";
+        }
+        try {
+            this.valueBuilders.put( column,
+                                    getValueBuilder( template ) );
+        } catch ( DecisionTableParseException pe ) {
+            this.conversionResult.addMessage( pe.getMessage(),
+                                              ConversionMessageType.WARNING );
+        }
     }
 
     private boolean isBoundVar() {
         return !("".equals( variable ));
     }
 
-    private ValueBuilder getValueBuilder(String template) {
+    @Override
+    public void setColumnHeader(int column,
+                                String value) {
+        this.columnHeaders.put( column,
+                                value.trim() );
+    }
+
+    private ParameterizedValueBuilder getValueBuilder(String template) {
         final SnippetType type = SnippetBuilder.getType( template );
         switch ( type ) {
             case INDEXED :
-                return new IndexedParametersValueBuilder( template );
+                return new IndexedParametersValueBuilder( template,
+                                                          parameterUtilities );
             case PARAM :
-                return new SingleParameterValueBuilder( template );
+                return new SingleParameterValueBuilder( template,
+                                                        parameterUtilities );
             case SINGLE :
-                return new SimpleValueBuilder( template );
+                return new LiteralValueBuilder( template );
         }
-        throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported." );
+        throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported. The column will not be added." );
     }
 
     public void addCellValue(int row,
                              int column,
                              String value) {
-        String definition = this.definitions.get( column );
-        if ( definition == null ) {
-            throw new DecisionTableParseException( "No code snippet for ACTION, above cell " +
-                                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                                                this.headerCol ) );
-        }
-
-        //Get column data
-        List<List<DTCellValue52>> xlsColumnData = this.values.get( column );
-        if ( xlsColumnData == null ) {
-            xlsColumnData = new ArrayList<List<DTCellValue52>>();
-            this.values.put( column,
-                             xlsColumnData );
-        }
-
         //Add new row to column data
-        ValueBuilder vb = this.valueBuilders.get( column );
+        ParameterizedValueBuilder vb = this.valueBuilders.get( column );
         if ( vb == null ) {
-            throw new DecisionTableParseException( "No ValueBuilder for ACTION, above cell " +
-                                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                                                this.headerCol ) );
+            final String message = "No code snippet for ACTION, above cell " +
+                                   RuleSheetParserUtil.rc2name( this.headerRow + 2,
+                                                                this.headerCol );
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.ERROR );
+            return;
         }
-        List<DTCellValue52> values = vb.build( value );
-        xlsColumnData.add( values );
+        vb.addCellValue( row,
+                         column,
+                         value );
     }
 
     public String getResult() {
@@ -181,11 +231,11 @@ public class GuidedDecisionTableRHSBuilder
     }
 
     public void clearValues() {
-        this.values.clear();
+        throw new UnsupportedOperationException();
     }
 
     public boolean hasValues() {
-        return this.values.size() > 0;
+        throw new UnsupportedOperationException();
     }
 
 }

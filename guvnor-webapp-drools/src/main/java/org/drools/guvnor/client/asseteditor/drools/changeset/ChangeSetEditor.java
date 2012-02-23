@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -88,7 +87,6 @@ public class ChangeSetEditor extends DirtyableComposite
     final private String assetPackageUUID;
     final private String assetName;
     private final int visibleLines;
-    private Constants constants = GWT.create(Constants.class);
 
     public ChangeSetEditor(Asset a,
             RuleViewer v,
@@ -301,7 +299,7 @@ public class ChangeSetEditor extends DirtyableComposite
 
                                 final String type = convertAssetFormatToResourceType(asset.getFormat());
                                 if (type == null) {
-                                    throw new IllegalArgumentException(constants.UnknownResourceFormat(asset.getFormat()));
+                                    throw new IllegalArgumentException(Constants.INSTANCE.UnknownResourceFormat(asset.getFormat()));
                                 }
 
                                 partialResult = partialResult.replace("{type}", type);
@@ -335,7 +333,7 @@ public class ChangeSetEditor extends DirtyableComposite
         url += this.assetName;
         url += "/source";
 
-        return new HTML(this.constants.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>");
+        return new HTML(Constants.INSTANCE.Url() + ":&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>");
     }
 }
 

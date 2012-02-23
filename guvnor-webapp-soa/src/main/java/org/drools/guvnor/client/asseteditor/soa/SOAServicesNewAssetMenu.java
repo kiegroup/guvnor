@@ -54,8 +54,11 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
         view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory, eventBus );
     }
 
+    public void onNewFormDefinition() {
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory, eventBus );
+    }
+
     public void onNewFile() {
         view.openNewAssetWizardWithoutCategories( "*", clientFactory, eventBus );
     }
-
 }

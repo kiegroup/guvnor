@@ -21,11 +21,11 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 public class ReportingTreeViewImpl extends Tree implements ReportingTreeView {
 
-    private static Constants constants = GWT.create(Constants.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     private Presenter presenter;
 

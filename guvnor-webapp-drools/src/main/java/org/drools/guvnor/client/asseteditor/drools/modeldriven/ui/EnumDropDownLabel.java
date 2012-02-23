@@ -25,7 +25,6 @@ import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -37,8 +36,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class EnumDropDownLabel extends Composite {
-
-    protected Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
     protected final Label                textWidget;
     protected final EnumDropDown               enumDropDown;
@@ -67,7 +64,7 @@ public class EnumDropDownLabel extends Composite {
 
         textWidget = createTextLabel();
         enumDropDown = createEnumDropDown();
-        okButton = new Button( constants.OK() );
+        okButton = new Button( Constants.INSTANCE.OK() );
         panel.add( textWidget );
 
         updateTextWidget();

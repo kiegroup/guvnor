@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
@@ -55,6 +56,8 @@ public class GuidedDecisionTable52
     public static final String                           AGENDA_GROUP_ATTR     = "agenda-group";
     public static final String                           ACTIVATION_GROUP_ATTR = "activation-group";
     public static final String                           DURATION_ATTR         = "duration";
+    public static final String                           TIMER_ATTR            = "timer";
+    public static final String                           CALENDARS_ATTR        = "calendars";
     public static final String                           AUTO_FOCUS_ATTR       = "auto-focus";
     public static final String                           LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
     public static final String                           RULEFLOW_GROUP_ATTR   = "ruleflow-group";
@@ -306,7 +309,7 @@ public class GuidedDecisionTable52
 
     private String getType(RowNumberCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        String type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         return type;
     }
 
@@ -321,13 +324,17 @@ public class GuidedDecisionTable52
         String type = null;
         String attrName = col.getAttribute();
         if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            type = SuggestionCompletionEngine.TYPE_NUMERIC_LONG;
+        } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
+        } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
@@ -400,6 +407,12 @@ public class GuidedDecisionTable52
 
     private String getType(BRLActionVariableColumn col,
                            SuggestionCompletionEngine sce) {
+
+        //If the parameter is not bound to a Fact or FactField use the explicit type
+        if ( col.getFactType() == null && col.getFactField() == null ) {
+            return col.getFieldType();
+        }
+
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,
@@ -410,6 +423,12 @@ public class GuidedDecisionTable52
 
     private String getType(BRLConditionVariableColumn col,
                            SuggestionCompletionEngine sce) {
+
+        //If the parameter is not bound to a Fact or FactField use the explicit type
+        if ( col.getFactType() == null && col.getFactField() == null ) {
+            return col.getFieldType();
+        }
+
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,
@@ -425,19 +444,23 @@ public class GuidedDecisionTable52
         DTDataTypes52 dataType = DTDataTypes52.STRING;
 
         if ( column instanceof RowNumberCol52 ) {
-            dataType = DTDataTypes52.NUMERIC;
+            dataType = DTDataTypes52.NUMERIC_INTEGER;
 
         } else if ( column instanceof AttributeCol52 ) {
             AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
             } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
+            } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
+                dataType = DTDataTypes52.STRING;
             } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
@@ -520,6 +543,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -550,6 +589,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -581,6 +636,22 @@ public class GuidedDecisionTable52
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+                dataType = DTDataTypes52.NUMERIC_BYTE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+                dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+                dataType = DTDataTypes52.NUMERIC_FLOAT;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+                dataType = DTDataTypes52.NUMERIC_INTEGER;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+                dataType = DTDataTypes52.NUMERIC_LONG;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+                dataType = DTDataTypes52.NUMERIC_SHORT;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
@@ -771,6 +842,16 @@ public class GuidedDecisionTable52
                 Pattern52 p = (Pattern52) cc;
                 if ( p.getBoundName().equals( boundName ) ) {
                     return p.getFactType();
+                }
+            } else if ( cc instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) cc;
+                for ( IPattern p : brl.getDefinition() ) {
+                    if ( p instanceof FactPattern ) {
+                        FactPattern fp = (FactPattern) p;
+                        if ( fp.isBound() && fp.getBoundName().equals( boundName ) ) {
+                            return fp.getFactType();
+                        }
+                    }
                 }
             }
         }

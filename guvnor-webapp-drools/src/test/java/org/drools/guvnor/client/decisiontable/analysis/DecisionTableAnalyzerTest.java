@@ -18,7 +18,6 @@ package org.drools.guvnor.client.decisiontable.analysis;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -73,28 +72,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52((Boolean) null),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((Boolean) null),
                         new DTCellValue52(Boolean.TRUE),
@@ -146,31 +145,31 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
-                        new DTCellValue52(new BigDecimal("20")),
-                        new DTCellValue52(new BigDecimal("50")),
+                        new DTCellValue52(new Integer("20")),
+                        new DTCellValue52(new Integer("50")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
-                        new DTCellValue52(new BigDecimal("40")),
-                        new DTCellValue52(new BigDecimal("30")),
+                        new DTCellValue52(new Integer("40")),
+                        new DTCellValue52(new Integer("30")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52(new BigDecimal("50")),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52(new Integer("50")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
-                        new DTCellValue52(new BigDecimal("20")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("20")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52("Row 4 message")
                 )
         );
@@ -225,7 +224,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52("Bart"),
@@ -233,7 +232,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52("Homer"),
@@ -241,7 +240,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52((String) null),
@@ -249,7 +248,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((String) null),
                         new DTCellValue52("Bart"),
@@ -257,7 +256,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52(5l),
                         new DTCellValue52("Row 5 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52((String) null),
@@ -312,28 +311,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52((Date) null),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52((Date) null),
@@ -391,43 +390,43 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52("Homer"),
-                        new DTCellValue52(new BigDecimal("20")),
-                        new DTCellValue52(new BigDecimal("50")),
+                        new DTCellValue52(new Integer("20")),
+                        new DTCellValue52(new Integer("50")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52("Homer"),
-                        new DTCellValue52(new BigDecimal("40")),
-                        new DTCellValue52(new BigDecimal("30")),
+                        new DTCellValue52(new Integer("40")),
+                        new DTCellValue52(new Integer("30")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52((String) null),
-                        new DTCellValue52(new BigDecimal("40")),
-                        new DTCellValue52(new BigDecimal("30")),
+                        new DTCellValue52(new Integer("40")),
+                        new DTCellValue52(new Integer("30")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52("Homer"),
-                        new DTCellValue52(new BigDecimal("20")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("20")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52(5l),
                         new DTCellValue52("Row 5 description"),
                         new DTCellValue52((String) null),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52("Row 5 message")
                 )
         );
@@ -458,14 +457,14 @@ public class DecisionTableAnalyzerTest {
         LimitedEntryConditionCol52 child = new LimitedEntryConditionCol52();
         child.setFactField("age");
         child.setOperator("<");
-        child.setValue(new DTCellValue52(new BigDecimal("18")));
+        child.setValue(new DTCellValue52(new Integer("18")));
         child.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(child);
 
         LimitedEntryConditionCol52 pensioner = new LimitedEntryConditionCol52();
         pensioner.setFactField("age");
         pensioner.setOperator(">=");
-        pensioner.setValue(new DTCellValue52(new BigDecimal("65")));
+        pensioner.setValue(new DTCellValue52(new Integer("65")));
         pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(pensioner);
 
@@ -479,21 +478,21 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.TRUE),
@@ -545,31 +544,31 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52(new Integer("20")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
-                        new DTCellValue52(new BigDecimal("21")),
-                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new Integer("21")),
+                        new DTCellValue52(new Integer("40")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
-                        new DTCellValue52(new BigDecimal("30")),
-                        new DTCellValue52(new BigDecimal("60")),
+                        new DTCellValue52(new Integer("30")),
+                        new DTCellValue52(new Integer("60")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
-                        new DTCellValue52(new BigDecimal("50")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("50")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52("Row 4 message")
                 )
         );
@@ -629,50 +628,50 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52(new Integer("20")),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
-                        new DTCellValue52(new BigDecimal("21")),
-                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new Integer("21")),
+                        new DTCellValue52(new Integer("40")),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
-                        new DTCellValue52(new BigDecimal("41")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("41")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52(new BigDecimal("25")),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52(new Integer("25")),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52(5l),
                         new DTCellValue52("Row 5 description"),
-                        new DTCellValue52(new BigDecimal("26")),
-                        new DTCellValue52(new BigDecimal("60")),
+                        new DTCellValue52(new Integer("26")),
+                        new DTCellValue52(new Integer("60")),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 5 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("6")),
+                        new DTCellValue52(6l),
                         new DTCellValue52("Row 6 description"),
-                        new DTCellValue52(new BigDecimal("50")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("50")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 6 message")
                 )
@@ -705,21 +704,21 @@ public class DecisionTableAnalyzerTest {
         LimitedEntryConditionCol52 child = new LimitedEntryConditionCol52();
         child.setFactField("age");
         child.setOperator("<");
-        child.setValue(new DTCellValue52(new BigDecimal("18")));
+        child.setValue(new DTCellValue52(new Integer("18")));
         child.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(child);
 
         LimitedEntryConditionCol52 adult = new LimitedEntryConditionCol52();
         adult.setFactField("age");
         adult.setOperator(">=");
-        adult.setValue(new DTCellValue52(new BigDecimal("18")));
+        adult.setValue(new DTCellValue52(new Integer("18")));
         adult.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(adult);
 
         LimitedEntryConditionCol52 pensioner = new LimitedEntryConditionCol52();
         pensioner.setFactField("age");
         pensioner.setOperator(">=");
-        pensioner.setValue(new DTCellValue52(new BigDecimal("65")));
+        pensioner.setValue(new DTCellValue52(new Integer("65")));
         pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getChildColumns().add(pensioner);
 
@@ -733,7 +732,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
@@ -741,7 +740,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.TRUE),
@@ -749,7 +748,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.FALSE),
@@ -802,31 +801,31 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52(1l),
                         new DTCellValue52("Row 1 description"),
-                        new DTCellValue52((BigDecimal) null),
-                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52((Integer) null),
+                        new DTCellValue52(new Integer("20")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52(2l),
                         new DTCellValue52("Row 2 description"),
-                        new DTCellValue52(new BigDecimal("21")),
-                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new Integer("21")),
+                        new DTCellValue52(new Integer("40")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52(3l),
                         new DTCellValue52("Row 3 description"),
-                        new DTCellValue52(new BigDecimal("30")),
-                        new DTCellValue52(new BigDecimal("60")),
+                        new DTCellValue52(new Integer("30")),
+                        new DTCellValue52(new Integer("60")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52(4l),
                         new DTCellValue52("Row 4 description"),
-                        new DTCellValue52(new BigDecimal("50")),
-                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new Integer("50")),
+                        new DTCellValue52((Integer) null),
                         new DTCellValue52("Same message")
                 )
         );
@@ -863,7 +862,7 @@ public class DecisionTableAnalyzerTest {
                                 new ModelField("age",
                                         Integer.class.getName(),
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                        SuggestionCompletionEngine.TYPE_NUMERIC),
+                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER),
                                 new ModelField("dateOfBirth",
                                         Date.class.getName(),
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,

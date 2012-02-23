@@ -67,8 +67,6 @@ public class SummaryPageViewImpl extends Composite
 
     private static SummaryPageWidgetBinder uiBinder  = GWT.create( SummaryPageWidgetBinder.class );
 
-    private static Constants               constants = GWT.create( Constants.class );
-
     public SummaryPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAssetName();
@@ -115,10 +113,10 @@ public class SummaryPageViewImpl extends Composite
     public void setTableFormat(TableFormat tableFormat) {
         switch ( tableFormat ) {
             case EXTENDED_ENTRY :
-                lblTableFormat.setText( constants.TableFormatExtendedEntry() );
+                lblTableFormat.setText( Constants.INSTANCE.TableFormatExtendedEntry() );
                 break;
             case LIMITED_ENTRY :
-                lblTableFormat.setText( constants.TableFormatLimitedEntry() );
+                lblTableFormat.setText( Constants.INSTANCE.TableFormatLimitedEntry() );
                 break;
         }
     }

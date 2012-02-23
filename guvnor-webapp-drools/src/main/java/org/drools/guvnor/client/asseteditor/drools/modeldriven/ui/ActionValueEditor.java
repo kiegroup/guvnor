@@ -28,7 +28,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -39,7 +38,6 @@ import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -63,9 +61,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This provides for editing of fields in the RHS of a rule.
  */
 public class ActionValueEditor extends DirtyableComposite {
-
-    private Constants        constants    = GWT.create( Constants.class );
-    private Images           images       = GWT.create( Images.class );
 
     private ActionFieldValue value;
     private DropDownData     enums;
@@ -184,13 +179,13 @@ public class ActionValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( images.deleteItemSmall() );
-        clear.setTitle( constants.RemoveActionValueDefinition() );
+        Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( constants.RemoveActionValueDefinitionQuestion() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveActionValueDefinitionQuestion() ) ) {
                     value.setNature( FieldNature.TYPE_UNDEFINED );
                     value.setValue( null );
                     doTypeChosen();
@@ -201,7 +196,8 @@ public class ActionValueEditor extends DirtyableComposite {
 
         wrapper.add( w );
         wrapper.add( clear );
-        wrapper.setCellVerticalAlignment( clear, HasVerticalAlignment.ALIGN_MIDDLE );
+        wrapper.setCellVerticalAlignment( clear,
+                                          HasVerticalAlignment.ALIGN_MIDDLE );
         return wrapper;
     }
 
@@ -220,7 +216,7 @@ public class ActionValueEditor extends DirtyableComposite {
     private Widget boundVariable(final FieldNature c) {
         // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
-        listVariable.addItem( constants.Choose() );
+        listVariable.addItem( Constants.INSTANCE.Choose() );
         List<String> bindings = getApplicableBindings();
         for ( String v : bindings ) {
             listVariable.addItem( v );
@@ -279,7 +275,10 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private Widget boundTextBox(final ActionFieldValue c) {
-        final TextBox box = new TextBox();
+
+        //Template TextBoxes are always Strings as they hold the template key for the actual value
+        final String dataType = value.nature == FieldNature.TYPE_TEMPLATE ? SuggestionCompletionEngine.TYPE_STRING : c.getType();
+        final TextBox box = TextBoxFactory.getTextBox( dataType );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -313,11 +312,6 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
-        //Template TextBoxes are always Strings as they hold the template key for the actual value
-        if ( value.nature != FieldNature.TYPE_TEMPLATE && value.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-        }
-
         if ( this.readOnly ) {
             return new SmallLabel( box.getText() );
         }
@@ -329,7 +323,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = new Image( images.edit() );
+            Image clickme = new Image( Images.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     showTypeChoice( (Widget) event.getSource() );
@@ -340,9 +334,9 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
-                                                        constants.FieldValue() );
-        Button lit = new Button( constants.LiteralValue() );
+        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+                                                        Constants.INSTANCE.FieldValue() );
+        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -352,13 +346,13 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
-        form.addAttribute( constants.LiteralValue() + ":",
+        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( constants.Literal(),
-                                                   constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Literal(),
+                                                   Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
 
         if ( modeller.isTemplate() ) {
-            Button templateButton = new Button( constants.TemplateKey() );
+            Button templateButton = new Button( Constants.INSTANCE.TemplateKey() );
             templateButton.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     value.nature = FieldNature.TYPE_TEMPLATE;
@@ -366,16 +360,16 @@ public class ActionValueEditor extends DirtyableComposite {
                     doTypeChosen( form );
                 }
             } );
-            form.addAttribute( constants.TemplateKey() + ":",
+            form.addAttribute( Constants.INSTANCE.TemplateKey() + ":",
                                widgets( templateButton,
-                                        new InfoPopup( constants.Literal(),
-                                                       constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                        new InfoPopup( Constants.INSTANCE.Literal(),
+                                                       Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
         }
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedSection() ) );
+        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
 
-        Button formula = new Button( constants.Formula() );
+        Button formula = new Button( Constants.INSTANCE.Formula() );
         formula.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -388,8 +382,8 @@ public class ActionValueEditor extends DirtyableComposite {
         // If there is a bound Facts or Fields that are of the same type as the current variable type, then show a button
         List<String> bindings = getApplicableBindings();
         if ( bindings.size() > 0 ) {
-            Button variable = new Button( constants.BoundVariable() );
-            form.addAttribute( constants.BoundVariable() + ":",
+            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+            form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
                                variable );
             variable.addClickHandler( new ClickHandler() {
 
@@ -401,10 +395,10 @@ public class ActionValueEditor extends DirtyableComposite {
             } );
         }
 
-        form.addAttribute( constants.Formula() + ":",
+        form.addAttribute( Constants.INSTANCE.Formula() + ":",
                            widgets( formula,
-                                    new InfoPopup( constants.Formula(),
-                                                   constants.FormulaTip() ) ) );
+                                    new InfoPopup( Constants.INSTANCE.Formula(),
+                                                   Constants.INSTANCE.FormulaTip() ) ) );
 
         form.show();
     }

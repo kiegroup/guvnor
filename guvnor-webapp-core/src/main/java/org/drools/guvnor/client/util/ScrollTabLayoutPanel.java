@@ -12,10 +12,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.Alignment;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 public class ScrollTabLayoutPanel extends Composite {
-    private static Images images = GWT.create( Images.class );
+    private static ImagesCore images = GWT.create( ImagesCore.class );
 
 
     private final double barHeight = 2;

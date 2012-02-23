@@ -54,8 +54,12 @@ public class RuleModel
         }
         final List<String> list = new ArrayList<String>();
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
+            if ( pat instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) pat;
                 if ( p.getBoundName() != null ) {
                     list.add( p.getBoundName() );
                 }
@@ -76,8 +80,12 @@ public class RuleModel
             return null;
         }
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
+            if ( pat instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) pat;
                 if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
                     return p;
                 }
@@ -98,8 +106,12 @@ public class RuleModel
             return null;
         }
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
+            if ( pat instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) pat;
                 for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
                     FieldConstraint fc = p.getFieldConstraints()[j];
                     List<String> fieldBindings = getFieldBinding( fc );
@@ -123,8 +135,12 @@ public class RuleModel
             return null;
         }
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
+            if ( pat instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) pat;
                 if ( p.isBound() && var.equals( p.getBoundName() ) ) {
                     return p.getFactType();
                 }
@@ -224,8 +240,12 @@ public class RuleModel
             return null;
         }
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
+            if ( pat instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) pat;
                 if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
                     return p;
                 }
@@ -249,6 +269,9 @@ public class RuleModel
         
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
             if ( pat instanceof FactPattern ) {
                 FactPattern fact = (FactPattern) pat;
                 if ( fact.isBound() ) {
@@ -353,8 +376,12 @@ public class RuleModel
                 newList[newIdx] = this.lhs[i];
                 newIdx++;
             } else {
-                if ( this.lhs[i] instanceof FactPattern ) {
-                    final FactPattern p = (FactPattern) this.lhs[i];
+                IPattern pat = this.lhs[i];
+                if ( pat instanceof FromCompositeFactPattern ) {
+                    pat = ((FromCompositeFactPattern) pat).getFactPattern();
+                }
+                if ( pat instanceof FactPattern ) {
+                    final FactPattern p = (FactPattern) pat;
                     if ( p.getBoundName() != null && isBoundFactUsed( p.getBoundName() ) ) {
                         return false;
                     }
@@ -654,7 +681,10 @@ public class RuleModel
     public List<String> getBoundVariablesInScope(final BaseSingleFieldConstraint con) {
         final List<String> result = new ArrayList<String>();
         for ( int i = 0; i < this.lhs.length; i++ ) {
-            final IPattern pat = this.lhs[i];
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FromCompositeFactPattern ) {
+                pat = ((FromCompositeFactPattern) pat).getFactPattern();
+            }
             if ( pat instanceof FactPattern ) {
                 final FactPattern fact = (FactPattern) pat;
 

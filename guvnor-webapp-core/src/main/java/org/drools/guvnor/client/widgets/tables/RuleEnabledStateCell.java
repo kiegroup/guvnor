@@ -15,8 +15,8 @@
 */
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -30,9 +30,9 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class RuleEnabledStateCell extends AbstractCell<Boolean> {
 
-    protected static final Constants constants = GWT.create( Constants.class );
+    protected static final ConstantsCore constants = GWT.create( ConstantsCore.class );
 
-    protected static final Images    images    = (Images) GWT.create( Images.class );
+    protected static final ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
     private SafeHtml                 shtml;
 

@@ -29,14 +29,13 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -47,17 +46,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:34:49
- * To change this template use File | Settings | File Templates.
- */
 public class DataInputWidget extends DirtyableFlexTable {
-
-    protected static Constants               constants = GWT.create( Constants.class );
-    private static Images                    images    = GWT.create( Images.class );
 
     private final Scenario                   scenario;
     private final SuggestionCompletionEngine suggestionCompletionEngine;
@@ -115,14 +104,14 @@ public class DataInputWidget extends DirtyableFlexTable {
                 }
                 String[] fields = (String[]) suggestionCompletionEngine.getModelFields( type );
                 final FormStylePopup pop = new FormStylePopup(); //NON-NLS
-                pop.setTitle( constants.ChooseDotDotDot() );
+                pop.setTitle( Constants.INSTANCE.ChooseDotDotDot() );
                 final ListBox fieldsListBox = new ListBox();
                 for ( int i = 0; i < fields.length; i++ ) {
                     String field = fields[i];
                     if ( !existingFields.contains( field ) ) fieldsListBox.addItem( field );
                 }
 
-                Button ok = new Button( constants.OK() );
+                Button ok = new Button( Constants.INSTANCE.OK() );
                 ok.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
@@ -141,7 +130,7 @@ public class DataInputWidget extends DirtyableFlexTable {
                 HorizontalPanel h = new HorizontalPanel();
                 h.add( fieldsListBox );
                 h.add( ok );
-                pop.addAttribute( constants.ChooseAFieldToAdd(),
+                pop.addAttribute( Constants.INSTANCE.ChooseAFieldToAdd(),
                                   h );
 
                 pop.show();
@@ -226,7 +215,7 @@ public class DataInputWidget extends DirtyableFlexTable {
                                                        HasHorizontalAlignment.ALIGN_RIGHT );
 
         if ( totalRows == 0 ) {
-            Button b = new Button( constants.AddAField() );
+            Button b = new Button( Constants.INSTANCE.AddAField() );
             b.addClickHandler( addFieldClickHandler() );
 
             setWidget( 1,
@@ -281,14 +270,14 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFactColumnButton extends ImageButton {
 
         public DeleteFactColumnButton(final FactData factData) {
-            super( images.deleteItemSmall(),
-                    constants.RemoveTheColumnForScenario( factData.getName() ) );
+            super( Images.INSTANCE.deleteItemSmall(),
+                    Constants.INSTANCE.RemoveTheColumnForScenario( factData.getName() ) );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if ( scenario.isFactDataReferenced( factData ) ) {
-                        Window.alert( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed( factData.getName() ) );
-                    } else if ( Window.confirm( constants.AreYouSureYouWantToRemoveColumn0( factData.getName() ) ) ) {
+                        Window.alert( Constants.INSTANCE.CanTRemoveThisColumnAsTheName0IsBeingUsed( factData.getName() ) );
+                    } else if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveColumn0( factData.getName() ) ) ) {
                         scenario.removeFixture( factData );
                         definitionList.remove( factData );
 
@@ -303,12 +292,12 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFieldRowButton extends ImageButton {
         public DeleteFieldRowButton(final String factName,
                                     final String fieldName) {
-            super( images.deleteItemSmall(),
-                   constants.RemoveThisRow() );
+            super( Images.INSTANCE.deleteItemSmall(),
+                   Constants.INSTANCE.RemoveThisRow() );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( constants.AreYouSureYouWantToRemoveRow0( factName ) ) ) {
+                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveRow0( factName ) ) ) {
                         ScenarioHelper.removeFields( definitionList,
                                                      fieldName );
 

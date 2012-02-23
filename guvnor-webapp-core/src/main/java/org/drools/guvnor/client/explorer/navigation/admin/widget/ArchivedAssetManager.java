@@ -19,9 +19,9 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -42,11 +42,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ArchivedAssetManager extends Composite {
 
-    private static Images           images    = (Images) GWT.create( Images.class );
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
     private AdminArchivedPagedTable table;
     private ListBox                 packages  = new ListBox( true );
-    private Constants               constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private Button                  btnRestorePackage;
     private Button                  btnDeletePackage;
     private EventBus                eventBus;

@@ -47,8 +47,6 @@ import java.util.Map.Entry;
  * This is the module editor for Drools Package.
  */
 public class PackageEditor extends AbstractModuleEditor {
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
 
     private final Module packageConfigData;
     private boolean isHistoricalReadOnly = false;
@@ -87,23 +85,23 @@ public class PackageEditor extends AbstractModuleEditor {
     private void refreshWidgets() {
         clear();
 
-        startSection( constants.ConfigurationSection() );
+        startSection( Constants.INSTANCE.ConfigurationSection() );
 
         packageConfigurationValidationResult.clear();
         addRow( packageConfigurationValidationResult );
 
-        addAttribute( constants.Configuration(),
+        addAttribute( Constants.INSTANCE.Configuration(),
                 header() );
 
         if ( !isHistoricalReadOnly ) {
-            addAttribute( constants.CategoryRules(),
+            addAttribute( Constants.INSTANCE.CategoryRules(),
                     getAddCatRules() );
         }
         addAttribute( "",
                 getShowCatRules() );
 
         if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            Button save = new Button( constants.ValidateConfiguration() );
+            Button save = new Button( Constants.INSTANCE.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -117,7 +115,7 @@ public class PackageEditor extends AbstractModuleEditor {
         endSection();
 
         if ( isHistoricalReadOnly ) {
-            startSection( constants.Dependencies() );
+            startSection( Constants.INSTANCE.Dependencies() );
             addRow( new DependencyWidget(
                     clientFactory,
                     eventBus,
@@ -127,16 +125,16 @@ public class PackageEditor extends AbstractModuleEditor {
         }
 
         if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            startSection( constants.BuildAndValidate() );
+            startSection( Constants.INSTANCE.BuildAndValidate() );
             addRow( new PackageBuilderWidget(
                     this.packageConfigData,
                     clientFactory ) );
             endSection();
         }
 
-        startSection( constants.InformationAndImportantURLs() );
+        startSection( Constants.INSTANCE.InformationAndImportantURLs() );
 
-        Button buildSource = new Button( constants.ShowPackageSource() );
+        Button buildSource = new Button( Constants.INSTANCE.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -146,43 +144,43 @@ public class PackageEditor extends AbstractModuleEditor {
         } );
 
         HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.packageConfigData ) + "' target='_blank'>" + getDocumentationDownload( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForDocumention(),
+        addAttribute( Constants.INSTANCE.URLForDocumention(),
                 createHPanel( html0,
-                        constants.URLDocumentionDescription() ) );
+                        Constants.INSTANCE.URLDocumentionDescription() ) );
 
         HTML html = new HTML( "<a href='" + getPackageSourceURL( this.packageConfigData ) + "' target='_blank'>" + getPackageSourceURL( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForPackageSource(),
+        addAttribute( Constants.INSTANCE.URLForPackageSource(),
                 createHPanel( html,
-                        constants.URLSourceDescription() ) );
+                        Constants.INSTANCE.URLSourceDescription() ) );
 
         HTML html2 = new HTML( "<a href='" + getPackageBinaryURL( this.packageConfigData ) + "' target='_blank'>" + getPackageBinaryURL( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForPackageBinary(),
+        addAttribute( Constants.INSTANCE.URLForPackageBinary(),
                 createHPanel( html2,
-                        constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
+                        Constants.INSTANCE.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
 
         HTML html3 = new HTML( "<a href='" + getScenarios( this.packageConfigData ) + "' target='_blank'>" + getScenarios( this.packageConfigData ) + "</a>" );
-        addAttribute( constants.URLForRunningTests(),
+        addAttribute( Constants.INSTANCE.URLForRunningTests(),
                 createHPanel( html3,
-                        constants.URLRunTestsRemote() ) );
+                        Constants.INSTANCE.URLRunTestsRemote() ) );
 
         HTML html4 = new HTML( "<a href='" + getChangeset( this.packageConfigData ) + "' target='_blank'>" + getChangeset( this.packageConfigData ) + "</a>" );
 
-        addAttribute( constants.ChangeSet(),
+        addAttribute( Constants.INSTANCE.ChangeSet(),
                 createHPanel( html4,
-                        constants.URLToChangeSetForDeploymentAgents() ) );
+                        Constants.INSTANCE.URLToChangeSetForDeploymentAgents() ) );
 
         HTML html5 = new HTML( "<a href='" + getModelDownload( this.packageConfigData ) + "' target='_blank'>" + getModelDownload( this.packageConfigData ) + "</a>" );
 
-        addAttribute( constants.ModelSet(),
+        addAttribute( Constants.INSTANCE.ModelSet(),
                 createHPanel( html5,
-                        constants.URLToDownloadModelSet() ) );
+                        Constants.INSTANCE.URLToDownloadModelSet() ) );
 
         final Tree springContextTree = new Tree();
         final TreeItem rootItem = new TreeItem( "" );
 
         springContextTree.addItem( rootItem );
 
-        final int rowNumber = addAttribute( constants.SpringContext() + ":",
+        final int rowNumber = addAttribute( Constants.INSTANCE.SpringContext() + ":",
                 springContextTree );
 
         GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
@@ -216,8 +214,8 @@ public class PackageEditor extends AbstractModuleEditor {
     //TODO: move this to PackageEditorActionToolbar
     private void doValidatePackageConfiguration(final Command refresh) {
         final HorizontalPanel busy = new HorizontalPanel();
-        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
-        busy.add( new Image( images.redAnime() ) );
+        busy.add( new Label( Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait() ) );
+        busy.add( new Image( Images.INSTANCE.redAnime() ) );
 
         packageConfigurationValidationResult.add( busy );
 
@@ -233,7 +231,7 @@ public class PackageEditor extends AbstractModuleEditor {
                                 String popUpText) {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( widget );
-        hPanel.add( new InfoPopup( constants.Tip(),
+        hPanel.add( new InfoPopup( Constants.INSTANCE.Tip(),
                 popUpText ) );
         return hPanel;
     }
@@ -245,7 +243,7 @@ public class PackageEditor extends AbstractModuleEditor {
             for (Iterator<Entry<String, String>> iterator = packageConfigData.getCatRules().entrySet().iterator(); iterator.hasNext(); ) {
                 Entry<String, String> entry = iterator.next();
                 HorizontalPanel hp = new HorizontalPanel();
-                String m = constants.AllRulesForCategory0WillNowExtendTheRule1(
+                String m = Constants.INSTANCE.AllRulesForCategory0WillNowExtendTheRule1(
                         (String) entry.getValue(),
                         (String) entry.getKey() );
                 hp.add( new SmallLabel( m ) );
@@ -258,11 +256,11 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        Image remove = new Image( images.deleteItemSmall() );
+        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisCategoryRule() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisCategoryRule() ) ) {
                     packageConfigData.getCatRules().remove( rule );
                     refreshWidgets();
                 }
@@ -272,8 +270,8 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( images.edit() );
-        add.setTitle( constants.AddCatRuleToThePackage() );
+        Image add = new ImageButton( Images.INSTANCE.edit() );
+        add.setTitle( Constants.INSTANCE.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {
 
@@ -284,8 +282,8 @@ public class PackageEditor extends AbstractModuleEditor {
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( add );
-        hp.add( new InfoPopup( constants.CategoryParentRules(),
-                constants.CatRulesInfo() ) );
+        hp.add( new InfoPopup( Constants.INSTANCE.CategoryParentRules(),
+                Constants.INSTANCE.CatRulesInfo() ) );
         return hp;
     }
 
@@ -301,9 +299,9 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     protected void showCatRuleSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup( images.config(),
-                constants.AddACategoryRuleToThePackage() );
-        final Button addbutton = new Button( constants.OK() );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.config(),
+                Constants.INSTANCE.AddACategoryRuleToThePackage() );
+        final Button addbutton = new Button( Constants.INSTANCE.OK() );
         final TextBox ruleName = new TextBox();
 
         final CategoryExplorerWidget exw = new CategoryExplorerWidget( new CategorySelectHandler() {
@@ -313,7 +311,7 @@ public class PackageEditor extends AbstractModuleEditor {
 
         ruleName.setVisibleLength( 15 );
 
-        addbutton.setTitle( constants.CreateCategoryRule() );
+        addbutton.setTitle( Constants.INSTANCE.CreateCategoryRule() );
 
         addbutton.addClickHandler( new ClickHandler() {
 
@@ -327,9 +325,9 @@ public class PackageEditor extends AbstractModuleEditor {
             }
         } );
 
-        pop.addAttribute( constants.AllTheRulesInFollowingCategory(),
+        pop.addAttribute( Constants.INSTANCE.AllTheRulesInFollowingCategory(),
                 exw );
-        pop.addAttribute( constants.WillExtendTheFollowingRuleCalled(),
+        pop.addAttribute( Constants.INSTANCE.WillExtendTheFollowingRuleCalled(),
                 ruleName );
         pop.addAttribute( "",
                 addbutton );
@@ -341,11 +339,11 @@ public class PackageEditor extends AbstractModuleEditor {
         packageConfigurationValidationResult.clear();
 
         if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith( "Class" ) ) {
-            Image img = new Image( images.warning() );
+            Image img = new Image( Images.INSTANCE.warning() );
             packageConfigurationValidationResult.add( img );
-            HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
+            HTML msg = new HTML( "<b>" + Constants.INSTANCE.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
-            Button show = new Button( constants.ViewErrors() );
+            Button show = new Button( Constants.INSTANCE.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     ValidationMessageWidget wid = new ValidationMessageWidget( validatedResponse.errorHeader,
@@ -355,9 +353,9 @@ public class PackageEditor extends AbstractModuleEditor {
             } );
             packageConfigurationValidationResult.add( show );
         } else {
-            Image img = new Image( images.greenTick() );
+            Image img = new Image( Images.INSTANCE.greenTick() );
             packageConfigurationValidationResult.add( img );
-            HTML msg = new HTML( "<b>" + constants.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
+            HTML msg = new HTML( "<b>" + Constants.INSTANCE.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
         }
     }

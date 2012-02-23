@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericFloatTextBox;
 import org.drools.guvnor.client.common.IBindingProvider;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -69,7 +70,7 @@ public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
         Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
-            lstAvailableBindings.addItem( constants.Choose() );
+            lstAvailableBindings.addItem( Constants.INSTANCE.Choose() );
             lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;

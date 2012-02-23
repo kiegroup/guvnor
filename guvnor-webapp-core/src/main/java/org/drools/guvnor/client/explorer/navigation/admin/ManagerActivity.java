@@ -14,7 +14,7 @@ import org.drools.guvnor.client.explorer.navigation.admin.widget.PermissionViewe
 import org.drools.guvnor.client.explorer.navigation.admin.widget.RepoConfigManager;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.StateManager;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.WorkspaceManager;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Activity;
@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class ManagerActivity extends Activity {
 
-    private Constants           constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private final int           id;
     private final ClientFactory clientFactory;

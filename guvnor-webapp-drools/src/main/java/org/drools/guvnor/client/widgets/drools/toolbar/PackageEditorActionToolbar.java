@@ -55,9 +55,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PackageEditorActionToolbar extends Composite {
 
-    private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create( Images.class );
-    
     interface PackageEditorActionToolbarBinder
             extends
             UiBinder<Widget, PackageEditorActionToolbar> {
@@ -139,7 +136,7 @@ public class PackageEditorActionToolbar extends Composite {
      * Sets the visible status display.
      */
     public void setState(String newStatus) {
-        status.setText(constants.statusIs(newStatus));
+        status.setText(Constants.INSTANCE.statusIs(newStatus));
     }
 
     private void applyToolBarConfiguration() {
@@ -203,7 +200,7 @@ public class PackageEditorActionToolbar extends Composite {
         archive.setCommand(new Command() {
 
             public void execute() {
-                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem())) {
+                if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToArchiveThisItem())) {
                     archiveCommand.execute();
                 }
             }
@@ -222,7 +219,7 @@ public class PackageEditorActionToolbar extends Composite {
         delete.setCommand(new Command() {
 
             public void execute() {
-                if (Window.confirm(constants.DeleteAreYouSure())) {
+                if (Window.confirm(Constants.INSTANCE.DeleteAreYouSure())) {
                     deleteCommand.execute();
                 }
             }
@@ -290,13 +287,13 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                constants.RenameThePackage() );
-        pop.addRow( new HTML( constants.RenamePackageTip() ) );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.newWiz(),
+                Constants.INSTANCE.RenameThePackage() );
+        pop.addRow( new HTML( Constants.INSTANCE.RenamePackageTip() ) );
         final TextBox name = new TextBox();
-        pop.addAttribute( constants.NewPackageNameIs(),
+        pop.addAttribute( Constants.INSTANCE.NewPackageNameIs(),
                 name );
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                 ok );
 
@@ -317,7 +314,7 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void completedRenaming(String newAssetUUID) {
-        Window.alert( constants.PackageRenamedSuccessfully() );
+        Window.alert( Constants.INSTANCE.PackageRenamedSuccessfully() );
         refreshPackageList();
 
         eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
@@ -333,13 +330,13 @@ public class PackageEditorActionToolbar extends Composite {
      * Will show a copy dialog for copying the whole package.
      */
     private void doCopy() {
-        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                constants.CopyThePackage() );
-        pop.addRow( new HTML( constants.CopyThePackageTip() ) );
+        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.newWiz(),
+                Constants.INSTANCE.CopyThePackage() );
+        pop.addRow( new HTML( Constants.INSTANCE.CopyThePackageTip() ) );
         final TextBox name = new TextBox();
-        pop.addAttribute( constants.NewPackageNameIs(),
+        pop.addAttribute( Constants.INSTANCE.NewPackageNameIs(),
                 name );
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                 ok );
 
@@ -347,10 +344,10 @@ public class PackageEditorActionToolbar extends Composite {
 
             public void onClick(ClickEvent event) {
                 if ( !ModuleNameValidator.validatePackageName( name.getText() ) ) {
-                    Window.alert( constants.NotAValidPackageName() );
+                    Window.alert( Constants.INSTANCE.NotAValidPackageName() );
                     return;
                 }
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getPackageService().copyModule( packageConfigData.getName(),
                         name.getText(),
                         new GenericCallback<String>() {
@@ -366,20 +363,20 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void completedCopying(String newAssetUUID) {
-        Window.alert( constants.PackageCopiedSuccessfully() );
+        Window.alert( Constants.INSTANCE.PackageCopiedSuccessfully() );
         refreshPackageList();
 
         openModule( newAssetUUID );
     }
 
     private void doSave(final Command refresh) {
-        LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
+        LoadingPopup.showMessage( Constants.INSTANCE.SavingPackageConfigurationPleaseWait() );
 
         RepositoryServiceFactory.getPackageService().saveModule( this.packageConfigData,
                 new GenericCallback<Void>() {
                     public void onSuccess(Void data) {
                         refreshCommand.execute();
-                        LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
+                        LoadingPopup.showMessage( Constants.INSTANCE.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
                         SuggestionCompletionCache.getInstance().loadPackage( packageConfigData.getName(),
                                 new Command() {

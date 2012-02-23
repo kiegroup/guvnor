@@ -50,11 +50,10 @@ public class CustomFormPopUp extends FormStylePopup {
         vp.setHeight("100%");
         vp.add(this.externalFrame);
 
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        okButton = new Button(constants.OK());
+        okButton = new Button(Constants.INSTANCE.OK());
 
         //cancel button with default handler
-        cancelButton = new Button(constants.Cancel(),
+        cancelButton = new Button(Constants.INSTANCE.Cancel(),
                 new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         hide();

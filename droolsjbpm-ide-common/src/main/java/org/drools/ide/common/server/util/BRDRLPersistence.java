@@ -72,9 +72,9 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final String          WORKITEM_PREFIX = "wi";
+    private static final String            WORKITEM_PREFIX = "wi";
 
-    private static final BRLPersistence  INSTANCE        = new BRDRLPersistence();
+    private static final BRLPersistence    INSTANCE        = new BRDRLPersistence();
 
     //Keep a record of all variable bindings for Actions that depend on them
     protected Map<String, IFactPattern>    bindingsPatterns;
@@ -774,11 +774,14 @@ public class BRDRLPersistence
                 OperatorParameterDRLBuilder builder = (OperatorParameterDRLBuilder) Class.forName( className ).newInstance();
                 return builder.buildDRL( parameters );
             } catch ( ClassNotFoundException cnfe ) {
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", cnfe );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.",
+                                                 cnfe );
             } catch ( IllegalAccessException iae ) {
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", iae );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.",
+                                                 iae );
             } catch ( InstantiationException ie ) {
-                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.", ie );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'.",
+                                                 ie );
             }
 
         }
@@ -829,14 +832,18 @@ public class BRDRLPersistence
                                          String fieldType,
                                          String value,
                                          StringBuilder buf) {
-            buf.append( " " );
-            if ( operator.equals( "in" ) ) {
+
+            if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
+                buf.append( " " );
                 buf.append( value );
             } else {
-                DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                              type,
-                                                              fieldType,
-                                                              value );
+                if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
+                    buf.append( " " );
+                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                                  type,
+                                                                  fieldType,
+                                                                  value );
+                }
             }
             buf.append( " " );
         }

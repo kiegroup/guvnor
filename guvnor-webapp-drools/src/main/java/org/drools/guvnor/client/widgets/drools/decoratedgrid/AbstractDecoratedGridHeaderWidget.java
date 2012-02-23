@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
@@ -28,7 +27,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalM
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -124,7 +122,6 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     protected final boolean          isReadOnly;
 
     // Resources
-    protected static final Constants constants        = GWT.create( Constants.class );
     protected ResourcesProvider<T>   resources;
     protected EventBus               eventBus;
 

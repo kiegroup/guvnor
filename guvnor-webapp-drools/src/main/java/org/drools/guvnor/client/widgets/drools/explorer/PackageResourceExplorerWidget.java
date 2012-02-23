@@ -38,7 +38,6 @@ import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMod
 
 public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExplorerWidget {
 
-    private Constants constants = GWT.create(Constants.class);
     private boolean globalArea;
 
     //Services
@@ -215,7 +214,7 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
             //source is mandatory!
             final TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
             if (selectedPackageItem == null || selectedPackageItem.getChildCount() != 0) {
-                throw new IllegalStateException(constants.NoPackageSeleced());
+                throw new IllegalStateException(Constants.INSTANCE.NoPackageSeleced());
             }
 
             final TreeItemData treeItem = (TreeItemData) selectedPackageItem.getUserObject();

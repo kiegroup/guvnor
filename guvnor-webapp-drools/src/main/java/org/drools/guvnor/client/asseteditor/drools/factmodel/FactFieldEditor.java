@@ -32,8 +32,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FactFieldEditor extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-
     interface FactFieldsEditorBinder
         extends
         UiBinder<Widget, FactFieldEditor> {
@@ -71,8 +69,8 @@ public class FactFieldEditor extends Composite {
         setTypeText( field.type );
         fieldName.setText( field.name );
 
-        editFieldIcon.setTitle( constants.Rename() );
-        deleteFieldIcon.setTitle( constants.Delete() );
+        editFieldIcon.setTitle( Constants.INSTANCE.Rename() );
+        deleteFieldIcon.setTitle( Constants.INSTANCE.Delete() );
     }
 
     @UiHandler("editFieldIcon")

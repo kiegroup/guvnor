@@ -23,8 +23,8 @@ import java.util.List;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.UserCapabilities;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PushClient;
@@ -58,8 +58,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DiscussionWidget extends Composite {
 
-    private static Constants       constants        = GWT.create( Constants.class );
-    private static Images          images           = GWT.create( Images.class );
+    private static ConstantsCore constants        = GWT.create( ConstantsCore.class );
+    private static ImagesCore images           = GWT.create( ImagesCore.class );
 
     private VerticalPanel          commentList      = new VerticalPanel();
     private VerticalPanel          newCommentLayout = new VerticalPanel();

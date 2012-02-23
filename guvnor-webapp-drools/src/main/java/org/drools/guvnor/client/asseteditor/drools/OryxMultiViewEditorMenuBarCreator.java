@@ -3,13 +3,11 @@ package org.drools.guvnor.client.asseteditor.drools;
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 
 public class OryxMultiViewEditorMenuBarCreator extends DefaultOryxMultiViewEditorMenuBarCreator {
-    private Constants constants = GWT.create(Constants.class);
     
     private Command closeCommand;
     private final Command beforeSaveCommand;
@@ -28,7 +26,7 @@ public class OryxMultiViewEditorMenuBarCreator extends DefaultOryxMultiViewEdito
     @Override
     public MenuBar createMenuBar(final MultiViewEditor editor, EventBus eventBus) {
         MenuBar toolbar = super.createMenuBar(editor, eventBus);
-        toolbar.addItem(constants.Close(),this.closeCommand);
+        toolbar.addItem(Constants.INSTANCE.Close(),this.closeCommand);
         return toolbar;
     }
 

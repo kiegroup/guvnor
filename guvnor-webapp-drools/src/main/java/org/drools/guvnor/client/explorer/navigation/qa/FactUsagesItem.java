@@ -16,10 +16,10 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -28,15 +28,12 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 class FactUsagesItem extends TreeItem {
 
-    private Constants constants = GWT.create( Constants.class );
-    private Images    images    = GWT.create( Images.class );
-
     public FactUsagesItem(AnalysisFactUsage[] factUsages) {
         setStyleName( "analysis-Report" );
 
-        setHTML( AbstractImagePrototype.create(images.factTemplate()).getHTML() + "<b>" + constants.ShowFactUsages() + "</b>" );
+        setHTML( AbstractImagePrototype.create(Images.INSTANCE.factTemplate()).getHTML() + "<b>" + Constants.INSTANCE.ShowFactUsages() + "</b>" );
 
-        setUserObject( new HTML( AbstractImagePrototype.create(images.factTemplate()).getHTML() + "<b>" + constants.FactUsages() + ":</b>" ) );
+        setUserObject( new HTML( AbstractImagePrototype.create(Images.INSTANCE.factTemplate()).getHTML() + "<b>" + Constants.INSTANCE.FactUsages() + ":</b>" ) );
 
         doFacts( factUsages );
     }
@@ -44,7 +41,7 @@ class FactUsagesItem extends TreeItem {
     private void doFacts(AnalysisFactUsage[] factUsages) {
         for ( AnalysisFactUsage factUsage : factUsages ) {
 
-            TreeItem fact = new TreeItem( AbstractImagePrototype.create(images.fact()).getHTML() + factUsage.name );
+            TreeItem fact = new TreeItem( AbstractImagePrototype.create(Images.INSTANCE.fact()).getHTML() + factUsage.name );
             TreeItem fieldList = doFields( factUsage.fields );
             fact.addItem( fieldList );
             fieldList.setState( true );
@@ -55,10 +52,10 @@ class FactUsagesItem extends TreeItem {
     }
 
     private TreeItem doFields(AnalysisFieldUsage[] fields) {
-        TreeItem fieldList = new TreeItem( constants.FieldsUsed() );
+        TreeItem fieldList = new TreeItem( Constants.INSTANCE.FieldsUsed() );
 
         for ( AnalysisFieldUsage fieldUsage : fields ) {
-            TreeItem field = new TreeItem( AbstractImagePrototype.create(images.field()).getHTML() + fieldUsage.name );
+            TreeItem field = new TreeItem( AbstractImagePrototype.create(Images.INSTANCE.field()).getHTML() + fieldUsage.name );
             fieldList.addItem( field );
             TreeItem ruleList = doAffectedRules( fieldUsage );
             field.addItem( ruleList );
@@ -69,10 +66,10 @@ class FactUsagesItem extends TreeItem {
     }
 
     private TreeItem doAffectedRules(AnalysisFieldUsage fieldUsage) {
-        TreeItem ruleList = new TreeItem( constants.ShowRulesAffected() );
-        ruleList.setUserObject( new HTML( constants.RulesAffected() ) );
+        TreeItem ruleList = new TreeItem( Constants.INSTANCE.ShowRulesAffected() );
+        ruleList.setUserObject( new HTML( Constants.INSTANCE.RulesAffected() ) );
         for ( String ruleName : fieldUsage.rules ) {
-            ruleList.addItem( new TreeItem( AbstractImagePrototype.create(images.ruleAsset()).getHTML() + ruleName ) );
+            ruleList.addItem( new TreeItem( AbstractImagePrototype.create(Images.INSTANCE.ruleAsset()).getHTML() + ruleName ) );
         }
         return ruleList;
     }

@@ -113,11 +113,13 @@ public class BuiltInSelector implements AssetSelector {
                 }
             }
         } else if ( "!=".equals( categoryOperator ) ) {
+            boolean categoryFound = false;
             for ( CategoryItem cat : item.getCategories() ) {
-                if ( !cat.getFullPath().equals( category ) ) {
-                    return true;
+                if ( cat.getFullPath().equals( category ) ) {
+                    categoryFound = true;
                 }
             }
+            return !categoryFound;
         }
 
         return false;

@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -46,8 +45,7 @@ public class WorkingSetSelectorPopup {
         this.asset = a;
 
         pop = new FormStylePopup();
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        pop.setTitle(constants.SelectWorkingSets());
+        pop.setTitle(Constants.INSTANCE.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
         RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().getModuleUUID(),
@@ -68,7 +66,7 @@ public class WorkingSetSelectorPopup {
                     }
                 });
 
-        Button save = new Button(constants.SaveAndClose());
+        Button save = new Button(Constants.INSTANCE.SaveAndClose());
         save.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 String[] wsUUIDs = new String[selectedFacts.getItemCount()];

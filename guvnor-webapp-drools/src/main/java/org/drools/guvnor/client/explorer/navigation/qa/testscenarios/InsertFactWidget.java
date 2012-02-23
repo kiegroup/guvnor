@@ -17,11 +17,12 @@
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 
 public class InsertFactWidget extends FactWidget {
@@ -36,7 +37,7 @@ public class InsertFactWidget extends FactWidget {
                scenario,
                parent,
                executionTrace,
-               constants.insertForScenario( factType ) );
+               Constants.INSTANCE.insertForScenario( factType ) );
     }
 
     public void onDelete() {
@@ -53,7 +54,7 @@ public class InsertFactWidget extends FactWidget {
         }
         
         if ( used ) {
-            ErrorPopup.showMessage( constants.CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed() );
+            ErrorPopup.showMessage( Constants.INSTANCE.CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed() );
         } else {
             super.onDelete();
         }

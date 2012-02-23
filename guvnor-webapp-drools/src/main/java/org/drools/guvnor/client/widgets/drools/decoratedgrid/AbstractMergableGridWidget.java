@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
@@ -52,7 +51,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCellElement;
@@ -180,7 +178,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     protected TableSectionElement                            tbody;
 
     // Resources
-    protected static final Constants                         messages             = GWT.create( Constants.class );
     protected ResourcesProvider<T>                           resources;
     protected EventBus                                       eventBus;
 

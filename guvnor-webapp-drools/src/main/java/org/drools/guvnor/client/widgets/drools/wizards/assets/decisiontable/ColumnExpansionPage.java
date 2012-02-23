@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
@@ -58,7 +59,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardColumnExpansion();
+        return Constants.INSTANCE.DecisionTableWizardColumnExpansion();
     }
 
     public void initialise() {

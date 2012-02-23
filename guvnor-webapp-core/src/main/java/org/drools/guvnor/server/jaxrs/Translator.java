@@ -81,6 +81,7 @@ public class Translator {
 
         Asset ret = new Asset();
         ret.setTitle(a.getTitle());
+        ret.setBinaryContentAttachmentFileName(a.getBinaryContentAttachmentFileName());
         ret.setPublished(a.getLastModified().getTime());
         ret.setAuthor(a.getLastContributor());
         ret.setMetadata(metadata);

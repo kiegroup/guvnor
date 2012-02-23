@@ -46,7 +46,6 @@ public class UserInbox {
                      String userName) {
         this.userInfo = new UserInfo( repo,
                                       userName );
-        this.userInfo.save();
     }
 
     /**
@@ -54,7 +53,6 @@ public class UserInbox {
      */
     public UserInbox(RulesRepository repo) {
         this.userInfo = new UserInfo( repo );
-        userInfo.save();
     }
 
     /**
@@ -163,13 +161,11 @@ public class UserInbox {
                         ExplorerNodeConfig.RECENT_VIEWED_ID );
         userInfo.clear( INBOX,
                         ExplorerNodeConfig.INCOMING_ID );
-        userInfo.save();
     }
 
     public void clearIncoming() {
         userInfo.clear( INBOX,
                         ExplorerNodeConfig.INCOMING_ID );
-        userInfo.save();
     }
 
     public static TableDataResult toTable(List<InboxEntry> entries,

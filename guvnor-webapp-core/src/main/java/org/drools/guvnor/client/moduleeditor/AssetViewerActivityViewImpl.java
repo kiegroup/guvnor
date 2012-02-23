@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -47,7 +47,7 @@ public class AssetViewerActivityViewImpl extends Composite
         implements
         AssetViewerActivityView {
 
-    private static final Constants constants = GWT.create( Constants.class );
+    private static final ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     interface AssetViewerActivityViewImplBinder
             extends

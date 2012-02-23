@@ -16,10 +16,9 @@
 package org.drools.ide.common.server.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -99,7 +98,7 @@ public class GuidedDTModelConversionTest {
         ins.boundName = "ins";
         ins.factType = "Cheese";
         ins.factField = "price";
-        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
@@ -222,7 +221,7 @@ public class GuidedDTModelConversionTest {
                       a1.getFactType() );
         assertEquals( "price",
                       a1.getFactField() );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       a1.getType() );
 
         ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
@@ -310,7 +309,7 @@ public class GuidedDTModelConversionTest {
         ins.boundName = "ins";
         ins.factType = "Cheese";
         ins.factField = "price";
-        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
         dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
@@ -432,7 +431,7 @@ public class GuidedDTModelConversionTest {
                       a1.getFactType() );
         assertEquals( "price",
                       a1.getFactField() );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       a1.getType() );
 
         ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
@@ -470,8 +469,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( new BigDecimal( 1 ),
-                      tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
+        assertEquals( new Integer( 1 ),
+                      (Integer) tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "metar1",
@@ -495,8 +494,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "a4r1",
                       tsdt.getData().get( 0 ).get( 11 ).getStringValue() );
 
-        assertEquals( new BigDecimal( 2 ),
-                      tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
+        assertEquals( new Integer( 2 ),
+                      (Integer) tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "metar2",
@@ -532,8 +531,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( row.size(),
                       array.length );
 
-        BigDecimal newRowNum = row.get( 0 ).getNumericValue();
-        BigDecimal oldRowNum = new BigDecimal( array[0] );
+        int newRowNum = (Integer) row.get( 0 ).getNumericValue();
+        int oldRowNum = Integer.valueOf( array[0] );
         assertEquals( newRowNum,
                       oldRowNum );
 
@@ -695,8 +694,8 @@ public class GuidedDTModelConversionTest {
             System.out.println( sb.toString() );
         }
 
-        assertEquals( new BigDecimal( 1 ),
-                      tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
+        assertEquals( new Integer( 1 ),
+                      (Integer) tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r1",
@@ -708,8 +707,8 @@ public class GuidedDTModelConversionTest {
         assertEquals( "f2c1r1",
                       tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
 
-        assertEquals( new BigDecimal( 2 ),
-                      tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
+        assertEquals( new Integer( 2 ),
+                      (Integer) tsdt.getData().get( 1 ).get( 0 ).getNumericValue() );
         assertEquals( "desc",
                       tsdt.getData().get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "z1c1r2",
@@ -728,7 +727,6 @@ public class GuidedDTModelConversionTest {
 
     }
 
-    
     private boolean isEqualOrNull(Object v1,
                                   Object v2) {
         if ( v1 == null && v2 == null ) {

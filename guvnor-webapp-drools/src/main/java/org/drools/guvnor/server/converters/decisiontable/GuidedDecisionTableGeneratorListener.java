@@ -29,17 +29,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
+
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.decisiontable.parser.SourceBuilder;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.server.converters.decisiontable.builders.DefaultDescriptionBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableActivationGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAgendaGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableAutoFocusBuilder;
-import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableCalendarsBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDescriptionBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableDurationBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableLHSBuilder;
@@ -50,57 +55,72 @@ import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecision
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRHSBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableRuleflowGroupBuilder;
 import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSalienceBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableSourceBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.GuidedDecisionTableTimerBuilder;
+import org.drools.guvnor.server.converters.decisiontable.builders.HasColumnHeadings;
+import org.drools.guvnor.server.converters.decisiontable.builders.ParameterUtilities;
 import org.drools.guvnor.server.converters.decisiontable.builders.RowNumberBuilder;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.model.Package;
-import org.drools.template.parser.DecisionTableParseException;
 
+@RequestScoped
 public class GuidedDecisionTableGeneratorListener
     implements
     RuleSheetListener {
 
     //keywords
-    private static final int                  ACTION_ROW                  = 1;
-    private static final int                  OBJECT_TYPE_ROW             = 2;
-    private static final int                  CODE_ROW                    = 3;
-    private static final int                  LABEL_ROW                   = 4;
+    private static final int                        ACTION_ROW                  = 1;
+    private static final int                        OBJECT_TYPE_ROW             = 2;
+    private static final int                        CODE_ROW                    = 3;
+    private static final int                        LABEL_ROW                   = 4;
 
     //Row Number column must always be at position 0
-    private static final int                  ROW_NUMBER_COLUMN_INDEX     = 0;
+    private static final int                        ROW_NUMBER_COLUMN_INDEX     = 0;
 
     //Description column must always be at position 1
-    private static final int                  DESCRIPTION_COLUMN_INDEX    = 1;
+    private static final int                        DESCRIPTION_COLUMN_INDEX    = 1;
 
-    private static GuidedDecisionTableBuilder ROW_NUMBER_BUILDER          = new RowNumberBuilder();
-    private static GuidedDecisionTableBuilder DEFAULT_DESCRIPTION_BUILDER = new DefaultDescriptionBuilder();
+    private static GuidedDecisionTableSourceBuilder ROW_NUMBER_BUILDER          = new RowNumberBuilder();
+    private static GuidedDecisionTableSourceBuilder DEFAULT_DESCRIPTION_BUILDER = new DefaultDescriptionBuilder();
 
     //State machine variables for this parser
-    private boolean                           _isInRuleTable              = false;
-    private int                               _ruleRow;
-    private int                               _ruleStartColumn;
-    private int                               _ruleStartRow;
-    private boolean                           _currentSequentialFlag      = false;                                 // indicates that we are in sequential mode
-    private boolean                           _currentEscapeQuotesFlag    = true;                                  // indicates that we are escaping quotes
-    private GuidedDecisionTable52             _dtable;
+    private boolean                                 _isInRuleTable              = false;
+    private boolean                                 _haveColumnsBeenIdentified  = false;
+    private int                                     _ruleRow;
+    private int                                     _ruleStartColumn;
+    private int                                     _ruleEndColumn;
+    private int                                     _ruleStartRow;
+    private boolean                                 _currentSequentialFlag      = false;                                 // indicates that we are in sequential mode
+    private boolean                                 _currentEscapeQuotesFlag    = true;                                  // indicates that we are escaping quotes
+    private GuidedDecisionTable52                   _dtable;
+    private boolean                                 _isNewDataRow               = false;
 
     //Accumulated output
-    private Map<Integer, ActionType>          _actions;
-    private final HashMap<Integer, String>    _cellComments               = new HashMap<Integer, String>();
-    private final List<GuidedDecisionTable52> _dtables                    = new ArrayList<GuidedDecisionTable52>();
-    private List<GuidedDecisionTableBuilder>  _sourceBuilders;
+    private Map<Integer, ActionType>                _actions;
+    private final List<GuidedDecisionTable52>       _dtables                    = new ArrayList<GuidedDecisionTable52>();
+    private List<GuidedDecisionTableSourceBuilder>  _sourceBuilders;
 
     //RuleSet wide configuration
-    private final PropertiesSheetListener     _propertiesListener         = new PropertiesSheetListener();
+    private final PropertiesSheetListener           _propertiesListener         = new PropertiesSheetListener();
+
+    //Results of conversion
+    private ConversionResult                        _conversionResult;
+
+    private ParameterUtilities                      _parameterUtilities;
+
+    public GuidedDecisionTableGeneratorListener(ConversionResult conversionResult) {
+        this._conversionResult = conversionResult;
+    }
 
     public CaseInsensitiveMap getProperties() {
         return this._propertiesListener.getProperties();
     }
 
     public Package getRuleSet() {
-        throw new UnsupportedOperationException( "Use getGuidedDecisionTable() instead." );
+        throw new UnsupportedOperationException( "Use getGuidedDecisionTables() instead." );
     }
 
     public List<Import> getImports() {
@@ -123,7 +143,7 @@ public class GuidedDecisionTableGeneratorListener
         return getProperties().getProperty( DECLARES_TAG );
     }
 
-    public List<GuidedDecisionTable52> getGuidedDecisionTable() {
+    public List<GuidedDecisionTable52> getGuidedDecisionTables() {
         return _dtables;
     }
 
@@ -138,12 +158,7 @@ public class GuidedDecisionTableGeneratorListener
     public void newRow(final int rowNumber,
                        final int columns) {
         if ( rowNumber > this._ruleStartRow + LABEL_ROW ) {
-            ROW_NUMBER_BUILDER.addCellValue( rowNumber,
-                                             0,
-                                             "" );
-            DEFAULT_DESCRIPTION_BUILDER.addCellValue( rowNumber,
-                                                      1,
-                                                      "" );
+            this._isNewDataRow = true;
         }
     }
 
@@ -151,7 +166,12 @@ public class GuidedDecisionTableGeneratorListener
                         final int column,
                         final String value,
                         int mergedColStart) {
-        if ( isCellValueEmpty( value ) ) {
+        //Ignore empty cells unless we've identified all columns
+        if ( isCellValueEmpty( value ) && !this._haveColumnsBeenIdentified ) {
+            return;
+        }
+        //Ignore cells beyond the extent of the defined columns
+        if ( column > this._ruleEndColumn && this._haveColumnsBeenIdentified ) {
             return;
         }
         if ( _isInRuleTable && row == this._ruleStartRow ) {
@@ -181,18 +201,21 @@ public class GuidedDecisionTableGeneratorListener
         this._isInRuleTable = true;
         this._actions = new HashMap<Integer, ActionType>();
         this._ruleStartColumn = column;
+        this._ruleEndColumn = column;
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;
+        this._isNewDataRow = false;
 
         // setup stuff for the rules to come.. (the order of these steps are important !)
         this._currentSequentialFlag = getSequentialFlag();
         this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
+        this._parameterUtilities = new ParameterUtilities();
 
         //Setup new Decision Table
         this._dtable = new GuidedDecisionTable52();
         this._dtable.setTableFormat( TableFormat.EXTENDED_ENTRY );
         this._dtable.setTableName( RuleSheetParserUtil.getRuleName( value ) );
-        this._sourceBuilders = new ArrayList<GuidedDecisionTableBuilder>();
+        this._sourceBuilders = new ArrayList<GuidedDecisionTableSourceBuilder>();
         ROW_NUMBER_BUILDER.clearValues();
         DEFAULT_DESCRIPTION_BUILDER.clearValues();
         this._sourceBuilders.add( ROW_NUMBER_COLUMN_INDEX,
@@ -211,11 +234,13 @@ public class GuidedDecisionTableGeneratorListener
             this._dtables.add( this._dtable );
             this._currentSequentialFlag = false;
             this._isInRuleTable = false;
+            this._haveColumnsBeenIdentified = false;
+            this._isNewDataRow = false;
         }
     }
 
     private void populateDecisionTable() {
-        for ( GuidedDecisionTableBuilder sb : this._sourceBuilders ) {
+        for ( GuidedDecisionTableSourceBuilder sb : this._sourceBuilders ) {
             sb.populateDecisionTable( this._dtable );
         }
     }
@@ -293,6 +318,7 @@ public class GuidedDecisionTableGeneratorListener
         switch ( row - this._ruleStartRow ) {
             case ACTION_ROW :
                 //CONDITION, ACTION, ATTRIBUTE etc...
+                this._ruleEndColumn = column;
                 doActionTypeCell( row,
                                   column,
                                   trimVal );
@@ -300,6 +326,7 @@ public class GuidedDecisionTableGeneratorListener
 
             case OBJECT_TYPE_ROW :
                 //Pattern definition ("Driver", "Smurf" etc...)
+                this._haveColumnsBeenIdentified = true;
                 doObjectTypeCell( row,
                                   column,
                                   trimVal,
@@ -321,6 +348,15 @@ public class GuidedDecisionTableGeneratorListener
                 break;
 
             default :
+                if ( this._isNewDataRow ) {
+                    this._isNewDataRow = false;
+                    ROW_NUMBER_BUILDER.addCellValue( row,
+                                                     0,
+                                                     "" );
+                    DEFAULT_DESCRIPTION_BUILDER.addCellValue( row,
+                                                              1,
+                                                              "" );
+                }
                 doDataCell( row,
                             column,
                             trimVal );
@@ -337,7 +373,7 @@ public class GuidedDecisionTableGeneratorListener
                                      row );
         final ActionType actionType = getActionForColumn( row,
                                                           column );
-        GuidedDecisionTableBuilder sb = null;
+        GuidedDecisionTableSourceBuilder sb = null;
         switch ( actionType.getCode() ) {
             case CONDITION :
                 //SourceBuilders for CONDITIONs are set when processing the Object row
@@ -348,7 +384,8 @@ public class GuidedDecisionTableGeneratorListener
 
             case NAME :
                 sb = new GuidedDecisionTableNameBuilder( row - 1,
-                                                         column );
+                                                         column,
+                                                         this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
@@ -357,7 +394,8 @@ public class GuidedDecisionTableGeneratorListener
                 //Remove default Description Column builder and add that provided
                 this._sourceBuilders.remove( DEFAULT_DESCRIPTION_BUILDER );
                 sb = new GuidedDecisionTableDescriptionBuilder( row - 1,
-                                                                column );
+                                                                column,
+                                                                this._conversionResult );
 
                 //Description column must always be at position 1
                 this._sourceBuilders.add( DESCRIPTION_COLUMN_INDEX,
@@ -368,63 +406,88 @@ public class GuidedDecisionTableGeneratorListener
             case SALIENCE :
                 sb = new GuidedDecisionTableSalienceBuilder( row - 1,
                                                              column,
-                                                             this._currentSequentialFlag);
+                                                             this._currentSequentialFlag,
+                                                             this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case DURATION :
                 sb = new GuidedDecisionTableDurationBuilder( row - 1,
-                                                             column );
+                                                             column,
+                                                             this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+                
+            case TIMER:
+                sb = new GuidedDecisionTableTimerBuilder( row - 1,
+                                                          column,
+                                                          this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case CALENDARS:
+                sb = new GuidedDecisionTableCalendarsBuilder( row - 1,
+                                                              column,
+                                                              this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case NOLOOP :
                 sb = new GuidedDecisionTableNoLoopBuilder( row - 1,
-                                                           column );
+                                                           column,
+                                                           this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case LOCKONACTIVE :
                 sb = new GuidedDecisionTableLockonActiveBuilder( row - 1,
-                                                                 column );
+                                                                 column,
+                                                                 this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case AUTOFOCUS :
                 sb = new GuidedDecisionTableAutoFocusBuilder( row - 1,
-                                                              column );
+                                                              column,
+                                                              this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case ACTIVATIONGROUP :
                 sb = new GuidedDecisionTableActivationGroupBuilder( row - 1,
-                                                                    column );
+                                                                    column,
+                                                                    this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case AGENDAGROUP :
                 sb = new GuidedDecisionTableAgendaGroupBuilder( row - 1,
-                                                                column );
+                                                                column,
+                                                                this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case RULEFLOWGROUP :
                 sb = new GuidedDecisionTableRuleflowGroupBuilder( row - 1,
-                                                                  column );
+                                                                  column,
+                                                                  this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
 
             case METADATA :
                 sb = new GuidedDecisionTableMetadataBuilder( row - 1,
-                                                             column );
+                                                             column,
+                                                             this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
@@ -437,26 +500,32 @@ public class GuidedDecisionTableGeneratorListener
                                   final String value,
                                   final int mergedColStart) {
         if ( value.indexOf( "$param" ) > -1 || value.indexOf( "$1" ) > -1 ) {
-            throw new DecisionTableParseException( "It looks like you have snippets in the row that is " +
-                                                   "meant for object declarations." + " Please insert an additional row before the snippets, " +
-                                                   "at cell " + RuleSheetParserUtil.rc2name( row,
-                                                                                             column ) );
+            final String message = "It looks like you have snippets in the row that is " +
+                                   "meant for object declarations." + " Please insert an additional row before the snippets, " +
+                                   "at cell " + RuleSheetParserUtil.rc2name( row,
+                                                                             column );
+            this._conversionResult.addMessage( message,
+                                               ConversionMessageType.ERROR );
         }
 
         ActionType actionType = getActionForColumn( row,
                                                     column );
         if ( mergedColStart == RuleSheetListener.NON_MERGED ) {
             if ( actionType.getCode() == Code.CONDITION ) {
-                GuidedDecisionTableBuilder sb = new GuidedDecisionTableLHSBuilder( row - 1,
-                                                                                   column,
-                                                                                   value );
+                GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableLHSBuilder( row - 1,
+                                                                                         column,
+                                                                                         value,
+                                                                                         this._parameterUtilities,
+                                                                                         this._conversionResult );
                 this._sourceBuilders.add( sb );
                 actionType.setSourceBuilder( sb );
 
             } else if ( actionType.getCode() == Code.ACTION ) {
-                GuidedDecisionTableBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
-                                                                                   column,
-                                                                                   value );
+                GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
+                                                                                         column,
+                                                                                         value,
+                                                                                         this._parameterUtilities,
+                                                                                         this._conversionResult );
                 this._sourceBuilders.add( sb );
                 actionType.setSourceBuilder( sb );
             }
@@ -464,16 +533,20 @@ public class GuidedDecisionTableGeneratorListener
         } else {
             if ( column == mergedColStart ) {
                 if ( actionType.getCode() == Code.CONDITION ) {
-                    GuidedDecisionTableBuilder sb = new GuidedDecisionTableLHSBuilder( row - 1,
-                                                                                       column,
-                                                                                       value );
+                    GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableLHSBuilder( row - 1,
+                                                                                             column,
+                                                                                             value,
+                                                                                             this._parameterUtilities,
+                                                                                             this._conversionResult );
                     this._sourceBuilders.add( sb );
                     actionType.setSourceBuilder( sb );
 
                 } else if ( actionType.getCode() == Code.ACTION ) {
-                    GuidedDecisionTableBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
-                                                                                       column,
-                                                                                       value );
+                    GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
+                                                                                             column,
+                                                                                             value,
+                                                                                             this._parameterUtilities,
+                                                                                             this._conversionResult );
                     this._sourceBuilders.add( sb );
                     actionType.setSourceBuilder( sb );
 
@@ -497,10 +570,12 @@ public class GuidedDecisionTableGeneratorListener
              (actionType.getCode() == Code.ACTION ||
                      actionType.getCode() == Code.CONDITION ||
                      actionType.getCode() == Code.METADATA) ) {
-            throw new DecisionTableParseException( "Code description in cell " +
-                                                   RuleSheetParserUtil.rc2name( row,
-                                                                                column ) +
-                                                   " does not contain any code specification. It should!" );
+            final String message = "Code description in cell " +
+                                   RuleSheetParserUtil.rc2name( row,
+                                                                column ) +
+                                   " does not contain any code specification. It should!";
+            this._conversionResult.addMessage( message,
+                                               ConversionMessageType.ERROR );
         }
 
         actionType.addTemplate( row,
@@ -513,14 +588,10 @@ public class GuidedDecisionTableGeneratorListener
                              final String value) {
         final ActionType actionType = getActionForColumn( row,
                                                           column );
-
-        if ( !value.trim().equals( "" ) && (actionType.getCode() == Code.ACTION || actionType.getCode() == Code.CONDITION) ) {
-            this._cellComments.put( column,
-                                    value );
-        } else {
-            this._cellComments.put( column,
-                                    "From cell: " + RuleSheetParserUtil.rc2name( row,
-                                                                                 column ) );
+        SourceBuilder sb = actionType.getSourceBuilder();
+        if ( sb instanceof HasColumnHeadings ) {
+            ((HasColumnHeadings) sb).setColumnHeader( column,
+                                                      value );
         }
     }
 
@@ -560,10 +631,12 @@ public class GuidedDecisionTableGeneratorListener
         final ActionType actionType = this._actions.get( column );
 
         if ( actionType == null ) {
-            throw new DecisionTableParseException( "Code description in cell " +
-                                                   RuleSheetParserUtil.rc2name( row,
-                                                                                column ) +
-                                                   " does not have an 'ACTION' or 'CONDITION' column header." );
+            final String message = "Code description in cell " +
+                                   RuleSheetParserUtil.rc2name( row,
+                                                                column ) +
+                                   " does not have an 'ACTION' or 'CONDITION' column header.";
+            this._conversionResult.addMessage( message,
+                                               ConversionMessageType.ERROR );
         }
 
         return actionType;

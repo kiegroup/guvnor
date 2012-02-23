@@ -16,141 +16,148 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Default editor for literal values, a text box.
  */
 public class DefaultLiteralEditor extends Composite {
 
-    private Constants constants = ((Constants) GWT.create(Constants.class));
-    private BaseSingleFieldConstraint constraint;
+    private final BaseSingleFieldConstraint constraint;
+    private final String                    dataType;
 
-    private Label textWidget = new Label();
+    private final Label                     textWidget   = new Label();
 
-    private final Button okButton = new Button(constants.OK());
-    private final ValueChanged valueChanged = new ValueChanged() {
-        public void valueChanged(String newValue) {
-            constraint.setValue(newValue);
-            if (onValueChangeCommand != null) {
-                onValueChangeCommand.execute();
-            }
-            okButton.click();
-        }
-    };
+    private final Button                    okButton     = new Button( Constants.INSTANCE.OK() );
+    private final ValueChanged              valueChanged = new ValueChanged() {
+                                                             public void valueChanged(String newValue) {
+                                                                 constraint.setValue( newValue );
+                                                                 if ( onValueChangeCommand != null ) {
+                                                                     onValueChangeCommand.execute();
+                                                                 }
+                                                                 okButton.click();
+                                                             }
+                                                         };
 
-    private Command onValueChangeCommand;
+    private Command                         onValueChangeCommand;
 
-    public DefaultLiteralEditor(BaseSingleFieldConstraint constraint,
-                                boolean numericValue) {
+    public DefaultLiteralEditor(final BaseSingleFieldConstraint constraint,
+                                final String dataType) {
         this.constraint = constraint;
+        this.dataType = dataType;
 
-        textWidget.setStyleName("form-field");
-        textWidget.addClickHandler(new ClickHandler() {
+        textWidget.setStyleName( "form-field" );
+        textWidget.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 showPopup();
             }
-        });
+        } );
 
-        if (constraint.getValue() != null && !"".equals(constraint.getValue())) {
-            textWidget.setText(constraint.getValue());
+        if ( constraint.getValue() != null && !"".equals( constraint.getValue() ) ) {
+            textWidget.setText( constraint.getValue() );
         } else {
-            textWidget.setText(constants.Value());
+            textWidget.setText( Constants.INSTANCE.Value() );
         }
 
-        initWidget(textWidget);
+        initWidget( textWidget );
     }
 
     private void showPopup() {
         final PopupPanel popup = new PopupPanel();
         HorizontalPanel horizontalPanel = new HorizontalPanel();
-        popup.setGlassEnabled(true);
-        popup.setPopupPosition(this.getAbsoluteLeft(),
-                this.getAbsoluteTop());
+        popup.setGlassEnabled( true );
+        popup.setPopupPosition( this.getAbsoluteLeft(),
+                                this.getAbsoluteTop() );
 
-        okButton.addClickHandler(new ClickHandler() {
+        okButton.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
-                if (!isValueEmpty(constraint.getValue())) {
-                    if (onValueChangeCommand != null) {
+                if ( !isValueEmpty( constraint.getValue() ) ) {
+                    if ( onValueChangeCommand != null ) {
                         onValueChangeCommand.execute();
                     }
-                    textWidget.setText(constraint.getValue());
-
+                    textWidget.setText( constraint.getValue() );
                     popup.hide();
                 }
             }
-        });
+        } );
 
-        horizontalPanel.add(getTextBox());
-        horizontalPanel.add(okButton);
+        horizontalPanel.add( getTextBox() );
+        horizontalPanel.add( okButton );
 
-        popup.add(horizontalPanel);
+        popup.add( horizontalPanel );
 
         popup.show();
 
     }
 
-    public TextBox getTextBox() {
+    private TextBox getTextBox() {
+        final TextBox box = TextBoxFactory.getTextBox( dataType );
+        box.setTitle( Constants.INSTANCE.LiteralValueTip() );
+        box.setStyleName( "constraint-value-Editor" );
+        if ( constraint.getValue() == null ) {
+            box.setText( "" );
+        } else {
+            box.setText( constraint.getValue() );
+        }
 
-        final TextBox box = new BoundTextBox(constraint);
-        box.addKeyboardListener(new KeyboardListener() {
+        String v = constraint.getValue();
+        if ( v == null || v.length() < 7 ) {
+            box.setVisibleLength( 8 );
+        } else {
+            box.setVisibleLength( v.length() + 1 );
+        }
 
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
-
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                constraint.setValue( box.getText() );
             }
+        } );
 
-            public void onKeyPress(Widget w,
-                                   char c,
-                                   int i) {
-                // all primitives will be "numeric" so this does not make sense for char as it will break the logic
-                // allow to enter values
-                //if ( numericValue && Character.isLetter( c ) ) {
-                //    ((TextBox) w).cancelKey();
-                //}
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char c,
-                                int arg2) {
-                if ('\r' == c || '\n' == c) {
-                    valueChanged.valueChanged(box.getText());
-                } else {
-                    constraint.setValue(box.getText());
+        box.addKeyUpHandler( new KeyUpHandler() {
+            public void onKeyUp(KeyUpEvent event) {
+                
+                //Alter visible size
+                int length = box.getText().length();
+                box.setVisibleLength( length > 0 ? length : 1 );
+                
+                //Commit change if enter is pressed
+                final int keyCode=event.getNativeKeyCode();
+                if(keyCode==KeyCodes.KEY_ENTER) {
+                    valueChanged.valueChanged( box.getText() );
                 }
             }
-
-        });
-
-        box.setTitle(constants.LiteralValueTip());
+        } );
 
         return box;
     }
 
     private boolean isValueEmpty(String s) {
-        if (s == null || "".equals(s.trim())) {
-            ErrorPopup.showMessage(constants.ValueCanNotBeEmpty());
+        if ( s == null || "".equals( s.trim() ) ) {
+            ErrorPopup.showMessage( Constants.INSTANCE.ValueCanNotBeEmpty() );
             return true;
         } else {
             return false;
-        }
-    }
-
-    private void executeOnValueChangeCommand() {
-        if (this.onValueChangeCommand != null) {
-            this.onValueChangeCommand.execute();
         }
     }
 

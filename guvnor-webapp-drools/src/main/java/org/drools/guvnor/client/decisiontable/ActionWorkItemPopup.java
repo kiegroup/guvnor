@@ -39,7 +39,6 @@ import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -53,8 +52,6 @@ import com.google.gwt.user.client.ui.TextBox;
  * A popup to define an Action to execute a Work Item
  */
 public class ActionWorkItemPopup extends FormStylePopup {
-
-    private static Constants                    constants = GWT.create( Constants.class );
 
     private ActionWorkItemCol52                 editingCol;
     private String                              packageUUID;
@@ -83,7 +80,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider,
                                                                      isReadOnly );
 
-        setTitle( constants.ColumnConfigurationWorkItem() );
+        setTitle( Constants.INSTANCE.ColumnConfigurationWorkItem() );
         setModal( false );
 
         //Column header
@@ -97,12 +94,12 @@ public class ActionWorkItemPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Work Item Definitions
         final ListBox workItemsListBox = new ListBox();
-        addAttribute( constants.WorkItemNameColon(),
+        addAttribute( Constants.INSTANCE.WorkItemNameColon(),
                       workItemsListBox );
         setupWorkItems( workItemsListBox );
         workItemsListBox.setEnabled( !isReadOnly );
@@ -123,32 +120,32 @@ public class ActionWorkItemPopup extends FormStylePopup {
         }
 
         //Work Item Input Parameters
-        workItemInputParametersIndex = addAttribute( constants.WorkItemInputParameters(),
+        workItemInputParametersIndex = addAttribute( Constants.INSTANCE.WorkItemInputParameters(),
                                                      workItemInputParameters,
                                                      false );
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -251,7 +248,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
 
     private void setupWorkItems(final ListBox workItemsListBox) {
         workItemsListBox.clear();
-        workItemsListBox.addItem( constants.NoWorkItemsAvailable() );
+        workItemsListBox.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
         clientFactory.getService().loadWorkItemDefinitions( packageUUID,
                                                             new GenericCallback<Set<PortableWorkDefinition>>() {
@@ -262,7 +259,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                     if ( result.size() > 0 ) {
                                                                         workItemsListBox.clear();
                                                                         workItemsListBox.setEnabled( true && !isReadOnly );
-                                                                        workItemsListBox.addItem( constants.pleaseChoose(),
+                                                                        workItemsListBox.addItem( Constants.INSTANCE.pleaseChoose(),
                                                                                                   "" );
                                                                         workItemDefinitions = new HashMap<String, PortableWorkDefinition>();
 

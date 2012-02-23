@@ -22,7 +22,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import java.util.Date;
 
@@ -62,7 +62,7 @@ public class DatePickerPopUp extends PopupPanel {
         horizontalPanel.add(years);
 
         // Add months
-        Constants constants = ((Constants) GWT.create(Constants.class));
+        ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
         months.addItem(constants.January());
         months.addItem(constants.February());
         months.addItem(constants.March());

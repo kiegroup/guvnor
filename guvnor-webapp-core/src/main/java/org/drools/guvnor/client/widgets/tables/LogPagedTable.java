@@ -20,7 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogPresenter.EventLogView;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.LogPageRow;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -59,7 +59,7 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow>
 
     private static LogPagedTableBinder uiBinder        = GWT.create( LogPagedTableBinder.class );
 
-    private static Images              images          = (Images) GWT.create( Images.class );
+    private static ImagesCore images          = (ImagesCore) GWT.create( ImagesCore.class );
     private static final String        HTML_ERROR_ICON = makeImage( images.error() );
     private static final String        HTML_INFO_ICON  = makeImage( images.information() );
 

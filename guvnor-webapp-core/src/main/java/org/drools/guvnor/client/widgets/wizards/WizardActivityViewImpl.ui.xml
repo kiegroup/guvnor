@@ -19,7 +19,7 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
   xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
   
   <gwt:VerticalPanel ui:field="container">

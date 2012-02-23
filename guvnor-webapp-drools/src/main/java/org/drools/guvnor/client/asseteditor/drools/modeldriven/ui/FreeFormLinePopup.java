@@ -39,8 +39,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FreeFormLinePopup extends Popup {
 
-    private static final Constants         constants = ((Constants) GWT.create( Constants.class ));
-
     private static FreeFormLinePopupBinder uiBinder  = GWT.create( FreeFormLinePopupBinder.class );
 
     //UI
@@ -56,10 +54,10 @@ public class FreeFormLinePopup extends Popup {
     protected DynamicTextArea textArea  = new DynamicTextArea();
 
     @UiField()
-    protected Button          btnOK     = new Button( constants.OK() );
+    protected Button          btnOK     = new Button( Constants.INSTANCE.OK() );
 
     @UiField()
-    protected Button          btnCancel = new Button( constants.Cancel() );
+    protected Button          btnCancel = new Button( Constants.INSTANCE.Cancel() );
 
     @UiField()
     protected VerticalPanel   content   = new VerticalPanel();

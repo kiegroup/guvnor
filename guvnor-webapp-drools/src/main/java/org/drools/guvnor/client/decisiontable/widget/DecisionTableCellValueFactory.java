@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -191,19 +192,43 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 cell = makeNewDateCellValue( dcv.getDateValue() );
                 break;
             case NUMERIC :
+                cell = makeNewNumericCellValue( (BigDecimal) dcv.getNumericValue() );
+                break;
+            case NUMERIC_BIGDECIMAL :
+                cell = makeNewBigDecimalCellValue( (BigDecimal) dcv.getNumericValue() );
+                break;
+            case NUMERIC_BIGINTEGER :
+                cell = makeNewBigIntegerCellValue( (BigInteger) dcv.getNumericValue() );
+                break;
+            case NUMERIC_BYTE :
+                cell = makeNewByteCellValue( (Byte) dcv.getNumericValue() );
+                break;
+            case NUMERIC_DOUBLE :
+                cell = makeNewDoubleCellValue( (Double) dcv.getNumericValue() );
+                break;
+            case NUMERIC_FLOAT :
+                cell = makeNewFloatCellValue( (Float) dcv.getNumericValue() );
+                break;
+            case NUMERIC_INTEGER :
+                cell = makeNewIntegerCellValue( (Integer) dcv.getNumericValue() );
+                break;
+            case NUMERIC_LONG :
                 if ( column instanceof RowNumberCol52 ) {
-                    cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
+                    cell = makeNewRowNumberCellValue( (Long) dcv.getNumericValue() );
                 } else {
-                    cell = makeNewNumericCellValue( dcv.getNumericValue() );
+                    cell = makeNewLongCellValue( (Long) dcv.getNumericValue() );
                     if ( column instanceof AttributeCol52 ) {
                         AttributeCol52 at = (AttributeCol52) column;
                         if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                             if ( at.isUseRowNumber() ) {
-                                cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
+                                cell = makeNewRowNumberCellValue( (Long) dcv.getNumericValue() );
                             }
                         }
                     }
                 }
+                break;
+            case NUMERIC_SHORT :
+                cell = makeNewShortCellValue( (Short) dcv.getNumericValue() );
                 break;
             default :
                 cell = makeNewStringCellValue( dcv.getStringValue() );
@@ -267,7 +292,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN :
-                dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
+                dcv.setBooleanValue( (text == null ? false : Boolean.valueOf( text )) );
                 break;
             case DATE :
                 Date d = null;
@@ -283,22 +308,102 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 dcv.setDateValue( d );
                 break;
             case NUMERIC :
-                BigDecimal bd = null;
+                BigDecimal numericValue = null;
                 try {
                     if ( text != null ) {
-                        bd = new BigDecimal( text );
+                        numericValue = new BigDecimal( text );
                     }
-                } catch ( NumberFormatException e ) {
+                } catch ( Exception e ) {
                 }
-                dcv.setNumericValue( bd );
+                dcv.setNumericValue( numericValue );
+                break;
+            case NUMERIC_BIGDECIMAL :
+                BigDecimal bigDecimalValue = null;
+                try {
+                    if ( text != null ) {
+                        bigDecimalValue = new BigDecimal( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( bigDecimalValue );
+                break;
+            case NUMERIC_BIGINTEGER :
+                BigInteger bigIntegerValue = null;
+                try {
+                    if ( text != null ) {
+                        bigIntegerValue = new BigInteger( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( bigIntegerValue );
+                break;
+            case NUMERIC_BYTE :
+                Byte byteValue = null;
+                try {
+                    if ( text != null ) {
+                        byteValue = new Byte( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( byteValue );
+                break;
+            case NUMERIC_DOUBLE :
+                Double doubleValue = null;
+                try {
+                    if ( text != null ) {
+                        doubleValue = new Double( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( doubleValue );
+                break;
+            case NUMERIC_FLOAT :
+                Float floatValue = null;
+                try {
+                    if ( text != null ) {
+                        floatValue = new Float( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( floatValue );
+                break;
+            case NUMERIC_INTEGER :
+                Integer integerValue = null;
+                try {
+                    if ( text != null ) {
+                        integerValue = new Integer( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( integerValue );
+                break;
+            case NUMERIC_LONG :
+                Long longValue = null;
+                try {
+                    if ( text != null ) {
+                        longValue = new Long( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( longValue );
+                break;
+            case NUMERIC_SHORT :
+                Short shortValue = null;
+                try {
+                    if ( text != null ) {
+                        shortValue = new Short( text );
+                    }
+                } catch ( Exception e ) {
+                }
+                dcv.setNumericValue( shortValue );
                 break;
         }
 
     }
 
-    public CellValue<BigDecimal> makeNewRowNumberCellValue(BigDecimal initialValue) {
+    public CellValue<Long> makeNewRowNumberCellValue(Long initialValue) {
         // Rows are 0-based internally but 1-based in the UI
-        CellValue<BigDecimal> cv = makeNewNumericCellValue();
+        CellValue<Long> cv = makeNewLongCellValue( initialValue );
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }
@@ -333,6 +438,30 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 break;
             case NUMERIC :
                 dtCell = new DTCellValue52( (BigDecimal) cell.getValue() );
+                break;
+            case NUMERIC_BIGDECIMAL :
+                dtCell = new DTCellValue52( (BigDecimal) cell.getValue() );
+                break;
+            case NUMERIC_BIGINTEGER :
+                dtCell = new DTCellValue52( (BigInteger) cell.getValue() );
+                break;
+            case NUMERIC_BYTE :
+                dtCell = new DTCellValue52( (Byte) cell.getValue() );
+                break;
+            case NUMERIC_DOUBLE :
+                dtCell = new DTCellValue52( (Double) cell.getValue() );
+                break;
+            case NUMERIC_FLOAT :
+                dtCell = new DTCellValue52( (Float) cell.getValue() );
+                break;
+            case NUMERIC_INTEGER :
+                dtCell = new DTCellValue52( (Integer) cell.getValue() );
+                break;
+            case NUMERIC_LONG :
+                dtCell = new DTCellValue52( (Long) cell.getValue() );
+                break;
+            case NUMERIC_SHORT :
+                dtCell = new DTCellValue52( (Short) cell.getValue() );
                 break;
             default :
                 dtCell = new DTCellValue52( (String) cell.getValue() );

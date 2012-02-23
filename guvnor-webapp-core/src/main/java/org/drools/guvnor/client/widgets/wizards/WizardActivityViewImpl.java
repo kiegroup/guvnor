@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.Popup;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -82,7 +82,7 @@ public class WizardActivityViewImpl extends Popup
 
     private static WizardActivityViewImplBinder uiBinder  = GWT.create( WizardActivityViewImplBinder.class );
 
-    private static Constants                    constants = GWT.create( Constants.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     public WizardActivityViewImpl(WizardContext context,
                                   EventBus eventBus) {

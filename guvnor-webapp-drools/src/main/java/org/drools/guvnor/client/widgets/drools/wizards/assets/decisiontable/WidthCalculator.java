@@ -92,8 +92,13 @@ public class WidthCalculator<V> {
         return minWidth > maximumWidth ? minWidth : maximumWidth;
     }
 
-    //Get the width of a single value
-    private int getElementWidth(V value) {
+    /**
+     * Get the width of a single item
+     * 
+     * @param value
+     * @return
+     */
+    public int getElementWidth(V value) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         cell.render( null,
                       value,

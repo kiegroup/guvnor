@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -29,8 +28,6 @@ import org.drools.guvnor.client.util.PercentageBar;
 public class SummaryTableViewImpl extends Composite
         implements
         SummaryTableView {
-
-    private Constants constants = GWT.create(Constants.class);
 
     private FlexTable flexTable = new FlexTable();
 
@@ -85,7 +82,7 @@ public class SummaryTableViewImpl extends Composite
         }
 
         private Button createOpenButton(final String uuid) {
-            Button open = new Button(constants.Open());
+            Button open = new Button(Constants.INSTANCE.Open());
 
             open.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {

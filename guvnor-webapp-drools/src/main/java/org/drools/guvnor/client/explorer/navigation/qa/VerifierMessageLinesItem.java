@@ -20,9 +20,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
-import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -31,8 +29,6 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 class VerifierMessageLinesItem extends TreeItem {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images    images    = GWT.create( Images.class );
 
 
     public VerifierMessageLinesItem(String topicHtml,
@@ -45,7 +41,7 @@ class VerifierMessageLinesItem extends TreeItem {
             TreeItem report = new TreeItem( new HTML( line.description ) );
             if ( line.reason != null ) {
                 report.addItem( new TreeItem( new HTML( "<b>"
-                                                        + constants.Reason()
+                                                        + Constants.INSTANCE.Reason()
                                                         + ":</b>&nbsp;"
                                                         + line.reason ) ) );
             }
@@ -55,7 +51,7 @@ class VerifierMessageLinesItem extends TreeItem {
 
             if ( line.causes.length > 0 ) {
                 TreeItem causes = doCauses( new HTML( "<b>"
-                                                      + constants.Causes()
+                                                      + Constants.INSTANCE.Causes()
                                                       + ":</b>" ),
                                             line.causes );
 
@@ -73,12 +69,12 @@ class VerifierMessageLinesItem extends TreeItem {
     private TreeItem doImpactedRules(AnalysisReportLine line) {
 
         TreeItem impactedRules = new TreeItem( new HTML( "<b>"
-                                                         + constants.ImpactedRules()
+                                                         + Constants.INSTANCE.ImpactedRules()
                                                          + ":</b>&nbsp;" ) );
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
             HorizontalPanel rule = new HorizontalPanel();
-            rule.add(new Image(images.ruleAsset()));
+            rule.add(new Image(Images.INSTANCE.ruleAsset()));
             rule.add(new Label(line.impactedRules.get( ruleAssetGuid )));
             
             // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised

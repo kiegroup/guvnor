@@ -30,15 +30,19 @@ public class ExpressionFormLineTest {
     @Test
     public void toStringText() {
         ExpressionFormLine efl = new ExpressionFormLine();
-        FactPattern fact = new FactPattern("String");
-        fact.setBoundName("$v");
-        efl.appendPart(new ExpressionVariable(fact));
-        efl.appendPart(new ExpressionMethod("size", "int", SuggestionCompletionEngine.TYPE_NUMERIC));
-        assertEquals("$v.size()", efl.getText());
+        FactPattern fact = new FactPattern( "String" );
+        fact.setBoundName( "$v" );
+        efl.appendPart( new ExpressionVariable( fact ) );
+        efl.appendPart( new ExpressionMethod( "size",
+                                              "int",
+                                              SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
+        assertEquals( "$v.size()",
+                      efl.getText() );
 
-        efl.setBinding("$s");
+        efl.setBinding( "$s" );
 
-        assertEquals("$s: $v.size()", efl.getText(true));
+        assertEquals( "$s: $v.size()",
+                      efl.getText( true ) );
 
     }
 }

@@ -25,13 +25,13 @@ import com.google.gwt.user.client.Timer;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.Activity;
 
 public class AssetEditorActivity extends Activity {
 
-    private Constants constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private final AssetEditorPlace place;
     private final ClientFactory clientFactory;

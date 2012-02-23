@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +24,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.gwt.user.client.Command;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 public class SuggestionCompletionCacheTest {
 
@@ -45,10 +39,7 @@ public class SuggestionCompletionCacheTest {
     @Test
     public void testCache() throws Exception {
 
-        //need to proxy out the constants.
-        Constants cs = (Constants) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {Constants.class}, new ConstantsProxy());
-
-        final SuggestionCompletionCache cache = new SuggestionCompletionCache(cs) {
+        final SuggestionCompletionCache cache = new SuggestionCompletionCache() {
 
             public void loadPackage(String packageName,
                              Command command) {
@@ -90,12 +81,4 @@ public class SuggestionCompletionCacheTest {
 
 
     }
-
-    class ConstantsProxy implements InvocationHandler {
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            return "testing";
-        }
-    }
-
 }

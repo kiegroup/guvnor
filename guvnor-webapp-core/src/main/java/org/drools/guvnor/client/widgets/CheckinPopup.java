@@ -22,7 +22,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextArea;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 /**
  * A popup and confirmation dialog for committing an asset.
@@ -38,7 +38,7 @@ public class CheckinPopup extends FormStylePopup {
         setTitle(message);
         comment = new TextArea();
         comment.setWidth("100%");
-        Constants constants = ((Constants) GWT.create(Constants.class));
+        ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
         comment.setTitle(constants.AddAnOptionalCheckInComment());
 
         save = new Button(constants.CheckIn());

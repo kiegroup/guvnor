@@ -53,9 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CompositeFactPatternWidget extends RuleModellerWidget {
 
-    private static Images                      images    = GWT.create( Images.class );
     protected final SuggestionCompletionEngine completions;
-    protected Constants                        constants = ((Constants) GWT.create( Constants.class ));
     protected DirtyableFlexTable               layout;
 
     protected CompositeFactPattern             pattern;
@@ -127,13 +125,13 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( images.deleteItemSmall() );
-        remove.setTitle( constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
+        final Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
                     if ( pattern.removeFactPattern( idx ) ) {
                         getModeller().refreshWidget();
                     }
@@ -202,7 +200,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         String lbl = HumanReadable.getCEDisplayName( pattern.type );
 
         if ( pattern.getPatterns() == null || pattern.getPatterns().length == 0 ) {
-            lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
+            lbl += " <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>";
         }
 
         return new ClickableLabel( lbl + ":",
@@ -218,15 +216,15 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
-        box.addItem( constants.Choose() );
+        box.addItem( Constants.INSTANCE.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
         }
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.NewFactPattern() );
-        popup.addAttribute( constants.chooseFactType(),
+        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
+        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -238,9 +236,9 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
             }
         } );
 
-        final Button fromBtn = new Button( constants.From() );
-        final Button fromAccumulateBtn = new Button( constants.FromAccumulate() );
-        final Button fromCollectBtn = new Button( constants.FromCollect() );
+        final Button fromBtn = new Button( Constants.INSTANCE.From() );
+        final Button fromAccumulateBtn = new Button( Constants.INSTANCE.FromAccumulate() );
+        final Button fromCollectBtn = new Button( Constants.INSTANCE.FromCollect() );
         ClickHandler btnsClickHandler = new ClickHandler() {
 
             public void onClick(ClickEvent event) {

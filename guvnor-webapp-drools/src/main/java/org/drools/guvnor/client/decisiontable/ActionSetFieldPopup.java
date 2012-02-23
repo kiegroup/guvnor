@@ -33,7 +33,6 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.Table
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,9 +47,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetFieldPopup extends FormStylePopup {
-
-    private static Constants           constants                        = GWT.create( Constants.class );
-    private static Images              images                           = (Images) GWT.create( Images.class );
 
     private SmallLabel                 bindingLabel                     = new SmallLabel();
     private TextBox                    fieldLabel                       = getFieldLabel();
@@ -82,7 +78,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
                                                 sce,
                                                 isReadOnly );
 
-        setTitle( constants.ColumnConfigurationSetAFieldOnAFact() );
+        setTitle( Constants.INSTANCE.ColumnConfigurationSetAFieldOnAFact() );
         setModal( false );
 
         //Fact on which field will be set
@@ -90,9 +86,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        ImageButton changePattern = new ImageButton( images.edit(),
-                                                     images.editDisabled(),
-                                                     constants.ChooseABoundFactThatThisColumnPertainsTo(),
+        ImageButton changePattern = new ImageButton( Images.INSTANCE.edit(),
+                                                     Images.INSTANCE.editDisabled(),
+                                                     Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              showChangeFact( w );
@@ -100,16 +96,16 @@ public class ActionSetFieldPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( constants.Fact(),
+        addAttribute( Constants.INSTANCE.Fact(),
                       pattern );
 
         //Fact Field being set
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( images.edit(),
-                                                 images.editDisabled(),
-                                                 constants.EditTheFieldThatThisColumnOperatesOn(),
+        ImageButton editField = new ImageButton( Images.INSTANCE.edit(),
+                                                 Images.INSTANCE.editDisabled(),
+                                                 Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {
                                                          showFieldChange();
@@ -117,7 +113,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( constants.Field(),
+        addAttribute( Constants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
@@ -132,7 +128,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Optional value list
@@ -149,58 +145,58 @@ public class ActionSetFieldPopup extends FormStylePopup {
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueList );
-            vl.add( new InfoPopup( constants.ValueList(),
-                                   constants.ValueListsExplanation() ) );
-            addAttribute( constants.optionalValueList(),
+            vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
+                                   Constants.INSTANCE.ValueListsExplanation() ) );
+            addAttribute( Constants.INSTANCE.optionalValueList(),
                           vl );
         }
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            addAttribute( constants.DefaultValue(),
+            addAttribute( Constants.INSTANCE.DefaultValue(),
                           DTCellValueWidgetFactory.getDefaultEditor( editingCol,
                                                                      isReadOnly ) );
         }
 
         //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( constants.LimitedEntryValue(),
+        limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
                                                         limitedEntryValueWidgetContainer );
         makeLimitedValueWidget();
 
         //Update Engine with changes
-        addAttribute( constants.UpdateEngineWithChanges(),
+        addAttribute( Constants.INSTANCE.UpdateEngineWithChanges(),
                       doUpdate() );
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( !isValidFactType() ) {
-                    Window.alert( constants.YouMustEnterAColumnFact() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnFact() );
                     return;
                 }
                 if ( !isValidFactField() ) {
-                    Window.alert( constants.YouMustEnterAColumnField() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnField() );
                     return;
                 }
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
 
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-                    
+
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -240,20 +236,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
         if ( dcv == null ) {
             return null;
         }
-        DTCellValue52 clone = new DTCellValue52();
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                clone.setBooleanValue( dcv.getBooleanValue() );
-                break;
-            case DATE :
-                clone.setDateValue( dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                clone.setNumericValue( dcv.getNumericValue() );
-                break;
-            case STRING :
-                clone.setStringValue( dcv.getStringValue() );
-        }
+        DTCellValue52 clone = new DTCellValue52( dcv );
         return clone;
     }
 
@@ -282,7 +265,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
         if ( this.editingCol.getBoundName() != null ) {
             this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
         } else {
-            this.bindingLabel.setText( constants.pleaseChooseABoundFactForThisColumn() );
+            this.bindingLabel.setText( Constants.INSTANCE.pleaseChooseABoundFactForThisColumn() );
         }
     }
 
@@ -290,7 +273,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
         if ( this.editingCol.getFactField() != null ) {
             this.fieldLabel.setText( this.editingCol.getFactField() );
         } else {
-            this.fieldLabel.setText( constants.pleaseChooseAFactPatternFirst() );
+            this.fieldLabel.setText( Constants.INSTANCE.pleaseChooseAFactPatternFirst() );
         }
     }
 
@@ -314,8 +297,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants.UpdateDescription() ) );
+        hp.add( new InfoPopup( Constants.INSTANCE.UpdateFact(),
+                               Constants.INSTANCE.UpdateDescription() ) );
         return hp;
     }
 
@@ -342,7 +325,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts(String binding) {
         ListBox listBox = new ListBox();
-        listBox.addItem( constants.Choose() );
+        listBox.addItem( Constants.INSTANCE.Choose() );
         List<String> factBindings = rm.getLHSBoundFacts();
 
         for ( int index = 0; index < factBindings.size(); index++ ) {
@@ -363,7 +346,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
         listBox.setEnabled( listBox.getItemCount() > 1 );
         if ( listBox.getItemCount() == 1 ) {
             listBox.clear();
-            listBox.addItem( constants.NoPatternBindingsAvailable() );
+            listBox.addItem( Constants.INSTANCE.NoPatternBindingsAvailable() );
         }
 
         return listBox;
@@ -377,9 +360,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
 
         final ListBox pats = this.loadBoundFacts( editingCol.getBoundName() );
-        pop.addAttribute( constants.ChooseFact(),
+        pop.addAttribute( Constants.INSTANCE.ChooseFact(),
                           pats );
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           ok );
 
@@ -409,9 +392,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
         }
-        pop.addAttribute( constants.Field(),
+        pop.addAttribute( Constants.INSTANCE.Field(),
                           box );
-        Button b = new Button( constants.OK() );
+        Button b = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {

@@ -39,9 +39,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VerifierResultWidget extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
-
     public VerifierResultWidget(AnalysisReport report,
                                 boolean showFactUsage) {
         
@@ -49,18 +46,18 @@ public class VerifierResultWidget extends Composite {
 
         Tree tree = new Tree();
 
-        TreeItem errors = doMessageLines( constants.Errors(),
-                                          images.error(),
+        TreeItem errors = doMessageLines( Constants.INSTANCE.Errors(),
+                                          Images.INSTANCE.error(),
                                           report.errors );
         tree.addItem( errors );
 
-        TreeItem warnings = doMessageLines( constants.Warnings(),
-                                            images.warning(),
+        TreeItem warnings = doMessageLines( Constants.INSTANCE.Warnings(),
+                                            Images.INSTANCE.warning(),
                                             report.warnings );
         tree.addItem( warnings );
 
-        TreeItem notes = doMessageLines( constants.Notes(),
-                                         images.note(),
+        TreeItem notes = doMessageLines( Constants.INSTANCE.Notes(),
+                                         Images.INSTANCE.note(),
                                          report.notes );
         tree.addItem( notes );
 
@@ -89,7 +86,7 @@ public class VerifierResultWidget extends Composite {
 
         TreeItem linesItem;
 
-        String summary = constants.analysisResultSummary(messageType, lines.length );
+        String summary = Constants.INSTANCE.analysisResultSummary(messageType, lines.length );
 
         String topicHtml = AbstractImagePrototype.create(icon).getHTML() + "&nbsp; " + summary;
 

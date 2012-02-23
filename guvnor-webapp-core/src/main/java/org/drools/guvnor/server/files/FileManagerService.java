@@ -137,7 +137,16 @@ public class FileManagerService {
         out.write( data );
         out.flush();
 
-        return item.getName() + "." + item.getFormat();
+        String fileName = null;
+        String binaryContentAttachmentFileName = item.getBinaryContentAttachmentFileName();                    
+        //Note the file extension name may not be same as asset format name in some cases.
+        if(binaryContentAttachmentFileName !=null && !"".equals(binaryContentAttachmentFileName)) {
+            fileName = binaryContentAttachmentFileName;
+        } else {
+            fileName = item.getName() + "." + item.getFormat();
+        }
+        
+        return fileName;
     }
 
     /**

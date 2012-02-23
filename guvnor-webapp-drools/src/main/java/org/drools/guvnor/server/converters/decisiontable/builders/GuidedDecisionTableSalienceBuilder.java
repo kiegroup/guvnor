@@ -15,47 +15,47 @@
  */
 package org.drools.guvnor.server.converters.decisiontable.builders;
 
-import java.math.BigDecimal;
-
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builder for Salience Attribute columns
  */
-public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTableBuilder {
+public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTableAttributeBuilder {
 
     private final boolean isSequential;
 
     public GuidedDecisionTableSalienceBuilder(int row,
                                               int column,
-                                              boolean isSequential) {
+                                              boolean isSequential,
+                                              ConversionResult conversionResult) {
         super( row,
                column,
-               ActionType.Code.SALIENCE );
+               ActionType.Code.SALIENCE,
+               conversionResult );
         this.isSequential = isSequential;
     }
 
     public void populateDecisionTable(GuidedDecisionTable52 dtable) {
         AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.SALIENCE_ATTR );
-        
+
         //If sequential set column to use reverse row number
         if ( isSequential ) {
             column.setUseRowNumber( true );
             column.setReverseOrder( true );
             final int maxRow = this.values.size();
-            for(int iRow = 0; iRow < maxRow; iRow++) {
-                DTCellValue52 dcv = this.values.get(iRow);
-                dcv.setNumericValue( new BigDecimal(maxRow-iRow) );
+            for ( int iRow = 0; iRow < maxRow; iRow++ ) {
+                DTCellValue52 dcv = this.values.get( iRow );
+                dcv.setNumericValue( new Integer( maxRow - iRow ) );
             }
         }
-        addColumn( dtable,
-                   column );
+        dtable.getAttributeCols().add( column );
         addColumnData( dtable,
                        column );
     }
@@ -67,13 +67,16 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
             value = value.substring( 1,
                                      value.lastIndexOf( ")" ) - 1 );
         }
+        DTCellValue52 dcv = new DTCellValue52();
         try {
-            DTCellValue52 dcv = new DTCellValue52( new Integer( value ) );
-            this.values.add( dcv );
+            dcv.setNumericValue( new Integer( value ) );
         } catch ( NumberFormatException nfe ) {
-            throw new DecisionTableParseException( "Priority is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
-                                                                                                                                 column ) );
+            final String message = "Priority is not an integer literal, in cell " + RuleSheetParserUtil.rc2name( row,
+                                                                                                                 column );
+            this.conversionResult.addMessage( message,
+                                              ConversionMessageType.WARNING );
         }
+        this.values.add( dcv );
     }
 
 }

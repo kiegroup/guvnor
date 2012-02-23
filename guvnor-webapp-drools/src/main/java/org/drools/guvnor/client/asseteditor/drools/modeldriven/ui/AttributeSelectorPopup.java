@@ -40,9 +40,6 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class AttributeSelectorPopup extends FormStylePopup {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images    images    = GWT.create( Images.class );
-
     private final ListBox    list      = RuleAttributeWidget.getAttributeList();
 
     private final TextBox    box       = new TextBox();
@@ -51,8 +48,8 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                   boolean lockLHS,
                                   boolean lockRHS,
                                   final Command refresh) {
-        super( images.config(),
-               constants.AddAnOptionToTheRule() );
+        super( Images.INSTANCE.config(),
+               Constants.INSTANCE.AddAnOptionToTheRule() );
 
         setTextBox( model,
                     refresh );
@@ -77,7 +74,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                  refresh,
                                  box ) );
 
-        addAttribute( constants.Metadata3(),
+        addAttribute( Constants.INSTANCE.Metadata3(),
                       horiz );
 
     }
@@ -100,7 +97,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                 hide();
             }
         } );
-        addAttribute( constants.Attribute1(),
+        addAttribute( Constants.INSTANCE.Attribute1(),
                       list );
 
     }
@@ -109,7 +106,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                 boolean lockLHS,
                                 boolean lockRHS,
                                 final Command refresh) {
-        Button freezeConditions = new Button( constants.Conditions() );
+        Button freezeConditions = new Button( Constants.INSTANCE.Conditions() );
         freezeConditions.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -119,7 +116,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                 hide();
             }
         } );
-        Button freezeActions = new Button( constants.Actions() );
+        Button freezeActions = new Button( Constants.INSTANCE.Actions() );
         freezeActions.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -136,11 +133,11 @@ public class AttributeSelectorPopup extends FormStylePopup {
         if ( !lockRHS ) {
             hz.add( freezeActions );
         }
-        hz.add( new InfoPopup( constants.FrozenAreas(),
-                               constants.FrozenExplanation() ) );
+        hz.add( new InfoPopup( Constants.INSTANCE.FrozenAreas(),
+                               Constants.INSTANCE.FrozenExplanation() ) );
 
         if ( hz.getWidgetCount() > 1 ) {
-            addAttribute( constants.FreezeAreasForEditing(),
+            addAttribute( Constants.INSTANCE.FreezeAreasForEditing(),
                           hz );
         }
     }
@@ -148,8 +145,8 @@ public class AttributeSelectorPopup extends FormStylePopup {
     private Image getAddButton(final RuleModel model,
                                final Command refresh,
                                final TextBox box) {
-        final Image addbutton = new ImageButton( images.newItem() );
-        addbutton.setTitle( constants.AddMetadataToTheRule() );
+        final Image addbutton = new ImageButton( Images.INSTANCE.newItem() );
+        addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
 
         addbutton.addClickHandler( new ClickHandler() {
 

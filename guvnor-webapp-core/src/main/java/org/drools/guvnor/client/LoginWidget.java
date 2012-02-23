@@ -19,9 +19,9 @@ package org.drools.guvnor.client;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -40,8 +40,8 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
  */
 public class LoginWidget {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
 
     private Command       loggedInEvent;
     private String        userNameLoggedIn;

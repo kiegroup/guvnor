@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
@@ -41,7 +41,7 @@ import org.drools.guvnor.client.widgets.query.OpenItemCommand;
  * Widget with a table of Permission entries.
  */
 public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPageRow> {
-    private static Constants constants = GWT.create(Constants.class);
+    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     // UI
     interface PermissionsPagedTableViewBinder extends

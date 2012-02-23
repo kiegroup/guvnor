@@ -20,8 +20,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RdbmsConfigurable;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -52,8 +52,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class RepoConfigManager extends Composite {
 
-    private static Images          images             = (Images) GWT.create( Images.class );
-    private Constants              constants          = ((Constants) GWT.create( Constants.class ));
+    private static ImagesCore images             = (ImagesCore) GWT.create( ImagesCore.class );
+    private ConstantsCore constants          = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private RepositoryServiceAsync service            = RepositoryServiceFactory.getService();
     private RdbmsConfigurable      rdbmsConf          = new RdbmsConfigurable();
@@ -140,7 +140,7 @@ public class RepoConfigManager extends Composite {
     }
 
     public static ListBox getDatabaseList() {
-        Constants cons = ((Constants) GWT.create( Constants.class ));
+        ConstantsCore cons = ((ConstantsCore) GWT.create( ConstantsCore.class ));
         ListBox list = new ListBox();
         list.addItem( cons.Choose() );
 

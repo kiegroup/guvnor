@@ -28,7 +28,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -41,8 +40,6 @@ import com.google.gwt.user.client.ui.ListBox;
 public class EnumDropDown extends ListBox
         implements
         IDirtyable {
-
-    private static final Constants     constants = GWT.create( Constants.class );
 
     private final DropDownValueChanged valueChangedCommand;
 
@@ -116,7 +113,7 @@ public class EnumDropDown extends ListBox
         if ( dropData != null && dropData.fixedList == null && dropData.queryExpression != null ) {
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
-                    LoadingPopup.showMessage( constants.RefreshingList() );
+                    LoadingPopup.showMessage( Constants.INSTANCE.RefreshingList() );
                     RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
                                                                                   dropData.queryExpression,
                                                                                   new GenericCallback<String[]>() {
@@ -124,7 +121,7 @@ public class EnumDropDown extends ListBox
                                                                                           LoadingPopup.close();
 
                                                                                           if ( data.length == 0 ) {
-                                                                                              data = new String[]{constants.UnableToLoadList()};
+                                                                                              data = new String[]{Constants.INSTANCE.UnableToLoadList()};
                                                                                           }
 
                                                                                           fillDropDown( currentValue,
@@ -135,7 +132,7 @@ public class EnumDropDown extends ListBox
                                                                                           LoadingPopup.close();
                                                                                           //just do an empty drop down...
                                                                                           fillDropDown( currentValue,
-                                                                                                        new String[]{constants.UnableToLoadList()} );
+                                                                                                        new String[]{Constants.INSTANCE.UnableToLoadList()} );
                                                                                       }
                                                                                   } );
                 }
@@ -163,7 +160,7 @@ public class EnumDropDown extends ListBox
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
         clear();
-        //        addItem( constants.Choose() );
+        //        addItem( Constants.INSTANCE.Choose() );
         boolean selected = false;
         HashSet<String> currentValues = new HashSet<String>();
         String trimmedCurrentValue = currentValue;

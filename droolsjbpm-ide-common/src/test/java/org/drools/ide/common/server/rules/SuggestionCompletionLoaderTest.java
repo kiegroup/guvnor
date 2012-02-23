@@ -174,7 +174,7 @@ public class SuggestionCompletionLoaderTest {
                                                                      new ArrayList() );
         assertNotNull( eng );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "SomeFact",
                                         "age" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -183,13 +183,9 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       eng.getFieldType( "SomeFact",
                                         "name" ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
-                      eng.getFieldType( "SomeFact",
-                                        "bigDecimal" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
                       eng.getFieldType( "SomeFact",
                                         "alive" ) );
-        //        assertEquals(SuggestionCompletionEngine.TYPE_COMPARABLE, eng.getFieldType( "SomeFact", "date"));
         assertEquals( SuggestionCompletionEngine.TYPE_DATE,
                       eng.getFieldType( "SomeFact",
                                         "date" ) );
@@ -205,6 +201,51 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( SuggestionCompletionEngine.TYPE_COLLECTION,
                       eng.getFieldType( "SomeFact",
                                         "factList" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL,
+                      eng.getFieldType( "SomeFact",
+                                        "objectBigDecimal" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER,
+                      eng.getFieldType( "SomeFact",
+                                        "objectBigInteger" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE,
+                      eng.getFieldType( "SomeFact",
+                                        "objectByte" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE,
+                      eng.getFieldType( "SomeFact",
+                                        "objectDouble" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
+                      eng.getFieldType( "SomeFact",
+                                        "objectFloat" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
+                      eng.getFieldType( "SomeFact",
+                                        "objectInteger" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+                      eng.getFieldType( "SomeFact",
+                                        "objectLong" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT,
+                      eng.getFieldType( "SomeFact",
+                                        "objectShort" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveByte" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveDouble" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveFloat" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveInteger" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveLong" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT,
+                      eng.getFieldType( "SomeFact",
+                                        "primitiveShort" ) );
+
         assertEquals( "SomeFact",
                       eng.getParametricFieldType( "SomeFact",
                                                   "factList" ) );
@@ -248,7 +289,7 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "GenBean2",
                       eng.getFactTypes()[1] );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "GenBean",
                                         "id" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -289,7 +330,7 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "Bean1",
                       eng.getFieldType( "Bean1",
                                         "this" ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "Bean1",
                                         "age" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -301,7 +342,7 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "Bean2",
                       eng.getFieldType( "Bean2",
                                         "this" ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "Bean2",
                                         "age" ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
@@ -467,8 +508,54 @@ public class SuggestionCompletionLoaderTest {
                       fields[2] );
         assertEquals( "anEnum",
                       fields[3] );
-        assertEquals( "bigDecimal",
+        assertEquals( "cheese",
                       fields[4] );
+        assertEquals( "date",
+                      fields[5] );
+        assertEquals( "dead",
+                      fields[6] );
+        assertEquals( "factList",
+                      fields[7] );
+        assertEquals( "factListString",
+                      fields[8] );
+        assertEquals( "hair",
+                      fields[9] );
+        assertEquals( "likes",
+                      fields[10] );
+        assertEquals( "name",
+                      fields[11] );
+        assertEquals( "objectBigDecimal",
+                      fields[12] );
+        assertEquals( "objectBigInteger",
+                      fields[13] );
+        assertEquals( "objectByte",
+                      fields[14] );
+        assertEquals( "objectDouble",
+                      fields[15] );
+        assertEquals( "objectFloat",
+                      fields[16] );
+        assertEquals( "objectInteger",
+                      fields[17] );
+        assertEquals( "objectLong",
+                      fields[18] );
+        assertEquals( "objectShort",
+                      fields[19] );
+        assertEquals( "primitiveByte",
+                      fields[20] );
+        assertEquals( "primitiveDouble",
+                      fields[21] );
+        assertEquals( "primitiveFloat",
+                      fields[22] );
+        assertEquals( "primitiveInteger",
+                      fields[23] );
+        assertEquals( "primitiveLong",
+                      fields[24] );
+        assertEquals( "primitiveShort",
+                      fields[25] );
+        assertEquals( "sex",
+                      fields[26] );
+        assertEquals( "status",
+                      fields[27] );
     }
 
     @Test
@@ -548,7 +635,7 @@ public class SuggestionCompletionLoaderTest {
                       eng.getFieldClassType( "Applicant",
                                              "creditRating" ) );
 
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "LoanApplication",
                                         "deposit" ) );
         assertEquals( "java.lang.Integer",
@@ -728,7 +815,7 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       eng.getFieldType( "ReadOnlyFact",
                                         "name" ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       eng.getFieldType( "ReadOnlyFact",
                                         "age" ) );
     }

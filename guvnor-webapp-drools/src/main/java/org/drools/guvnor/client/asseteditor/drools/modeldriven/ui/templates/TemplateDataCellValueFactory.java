@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -173,12 +174,76 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                 cell = makeNewDateCellValue( d );
                 break;
             case NUMERIC :
-                BigDecimal bd = null;
+                BigDecimal numericValue = null;
                 try {
-                    bd = new BigDecimal( dcv );
+                    numericValue = new BigDecimal( dcv );
                 } catch ( Exception e ) {
                 }
-                cell = makeNewNumericCellValue( bd );
+                cell = makeNewNumericCellValue( numericValue );
+                break;
+            case NUMERIC_BIGDECIMAL :
+                BigDecimal bigDecimalValue = null;
+                try {
+                    bigDecimalValue = new BigDecimal( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewBigDecimalCellValue( bigDecimalValue );
+                break;
+            case NUMERIC_BIGINTEGER :
+                BigInteger bigIntegerValue = null;
+                try {
+                    bigIntegerValue = new BigInteger( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewBigIntegerCellValue( bigIntegerValue );
+                break;
+            case NUMERIC_BYTE :
+                Byte byteValue = null;
+                try {
+                    byteValue = new Byte( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewByteCellValue( byteValue );
+                break;
+            case NUMERIC_DOUBLE :
+                Double doubleValue = null;
+                try {
+                    doubleValue = new Double( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewDoubleCellValue( doubleValue );
+                break;
+            case NUMERIC_FLOAT :
+                Float floatValue = null;
+                try {
+                    floatValue = new Float( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewFloatCellValue( floatValue );
+                break;
+            case NUMERIC_INTEGER :
+                Integer integerValue = null;
+                try {
+                    integerValue = new Integer( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewIntegerCellValue( integerValue );
+                break;
+            case NUMERIC_LONG :
+                Long longValue = null;
+                try {
+                    longValue = new Long( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewLongCellValue( longValue );
+                break;
+            case NUMERIC_SHORT :
+                Short shortValue = null;
+                try {
+                    shortValue = new Short( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewShortCellValue( shortValue );
                 break;
             default :
                 cell = makeNewStringCellValue( dcv );
@@ -212,6 +277,22 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
             return DTDataTypes52.DATE;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             return DTDataTypes52.NUMERIC;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            return DTDataTypes52.NUMERIC_BIGDECIMAL;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            return DTDataTypes52.NUMERIC_BIGINTEGER;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            return DTDataTypes52.NUMERIC_BYTE;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            return DTDataTypes52.NUMERIC_DOUBLE;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            return DTDataTypes52.NUMERIC_FLOAT;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            return DTDataTypes52.NUMERIC_INTEGER;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            return DTDataTypes52.NUMERIC_LONG;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            return DTDataTypes52.NUMERIC_SHORT;
         } else {
             return DTDataTypes52.STRING;
         }
@@ -245,6 +326,22 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                 return convertDateValueToString( cv );
             case NUMERIC :
                 return convertNumericValueToString( cv );
+            case NUMERIC_BIGDECIMAL :
+                return convertBigDecimalValueToString( cv );
+            case NUMERIC_BIGINTEGER :
+                return convertBigIntegerValueToString( cv );
+            case NUMERIC_BYTE :
+                return convertByteValueToString( cv );
+            case NUMERIC_DOUBLE :
+                return convertDoubleValueToString( cv );
+            case NUMERIC_FLOAT :
+                return convertFloatValueToString( cv );
+            case NUMERIC_INTEGER :
+                return convertIntegerValueToString( cv );
+            case NUMERIC_LONG :
+                return convertLongValueToString( cv );
+            case NUMERIC_SHORT :
+                return convertShortValueToString( cv );
             default :
                 return convertStringValueToString( cv );
         }
@@ -268,9 +365,49 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         return result;
     }
 
-    //Convert a BigDecimal value to a String
+    //Convert a Generic Numeric (BigDecimal) value to a String
     private String convertNumericValueToString(CellValue< ? > value) {
         return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
+    }
+
+    //Convert a BigDecimal value to a String
+    private String convertBigDecimalValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
+    }
+
+    //Convert a BigInteger value to a String
+    private String convertBigIntegerValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((BigInteger) value.getValue()).toString());
+    }
+
+    //Convert a Byte value to a String
+    private String convertByteValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Byte) value.getValue()).toString());
+    }
+
+    //Convert a Double value to a String
+    private String convertDoubleValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Double) value.getValue()).toString());
+    }
+
+    //Convert a Float value to a String
+    private String convertFloatValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Float) value.getValue()).toString());
+    }
+
+    //Convert a Integer value to a String
+    private String convertIntegerValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Integer) value.getValue()).toString());
+    }
+
+    //Convert a Long value to a String
+    private String convertLongValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Long) value.getValue()).toString());
+    }
+
+    //Convert a Short value to a String
+    private String convertShortValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Short) value.getValue()).toString());
     }
 
     //Convert a String value to a String

@@ -18,7 +18,7 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.List;
 
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
 
 import com.google.gwt.core.client.GWT;
@@ -44,7 +44,7 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
     HasData<T> {
 
     // Usual suspects
-    protected static final Constants constants = GWT.create( Constants.class );
+    protected static final ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     @UiField(provided = true)
     public ToggleButton           columnPickerButton;

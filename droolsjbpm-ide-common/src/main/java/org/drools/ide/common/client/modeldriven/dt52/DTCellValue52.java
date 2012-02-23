@@ -16,6 +16,7 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
@@ -34,9 +35,9 @@ public class DTCellValue52
     //Type safe value of cell
     private Boolean           valueBoolean;
     private Date              valueDate;
-    private BigDecimal        valueNumeric;
-    private String            valueString;
-    private DTDataTypes52     dataType;
+    private Number            valueNumeric;
+    private String            valueString      = "";
+    private DTDataTypes52     dataType         = DTDataTypes52.STRING;
 
     //Does this cell represent "all other values" to those explicitly defined for the column
     private boolean           isOtherwise;
@@ -44,33 +45,164 @@ public class DTCellValue52
     public DTCellValue52() {
     }
 
+    public DTCellValue52(DTCellValue52 sourceCell) {
+        switch ( sourceCell.getDataType() ) {
+            case BOOLEAN :
+                setBooleanValue( sourceCell.getBooleanValue() );
+                this.dataType = DTDataTypes52.BOOLEAN;
+                break;
+            case DATE :
+                setDateValue( sourceCell.getDateValue() );
+                this.dataType = DTDataTypes52.DATE;
+                break;
+            case NUMERIC :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC;
+                break;
+            case NUMERIC_BIGDECIMAL :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+                break;
+            case NUMERIC_BIGINTEGER :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+                break;
+            case NUMERIC_BYTE :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_BYTE;
+                break;
+            case NUMERIC_DOUBLE :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_DOUBLE;
+                break;
+            case NUMERIC_FLOAT :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_FLOAT;
+                break;
+            case NUMERIC_INTEGER :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_INTEGER;
+                break;
+            case NUMERIC_LONG :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_LONG;
+                break;
+            case NUMERIC_SHORT :
+                setNumericValue( sourceCell.getNumericValue() );
+                this.dataType = DTDataTypes52.NUMERIC_SHORT;
+                break;
+            default :
+                setStringValue( sourceCell.getStringValue() );
+                this.dataType = DTDataTypes52.STRING;
+        }
+    }
+
+    public DTCellValue52(DTDataTypes52 type) {
+        switch ( type ) {
+            case BOOLEAN :
+                setBooleanValue( false );
+                this.dataType = DTDataTypes52.BOOLEAN;
+                break;
+            case DATE :
+                setDateValue( new Date() );
+                this.dataType = DTDataTypes52.DATE;
+                break;
+            case NUMERIC :
+                setNumericValue( new BigDecimal( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC;
+                break;
+            case NUMERIC_BIGDECIMAL :
+                setNumericValue( new BigDecimal( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+                break;
+            case NUMERIC_BIGINTEGER :
+                setNumericValue( new BigInteger( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+                break;
+            case NUMERIC_BYTE :
+                setNumericValue( new Byte( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC_BYTE;
+                break;
+            case NUMERIC_DOUBLE :
+                setNumericValue( 0.0d );
+                this.dataType = DTDataTypes52.NUMERIC_DOUBLE;
+                break;
+            case NUMERIC_FLOAT :
+                setNumericValue( 0.0f );
+                this.dataType = DTDataTypes52.NUMERIC_FLOAT;
+                break;
+            case NUMERIC_INTEGER :
+                setNumericValue( new Integer( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC_INTEGER;
+                break;
+            case NUMERIC_LONG :
+                setNumericValue( 0l );
+                this.dataType = DTDataTypes52.NUMERIC_LONG;
+                break;
+            case NUMERIC_SHORT :
+                setNumericValue( new Short( "0" ) );
+                this.dataType = DTDataTypes52.NUMERIC_SHORT;
+                break;
+            default :
+                setStringValue( "" );
+                this.dataType = DTDataTypes52.STRING;
+        }
+    }
+
     public DTCellValue52(Object value) {
         if ( value instanceof String ) {
             setStringValue( (String) value );
+            this.dataType = DTDataTypes52.STRING;
             return;
         }
         if ( value instanceof Boolean ) {
             setBooleanValue( (Boolean) value );
+            this.dataType = DTDataTypes52.BOOLEAN;
             return;
         }
         if ( value instanceof Date ) {
             setDateValue( (Date) value );
+            this.dataType = DTDataTypes52.DATE;
             return;
         }
         if ( value instanceof BigDecimal ) {
             setNumericValue( (BigDecimal) value );
+            this.dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+            return;
+        }
+        if ( value instanceof BigInteger ) {
+            setNumericValue( (BigInteger) value );
+            this.dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+            return;
+        }
+        if ( value instanceof Byte ) {
+            setNumericValue( (Byte) value );
+            this.dataType = DTDataTypes52.NUMERIC_BYTE;
             return;
         }
         if ( value instanceof Double ) {
-            setNumericValue( new BigDecimal( (Double) value ) );
+            setNumericValue( (Double) value );
+            this.dataType = DTDataTypes52.NUMERIC_DOUBLE;
+            return;
+        }
+        if ( value instanceof Float ) {
+            setNumericValue( (Float) value );
+            this.dataType = DTDataTypes52.NUMERIC_FLOAT;
             return;
         }
         if ( value instanceof Integer ) {
-            setNumericValue( new BigDecimal( (Integer) value ) );
+            setNumericValue( (Integer) value );
+            this.dataType = DTDataTypes52.NUMERIC_INTEGER;
             return;
         }
         if ( value instanceof Long ) {
-            setNumericValue( new BigDecimal( (Long) value ) );
+            setNumericValue( (Long) value );
+            this.dataType = DTDataTypes52.NUMERIC_LONG;
+            return;
+        }
+        if ( value instanceof Short ) {
+            setNumericValue( (Short) value );
+            this.dataType = DTDataTypes52.NUMERIC_SHORT;
             return;
         }
         setStringValue( null );
@@ -78,33 +210,72 @@ public class DTCellValue52
 
     public DTCellValue52(BigDecimal value) {
         setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+    }
+
+    public DTCellValue52(BigInteger value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+    }
+
+    public DTCellValue52(Byte value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_BYTE;
+    }
+
+    public DTCellValue52(Double value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_DOUBLE;
+    }
+
+    public DTCellValue52(Float value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_FLOAT;
+    }
+
+    public DTCellValue52(Integer value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_INTEGER;
+    }
+
+    public DTCellValue52(Long value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_LONG;
+    }
+
+    public DTCellValue52(Short value) {
+        setNumericValue( value );
+        this.dataType = DTDataTypes52.NUMERIC_SHORT;
     }
 
     public DTCellValue52(Boolean value) {
         setBooleanValue( value );
+        this.dataType = DTDataTypes52.BOOLEAN;
     }
 
     public DTCellValue52(Date value) {
         setDateValue( value );
+        this.dataType = DTDataTypes52.DATE;
     }
 
     public DTCellValue52(String value) {
         setStringValue( value );
-    }
-
-    public Boolean getBooleanValue() {
-        return valueBoolean;
+        this.dataType = DTDataTypes52.STRING;
     }
 
     public DTDataTypes52 getDataType() {
         return this.dataType;
     }
 
+    public Boolean getBooleanValue() {
+        return valueBoolean;
+    }
+
     public Date getDateValue() {
         return valueDate;
     }
 
-    public BigDecimal getNumericValue() {
+    public Number getNumericValue() {
         return valueNumeric;
     }
 
@@ -128,10 +299,57 @@ public class DTCellValue52
         this.dataType = DTDataTypes52.DATE;
     }
 
+    public void setNumericValue(Number value) {
+        clearValues();
+        this.valueNumeric = value;
+    }
+
     public void setNumericValue(BigDecimal value) {
         clearValues();
         this.valueNumeric = value;
-        this.dataType = DTDataTypes52.NUMERIC;
+        this.dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+    }
+
+    public void setNumericValue(BigInteger value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+    }
+
+    public void setNumericValue(Byte value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_BYTE;
+    }
+
+    public void setNumericValue(Double value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_DOUBLE;
+    }
+
+    public void setNumericValue(Float value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_FLOAT;
+    }
+
+    public void setNumericValue(Integer value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_INTEGER;
+    }
+
+    public void setNumericValue(Long value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_LONG;
+    }
+
+    public void setNumericValue(Short value) {
+        clearValues();
+        this.valueNumeric = value;
+        this.dataType = DTDataTypes52.NUMERIC_SHORT;
     }
 
     public void setOtherwise(boolean isOtherwise) {
@@ -147,12 +365,16 @@ public class DTCellValue52
     private void clearValues() {
         this.valueBoolean = null;
         this.valueDate = null;
-        this.valueNumeric = null;
         this.valueString = null;
+        this.dataType = null;
     }
 
     public boolean hasValue() {
-        return valueBoolean != null || valueDate != null || valueNumeric != null || valueString != null || isOtherwise;
+        return valueBoolean != null
+               || valueDate != null
+               || valueNumeric != null
+               || valueString != null
+               || isOtherwise;
     }
 
     @Override

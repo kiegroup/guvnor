@@ -47,7 +47,6 @@ public class CEPWindowOperatorsDropdown extends Composite
     implements
     HasValueChangeHandlers<OperatorSelection> {
 
-    private static final Constants         constants                        = ((Constants) GWT.create( Constants.class ));
     private static final OperatorsResource resources                        = GWT.create( OperatorsResource.class );
     private static final OperatorsCss      css                              = resources.operatorsCss();
 
@@ -156,7 +155,7 @@ public class CEPWindowOperatorsDropdown extends Composite
 
         box = new ListBox();
         box.setEnabled( !isReadOnly );
-        box.addItem( constants.noCEPWindow(),
+        box.addItem( Constants.INSTANCE.noCEPWindow(),
                      "" );
 
         for ( int i = 0; i < operators.size(); i++ ) {

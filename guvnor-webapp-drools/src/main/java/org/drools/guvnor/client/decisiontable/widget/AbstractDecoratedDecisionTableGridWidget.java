@@ -156,7 +156,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                      colIndex,
                                                                                      eventBus );
         columnWidth = descriptionCol.getWidth();
-        descriptionColumn.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+        descriptionColumn.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
         columns.add( descriptionColumn );
 
         data.addColumn( colIndex,
@@ -172,7 +172,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                               colIndex,
                                                                               eventBus );
             columnWidth = col.getWidth();
-            col.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+            col.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
             column.setVisible( !col.isHideColumn() );
             columns.add( column );
 
@@ -190,7 +190,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                               colIndex,
                                                                               eventBus );
             columnWidth = col.getWidth();
-            column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+            column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
             column.setVisible( !col.isHideColumn() );
             column.setSystemControlled( col.isUseRowNumber() );
             column.setSortable( !col.isUseRowNumber() );
@@ -213,7 +213,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                   colIndex,
                                                                                   eventBus );
                 columnWidth = brl.getWidth();
-                column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                 column.setVisible( !brl.isHideColumn() );
                 columns.add( column );
 
@@ -231,7 +231,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                       colIndex,
                                                                                       eventBus );
                     columnWidth = variable.getWidth();
-                    column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                     column.setVisible( !variable.isHideColumn() );
                     columns.add( column );
 
@@ -250,7 +250,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                       colIndex,
                                                                                       eventBus );
                     columnWidth = col.getWidth();
-                    column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                     column.setVisible( !col.isHideColumn() );
                     columns.add( column );
 
@@ -258,7 +258,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                     makeColumnData( model,
                                                     col,
                                                     colIndex++ ),
-                                                column.isVisible() );
+                                                    column.isVisible() );
                 }
             }
         }
@@ -272,7 +272,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                   colIndex,
                                                                                   eventBus );
                 columnWidth = brl.getWidth();
-                column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                 column.setVisible( !brl.isHideColumn() );
                 columns.add( column );
 
@@ -290,7 +290,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                       colIndex,
                                                                                       eventBus );
                     columnWidth = variable.getWidth();
-                    column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                    column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                     column.setVisible( !variable.isHideColumn() );
                     columns.add( column );
 
@@ -308,7 +308,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                   colIndex,
                                                                                   eventBus );
                 columnWidth = col.getWidth();
-                column.setWidth( columnWidth < 0 ? defaultColumnWidth : columnWidth );
+                column.setWidth( columnWidth <= 0 ? defaultColumnWidth : columnWidth );
                 column.setVisible( !col.isHideColumn() );
                 columns.add( column );
 
@@ -348,7 +348,8 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            DTCellValue52 dcv = new DTCellValue52( iRow + 1 );
+            DTCellValue52 dcv = new DTCellValue52();
+            dcv.setNumericValue( iRow + 1 );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
                                                                                                dcv );
             columnData.add( cv );

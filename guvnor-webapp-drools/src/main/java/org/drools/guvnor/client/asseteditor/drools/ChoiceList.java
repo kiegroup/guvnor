@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.messages.Constants;
@@ -46,8 +45,7 @@ public class ChoiceList extends PopupPanel {
         this.sentences = sen;
         filter = new TextBox();
         filter.setWidth("100%");
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        final String defaultMessage = constants.enterTextToFilterList();
+        final String defaultMessage = Constants.INSTANCE.enterTextToFilterList();
         filter.setText(defaultMessage);
         filter.addFocusHandler(new FocusHandler() {
             public void onFocus(FocusEvent event) {
@@ -85,14 +83,14 @@ public class ChoiceList extends PopupPanel {
 
         panel.add(list);
 
-        Button ok = new Button(constants.OK());
+        Button ok = new Button(Constants.INSTANCE.OK());
         ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 applyChoice(self);
             }
         });
 
-        Button cancel = new Button(constants.Cancel());
+        Button cancel = new Button(Constants.INSTANCE.Cancel());
         cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 hide();
@@ -119,7 +117,7 @@ public class ChoiceList extends PopupPanel {
     private void populateList(List<DSLSentence> filtered) {
         list.clear();
         for (int i = 0; i < filtered.size(); i++) {
-            list.addItem(((DSLSentence) filtered.get(i)).getDefinition());
+            list.addItem( filtered.get(i).getDefinition());
         }
     }
 

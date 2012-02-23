@@ -21,6 +21,7 @@ import org.drools.guvnor.client.asseteditor.PropertiesHolder;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable;
 
@@ -61,7 +62,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
     }
 
     public ImageResource getIcon() {
-        return images.newFileLarge();
+        return Images.INSTANCE.newFileLarge();
     }
 
     public String getOverallStyleName() {

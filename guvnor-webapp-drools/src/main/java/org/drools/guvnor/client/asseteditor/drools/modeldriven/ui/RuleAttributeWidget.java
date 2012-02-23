@@ -26,7 +26,6 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,36 +43,34 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Displays a list of rule options (attributes).
- *
- *         <p/>
- *         Added support for metadata - Michael Rhoden 10/17/08
+ * <p/>
+ * Added support for metadata - Michael Rhoden 10/17/08
  */
 public class RuleAttributeWidget extends Composite {
-
-    private Constants           constants             = GWT.create( Constants.class );
-    private static Images       images                = GWT.create( Images.class );
 
     /**
      * These are the names of all of the rule attributes for this widget
      */
-    public static final String SALIENCE_ATTR         = "salience";                   // needs to be public
-    public static final String ENABLED_ATTR          = "enabled";
-    public static final String DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String NO_LOOP_ATTR          = "no-loop";
-    public static final String AGENDA_GROUP_ATTR     = "agenda-group";
-    public static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String DURATION_ATTR         = "duration";
-    public static final String AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String DIALECT_ATTR          = "dialect";
-    public static final String LOCK_LHS              = "freeze_conditions";
-    public static final String LOCK_RHS              = "freeze_actions";
-    
+    public static final String  SALIENCE_ATTR         = "salience";         // needs to be public
+    public static final String  ENABLED_ATTR          = "enabled";
+    public static final String  DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String  DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String  NO_LOOP_ATTR          = "no-loop";
+    public static final String  AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String  ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String  DURATION_ATTR         = "duration";
+    public static final String  TIMER_ATTR            = "timer";
+    public static final String  CALENDARS_ATTR        = "calendars";
+    public static final String  AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String  LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String  RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String  DIALECT_ATTR          = "dialect";
+    public static final String  LOCK_LHS              = "freeze_conditions";
+    public static final String  LOCK_RHS              = "freeze_actions";
+
     /**
-     * If the rule attribute is represented visually by a checkbox, these are the values that will
-     * be stored in the model when checked/unchecked
+     * If the rule attribute is represented visually by a checkbox, these are
+     * the values that will be stored in the model when checked/unchecked
      */
     private static final String TRUE_VALUE            = "true";
     private static final String FALSE_VALUE           = "false";
@@ -90,7 +87,7 @@ public class RuleAttributeWidget extends Composite {
         RuleMetadata[] meta = model.metadataList;
         if ( meta.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( constants.Metadata2() ) );
+            hp.add( new SmallLabel( Constants.INSTANCE.Metadata2() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < meta.length; i++ ) {
@@ -102,7 +99,7 @@ public class RuleAttributeWidget extends Composite {
         RuleAttribute[] attrs = model.attributes;
         if ( attrs.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( constants.Attributes1() ) );
+            hp.add( new SmallLabel( Constants.INSTANCE.Attributes1() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < attrs.length; i++ ) {
@@ -117,13 +114,12 @@ public class RuleAttributeWidget extends Composite {
 
     /**
      * Return a listbox of choices for rule attributes.
-     *
+     * 
      * @return
      */
     public static ListBox getAttributeList() {
-        Constants cons = ((Constants) GWT.create( Constants.class ));
         ListBox list = new ListBox();
-        list.addItem( cons.Choose() );
+        list.addItem( Constants.INSTANCE.Choose() );
 
         list.addItem( SALIENCE_ATTR );
         list.addItem( ENABLED_ATTR );
@@ -132,6 +128,9 @@ public class RuleAttributeWidget extends Composite {
         list.addItem( NO_LOOP_ATTR );
         list.addItem( AGENDA_GROUP_ATTR );
         list.addItem( ACTIVATION_GROUP_ATTR );
+        list.addItem( DURATION_ATTR );
+        list.addItem( TIMER_ATTR );
+        list.addItem( CALENDARS_ATTR );
         list.addItem( DURATION_ATTR );
         list.addItem( AUTO_FOCUS_ATTR );
         list.addItem( LOCK_ON_ACTIVE_ATTR );
@@ -163,8 +162,8 @@ public class RuleAttributeWidget extends Composite {
         Widget editor;
 
         if ( rm.attributeName.equals( LOCK_LHS ) || rm.attributeName.equals( LOCK_RHS ) ) {
-            editor = new InfoPopup( constants.FrozenAreas(),
-                                    constants.FrozenExplanation() );
+            editor = new InfoPopup( Constants.INSTANCE.FrozenAreas(),
+                                    Constants.INSTANCE.FrozenExplanation() );
         } else {
             editor = textBoxEditor( rm );
         }
@@ -211,7 +210,8 @@ public class RuleAttributeWidget extends Composite {
 
         box.addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
-                box.setVisibleLength( box.getText().length() );
+                int length = box.getText().length();
+                box.setVisibleLength( length > 0 ? length : 1 );
             }
         } );
         return box;
@@ -236,10 +236,10 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( images.deleteItemSmall() );
+        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
                     model.removeAttribute( idx );
                     parent.refreshWidget();
                 }
@@ -249,10 +249,10 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( images.deleteItemSmall() );
+        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
                     model.removeMetadata( idx );
                     parent.refreshWidget();
                 }

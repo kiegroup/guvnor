@@ -21,8 +21,8 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.core.client.GWT;
@@ -44,17 +44,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:30:04
- * To change this template use File | Settings | File Templates.
- */
 public class VerifyRulesFiredWidget extends Composite {
-
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
 
     private Grid          outer;
     private boolean       showResults;
@@ -80,7 +70,7 @@ public class VerifyRulesFiredWidget extends Composite {
 
         outer.setWidget( 0,
                          0,
-                         new SmallLabel( constants.ExpectRules() ) );
+                         new SmallLabel( Constants.INSTANCE.ExpectRules() ) );
         initWidget( outer );
 
         FlexTable data = render( rfl,
@@ -101,10 +91,10 @@ public class VerifyRulesFiredWidget extends Composite {
                 if ( !v.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.warning() ) );
+                                    new Image( Images.INSTANCE.warning() ) );
                     data.setWidget( i,
                                     4,
-                                    new HTML( constants.ActualResult(v.getActualResult().toString()) ) );
+                                    new HTML( Constants.INSTANCE.ActualResult(v.getActualResult().toString()) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           4,
@@ -113,7 +103,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.testPassed() ) );
+                                    new Image( Images.INSTANCE.testPassed() ) );
                 }
 
             }
@@ -126,11 +116,11 @@ public class VerifyRulesFiredWidget extends Composite {
                                                       HasVerticalAlignment.ALIGN_MIDDLE );
 
             final ListBox b = new ListBox();
-            b.addItem( constants.firedAtLeastOnce(),
+            b.addItem( Constants.INSTANCE.firedAtLeastOnce(),
                        "y" );
-            b.addItem( constants.didNotFire(),
+            b.addItem( Constants.INSTANCE.didNotFire(),
                        "n" );
-            b.addItem( constants.firedThisManyTimes(),
+            b.addItem( Constants.INSTANCE.firedThisManyTimes(),
                        "e" );
             final TextBox num = new TextBox();
             num.setVisibleLength( 5 );
@@ -160,7 +150,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 }
             } );
 
-            b.addItem( constants.ChooseDotDotDot() );
+            b.addItem( Constants.INSTANCE.ChooseDotDotDot() );
 
             num.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
@@ -175,11 +165,11 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( images.deleteItemSmall(),
-                                         constants.RemoveThisRuleExpectation(),
+            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+                                         Constants.INSTANCE.RemoveThisRuleExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
-                                                 if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
+                                                 if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
                                                      rfl.remove( v );
                                                      sc.removeFixture( v );
                                                      outer.setWidget( 1,

@@ -18,8 +18,8 @@ package org.drools.guvnor.client.asseteditor;
 
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.core.client.GWT;
@@ -33,8 +33,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleViewer extends GuvnorEditor {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
 
     interface RuleViewerBinder
             extends
@@ -104,8 +104,18 @@ public class RuleViewer extends GuvnorEditor {
                 editor.setHeight( "580px" );
             }
         }
-
-        initWidget( uiBinder.createAndBindUi( this ) );
+        if ( editor instanceof FormEditor ) {
+            if ( ruleViewerSettings1.isStandalone() ) {
+                // standalone bigger dimensions"
+                editor.setWidth( "100%" );
+                editor.setHeight( "1000px" );
+            } else {
+                // normal dimensions inside guvnor
+                editor.setWidth( "100%" );
+                editor.setHeight( "580px" );
+            }
+        }
+  initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
 
         LoadingPopup.close();

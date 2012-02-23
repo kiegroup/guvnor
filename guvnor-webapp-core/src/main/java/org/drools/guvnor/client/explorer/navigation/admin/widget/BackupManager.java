@@ -20,8 +20,8 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,9 +42,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class BackupManager extends Composite {
 
-    private static Images images    = (Images) GWT.create( Images.class );
+    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
-    private Constants     constants = GWT.create( Constants.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     public BackupManager() {
 

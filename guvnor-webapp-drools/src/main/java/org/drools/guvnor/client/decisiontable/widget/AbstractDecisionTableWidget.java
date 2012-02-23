@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1025,14 +1026,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             for ( List<DTCellValue52> row : model.getData() ) {
                 columnData.add( row.get( iCol ) );
             }
-            origColumnVariables.put( key.toString(),
+            origColumnVariables.put( key,
                                      columnData );
         }
 
         int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLConditionColumnKey( variable );
-            List<DTCellValue52> columnData = origColumnVariables.get( key.toString() );
+            List<DTCellValue52> columnData = origColumnVariables.get( key );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
             }
@@ -1741,7 +1742,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         int rowNumber = 1;
         int iColIndex = model.getExpandedColumns().indexOf( column );
         for ( List<DTCellValue52> row : model.getData() ) {
-            row.get( iColIndex ).setNumericValue( new BigDecimal( rowNumber ) );
+            row.get( iColIndex ).setNumericValue( rowNumber );
             rowNumber++;
         }
 
@@ -1775,7 +1776,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         //If Salience values are reverse order derive them and update column
         int salience = (column.isReverseOrder() ? model.getData().size() : 1);
         for ( List<DTCellValue52> row : model.getData() ) {
-            row.get( iColIndex ).setNumericValue( new BigDecimal( salience ) );
+            row.get( iColIndex ).setNumericValue( salience );
             if ( column.isReverseOrder() ) {
                 salience--;
             } else {
@@ -2065,6 +2066,30 @@ public abstract class AbstractDecisionTableWidget extends Composite
                         break;
                     case NUMERIC :
                         targetCell.setNumericValue( sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_BIGDECIMAL :
+                        targetCell.setNumericValue( (BigDecimal) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_BIGINTEGER :
+                        targetCell.setNumericValue( (BigInteger) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_BYTE :
+                        targetCell.setNumericValue( (Byte) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_DOUBLE :
+                        targetCell.setNumericValue( (Double) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_FLOAT :
+                        targetCell.setNumericValue( (Float) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_INTEGER :
+                        targetCell.setNumericValue( (Integer) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_LONG :
+                        targetCell.setNumericValue( (Long) sourceCell.getNumericValue() );
+                        break;
+                    case NUMERIC_SHORT :
+                        targetCell.setNumericValue( (Short) sourceCell.getNumericValue() );
                         break;
                     default :
                         targetCell.setStringValue( sourceCell.getStringValue() );

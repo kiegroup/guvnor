@@ -18,9 +18,7 @@ package org.drools.guvnor.client.decisiontable.cells;
 import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.widget.BoundFactsChangedEvent;
-import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -31,6 +29,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
+import org.drools.guvnor.client.messages.Constants;
 
 /**
  * A Popup drop-down Editor for bound Fact Patterns. This cell listens for
@@ -40,8 +39,6 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 public class PopupBoundPatternDropDownEditCell extends AbstractPopupEditCell<String, String>
     implements
     BoundFactsChangedEvent.Handler {
-
-    private Constants     constants = GWT.create( Constants.class );
 
     private final ListBox listBox;
 
@@ -86,7 +83,7 @@ public class PopupBoundPatternDropDownEditCell extends AbstractPopupEditCell<Str
     /**
      * Set content of drop-down.
      * 
-     * @param patterns
+     * @param factBindings
      */
     public void setFactBindings(List<String> factBindings) {
         listBox.clear();
@@ -95,7 +92,7 @@ public class PopupBoundPatternDropDownEditCell extends AbstractPopupEditCell<Str
         }
         listBox.setEnabled( listBox.getItemCount() > 0 );
         if ( listBox.getItemCount() == 0 ) {
-            listBox.addItem( constants.NoPatternBindingsAvailable() );
+            listBox.addItem( Constants.INSTANCE.NoPatternBindingsAvailable() );
         }
     }
 

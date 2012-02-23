@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -64,18 +65,18 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     @Override
     protected String getPopupTitle() {
-        return constants.AddANewAction();
+        return Constants.INSTANCE.AddANewAction();
     }
 
     @Override
     public Widget getContent() {
         if ( position == null ) {
-            positionCbo.addItem( constants.Bottom(),
+            positionCbo.addItem( Constants.INSTANCE.Bottom(),
                                  String.valueOf( this.model.rhs.length ) );
-            positionCbo.addItem( constants.Top(),
+            positionCbo.addItem( Constants.INSTANCE.Top(),
                                  "0" );
             for ( int i = 1; i < model.rhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0( i ),
+                positionCbo.addItem( Constants.INSTANCE.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -85,16 +86,16 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         }
 
         if ( completions.getDSLConditions().length == 0 && completions.getFactTypes().length == 0 ) {
-            layoutPanel.addRow( new HTML( "<div class='highlight'>" + constants.NoModelTip() + "</div>" ) ); 
+            layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
         }
         
         //only show the drop down if we are not using fixed position.
         if ( position == null ) {
             HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( constants.PositionColon() ) );
+            hp0.add( new HTML( Constants.INSTANCE.PositionColon() ) );
             hp0.add( positionCbo );
-            hp0.add( new InfoPopup( constants.PositionColon(),
-                                    constants.ActionPositionExplanation() ) );
+            hp0.add( new InfoPopup( Constants.INSTANCE.PositionColon(),
+                                    Constants.INSTANCE.ActionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -103,7 +104,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         layoutPanel.addRow( choicesPanel );
 
         HorizontalPanel hp = new HorizontalPanel();
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         hp.add( ok );
         ok.addClickHandler( new ClickHandler() {
 
@@ -112,7 +113,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
         } );
 
-        Button cancel = new Button( constants.Cancel() );
+        Button cancel = new Button( Constants.INSTANCE.Cancel() );
         hp.add( cancel );
         cancel.addClickHandler( new ClickHandler() {
 
@@ -122,7 +123,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         } );
 
         CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( constants.OnlyDisplayDSLActions() );
+        chkOnlyDisplayDSLConditions.setText( Constants.INSTANCE.OnlyDisplayDSLActions() );
         chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
         chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
@@ -211,7 +212,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( constants.ChangeFieldValuesOf0( v ),
+            choices.addItem( Constants.INSTANCE.ChangeFieldValuesOf0( v ),
                              "VAR" + v );
             cmds.put( "VAR" + v,
                       new Command() {
@@ -235,7 +236,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < globals.length; i++ ) {
             final String v = globals[i];
-            choices.addItem( constants.ChangeFieldValuesOf0( v ),
+            choices.addItem( Constants.INSTANCE.ChangeFieldValuesOf0( v ),
                              "GLOBVAR" + v );
             cmds.put( "GLOBVAR" + v,
                       new Command() {
@@ -258,7 +259,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            choices.addItem( constants.Retract0( v ),
+            choices.addItem( Constants.INSTANCE.Retract0( v ),
                              "RET" + v );
             cmds.put( "RET" + v,
                       new Command() {
@@ -282,7 +283,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( constants.Modify0( v ),
+            choices.addItem( Constants.INSTANCE.Modify0( v ),
                              "MOD" + v );
             cmds.put( "MOD" + v,
                       new Command() {
@@ -304,7 +305,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             final String item = completions.getFactTypes()[i];
-            choices.addItem( constants.InsertFact0( item ),
+            choices.addItem( Constants.INSTANCE.InsertFact0( item ),
                              "INS" + item );
             cmds.put( "INS" + item,
                       new Command() {
@@ -326,7 +327,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             final String item = completions.getFactTypes()[i];
-            choices.addItem( constants.LogicallyInsertFact0( item ),
+            choices.addItem( Constants.INSTANCE.LogicallyInsertFact0( item ),
                              "LINS" + item );
             cmds.put( "LINS" + item,
                       new Command() {
@@ -354,7 +355,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( int i = 0; i < completions.getGlobalCollections().length; i++ ) {
                 final String glob = completions.getGlobalCollections()[i];
                 final String var = bf;
-                choices.addItem( constants.Append0ToList1( var,
+                choices.addItem( Constants.INSTANCE.Append0ToList1( var,
                                                            glob ),
                                  "GLOBCOL" + glob + var );
                 cmds.put( "GLOBCOL" + glob + var,
@@ -381,7 +382,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
         if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( constants.AddFreeFormDrl(),
+            choices.addItem( Constants.INSTANCE.AddFreeFormDrl(),
                              "FF" );
             cmds.put( "FF",
                       new Command() {
@@ -399,7 +400,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
             for ( int i = 0; i < globals.length; i++ ) {
                 final String v = globals[i];
-                choices.addItem( constants.CallMethodOn0( v ),
+                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
                                  "GLOBCALL" + v );
                 cmds.put( "GLOBCALL" + v,
                           new Command() {
@@ -420,7 +421,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( constants.CallMethodOn0( v ),
+                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
                                  "CALL" + v );
                 cmds.put( "CALL" + v,
                           new Command() {
@@ -440,7 +441,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( Iterator<String> iter = vars2.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( constants.CallMethodOn0( v ),
+                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
                                  "CALL" + v );
                 cmds.put( "CALL" + v,
                           new Command() {

@@ -38,8 +38,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class AnnotationEditorPopup {
 
-    private static Constants                constants  = ((Constants) GWT.create( Constants.class ));
-
     // A valid Annotation name
     private static final RegExp             VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d]*$" );
 
@@ -105,18 +103,18 @@ public class AnnotationEditorPopup {
 
         setControlValues( annotation );
 
-        Button btnOK = new Button( constants.OK() );
+        Button btnOK = new Button( Constants.INSTANCE.OK() );
 
         btnOK.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 String name = txtName.getText();
                 if ( !isNameValid( name ) ) {
-                    Window.alert( constants.InvalidModelName( name ) );
+                    Window.alert( Constants.INSTANCE.InvalidModelName( name ) );
                     return;
                 }
                 if ( doesTheNameExist( name ) ) {
-                    Window.alert( constants.NameTakenForModel( name ) );
+                    Window.alert( Constants.INSTANCE.NameTakenForModel( name ) );
                     return;
                 }
                 if ( annotationAlreadyHasAName() && annotationNameHasChanged( name ) ) {
@@ -165,7 +163,7 @@ public class AnnotationEditorPopup {
             }
 
             private boolean isTheUserSureHeWantsToChangeTheName() {
-                return Window.confirm( constants.ModelNameChangeWarning() );
+                return Window.confirm( Constants.INSTANCE.ModelNameChangeWarning() );
             }
 
             private boolean doesTheNameExist(String name) {

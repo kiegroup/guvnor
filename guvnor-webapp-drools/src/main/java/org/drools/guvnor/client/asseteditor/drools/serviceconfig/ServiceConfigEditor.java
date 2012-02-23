@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss by Red Hat.
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -90,7 +90,6 @@ public class ServiceConfigEditor extends DirtyableComposite
     private static ServiceConfigEditorBinder uiBinder = GWT.create(ServiceConfigEditorBinder.class);
     ArtifactDependenciesServiceAsync mavenArtifactsAsync = (ArtifactDependenciesServiceAsync) GWT.create(ArtifactDependenciesService.class);
 
-    private static Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create(Images.class);
 
     public static final Map<String, ImageResource> FORMAT_IMAGES = new HashMap<String, ImageResource>() {{
@@ -450,13 +449,13 @@ public class ServiceConfigEditor extends DirtyableComposite
 
     private class NewResourcePopup extends FormStylePopup {
 
-        private final Button ok = new Button(constants.OK());
+        private final Button ok = new Button(Constants.INSTANCE.OK());
 
         public NewResourcePopup(Widget content) {
-            setTitle(constants.NewResource());
+            setTitle(Constants.INSTANCE.NewResource());
 
             final HorizontalPanel hor = new HorizontalPanel();
-            final Button cancel = new Button(constants.Cancel());
+            final Button cancel = new Button(Constants.INSTANCE.Cancel());
 
             hor.add(ok);
             hor.add(cancel);

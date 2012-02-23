@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -76,7 +75,7 @@ public class Scenario
      */
     public boolean wasSuccessful() {
         for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof Expectation ) {
+            if ( fixture instanceof Expectation) {
                 if ( !((Expectation) fixture).wasSuccessful() ) {
                     return false;
                 }
@@ -97,7 +96,7 @@ public class Scenario
         int start = (fixtureBeforeTheNewOne == null) ? 0 : fixtures.indexOf( fixtureBeforeTheNewOne ) + 1;
 
         for ( int j = start; j < fixtures.size(); j++ ) {
-            if ( fixtures.get( j ) instanceof ExecutionTrace ) {
+            if ( fixtures.get( j ) instanceof ExecutionTrace) {
                 getFixtures().add( j,
                                    newFixture );
                 return;
@@ -258,7 +257,7 @@ public class Scenario
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
                 factDataNames.add( factData.getName() );
-            } else if ( fixture instanceof RetractFact ) {
+            } else if ( fixture instanceof RetractFact) {
                 RetractFact retractFact = (RetractFact) fixture;
                 factDataNames.remove( retractFact.getName() );
             }

@@ -41,8 +41,7 @@ import java.util.Map;
 public class QATree extends NavigationItemBuilderOld
         implements
         OpenHandler<TreeItem> {
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = (Images) GWT.create( Images.class );
+    
     private final ClientFactory clientFactory;
 
     public QATree(ClientFactory clientFactory) {
@@ -63,11 +62,11 @@ public class QATree extends NavigationItemBuilderOld
     }
 
     public String getName() {
-        return constants.QA1();
+        return Constants.INSTANCE.QA1();
     }
 
     public ImageResource getImage() {
-        return images.analyze();
+        return Images.INSTANCE.analyze();
     }
 
     public IsWidget createContent() {
@@ -106,7 +105,7 @@ public class QATree extends NavigationItemBuilderOld
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( Images.INSTANCE.packages(),
                                 c.name ) );
 
                         node.addItem( pkg );
@@ -123,7 +122,7 @@ public class QATree extends NavigationItemBuilderOld
                     removeAnalysisIDs( itemWidgets );
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( Images.INSTANCE.packages(),
                                 c.name ) );
 
                         node.addItem( pkg );

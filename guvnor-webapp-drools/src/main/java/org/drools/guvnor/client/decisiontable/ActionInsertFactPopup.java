@@ -36,7 +36,6 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.Table
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -55,9 +54,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This is an editor for columns that are for inserting facts.
  */
 public class ActionInsertFactPopup extends FormStylePopup {
-
-    private static Images              images                           = (Images) GWT.create( Images.class );
-    private static Constants           constants                        = GWT.create( Constants.class );
 
     private SmallLabel                 patternLabel                     = new SmallLabel();
     private TextBox                    fieldLabel                       = getFieldLabel();
@@ -89,7 +85,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                 sce,
                                                 isReadOnly );
 
-        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
+        setTitle( Constants.INSTANCE.ActionColumnConfigurationInsertingANewFact() );
         setModal( false );
 
         //Fact being inserted
@@ -97,9 +93,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        ImageButton changePattern = new ImageButton( images.edit(),
-                                                     images.editDisabled(),
-                                                     constants.ChooseAPatternThatThisColumnAddsDataTo(),
+        ImageButton changePattern = new ImageButton( Images.INSTANCE.edit(),
+                                                     Images.INSTANCE.editDisabled(),
+                                                     Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              showChangePattern( w );
@@ -107,16 +103,16 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( constants.Pattern(),
+        addAttribute( Constants.INSTANCE.Pattern(),
                       pattern );
 
         //Fact field being set
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( images.edit(),
-                                                 images.editDisabled(),
-                                                 constants.EditTheFieldThatThisColumnOperatesOn(),
+        ImageButton editField = new ImageButton( Images.INSTANCE.edit(),
+                                                 Images.INSTANCE.editDisabled(),
+                                                 Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {
                                                          showFieldChange();
@@ -124,7 +120,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( constants.Field(),
+        addAttribute( Constants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
@@ -139,7 +135,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( constants.ColumnHeaderDescription(),
+        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Optional value list
@@ -156,58 +152,58 @@ public class ActionInsertFactPopup extends FormStylePopup {
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueList );
-            vl.add( new InfoPopup( constants.ValueList(),
-                                   constants.ValueListsExplanation() ) );
-            addAttribute( constants.optionalValueList(),
+            vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
+                                   Constants.INSTANCE.ValueListsExplanation() ) );
+            addAttribute( Constants.INSTANCE.optionalValueList(),
                           vl );
         }
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            addAttribute( constants.DefaultValue(),
+            addAttribute( Constants.INSTANCE.DefaultValue(),
                           DTCellValueWidgetFactory.getDefaultEditor( editingCol,
                                                                      isReadOnly ) );
         }
 
         //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( constants.LimitedEntryValue(),
+        limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
                                                         limitedEntryValueWidgetContainer );
         makeLimitedValueWidget();
 
         //Logical insertion
-        addAttribute( constants.LogicallyInsertColon(),
+        addAttribute( Constants.INSTANCE.LogicallyInsertColon(),
                       doInsertLogical() );
 
         //Hide column tick-box
-        addAttribute( constants.HideThisColumn(),
+        addAttribute( Constants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( constants.ApplyChanges() );
+        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( !isValidFactType() ) {
-                    Window.alert( constants.YouMustEnterAColumnPattern() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnPattern() );
                     return;
                 }
                 if ( !isValidFactField() ) {
-                    Window.alert( constants.YouMustEnterAColumnField() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnField() );
                     return;
                 }
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
 
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -248,20 +244,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         if ( dcv == null ) {
             return null;
         }
-        DTCellValue52 clone = new DTCellValue52();
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                clone.setBooleanValue( dcv.getBooleanValue() );
-                break;
-            case DATE :
-                clone.setDateValue( dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                clone.setNumericValue( dcv.getNumericValue() );
-                break;
-            case STRING :
-                clone.setStringValue( dcv.getStringValue() );
-        }
+        DTCellValue52 clone = new DTCellValue52( dcv );
         return clone;
     }
 
@@ -288,7 +271,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     private void doFieldLabel() {
         if ( nil( this.editingCol.getFactField() ) ) {
-            fieldLabel.setText( constants.pleaseChooseFactType() );
+            fieldLabel.setText( Constants.INSTANCE.pleaseChooseFactType() );
         } else {
             fieldLabel.setText( editingCol.getFactField() );
         }
@@ -353,9 +336,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
         }
-        pop.addAttribute( constants.Field(),
+        pop.addAttribute( Constants.INSTANCE.Field(),
                           box );
-        Button b = new Button( constants.OK() );
+        Button b = new Button( Constants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -392,12 +375,12 @@ public class ActionInsertFactPopup extends FormStylePopup {
         hp.add( pats );
         hp.add( ok );
 
-        pop.addAttribute( constants.ChooseExistingPatternToAddColumnTo(),
+        pop.addAttribute( Constants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
                           hp );
         pop.addAttribute( "",
-                          new HTML( constants.ORwithEmphasis() ) );
+                          new HTML( Constants.INSTANCE.ORwithEmphasis() ) );
 
-        Button createPattern = new Button( constants.CreateNewFactPattern() );
+        Button createPattern = new Button( Constants.INSTANCE.CreateNewFactPattern() );
         createPattern.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 pop.hide();
@@ -425,18 +408,18 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     protected void showNewPatternDialog() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( constants.NewFactSelectTheType() );
+        pop.setTitle( Constants.INSTANCE.NewFactSelectTheType() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < sce.getFactTypes().length; i++ ) {
             types.addItem( sce.getFactTypes()[i] );
         }
-        pop.addAttribute( constants.FactType(),
+        pop.addAttribute( Constants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( constants.Binding(),
+        pop.addAttribute( Constants.INSTANCE.Binding(),
                           binding );
 
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( Constants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
 
@@ -444,13 +427,13 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();
                 if ( fn.equals( "" ) ) {
-                    Window.alert( constants.PleaseEnterANameForFact() );
+                    Window.alert( Constants.INSTANCE.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !isBindingUnique( fn ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
 
@@ -502,8 +485,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( constants.LogicallyInsertANewFact(),
-                               constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
+        hp.add( new InfoPopup( Constants.INSTANCE.LogicallyInsertANewFact(),
+                               Constants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 
