@@ -17,7 +17,7 @@ package org.drools.guvnor.client.widgets.drools.explorer;
 
 public interface PackageReadyCommand {
 
-    void onSuccess(String packageRef, String name, String description);
+    void onSuccess(String moduleName, String label, String link, String name, String description);
 
     void onFailure(Throwable cause);
 }

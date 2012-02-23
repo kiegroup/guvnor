@@ -77,7 +77,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.changeset.ChangeSetEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.changeset.ChangeSetEditor</class>
         <format>changeset</format>
         <icon>images.enumeration()</icon>
         <title>constants.ChangeSets()</title>    
@@ -160,9 +160,16 @@
         <format>springContext</format>
         <icon>images.enumeration()</icon>
         <title>constants.SpringContext()</title>    
-    </asseteditor>    
-    
-    <asseteditor>
+    </asseteditor>
+
+  <asseteditor>
+    <class>org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfigEditor</class>
+    <format>serviceConfig</format>
+    <icon>images.enumeration()</icon>
+    <title>constants.ServiceConfig()</title>
+  </asseteditor>
+
+  <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.drools.workitem.WorkitemDefinitionEditor</class> 
         <format>wid</format>
         <icon>images.enumeration()</icon>

@@ -16,7 +16,12 @@
 
 package org.drools.guvnor.server.contenthandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 
@@ -37,6 +42,38 @@ public abstract class PlainTextContentHandler extends ContentHandler {
                                   AssetItem repoAsset) throws SerializationException {
         repoAsset.updateContent( ((RuleContentText) asset.getContent()).content );
 
+    }
+
+    public BuilderResult validateAsset(AssetItem asset) {
+
+        final String message = validate(asset.getContent());
+
+        return createBuilderResult(message,
+                asset.getName(),
+                asset.getFormat(),
+                asset.getUUID());
+    }
+
+    private BuilderResult createBuilderResult(final String message, final String name,
+            final String format, final String uuid) {
+
+        if (message.length() == 0) {
+            return new BuilderResult();
+        } else {
+            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+
+            BuilderResultLine result = new BuilderResultLine().setAssetName(name).setAssetFormat(format).setUuid(uuid).setMessage(message);
+            errors.add(result);
+
+            BuilderResult builderResult = new BuilderResult();
+            builderResult.addLines(errors);
+
+            return builderResult;
+        }
+    }
+
+    public String validate(final String content) {
+        return "";
     }
 
 }

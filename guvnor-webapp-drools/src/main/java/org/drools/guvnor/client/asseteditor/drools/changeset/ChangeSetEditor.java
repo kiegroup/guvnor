@@ -37,10 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
-import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
-import org.drools.guvnor.client.widgets.drools.explorer.PackageResourceExplorerWidget;
-import org.drools.guvnor.client.widgets.drools.explorer.PackageReadyCommand;
-import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -49,9 +46,14 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.RESTUtil;
+import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
+import org.drools.guvnor.client.widgets.drools.explorer.PackageReadyCommand;
+import org.drools.guvnor.client.widgets.drools.explorer.PackageResourceExplorerWidget;
+import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
 
-import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 import static org.drools.guvnor.client.common.AssetFormats.*;
+import static org.drools.guvnor.client.widgets.drools.explorer.AssetDownloadLinkUtil.*;
+import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 
 /**
  * This is the default Change Set editor widget - more to come later.
@@ -213,8 +215,7 @@ public class ChangeSetEditor extends DirtyableComposite
                 try {
                     widget.processSelectedPackage(new PackageReadyCommand() {
 
-                        public void onSuccess(final String packageRef, final String name, final String description) {
-
+                        public void onSuccess(String moduleName, String label, String link, String name, String description) {
                             String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
                             String result = resourceXMLElementTemplate;
 
@@ -232,7 +233,7 @@ public class ChangeSetEditor extends DirtyableComposite
 
                             result = result.replace("{description}", descriptionString);
                             result = result.replace("{type}", "PKG");
-                            result = result.replace("{source}", packageRef);
+                            result = result.replace("{source}", link);
 
                             insertText(result.toString(), false);
                         }
@@ -256,6 +257,7 @@ public class ChangeSetEditor extends DirtyableComposite
         addNewResource(new AssetResourceExplorerWidget(assetPackageUUID,
                 assetPackageName,
                 clientFactory,
+                CHANGE_SET_RESOURCE,
                 DISPLAY_NAME_AND_DESCRIPTION));
     }
 
@@ -297,15 +299,14 @@ public class ChangeSetEditor extends DirtyableComposite
                                 partialResult = partialResult.replace("{description}",
                                         descriptionString);
 
-                                String type = convertAssetFormatToResourceType(asset.getFormat());
+                                final String type = convertAssetFormatToResourceType(asset.getFormat());
                                 if (type == null) {
                                     throw new IllegalArgumentException(constants.UnknownResourceFormat(asset.getFormat()));
                                 }
 
-                                partialResult = partialResult.replace("{type}",
-                                        type);
+                                partialResult = partialResult.replace("{type}", type);
 
-                                partialResult = partialResult.replace("{source}", getDownloadLink(asset, packageRef));
+                                partialResult = partialResult.replace("{source}", buildDownloadLink(asset, packageRef));
 
                                 result.append(partialResult).append('\n');
                             }
@@ -324,17 +325,6 @@ public class ChangeSetEditor extends DirtyableComposite
             }
         });
         popup.show();
-    }
-
-    private String getDownloadLink(final Asset asset, final String packageRef) {
-        String url = RESTUtil.getRESTBaseURL();
-        url += "packages/";
-        url += packageRef;
-        url += "/assets/";
-        url += asset.name;
-        url += "/source";
-
-        return url;
     }
 
     private Widget createChangeSetLink() {

@@ -47,6 +47,10 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     public void onNewSpringContext() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory, eventBus );
     }
+
+    public void onNewServiceConfig() {
+        view.openNewAssetWizardWithoutCategories( AssetFormats.SERVICE_CONFIG, clientFactory, eventBus );
+    }
     
     public void onNewChangeSet() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.CHANGE_SET, clientFactory, eventBus );

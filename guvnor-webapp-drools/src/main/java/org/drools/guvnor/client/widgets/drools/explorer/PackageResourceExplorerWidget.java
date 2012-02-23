@@ -34,7 +34,7 @@ import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
-import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.HIDE_NAME_AND_DESCRIPTION;
+import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 
 public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExplorerWidget {
 
@@ -111,8 +111,7 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                 }
 
                 public void onSuccess(Module result) {
-                    populatePackageTree(result,
-                            null);
+                    populatePackageTree(result, null);
                 }
             });
 
@@ -126,8 +125,7 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                 public void onSuccess(Module[] result) {
                     for (int i = 0; i < result.length; i++) {
                         final Module packageConfigData = result[i];
-                        populatePackageTree(packageConfigData,
-                                null);
+                        populatePackageTree(packageConfigData, null);
                     }
                 }
             });
@@ -151,13 +149,11 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
 
     }
 
-    private void populatePackageTree(final Module packageConfigData,
-            final TreeItem rootItem) {
+    private void populatePackageTree(final Module packageConfigData, final TreeItem rootItem) {
 
         final TreeItem packageItem = new TreeItem(packageConfigData.getName());
 
-        packageItem.addItem(createTreeItem("LATEST",
-                PackageBuilderWidget.getDownloadLink(packageConfigData)));
+        packageItem.addItem(createTreeItem("LATEST", packageConfigData.getName(), PackageBuilderWidget.getDownloadLink(packageConfigData)));
 
         this.packageService.listSnapshots(packageConfigData.getName(),
                 new AsyncCallback<SnapshotInfo[]>() {
@@ -177,8 +173,7 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                                         }
 
                                         public void onSuccess(Module result) {
-                                            packageItem.addItem(createTreeItem(snapshotInfo.getName(),
-                                                    PackageBuilderWidget.getDownloadLink(result)));
+                                            packageItem.addItem(createTreeItem(snapshotInfo.getName(), packageConfigData.getName(), PackageBuilderWidget.getDownloadLink(result)));
                                         }
                                     });
 
@@ -195,24 +190,36 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
 
     }
 
-    private TreeItem createTreeItem(String label,
-            String link) {
-        TreeItem treeItem = new TreeItem(new RadioButton("pkgResourceGroup",
-                label));
-        treeItem.setUserObject(link);
+    private TreeItem createTreeItem(final String label, final String moduleName, final String link) {
+        TreeItem treeItem = new TreeItem(new RadioButton("pkgResourceGroup", label));
+        treeItem.setUserObject(new TreeItemData(moduleName, label, link));
 
         return treeItem;
+    }
+
+    private class TreeItemData {
+
+        final String moduleName;
+        final String label;
+        final String link;
+
+        TreeItemData(final String moduleName, final String label, final String link) {
+            this.moduleName = moduleName;
+            this.label = label;
+            this.link = link;
+        }
     }
 
     public void processSelectedPackage(final PackageReadyCommand command) {
         try {
             //source is mandatory!
-            TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
+            final TreeItem selectedPackageItem = this.packageTree.getSelectedItem();
             if (selectedPackageItem == null || selectedPackageItem.getChildCount() != 0) {
                 throw new IllegalStateException(constants.NoPackageSeleced());
             }
 
-            command.onSuccess((String) selectedPackageItem.getUserObject(), txtName.getText(), txtDescription.getText());
+            final TreeItemData treeItem = (TreeItemData) selectedPackageItem.getUserObject();
+            command.onSuccess(treeItem.moduleName, treeItem.label, treeItem.link, txtName.getText(), txtDescription.getText());
 
         } catch (Throwable t) {
             command.onFailure(t);

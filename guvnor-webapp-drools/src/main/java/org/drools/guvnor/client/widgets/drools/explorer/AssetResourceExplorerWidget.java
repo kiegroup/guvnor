@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -93,10 +92,11 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
 
     protected AssetPagedTable assetsTable;
 
-    public AssetResourceExplorerWidget(String packageUUID,
-            String packageName,
-            ClientFactory clientFactory,
-            ExplorerRenderMode mode) {
+    public AssetResourceExplorerWidget(final String packageUUID,
+            final String packageName,
+            final ClientFactory clientFactory,
+            final String[] formatList,
+            final ExplorerRenderMode mode) {
 
         this.initWidget(uiBinder.createAndBindUi(this));
 
@@ -110,7 +110,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
         //store data
         this.packageUUID = packageUUID;
 
-        this.initializeFormatList();
+        this.initializeFormatList(formatList);
 
         this.initializePackageList();
 
@@ -184,17 +184,14 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
 
     }
 
-    private void initializeFormatList() {
-        for (String format : AssetFormats.CHANGE_SET_RESOURCE) {
-            //TODO: I18N the label!
-            this.lstFormat.addItem(format,
-                    format);
+    private void initializeFormatList(final String[] formatList) {
+        for (String format : formatList) {
+            this.lstFormat.addItem(format, format);
         }
 
         this.lstFormat.setSelectedIndex(0);
 
         this.lstFormat.addChangeHandler(new ChangeHandler() {
-
             public void onChange(ChangeEvent event) {
                 handleListChanges(event);
             }

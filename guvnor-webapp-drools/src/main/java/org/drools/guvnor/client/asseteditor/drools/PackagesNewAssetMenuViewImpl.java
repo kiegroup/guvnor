@@ -45,6 +45,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         addNewPackageMenuItem();
         addNewChangeSetMenuItem();
         addNewSpringContextMenuItem();
+        addNewServiceConfigMenuItem();
         addNewWorkingSetMenuItem();
         addNewRuleMenuItem();
         addNewRuleTemplateMenuItem();
@@ -205,6 +206,16 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
                 new Command() {
                     public void execute() {
                         presenter.onNewSpringContext();
+                    }
+                } );
+    }
+
+    private void addNewServiceConfigMenuItem() {
+        createNewMenu.addItem( Util.getHeader( images.newEnumeration(), constants.NewServiceConfig() ).asString(),
+                true,
+                new Command() {
+                    public void execute() {
+                        presenter.onNewServiceConfig();
                     }
                 } );
     }

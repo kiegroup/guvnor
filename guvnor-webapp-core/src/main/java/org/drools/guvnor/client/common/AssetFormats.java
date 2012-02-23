@@ -114,6 +114,8 @@ public class AssetFormats {
 
     public static final String SPRING_CONTEXT = "springContext";
 
+    public static final String SERVICE_CONFIG = "serviceConfig";
+
     public static final String CHANGE_SET = "changeset";
     
     /**
@@ -130,7 +132,11 @@ public class AssetFormats {
      */
     public static final String[] CHANGE_SET_RESOURCE = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DRL, AssetFormats.DSL, AssetFormats.BPMN2_PROCESS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE, AssetFormats.CHANGE_SET};
 
-    
+    /**
+     * These define assets that can be added as resource to service config
+     */
+    public static final String[] SERVICE_CONFIG_RESOURCE = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DRL, AssetFormats.DSL, AssetFormats.BPMN2_PROCESS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.CHANGE_SET, AssetFormats.MODEL};
+
     /**
      * Will return true if the given asset format is a package dependency (eg a function, DSL, model etc).
      * Package dependencies are needed before the package is validated, and any rule assets are processed.
