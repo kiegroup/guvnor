@@ -7,10 +7,6 @@
 
   <title>Guvnor Manual</title>
   <subtitle>For users and administrators of Guvnor</subtitle>
-  <productname>Guvnor</productname>
-  <productnumber>5.3</productnumber>
-  <edition>1</edition>
-  <pubsnumber>1</pubsnumber>
   <releaseinfo>Version &project.version;</releaseinfo>
 
   <abstract>
