@@ -22,74 +22,43 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
-
 public class SpringContextContentHandler extends PlainTextContentHandler implements IHasCustomValidator {
+
     public void retrieveAssetContent(Asset asset, ModuleItem pkg, AssetItem item)
             throws SerializationException {
         if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
-            asset.setContent( text );
+            asset.setContent(text);
         }
     }
 
     public void storeAssetContent(Asset asset,
-                                  AssetItem repoAsset) throws SerializationException {
+            AssetItem repoAsset) throws SerializationException {
 
         RuleContentText text = (RuleContentText) asset.getContent();
 
         try {
-            InputStream input = new ByteArrayInputStream( text.content.getBytes( "UTF-8" ) );
-            repoAsset.updateBinaryContentAttachment( input );
-        } catch ( UnsupportedEncodingException e ) {
+            InputStream input = new ByteArrayInputStream(text.content.getBytes("UTF-8"));
+            repoAsset.updateBinaryContentAttachment(input);
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 
-    public BuilderResult validateAsset(AssetItem asset) {
-
-        String message = validate( asset.getContent() );
-
-        return createBuilderResult( message,
-                                    asset.getName(),
-                                    asset.getFormat(),
-                                    asset.getUUID() );
-    }
-
-    private BuilderResult createBuilderResult(String message,
-                                              String name,
-                                              String format,
-                                              String uuid) {
-
-        if ( message.length() == 0 ) {
-            return new BuilderResult();
-        } else {
-            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-
-            BuilderResultLine result = new BuilderResultLine().setAssetName( name ).setAssetFormat( format ).setUuid( uuid ).setMessage( message );
-            errors.add( result );
-
-            BuilderResult builderResult = new BuilderResult();
-            builderResult.addLines(errors);
-
-            return builderResult;
-        }
-    }
-
-    private String validate(String content) {
+    public String validate(String content) {
 
         SpringContextValidator contextValidator = new SpringContextValidator();
-        contextValidator.setContentAsString( content );
+        contextValidator.setContentAsString(content);
 
         return contextValidator.validate();
     }

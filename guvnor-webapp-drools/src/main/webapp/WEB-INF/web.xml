@@ -63,6 +63,16 @@
       <!--<param-value>prototype</param-value>-->
     <!--</init-param>-->
   </servlet>
+
+  <servlet>
+    <servlet-name>serviceWarBuilderAndDownloadHandler</servlet-name>
+    <servlet-class>org.drools.guvnor.server.contenthandler.drools.ServiceWarBuilderAndDownloadHandler</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>mavenArtifactsService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.maven.ArtifactDependenciesServiceImpl</servlet-class>
+  </servlet>
+
   <servlet>
     <servlet-name>guvnorService</servlet-name>
     <servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
@@ -134,6 +144,14 @@
   <servlet-mapping>
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>serviceWarBuilderAndDownloadHandler</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/serviceWarBuilderAndDownloadHandler</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>mavenArtifactsService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/mavenArtifactsService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OryxEditorServlet</servlet-name>

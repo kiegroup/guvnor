@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.changeset;
+package org.drools.guvnor.client.widgets.drools.explorer;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
 
 /**
- * Defines the interface of XMLReourceDefinitionCreator like: <resource
- * type="DRL" name="someName" description="some Descr" source="..."/>
+ *
  */
-public interface XMLResourceDefinitionCreator {
-
-    public String resourceXMLElementTemplate = "<resource {name} {description} source='{source}' type='{type}' />";
-
-    /**
-     * Return an xml <resource> element.
-     * 
-     * @return an xml <resource> element
-     */
-    void getResourceElement(ResourceElementReadyCommand resourceElementReadyCommand);
+public abstract class AbstractResourceDefinitionExplorerWidget extends DirtyableComposite
+    implements
+        ResourceDefinitionExplorer {
 
 }

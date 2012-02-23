@@ -60,34 +60,7 @@ public class WorkItemContentHandler extends PlainTextContentHandler implements
         }
     }
 
-    public BuilderResult validateAsset(AssetItem asset) {
-        String message = validate(asset.getContent());
-
-        return createBuilderResult(message, asset.getName(), asset.getFormat(),
-                asset.getUUID());
-    }
-
-    private BuilderResult createBuilderResult(String message, String name,
-            String format, String uuid) {
-
-        if (message.length() == 0) {
-            return new BuilderResult();
-        } else {
-            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-
-            BuilderResultLine result = new BuilderResultLine()
-                    .setAssetName(name).setAssetFormat(format).setUuid(uuid)
-                    .setMessage(message);
-            errors.add(result);
-
-            BuilderResult builderResult = new BuilderResult();
-            builderResult.addLines(errors);
-
-            return builderResult;
-        }
-    }
-
-    private String validate(String content) {
+    public String validate(String content) {
         WorkItemValidator widValidator = new WorkItemValidator();
         widValidator.setContent(content);
 

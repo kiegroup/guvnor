@@ -1,0 +1,3 @@
+http://repository.jboss.org/nexus/content/repositories/central/
+http://repository.jboss.org/nexus/content/repositories/releases/
+http://repository.jboss.org/nexus/content/repositories/snapshots/

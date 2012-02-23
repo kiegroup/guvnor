@@ -26,11 +26,11 @@
   <gwt:HTMLPanel width="100%">
     <table style='width:100%; border-collapse:collapse;'>
         <tr>
-            <td style="text-align:right;"><b><gwt:Label text="{i18n.Name}:"></gwt:Label></b></td>
+            <td style="text-align:right;"><b><gwt:Label ui:field="labelName" text="{i18n.Name}:"></gwt:Label></b></td>
             <td><gwt:TextBox ui:field="txtName"></gwt:TextBox></td>
         </tr>
         <tr>
-            <td style="text-align:right;"><b><gwt:Label text="{i18n.Description}:"></gwt:Label></b></td>
+            <td style="text-align:right;"><b><gwt:Label ui:field="labelDescr" text="{i18n.Description}:"></gwt:Label></b></td>
             <td><gwt:TextBox ui:field="txtDescription"></gwt:TextBox></td>
         </tr>
         <tr>

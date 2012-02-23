@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss by Red Hat.
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.changeset;
+package org.drools.guvnor.client.widgets.drools.explorer;
 
-/**
- * The creation of a new <resource> element (unfortunately) is not always
- * synchronous (see
- * {@link CreateAssetResourceWidget#getResourceElement(ResourceElementReadyCommand)}
- * This command is used to be notified when the <resource> element is ready to
- * be used.
- */
-public interface ResourceElementReadyCommand {
-    void onSuccess(String resource);
+public interface PackageReadyCommand {
+
+    void onSuccess(String moduleName, String label, String link, String name, String description);
 
     void onFailure(Throwable cause);
 }

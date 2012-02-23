@@ -2182,6 +2182,12 @@ public interface Constants
 
     String NewSpringContext();
 
+    String ServiceConfig();
+
+    String NewServiceConfig();
+
+    String DescServiceConfig();
+
     String WorkItemDefinition();
 
     String NewWorkitemDefinition();

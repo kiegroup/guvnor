@@ -417,5 +417,17 @@
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
 
+    <!-- used by service config to generate a war file -->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+      <version>1.0.0-cr-1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-impl-base</artifactId>
+      <version>1.0.0-cr-1</version>
+    </dependency>
+
   </dependencies>
 </project>
