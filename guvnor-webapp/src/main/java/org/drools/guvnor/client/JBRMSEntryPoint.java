@@ -23,6 +23,7 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ClientFactoryImpl;
+import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
@@ -152,6 +153,9 @@ public class JBRMSEntryPoint
         }
 
         askToInstallSampleRepository();
+        
+        //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
+        clientFactory.getPlaceController().goTo(new FindPlace());
     }
 
     private void askToInstallSampleRepository() {

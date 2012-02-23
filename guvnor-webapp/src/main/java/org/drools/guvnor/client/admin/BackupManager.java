@@ -92,6 +92,7 @@ public class BackupManager extends Composite {
         uploadFormPanel.setWidget( panel );
 
         final FileUpload upload = new FileUpload();
+        upload.setHeight("30px");
         upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
         panel.add( upload );
 
@@ -108,6 +109,8 @@ public class BackupManager extends Composite {
                 }
             }
         } );
+
+        panel.add(new HTML("&nbsp;&nbsp;&nbsp;"));
 
         panel.add( ok );
 
