@@ -32,7 +32,6 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -110,7 +109,8 @@ public class Connectives {
                                          String factClass,
                                          String fieldName) {
 
-        return new ConstraintValueEditor( pattern,
+        return new ConstraintValueEditor( pattern.getFactType(),
+                                          pattern.constraintList,
                                           fieldName,
                                           con,
                                           this.modeller,

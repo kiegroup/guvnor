@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -348,17 +349,17 @@ public class SuggestionCompletionEngine
      * given field of the given FactPattern. This also takes into account enums
      * that depend on other fields.
      */
-    public DropDownData getEnums(FactPattern pattern,
+    public DropDownData getEnums(String factType,
+                                 CompositeFieldConstraint constraintList,
                                  String field) {
 
         if ( field == null ) {
             return null;
         }
-        String type = pattern.getFactType();
         Map<String, String> currentValueMap = new HashMap<String, String>();
 
-        if ( pattern.constraintList != null && pattern.constraintList.constraints != null ) {
-            for ( FieldConstraint con : pattern.constraintList.constraints ) {
+        if ( constraintList != null && constraintList.constraints != null ) {
+            for ( FieldConstraint con : constraintList.constraints ) {
                 if ( con instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) con;
                     String fieldName = sfc.getFieldName();
@@ -370,7 +371,7 @@ public class SuggestionCompletionEngine
                 }
             }
         }
-        return getEnums( type,
+        return getEnums( factType,
                          field,
                          currentValueMap );
     }

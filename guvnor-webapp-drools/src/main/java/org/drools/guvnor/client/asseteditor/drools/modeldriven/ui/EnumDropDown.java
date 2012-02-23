@@ -200,8 +200,8 @@ public class EnumDropDown extends ListBox
 
         if ( !selected ) {
             setSelectedIndex( 0 );
-            valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
-                                              getValue( getSelectedIndex() ) );
+            valueChangedCommand.valueChanged( getItemText( 0 ),
+                                              getValue( 0 ) );
         }
     }
 }

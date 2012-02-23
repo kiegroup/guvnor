@@ -34,6 +34,7 @@ import org.drools.ide.common.client.factconstraints.customform.CustomFormConfigu
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -68,9 +69,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private final FactPattern                pattern;
+    private String                           factType;
+    private CompositeFieldConstraint         constraintList;
     private String                           fieldName;
-    private String                           qualifiedFieldName;
+    private String                           fieldType;
+
     private final SuggestionCompletionEngine sce;
     private final BaseSingleFieldConstraint  constraint;
     private final Panel                      panel;
@@ -78,21 +81,22 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final RuleModeller               modeller;
     private final EventBus                   eventBus;
 
-    //    private boolean                          isNumeric;
     private DropDownData                     dropDownData;
-    private String                           fieldType;
     private boolean                          readOnly;
     private Command                          onValueChangeCommand;
     private boolean                          isDropDownDataEnum;
     private Widget                           constraintWidget = null;
 
-    public ConstraintValueEditor(FactPattern pattern,
+    public ConstraintValueEditor(String factType,
+                                 CompositeFieldConstraint constraintList,
                                  String fieldName,
                                  BaseSingleFieldConstraint con,
                                  RuleModeller modeller,
                                  EventBus eventBus,
                                  boolean readOnly) {
-        this.pattern = pattern;
+        this.factType = factType;
+        this.constraintList = constraintList;
+
         this.sce = modeller.getSuggestionCompletions();
         this.constraint = con;
         this.panel = new SimplePanel();
@@ -103,9 +107,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         if ( con instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) con;
-            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            if ( fieldName != null && fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            this.fieldName = fieldName;
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
-            this.qualifiedFieldName = this.fieldName;
 
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
@@ -115,11 +122,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
             this.fieldName = fieldName;
             this.fieldType = cc.getFieldType();
-            this.qualifiedFieldName = cc.getFieldName();
 
         } else {
-            this.qualifiedFieldName = fieldName;
-            String factType = pattern.getFactType();
             if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
@@ -148,7 +152,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //without first deleting and re-creating.
         if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
-            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            String fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            if ( fieldName != null && fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            this.fieldName = fieldName;
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
         }
 
@@ -158,7 +166,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             this.dropDownData = DropDownData.create( new String[]{"true", "false"} );
         } else {
             this.isDropDownDataEnum = true;
-            this.dropDownData = sce.getEnums( pattern,
+            this.dropDownData = sce.getEnums( this.factType,
+                                              this.constraintList,
                                               fieldName );
         }
 
@@ -232,7 +241,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( this.constraint instanceof SingleFieldConstraint ) {
             final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
             CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getModuleName(),
-                                                                                                                          pattern.getFactType(),
+                                                                                                                          factType,
                                                                                                                           fieldName );
             if ( customFormConfiguration != null ) {
                 Button btnCustom = new Button( con.getValue(),
@@ -250,8 +259,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //Enumeration
         if ( this.dropDownData != null ) {
-            EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.pattern,
-                                                                    this.qualifiedFieldName,
+            EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.factType,
+                                                                    this.constraintList,
                                                                     this.sce,
                                                                     this.constraint,
                                                                     !this.readOnly );
@@ -402,7 +411,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                 final BaseSingleFieldConstraint con) {
 
         CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getModuleName(),
-                                                                                                                      pattern.getFactType(),
+                                                                                                                      factType,
                                                                                                                       fieldName );
 
         if ( customFormConfiguration != null ) {
@@ -677,13 +686,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //'this' can be compared to bound facts of the same type
         if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-            if ( boundFactType != null && boundFactType.equals( this.pattern.getFactType() ) ) {
+            if ( boundFactType != null && boundFactType.equals( this.factType ) ) {
                 return true;
             }
         }
 
         //For collection, present the list of possible bound variable
-        String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+        String factCollectionType = sce.getParametricFieldType( this.factType,
                                                                 this.fieldName );
         if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
             return true;
@@ -701,7 +710,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //'this' can be compared to bound fields of the same type
         if ( this.fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-            if ( boundFieldType != null && boundFieldType.equals( this.pattern.getFactType() ) ) {
+            if ( boundFieldType != null && boundFieldType.equals( this.factType ) ) {
                 return true;
             }
         }
@@ -737,7 +746,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //For collection, present the list of possible bound variable
-        String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+        String factCollectionType = sce.getParametricFieldType( this.factType,
                                                                 this.fieldName );
         if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
             return true;

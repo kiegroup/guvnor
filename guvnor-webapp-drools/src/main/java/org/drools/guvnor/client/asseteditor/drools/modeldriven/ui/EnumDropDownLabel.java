@@ -21,8 +21,10 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,26 +40,27 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class EnumDropDownLabel extends Composite {
 
     protected final Label                textWidget;
-    protected final EnumDropDown               enumDropDown;
+    protected final EnumDropDown         enumDropDown;
     protected final Button               okButton;
-    protected final Panel                panel     = new HorizontalPanel();
+    protected final Panel                panel = new HorizontalPanel();
     protected final PopupPanel           popup;
 
     protected Command                    onValueChangeCommand;
 
-    protected FactPattern                pattern;
-    protected String                     qualifiedFieldName;
+    private String                       factType;
+    private CompositeFieldConstraint     constraintList;
+
     protected SuggestionCompletionEngine sce;
     protected BaseSingleFieldConstraint  constraint;
     protected boolean                    enabled;
 
-    public EnumDropDownLabel(FactPattern pattern,
-                             String qualifiedFieldName,
+    public EnumDropDownLabel(String factType,
+                             CompositeFieldConstraint constraintList,
                              SuggestionCompletionEngine sce,
                              BaseSingleFieldConstraint constraint,
                              boolean enabled) {
-        this.pattern = pattern;
-        this.qualifiedFieldName = qualifiedFieldName;
+        this.factType = factType;
+        this.constraintList = constraintList;
         this.constraint = constraint;
         this.sce = sce;
         this.enabled = enabled;
@@ -80,14 +83,14 @@ public class EnumDropDownLabel extends Composite {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
         //Change from mul
-        if (constraint.getOperator().equals("in") && !enumDropDown.isMultipleSelect()) {
+        if ( constraint.getOperator().equals( "in" ) && !enumDropDown.isMultipleSelect() ) {
             //Reset the current value since we are changing type of the list from multi to non-multi or vice versa
-            enumDropDown.setMultipleSelect(true);
-            constraint.setValue("");
-            
-        } else if (!constraint.getOperator().equals("in") && enumDropDown.isMultipleSelect()) {
-            enumDropDown.setMultipleSelect(false);
-            constraint.setValue("");
+            enumDropDown.setMultipleSelect( true );
+            constraint.setValue( "" );
+
+        } else if ( !constraint.getOperator().equals( "in" ) && enumDropDown.isMultipleSelect() ) {
+            enumDropDown.setMultipleSelect( false );
+            constraint.setValue( "" );
         }
         //Lazy initialisation of drop-down data as it's content could depend on another drop-down
         enumDropDown.setDropDownData( constraint.getValue(),
@@ -98,11 +101,15 @@ public class EnumDropDownLabel extends Composite {
 
     private DropDownData getDropDownData() {
         String valueType;
-        String factType = this.pattern.getFactType();
-        String fieldName = this.qualifiedFieldName;
+        String fieldName;
         if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
-            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
+            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
+            fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            if ( fieldName != null && fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
             valueType = sfexp.getExpressionLeftSide().getGenericType();
+
         } else if ( constraint instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
             fieldName = cc.getFieldName();
@@ -110,26 +117,29 @@ public class EnumDropDownLabel extends Composite {
                 fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
             }
             valueType = cc.getFieldType();
-        } else {
-
-            factType = this.pattern.getFactType();
-            fieldName = this.qualifiedFieldName;
+            
+        } else if(constraint instanceof SingleFieldConstraint) {
+            SingleFieldConstraint sfc = (SingleFieldConstraint) this.constraint;
+            fieldName = sfc.getFieldName();
             if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
                                                 index );
                 fieldName = fieldName.substring( index + 1 );
             }
-
             valueType = sce.getFieldType( factType,
                                           fieldName );
+        } else {
+            //TODO {manstis} This should never happen
+            throw new IllegalArgumentException("That should not have happened!");
         }
 
         final DropDownData dropDownData;
         if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( valueType ) ) {
             dropDownData = DropDownData.create( new String[]{"true", "false"} ); //NON-NLS
         } else {
-            dropDownData = sce.getEnums( pattern,
+            dropDownData = sce.getEnums( this.factType,
+                                         this.constraintList,
                                          fieldName );
         }
         return dropDownData;
@@ -146,14 +156,14 @@ public class EnumDropDownLabel extends Composite {
                                                        }
                                                    },
                                                    getDropDownData(),
-                                                   "in".equals(constraint.getOperator()) );
+                                                   "in".equals( constraint.getOperator() ) );
 
         if ( box.getItemCount() > 6 ) {
             box.setVisibleItemCount( 6 );
         } else {
             box.setVisibleItemCount( box.getItemCount() );
         }
-        
+
         box.setEnabled( enabled );
 
         return box;
@@ -217,12 +227,12 @@ public class EnumDropDownLabel extends Composite {
 
     //Lookup display text from drop-down selection
     private void updateTextWidget() {
-       textWidget.setText( enumDropDown.getSelectedItemsText() );
+        textWidget.setText( enumDropDown.getSelectedItemsText() );
     }
 
     //Lookup model value from drop-down selection
     private void updateModel() {
-       constraint.setValue( enumDropDown.getSelectedValue() );
+        constraint.setValue( enumDropDown.getSelectedValue() );
     }
 
 }

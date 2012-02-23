@@ -38,7 +38,6 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -463,10 +462,10 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                inner,
                                                row,
                                                2 + col ) );
+            //Get first part of constraint.fieldName? #1=Fact1, #2=SubFact1
             inner.setWidget( row,
                              2 + col,
-                             valueEditor( constraint,
-                                          constraint.getFieldType() ) );
+                             valueEditor( constraint ) );
             inner.setWidget( row,
                              3 + col,
                              connectives.connectives( constraint,
@@ -567,8 +566,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     constraint.setValue( "" );
                     inner.setWidget( row,
                                      2 + col,
-                                     valueEditor( constraint,
-                                                  constraint.getFieldType() ) );
+                                     valueEditor( constraint ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -668,9 +666,14 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Widget valueEditor(final SingleFieldConstraint c,
-                               String factType) {
-        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( pattern,
+    private Widget valueEditor(final SingleFieldConstraint c) {
+        String factType = c.getFieldName();
+        if ( factType.indexOf( "." ) != -1 ) {
+            factType = factType.substring( 0,
+                                           factType.indexOf( "." ) );
+        }
+        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( factType,
+                                                                                 pattern.constraintList,
                                                                                  c.getFieldName(),
                                                                                  c,
                                                                                  this.getModeller(),

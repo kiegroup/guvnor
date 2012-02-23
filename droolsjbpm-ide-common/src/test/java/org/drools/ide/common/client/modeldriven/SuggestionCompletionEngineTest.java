@@ -98,7 +98,8 @@ public class SuggestionCompletionEngineTest {
         assertEquals( "43",
                       items[1] );
 
-        items = engine.getEnums( new FactPattern( "Person" ),
+        items = engine.getEnums( "Person",
+                                 null,
                                  "age" ).fixedList;
         assertEquals( 2,
                       items.length );
@@ -107,11 +108,13 @@ public class SuggestionCompletionEngineTest {
         assertEquals( "43",
                       items[1] );
 
-        assertNull( engine.getEnums( new FactPattern( "Nothing" ),
+        assertNull( engine.getEnums( "Nothing",
+                                     null,
                                      "age" ) );
 
         assertEquals( null,
-                      engine.getEnums( new FactPattern( "Something" ),
+                      engine.getEnums( "Something",
+                                       null,
                                        "else" ) );
 
     }
@@ -140,7 +143,8 @@ public class SuggestionCompletionEngineTest {
         pat.addConstraint( f1 );
         pat.addConstraint( new SingleFieldConstraint( "f2" ) );
 
-        DropDownData data = engine.getEnums( pat,
+        DropDownData data = engine.getEnums( pat.getFactType(),
+                                             pat.constraintList,
                                              "f2" );
 
         assertNotNull( data );
@@ -184,7 +188,8 @@ public class SuggestionCompletionEngineTest {
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "field2" );
         pat.addConstraint( sfc );
-        items = engine.getEnums( pat,
+        items = engine.getEnums( pat.getFactType(),
+                                 pat.constraintList,
                                  "field2" ).fixedList;
         assertEquals( 2,
                       items.length );
@@ -201,7 +206,8 @@ public class SuggestionCompletionEngineTest {
         assertEquals( "val2",
                       items[1] );
 
-        items = engine.getEnums( new FactPattern( "Fact" ),
+        items = engine.getEnums( "Fact",
+                                 null,
                                  "field1" ).fixedList;
         assertEquals( 2,
                       items.length );
@@ -794,7 +800,8 @@ public class SuggestionCompletionEngineTest {
         SingleFieldConstraint sfc = new SingleFieldConstraint( "type" );
         sfc.setValue( "sex" );
         pat.addConstraint( sfc );
-        String[] result = sce.getEnums( pat,
+        String[] result = sce.getEnums( pat.getFactType(),
+                                        pat.constraintList,
                                         "value" ).fixedList;
         assertEquals( 2,
                       result.length );
@@ -808,7 +815,8 @@ public class SuggestionCompletionEngineTest {
         sfc.setValue( "colour" );
         pat.addConstraint( sfc );
 
-        result = sce.getEnums( pat,
+        result = sce.getEnums( pat.getFactType(),
+                               pat.constraintList,
                                "value" ).fixedList;
         assertEquals( 3,
                       result.length );
@@ -819,7 +827,8 @@ public class SuggestionCompletionEngineTest {
         assertEquals( "BLUE",
                       result[2] );
 
-        result = sce.getEnums( pat,
+        result = sce.getEnums( pat.getFactType(),
+                               pat.constraintList,
                                "type" ).fixedList;
         assertEquals( 2,
                       result.length );
@@ -873,7 +882,8 @@ public class SuggestionCompletionEngineTest {
         sfc2.setValue( "b1" );
         pat.addConstraint( sfc2 );
 
-        String[] result = sce.getEnums( pat,
+        String[] result = sce.getEnums( pat.getFactType(),
+                                        pat.constraintList,
                                         "field3" ).fixedList;
         assertEquals( 3,
                       result.length );
@@ -917,14 +927,16 @@ public class SuggestionCompletionEngineTest {
         sfc4.setValue( "d1" );
         pat.addConstraint( sfc4 );
 
-        assertNull( sce.getEnums( pat,
+        assertNull( sce.getEnums( pat.getFactType(),
+                                  pat.constraintList,
                                   "field6" ) );
 
         SingleFieldConstraint sfc5 = new SingleFieldConstraint( "field5" );
         sfc5.setValue( "e2" );
         pat.addConstraint( sfc5 );
 
-        String[] result2 = sce.getEnums( pat,
+        String[] result2 = sce.getEnums( pat.getFactType(),
+                                         pat.constraintList,
                                          "field6" ).fixedList;
         assertEquals( 2,
                       result2.length );
@@ -944,7 +956,8 @@ public class SuggestionCompletionEngineTest {
                                new String[]{"select something from database where x=@{f1} and y=@{f2}"} );
 
         FactPattern fp = new FactPattern( "Fact" );
-        String[] drops = sce.getEnums( fp,
+        String[] drops = sce.getEnums( fp.getFactType(),
+                                       fp.constraintList,
                                        "type" ).fixedList;
         assertEquals( 2,
                       drops.length );
@@ -972,7 +985,8 @@ public class SuggestionCompletionEngineTest {
         sfc.setValue( "f2val" );
         pat.addConstraint( sfc );
 
-        DropDownData dd = sce.getEnums( pat,
+        DropDownData dd = sce.getEnums( pat.getFactType(),
+                                        pat.constraintList,
                                         "value" );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
@@ -1024,7 +1038,8 @@ public class SuggestionCompletionEngineTest {
                                new String[]{"select something from database where x=@{f1} and y=@{f2}"} );
 
         FactPattern fp = new FactPattern( "Fact" );
-        String[] drops = sce.getEnums( fp,
+        String[] drops = sce.getEnums( fp.getFactType(),
+                                       fp.constraintList,
                                        "type" ).fixedList;
         assertEquals( 2,
                       drops.length );
@@ -1052,7 +1067,8 @@ public class SuggestionCompletionEngineTest {
         sfc.setValue( "f2val" );
         pat.addConstraint( sfc );
 
-        DropDownData dd = sce.getEnums( pat,
+        DropDownData dd = sce.getEnums( pat.getFactType(),
+                                        pat.constraintList,
                                         "value" );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
