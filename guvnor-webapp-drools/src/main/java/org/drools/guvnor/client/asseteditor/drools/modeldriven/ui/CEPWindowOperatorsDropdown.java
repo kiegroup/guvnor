@@ -133,7 +133,8 @@ public class CEPWindowOperatorsDropdown extends Composite
             hcw.getWindow().setParameter( key,
                                           value );
         }
-        if ( !txt.isValidValue( value ) ) {
+        if ( !txt.isValidValue( value,
+                                false ) ) {
             value = "";
             hcw.getWindow().setParameter( key,
                                           value );

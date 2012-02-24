@@ -26,7 +26,8 @@ public class BindingTextBox extends AbstractRestrictedEntryTextBox {
     private static final RegExp VALID = RegExp.compile( "(^\\$?\\w*$)" );
 
     @Override
-    protected boolean isValidValue(String value) {
+    protected boolean isValidValue(String value,
+                                   boolean isOnFocusLost) {
         return VALID.test( value );
     }
 

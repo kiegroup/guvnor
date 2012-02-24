@@ -26,12 +26,13 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
     @Override
-    protected boolean isValidValue(String value) {
+    protected boolean isValidValue(String value,
+                                   boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
         }
-        if ( "-".equals( value ) ) {
+        if ( !isOnFocusLost && "-".equals( value ) ) {
             return true;
         }
         try {
@@ -40,6 +41,11 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
             isValid = false;
         }
         return isValid;
+    }
+
+    @Override
+    protected String makeValidValue(String value) {
+        return "0";
     }
 
 }

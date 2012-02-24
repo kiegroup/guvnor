@@ -30,10 +30,14 @@ public class NumericTextBox extends AbstractRestrictedEntryTextBox {
     private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     @Override
-    protected boolean isValidValue(String value) {
+    protected boolean isValidValue(String value,
+                                   boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
+        }
+        if ( !isOnFocusLost && "-".equals( value ) ) {
+            return true;
         }
         try {
             @SuppressWarnings("unused")

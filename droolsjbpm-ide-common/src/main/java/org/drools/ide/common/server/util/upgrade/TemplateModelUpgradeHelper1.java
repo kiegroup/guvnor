@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
@@ -21,7 +21,7 @@ import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 /**
  * Utility class to support upgrades of the TemplateModel model
  */
-public class TemplateModelUpgradeHelper
+public class TemplateModelUpgradeHelper1
     implements
     IUpgradeHelper<TemplateModel, TemplateModel> {
 

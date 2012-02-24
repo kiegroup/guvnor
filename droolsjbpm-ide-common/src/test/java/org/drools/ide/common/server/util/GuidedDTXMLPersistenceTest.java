@@ -27,12 +27,13 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GuidedDTXMLPersistenceTest {
 
-    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private GuidedDecisionTableUpgradeHelper1 upgrader = new GuidedDecisionTableUpgradeHelper1();
     
     @Before
     public void setUp() throws Exception {

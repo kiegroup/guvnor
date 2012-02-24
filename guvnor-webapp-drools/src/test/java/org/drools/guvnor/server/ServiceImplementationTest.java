@@ -73,7 +73,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-import org.drools.ide.common.server.util.GuidedDecisionTableModelUpgradeHelper;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.drools.process.core.datatype.impl.type.EnumDataType;
@@ -100,7 +100,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @SuppressWarnings("deprecation")
 public class ServiceImplementationTest extends GuvnorTestBase {
 
-    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private GuidedDecisionTableUpgradeHelper1 upgrader = new GuidedDecisionTableUpgradeHelper1();
 
     @Test
     public void testDeleteUnversionedRule() throws Exception {

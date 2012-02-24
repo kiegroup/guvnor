@@ -21,13 +21,13 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -128,22 +128,27 @@ public class DefaultLiteralEditor extends Composite {
             box.setVisibleLength( v.length() + 1 );
         }
 
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
                 constraint.setValue( box.getText() );
             }
+
         } );
 
         box.addKeyUpHandler( new KeyUpHandler() {
+
+            @Override
             public void onKeyUp(KeyUpEvent event) {
-                
+
                 //Alter visible size
                 int length = box.getText().length();
                 box.setVisibleLength( length > 0 ? length : 1 );
-                
+
                 //Commit change if enter is pressed
-                final int keyCode=event.getNativeKeyCode();
-                if(keyCode==KeyCodes.KEY_ENTER) {
+                final int keyCode = event.getNativeKeyCode();
+                if ( keyCode == KeyCodes.KEY_ENTER ) {
                     valueChanged.valueChanged( box.getText() );
                 }
             }

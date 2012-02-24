@@ -67,6 +67,7 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
@@ -76,7 +77,7 @@ import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
 
-    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private GuidedDecisionTableUpgradeHelper1 upgrader = new GuidedDecisionTableUpgradeHelper1();
 
     @Test
     public void test2Rules() throws Exception {

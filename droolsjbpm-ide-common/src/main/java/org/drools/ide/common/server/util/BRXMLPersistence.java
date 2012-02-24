@@ -45,6 +45,9 @@ import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
+import org.drools.ide.common.server.util.upgrade.RuleModelUpgradeHelper1;
+import org.drools.ide.common.server.util.upgrade.RuleModelUpgradeHelper2;
+import org.drools.ide.common.server.util.upgrade.RuleModelUpgradeHelper3;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -57,9 +60,11 @@ public class BRXMLPersistence
     implements
     BRLPersistence {
 
-    private XStream                             xt;
-    private static final RuleModelUpgradeHelper UPGRADER = new RuleModelUpgradeHelper();
-    private static final BRLPersistence         INSTANCE = new BRXMLPersistence();
+    private XStream                              xt;
+    private static final RuleModelUpgradeHelper1 upgrader1 = new RuleModelUpgradeHelper1();
+    private static final RuleModelUpgradeHelper2 upgrader2 = new RuleModelUpgradeHelper2();
+    private static final RuleModelUpgradeHelper3 upgrader3 = new RuleModelUpgradeHelper3();
+    private static final BRLPersistence          INSTANCE  = new BRXMLPersistence();
 
     protected BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
@@ -170,8 +175,9 @@ public class BRXMLPersistence
         RuleModel rm = (RuleModel) this.xt.fromXML( xml );
 
         //Upgrade model changes to legacy artifacts
-        UPGRADER.upgrade( rm );
-
+        upgrader1.upgrade( rm );
+        upgrader2.upgrade( rm );
+        upgrader3.upgrade( rm );
         return rm;
     }
 

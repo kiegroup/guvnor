@@ -34,7 +34,8 @@ public class CEPLengthParameterTextBox extends AbstractCEPRestrictedEntryTextBox
     }
 
     @Override
-    protected boolean isValidValue(String value) {
+    protected boolean isValidValue(String value,
+                                   boolean isOnFocusLost) {
         return VALID_LENGTH.test( value );
     }
 

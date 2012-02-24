@@ -36,12 +36,13 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
 public class GuidedDTModelConversionTest {
 
-    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private GuidedDecisionTableUpgradeHelper1 upgrader = new GuidedDecisionTableUpgradeHelper1();
 
     @Test
     public void testConversion() {

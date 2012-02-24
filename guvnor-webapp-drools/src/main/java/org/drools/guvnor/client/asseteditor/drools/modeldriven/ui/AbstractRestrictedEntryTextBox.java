@@ -15,9 +15,12 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -32,6 +35,7 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
     protected void setup() {
         final TextBox me = this;
 
+        //Validate value as it is entered
         this.addKeyPressHandler( new KeyPressHandler() {
 
             public void onKeyPress(KeyPressEvent event) {
@@ -56,10 +60,28 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
                            + ((char) charCode);
                 newValue = newValue
                            + oldValue.substring( me.getCursorPos() + me.getSelectionLength() );
-                if ( !isValidValue( newValue ) ) {
+                if ( !isValidValue( newValue,
+                                    false ) ) {
                     event.preventDefault();
                 }
 
+            }
+
+        } );
+
+        //Add validation when looses focus (for when values are pasted in by users')
+        this.addBlurHandler( new BlurHandler() {
+
+            @Override
+            public void onBlur(BlurEvent event) {
+                final String value = me.getText();
+                if ( !isValidValue( value,
+                                    true ) ) {
+                    final String validValue = makeValidValue( value );
+                    me.setText( validValue );
+                    ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
+                                           validValue );
+                }
             }
 
         } );
@@ -70,8 +92,26 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
      * Validate value of TextBox
      * 
      * @param value
+     * @param isOnFocusLost
+     *            Focus has been lost from the TextBox
      * @return True if valid
      */
-    protected abstract boolean isValidValue(String value);
+    protected abstract boolean isValidValue(String value,
+                                            boolean isOnFocusLost);
+
+    /**
+     * If validation fails (e.g. as a result of a user pasting a value) when the
+     * TextBox looses focus this method is called to transform the current value
+     * into one which is valid. This default implementation returns an empty
+     * String, however numerical TextBoxes could check the value is numerical
+     * and scale to that suitable for the type.
+     * 
+     * @param value
+     *            Current value
+     * @return A valid value
+     */
+    protected String makeValidValue(String value) {
+        return "";
+    }
 
 }

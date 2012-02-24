@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,10 +45,12 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
- * Helper class to upgrade model used for Guided Decision Table
+ * Helper class to upgrade model used for Guided Decision Table. This
+ * implementation converts legacy GuidedDecisionTable objects to
+ * GuidedDecisionTable52 objects used from Guvnor 5.2 onwards.
  */
 @SuppressWarnings("deprecation")
-public class GuidedDecisionTableModelUpgradeHelper
+public class GuidedDecisionTableUpgradeHelper1
     implements
     IUpgradeHelper<GuidedDecisionTable52, GuidedDecisionTable> {
 

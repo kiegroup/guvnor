@@ -18,6 +18,7 @@ package org.drools.ide.common.server.util;
 
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
+import org.drools.ide.common.server.util.upgrade.TemplateModelUpgradeHelper1;
 
 /**
  * This class persists the template rule model to XML and back. This is the
@@ -25,8 +26,8 @@ import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
  */
 public class BRDRTXMLPersistence extends BRXMLPersistence {
 
-    private static final BRLPersistence             INSTANCE = new BRDRTXMLPersistence();
-    private static final TemplateModelUpgradeHelper UPGRADER = new TemplateModelUpgradeHelper();
+    private static final BRLPersistence              INSTANCE  = new BRDRTXMLPersistence();
+    private static final TemplateModelUpgradeHelper1 upgrader1 = new TemplateModelUpgradeHelper1();
 
     private BRDRTXMLPersistence() {
         super();
@@ -48,7 +49,7 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
         model.putInSync();
 
         //Upgrade model changes to legacy artifacts
-        UPGRADER.upgrade( model );
+        upgrader1.upgrade( model );
 
         return model;
     }

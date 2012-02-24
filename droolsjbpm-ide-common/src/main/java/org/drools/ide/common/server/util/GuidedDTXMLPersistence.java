@@ -33,6 +33,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper2;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -40,10 +42,10 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
 
-    private XStream                                               xt;
-    private static final GuidedDecisionTableModelUpgradeHelper    modelVersionUpgrader = new GuidedDecisionTableModelUpgradeHelper();
-    private static final GuidedDecisionTableDataTypeUpgradeHelper dataTypeUpgrader     = new GuidedDecisionTableDataTypeUpgradeHelper();
-    private static final GuidedDTXMLPersistence                   INSTANCE             = new GuidedDTXMLPersistence();
+    private XStream                                        xt;
+    private static final GuidedDecisionTableUpgradeHelper1 upgrader1 = new GuidedDecisionTableUpgradeHelper1();
+    private static final GuidedDecisionTableUpgradeHelper2 upgrader2 = new GuidedDecisionTableUpgradeHelper2();
+    private static final GuidedDTXMLPersistence            INSTANCE  = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
@@ -110,13 +112,13 @@ public class GuidedDTXMLPersistence {
         GuidedDecisionTable52 newDTModel;
         if ( model instanceof GuidedDecisionTable ) {
             GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
-            newDTModel = modelVersionUpgrader.upgrade( legacyDTModel );
+            newDTModel = upgrader1.upgrade( legacyDTModel );
         } else {
             newDTModel = (GuidedDecisionTable52) model;
         }
 
         //Ensure RowNumber, Salience and Duration data-types are correct
-        newDTModel = dataTypeUpgrader.upgrade( newDTModel );
+        newDTModel = upgrader2.upgrade( newDTModel );
 
         return newDTModel;
     }

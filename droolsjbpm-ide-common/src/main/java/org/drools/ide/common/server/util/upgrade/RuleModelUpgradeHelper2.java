@@ -13,60 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
-import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 /**
- * Utility class to support upgrades of the RuleModel model
+ * Utility class to support upgrades of the RuleModel model. This implementation
+ * ensures additional ConnectiveConstraints fields created for Guvnor v5.2 have
+ * reasonable default values.
  */
-public class RuleModelUpgradeHelper
+public class RuleModelUpgradeHelper2
     implements
     IUpgradeHelper<RuleModel, RuleModel> {
 
     public RuleModel upgrade(RuleModel model) {
-        updateMetadata( model );
-        updateMethodCall( model );
         updateConnectiveConstraints( model );
-        return model;
-    }
-
-    //Fixme, hack for a upgrade to add Metadata
-    private void updateMetadata(RuleModel model) {
-        if ( model.metadataList == null ) {
-            model.metadataList = new RuleMetadata[0];
-        }
-    }
-
-    // The way method calls are done changed after 5.0.0.CR1 so every rule done
-    // before that needs to be updated.
-    private RuleModel updateMethodCall(RuleModel model) {
-
-        for ( int i = 0; i < model.rhs.length; i++ ) {
-            if ( model.rhs[i] instanceof ActionCallMethod ) {
-                ActionCallMethod action = (ActionCallMethod) model.rhs[i];
-                // Check if method name is filled, if not this was made with an older Guvnor version
-                if ( action.methodName == null || "".equals( action.methodName ) ) {
-                    if ( action.fieldValues != null && action.fieldValues.length >= 1 ) {
-                        action.methodName = action.fieldValues[0].field;
-
-                        action.fieldValues = new ActionFieldValue[0];
-                        action.state = ActionCallMethod.TYPE_DEFINED;
-                    }
-                }
-            }
-        }
-
         return model;
     }
 

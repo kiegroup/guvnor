@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
 import java.util.List;
 
@@ -23,9 +23,11 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 /**
- * Helper class to upgrade data-types for Guided Decision Table
+ * Helper class to upgrade data-types for Guided Decision Table. This
+ * implementation ensures the RowNumber, Salience and Duration columns have data
+ * of the correct data-type. Support for this was added for Guvnor v5.4.
  */
-public class GuidedDecisionTableDataTypeUpgradeHelper
+public class GuidedDecisionTableUpgradeHelper2
     implements
     IUpgradeHelper<GuidedDecisionTable52, GuidedDecisionTable52> {
 
