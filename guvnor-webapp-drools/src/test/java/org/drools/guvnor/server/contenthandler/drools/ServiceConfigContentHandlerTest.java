@@ -28,13 +28,13 @@ import static org.junit.Assert.*;
 public class ServiceConfigContentHandlerTest {
 
     final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>() {{
-        add(new ServiceConfig.AssetReference("a|drl|http://localhost/c/source"));
-        add(new ServiceConfig.AssetReference("aa|drl|http://localhost/cc/source"));
-        add(new ServiceConfig.AssetReference("ab|change_set|http://localhost/cd/source"));
+        add(new ServiceConfig.AssetReference("pkgRef|a|drl|http://localhost/c/source|uuid1"));
+        add(new ServiceConfig.AssetReference("pkgRef|aa|drl|http://localhost/cc/source|uuid2"));
+        add(new ServiceConfig.AssetReference("pkgRef|ab|change_set|http://localhost/cd/source|uuid3"));
     }};
 
     final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>() {{
-        add(new ServiceConfig.AssetReference("a.jar|model|http://localhost/a.jar"));
+        add(new ServiceConfig.AssetReference("pkgRef|a.jar|model|http://localhost/a.jar|uuidx"));
     }};
 
     final Collection<MavenArtifact> exclucedArtifacts = new ArrayList<MavenArtifact>() {{
@@ -68,8 +68,8 @@ public class ServiceConfigContentHandlerTest {
 
         final String content = "polling=70a\n" +
                 "protocol=REST\n" +
-                "resource=a|drl|http://localhost/c/source\n" +
-                "model=a.jar|model|http://localhost/a.jar\n" +
+                "resource=pkgRef|a|drl|http://localhost/c/source|uuidx\n" +
+                "model=pkgRef|a.jar|model|http://localhost/a.jar|uuidy\n" +
                 "excluded.artifact=org.apache.camel:camel-core:test-jar:tests:2.4.0:test\n";
 
         final String invalidResult = sch.validate(content);
@@ -84,8 +84,8 @@ public class ServiceConfigContentHandlerTest {
 
         final String content = "polling=70\n" +
                 "protocol=some\n" +
-                "resource=a|drl|http://localhost/c/source\n" +
-                "model=a.jar|model|http://localhost/a.jar\n" +
+                "resource=pkgRef|a|drl|http://localhost/c/source|uuidx\n" +
+                "model=pkgRef|a.jar|model|http://localhost/a.jar|uuidy\n" +
                 "excluded.artifact=org.apache.camel:camel-core:test-jar:tests:2.4.0:test\n";
 
         final String invalidResult = sch.validate(content);
@@ -101,7 +101,7 @@ public class ServiceConfigContentHandlerTest {
         final String content = "polling=70\n" +
                 "protocol=REST\n" +
                 "resource=a|http://localhost/c/source\n" +
-                "model=a.jar|model|http://localhost/a.jar\n" +
+                "model=pkgRef|a.jar|model|http://localhost/a.jar|uuidy\n" +
                 "excluded.artifact=org.apache.camel:camel-core:test-jar:tests:2.4.0:test\n";
 
         final String invalidResult = sch.validate(content);
@@ -116,7 +116,7 @@ public class ServiceConfigContentHandlerTest {
 
         final String content = "polling=70\n" +
                 "protocol=REST\n" +
-                "resource=a|drl|http://localhost/c/source\n" +
+                "resource=pkgRef|a|drl|http://localhost/c/source|uuidx\n" +
                 "model=a.jar\n" +
                 "excluded.artifact=org.apache.camel:camel-core:test-jar:tests:2.4.0:test\n";
 
@@ -132,8 +132,8 @@ public class ServiceConfigContentHandlerTest {
 
         final String content = "polling=70\n" +
                 "protocol=REST\n" +
-                "resource=a|drl|http://localhost/c/source\n" +
-                "model=a.jar|model|http://localhost/a.jar\n" +
+                "resource=pkgRef|a|drl|http://localhost/c/source|uuidx\n" +
+                "model=pkgRef|a.jar|model|http://localhost/a.jar|uuidy\n" +
                 "excluded.artifact=camel-core:test-jar:2.4.0:test\n";
 
         final String invalidResult = sch.validate(content);
@@ -143,8 +143,8 @@ public class ServiceConfigContentHandlerTest {
 
         final String content2 = "polling=70\n" +
                 "protocol=REST\n" +
-                "resource=a|drl|http://localhost/c/source\n" +
-                "model=a.jar|model|http://localhost/a.jar\n" +
+                "resource=pkgRef|a|drl|http://localhost/c/source|uuidx\n" +
+                "model=pkgRef|a.jar|model|http://localhost/a.jar|uuidy\n" +
                 "excluded.artifact=camel-core:test-jar:2.4.0:test:2:3:3:3:3:3:3:3\n";
 
         final String invalid2 = sch.validate(content2);
