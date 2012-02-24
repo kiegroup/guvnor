@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1260,4 +1262,75 @@ public class SuggestionCompletionEngineTest {
         }
 
     }
+    
+    @Test
+    public void testDataTypes() {
+        String pkg = "package org.test\n import org.drools.DataTypes";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>() );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldString" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldBooleanObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_DATE,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldDate" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldNumeric" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldBigDecimal" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldBigInteger" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldByteObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldDoubleObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldFloatObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldIntegerObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldLongObject" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldShortObject" ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldBooleanPrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldBytePrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldDoublePrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldFloatPrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldIntegerPrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldLongPrimitive" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT,
+                      engine.getFieldType( "DataTypes",
+                                           "fieldShortPrimitive" ) );
+
+    }
+
 }
