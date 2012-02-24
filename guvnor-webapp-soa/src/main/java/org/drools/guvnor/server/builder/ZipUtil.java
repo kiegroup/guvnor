@@ -71,6 +71,9 @@ public class ZipUtil {
                                     + assetItem.getFormat();
                         }
 
+                        if("wsdl".equals(assetItem.getFormat())) {
+                            fileName = "wsdl/" + fileName;
+                        }
                         zipOutputStream.putNextEntry(new ZipEntry(fileName));
 
                         while ((count = bis.read(data, 0, 1000)) != -1) {

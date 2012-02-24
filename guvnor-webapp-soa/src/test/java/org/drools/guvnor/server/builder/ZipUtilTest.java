@@ -61,7 +61,7 @@ public class ZipUtilTest {
         while ((ze = zin.getNextEntry()) != null) {
             String name = ze.getName();
             zin.closeEntry();
-            if("CustomerService.wsdl".equals(name)) {
+            if("wsdl/CustomerService.wsdl".equals(name)) {
                 foundWsdl = true;
             }
             if("com/billasurf/Board.java".equals(name)) {
