@@ -63,7 +63,7 @@ public class PreconditionsTest {
         try {
             checkNotNull("notNullable", null);
         } catch (final IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("Parameter named notNullable should be not null!"));
+            assertThat(e.getMessage(), is("Parameter named 'notNullable' should be not null!"));
         }
     }
 

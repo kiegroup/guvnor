@@ -57,15 +57,15 @@ public class ServiceWarGeneratorTest {
 
     private static final String REST_SERVICE_CONFIG = "polling=70\n" +
             "protocol=REST\n" +
-            "resource=a|drl|http://localhost/c/source\n" +
-            "resource=aa|drl|http://localhost/cc/source\n" +
-            "resource=ab|change_set|http://localhost/cd/source\n";
+            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
+            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
+            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
 
     private static final String WS_SERVICE_CONFIG = "polling=70\n" +
             "protocol=WEB_SERVICE\n" +
-            "resource=a|drl|http://localhost/c/source\n" +
-            "resource=aa|drl|http://localhost/cc/source\n" +
-            "resource=ab|change_set|http://localhost/cd/source\n";
+            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
+            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
+            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
 
     private static final Set<String> LIBS = new HashSet<String>() {{
         add("log4j-1.2.16.jar");
