@@ -36,9 +36,9 @@ public class ServiceWarBuilderAndDownloadHandlerTest extends GuvnorTestBase {
 
     private static final String REST_SERVICE_CONFIG_CONTENT = "polling=70\n" +
             "protocol=REST\n" +
-            "resource=a|drl|http://localhost/c/source\n" +
-            "resource=aa|drl|http://localhost/cc/source\n" +
-            "resource=ab|change_set|http://localhost/cd/source\n";
+            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
+            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
+            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
 
     @Inject
     private ServiceWarBuilderAndDownloadHandler serviceHandler;

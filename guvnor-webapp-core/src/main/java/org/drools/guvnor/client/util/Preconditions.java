@@ -22,7 +22,7 @@ public class Preconditions {
      */
     public static void checkCondition(final String name, final boolean condition) {
         if (!condition) {
-            throw new IllegalStateException("Condition " + name + " is invalid!");
+            throw new IllegalStateException("Condition '" + name + "' is invalid!");
         }
     }
 
@@ -34,11 +34,11 @@ public class Preconditions {
      */
     public static <T> void checkEachParameterNotNull(final String name, final T... parameters) {
         if (parameters == null) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be not null!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
         }
         for (final Object parameter : parameters) {
             if (parameter == null) {
-                throw new IllegalArgumentException("Parameter named " + name + " should be not null!");
+                throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
 
             }
         }
@@ -52,7 +52,7 @@ public class Preconditions {
      */
     public static void checkNotEmpty(final String name, final Collection<?> parameter) {
         if (parameter == null || parameter.size() == 0) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be filled!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
     }
 
@@ -63,7 +63,7 @@ public class Preconditions {
      */
     public static void checkNotEmpty(final String name, final Map<?, ?> parameter) {
         if (parameter == null || parameter.size() == 0) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be filled!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
     }
 
@@ -74,7 +74,7 @@ public class Preconditions {
      */
     public static String checkNotEmpty(final String name, final String parameter) {
         if (parameter == null || parameter.trim().length() == 0) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be filled!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
         return parameter;
     }
@@ -87,7 +87,7 @@ public class Preconditions {
      */
     public static <T> void checkNotEmpty(final String name, final T[] parameter) {
         if (parameter == null || parameter.length == 0) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be filled!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
     }
 
@@ -98,7 +98,7 @@ public class Preconditions {
      */
     public static void checkNotNull(final String name, final Object parameter) {
         if (parameter == null) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be not null!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
         }
     }
 
@@ -109,7 +109,7 @@ public class Preconditions {
      */
     public static void checkNullMandatory(final String name, final Object parameter) {
         if (parameter != null) {
-            throw new IllegalArgumentException("Parameter named " + name + " should be null!");
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be null!");
         }
     }
 

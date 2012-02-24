@@ -53,12 +53,12 @@ public class ServiceConfigContentHandler extends PlainTextContentHandler impleme
                 }
             } else if (line.startsWith("resource=")) {
                 final String[] values = line.substring(9).split("\\|");
-                if (values.length != 3) {
+                if (values.length != 5) {
                     return "Invalid resource format.";
                 }
             } else if (line.startsWith("model=")) {
                 final String[] values = line.substring(6).split("\\|");
-                if (values.length != 3) {
+                if (values.length != 5) {
                     return "Invalid model format.";
                 }
             } else if (line.startsWith("excluded.artifact=")) {
