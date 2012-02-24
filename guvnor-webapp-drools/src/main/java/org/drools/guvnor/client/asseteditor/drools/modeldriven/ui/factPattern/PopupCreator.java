@@ -33,7 +33,6 @@ import org.drools.ide.common.client.modeldriven.brl.HasConstraints;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -198,10 +197,12 @@ public class PopupCreator {
 
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
+                String factType = pattern.getFactType();
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = getCompletions().getFieldType( pattern.getFactType(),
+                String fieldType = getCompletions().getFieldType( factType,
                                                                   fieldName );
-                hasConstraints.addConstraint( new SingleFieldConstraint( fieldName,
+                hasConstraints.addConstraint( new SingleFieldConstraint( factType,
+                                                                         fieldName,
                                                                          fieldType,
                                                                          null ) );
                 modeller.refreshWidget();
@@ -294,9 +295,10 @@ public class PopupCreator {
                 if ( "...".equals( fieldName ) ) {
                     return;
                 }
-                String qualifiedName = factType + "." + fieldName;
-                String fieldType = completions.getFieldType( qualifiedName );
-                fp.addConstraint( new SingleFieldConstraint( qualifiedName,
+                String fieldType = completions.getFieldType( factType,
+                                                             fieldName );
+                fp.addConstraint( new SingleFieldConstraint( factType,
+                                                             fieldName,
                                                              fieldType,
                                                              con ) );
                 modeller.refreshWidget();
@@ -376,18 +378,11 @@ public class PopupCreator {
                                SingleFieldConstraint sfc) {
         String factType;
         if ( sfc == null ) {
-            //If FactType is qualified strip the field qualifier 
             factType = fp.getFactType();
-            if ( factType.contains( "." ) ) {
-                factType = factType.substring( factType.indexOf( "." ) + 1 );
-            }
         } else {
+            factType = sfc.getFieldType();
             //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
             String fieldName = sfc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
-            factType = sfc.getFieldType();
             if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
                 factType = fp.getFactType();
             }

@@ -304,6 +304,7 @@ public class RuleModelCloneVisitor {
         clone.setConstraintValueType( sfc.getConstraintValueType() );
         clone.setExpressionValue( (ExpressionFormLine) visit( sfc.getExpressionValue() ) );
         clone.setFieldBinding( sfc.getFieldBinding() );
+        clone.setFactType( sfc.getFactType() );
         clone.setFieldName( sfc.getFieldName() );
         clone.setFieldType( sfc.getFieldType() );
         clone.setOperator( sfc.getOperator() );
@@ -349,6 +350,7 @@ public class RuleModelCloneVisitor {
         clone.setExpressionLeftSide( (ExpressionFormLine) visit( sfexp.getExpressionLeftSide() ) );
         clone.setExpressionValue( (ExpressionFormLine) visit( sfexp.getExpressionValue() ) );
         clone.setFieldBinding( sfexp.getFieldBinding() );
+        clone.setFactType( sfexp.getFactType() );
         clone.setFieldName( sfexp.getFieldName() );
         clone.setFieldType( sfexp.getFieldType() );
         clone.setOperator( sfexp.getOperator() );

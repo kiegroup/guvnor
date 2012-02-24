@@ -47,8 +47,7 @@ public class ExpressionFormLine
     }
 
     public String getText(boolean renderBindVariable) {
-        return new ToStringVisitor().buildString(
-                                                  renderBindVariable ? getBinding() : null,
+        return new ToStringVisitor().buildString( renderBindVariable ? getBinding() : null,
                                                   getRootExpression() );
     }
 
@@ -91,15 +90,7 @@ public class ExpressionFormLine
     }
 
     public String getFieldName() {
-        if ( parts.isEmpty() ) {
-            return null;
-        }
-        ExpressionPart last = parts.getLast();
-        ExpressionPart prev = getPreviousPart().getPrevious();
-        if ( prev == null ) {
-            prev = last;
-        }
-        return prev.getClassType() + "." + last.getName();
+        return parts.isEmpty() ? null : parts.getLast().getName();
     }
 
     public String getPreviousGenericType() {

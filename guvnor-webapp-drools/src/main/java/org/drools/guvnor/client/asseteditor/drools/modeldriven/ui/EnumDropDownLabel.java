@@ -23,7 +23,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
@@ -105,28 +104,16 @@ public class EnumDropDownLabel extends Composite {
         if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
             fieldName = sfexp.getExpressionLeftSide().getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
             valueType = sfexp.getExpressionLeftSide().getGenericType();
 
         } else if ( constraint instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
             fieldName = cc.getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
             valueType = cc.getFieldType();
             
         } else if(constraint instanceof SingleFieldConstraint) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) this.constraint;
             fieldName = sfc.getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                int index = fieldName.indexOf( "." );
-                factType = fieldName.substring( 0,
-                                                index );
-                fieldName = fieldName.substring( index + 1 );
-            }
             valueType = sce.getFieldType( factType,
                                           fieldName );
         } else {

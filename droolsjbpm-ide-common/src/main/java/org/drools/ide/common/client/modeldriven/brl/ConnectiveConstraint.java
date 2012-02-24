@@ -16,27 +16,47 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 /**
  * This is for a connective constraint that adds more options to a field
  * constraint.
  */
 public class ConnectiveConstraint extends BaseSingleFieldConstraint {
 
+    private String factType;
     private String fieldName;
     private String fieldType;
 
     public ConnectiveConstraint() {
     }
 
-    public ConnectiveConstraint(final String fieldName,
+    public ConnectiveConstraint(final String factType,
+                                final String fieldName,
+                                final String fieldType) {
+        this( factType,
+              fieldName,
+              fieldType,
+              null,
+              null );
+    }
+
+    public ConnectiveConstraint(final String factType,
+                                final String fieldName,
                                 final String fieldType,
                                 final String opr,
                                 final String val) {
+        this.factType = factType;
         this.fieldName = fieldName;
         this.fieldType = fieldType;
         this.operator = opr;
         this.setValue( val );
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
     public String getFieldName() {

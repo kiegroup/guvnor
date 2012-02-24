@@ -87,50 +87,41 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private boolean                          isDropDownDataEnum;
     private Widget                           constraintWidget = null;
 
-    public ConstraintValueEditor(String factType,
+    public ConstraintValueEditor(BaseSingleFieldConstraint con,
                                  CompositeFieldConstraint constraintList,
-                                 String fieldName,
-                                 BaseSingleFieldConstraint con,
                                  RuleModeller modeller,
                                  EventBus eventBus,
                                  boolean readOnly) {
-        this.factType = factType;
-        this.constraintList = constraintList;
-
-        this.sce = modeller.getSuggestionCompletions();
         this.constraint = con;
-        this.panel = new SimplePanel();
+        this.constraintList = constraintList;
+        this.sce = modeller.getSuggestionCompletions();
         this.model = modeller.getModel();
+
         this.modeller = modeller;
         this.eventBus = eventBus;
         this.readOnly = readOnly;
 
+        this.panel = new SimplePanel();
+
         if ( con instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) con;
-            fieldName = sfexp.getExpressionLeftSide().getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+            if ( this.factType == null ) {
+                this.factType = sfexp.getExpressionLeftSide().getClassType();
             }
-            this.fieldName = fieldName;
+            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
 
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
-            fieldName = cc.getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
-            this.fieldName = fieldName;
+            this.factType = cc.getFactType();
+            this.fieldName = cc.getFieldName();
             this.fieldType = cc.getFieldType();
 
-        } else {
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                int index = fieldName.indexOf( "." );
-                factType = fieldName.substring( 0,
-                                                index );
-                fieldName = fieldName.substring( index + 1 );
-            }
-            this.fieldName = fieldName;
+        } else if ( con instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+            this.factType = sfc.getFactType();
+            this.fieldName = sfc.getFieldName();
             this.fieldType = sce.getFieldType( factType,
                                                fieldName );
         }
@@ -152,11 +143,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //without first deleting and re-creating.
         if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
-            String fieldName = sfexp.getExpressionLeftSide().getFieldName();
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
-            this.fieldName = fieldName;
+            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
         }
 
@@ -455,18 +442,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( con instanceof SingleFieldConstraint ) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
             String fieldName = sfc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
             if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() );
             }
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             String fieldName = cc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
             if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( cc.getOperator() );
             }

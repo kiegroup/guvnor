@@ -22,10 +22,12 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
         super();
     }
 
-    public SingleFieldConstraintEBLeftSide(String field,
+    public SingleFieldConstraintEBLeftSide(String factType,
+                                           String fieldName,
                                            String fieldType,
                                            FieldConstraint parent) {
-        super( field,
+        super( factType,
+               fieldName,
                fieldType,
                parent );
     }
@@ -65,7 +67,7 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     public String getFieldType() {
         return getExpressionLeftSide().getClassType();
     }
-    
+
     @Override
     public String getFieldName() {
         return getExpressionLeftSide().getFieldName();
@@ -79,21 +81,23 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
 
         String fieldName = getExpressionLeftSide().getFieldName();
         String fieldType = getExpressionLeftSide().getGenericType();
+        String factType = getExpressionLeftSide().getPreviousClassType();
+        if ( factType == null ) {
+            factType = getExpressionLeftSide().getClassType();
+        }
 
         if ( this.connectives == null ) {
-            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( fieldName,
-                                                                                    fieldType,
-                                                                                    null,
-                                                                                    null )};
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( factType,
+                                                                                    fieldName,
+                                                                                    fieldType )};
         } else {
             final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
             for ( int i = 0; i < this.connectives.length; i++ ) {
                 newList[i] = this.connectives[i];
             }
-            newList[this.connectives.length] = new ConnectiveConstraint( fieldName,
-                                                                         fieldType,
-                                                                         null,
-                                                                         null );
+            newList[this.connectives.length] = new ConnectiveConstraint( factType,
+                                                                         fieldName,
+                                                                         fieldType );
             this.connectives = newList;
         }
     }

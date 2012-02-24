@@ -30,7 +30,6 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -85,11 +84,8 @@ public class Connectives {
 
                 ConnectiveConstraint con = c.connectives[i];
 
-                hp.add( connectiveOperatorDropDown( con,
-                                                    c ) );
-                hp.add( connectiveValueEditor( con,
-                                               factClass,
-                                               c.getFieldName() ) );
+                hp.add( connectiveOperatorDropDown( con ) );
+                hp.add( connectiveValueEditor( con ) );
 
                 if ( !isReadOnly ) {
                     Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
@@ -105,37 +101,21 @@ public class Connectives {
 
     }
 
-    private Widget connectiveValueEditor(final BaseSingleFieldConstraint con,
-                                         String factClass,
-                                         String fieldName) {
+    private Widget connectiveValueEditor(final BaseSingleFieldConstraint con) {
 
-        return new ConstraintValueEditor( pattern.getFactType(),
+        return new ConstraintValueEditor( con,
                                           pattern.constraintList,
-                                          fieldName,
-                                          con,
                                           this.modeller,
                                           this.eventBus,
                                           isReadOnly );
     }
 
-    private Widget connectiveOperatorDropDown(final ConnectiveConstraint cc,
-                                              final SingleFieldConstraint sfc) {
+    private Widget connectiveOperatorDropDown(final ConnectiveConstraint cc) {
 
         if ( !isReadOnly ) {
+
+            String factType = cc.getFactType();
             String fieldName = cc.getFieldName();
-            String factType = this.pattern.getFactType();
-
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                int index = fieldName.indexOf( "." );
-                factType = fieldName.substring( 0,
-                                                index );
-                fieldName = fieldName.substring( index + 1 );
-            }
-
-            if ( sfc instanceof SingleFieldConstraintEBLeftSide ) {
-                SingleFieldConstraintEBLeftSide sfcex = (SingleFieldConstraintEBLeftSide) sfc;
-                factType = sfcex.getExpressionLeftSide().getPreviousClassType();
-            }
 
             String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
                                                                                          fieldName );

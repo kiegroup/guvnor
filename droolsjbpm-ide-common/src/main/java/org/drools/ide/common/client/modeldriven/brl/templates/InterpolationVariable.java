@@ -35,7 +35,7 @@ public class InterpolationVariable {
         this.varName = varName;
         this.dataType = dataType;
         this.factType = factType;
-        this.factField = getLeafFieldName( factField );
+        this.factField = factField;
     }
 
     private boolean equalOrNull(Object lhs,
@@ -94,7 +94,7 @@ public class InterpolationVariable {
     }
 
     public void setFactField(String factField) {
-        this.factField = getLeafFieldName( factField );
+        this.factField = factField;
     }
 
     public void setFactType(String factType) {
@@ -103,15 +103,6 @@ public class InterpolationVariable {
 
     public void setVarName(String varName) {
         this.varName = varName;
-    }
-
-    private String getLeafFieldName(String qualifiedFieldName) {
-        if ( qualifiedFieldName != null ) {
-            if ( qualifiedFieldName.contains( "." ) ) {
-                return qualifiedFieldName.substring( qualifiedFieldName.indexOf( "." ) + 1 );
-            }
-        }
-        return qualifiedFieldName;
     }
 
 }

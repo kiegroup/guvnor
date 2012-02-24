@@ -681,6 +681,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc0 = new SingleFieldConstraint();
         sfc0.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         sfc0.setFieldBinding( "$sfc0" );
+        sfc0.setFactType( "FT0" );
         sfc0.setFieldName( "sfc0" );
         sfc0.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc0.setOperator( "==" );
@@ -692,6 +693,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         sfc1.setFieldBinding( "$sfc1" );
+        sfc1.setFactType( "FT1" );
         sfc1.setFieldName( "sfc1" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setOperator( "==" );
@@ -729,6 +731,8 @@ public class RuleModelCloneVisitorTests {
                       sfc0Clone.getConstraintValueType() );
         assertEquals( sfc0.getFieldBinding(),
                       sfc0Clone.getFieldBinding() );
+        assertEquals( sfc0.getFactType(),
+                      sfc0Clone.getFactType() );
         assertEquals( sfc0.getFieldName(),
                       sfc0Clone.getFieldName() );
         assertEquals( sfc0.getFieldType(),
@@ -750,6 +754,8 @@ public class RuleModelCloneVisitorTests {
                       sfc1Clone.getConstraintValueType() );
         assertEquals( sfc1.getFieldBinding(),
                       sfc1Clone.getFieldBinding() );
+        assertEquals( sfc1.getFactType(),
+                      sfc1Clone.getFactType() );
         assertEquals( sfc1.getFieldName(),
                       sfc1Clone.getFieldName() );
         assertEquals( sfc1.getFieldType(),
@@ -775,6 +781,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc0 = new SingleFieldConstraint();
         sfc0.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         sfc0.setFieldBinding( "$sfc0" );
+        sfc0.setFactType( "FT0" );
         sfc0.setFieldName( "sfc0" );
         sfc0.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc0.setOperator( "==" );
@@ -822,6 +829,8 @@ public class RuleModelCloneVisitorTests {
                       sfc0Clone.getConstraintValueType() );
         assertEquals( sfc0.getFieldBinding(),
                       sfc0Clone.getFieldBinding() );
+        assertEquals( sfc0.getFactType(),
+                      sfc0Clone.getFactType() );
         assertEquals( sfc0.getFieldName(),
                       sfc0Clone.getFieldName() );
         assertEquals( sfc0.getFieldType(),
@@ -871,6 +880,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc0 = new SingleFieldConstraint();
         sfc0.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         sfc0.setFieldBinding( "$sfc0" );
+        sfc0.setFactType( "FT0" );
         sfc0.setFieldName( "sfc0" );
         sfc0.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc0.setOperator( "==" );
@@ -882,6 +892,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         sfc1.setFieldBinding( "$sfc1" );
+        sfc1.setFactType( "FT1" );
         sfc1.setFieldName( "sfc1" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setOperator( "==" );
@@ -927,6 +938,8 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint sfc0Clone = (SingleFieldConstraint) cfc0Clone.constraints[0];
         assertEquals( sfc0.getFieldBinding(),
                       sfc0Clone.getFieldBinding() );
+        assertEquals( sfc0.getFactType(),
+                      sfc0Clone.getFactType() );
         assertEquals( sfc0.getFieldName(),
                       sfc0Clone.getFieldName() );
         assertEquals( sfc0.getFieldType(),
@@ -948,6 +961,8 @@ public class RuleModelCloneVisitorTests {
                       sfc1Clone.getConstraintValueType() );
         assertEquals( sfc1.getFieldBinding(),
                       sfc1Clone.getFieldBinding() );
+        assertEquals( sfc1.getFactType(),
+                      sfc1Clone.getFactType() );
         assertEquals( sfc1.getFieldName(),
                       sfc1Clone.getFieldName() );
         assertEquals( sfc1.getFieldType(),
@@ -1169,6 +1184,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint fp0sfc0 = new SingleFieldConstraint();
         fp0sfc0.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         fp0sfc0.setFieldBinding( "$fp0sfc0" );
+        fp0sfc0.setFactType( "FT0" );
         fp0sfc0.setFieldName( "fp0sfc0" );
         fp0sfc0.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         fp0sfc0.setOperator( "==" );
@@ -1185,6 +1201,7 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint fp1sfc0 = new SingleFieldConstraint();
         fp1sfc0.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         fp1sfc0.setFieldBinding( "$fp1sfc0" );
+        fp1sfc0.setFactType( "FT1" );
         fp1sfc0.setFieldName( "fp1sfc0" );
         fp1sfc0.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         fp1sfc0.setOperator( "==" );
@@ -1232,6 +1249,8 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint fp0sfc0Clone = (SingleFieldConstraint) fp0Clone.constraintList.constraints[0];
         assertEquals( fp0sfc0.getFieldBinding(),
                       fp0sfc0Clone.getFieldBinding() );
+        assertEquals( fp0sfc0.getFactType(),
+                      fp0sfc0Clone.getFactType() );
         assertEquals( fp0sfc0.getFieldName(),
                       fp0sfc0Clone.getFieldName() );
         assertEquals( fp0sfc0.getFieldType(),
@@ -1263,6 +1282,8 @@ public class RuleModelCloneVisitorTests {
         SingleFieldConstraint fp1sfc0Clone = (SingleFieldConstraint) fp1Clone.constraintList.constraints[0];
         assertEquals( fp1sfc0.getFieldBinding(),
                       fp1sfc0Clone.getFieldBinding() );
+        assertEquals( fp1sfc0.getFactType(),
+                      fp1sfc0Clone.getFactType() );
         assertEquals( fp1sfc0.getFieldName(),
                       fp1sfc0Clone.getFieldName() );
         assertEquals( fp1sfc0.getFieldType(),

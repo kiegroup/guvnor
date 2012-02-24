@@ -97,6 +97,7 @@ public class BRLRuleModelTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldBinding( "$sfc1" );
         sfc1.setOperator( "==" );
+        sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
 
@@ -146,6 +147,7 @@ public class BRLRuleModelTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldBinding( "$sfc1" );
         sfc1.setOperator( "==" );
+        sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
 
@@ -211,6 +213,7 @@ public class BRLRuleModelTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldBinding( "$sfc1" );
         sfc1.setOperator( "==" );
+        sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
 

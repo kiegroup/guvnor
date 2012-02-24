@@ -131,7 +131,9 @@ public class RuleModelTest {
         fp.setBoundName( "$c" );
 
         SingleFieldConstraint sfc = new SingleFieldConstraintEBLeftSide( "make" );
-        sfc.getExpressionValue().appendPart( new ExpressionField("make", "java.lang.String", SuggestionCompletionEngine.TYPE_STRING) );
+        sfc.getExpressionValue().appendPart( new ExpressionField( "make",
+                                                                  "java.lang.String",
+                                                                  SuggestionCompletionEngine.TYPE_STRING ) );
         sfc.setFieldBinding( "$m" );
         fp.addConstraint( sfc );
 
@@ -144,7 +146,7 @@ public class RuleModelTest {
                       vars.get( 1 ) );
 
     }
-    
+
     @Test
     public void testAttributes() {
         final RuleModel m = new RuleModel();
@@ -191,7 +193,8 @@ public class RuleModelTest {
         cons[0].setFieldBinding( "qbc" );
         cons[0].setFieldType( "String" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            "String",
                                                            "&",
                                                            "x" );
@@ -199,7 +202,8 @@ public class RuleModelTest {
         cons[1] = new SingleFieldConstraint( "make" );
         cons[1].setFieldType( "Long" );
         cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "make",
+        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "make",
                                                            "Long",
                                                            "=",
                                                            "2" );
@@ -237,7 +241,8 @@ public class RuleModelTest {
         con.setFieldBinding( "qbc" );
         con.setFieldType( "String" );
         con.connectives = new ConnectiveConstraint[1];
-        con.connectives[0] = new ConnectiveConstraint( "age",
+        con.connectives[0] = new ConnectiveConstraint( "Car",
+                                                       "age",
                                                        "String",
                                                        "==",
                                                        "x" );
@@ -274,7 +279,7 @@ public class RuleModelTest {
                       parentFactPattern );
 
     }
-   
+
     @Test
     public void testBoundFactFinder() {
         final RuleModel model = new RuleModel();
@@ -330,7 +335,8 @@ public class RuleModelTest {
                   ActionRetractFact.class );
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+        xt.aliasPackage( "org.drools.guvnor.client",
+                         "org.drools.ide.common.client" );
 
         final String brl = xt.toXML( model );
 
@@ -514,7 +520,8 @@ public class RuleModelTest {
         cons[1] = new SingleFieldConstraint( "make" );
         cons[0].setFieldBinding( "qbc" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            null,
                                                            "&",
                                                            "x" );
@@ -574,7 +581,7 @@ public class RuleModelTest {
         CompositeFieldConstraint cf = new CompositeFieldConstraint();
         cf.addConstraint( new SingleFieldConstraint( "x" ) );
         p.addConstraint( cf );
-        
+
         SingleFieldConstraint sf = new SingleFieldConstraint( "q" );
         sf.setFieldBinding( "abc" );
         p.addConstraint( sf );
@@ -609,7 +616,8 @@ public class RuleModelTest {
         cons[0].setFieldBinding( "qbc" );
         cons[0].setFieldType( "String" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            "String",
                                                            "&",
                                                            "x" );
@@ -617,7 +625,8 @@ public class RuleModelTest {
         cons[1] = new SingleFieldConstraint( "make" );
         cons[1].setFieldType( "Long" );
         cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "make",
+        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "make",
                                                            "Long",
                                                            "=",
                                                            "2" );
@@ -918,32 +927,40 @@ public class RuleModelTest {
 
         model.lhs = new IPattern[1];
 
-        final FromCompositeFactPattern fcfp = new FromCompositeFactPattern( );
+        final FromCompositeFactPattern fcfp = new FromCompositeFactPattern();
         final FactPattern x = new FactPattern( "Car" );
         x.setBoundName( "x" );
         final SingleFieldConstraint a = new SingleFieldConstraint( "name" );
         a.setFieldBinding( "a" );
         a.setFieldType( "String" );
         x.addConstraint( a );
-        fcfp.setFactPattern(x);
+        fcfp.setFactPattern( x );
 
         model.lhs[0] = fcfp;
 
-        assertEquals( x, model.getLHSBoundFact( "x" ) );
+        assertEquals( x,
+                      model.getLHSBoundFact( "x" ) );
 
-        assertEquals( 1, model.getLHSBoundFacts().size() );
-        assertEquals( "x", model.getLHSBoundFacts().get(0) );
+        assertEquals( 1,
+                      model.getLHSBoundFacts().size() );
+        assertEquals( "x",
+                      model.getLHSBoundFacts().get( 0 ) );
 
-        assertEquals( a, model.getLHSBoundField( "a" ) );
+        assertEquals( a,
+                      model.getLHSBoundField( "a" ) );
 
-        assertEquals( "Car", model.getLHSBindingType( "x" ) );
-        assertEquals( "String", model.getLHSBindingType( "a" ) );
+        assertEquals( "Car",
+                      model.getLHSBindingType( "x" ) );
+        assertEquals( "String",
+                      model.getLHSBindingType( "a" ) );
 
-        assertEquals( x, model.getLHSParentFactPatternForBinding( "a" ) );
+        assertEquals( x,
+                      model.getLHSParentFactPatternForBinding( "a" ) );
 
-        assertEquals( 2, model.getAllLHSVariables().size() );
-        assertTrue( model.getAllLHSVariables().contains("x") );
-        assertTrue( model.getAllLHSVariables().contains("a") );
+        assertEquals( 2,
+                      model.getAllLHSVariables().size() );
+        assertTrue( model.getAllLHSVariables().contains( "x" ) );
+        assertTrue( model.getAllLHSVariables().contains( "a" ) );
 
         model.rhs = new IAction[1];
         final ActionSetField set = new ActionSetField();
@@ -952,8 +969,10 @@ public class RuleModelTest {
 
         assertTrue( model.isBoundFactUsed( "x" ) );
 
-        assertEquals( 1,  model.lhs.length );
+        assertEquals( 1,
+                      model.lhs.length );
         assertFalse( model.removeLhsItem( 0 ) );
-        assertEquals( 1,  model.lhs.length );
+        assertEquals( 1,
+                      model.lhs.length );
     }
 }

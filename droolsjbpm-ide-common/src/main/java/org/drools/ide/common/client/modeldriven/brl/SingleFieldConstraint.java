@@ -17,16 +17,16 @@
 package org.drools.ide.common.client.modeldriven.brl;
 
 /**
- * This represents a constraint on a fact - involving a SINGLE FIELD.
- * 
- * Can also include optional "connective constraints" that extend the options
- * for matches.
+ * This represents a constraint on a fact - involving a SINGLE FIELD. Can also
+ * include optional "connective constraints" that extend the options for
+ * matches.
  */
 public class SingleFieldConstraint extends BaseSingleFieldConstraint
     implements
     FieldConstraint {
 
     private String                fieldBinding;
+    private String                factType;
     private String                fieldName;
     private String                fieldType;
     private FieldConstraint       parent;
@@ -37,21 +37,25 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     private String                id;
     public ConnectiveConstraint[] connectives;
 
-    public SingleFieldConstraint(final String field,
+    public SingleFieldConstraint(final String factType,
+                                 final String fieldName,
                                  final String fieldType,
                                  final FieldConstraint parent) {
-        this.fieldName = field;
+        this.factType = factType;
+        this.fieldName = fieldName;
         this.fieldType = fieldType;
         this.parent = parent;
     }
 
-    public SingleFieldConstraint(final String field) {
-        this.fieldName = field;
+    public SingleFieldConstraint(final String fieldName) {
+        this.factType = null;
+        this.fieldName = fieldName;
         this.fieldType = "";
         this.parent = null;
     }
 
     public SingleFieldConstraint() {
+        this.factType = null;
         this.fieldName = null;
         this.fieldType = "";
         this.parent = null;
@@ -72,21 +76,20 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
 
         String fieldName = this.fieldName;
         String fieldType = this.fieldType;
+        String factType = this.factType;
 
         if ( this.connectives == null ) {
-            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( fieldName,
-                                                                                    fieldType,
-                                                                                    null,
-                                                                                    null )};
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( factType,
+                                                                                    fieldName,
+                                                                                    fieldType )};
         } else {
             final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
             for ( int i = 0; i < this.connectives.length; i++ ) {
                 newList[i] = this.connectives[i];
             }
-            newList[this.connectives.length] = new ConnectiveConstraint( fieldName,
-                                                                         fieldType,
-                                                                         null,
-                                                                         null );
+            newList[this.connectives.length] = new ConnectiveConstraint( factType,
+                                                                         fieldName,
+                                                                         fieldType );
             this.connectives = newList;
         }
     }
@@ -117,6 +120,14 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
      */
     public boolean isBound() {
         return this.getFieldBinding() != null && this.getFieldBinding().length() > 0;
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
     public void setFieldName(String fieldName) {
