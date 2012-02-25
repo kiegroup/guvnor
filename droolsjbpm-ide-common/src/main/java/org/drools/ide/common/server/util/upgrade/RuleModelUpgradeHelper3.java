@@ -107,6 +107,9 @@ public class RuleModelUpgradeHelper3
     }
 
     private String fixFieldName(String fieldName) {
+        if ( fieldName == null ) {
+            return null;
+        }
         int dotIndex = fieldName.indexOf( "." );
         if ( dotIndex != -1 ) {
             return fieldName.substring( dotIndex + 1 );
