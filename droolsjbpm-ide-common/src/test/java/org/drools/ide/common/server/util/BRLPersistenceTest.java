@@ -280,6 +280,7 @@ public class BRLPersistenceTest {
         final FactPattern pat = new FactPattern( "Person" );
         pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
         con.setFieldBinding( "f1" );
         con.setFieldName( "age" );
         con.setOperator( "<" );
