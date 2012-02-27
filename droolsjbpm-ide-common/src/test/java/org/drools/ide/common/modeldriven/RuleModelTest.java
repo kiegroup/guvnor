@@ -98,10 +98,12 @@ public class RuleModelTest {
         x.setBoundName( "boundFact" );
 
         SingleFieldConstraint sfc = new SingleFieldConstraint( "q" );
+        sfc.setFactType( "Car" );
         x.addConstraint( sfc );
         sfc.setFieldBinding( "field1" );
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint( "q" );
+        sfc.setFactType( "Car" );
         x.addConstraint( sfc2 );
         sfc2.setFieldBinding( "field2" );
 
@@ -130,6 +132,7 @@ public class RuleModelTest {
         fp.setBoundName( "$c" );
 
         SingleFieldConstraint sfc = new SingleFieldConstraintEBLeftSide( "make" );
+        sfc.setFactType( "Car" );
         sfc.getExpressionValue().appendPart( new ExpressionField("make", "java.lang.String", SuggestionCompletionEngine.TYPE_STRING) );
         sfc.setFieldBinding( "$m" );
         fp.addConstraint( sfc );
@@ -187,18 +190,22 @@ public class RuleModelTest {
         y.constraintList = new CompositeFieldConstraint();
         y.constraintList.constraints = cons;
         cons[0] = new SingleFieldConstraint( "age" );
-        cons[0].setFieldBinding( "qbc" );
+        cons[0].setFactType( "Car" );
         cons[0].setFieldType( "String" );
+        cons[0].setFieldBinding( "qbc" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            "String",
                                                            "&",
                                                            "x" );
         cons[0].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cons[1] = new SingleFieldConstraint( "make" );
+        cons[1].setFactType( "Car" );
         cons[1].setFieldType( "Long" );
         cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "make",
+        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "make",
                                                            "Long",
                                                            "=",
                                                            "2" );
@@ -233,10 +240,12 @@ public class RuleModelTest {
         y.setBoundName( "y" );
 
         final SingleFieldConstraint con = new SingleFieldConstraint( "age" );
-        con.setFieldBinding( "qbc" );
+        con.setFactType( "Car" );
         con.setFieldType( "String" );
+        con.setFieldBinding( "qbc" );
         con.connectives = new ConnectiveConstraint[1];
-        con.connectives[0] = new ConnectiveConstraint( "age",
+        con.connectives[0] = new ConnectiveConstraint( "Car",
+                                                       "age",
                                                        "String",
                                                        "==",
                                                        "x" );
@@ -511,9 +520,11 @@ public class RuleModelTest {
         y.constraintList.constraints = cons;
         cons[0] = new SingleFieldConstraint( "age" );
         cons[1] = new SingleFieldConstraint( "make" );
+        cons[0].setFactType( "Car" );
         cons[0].setFieldBinding( "qbc" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            null,
                                                            "&",
                                                            "x" );
@@ -605,18 +616,22 @@ public class RuleModelTest {
         y.constraintList = new CompositeFieldConstraint();
         y.constraintList.constraints = cons;
         cons[0] = new SingleFieldConstraint( "age" );
-        cons[0].setFieldBinding( "qbc" );
+        cons[0].setFactType( "Car" );
         cons[0].setFieldType( "String" );
+        cons[0].setFieldBinding( "qbc" );
         cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "age",
+        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "age",
                                                            "String",
                                                            "&",
                                                            "x" );
         cons[0].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         cons[1] = new SingleFieldConstraint( "make" );
+        cons[1].setFactType( "Car" );
         cons[1].setFieldType( "Long" );
         cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "make",
+        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
+                                                           "make",
                                                            "Long",
                                                            "=",
                                                            "2" );

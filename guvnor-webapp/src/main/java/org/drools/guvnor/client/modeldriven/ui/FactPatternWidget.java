@@ -671,15 +671,8 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor(final SingleFieldConstraint c) {
-        String factType = c.getFieldName();
-        if ( factType.indexOf( "." ) != -1 ) {
-            factType = factType.substring( 0,
-                                           factType.indexOf( "." ) );
-        }
-        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( factType,
+        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( c,
                                                                                  pattern.constraintList,
-                                                                                 c.getFieldName(),
-                                                                                 c,
                                                                                  this.getModeller(),
                                                                                  this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
@@ -701,20 +694,23 @@ public class FactPatternWidget extends RuleModellerWidget {
                                     final int col) {
         if ( !this.readOnly ) {
 
-            String fieldName = c.getFieldName();
-            String factType = this.pattern.getFactType();
+            String fieldName;
+            String factType;
 
-            if ( fieldName != null && fieldName.contains( "." ) ) {
-                int index = fieldName.indexOf( "." );
-                factType = fieldName.substring( 0,
-                                                index );
-                fieldName = fieldName.substring( index + 1 );
-            }
-
+            //Connectives Operators are handled in class Connectives
             if ( c instanceof SingleFieldConstraintEBLeftSide ) {
-                SingleFieldConstraintEBLeftSide sfc = (SingleFieldConstraintEBLeftSide) c;
-                factType = sfc.getExpressionLeftSide().getPreviousClassType();
+                SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) c;
+                factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+                if ( factType == null ) {
+                    factType = sfexp.getExpressionLeftSide().getClassType();
+                }
+                fieldName = sfexp.getExpressionLeftSide().getFieldName();
+
+            } else {
+                factType = c.getFactType();
+                fieldName = c.getFieldName();
             }
+
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
                                                                                       fieldName );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
@@ -794,16 +790,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             bindingLabel.append( "]</b>&nbsp;" );
         }
 
-        //If the field is a direct descendant of the Pattern only show the leaf-name
-        //otherwise show the qualified field name which includes the preceding field type 
         String fieldName = con.getFieldName();
-        if ( fieldName != null && fieldName.contains( "." ) ) {
-            String factType = fieldName.substring( 0,
-                                                   fieldName.indexOf( "." ) );
-            if ( factType.equals( this.pattern.getFactType() ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
-        }
         bindingLabel.append( fieldName );
 
         if ( bindable && showBinding && !this.readOnly ) {
@@ -813,9 +800,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                     String[] fields = new String[0];
                     //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
                     String fieldName = con.getFieldName();
-                    if ( fieldName.contains( "." ) ) {
-                        fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-                    }
                     if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
                         fields = connectives.getCompletions().getFieldCompletions( pattern.getFactType() );
                     } else {

@@ -148,6 +148,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "type" );
         con.setOperator( "==" );
         con.setValue( "CheeseType.CHEDDAR" );
@@ -172,6 +173,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "type" );
         con.setOperator( "==" );
         con.setValue( "CHEDDAR" );
@@ -197,6 +199,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "age" );
         con.setOperator( "==" );
         con.setValue( "100" );
@@ -222,6 +225,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "smelly" );
         con.setOperator( "==" );
         con.setValue( "true" );
@@ -247,6 +251,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "dateMade" );
         con.setOperator( "==" );
         con.setValue( "31-Jan-2010" );
@@ -272,6 +277,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Cheese" );
         con.setFieldName( "type" );
         con.setOperator( "==" );
         con.setValue( "Cheese.CHEDDAR" );
@@ -321,6 +327,7 @@ public class BRDRLPersistenceTest {
         m.name = "IsNullOperator";
         final FactPattern pat = new FactPattern( "Person" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
         con.setFieldName( "age" );
         con.setOperator( "== null" );
         pat.addConstraint( con );
@@ -337,6 +344,7 @@ public class BRDRLPersistenceTest {
         m.name = "IsNotNullOperator";
         final FactPattern pat = new FactPattern( "Person" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
         con.setFieldName( "age" );
         con.setOperator( "!= null" );
         pat.addConstraint( con );
@@ -383,6 +391,7 @@ public class BRDRLPersistenceTest {
         final FactPattern pat = new FactPattern( "Person" );
         pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
         con.setFieldBinding( "f1" );
         con.setFieldName( "age" );
         // con.operator = "<";
@@ -408,6 +417,7 @@ public class BRDRLPersistenceTest {
         final FactPattern pat = new FactPattern( "Person" );
         pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
         con.setFieldBinding( "f1" );
         con.setFieldName( "age" );
         con.setOperator( "<" );
@@ -445,6 +455,7 @@ public class BRDRLPersistenceTest {
                                                             CompositeFactPattern.COMPOSITE_TYPE_OR );
         FactPattern p1 = new FactPattern( "Person" );
         SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setFactType( "Person" );
         sf1.setOperator( "==" );
         sf1.setValue( "42" );
         p1.addConstraint( sf1 );
@@ -453,6 +464,7 @@ public class BRDRLPersistenceTest {
 
         FactPattern p2 = new FactPattern( "Person" );
         SingleFieldConstraint sf2 = new SingleFieldConstraint( "age" );
+        sf2.setFactType( "Person" );
         sf2.setOperator( "==" );
         sf2.setValue( "43" );
         p2.addConstraint( sf2 );
@@ -488,6 +500,7 @@ public class BRDRLPersistenceTest {
         CompositeFactPattern cp = new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         FactPattern p1 = new FactPattern( "Person" );
         SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setFactType( "Person" );
         sf1.setOperator( "==" );
         sf1.setValue( "42" );
         p1.addConstraint( sf1 );
@@ -508,6 +521,7 @@ public class BRDRLPersistenceTest {
         CompositeFactPattern cp = new CompositeFactPattern( type );
         FactPattern p1 = new FactPattern( "Person" );
         SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setFactType( "Person" );
         sf1.setOperator( "==" );
         sf1.setValue( "42" );
         p1.addConstraint( sf1 );
@@ -516,6 +530,7 @@ public class BRDRLPersistenceTest {
 
         FactPattern p2 = new FactPattern( "Person" );
         SingleFieldConstraint sf2 = new SingleFieldConstraint( "age" );
+        sf2.setFactType( "Person" );
         sf2.setOperator( "==" );
         sf2.setValue( "43" );
         p2.addConstraint( sf2 );
@@ -553,6 +568,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( comp );
 
         final SingleFieldConstraint X = new SingleFieldConstraint();
+        X.setFactType( "Goober" );
         X.setFieldName( "goo" );
         X.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         X.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -561,6 +577,7 @@ public class BRDRLPersistenceTest {
         X.connectives = new ConnectiveConstraint[1];
         X.connectives[0] = new ConnectiveConstraint();
         X.connectives[0].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
+        X.connectives[0].setFactType( "Goober" );
         X.connectives[0].setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         X.connectives[0].setOperator( "|| ==" );
         X.connectives[0].setValue( "bar" );
@@ -1508,6 +1525,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( comp );
 
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFactType( "Goober" );
         sfc1.setFieldName( "gooField" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1516,6 +1534,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc1 );
 
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFactType( "Goober" );
         sfc2.setFieldName( "fooField" );
         sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
         sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1523,7 +1542,8 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc2 );
 
         final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
-        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setFactType( "Bar" );
+        sfc3.setFieldName( "barField" );
         sfc3.setParent( sfc2 );
         sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1559,6 +1579,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( comp );
 
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFactType( "Goober" );
         sfc1.setFieldName( "gooField" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1567,6 +1588,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc1 );
 
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFactType( "Goober" );
         sfc2.setFieldName( "fooField" );
         sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
         sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1574,7 +1596,8 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc2 );
 
         final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
-        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setFactType( "Foo" );
+        sfc3.setFieldName( "barField" );
         sfc3.setParent( sfc2 );
         sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1583,6 +1606,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc3 );
 
         final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
+        sfc4.setFactType( "Zoo" );
         sfc4.setFieldName( "zooField" );
         sfc4.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1618,6 +1642,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( comp );
 
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFactType( "Goober" );
         sfc1.setFieldName( "gooField" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1626,6 +1651,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc1 );
 
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFactType( "Foo" );
         sfc2.setFieldName( "fooField" );
         sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
         sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1633,7 +1659,8 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc2 );
 
         final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
-        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setFactType( "Bar" );
+        sfc3.setFieldName( "barField" );
         sfc3.setParent( sfc2 );
         sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1669,6 +1696,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( comp );
 
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFactType( "Goober" );
         sfc1.setFieldName( "gooField" );
         sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1677,6 +1705,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc1 );
 
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc1.setFactType( "Foo" );
         sfc2.setFieldName( "fooField" );
         sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
         sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1684,7 +1713,8 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc2 );
 
         final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
-        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setFactType( "Bar" );
+        sfc3.setFieldName( "barField" );
         sfc3.setParent( sfc2 );
         sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -1693,6 +1723,7 @@ public class BRDRLPersistenceTest {
         comp.addConstraint( sfc3 );
         
         final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
+        sfc4.setFactType( "Zoo" );
         sfc4.setFieldName( "zooField" );
         sfc4.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );

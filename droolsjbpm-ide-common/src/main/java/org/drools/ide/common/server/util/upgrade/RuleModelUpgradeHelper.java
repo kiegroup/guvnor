@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;

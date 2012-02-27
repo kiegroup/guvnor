@@ -63,7 +63,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param pattern the pattern to set
+     * @param pattern
+     *            the pattern to set
      */
     public void setPattern(FactPattern pattern) {
         this.pattern = pattern;
@@ -77,7 +78,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param completions the completions to set
+     * @param completions
+     *            the completions to set
      */
     public void setCompletions(SuggestionCompletionEngine completions) {
         this.completions = completions;
@@ -91,7 +93,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param modeller the modeller to set
+     * @param modeller
+     *            the modeller to set
      */
     public void setModeller(RuleModeller modeller) {
         this.modeller = modeller;
@@ -105,7 +108,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param bindable the bindable to set
+     * @param bindable
+     *            the bindable to set
      */
     public void setBindable(boolean bindable) {
         this.bindable = bindable;
@@ -163,7 +167,7 @@ public class PopupCreator {
 
         popup.show();
     }
-    
+
     //Check if there are any fields other than "this"
     private boolean hasApplicableFields(String[] fields) {
         if ( fields == null || fields.length == 0 ) {
@@ -177,7 +181,7 @@ public class PopupCreator {
         }
         return true;
     }
-    
+
     /**
      * This shows a popup for adding fields to a composite
      */
@@ -197,10 +201,12 @@ public class PopupCreator {
 
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
+                String factType = pattern.getFactType();
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = getCompletions().getFieldType( pattern.getFactType(),
+                String fieldType = getCompletions().getFieldType( factType,
                                                                   fieldName );
-                hasConstraints.addConstraint( new SingleFieldConstraint( fieldName,
+                hasConstraints.addConstraint( new SingleFieldConstraint( factType,
+                                                                         fieldName,
                                                                          fieldType,
                                                                          null ) );
                 modeller.refreshWidget();
@@ -259,7 +265,8 @@ public class PopupCreator {
     }
 
     /**
-     * This shows a popup allowing you to add field constraints to a pattern (its a popup).
+     * This shows a popup allowing you to add field constraints to a pattern
+     * (its a popup).
      */
     public void showPatternPopup(Widget w,
                                  final FactPattern fp,
@@ -291,9 +298,10 @@ public class PopupCreator {
                 if ( "...".equals( fieldName ) ) {
                     return;
                 }
-                String qualifiedName = factType + "." + fieldName;
-                String fieldType = completions.getFieldType( qualifiedName );
-                fp.addConstraint( new SingleFieldConstraint( qualifiedName,
+                String fieldType = completions.getFieldType( factType,
+                                                             fieldName );
+                fp.addConstraint( new SingleFieldConstraint( factType,
+                                                             fieldName,
                                                              fieldType,
                                                              con ) );
                 modeller.refreshWidget();
@@ -368,23 +376,17 @@ public class PopupCreator {
 
         popup.show();
     }
-    
+
     private String getFactType(FactPattern fp,
                                SingleFieldConstraint sfc) {
         String factType;
         if ( sfc == null ) {
-            //If FactType is qualified strip the field qualifier
             factType = fp.getFactType();
-            if ( factType.contains( "." ) ) {
-                factType = factType.substring( factType.indexOf( "." ) + 1 );
-            }
+
         } else {
+            factType = sfc.getFieldType();
             //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
             String fieldName = sfc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
-                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-            }
-            factType = sfc.getFieldType();
             if ( SuggestionCompletionEngine.TYPE_THIS.equals( fieldName ) ) {
                 factType = fp.getFactType();
             }
@@ -393,10 +395,9 @@ public class PopupCreator {
     }
 
     /**
-     * This adds in (optionally) the editor for changing the bound variable name.
-     * If its a bindable pattern, it will show the editor,
-     * if it is already bound, and the name is used, it should
-     * not be editable.
+     * This adds in (optionally) the editor for changing the bound variable
+     * name. If its a bindable pattern, it will show the editor, if it is
+     * already bound, and the name is used, it should not be editable.
      */
     private void doBindingEditor(final FormStylePopup popup) {
         if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.getBoundName() )) ) {

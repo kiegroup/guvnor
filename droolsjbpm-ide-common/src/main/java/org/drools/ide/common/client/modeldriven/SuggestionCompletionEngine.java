@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -340,9 +339,6 @@ public class SuggestionCompletionEngine
                 if ( con instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) con;
                     String fieldName = sfc.getFieldName();
-                    if ( fieldName != null && fieldName.contains( "." ) ) {
-                        fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-                    }
                     currentValueMap.put( fieldName,
                                          sfc.getValue() );
                 }

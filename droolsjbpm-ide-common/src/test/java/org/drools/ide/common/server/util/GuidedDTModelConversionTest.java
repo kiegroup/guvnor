@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableModelUpgradeHelper;
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")

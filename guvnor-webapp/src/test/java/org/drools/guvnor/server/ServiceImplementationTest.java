@@ -73,7 +73,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-import org.drools.ide.common.server.util.GuidedDecisionTableModelUpgradeHelper;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableModelUpgradeHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;

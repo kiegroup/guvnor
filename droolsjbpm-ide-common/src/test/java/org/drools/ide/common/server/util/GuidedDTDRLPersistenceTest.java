@@ -47,6 +47,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableModelUpgradeHelper;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {

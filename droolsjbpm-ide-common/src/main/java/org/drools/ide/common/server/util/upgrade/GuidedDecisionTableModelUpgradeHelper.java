@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.server.util;
+package org.drools.ide.common.server.util.upgrade;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
