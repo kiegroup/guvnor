@@ -73,10 +73,10 @@ public class MandatoryFieldConstraint implements Constraint, Serializable {
             InputStream resourceAsStream = null;
             try {
                 resourceAsStream = MandatoryFieldConstraint.class.getClassLoader().getResourceAsStream("factconstraints/verifierRules/MandatoryFieldConstraint.drl");
-                reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+                reader = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"));
                 String line = null;
                 StringBuilder builder = new StringBuilder();
-                while ((line = reader.readLine())!= null){
+                while ((line = reader.readLine()) != null){
                     builder.append(line);
                     builder.append("\n");
                 }
