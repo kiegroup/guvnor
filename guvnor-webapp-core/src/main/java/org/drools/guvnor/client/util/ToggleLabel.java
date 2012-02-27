@@ -32,8 +32,6 @@ public class ToggleLabel extends Composite
     private String failureText;
 
     public ToggleLabel() {
-        label.setText( failureText );
-
         initWidget( label );
     }
 
