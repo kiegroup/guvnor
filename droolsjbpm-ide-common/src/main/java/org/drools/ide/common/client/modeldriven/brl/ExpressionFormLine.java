@@ -23,8 +23,7 @@ import java.util.Map;
 public class ExpressionFormLine
     implements
     IAction,
-    IPattern,
-    Cloneable {
+    IPattern {
 
     private String                     binding = null;
     private LinkedList<ExpressionPart> parts   = new LinkedList<ExpressionPart>();
