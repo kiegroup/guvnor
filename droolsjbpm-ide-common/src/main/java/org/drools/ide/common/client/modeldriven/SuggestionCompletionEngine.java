@@ -546,18 +546,17 @@ public class SuggestionCompletionEngine
                     if ( predicate.indexOf( '=' ) > -1 ) {
 
                         String[] bits = predicate.split( "," );
-                        String typeField = "";
+                        StringBuilder typeFieldBuilder = new StringBuilder();
 
                         for ( int i = 0; i < bits.length; i++ ) {
-                            typeField += bits[i].substring( 0,
-                                                            bits[i].indexOf( '=' ) );
+                            typeFieldBuilder.append(bits[i].substring( 0,
+                                                            bits[i].indexOf( '=' ) ));
                             if ( i != (bits.length - 1) ) {
-                                typeField += ",";
+                                typeFieldBuilder.append(",");
                             }
                         }
 
-                        dataEnumLookupFields.put( factField,
-                                                  typeField );
+                        dataEnumLookupFields.put( factField, typeFieldBuilder.toString() );
                     } else {
                         String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {
