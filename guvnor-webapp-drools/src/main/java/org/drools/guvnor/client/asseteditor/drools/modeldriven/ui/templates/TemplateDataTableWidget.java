@@ -133,6 +133,7 @@ public class TemplateDataTableWidget extends Composite
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
+        this.cellFactory.setModel( model );
         this.cellValueFactory.setModel( model );
 
         //Fire event for UI components to set themselves up

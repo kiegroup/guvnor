@@ -15,11 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
-import org.drools.ide.common.client.modeldriven.DropDownData;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -31,32 +26,20 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
 /**
- * A Popup drop-down Editor ;-)
+ * A Popup drop-down Editor for the Dialect column attribute
  */
-public class PopupDropDownEditCell extends
+public class PopupDialectDropDownEditCell extends
         AbstractPopupEditCell<String, String> {
 
-    private final ListBox                               listBox;
-    private String[][]                                  items;
+    private static String[] DIALECTS = {"java", "mvel"};
 
-    private final String                                factType;
-    private final String                                factField;
+    private final ListBox   listBox;
 
-    private final SuggestionCompletionEngine            sce;
-    private final CellTableDropDownDataValueMapProvider ddValueMapProvider;
-
-    public PopupDropDownEditCell(final String factType,
-                                 final String factField,
-                                 final SuggestionCompletionEngine sce,
-                                 final CellTableDropDownDataValueMapProvider ddValueMapProvider,
-                                 final boolean isReadOnly) {
+    public PopupDialectDropDownEditCell(boolean isReadOnly) {
         super( isReadOnly );
-        this.factType = factType;
-        this.factField = factField;
-        this.ddValueMapProvider = ddValueMapProvider;
-        this.sce = sce;
-
         this.listBox = new ListBox();
+
+        setItems( DIALECTS );
 
         // Tabbing out of the ListBox commits changes
         listBox.addKeyDownHandler( new KeyDownHandler() {
@@ -79,54 +62,16 @@ public class PopupDropDownEditCell extends
     public void render(Context context,
                        String value,
                        SafeHtmlBuilder sb) {
-
-        //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
-        //Since the content of the list may be different for each cell (dependent enumerations) the list
-        //has to be populated "on demand". 
-        DropDownData dd = sce.getEnums( this.factType,
-                                        this.factField,
-                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
-        if ( dd == null ) {
-            return;
-        }
-        setItems( dd.fixedList );
-
-        //Render value
         if ( value != null ) {
-            String label = getLabel( value );
-            sb.append( renderer.render( label ) );
+            sb.append( renderer.render( value ) );
         }
     }
 
     // Set content of drop-down
     private void setItems(String[] items) {
-        this.listBox.clear();
-        this.items = new String[items.length][2];
         for ( int i = 0; i < items.length; i++ ) {
-            String item = items[i].trim();
-            if ( item.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueEditorHelper.splitValue( item );
-                this.items[i][0] = splut[0];
-                this.items[i][1] = splut[1];
-                this.listBox.addItem( splut[1],
-                                      splut[0] );
-            } else {
-                this.items[i][0] = item;
-                this.items[i][1] = item;
-                this.listBox.addItem( item,
-                                      item );
-            }
+            this.listBox.addItem( items[i] );
         }
-    }
-
-    // Lookup the display text based on the value
-    private String getLabel(String value) {
-        for ( int i = 0; i < this.items.length; i++ ) {
-            if ( this.items[i][0].equals( value ) ) {
-                return items[i][1];
-            }
-        }
-        return value;
     }
 
     // Commit the change
@@ -154,17 +99,6 @@ public class PopupDropDownEditCell extends
     protected void startEditing(final Context context,
                                 final Element parent,
                                 final String value) {
-
-        //We need to get the list of potential values for the enumeration. Since the content 
-        //of the list may be different for each cell (dependent enumerations) the list
-        //has to be populated "on demand". 
-        DropDownData dd = sce.getEnums( this.factType,
-                                        this.factField,
-                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
-        if ( dd == null ) {
-            return;
-        }
-        setItems( dd.fixedList );
 
         // Select the appropriate item
         boolean emptyValue = (value == null);

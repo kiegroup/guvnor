@@ -15,15 +15,25 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
+import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelPeerVariableVisitor;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelPeerVariableVisitor.ValueHolder;
+import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
 
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.event.shared.EventBus;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
+
+    private TemplateModel model;
 
     /**
      * Construct a Cell Factory for a specific Template Data Widget
@@ -42,6 +52,18 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
     }
 
     /**
+     * Set the model for which cells will be created
+     * 
+     * @param model
+     */
+    public void setModel(TemplateModel model) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+        this.model = model;
+    }
+
+    /**
      * Create a Cell for the given TemplateDataColumn
      * 
      * @param column
@@ -53,20 +75,17 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = null;
 
         //Check if the column has an enumeration
-        String[] vals = null;
         String factType = column.getFactType();
         String factField = column.getFactField();
+        if ( sce.hasEnums( factType,
+                           factField ) ) {
 
-        //Check for enumerations
-        if ( factType != null && factField != null ) {
-            vals = sce.getEnumValues( factType,
-                                      factField );
-        }
-
-        //Make a drop-down or plain cell
-        if ( vals != null && vals.length > 0 ) {
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-            pudd.setItems( vals );
+            // Columns with lists of values, enums etc are always Text (for now)
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
+                                                                    factField,
+                                                                    sce,
+                                                                    this,
+                                                                    isReadOnly );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );
 
@@ -101,6 +120,57 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
 
         return cell;
 
+    }
+
+    @Override
+    public Map<String, String> getCurrentValueMap(Context context) {
+        Map<String, String> currentValueMap = new HashMap<String, String>();
+
+        final int iBaseRowIndex = context.getIndex();
+        final int iBaseColIndex = context.getColumn();
+
+        //Get variable for the column being edited
+        InterpolationVariable[] allVariables = this.model.getInterpolationVariablesList();
+        InterpolationVariable baseVariable = allVariables[iBaseColIndex];
+        final String baseVariableName = baseVariable.getVarName();
+
+        //Get other variables (and literals) in the same scope as the base variable
+        final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( model,
+                                                                                                   baseVariableName );
+        List<ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
+
+        //Add other variables values
+        for ( ValueHolder valueHolder : peerVariables ) {
+            switch ( valueHolder.getType() ) {
+                case TEMPLATE_KEY :
+                    final InterpolationVariable variable = getInterpolationVariable( valueHolder.getValue(),
+                                                                                     allVariables );
+                    final String field = variable.getFactField();
+                    //TODO {manstis} This should not be required. We don't want to do this until the row had been 
+                    //added to the data. Perhaps we should use the UI data-model and not the persisted data-model?
+                    final List<String> columnData = this.model.getTable().get( variable.getVarName() );
+                    final String value = iBaseRowIndex < columnData.size() ? columnData.get( iBaseRowIndex ) : "";
+                    currentValueMap.put( field,
+                                         value );
+                    break;
+                case VALUE :
+                    currentValueMap.put( valueHolder.getFieldName(),
+                                         valueHolder.getValue() );
+            }
+        }
+
+        return currentValueMap;
+    }
+
+    private InterpolationVariable getInterpolationVariable(final String variableName,
+                                                           final InterpolationVariable[] allVariables) {
+        for ( InterpolationVariable variable : allVariables ) {
+            if ( variable.getVarName().equals( variableName ) ) {
+                return variable;
+            }
+        }
+        //This should never happen
+        throw new IllegalArgumentException( "Variable '" + variableName + "' not found. This suggests an programming error." );
     }
 
 }

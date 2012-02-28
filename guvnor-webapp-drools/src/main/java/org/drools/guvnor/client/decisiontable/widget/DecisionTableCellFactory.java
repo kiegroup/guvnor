@@ -15,9 +15,14 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupDialectDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
@@ -39,20 +44,21 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.event.shared.EventBus;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
-
-    private static String[]       DIALECTS = {"java", "mvel"};
 
     private GuidedDecisionTable52 model;
 
@@ -228,54 +234,56 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         String type = model.getType( col,
                                      sce );
 
-        //Retrieve "Guvnor" enums
-        String[] vals = model.getValueList( col,
-                                            sce );
-        if ( vals.length == 0 ) {
-
-            //Null means the field is free-format
-            if ( type == null ) {
-                return cell;
-            }
-
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                cell = makeNumericCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-                cell = makeNumericBigDecimalCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-                cell = makeNumericBigIntegerCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-                cell = makeNumericByteCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-                cell = makeNumericDoubleCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-                cell = makeNumericFloatCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-                cell = makeNumericIntegerCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-                cell = makeNumericLongCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-                cell = makeNumericShortCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                cell = makeBooleanCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                cell = makeDateCell();
-            }
-        } else {
+        //Check if the column has an enumeration or a "Value List"
+        if ( model.hasEnums( col,
+                             sce ) ) {
 
             // Columns with lists of values, enums etc are always Text (for now)
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-            pudd.setItems( vals );
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell( getFactType( col ),
+                                                                    getFactField( col ),
+                                                                    sce,
+                                                                    this,
+                                                                    isReadOnly );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );
+            return cell;
         }
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return cell;
+        }
+
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            cell = makeNumericCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            cell = makeNumericBigDecimalCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            cell = makeNumericBigIntegerCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            cell = makeNumericByteCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            cell = makeNumericDoubleCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            cell = makeNumericFloatCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            cell = makeNumericIntegerCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            cell = makeNumericLongCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            cell = makeNumericShortCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            cell = makeBooleanCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            cell = makeDateCell();
+        }
+
         return cell;
     }
 
     // Make a new Cell for Dialect columns
     private DecoratedGridCellValueAdaptor<String> makeDialectCell() {
-        PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-        pudd.setItems( DIALECTS );
+        PopupDialectDropDownEditCell pudd = new PopupDialectDropDownEditCell( isReadOnly );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );
     }
@@ -302,6 +310,86 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     private DecoratedGridCellValueAdaptor<Analysis> makeRowAnalysisCell() {
         return new DecoratedGridCellValueAdaptor<Analysis>( new AnalysisCell(),
                                                             eventBus );
+    }
+
+    private String getFactType(DTColumnConfig52 col) {
+        if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 cc = (ConditionCol52) col;
+            return model.getPattern( cc ).getFactType();
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            ActionSetFieldCol52 asf = (ActionSetFieldCol52) col;
+            return model.getConditionPattern( asf.getBoundName() ).getFactType();
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            ActionInsertFactCol52 aif = (ActionInsertFactCol52) col;
+            return aif.getFactType();
+        }
+        throw new IllegalArgumentException( "Unexpected type of DTColumnConfig52 found." );
+    }
+
+    private String getFactField(DTColumnConfig52 col) {
+        if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 cc = (ConditionCol52) col;
+            return cc.getFactField();
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            ActionSetFieldCol52 asf = (ActionSetFieldCol52) col;
+            return asf.getFactField();
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            ActionInsertFactCol52 aif = (ActionInsertFactCol52) col;
+            return aif.getFactField();
+        }
+        throw new IllegalArgumentException( "Unexpected type of DTColumnConfig52 found." );
+    }
+
+    @Override
+    public Map<String, String> getCurrentValueMap(Context context) {
+        Map<String, String> currentValueMap = new HashMap<String, String>();
+
+        final int iBaseRowIndex = context.getIndex();
+        final int iBaseColIndex = context.getColumn();
+        final List<DTCellValue52> rowData = this.model.getData().get( iBaseRowIndex );
+
+        List<BaseColumn> allColumns = this.model.getExpandedColumns();
+        BaseColumn baseColumn = allColumns.get( iBaseColIndex );
+
+        if ( baseColumn instanceof ConditionCol52 ) {
+            final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
+            final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
+            for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
+                final int iCol = allColumns.indexOf( cc );
+                currentValueMap.put( cc.getFactField(),
+                                     rowData.get( iCol ).getStringValue() );
+            }
+
+        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
+            ActionSetFieldCol52 baseActionColumn = (ActionSetFieldCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionSetFieldCol52 ) {
+                    final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                    if ( asf.getBoundName().equals( binding ) ) {
+                        final int iCol = allColumns.indexOf( asf );
+                        currentValueMap.put( asf.getFactField(),
+                                             rowData.get( iCol ).getStringValue() );
+                    }
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
+            ActionInsertFactCol52 baseActionColumn = (ActionInsertFactCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionInsertFactCol52 ) {
+                    final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
+                    if ( aif.getBoundName().equals( binding ) ) {
+                        final int iCol = allColumns.indexOf( aif );
+                        currentValueMap.put( aif.getFactField(),
+                                             rowData.get( iCol ).getStringValue() );
+                    }
+                }
+            }
+
+        }
+        return currentValueMap;
     }
 
 }

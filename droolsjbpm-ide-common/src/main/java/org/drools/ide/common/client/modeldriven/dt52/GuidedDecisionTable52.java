@@ -538,33 +538,35 @@ public class GuidedDecisionTable52
         }
 
         // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = getValueList( col,
-                                      sce );
-        if ( vals.length == 0 ) {
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-                dataType = DTDataTypes52.NUMERIC_BYTE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-                dataType = DTDataTypes52.NUMERIC_DOUBLE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-                dataType = DTDataTypes52.NUMERIC_FLOAT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_INTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-                dataType = DTDataTypes52.NUMERIC_LONG;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-                dataType = DTDataTypes52.NUMERIC_SHORT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                dataType = DTDataTypes52.DATE;
-            }
+        if ( hasEnums( col,
+                       sce ) ) {
+            return dataType;
         }
+
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            dataType = DTDataTypes52.NUMERIC;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            dataType = DTDataTypes52.NUMERIC_BYTE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            dataType = DTDataTypes52.NUMERIC_DOUBLE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            dataType = DTDataTypes52.NUMERIC_FLOAT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_INTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            dataType = DTDataTypes52.NUMERIC_LONG;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            dataType = DTDataTypes52.NUMERIC_SHORT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            dataType = DTDataTypes52.BOOLEAN;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            dataType = DTDataTypes52.DATE;
+        }
+
         return dataType;
     }
 
@@ -584,33 +586,35 @@ public class GuidedDecisionTable52
         }
 
         // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = getValueList( col,
-                                      sce );
-        if ( vals.length == 0 ) {
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-                dataType = DTDataTypes52.NUMERIC_BYTE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-                dataType = DTDataTypes52.NUMERIC_DOUBLE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-                dataType = DTDataTypes52.NUMERIC_FLOAT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_INTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-                dataType = DTDataTypes52.NUMERIC_LONG;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-                dataType = DTDataTypes52.NUMERIC_SHORT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                dataType = DTDataTypes52.DATE;
-            }
+        if ( hasEnums( col,
+                       sce ) ) {
+            return dataType;
         }
+
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            dataType = DTDataTypes52.NUMERIC;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            dataType = DTDataTypes52.NUMERIC_BYTE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            dataType = DTDataTypes52.NUMERIC_DOUBLE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            dataType = DTDataTypes52.NUMERIC_FLOAT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_INTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            dataType = DTDataTypes52.NUMERIC_LONG;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            dataType = DTDataTypes52.NUMERIC_SHORT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            dataType = DTDataTypes52.BOOLEAN;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            dataType = DTDataTypes52.DATE;
+        }
+
         return dataType;
     }
 
@@ -630,34 +634,35 @@ public class GuidedDecisionTable52
         }
 
         // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = getValueList( pattern,
-                                      col,
-                                      sce );
-        if ( vals.length == 0 ) {
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-                dataType = DTDataTypes52.NUMERIC_BYTE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-                dataType = DTDataTypes52.NUMERIC_DOUBLE;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-                dataType = DTDataTypes52.NUMERIC_FLOAT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-                dataType = DTDataTypes52.NUMERIC_INTEGER;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-                dataType = DTDataTypes52.NUMERIC_LONG;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-                dataType = DTDataTypes52.NUMERIC_SHORT;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                dataType = DTDataTypes52.DATE;
-            }
+        if ( hasEnums( col,
+                       sce ) ) {
+            return dataType;
         }
+
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            dataType = DTDataTypes52.NUMERIC;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGDECIMAL;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_BIGINTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            dataType = DTDataTypes52.NUMERIC_BYTE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            dataType = DTDataTypes52.NUMERIC_DOUBLE;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            dataType = DTDataTypes52.NUMERIC_FLOAT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            dataType = DTDataTypes52.NUMERIC_INTEGER;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            dataType = DTDataTypes52.NUMERIC_LONG;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            dataType = DTDataTypes52.NUMERIC_SHORT;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            dataType = DTDataTypes52.BOOLEAN;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            dataType = DTDataTypes52.DATE;
+        }
+
         return dataType;
     }
 
@@ -684,7 +689,7 @@ public class GuidedDecisionTable52
         }
         return new String[0];
     }
-
+    
     private String[] getValueList(AttributeCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
@@ -692,7 +697,7 @@ public class GuidedDecisionTable52
         }
         return new String[0];
     }
-
+    
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
@@ -763,6 +768,103 @@ public class GuidedDecisionTable52
         String[] r = sce.getEnumValues( col.getFactType(),
                                         col.getFactField() );
         return (r != null) ? r : new String[0];
+    }
+    
+    public boolean hasEnums(BaseColumn col,
+                            SuggestionCompletionEngine sce) {
+        if ( col instanceof AttributeCol52 ) {
+            return hasEnums( (AttributeCol52) col,
+                                 sce );
+        } else if ( col instanceof BRLConditionVariableColumn ) {
+            return hasEnums( (BRLConditionVariableColumn) col,
+                                 sce );
+        } else if ( col instanceof ConditionCol52 ) {
+            return hasEnums( (ConditionCol52) col,
+                                 sce );
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            return hasEnums( (ActionSetFieldCol52) col,
+                                 sce );
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            return hasEnums( (ActionInsertFactCol52) col,
+                                 sce );
+        } else if ( col instanceof BRLActionVariableColumn ) {
+            return hasEnums( (BRLActionVariableColumn) col,
+                                 sce );
+        }
+        return false;
+    }
+
+    private boolean hasEnums(AttributeCol52 col,
+                             SuggestionCompletionEngine sce) {
+        if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasEnums(ConditionCol52 col,
+                             SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        } else {
+            Pattern52 pattern = getPattern( col );
+            return sce.hasEnums( pattern.getFactType(),
+                                 col.getFactField() );
+        }
+    }
+
+    public boolean hasEnums(Pattern52 pattern,
+                            ConditionCol52 col,
+                            SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        } else {
+            return sce.hasEnums( pattern.getFactType(),
+                                 col.getFactField() );
+        }
+    }
+
+    private boolean hasEnums(ActionSetFieldCol52 col,
+                             SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        } else {
+            return sce.hasEnums( getBoundFactType( col.getBoundName() ),
+                                 col.getFactField() );
+        }
+    }
+
+    public boolean hasEnums(Pattern52 pattern,
+                            ActionSetFieldCol52 col,
+                            SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        } else {
+            return sce.hasEnums( pattern.getFactType(),
+                                 col.getFactField() );
+        }
+    }
+
+    private boolean hasEnums(ActionInsertFactCol52 col,
+                             SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        } else {
+            return sce.hasEnums( col.getFactType(),
+                                 col.getFactField() );
+        }
+    }
+
+    private boolean hasEnums(BRLActionVariableColumn col,
+                             SuggestionCompletionEngine sce) {
+        return sce.hasEnums( col.getFactType(),
+                             col.getFactField() );
+    }
+
+    private boolean hasEnums(BRLConditionVariableColumn col,
+                             SuggestionCompletionEngine sce) {
+        return sce.hasEnums( col.getFactType(),
+                             col.getFactField() );
     }
 
     public boolean isConstraintValid(DTColumnConfig52 col,

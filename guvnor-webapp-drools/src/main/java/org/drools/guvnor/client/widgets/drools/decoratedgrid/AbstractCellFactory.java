@@ -40,7 +40,9 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 /**
  * A Factory to provide the Cells.
  */
-public abstract class AbstractCellFactory<T> {
+public abstract class AbstractCellFactory<T>
+    implements
+    CellTableDropDownDataValueMapProvider {
 
     private static final String                DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 

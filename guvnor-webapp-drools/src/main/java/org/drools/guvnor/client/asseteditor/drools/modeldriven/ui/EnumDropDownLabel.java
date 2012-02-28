@@ -117,8 +117,7 @@ public class EnumDropDownLabel extends Composite {
             valueType = sce.getFieldType( factType,
                                           fieldName );
         } else {
-            //TODO {manstis} This should never happen
-            throw new IllegalArgumentException("That should not have happened!");
+            throw new IllegalArgumentException("Unrecognised constraint type.");
         }
 
         final DropDownData dropDownData;

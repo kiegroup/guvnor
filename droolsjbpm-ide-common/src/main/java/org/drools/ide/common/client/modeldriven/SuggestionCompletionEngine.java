@@ -528,6 +528,21 @@ public class SuggestionCompletionEngine
         return this.getDataEnumList( factType + "." + field );
     }
 
+    public boolean hasEnums(String factType,
+                            String field) {
+        return this.hasEnums( factType + "." + field );
+    }
+
+    public boolean hasEnums(String type) {
+        boolean hasEnums = false;
+        for ( String e : this.dataEnumLists.keySet() ) {
+            if ( e.startsWith( type ) ) {
+                return true;
+            }
+        }
+        return hasEnums;
+    }
+
     /**
      * This is only used by enums that are like Fact.field[something=X] and so
      * on.
