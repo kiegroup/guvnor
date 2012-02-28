@@ -743,11 +743,16 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( this.dropDownData == null ) {
             return;
         }
-        if ( !(this.constraintWidget instanceof EnumDropDownLabel) ) {
-            return;
+        if ( this.constraintWidget instanceof HorizontalPanel ) {
+            HorizontalPanel hp = (HorizontalPanel) this.constraintWidget;
+            for ( int iChildIndex = 0; iChildIndex < hp.getWidgetCount(); iChildIndex++ ) {
+                Widget w = hp.getWidget( iChildIndex );
+                if ( w instanceof EnumDropDownLabel ) {
+                    EnumDropDownLabel eddl = (EnumDropDownLabel) w;
+                    eddl.refreshDropDownData();
+                }
+            }
         }
-        EnumDropDownLabel eddl = (EnumDropDownLabel) this.constraintWidget;
-        eddl.refreshDropDownData();
     }
 
     //Signal (potential) change in Template variables
