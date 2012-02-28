@@ -69,6 +69,7 @@ public class Translator {
         metadata.setCreatedBy(a.getCreator());
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
+        metadata.setState(a.getState() == null ? "" : a.getState().getName());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         List<CategoryItem> categories = a.getCategories();
         //TODO: Is this a bug since cat's are never assigned to metadata after this?
