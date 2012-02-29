@@ -32,7 +32,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
@@ -50,6 +49,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergin
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateSelectedCellsEvent;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -85,7 +85,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     ColumnResizeEvent.Handler,
     MoveColumnsEvent.Handler,
     SortDataEvent.Handler,
-    CellValueChangedEvent.Handler,
+    UpdateSelectedCellsEvent.Handler,
     CellStateChangedEvent.Handler {
 
     /**
@@ -142,20 +142,20 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     //event.stopPropogation() doesn't prevent text selection
     private native static void disableTextSelectInternal(Element e,
                                                          boolean disable)/*-{
-                                                                         if (disable) {
-                                                                         e.ondrag = function() {
-                                                                         return false;
-                                                                         };
-                                                                         e.onselectstart = function() {
-                                                                         return false;
-                                                                         };
-                                                                         e.style.MozUserSelect = "none"
-                                                                         } else {
-                                                                         e.ondrag = null;
-                                                                         e.onselectstart = null;
-                                                                         e.style.MozUserSelect = "text"
-                                                                         }
-                                                                         }-*/;
+		if (disable) {
+			e.ondrag = function() {
+				return false;
+			};
+			e.onselectstart = function() {
+				return false;
+			};
+			e.style.MozUserSelect = "none"
+		} else {
+			e.ondrag = null;
+			e.onselectstart = null;
+			e.style.MozUserSelect = "text"
+		}
+    }-*/;
 
     // Selections store the actual grid data selected (irrespective of
     // merged cells). So a merged cell spanning 2 rows is stored as 2
@@ -275,7 +275,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                              this );
         eventBus.addHandler( SortDataEvent.TYPE,
                              this );
-        eventBus.addHandler( CellValueChangedEvent.TYPE,
+        eventBus.addHandler( UpdateSelectedCellsEvent.TYPE,
                              this );
         eventBus.addHandler( CellStateChangedEvent.TYPE,
                              this );
@@ -1223,9 +1223,12 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     @SuppressWarnings("rawtypes")
-    public void onCellValueChanged(CellValueChangedEvent event) {
+    public void onUpdateSelectedCells(UpdateSelectedCellsEvent event) {
 
-        Object value = event.getValue();
+        //TODO {manstis} This needs to see if other cells need to be updated as a result of the change to 
+        //a selected cell. For example, dependent enumerations. Access to a XXXDropDownManager would be nice. 
+        //We can then find the maximum extent of all cells to be updated so we redraw what is needed.
+        Comparable< ? > value = event.getValue();
         boolean bUngroupCells = false;
         Coordinate selection = selections.first().getCoordinate();
         List<List<CellValue< ? extends Comparable< ? >>>> changedData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
@@ -1276,7 +1279,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                          true );
                 }
             }
-        } else {
+        } else if ( data.isMerged() ) {
+
             data.assertModelMerging();
 
             // Partial redraw

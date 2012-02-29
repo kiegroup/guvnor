@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -78,7 +79,7 @@ public class DecisionTableDropDownManager
             for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
                 final int iCol = allColumns.indexOf( cc );
                 currentValueMap.put( cc.getFactField(),
-                                     (String) rowData.get( iCol ).getValue() );
+                                     getValue( rowData.get( iCol ) ) );
             }
 
         } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
@@ -90,7 +91,7 @@ public class DecisionTableDropDownManager
                     if ( asf.getBoundName().equals( binding ) ) {
                         final int iCol = allColumns.indexOf( asf );
                         currentValueMap.put( asf.getFactField(),
-                                             (String) rowData.get( iCol ).getValue() );
+                                             getValue( rowData.get( iCol ) ) );
                     }
                 }
             }
@@ -104,13 +105,20 @@ public class DecisionTableDropDownManager
                     if ( aif.getBoundName().equals( binding ) ) {
                         final int iCol = allColumns.indexOf( aif );
                         currentValueMap.put( aif.getFactField(),
-                                             (String) rowData.get( iCol ).getValue() );
+                                             getValue( rowData.get( iCol ) ) );
                     }
                 }
             }
 
         }
         return currentValueMap;
+    }
+
+    private String getValue(CellValue< ? extends Comparable< ? >> dcv) {
+        if ( dcv == null || dcv.getValue() == null ) {
+            return "";
+        }
+        return dcv.getValue().toString();
     }
 
 }

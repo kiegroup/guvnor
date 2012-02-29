@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
@@ -43,6 +44,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testValueLists() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        Map<String, String> currentValueMap = new HashMap<String, String>();
 
         // add cols for LHS
         ConditionCol52 c1 = new ConditionCol52();
@@ -124,8 +126,12 @@ public class GuidedDecisionTableTest {
         sce.putDataEnumList( "Person.rating",
                              new String[]{"1", "2"} );
 
-        String[] r = dt.getValueList( c1,
-                                      sce );
+        assertTrue( dt.hasEnums( c1,
+                                 sce ) );
+        assertFalse( dt.hasValueList( c1 ) );
+        String[] r = sce.getEnums( p1.getFactType(),
+                                   c1.getFactField(),
+                                   currentValueMap ).fixedList;
         assertEquals( 2,
                       r.length );
         assertEquals( "bob",
@@ -133,8 +139,12 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        r = dt.getValueList( c1_,
-                                      sce );
+        assertTrue( dt.hasEnums( c1_,
+                                 sce ) );
+        assertFalse( dt.hasValueList( c1_ ) );
+        r = sce.getEnums( p1_.getFactType(),
+                          c1_.getFactField(),
+                          currentValueMap ).fixedList;
         assertEquals( 2,
                       r.length );
         assertEquals( "bob",
@@ -142,6 +152,9 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
+        assertFalse( dt.hasEnums( c1__,
+                                  sce ) );
+        assertTrue( dt.hasValueList( c1__ ) );
         r = dt.getValueList( c1__,
                              sce );
         assertEquals( 2,
@@ -151,6 +164,9 @@ public class GuidedDecisionTableTest {
         assertEquals( "Female",
                       r[1] );
 
+        assertTrue( dt.hasEnums( c1___,
+                                 sce ) );
+        assertTrue( dt.hasValueList( c1___ ) );
         r = dt.getValueList( c1___,
                              sce );
         assertEquals( 3,
@@ -166,8 +182,12 @@ public class GuidedDecisionTableTest {
                       dt.getValueList( c2,
                                        sce ).length );
 
-        r = dt.getValueList( asf,
-                             sce );
+        assertTrue( dt.hasEnums( asf,
+                                 sce ) );
+        assertFalse( dt.hasValueList( asf ) );
+        r = sce.getEnums( p1.getFactType(),
+                          asf.getFactField(),
+                          currentValueMap ).fixedList;
         assertEquals( 2,
                       r.length );
         assertEquals( "bob",
@@ -175,8 +195,12 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        r = dt.getValueList( ins,
-                             sce );
+        assertTrue( dt.hasEnums( ins,
+                                 sce ) );
+        assertFalse( dt.hasValueList( ins ) );
+        r = sce.getEnums( ins.getFactType(),
+                          ins.getFactField(),
+                          currentValueMap ).fixedList;
         assertEquals( 2,
                       r.length );
         assertEquals( "1",
@@ -184,6 +208,9 @@ public class GuidedDecisionTableTest {
         assertEquals( "2",
                       r[1] );
 
+        assertTrue( dt.hasEnums( ins_,
+                                 sce ) );
+        assertTrue( dt.hasValueList( ins_ ) );
         r = dt.getValueList( ins_,
                              sce );
         assertEquals( 3,
@@ -199,6 +226,9 @@ public class GuidedDecisionTableTest {
                       dt.getValueList( asf_,
                                        sce ).length );
 
+        assertFalse( dt.hasEnums( asf__,
+                                  sce ) );
+        assertTrue( dt.hasValueList( asf__ ) );
         r = dt.getValueList( asf__,
                              sce );
         assertEquals( 3,

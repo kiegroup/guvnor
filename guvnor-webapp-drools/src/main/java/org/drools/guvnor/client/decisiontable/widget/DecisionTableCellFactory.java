@@ -21,6 +21,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEdi
 import org.drools.guvnor.client.decisiontable.cells.PopupDialectDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupValueListDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
@@ -238,14 +239,22 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         //Extended Entry...
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
-        String type = model.getType( col,
-                                     sce );
 
-        //Check if the column has an enumeration or a "Value List"
-        if ( model.hasEnums( col,
-                             sce ) ) {
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        if ( model.hasValueList( col ) ) {
 
-            // Columns with lists of values, enums etc are always Text (for now)
+            // Columns with "Value Lists" are always Text (for now)
+            PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col,
+                                                                                                          sce ),
+                                                                                      isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                              eventBus );
+            return cell;
+
+        } else if ( model.hasEnums( col,
+                                    sce ) ) {
+
+            // Columns with enumerations are always Text
             PopupDropDownEditCell pudd = new PopupDropDownEditCell( getFactType( col ),
                                                                     getFactField( col ),
                                                                     sce,
@@ -255,6 +264,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                                                               eventBus );
             return cell;
         }
+
+        //Get a cell based upon the data-type
+        String type = model.getType( col,
+                                     sce );
 
         //Null means the field is free-format
         if ( type == null ) {

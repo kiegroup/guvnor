@@ -257,7 +257,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
         if ( lea.getValue() == null ) {
             lea.setValue( factory.makeNewValue( editingCol ) );
         }
-        limitedEntryValueWidgetContainer.setWidget( factory.getWidget( editingCol,
+        limitedEntryValueWidgetContainer.setWidget( factory.getWidget( model.getConditionPattern( editingCol.getBoundName() ),
+                                                                       editingCol,
                                                                        lea.getValue() ) );
     }
 

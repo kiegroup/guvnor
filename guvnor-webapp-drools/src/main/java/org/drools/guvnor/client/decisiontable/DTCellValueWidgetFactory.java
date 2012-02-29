@@ -18,6 +18,8 @@ package org.drools.guvnor.client.decisiontable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.AbstractRestrictedEntryTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
@@ -31,7 +33,9 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTe
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -87,55 +91,6 @@ public class DTCellValueWidgetFactory {
     }
 
     /**
-     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
-     * some columns (in the future) will have multiple DTCellValues (for
-     * "Default Value" and "Option List")
-     * 
-     * @param c
-     * @param value
-     * @return
-     */
-    public Widget getWidget(DTColumnConfig52 c,
-                            DTCellValue52 value) {
-        DTDataTypes52 type = dtable.getTypeSafeType( c,
-                                                     sce );
-        String[] completions = dtable.getValueList( c,
-                                                    sce );
-
-        if ( completions != null && completions.length > 0 ) {
-            return makeListBox( completions,
-                                value );
-        }
-
-        switch ( type ) {
-            case NUMERIC :
-                return makeNumericTextBox( value );
-            case NUMERIC_BIGDECIMAL :
-                return makeNumericBigDecimalTextBox( value );
-            case NUMERIC_BIGINTEGER :
-                return makeNumericBigIntegerTextBox( value );
-            case NUMERIC_BYTE :
-                return makeNumericByteTextBox( value );
-            case NUMERIC_DOUBLE :
-                return makeNumericDoubleTextBox( value );
-            case NUMERIC_FLOAT :
-                return makeNumericFloatTextBox( value );
-            case NUMERIC_INTEGER :
-                return makeNumericIntegerTextBox( value );
-            case NUMERIC_LONG :
-                return makeNumericLongTextBox( value );
-            case NUMERIC_SHORT :
-                return makeNumericShortTextBox( value );
-            case BOOLEAN :
-                return makeBooleanSelector( value );
-            case DATE :
-                return makeDateSelector( value );
-            default :
-                return makeTextBox( value );
-        }
-    }
-
-    /**
      * Make a DTCellValue for a column. This overloaded method takes a Pattern52
      * object as well since the pattern may be different to that to which the
      * column has been bound in the Decision Table model, i.e. when adding or
@@ -170,18 +125,24 @@ public class DTCellValueWidgetFactory {
                             ConditionCol52 column,
                             DTCellValue52 value) {
 
-        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
-                                                     column,
-                                                     sce );
-        String[] completions = dtable.getValueList( pattern,
-                                                    column,
-                                                    sce );
-
-        if ( completions != null && completions.length > 0 ) {
-            return makeListBox( completions,
+        if ( sce.hasEnums( pattern.getFactType(),
+                           column.getFactField() ) ) {
+            //TODO {manstis} This needs to be derived from the model
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            DropDownData dd = sce.getEnums( pattern.getFactType(),
+                                            column.getFactField(),
+                                            currentValueMap );
+            if ( dd == null ) {
+                return makeListBox( new String[0],
+                                    value );
+            }
+            return makeListBox( dd.fixedList,
                                 value );
         }
 
+        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
+                                                     column,
+                                                     sce );
         switch ( type ) {
             case NUMERIC :
                 return makeNumericTextBox( value );
@@ -243,18 +204,81 @@ public class DTCellValueWidgetFactory {
                             ActionSetFieldCol52 column,
                             DTCellValue52 value) {
 
-        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
-                                                     column,
-                                                     sce );
-        String[] completions = dtable.getValueList( pattern,
-                                                    column,
-                                                    sce );
-
-        if ( completions != null && completions.length > 0 ) {
-            return makeListBox( completions,
+        if ( sce.hasEnums( pattern.getFactType(),
+                           column.getFactField() ) ) {
+            //TODO {manstis} This needs to be derived from the model
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            DropDownData dd = sce.getEnums( pattern.getFactType(),
+                                            column.getFactField(),
+                                            currentValueMap );
+            if ( dd == null ) {
+                return makeListBox( new String[0],
+                                    value );
+            }
+            return makeListBox( dd.fixedList,
                                 value );
         }
 
+        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
+                                                     column,
+                                                     sce );
+        switch ( type ) {
+            case NUMERIC :
+                return makeNumericTextBox( value );
+            case NUMERIC_BIGDECIMAL :
+                return makeNumericBigDecimalTextBox( value );
+            case NUMERIC_BIGINTEGER :
+                return makeNumericBigIntegerTextBox( value );
+            case NUMERIC_BYTE :
+                return makeNumericByteTextBox( value );
+            case NUMERIC_DOUBLE :
+                return makeNumericDoubleTextBox( value );
+            case NUMERIC_FLOAT :
+                return makeNumericFloatTextBox( value );
+            case NUMERIC_INTEGER :
+                return makeNumericIntegerTextBox( value );
+            case NUMERIC_LONG :
+                return makeNumericLongTextBox( value );
+            case NUMERIC_SHORT :
+                return makeNumericShortTextBox( value );
+            case BOOLEAN :
+                return makeBooleanSelector( value );
+            case DATE :
+                return makeDateSelector( value );
+            default :
+                return makeTextBox( value );
+        }
+    }
+
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List").
+     * 
+     * @param column
+     * @param value
+     * @return
+     */
+    public Widget getWidget(ActionInsertFactCol52 column,
+                            DTCellValue52 value) {
+
+        if ( sce.hasEnums( column.getFactType(),
+                           column.getFactField() ) ) {
+            //TODO {manstis} This needs to be derived from the model
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            DropDownData dd = sce.getEnums( column.getFactType(),
+                                            column.getFactField(),
+                                            currentValueMap );
+            if ( dd == null ) {
+                return makeListBox( new String[0],
+                                    value );
+            }
+            return makeListBox( dd.fixedList,
+                                value );
+        }
+
+        DTDataTypes52 type = dtable.getTypeSafeType( column,
+                                                     sce );
         switch ( type ) {
             case NUMERIC :
                 return makeNumericTextBox( value );
@@ -339,8 +363,10 @@ public class DTCellValueWidgetFactory {
 
         //If nothing has been selected, select the first value
         if ( selectedIndex == -1 ) {
-            lb.setSelectedIndex( 0 );
-            value.setStringValue( lb.getValue( 0 ) );
+            if ( lb.getItemCount() > 0 ) {
+                lb.setSelectedIndex( 0 );
+                value.setStringValue( lb.getValue( 0 ) );
+            }
         }
 
         return lb;

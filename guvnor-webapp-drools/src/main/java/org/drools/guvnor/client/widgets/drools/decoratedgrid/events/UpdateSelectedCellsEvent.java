@@ -24,21 +24,21 @@ import com.google.gwt.event.shared.GwtEvent;
  * is maintained by the AbstractMergableGridWidget that handles single and
  * multiple cell selection.
  */
-public class CellValueChangedEvent extends GwtEvent<CellValueChangedEvent.Handler> {
+public class UpdateSelectedCellsEvent extends GwtEvent<UpdateSelectedCellsEvent.Handler> {
 
     public static interface Handler
         extends
         EventHandler {
 
-        void onCellValueChanged(CellValueChangedEvent event);
+        void onUpdateSelectedCells(UpdateSelectedCellsEvent event);
     }
 
-    public static Type<CellValueChangedEvent.Handler> TYPE = new Type<CellValueChangedEvent.Handler>();
+    public static Type<UpdateSelectedCellsEvent.Handler> TYPE = new Type<UpdateSelectedCellsEvent.Handler>();
 
     //The new value
-    private Comparable< ? >                           value;
+    private Comparable< ? >                              value;
 
-    public CellValueChangedEvent(Comparable< ? > value) {
+    public UpdateSelectedCellsEvent(Comparable< ? > value) {
         this.value = value;
     }
 
@@ -47,13 +47,13 @@ public class CellValueChangedEvent extends GwtEvent<CellValueChangedEvent.Handle
     }
 
     @Override
-    public Type<CellValueChangedEvent.Handler> getAssociatedType() {
+    public Type<UpdateSelectedCellsEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(CellValueChangedEvent.Handler handler) {
-        handler.onCellValueChanged( this );
+    protected void dispatch(UpdateSelectedCellsEvent.Handler handler) {
+        handler.onUpdateSelectedCells( this );
     }
 
 }

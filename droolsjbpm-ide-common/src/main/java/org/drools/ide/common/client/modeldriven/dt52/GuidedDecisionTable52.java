@@ -537,9 +537,9 @@ public class GuidedDecisionTable52
             return dataType;
         }
 
-        // Columns with lists of values, enums etc are always Text (for now)
+        // Columns with enumerations or "Value Lists" etc are always Text (for now)
         if ( hasEnums( col,
-                       sce ) ) {
+                       sce ) || hasValueList( col ) ) {
             return dataType;
         }
 
@@ -635,7 +635,7 @@ public class GuidedDecisionTable52
 
         // Columns with lists of values, enums etc are always Text (for now)
         if ( hasEnums( col,
-                       sce ) ) {
+                       sce ) || hasValueList( col ) ) {
             return dataType;
         }
 
@@ -671,9 +671,6 @@ public class GuidedDecisionTable52
         if ( col instanceof AttributeCol52 ) {
             return getValueList( (AttributeCol52) col,
                                  sce );
-        } else if ( col instanceof BRLConditionVariableColumn ) {
-            return getValueList( (BRLConditionVariableColumn) col,
-                                 sce );
         } else if ( col instanceof ConditionCol52 ) {
             return getValueList( (ConditionCol52) col,
                                  sce );
@@ -683,13 +680,10 @@ public class GuidedDecisionTable52
         } else if ( col instanceof ActionInsertFactCol52 ) {
             return getValueList( (ActionInsertFactCol52) col,
                                  sce );
-        } else if ( col instanceof BRLActionVariableColumn ) {
-            return getValueList( (BRLActionVariableColumn) col,
-                                 sce );
         }
         return new String[0];
     }
-    
+
     private String[] getValueList(AttributeCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
@@ -697,88 +691,34 @@ public class GuidedDecisionTable52
         }
         return new String[0];
     }
-    
+
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
-        } else {
-            Pattern52 pattern = getPattern( col );
-            String[] r = sce.getEnumValues( pattern.getFactType(),
-                                            col.getFactField() );
-            return (r != null) ? r : new String[0];
         }
-    }
-
-    public String[] getValueList(Pattern52 pattern,
-                                 ConditionCol52 col,
-                                 SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return col.getValueList().split( "," );
-        } else {
-            String[] r = sce.getEnumValues( pattern.getFactType(),
-                                            col.getFactField() );
-            return (r != null) ? r : new String[0];
-        }
+        return new String[0];
     }
 
     private String[] getValueList(ActionSetFieldCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
-        } else {
-            String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
-                                            col.getFactField() );
-            return (r != null) ? r : new String[0];
         }
-    }
-
-    public String[] getValueList(Pattern52 pattern,
-                                 ActionSetFieldCol52 col,
-                                 SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return col.getValueList().split( "," );
-        } else {
-            String[] r = sce.getEnumValues( pattern.getFactType(),
-                                            col.getFactField() );
-            return (r != null) ? r : new String[0];
-        }
+        return new String[0];
     }
 
     private String[] getValueList(ActionInsertFactCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
-        } else {
-            String[] r = sce.getEnumValues( col.getFactType(),
-                                            col.getFactField() );
-            return (r != null) ? r : new String[0];
         }
+        return new String[0];
     }
 
-    private String[] getValueList(BRLActionVariableColumn col,
-                                  SuggestionCompletionEngine sce) {
-        String[] r = sce.getEnumValues( col.getFactType(),
-                                        col.getFactField() );
-        return (r != null) ? r : new String[0];
-    }
-
-    private String[] getValueList(BRLConditionVariableColumn col,
-                                  SuggestionCompletionEngine sce) {
-        String[] r = sce.getEnumValues( col.getFactType(),
-                                        col.getFactField() );
-        return (r != null) ? r : new String[0];
-    }
-    
     public boolean hasEnums(BaseColumn col,
                             SuggestionCompletionEngine sce) {
-        if ( col instanceof AttributeCol52 ) {
-            return hasEnums( (AttributeCol52) col,
-                                 sce );
-        } else if ( col instanceof BRLConditionVariableColumn ) {
-            return hasEnums( (BRLConditionVariableColumn) col,
-                                 sce );
-        } else if ( col instanceof ConditionCol52 ) {
+        if ( col instanceof ConditionCol52 ) {
             return hasEnums( (ConditionCol52) col,
                                  sce );
         } else if ( col instanceof ActionSetFieldCol52 ) {
@@ -787,84 +727,68 @@ public class GuidedDecisionTable52
         } else if ( col instanceof ActionInsertFactCol52 ) {
             return hasEnums( (ActionInsertFactCol52) col,
                                  sce );
-        } else if ( col instanceof BRLActionVariableColumn ) {
-            return hasEnums( (BRLActionVariableColumn) col,
-                                 sce );
-        }
-        return false;
-    }
-
-    private boolean hasEnums(AttributeCol52 col,
-                             SuggestionCompletionEngine sce) {
-        if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
-            return true;
         }
         return false;
     }
 
     private boolean hasEnums(ConditionCol52 col,
                              SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return true;
-        } else {
-            Pattern52 pattern = getPattern( col );
-            return sce.hasEnums( pattern.getFactType(),
-                                 col.getFactField() );
-        }
-    }
-
-    public boolean hasEnums(Pattern52 pattern,
-                            ConditionCol52 col,
-                            SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return true;
-        } else {
-            return sce.hasEnums( pattern.getFactType(),
-                                 col.getFactField() );
-        }
+        Pattern52 pattern = getPattern( col );
+        return sce.hasEnums( pattern.getFactType(),
+                             col.getFactField() );
     }
 
     private boolean hasEnums(ActionSetFieldCol52 col,
                              SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return true;
-        } else {
-            return sce.hasEnums( getBoundFactType( col.getBoundName() ),
-                                 col.getFactField() );
-        }
-    }
-
-    public boolean hasEnums(Pattern52 pattern,
-                            ActionSetFieldCol52 col,
-                            SuggestionCompletionEngine sce) {
-        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
-            return true;
-        } else {
-            return sce.hasEnums( pattern.getFactType(),
-                                 col.getFactField() );
-        }
+        return sce.hasEnums( getBoundFactType( col.getBoundName() ),
+                             col.getFactField() );
     }
 
     private boolean hasEnums(ActionInsertFactCol52 col,
                              SuggestionCompletionEngine sce) {
+        return sce.hasEnums( col.getFactType(),
+                             col.getFactField() );
+    }
+
+    public boolean hasValueList(BaseColumn col) {
+        if ( col instanceof AttributeCol52 ) {
+            return hasValueList( (AttributeCol52) col );
+        } else if ( col instanceof ConditionCol52 ) {
+            return hasValueList( (ConditionCol52) col );
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            return hasValueList( (ActionSetFieldCol52) col );
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            return hasValueList( (ActionInsertFactCol52) col );
+        }
+        return false;
+    }
+
+    private boolean hasValueList(AttributeCol52 col) {
+        if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasValueList(ConditionCol52 col) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return true;
-        } else {
-            return sce.hasEnums( col.getFactType(),
-                                 col.getFactField() );
         }
+        return false;
     }
 
-    private boolean hasEnums(BRLActionVariableColumn col,
-                             SuggestionCompletionEngine sce) {
-        return sce.hasEnums( col.getFactType(),
-                             col.getFactField() );
+    private boolean hasValueList(ActionSetFieldCol52 col) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        }
+        return false;
     }
 
-    private boolean hasEnums(BRLConditionVariableColumn col,
-                             SuggestionCompletionEngine sce) {
-        return sce.hasEnums( col.getFactType(),
-                             col.getFactField() );
+    private boolean hasValueList(ActionInsertFactCol52 col) {
+        if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isConstraintValid(DTColumnConfig52 col,

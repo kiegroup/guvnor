@@ -390,7 +390,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 if ( lec.getValue() == null ) {
                     lec.setValue( factory.makeNewValue( chosenConditionsSelection ) );
                 }
-                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenConditionsSelection,
+                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
+                                                                               chosenConditionsSelection,
                                                                                lec.getValue() ) );
             }
 

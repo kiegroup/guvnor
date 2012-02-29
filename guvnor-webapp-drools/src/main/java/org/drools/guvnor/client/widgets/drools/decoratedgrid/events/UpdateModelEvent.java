@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
@@ -35,26 +37,24 @@ public class UpdateModelEvent extends GwtEvent<UpdateModelEvent.Handler> {
         void onUpdateModel(UpdateModelEvent event);
     }
 
-    public static Type<UpdateModelEvent.Handler>              TYPE = new Type<UpdateModelEvent.Handler>();
+    public static Type<UpdateModelEvent.Handler>                               TYPE = new Type<UpdateModelEvent.Handler>();
 
-    //The origin coordinate of the change (top-left)
-    private Coordinate                                        coordinate;
+    //Updated data: Key=Coordinate of start, Value=Cell-row data
+    private Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> updates;
 
-    //The data changes
-    private List<List<CellValue< ? extends Comparable< ? >>>> data;
+    public UpdateModelEvent(Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> updates) {
+        this.updates = updates;
+    }
 
-    public UpdateModelEvent(Coordinate coordinate,
+    public UpdateModelEvent(Coordinate c,
                             List<List<CellValue< ? extends Comparable< ? >>>> data) {
-        this.coordinate = coordinate;
-        this.data = data;
+        this.updates = new HashMap<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>>();
+        this.updates.put( c,
+                          data );
     }
 
-    public Coordinate getOriginCoordinate() {
-        return this.coordinate;
-    }
-
-    public List<List<CellValue< ? extends Comparable< ? >>>> getData() {
-        return this.data;
+    public Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> getUpdates() {
+        return this.updates;
     }
 
     @Override

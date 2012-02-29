@@ -2184,21 +2184,29 @@ public abstract class AbstractDecisionTableWidget extends Composite
     public void onUpdateModel(UpdateModelEvent event) {
 
         //Copy data into the underlying model
-        List<List<CellValue< ? extends Comparable< ? >>>> changedData = event.getData();
-        Coordinate originCoordinate = event.getOriginCoordinate();
-        int originRowIndex = originCoordinate.getRow();
-        int originColumnIndex = originCoordinate.getCol();
+        Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> updates = event.getUpdates();
+        for ( Map.Entry<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> e : updates.entrySet() ) {
 
-        for ( int iRow = 0; iRow < changedData.size(); iRow++ ) {
-            List<CellValue< ? extends Comparable< ? >>> changedRow = changedData.get( iRow );
-            int targetRowIndex = originRowIndex + iRow;
-            for ( int iCol = 0; iCol < changedRow.size(); iCol++ ) {
-                int targetColumnIndex = originColumnIndex + iCol;
-                CellValue< ? extends Comparable< ? >> changedCell = changedRow.get( iCol );
-                DTCellValue52 dcv = cellValueFactory.convertToModelCell( model.getExpandedColumns().get( targetColumnIndex ),
-                                                                         changedCell );
-                model.getData().get( targetRowIndex ).set( targetColumnIndex,
-                                                           dcv );
+            //Coordinate of change
+            Coordinate originCoordinate = e.getKey();
+            int originRowIndex = originCoordinate.getRow();
+            int originColumnIndex = originCoordinate.getCol();
+
+            //Changed data
+            List<List<CellValue< ? extends Comparable< ? >>>> data = e.getValue();
+
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                List<CellValue< ? extends Comparable< ? >>> rowData = data.get( iRow );
+                int targetRowIndex = originRowIndex + iRow;
+                for ( int iCol = 0; iCol < rowData.size(); iCol++ ) {
+                    int targetColumnIndex = originColumnIndex + iCol;
+                    CellValue< ? extends Comparable< ? >> changedCell = rowData.get( iCol );
+                    BaseColumn col = model.getExpandedColumns().get( targetColumnIndex );
+                    DTCellValue52 dcv = cellValueFactory.convertToModelCell( col,
+                                                                             changedCell );
+                    model.getData().get( targetRowIndex ).set( targetColumnIndex,
+                                                               dcv );
+                }
             }
         }
 
