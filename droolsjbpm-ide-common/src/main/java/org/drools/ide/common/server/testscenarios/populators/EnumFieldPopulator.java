@@ -58,7 +58,7 @@ public class EnumFieldPopulator extends FieldPopulator {
                 value = valueOfEnum;
             }
         } else {
-            value = valueOfEnum;
+            value = this.fieldValue;
         }
 
         populateField(value, populatedData);
