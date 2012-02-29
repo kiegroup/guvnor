@@ -23,8 +23,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -847,8 +845,9 @@ public class SuggestionCompletionEngineTest {
                                         null,
                                         "blah" );
         result = sce.getEnums( "Fact",
-                "value", vals
-        ).fixedList;
+                               "value",
+                               vals
+                ).fixedList;
         assertNotNull( result );
         assertEquals( 2,
                       result.length );
@@ -858,8 +857,9 @@ public class SuggestionCompletionEngineTest {
                       result[1] );
 
         assertNull( sce.getEnums( "Nothing",
-                "value", vals
-        ) );
+                                  "value",
+                                  vals
+                ) );
 
     }
 
@@ -1012,8 +1012,9 @@ public class SuggestionCompletionEngineTest {
                                         "f2val",
                                         "blah" );
         dd = sce.getEnums( "Fact",
-                "value", vals
-        );
+                           "value",
+                           vals
+                );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
@@ -1094,8 +1095,9 @@ public class SuggestionCompletionEngineTest {
                                         "f2val",
                                         "blah" );
         dd = sce.getEnums( "Fact",
-                "value", vals
-        );
+                           "value",
+                           vals
+                );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
@@ -1262,7 +1264,7 @@ public class SuggestionCompletionEngineTest {
         }
 
     }
-    
+
     @Test
     public void testDataTypes() {
         String pkg = "package org.test\n import org.drools.DataTypes";
@@ -1331,6 +1333,32 @@ public class SuggestionCompletionEngineTest {
                       engine.getFieldType( "DataTypes",
                                            "fieldShortPrimitive" ) );
 
+    }
+
+    @Test
+    public void testDataHasEnums2() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        enums.add( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        enums );
+
+        //Fact.field1 has explicit enumerations
+        assertTrue( engine.hasEnums( "Fact.field1" ) );
+        assertTrue( engine.hasEnums( "Fact",
+                                     "field1" ) );
+
+        //Fact.field2 has explicit enumerations dependent upon Fact.field1
+        assertTrue( engine.hasEnums( "Fact.field2" ) );
+        assertTrue( engine.hasEnums( "Fact",
+                                     "field2" ) );
     }
 
 }

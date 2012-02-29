@@ -1,0 +1,116 @@
+/*
+ * Copyright 2012 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.drools.guvnor.client.decisiontable.widget;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
+import com.google.gwt.cell.client.Cell.Context;
+
+/**
+ * A utility class to get the values of all Constraints\Actions in the scope of
+ * a Template Key to drive dependent enumerations. A value is in scope if it is
+ * on a Constraint or Action on the same Pattern of the base column.
+ */
+public class DecisionTableDropDownManager
+    implements
+    CellTableDropDownDataValueMapProvider {
+
+    private final GuidedDecisionTable52 model;
+    private final DynamicData           data;
+
+    public DecisionTableDropDownManager(final GuidedDecisionTable52 model,
+                                        final DynamicData data) {
+        this.model = model;
+        this.data = data;
+    }
+
+    /**
+     * Create a map of Field Values keyed on Field Names used by
+     * SuggestionCompletionEngine.getEnums(String, String, Map<String, String>)
+     * to drive dependent enumerations.
+     * 
+     * @param context
+     *            The Context of the cell being edited containing physical
+     *            coordinate in the data-space.
+     */
+    @Override
+    public Map<String, String> getCurrentValueMap(Context context) {
+        Map<String, String> currentValueMap = new HashMap<String, String>();
+
+        final int iBaseRowIndex = context.getIndex();
+        final int iBaseColIndex = context.getColumn();
+        final DynamicDataRow rowData = this.data.get( iBaseRowIndex );
+
+        //Get the column for the cell being edited
+        List<BaseColumn> allColumns = this.model.getExpandedColumns();
+        BaseColumn baseColumn = allColumns.get( iBaseColIndex );
+
+        //Get values for all Constraints or Actions on the same pattern as the baseColumn
+        if ( baseColumn instanceof ConditionCol52 ) {
+            final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
+            final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
+            for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
+                final int iCol = allColumns.indexOf( cc );
+                currentValueMap.put( cc.getFactField(),
+                                     (String) rowData.get( iCol ).getValue() );
+            }
+
+        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
+            ActionSetFieldCol52 baseActionColumn = (ActionSetFieldCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionSetFieldCol52 ) {
+                    final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                    if ( asf.getBoundName().equals( binding ) ) {
+                        final int iCol = allColumns.indexOf( asf );
+                        currentValueMap.put( asf.getFactField(),
+                                             (String) rowData.get( iCol ).getValue() );
+                    }
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
+            ActionInsertFactCol52 baseActionColumn = (ActionInsertFactCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionInsertFactCol52 ) {
+                    final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
+                    if ( aif.getBoundName().equals( binding ) ) {
+                        final int iCol = allColumns.indexOf( aif );
+                        currentValueMap.put( aif.getFactField(),
+                                             (String) rowData.get( iCol ).getValue() );
+                    }
+                }
+            }
+
+        }
+        return currentValueMap;
+    }
+
+}

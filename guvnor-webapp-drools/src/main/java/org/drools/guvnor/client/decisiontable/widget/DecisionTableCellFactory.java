@@ -15,10 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
@@ -27,6 +23,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -44,15 +41,12 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.event.shared.EventBus;
 
 /**
@@ -60,7 +54,8 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
-    private GuidedDecisionTable52 model;
+    private GuidedDecisionTable52                 model;
+    private CellTableDropDownDataValueMapProvider dropDownManager;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -90,6 +85,18 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
+    }
+
+    /**
+     * Set the DropDownManager
+     * 
+     * @param dropDownManager
+     */
+    public void setDropDownManager(CellTableDropDownDataValueMapProvider dropDownManager) {
+        if ( dropDownManager == null ) {
+            throw new IllegalArgumentException( "dropDownManager cannot be null" );
+        }
+        this.dropDownManager = dropDownManager;
     }
 
     /**
@@ -242,7 +249,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell( getFactType( col ),
                                                                     getFactField( col ),
                                                                     sce,
-                                                                    this,
+                                                                    dropDownManager,
                                                                     isReadOnly );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );
@@ -338,58 +345,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             return aif.getFactField();
         }
         throw new IllegalArgumentException( "Unexpected type of DTColumnConfig52 found." );
-    }
-
-    @Override
-    public Map<String, String> getCurrentValueMap(Context context) {
-        Map<String, String> currentValueMap = new HashMap<String, String>();
-
-        final int iBaseRowIndex = context.getIndex();
-        final int iBaseColIndex = context.getColumn();
-        final List<DTCellValue52> rowData = this.model.getData().get( iBaseRowIndex );
-
-        List<BaseColumn> allColumns = this.model.getExpandedColumns();
-        BaseColumn baseColumn = allColumns.get( iBaseColIndex );
-
-        if ( baseColumn instanceof ConditionCol52 ) {
-            final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
-            final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
-            for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
-                final int iCol = allColumns.indexOf( cc );
-                currentValueMap.put( cc.getFactField(),
-                                     rowData.get( iCol ).getStringValue() );
-            }
-
-        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
-            ActionSetFieldCol52 baseActionColumn = (ActionSetFieldCol52) baseColumn;
-            final String binding = baseActionColumn.getBoundName();
-            for ( ActionCol52 ac : this.model.getActionCols() ) {
-                if ( ac instanceof ActionSetFieldCol52 ) {
-                    final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
-                    if ( asf.getBoundName().equals( binding ) ) {
-                        final int iCol = allColumns.indexOf( asf );
-                        currentValueMap.put( asf.getFactField(),
-                                             rowData.get( iCol ).getStringValue() );
-                    }
-                }
-            }
-
-        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
-            ActionInsertFactCol52 baseActionColumn = (ActionInsertFactCol52) baseColumn;
-            final String binding = baseActionColumn.getBoundName();
-            for ( ActionCol52 ac : this.model.getActionCols() ) {
-                if ( ac instanceof ActionInsertFactCol52 ) {
-                    final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
-                    if ( aif.getBoundName().equals( binding ) ) {
-                        final int iCol = allColumns.indexOf( aif );
-                        currentValueMap.put( aif.getFactField(),
-                                             rowData.get( iCol ).getStringValue() );
-                    }
-                }
-            }
-
-        }
-        return currentValueMap;
     }
 
 }

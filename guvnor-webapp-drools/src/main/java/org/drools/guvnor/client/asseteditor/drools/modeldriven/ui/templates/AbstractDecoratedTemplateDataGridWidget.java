@@ -76,10 +76,15 @@ public abstract class AbstractDecoratedTemplateDataGridWidget extends AbstractDe
 
     public void onSetModel(SetModelEvent<TemplateModel> event) {
 
-        TemplateModel model = event.getModel();
-
         DynamicData data = new DynamicData();
+        TemplateModel model = event.getModel();
         List<DynamicColumn<TemplateDataColumn>> columns = new ArrayList<DynamicColumn<TemplateDataColumn>>();
+
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //for dependent enumerations. This needs to be called before the columns are created.
+        this.cellFactory.setDropDownManager( new TemplateDropDownManager( model,
+                                                                          data ) );
+
         setupInternalModel( model,
                             columns,
                             data );

@@ -103,10 +103,15 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
     public void onSetModel(SetModelEvent<GuidedDecisionTable52> event) {
 
-        GuidedDecisionTable52 model = event.getModel();
-
         DynamicData data = new DynamicData();
+        GuidedDecisionTable52 model = event.getModel();
         List<DynamicColumn<BaseColumn>> columns = new ArrayList<DynamicColumn<BaseColumn>>();
+
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //for dependent enumerations. This needs to be called before the columns are created.
+        this.cellFactory.setDropDownManager( new DecisionTableDropDownManager( model,
+                                                                               data ) );
+
         setupInternalModel( model,
                             columns,
                             data );

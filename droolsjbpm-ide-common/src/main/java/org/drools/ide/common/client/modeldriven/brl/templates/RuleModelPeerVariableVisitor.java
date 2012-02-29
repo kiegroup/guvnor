@@ -136,19 +136,43 @@ public class RuleModelPeerVariableVisitor {
     }
 
     private boolean isParentFactPattern(final FactPattern fp) {
-        boolean isParent = false;
         for ( FieldConstraint fc : fp.getFieldConstraints() ) {
-            if ( fc instanceof SingleFieldConstraint ) {
-                final SingleFieldConstraint sfc = (SingleFieldConstraint) fc;
-                if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_TEMPLATE ) {
-                    if ( sfc.getValue().equals( this.baseVariableName ) ) {
-                        isParent = true;
-                        break;
-                    }
+            if ( isParentFactPattern( fc ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isParentFactPattern(FieldConstraint fc) {
+        if ( fc instanceof SingleFieldConstraint ) {
+            final SingleFieldConstraint sfc = (SingleFieldConstraint) fc;
+            return isParentFactPattern( sfc );
+        } else if ( fc instanceof CompositeFieldConstraint ) {
+            final CompositeFieldConstraint cfc = (CompositeFieldConstraint) fc;
+            return isParentFactPattern( cfc );
+        }
+        return false;
+    }
+
+    private boolean isParentFactPattern(final SingleFieldConstraint sfc) {
+        if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_TEMPLATE ) {
+            if ( sfc.getValue().equals( this.baseVariableName ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isParentFactPattern(final CompositeFieldConstraint cfc) {
+        if ( cfc.compositeJunctionType.equals( CompositeFieldConstraint.COMPOSITE_TYPE_AND ) ) {
+            for ( FieldConstraint fc : cfc.constraints ) {
+                if ( isParentFactPattern( fc ) ) {
+                    return true;
                 }
             }
         }
-        return isParent;
+        return false;
     }
 
     private void visitCompositeFactPattern(final CompositeFactPattern cfp) {
@@ -214,8 +238,8 @@ public class RuleModelPeerVariableVisitor {
                     addVariables = true;
                 }
                 ValueHolder vh = new ValueHolder( afv.getField(),
-                                                   afv.getValue(),
-                                                   ValueHolder.Type.TEMPLATE_KEY );
+                                                  afv.getValue(),
+                                                  ValueHolder.Type.TEMPLATE_KEY );
                 variables.add( vh );
             } else {
                 ValueHolder vh = new ValueHolder( afv.getField(),
