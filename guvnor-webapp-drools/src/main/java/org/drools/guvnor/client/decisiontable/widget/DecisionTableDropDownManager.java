@@ -45,6 +45,8 @@ public class DecisionTableDropDownManager
     private final GuidedDecisionTable52 model;
     private final DynamicData           data;
 
+    //TODO {manstis} This needs the UI columns NOT model. 
+    //The model may not have been updated before the cell is rendered.
     public DecisionTableDropDownManager(final GuidedDecisionTable52 model,
                                         final DynamicData data) {
         this.model = model;

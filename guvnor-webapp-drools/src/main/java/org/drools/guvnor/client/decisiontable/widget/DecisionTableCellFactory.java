@@ -27,7 +27,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -44,7 +43,6 @@ import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
@@ -150,7 +148,11 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 cell = makeBooleanCell();
             }
 
+        } else if ( column instanceof LimitedEntryCol ) {
+            cell = makeBooleanCell();
+
         } else if ( column instanceof BRLConditionVariableColumn ) {
+            //Before ConditionCol52 as this is a sub-class
             cell = derieveCellFromCondition( (BRLConditionVariableColumn) column );
 
         } else if ( column instanceof ConditionCol52 ) {
@@ -176,9 +178,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         } else if ( column instanceof ActionWorkItemCol52 ) {
             cell = makeBooleanCell();
 
-        } else if ( column instanceof LimitedEntryBRLActionColumn ) {
-            cell = derieveCellFromAction( (LimitedEntryBRLActionColumn) column );
-
         } else if ( column instanceof BRLActionVariableColumn ) {
             cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
@@ -193,37 +192,79 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     // Make a new Cell for Condition columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromCondition(ConditionCol52 col) {
 
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
-        }
-
         //Operators "is null" and "is not null" require a boolean cell
         if ( col.getOperator() != null && (col.getOperator().equals( "== null" ) || col.getOperator().equals( "!= null" )) ) {
             return makeBooleanCell();
         }
 
-        return derieveCellFromModel( col );
-    }
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = model.getPattern( col ).getFactType();
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
 
-    // Make a new Cell for Actions columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionCol52 col) {
-
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
         }
 
         return derieveCellFromModel( col );
     }
 
-    // Make a new Cell for Actions columns
+    // Make a new Cell for BRLConditionVariableColumn columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromCondition(BRLConditionVariableColumn col) {
+
+        //Check if the column has an enumeration
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( sce.hasEnums( factType,
+                           fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionSetField columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionSetFieldCol52 col) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = model.getBoundFactType( col.getBoundName() );
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
+
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionInsertFact columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionInsertFactCol52 col) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
+
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionRetractFactCol52 columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionRetractFactCol52 col) {
-
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
-        }
 
         //Drop down of possible patterns
         PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus,
@@ -234,45 +275,30 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                                                           eventBus );
     }
 
+    // Make a new Cell for BRLActionVariableColumn columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(BRLActionVariableColumn col) {
+
+        //Check if the column has an enumeration
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( sce.hasEnums( factType,
+                           fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
     //Get Cell applicable to Model's data-type
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromModel(DTColumnConfig52 col) {
 
         //Extended Entry...
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
 
-        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        if ( model.hasValueList( col ) ) {
-
-            // Columns with "Value Lists" are always Text (for now)
-            PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col,
-                                                                                                          sce ),
-                                                                                      isReadOnly );
-            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
-                                                              eventBus );
-            return cell;
-
-        } else if ( model.hasEnums( col,
-                                    sce ) ) {
-
-            // Columns with enumerations are always Text
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell( getFactType( col ),
-                                                                    getFactField( col ),
-                                                                    sce,
-                                                                    dropDownManager,
-                                                                    isReadOnly );
-            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
-                                                              eventBus );
-            return cell;
-        }
-
         //Get a cell based upon the data-type
         String type = model.getType( col,
                                      sce );
-
-        //Null means the field is free-format
-        if ( type == null ) {
-            return cell;
-        }
 
         if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             cell = makeNumericCell();
@@ -332,32 +358,31 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                                                             eventBus );
     }
 
-    private String getFactType(DTColumnConfig52 col) {
-        if ( col instanceof ConditionCol52 ) {
-            ConditionCol52 cc = (ConditionCol52) col;
-            return model.getPattern( cc ).getFactType();
-        } else if ( col instanceof ActionSetFieldCol52 ) {
-            ActionSetFieldCol52 asf = (ActionSetFieldCol52) col;
-            return model.getConditionPattern( asf.getBoundName() ).getFactType();
-        } else if ( col instanceof ActionInsertFactCol52 ) {
-            ActionInsertFactCol52 aif = (ActionInsertFactCol52) col;
-            return aif.getFactType();
-        }
-        throw new IllegalArgumentException( "Unexpected type of DTColumnConfig52 found." );
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> makeValueListCell(DTColumnConfig52 col) {
+
+        // Columns with "Value Lists" are always Text (for now)
+        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col,
+                                                                                                      sce ),
+                                                                                  isReadOnly );
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                                                                                    eventBus );
+        return cell;
     }
 
-    private String getFactField(DTColumnConfig52 col) {
-        if ( col instanceof ConditionCol52 ) {
-            ConditionCol52 cc = (ConditionCol52) col;
-            return cc.getFactField();
-        } else if ( col instanceof ActionSetFieldCol52 ) {
-            ActionSetFieldCol52 asf = (ActionSetFieldCol52) col;
-            return asf.getFactField();
-        } else if ( col instanceof ActionInsertFactCol52 ) {
-            ActionInsertFactCol52 aif = (ActionInsertFactCol52) col;
-            return aif.getFactField();
-        }
-        throw new IllegalArgumentException( "Unexpected type of DTColumnConfig52 found." );
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> makeEnumCell(String factType,
+                                                                                   String fieldName) {
+
+        // Columns with enumerations are always Text
+        PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
+                                                                fieldName,
+                                                                sce,
+                                                                dropDownManager,
+                                                                isReadOnly );
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                                                                                    eventBus );
+        return cell;
     }
 
 }

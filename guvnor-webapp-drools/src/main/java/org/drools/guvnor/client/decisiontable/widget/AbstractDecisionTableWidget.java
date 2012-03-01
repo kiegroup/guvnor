@@ -1299,8 +1299,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
                 LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
                 LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-                if ( isEqualOrNull( lecOrig.getValue(),
-                                    lecEditing.getValue() ) ) {
+                if ( !isEqualOrNull( lecOrig.getValue(),
+                                     lecEditing.getValue() ) ) {
                     bUpdateColumnDefinition = true;
                 }
             }
@@ -1463,13 +1463,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return false;
     }
 
-    // Find the right-most index for an Action column
-    private int findActionColumnIndex() {
-        int analysisColumnsSize = 1;
-        int index = model.getExpandedColumns().size() - analysisColumnsSize;
-        return index;
-    }
-
     // Find the right-most index for a Attribute column
     private int findAttributeColumnIndex() {
         int index = 0;
@@ -1483,6 +1476,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
             } else if ( column instanceof MetadataCol52 ) {
                 index = iCol;
             } else if ( column instanceof AttributeCol52 ) {
+                index = iCol;
+            }
+        }
+        return index + 1;
+    }
+
+    // Find the right-most index for a Metadata column
+    private int findMetadataColumnIndex() {
+        int index = 0;
+        List<BaseColumn> columns = model.getExpandedColumns();
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            BaseColumn column = columns.get( iCol );
+            if ( column instanceof RowNumberCol52 ) {
+                index = iCol;
+            } else if ( column instanceof DescriptionCol52 ) {
+                index = iCol;
+            } else if ( column instanceof MetadataCol52 ) {
                 index = iCol;
             }
         }
@@ -1517,21 +1527,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return index;
     }
 
-    // Find the right-most index for a Metadata column
-    private int findMetadataColumnIndex() {
-        int index = 0;
-        List<BaseColumn> columns = model.getExpandedColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            BaseColumn column = columns.get( iCol );
-            if ( column instanceof RowNumberCol52 ) {
-                index = iCol;
-            } else if ( column instanceof DescriptionCol52 ) {
-                index = iCol;
-            } else if ( column instanceof MetadataCol52 ) {
-                index = iCol;
-            }
-        }
-        return index + 1;
+    // Find the right-most index for an Action column
+    private int findActionColumnIndex() {
+        int analysisColumnsSize = 1;
+        int index = model.getExpandedColumns().size() - analysisColumnsSize;
+        return index;
     }
 
     // Retrieve the data for a particular column

@@ -185,7 +185,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
                     constraintWidget = wrap( new DefaultLiteralEditor( this.constraint,
-                                                                       this.fieldType ) );
+                                                                       SuggestionCompletionEngine.TYPE_STRING ) );
                     break;
                 default :
                     break;

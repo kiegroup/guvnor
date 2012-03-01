@@ -126,8 +126,8 @@ public class GuidedDecisionTableTest {
         sce.putDataEnumList( "Person.rating",
                              new String[]{"1", "2"} );
 
-        assertTrue( dt.hasEnums( c1,
-                                 sce ) );
+        assertTrue( sce.hasEnums( p1.getFactType(),
+                                  c1.getFactField() ) );
         assertFalse( dt.hasValueList( c1 ) );
         String[] r = sce.getEnums( p1.getFactType(),
                                    c1.getFactField(),
@@ -139,8 +139,8 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        assertTrue( dt.hasEnums( c1_,
-                                 sce ) );
+        assertTrue( sce.hasEnums( p1_.getFactType(),
+                                  c1_.getFactField() ) );
         assertFalse( dt.hasValueList( c1_ ) );
         r = sce.getEnums( p1_.getFactType(),
                           c1_.getFactField(),
@@ -152,8 +152,8 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        assertFalse( dt.hasEnums( c1__,
-                                  sce ) );
+        assertFalse( sce.hasEnums( p1_.getFactType(),
+                                   c1__.getFactField() ) );
         assertTrue( dt.hasValueList( c1__ ) );
         r = dt.getValueList( c1__,
                              sce );
@@ -164,8 +164,8 @@ public class GuidedDecisionTableTest {
         assertEquals( "Female",
                       r[1] );
 
-        assertTrue( dt.hasEnums( c1___,
-                                 sce ) );
+        assertTrue( sce.hasEnums( p1__.getFactType(),
+                                  c1___.getFactField() ) );
         assertTrue( dt.hasValueList( c1___ ) );
         r = dt.getValueList( c1___,
                              sce );
@@ -182,8 +182,8 @@ public class GuidedDecisionTableTest {
                       dt.getValueList( c2,
                                        sce ).length );
 
-        assertTrue( dt.hasEnums( asf,
-                                 sce ) );
+        assertTrue( sce.hasEnums( p1.getFactType(),
+                                  asf.getFactField() ) );
         assertFalse( dt.hasValueList( asf ) );
         r = sce.getEnums( p1.getFactType(),
                           asf.getFactField(),
@@ -195,8 +195,8 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        assertTrue( dt.hasEnums( ins,
-                                 sce ) );
+        assertTrue( sce.hasEnums( ins.getFactType(),
+                                  ins.getFactField() ) );
         assertFalse( dt.hasValueList( ins ) );
         r = sce.getEnums( ins.getFactType(),
                           ins.getFactField(),
@@ -208,8 +208,8 @@ public class GuidedDecisionTableTest {
         assertEquals( "2",
                       r[1] );
 
-        assertTrue( dt.hasEnums( ins_,
-                                 sce ) );
+        assertTrue( sce.hasEnums( ins_.getFactType(),
+                                  ins_.getFactField() ) );
         assertTrue( dt.hasValueList( ins_ ) );
         r = dt.getValueList( ins_,
                              sce );
@@ -226,8 +226,8 @@ public class GuidedDecisionTableTest {
                       dt.getValueList( asf_,
                                        sce ).length );
 
-        assertFalse( dt.hasEnums( asf__,
-                                  sce ) );
+        assertFalse( sce.hasEnums( p1.getFactType(),
+                                   asf__.getFactField() ) );
         assertTrue( dt.hasValueList( asf__ ) );
         r = dt.getValueList( asf__,
                              sce );
@@ -373,7 +373,7 @@ public class GuidedDecisionTableTest {
                       dt.getType( ins,
                                   sce ) );
 
-        assertEquals( null,
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       dt.getType( c2,
                                   sce ) );
     }
@@ -504,7 +504,7 @@ public class GuidedDecisionTableTest {
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
                       dt.getType( ins_,
                                   sce ) );
-        assertEquals( null,
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       dt.getType( conditionColAge2,
                                   sce ) );
     }

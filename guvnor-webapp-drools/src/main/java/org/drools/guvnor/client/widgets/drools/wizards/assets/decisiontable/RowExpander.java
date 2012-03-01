@@ -17,11 +17,13 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -113,17 +115,33 @@ public class RowExpander {
 
     private void addColumn(Pattern52 p) {
         for ( ConditionCol52 c : p.getChildColumns() ) {
-            addColumn( c );
+            addColumn( p,
+                       c );
         }
     }
 
-    private void addColumn(ConditionCol52 c) {
+    private void addColumn(Pattern52 p,
+                           ConditionCol52 c) {
         String[] values = new String[]{};
         switch ( dtable.getTableFormat() ) {
             case EXTENDED_ENTRY :
-                values = dtable.getValueList( c,
-                                              sce );
-                values = getValues( values );
+                if ( dtable.hasValueList( c ) ) {
+                    values = dtable.getValueList( c,
+                                                  sce );
+                    values = getValues( values );
+                } else if ( sce.hasEnums( p.getFactType(),
+                                          c.getFactField() ) ) {
+                    //TODO {manstis} This needs to be derived from the model
+                    Map<String, String> currentValueMap = new HashMap<String, String>();
+                    DropDownData dd = sce.getEnums( p.getFactType(),
+                                                    c.getFactField(),
+                                                    currentValueMap );
+                    if ( dd == null ) {
+                        values = EMPTY_VALUE;
+                    } else {
+                        values = getValues( dd.fixedList );
+                    }
+                }
                 break;
             case LIMITED_ENTRY :
                 values = new String[]{"true", "false"};

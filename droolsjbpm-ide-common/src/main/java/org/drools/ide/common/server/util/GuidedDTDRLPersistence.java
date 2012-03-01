@@ -260,9 +260,27 @@ public class GuidedDTDRLPersistence {
             }
 
             if ( addAction ) {
-                LabelledAction la = new LabelledAction();
-                la.action = action;
-                actions.add( la );
+                String binding = null;
+                LabelledAction a = null;
+                if ( action instanceof ActionInsertFact ) {
+                    final ActionInsertFact af = (ActionInsertFact) action;
+                    binding = af.getBoundName();
+                    a = findByLabelledAction( actions,
+                                              binding );
+
+                } else if ( action instanceof ActionSetField ) {
+                    final ActionSetField af = (ActionSetField) action;
+                    binding = af.variable;
+                    a = findByLabelledAction( actions,
+                                              binding );
+                }
+
+                if ( a == null && binding != null ) {
+                    a = new LabelledAction();
+                    a.boundName = binding;
+                    a.action = action;
+                    actions.add( a );
+                }
             }
 
         }
