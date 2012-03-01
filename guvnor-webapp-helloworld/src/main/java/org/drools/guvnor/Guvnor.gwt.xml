@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+
+  <inherits name="org.drools.guvnor.GuvnorCore"/>
+
+  <!-- Here we put different locales (translations) There are of the form 
+values="xx_YY" - which match to Constants_xx_YY.properties which contain
+the content. You then access then in the timetime app via &locale=xx_YY at
+the end of the URL. <extend-property name="locale" values="fr"/> -->
+
+  <extend-property name="locale" values="es_ES"/>
+  <extend-property name="locale" values="zh_CN"/>
+  <extend-property name="locale" values="ja_JP"/>
+  <extend-property name="locale" values="pt_BR"/>
+  <extend-property name="locale" values="fr_FR"/>
+
+  <!-- Specify the app entry point class. -->
+  <entry-point class="org.drools.guvnor.client.HelloWorldEntryPoint"/>
+
+  <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
+
+  <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
+    <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
+  </generate-with>
+
+  <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
+    <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
+  </generate-with>
+
+</module>

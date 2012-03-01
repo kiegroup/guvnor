@@ -16,56 +16,11 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.FindPlace;
-import org.drools.guvnor.client.explorer.MultiActivityManager;
-import org.drools.guvnor.client.perspective.PerspectivesPanel;
 
-public class AppController {
+public interface AppController {
 
-    private final ClientFactory clientFactory;
+    void setUserName(String userName);
 
-    private final PerspectivesPanel perspectivesPanel;
-    private final EventBus eventBus;
-
-    public AppController(
-            ClientFactory clientFactory,
-            EventBus eventBus) {
-        this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
-
-        perspectivesPanel = createPerspectivesPanel();
-        setUpActivityMapper();
-        setUpHistoryMapper();
-    }
-
-    private void setUpHistoryMapper() {
-        PlaceHistoryHandler historyHandler = clientFactory.getPlaceHistoryHandler();
-        historyHandler.register(
-                clientFactory.getPlaceController(),
-                eventBus,
-                new FindPlace());
-
-        //historyHandler.handleCurrentHistory();
-    }
-
-    private PerspectivesPanel createPerspectivesPanel() {
-        return new PerspectivesPanel(clientFactory, eventBus);
-    }
-
-    private void setUpActivityMapper() {
-        MultiActivityManager activityManager = clientFactory.getActivityManager();
-        activityManager.setTabbedPanel(perspectivesPanel.getTabbedPanel());
-    }
-
-    public IsWidget getMainPanel() {
-        return perspectivesPanel.getView();
-    }
-
-    public void setUserName(String userName) {
-        perspectivesPanel.setUserName(userName);
-    }
+    IsWidget getMainPanel();
 }

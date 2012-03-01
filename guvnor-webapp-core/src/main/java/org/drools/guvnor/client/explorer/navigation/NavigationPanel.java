@@ -48,7 +48,7 @@ public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget
     }
 
     private void addNavigationItems(ChangePerspectiveEvent changePerspectiveEvent) {
-        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective().getBuilders(clientFactory, eventBus)) {
+        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getWorkspace().getBuilders(clientFactory, eventBus)) {
             addNavigationItem(navigationItemBuilder);
         }
     }

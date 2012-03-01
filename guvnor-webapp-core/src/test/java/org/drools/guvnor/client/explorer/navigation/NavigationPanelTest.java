@@ -30,7 +30,7 @@ import com.google.web.bindery.event.shared.Event;
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
-import org.drools.guvnor.client.perspective.Perspective;
+import org.drools.guvnor.client.perspective.Workspace;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -73,7 +73,7 @@ public class NavigationPanelTest {
     @Test
     public void testPerspectiveChange() throws Exception {
 
-        Perspective perspective = mock(Perspective.class);
+        Workspace workspace = mock(Workspace.class);
         ArrayList<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
         final IsWidget header = mock(IsWidget.class);
@@ -84,12 +84,12 @@ public class NavigationPanelTest {
         navigationItemBuilders.add(createNavigationItemBuilder(true, header, content));
         navigationItemBuilders.add(createNavigationItemBuilder(false, headerThatIsNeverShown, contentThatIsNeverShown));
         when(
-                perspective.getBuilders(eq(clientFactory), any(ResettableEventBus.class))
+                workspace.getBuilders(eq(clientFactory), any(ResettableEventBus.class))
         ).thenReturn(
                 navigationItemBuilders
         );
 
-        presenter.onChangePerspective(new ChangePerspectiveEvent(perspective));
+        presenter.onChangePerspective(new ChangePerspectiveEvent(workspace));
 
         verify(view).clear();
         verify(view).add(header, content);
@@ -98,16 +98,16 @@ public class NavigationPanelTest {
 
     @Test
     public void testEventBusClearedOnPerspectiveChange() throws Exception {
-        Perspective perspective = mock(Perspective.class);
+        Workspace workspace = mock(Workspace.class);
 
         ArgumentCaptor<ResettableEventBus> resettableEventBusArgumentCaptor = ArgumentCaptor.forClass(ResettableEventBus.class);
         when(
-                perspective.getBuilders(eq(clientFactory), resettableEventBusArgumentCaptor.capture())
+                workspace.getBuilders(eq(clientFactory), resettableEventBusArgumentCaptor.capture())
         ).thenReturn(
                 Collections.<NavigationItemBuilder>emptyList()
         );
 
-        presenter.onChangePerspective(new ChangePerspectiveEvent(perspective));
+        presenter.onChangePerspective(new ChangePerspectiveEvent(workspace));
 
         resettableEventBusArgumentCaptor.getValue().addHandler(RefreshAssetEditorEvent.TYPE, new RefreshAssetEditorEvent.Handler() {
             public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
@@ -115,7 +115,7 @@ public class NavigationPanelTest {
             }
         });
 
-        presenter.onChangePerspective(new ChangePerspectiveEvent(perspective));
+        presenter.onChangePerspective(new ChangePerspectiveEvent(workspace));
 
         verify(handlerRegistration).removeHandler();
     }

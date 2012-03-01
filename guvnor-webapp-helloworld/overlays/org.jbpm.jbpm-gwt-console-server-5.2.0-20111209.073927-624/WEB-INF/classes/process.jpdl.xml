@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="StateSequence" xmlns="http://jbpm.org/4/jpdl">
+
+  <start g="16,18,48,48">
+    <flow to="a" />
+  </start>
+
+  <state name="a" g="96,16,75,52">
+    <flow to="b" />
+  </state>
+
+  <state name="b" g="203,16,73,52">
+    <flow to="c" />
+  </state>
+
+  <state name="c" g="308,16,76,52" >
+    <flow to="end"/>
+  </state>
+
+  <end name="end" g="239,40,48,48"/>
+
+</process>

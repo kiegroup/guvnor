@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>JBoss Guvnor for Drools</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <!--<filter>-->
+    <!--<filter-name>Seam Filter</filter-name>-->
+    <!--<filter-class>org.jboss.seam.web.ContextFilter</filter-class>-->
+  <!--</filter>-->
+  <!--<filter-mapping>-->
+    <!--<filter-name>Seam Filter</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+  <!--</filter-mapping>-->
+  <listener>
+    <listener-class>org.drools.guvnor.server.repository.SafeWeldListener</listener-class>
+  </listener>
+
+  <!-- TODO this might be needed due to the migration from seam 2 to seam 3
+    TODO Or instead, all the usages of @WebRemote are dead code (GUVNOR-1520):
+    - there is no SeamResourceServlet to activate them
+    - PackageDeploymentServlet does the old stuff for jbpm-console
+    - jaxrs does the new REST stuff
+  -->
+  <!--<servlet>-->
+    <!--<servlet-name>Remoting Servlet</servlet-name>-->
+    <!--<servlet-class>org.jboss.seam.remoting.Remoting</servlet-class>-->
+    <!--<load-on-startup>1</load-on-startup>-->
+  <!--</servlet>-->
+  <!--<servlet-mapping>-->
+    <!--<servlet-name>Remoting Servlet</servlet-name>-->
+    <!--<url-pattern>/seam/resource/remoting/*</url-pattern>-->
+  <!--</servlet-mapping>-->
+
+  <!-- servlets - mostly to do with file management -->
+  <servlet>
+    <servlet-name>CXFServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.jaxrs.HackInjectCXFNonSpringJaxrsServlet</servlet-class>
+    <init-param>
+      <param-name>jaxrs.serviceClasses</param-name>
+      <param-value>
+        org.drools.guvnor.server.jaxrs.PackageResource
+        org.drools.guvnor.server.jaxrs.CategoryResource		      
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.providers</param-name>
+      <param-value>
+        org.apache.cxf.jaxrs.provider.AtomEntryProvider
+        org.apache.cxf.jaxrs.provider.AtomFeedProvider
+        org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
+      </param-value>
+    </init-param>
+    <!-- Use per-request life-cycle -->
+    <!-- Enabling this breaks CDI injection in HackInjectCXFNonSpringJaxrsServlet -->
+    <!--<init-param>-->
+      <!--<param-name>jaxrs.scope</param-name>-->
+      <!--<param-value>prototype</param-value>-->
+    <!--</init-param>-->
+  </servlet>
+  <servlet>
+    <servlet-name>guvnorService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>securityService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AssetFileServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.AssetFileServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>PackageDeploymentServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.PackageDeploymentServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RepositoryBackupServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.RepositoryBackupServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WebdavServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.WebdavServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RestAPIServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.RestAPIServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ActionsAPIServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.ActionsAPIServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>FeedServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.FeedServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WorkflowManagerServlet</servlet-name>
+    <servlet-class>org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WSDLParserServlet</servlet-name>
+    <servlet-class>org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>guvnorAPI</servlet-name>
+    <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>verificationService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>configurationService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.ConfigurationServiceImplementation</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>OryxEditorServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.files.OryxEditorServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>StandaloneEditorServlet</servlet-name>
+    <servlet-class>org.drools.guvnor.server.StandaloneEditorServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
+    <servlet-class>org.drools.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CXFServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OryxEditorServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/oryxeditor/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StandaloneEditorServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorServlet/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>guvnorService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>securityService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AssetFileServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/asset</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PackageDeploymentServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/package/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RepositoryBackupServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/backup</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WebdavServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/webdav/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RestAPIServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ActionsAPIServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/action/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>FeedServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WorkflowManagerServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/workflowmanager/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WSDLParserServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>guvnorAPI</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>verificationService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>configurationService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/configurationService</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>180</session-timeout>
+  </session-config>
+
+  <resource-env-ref><!-- Needed to make weld/arquillian work on tomcat6, jetty6 and jetty7 -->
+    <resource-env-ref-name>BeanManager</resource-env-ref-name>
+    <resource-env-ref-type>
+      javax.enterprise.inject.spi.BeanManager
+    </resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

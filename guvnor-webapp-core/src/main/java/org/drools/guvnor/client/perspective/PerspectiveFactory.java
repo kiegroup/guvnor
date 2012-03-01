@@ -40,5 +40,5 @@ public interface PerspectiveFactory {
     
     public Widget getAssetEditorActionToolbar(String perspectiveType, Asset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly);    
     
-    public Perspective getPerspective(String perspectiveType);
+    public Workspace getPerspective(String perspectiveType);
  }

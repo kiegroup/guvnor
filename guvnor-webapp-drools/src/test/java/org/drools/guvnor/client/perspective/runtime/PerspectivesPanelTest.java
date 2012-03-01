@@ -30,8 +30,7 @@ import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
-import org.drools.guvnor.client.perspective.runtime.RunTimePerspective;
+import org.drools.guvnor.client.perspective.drools.AuthorWorkspace;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,14 +73,14 @@ public class PerspectivesPanelTest {
         when(
                 perspectiveFactory.getPerspective("author")
         ).thenReturn(
-                new AuthorPerspective()
+                new AuthorWorkspace()
                 
         );
         
         when(
                 perspectiveFactory.getPerspective("runtime")
         ).thenReturn(
-                new RunTimePerspective()
+                new RunTimeWorkspace()
                 
         );        
         
@@ -137,14 +136,14 @@ public class PerspectivesPanelTest {
         presenter.onChangePerspective("runtime");
 
         assertTrue(eventBus.getLatestEvent() instanceof ChangePerspectiveEvent);
-        assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getPerspective() instanceof RunTimePerspective);
+        assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getWorkspace() instanceof RunTimeWorkspace);
     }
 
     private void verifyPerspectiveChangedToAuthor(int times) {
         ArgumentCaptor<ChangePerspectiveEvent> changePerspectiveEventArgumentCaptor = ArgumentCaptor.forClass(ChangePerspectiveEvent.class);
         verify(eventBus, times(times)).fireEvent(changePerspectiveEventArgumentCaptor.capture());
 
-        assertTrue(changePerspectiveEventArgumentCaptor.getValue().getPerspective() instanceof AuthorPerspective);
+        assertTrue(changePerspectiveEventArgumentCaptor.getValue().getWorkspace() instanceof AuthorWorkspace);
     }
 
     class EventBusMock extends EventBus {
