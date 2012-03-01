@@ -252,7 +252,7 @@ public class PackageResource extends Resource {
                 result = p.getCompiledPackageBytes();
             } else {
                 BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
-                if (builderResult != null) {
+                if (builderResult != null && !builderResult.getLines().isEmpty()) {
                     StringBuilder errs = new StringBuilder();
                     errs.append("Unable to build package name [").append(packageName).append("]\n");
                     for (BuilderResultLine resultLine : builderResult.getLines()) {
