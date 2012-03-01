@@ -120,6 +120,9 @@ public class DecisionTableDropDownManager
         if ( dcv == null || dcv.getValue() == null ) {
             return "";
         }
+        //The generic class CellValue can have different data-types however enumerations
+        //in a Decision Table are always String-based hence we can safely call toString()
+        //to retrieve the correct String representation of the CellValue's value.
         return dcv.getValue().toString();
     }
 

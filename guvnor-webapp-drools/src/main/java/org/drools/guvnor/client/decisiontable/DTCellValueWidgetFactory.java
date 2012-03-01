@@ -18,7 +18,6 @@ package org.drools.guvnor.client.decisiontable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.AbstractRestrictedEntryTextBox;
@@ -33,6 +32,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTe
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -63,18 +63,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DTCellValueWidgetFactory {
 
-    private final GuidedDecisionTable52      dtable;
-    private final SuggestionCompletionEngine sce;
-    private final boolean                    isReadOnly;
+    private final SuggestionCompletionEngine  sce;
+    private final GuidedDecisionTable52       dtable;
+    private final LimitedEntryDropDownManager dropDownManager;
+    private final boolean                     isReadOnly;
 
-    private static final String              DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat      format      = DateTimeFormat.getFormat( DATE_FORMAT );
+    private static final String               DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final DateTimeFormat       format      = DateTimeFormat.getFormat( DATE_FORMAT );
 
     public DTCellValueWidgetFactory(GuidedDecisionTable52 dtable,
                                     SuggestionCompletionEngine sce,
                                     boolean isReadOnly) {
         this.sce = sce;
         this.dtable = dtable;
+        this.dropDownManager = new LimitedEntryDropDownManager( dtable );
         this.isReadOnly = isReadOnly;
     }
 
@@ -127,11 +129,12 @@ public class DTCellValueWidgetFactory {
 
         if ( sce.hasEnums( pattern.getFactType(),
                            column.getFactField() ) ) {
-            //TODO {manstis} This needs to be derived from the model
-            Map<String, String> currentValueMap = new HashMap<String, String>();
-            DropDownData dd = sce.getEnums( pattern.getFactType(),
-                                            column.getFactField(),
-                                            currentValueMap );
+            final Context context = new Context( pattern,
+                                                 column );
+            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
+            final DropDownData dd = sce.getEnums( pattern.getFactType(),
+                                                  column.getFactField(),
+                                                  currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
                                     value );
@@ -206,11 +209,12 @@ public class DTCellValueWidgetFactory {
 
         if ( sce.hasEnums( pattern.getFactType(),
                            column.getFactField() ) ) {
-            //TODO {manstis} This needs to be derived from the model
-            Map<String, String> currentValueMap = new HashMap<String, String>();
-            DropDownData dd = sce.getEnums( pattern.getFactType(),
-                                            column.getFactField(),
-                                            currentValueMap );
+            final Context context = new Context( pattern,
+                                                 column );
+            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
+            final DropDownData dd = sce.getEnums( pattern.getFactType(),
+                                                  column.getFactField(),
+                                                  currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
                                     value );
@@ -264,11 +268,11 @@ public class DTCellValueWidgetFactory {
 
         if ( sce.hasEnums( column.getFactType(),
                            column.getFactField() ) ) {
-            //TODO {manstis} This needs to be derived from the model
-            Map<String, String> currentValueMap = new HashMap<String, String>();
-            DropDownData dd = sce.getEnums( column.getFactType(),
-                                            column.getFactField(),
-                                            currentValueMap );
+            final Context context = new Context( column );
+            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
+            final DropDownData dd = sce.getEnums( column.getFactType(),
+                                                  column.getFactField(),
+                                                  currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
                                     value );

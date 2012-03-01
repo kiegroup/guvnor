@@ -17,12 +17,13 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager;
+import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -44,12 +45,14 @@ import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
  */
 public class RowExpander {
 
-    private Map<BaseColumn, ColumnValues> expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
-    private List<ColumnValues>            columns;
-    private GuidedDecisionTable52         dtable;
-    private SuggestionCompletionEngine    sce;
+    private Map<BaseColumn, ColumnValues>     expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
+    private List<ColumnValues>                columns;
 
-    private static final String[]         EMPTY_VALUE     = new String[0];
+    private final LimitedEntryDropDownManager dropDownManager;
+    private final GuidedDecisionTable52       dtable;
+    private final SuggestionCompletionEngine  sce;
+
+    private static final String[]             EMPTY_VALUE     = new String[0];
 
     /**
      * Constructor
@@ -60,6 +63,7 @@ public class RowExpander {
     RowExpander(GuidedDecisionTable52 dtable,
                 SuggestionCompletionEngine sce) {
         this.columns = new ArrayList<ColumnValues>();
+        this.dropDownManager = new LimitedEntryDropDownManager( dtable );
         this.dtable = dtable;
         this.sce = sce;
 
@@ -131,11 +135,12 @@ public class RowExpander {
                     values = getValues( values );
                 } else if ( sce.hasEnums( p.getFactType(),
                                           c.getFactField() ) ) {
-                    //TODO {manstis} This needs to be derived from the model
-                    Map<String, String> currentValueMap = new HashMap<String, String>();
-                    DropDownData dd = sce.getEnums( p.getFactType(),
-                                                    c.getFactField(),
-                                                    currentValueMap );
+                    final Context context = new Context( p,
+                                                         c );
+                    final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
+                    final DropDownData dd = sce.getEnums( p.getFactType(),
+                                                          c.getFactField(),
+                                                          currentValueMap );
                     if ( dd == null ) {
                         values = EMPTY_VALUE;
                     } else {

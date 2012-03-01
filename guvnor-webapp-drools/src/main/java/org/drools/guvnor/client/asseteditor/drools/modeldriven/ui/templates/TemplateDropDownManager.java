@@ -81,6 +81,10 @@ public class TemplateDropDownManager
                     final int iCol = getVariableColumnIndex( valueHolder.getValue() );
                     final InterpolationVariable variable = allVariables[iCol];
                     final String field = variable.getFactField();
+
+                    //The generic class CellValue can have different data-types however enumerations
+                    //in a Decision Table are always String-based hence we can safely cast to a String
+                    //to retrieve the correct String representation of the CellValue's value.
                     final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
                     currentValueMap.put( field,
                                          value );
