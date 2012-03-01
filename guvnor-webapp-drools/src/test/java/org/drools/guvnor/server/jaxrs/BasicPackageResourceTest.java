@@ -123,6 +123,16 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
         pkg.checkin( "version3" );
+        
+        ModuleItem pkg2 = rulesRepository.createModule( "restPackage2",
+                "this is package restPackage2" );   
+        pkg2.checkout();
+        repositoryPackageService.buildPackage(pkg2.getUUID(), true);        
+        pkg2.checkin("version2");
+        pkg2.checkout();
+        repositoryPackageService.buildPackage(pkg2.getUUID(), true);       
+        pkg2.checkin("version3");      
+        
         logoutAs("admin");
     }
     
@@ -222,7 +232,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 		assertEquals("Packages", feed.getTitle());
 		
 		List<Entry> entries = feed.getEntries();
-		assertEquals(2, entries.size());
+		assertEquals(3, entries.size());
 		Iterator<Entry> it = entries.iterator();	
 		boolean foundPackageEntry = false;
 		while (it.hasNext()) {
@@ -889,10 +899,10 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertTrue( result.indexOf( "declare Album2" ) >= 0 );
     }
 
+    /* Tests package compilation in addition to byte retrieval */
     @Test @RunAsClient
-    @Ignore
     public void testGetPackageBinary (@ArquillianResource URL baseURL) throws Exception {
-        /* Tests package compilation in addition to byte retrieval */
+        //Expect 500 error because restPackage1 build fails due to: ClassNotFoundException: Unable to find class 'com.billasurf.Person'
         URL url = new URL(baseURL, "rest/packages/restPackage1/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
@@ -901,9 +911,20 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
 
-        assertEquals(200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        System.out.println(IOUtils.toString(connection.getInputStream()));
+        assertEquals(500, connection.getResponseCode());
+        
+        //restPackage2 should build ok. 
+        URL url2 = new URL(baseURL, "rest/packages/restPackage2/binary");
+        HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+        connection2.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection2.setRequestMethod("GET");
+        connection2.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection2.connect();
+
+        assertEquals(200, connection2.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection2.getContentType());
+        //System.out.println(IOUtils.toString(connection2.getInputStream()));
     }
 
     @Test @RunAsClient
@@ -1103,7 +1124,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient 
     public void testGetHistoricalPackageBinary(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2/binary");
+        URL url = new URL(baseURL, "rest/packages/restPackage2/versions/2/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -1111,10 +1132,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
 
-        //TODO:
-        //assertEquals (500, connection.getResponseCode());
-        //String result = IOUtils.toString(connection.getInputStream());
-        //System.out.println(result);
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
     }
 
     @Test @RunAsClient

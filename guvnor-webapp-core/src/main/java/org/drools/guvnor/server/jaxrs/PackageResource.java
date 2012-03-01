@@ -250,7 +250,7 @@ public class PackageResource extends Resource {
                 result = p.getCompiledBinaryBytes();
             } else {
                 BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
-                if (builderResult != null) {
+                if (builderResult != null && !builderResult.getLines().isEmpty()) {
                     StringBuilder errs = new StringBuilder();
                     errs.append("Unable to build package name [").append(packageName).append("]\n");
                     for (BuilderResultLine resultLine : builderResult.getLines()) {
