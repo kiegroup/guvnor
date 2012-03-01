@@ -68,6 +68,7 @@ public class Translator {
         metadata.setCreated(a.getCreatedDate().getTime());
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
+        metadata.setState(a.getState() == null ? "" : a.getState().getName());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         metadata.setCheckInComment(a.getCheckinComment());
         metadata.setVersionNumber(a.getVersionNumber());
