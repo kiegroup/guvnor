@@ -142,7 +142,7 @@ public class GuvnorSOAEntryPoint
         EventBus eventBus = new SimpleEventBus();
         RefreshModuleDataModelImpl.getInstance().setEventBus(eventBus);
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
-        appController = new AppController(clientFactory,eventBus);
+        appController = new AppControllerImpl(clientFactory,eventBus);
 
         RootLayoutPanel.get().add(appController.getMainPanel());
 
