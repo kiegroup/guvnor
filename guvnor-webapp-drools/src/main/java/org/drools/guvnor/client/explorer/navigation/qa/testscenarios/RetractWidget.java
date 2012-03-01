@@ -35,11 +35,11 @@ public class RetractWidget extends FlexTable {
 
     protected final FixtureList    retractList;
     protected final Scenario       scenario;
-    protected final ScenarioWidget parent;
+    protected final ScenarioParentWidget parent;
 
     public RetractWidget(FixtureList retractList,
                          Scenario scenario,
-                         ScenarioWidget parent) {
+                         ScenarioParentWidget parent) {
 
         this.retractList = retractList;
         this.scenario = scenario;

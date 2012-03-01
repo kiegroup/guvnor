@@ -16,25 +16,28 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import java.util.Map;
-
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.Map;
 
 public class GlobalPanel extends VerticalPanel {
     public GlobalPanel(Map<String, FixtureList> globals,
                        Scenario scenario,
                        ExecutionTrace previousEx,
-                       ScenarioWidget scenarioWidget) {
-        for ( Map.Entry<String, FixtureList> e : globals.entrySet() ) {
-            add( new GlobalFactWidget( e.getKey(),
-                                       globals.get( e.getKey() ),
-                                       scenario,
-                                       scenarioWidget,
-                                       previousEx ) );
+                       SuggestionCompletionEngine suggestionCompletionEngine,
+                       ScenarioParentWidget scenarioWidget) {
+        for (Map.Entry<String, FixtureList> e : globals.entrySet()) {
+            add(new GlobalFactWidget(
+                    e.getKey(),
+                    globals.get(e.getKey()),
+                    scenario,
+                    suggestionCompletionEngine,
+                    scenarioWidget,
+                    previousEx));
         }
     }
 }

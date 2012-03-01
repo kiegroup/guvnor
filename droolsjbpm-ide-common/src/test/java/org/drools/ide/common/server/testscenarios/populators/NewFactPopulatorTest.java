@@ -23,6 +23,7 @@ import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -43,7 +44,7 @@ public class NewFactPopulatorTest {
 
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
 
-        List<FieldData> fieldData = new ArrayList<FieldData>();
+        List<Field> fieldData = new ArrayList<Field>();
         fieldData.add(new FieldData("type",
                 "cheddar"));
         fieldData.add(new FieldData("price",

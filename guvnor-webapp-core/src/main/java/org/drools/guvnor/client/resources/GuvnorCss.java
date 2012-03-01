@@ -32,4 +32,5 @@ public interface GuvnorCss
     
     String popupListWidgetCaption();
 
+    String greyBorderWithRoundCorners();
 }

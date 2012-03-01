@@ -156,6 +156,7 @@ public class LazyStackPanel extends Composite
                              row );
     }
 
+    @Override
     public HandlerRegistration addSelectionHandler(SelectionHandler<LazyStackPanelRow> handler) {
         return addHandler( handler,
                            SelectionEvent.getType() );

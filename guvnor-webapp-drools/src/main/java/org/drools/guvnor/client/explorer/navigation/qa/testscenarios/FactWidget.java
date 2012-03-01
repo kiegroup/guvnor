@@ -16,48 +16,51 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 public abstract class FactWidget extends HorizontalPanel {
 
-    protected final ScenarioWidget parent;
-    protected final Scenario       scenario;
-    protected final FixtureList    definitionList;
+    protected final ScenarioParentWidget parent;
+    protected final Scenario scenario;
+    protected final FixtureList definitionList;
 
     public FactWidget(String factType,
                       FixtureList definitionList,
                       Scenario scenario,
-                      ScenarioWidget parent,
+                      SuggestionCompletionEngine suggestionCompletionEngine,
+                      ScenarioParentWidget parent,
                       ExecutionTrace executionTrace,
                       String headerText) {
         this.parent = parent;
         this.scenario = scenario;
         this.definitionList = definitionList;
 
-        add( new DataInputWidget( factType,
-                                  definitionList,
-                                  scenario,
-                                  parent,
-                                  executionTrace,
-                                  headerText ) );
-        add( new DeleteButton( definitionList ) );
+        add(new DataInputWidget(factType,
+                definitionList,
+                scenario,
+                suggestionCompletionEngine,
+                parent,
+                executionTrace,
+                headerText));
+        add(new DeleteButton(definitionList));
     }
 
     protected void onDelete() {
-        if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
-            for ( Fixture f : definitionList )
-                scenario.removeFixture( f );
+        if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveThisBlockOfData())) {
+            for (Fixture f : definitionList)
+                scenario.removeFixture(f);
             parent.renderEditor();
         }
     }

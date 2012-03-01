@@ -16,21 +16,16 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
-import org.drools.guvnor.client.common.DatePickerTextBox;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.DropDownValueChanged;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -40,129 +35,102 @@ import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
 
 /**
  * Constraint editor for the FieldData in the Given Section
  */
+public class FieldDataConstraintEditor extends DirtyableComposite implements HasValueChangeHandlers<String> {
 
-public class FieldDataConstraintEditor extends DirtyableComposite {
-
-    private String                     factType;
-    private FieldData                  field;
-    private FactData                   givenFact;
-    private final Panel                panel;
-    private Scenario                   scenario;
-    private ExecutionTrace             executionTrace;
-    private SuggestionCompletionEngine sce;
-    private ValueChanged               callback;
+    private FieldData field;
+    private final Panel panel = new SimplePanel();
+    private final FieldDataConstraintHelper helper;
 
     public FieldDataConstraintEditor(String factType,
-                                     ValueChanged callback,
                                      FieldData field,
                                      FactData givenFact,
                                      SuggestionCompletionEngine sce,
                                      Scenario scenario,
-                                     ExecutionTrace exec) {
+                                     ExecutionTrace executionTrace) {
         this.field = field;
-        this.sce = sce;
-        this.factType = factType;
-        this.callback = callback;
-        this.scenario = scenario;
-        this.executionTrace = exec;
-        this.givenFact = givenFact;
-        panel = new SimplePanel();
+        helper = new FieldDataConstraintHelper(scenario, executionTrace, sce, factType, field, givenFact);
         refreshEditor();
         initWidget( panel );
     }
 
     private void refreshEditor() {
-        String key = factType + "." + field.getName();
-        String flType = sce.getFieldType( key );
+        String flType = helper.getFieldType();
         panel.clear();
 
-        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            String[] c = new String[]{"true", "false"};
-            panel.add( new EnumDropDown( field.getValue(),
-                                         new DropDownValueChanged() {
-                                             public void valueChanged(String newText,
-                                                                      String newValue) {
-                                                 callback.valueChanged( newValue );
-                                             }
-                                         },
-                                         DropDownData.create( c ) ) );
+        if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
+            panel.add(new EnumDropDown(field.getValue(),
+                    new DropDownValueChanged() {
+                        public void valueChanged(String newText,
+                                                 String newValue) {
+                            valueHasChanged(newValue);
+                        }
 
-        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
-            datePicker.setTitle( Constants.INSTANCE.ValueFor0( field.getName() ) );
-            datePicker.addValueChanged( new ValueChanged() {
+                    },
+                    DropDownData.create(new String[]{"true", "false"})));
+
+        } else if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_DATE)) {
+            final DatePickerTextBox datePicker = new DatePickerTextBox(field.getValue());
+            datePicker.setTitle(Constants.INSTANCE.ValueFor0(field.getName()));
+            datePicker.addValueChanged(new ValueChanged() {
                 public void valueChanged(String newValue) {
-                    field.setValue( newValue );
+                    field.setValue(newValue);
                 }
-            } );
-            panel.add( datePicker );
+            });
+            panel.add(datePicker);
 
         } else {
-            Map<String, String> currentValueMap = new HashMap<String, String>();
-            for ( FieldData otherFieldData : givenFact.getFieldData() ) {
-                currentValueMap.put( otherFieldData.getName(),
-                                     otherFieldData.getValue() );
-            }
-            DropDownData dropDownData = sce.getEnums( factType,
-                                                      field.getName(),
-                                                      currentValueMap );
-            if ( dropDownData != null ) {
-                field.setNature( FieldData.TYPE_ENUM );
-                panel.add( new EnumDropDown( field.getValue(),
-                                             new DropDownValueChanged() {
-                                                 public void valueChanged(String newText,
-                                                                          String newValue) {
-                                                     callback.valueChanged( newValue );
-                                                 }
-                                             },
-                                             dropDownData ) );
+            DropDownData dropDownData = helper.getEnums();
+
+            if (dropDownData != null) {
+                field.setNature(FieldData.TYPE_ENUM);
+                panel.add(new EnumDropDown(field.getValue(),
+                        new DropDownValueChanged() {
+                            public void valueChanged(String newText,
+                                                     String newValue) {
+                                valueHasChanged(newValue);
+                            }
+                        },
+                        dropDownData));
 
             } else {
-                if ( field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
-                    if ( field.getValue().length() > 1 && field.getValue().charAt( 1 ) == '[' && field.getValue().charAt( 0 ) == '=' ) {
-                        field.setNature( FieldData.TYPE_LITERAL );
-                    } else if ( field.getValue().charAt( 0 ) == '=' ) {
-                        field.setNature( FieldData.TYPE_VARIABLE );
+                if (field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED) {
+                    if (field.getValue().length() > 1 && field.getValue().charAt(1) == '[' && field.getValue().charAt(0) == '=') {
+                        field.setNature(FieldData.TYPE_LITERAL);
+                    } else if (field.getValue().charAt(0) == '=') {
+                        field.setNature(FieldData.TYPE_VARIABLE);
                     } else {
-                        field.setNature( FieldData.TYPE_LITERAL );
+                        field.setNature(FieldData.TYPE_LITERAL);
                     }
                 }
-                if ( field.getNature() == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
+                if ( field.getNature() == FieldData.TYPE_UNDEFINED && (helper.isThereABoundVariableToSet() == true || helper.isItAList() == true) ) {
                     Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
-                            showTypeChoice( w,
-                                            field );
+                            showTypeChoice(w,
+                                    field);
                         }
-                    } );
-                    panel.add( clickme );
-                } else if ( field.getNature() == FieldData.TYPE_VARIABLE ) {
-                    panel.add( variableEditor( callback ) );
-                } else if ( field.getNature() == FieldData.TYPE_COLLECTION ) {
-                    panel.add( listEditor( callback ) );
+                    });
+                    panel.add(clickme);
+                } else if (field.getNature() == FieldData.TYPE_VARIABLE) {
+                    panel.add(variableEditor());
+                } else if (field.getNature() == FieldData.TYPE_COLLECTION) {
+                    panel.add(listEditor());
                 } else {
-                    panel.add( editableTextBox( callback,
-                                                flType,
-                                                field.getName(),
-                                                field.getValue() ) );
+                    panel.add(editableTextBox(
+                            new ValueChanged() {
+                                @Override
+                                public void valueChanged(String newValue) {
+                                    valueChanged(newValue);
+                                }
+                            },
+                            flType,
+                            field.getName(),
+                            field.getValue()));
                 }
             }
         }
@@ -186,274 +154,188 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         return tb;
     }
 
-    private Widget variableEditor(final ValueChanged changed) {
-        List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
-                                                               true );
+    private Widget variableEditor() {
+        List<String> vars = helper.getFactNamesInScope();
+
 
         final ListBox box = new ListBox();
 
-        if ( this.field.getValue() == null ) {
-            box.addItem( Constants.INSTANCE.Choose() );
+        if (this.field.getValue() == null) {
+            box.addItem(Constants.INSTANCE.Choose());
         }
         int j = 0;
-        for ( int i = 0; i < vars.size(); i++ ) {
-            String var = vars.get( i );
-            FactData f = this.scenario.getFactTypes().get( var );
-            String fieldType = null;
-            if ( field.collectionType == null ) {
-                fieldType = sce.getFieldType( this.factType,
-                                              field.getName() );
-            } else {
-                fieldType = field.collectionType;
-            }
-
-            if ( f.getType().equals( fieldType ) ) {
-                if ( box.getItemCount() == 0 ) {
-                    box.addItem( "..." );
+        for (String var : vars) {
+            if (helper.getFactTypeByVariableName(var).getType().equals(helper.resolveFieldType())) {
+                if (box.getItemCount() == 0) {
+                    box.addItem("...");
                     j++;
                 }
-                box.addItem( "=" + var );
-                if ( this.field.getValue() != null && this.field.getValue().equals( "=" + var ) ) {
-                    box.setSelectedIndex( j );
+                box.addItem("=" + var);
+                if (this.field.getValue() != null && this.field.getValue().equals("=" + var)) {
+                    box.setSelectedIndex(j);
 
                 }
                 j++;
             }
         }
 
-        box.addChangeHandler( new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                field.setValue( box.getItemText( box.getSelectedIndex() ) );
-                changed.valueChanged( field.getValue() );
+                field.setValue(box.getItemText(box.getSelectedIndex()));
+                valueHasChanged(field.getValue());
             }
-        } );
+        });
 
         return box;
     }
 
-    private Widget listEditor(final ValueChanged changed) {
+    private Widget listEditor() {
         Panel panel = new VerticalPanel();
         int i = 0;
-        for ( final FieldData f : this.field.collectionFieldList ) {
+        for (final FieldData f : this.field.collectionFieldList) {
 
             DirtyableHorizontalPane hpanel = new DirtyableHorizontalPane();
 
-            FieldDataConstraintEditor fieldElement = new FieldDataConstraintEditor( f.collectionType,
-                                                                                    new ValueChanged() {
-                                                                                        public void valueChanged(String newValue) {
-                                                                                            f.setValue( newValue );
-                                                                                            calculateValueFromList();
-                                                                                            makeDirty();
-                                                                                        }
-                                                                                    },
-                                                                                    f,
-                                                                                    givenFact,
-                                                                                    sce,
-                                                                                    scenario,
-                                                                                    executionTrace );
-            hpanel.add( fieldElement );
+            FieldDataConstraintEditor fieldDataConstraintEditor = helper.createFieldDataConstraintEditor(f);
+            fieldDataConstraintEditor.addValueChangeHandler(new ValueChangeHandler<String>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<String> stringValueChangeEvent) {
+                    f.setValue(stringValueChangeEvent.getValue());
+                    calculateValueFromList();
+                    makeDirty();
+                }
+            });
+            hpanel.add(fieldDataConstraintEditor);
             final int index = i;
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
-                                         Constants.INSTANCE.AElementToDelInCollectionList(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 field.collectionFieldList.remove( index );
-                                                 calculateValueFromList();
-                                                 refreshEditor();
-                                             }
-                                         } );
 
-            hpanel.add( del );
+            hpanel.add(new ImageButton(DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+                    Constants.INSTANCE.AElementToDelInCollectionList(),
+                    new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            field.collectionFieldList.remove(index);
+                            calculateValueFromList();
+                            refreshEditor();
+                        }
+                    }));
 
-            Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItemBelow() );
-            addPattern.setTitle( Constants.INSTANCE.AddElementBelow() );
+            Image addPattern = new ImageButton(DroolsGuvnorImages.INSTANCE.newItemBelow());
+            addPattern.setTitle(Constants.INSTANCE.AddElementBelow());
 
-            addPattern.addClickHandler( new ClickHandler() {
+            addPattern.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     FieldData newFieldData = new FieldData();
-                    newFieldData.setName( field.getName() );
+                    newFieldData.setName(field.getName());
                     newFieldData.collectionType = field.collectionType;
-                    field.collectionFieldList.add( index + 1,
-                                                   newFieldData );
+                    field.collectionFieldList.add(index + 1,
+                            newFieldData);
                     calculateValueFromList();
                     refreshEditor();
                 }
-            } );
-            hpanel.add( addPattern );
-            Image moveDown = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleDown() );
-            moveDown.setTitle( Constants.INSTANCE.MoveDownListMove() );
-            moveDown.addClickHandler( new ClickHandler() {
+            });
+            hpanel.add(addPattern);
+            Image moveDown = new ImageButton(DroolsGuvnorImages.INSTANCE.shuffleDown());
+            moveDown.setTitle(Constants.INSTANCE.MoveDownListMove());
+            moveDown.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent sender) {
-                    if ( index < field.collectionFieldList.size() - 1 ) {
-                        FieldData onMyLine = field.collectionFieldList.get( index );
-                        FieldData onDown = field.collectionFieldList.get( index + 1 );
-                        field.collectionFieldList.set( index + 1,
-                                                       onMyLine );
-                        field.collectionFieldList.set( index,
-                                                       onDown );
+                    if (index < field.collectionFieldList.size() - 1) {
+                        FieldData onMyLine = field.collectionFieldList.get(index);
+                        FieldData onDown = field.collectionFieldList.get(index + 1);
+                        field.collectionFieldList.set(index + 1,
+                                onMyLine);
+                        field.collectionFieldList.set(index,
+                                onDown);
                         calculateValueFromList();
                         refreshEditor();
                     }
                 }
-            } );
-            hpanel.add( moveDown );
+            });
+            hpanel.add(moveDown);
 
-            Image moveUp = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleUp() );
-            moveUp.setTitle( Constants.INSTANCE.MoveUpList() );
-            moveUp.addClickHandler( new ClickHandler() {
+            Image moveUp = new ImageButton(DroolsGuvnorImages.INSTANCE.shuffleUp());
+            moveUp.setTitle(Constants.INSTANCE.MoveUpList());
+            moveUp.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent sender) {
-                    if ( index > 0 ) {
-                        FieldData oneUp = field.collectionFieldList.get( index - 1 );
-                        FieldData onMyLine = field.collectionFieldList.get( index );
-                        field.collectionFieldList.set( index,
-                                                       oneUp );
-                        field.collectionFieldList.set( index - 1,
-                                                       onMyLine );
+                    if (index > 0) {
+                        FieldData oneUp = field.collectionFieldList.get(index - 1);
+                        FieldData onMyLine = field.collectionFieldList.get(index);
+                        field.collectionFieldList.set(index,
+                                oneUp);
+                        field.collectionFieldList.set(index - 1,
+                                onMyLine);
                         calculateValueFromList();
                         refreshEditor();
                     }
                 }
-            } );
-            hpanel.add( moveUp );
-            panel.add( hpanel );
+            });
+            hpanel.add(moveUp);
+            panel.add(hpanel);
             i++;
         }
 
-        if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
-                                         Constants.INSTANCE.AElementToAddInCollectionList(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 FieldData newFieldData = new FieldData();
-                                                 newFieldData.setName( field.getName() );
-                                                 newFieldData.collectionType = field.collectionType;
-                                                 field.collectionFieldList.add( newFieldData );
-                                                 calculateValueFromList();
-                                                 refreshEditor();
-                                             }
-                                         } );
-            panel.add( add );
+        if (this.field.collectionFieldList.size() == 0) {
+            Image add = new ImageButton(DroolsGuvnorImages.INSTANCE.newItem(),
+                    Constants.INSTANCE.AElementToAddInCollectionList(),
+                    new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            FieldData newFieldData = new FieldData();
+                            newFieldData.setName(field.getName());
+                            newFieldData.collectionType = field.collectionType;
+                            field.collectionFieldList.add(newFieldData);
+                            calculateValueFromList();
+                            refreshEditor();
+                        }
+                    });
+            panel.add(add);
         }
         return panel;
     }
 
     private void calculateValueFromList() {
-        if ( this.field.collectionFieldList == null || this.field.collectionFieldList.isEmpty() ) {
-            this.field.setValue( "=[]" );
+        if (this.field.collectionFieldList == null || this.field.collectionFieldList.isEmpty()) {
+            this.field.setValue("=[]");
             return;
         }
         StringBuilder listContent = new StringBuilder();
-        for ( final FieldData f : this.field.collectionFieldList ) {
-            listContent.append( ',' );
-            if ( f.getValue() != null ) {
-                listContent.append( f.getValue() );
+        for (final FieldData f : this.field.collectionFieldList) {
+            listContent.append(',');
+            if (f.getValue() != null) {
+                listContent.append(f.getValue());
             }
         }
-        this.field.setValue( "=[" + listContent.substring( 1 ) + "]" );
+        this.field.setValue("=[" + listContent.substring(1) + "]");
     }
 
     private void showTypeChoice(ClickEvent w,
                                 final FieldData con) {
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
-                                                        Constants.INSTANCE.FieldValue() );
 
-        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
-        lit.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                con.setNature( FieldData.TYPE_LITERAL );
-                doTypeChosen( form );
-            }
 
-        } );
-        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( Constants.INSTANCE.LiteralValue(),
-                                                   Constants.INSTANCE.LiteralValTip() ) ) );
+        TypeChoiceFormPopup typeChoiceForm = new TypeChoiceFormPopup(helper);
+        typeChoiceForm.addSelectionHandler(new SelectionHandler<Integer>() {
 
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
-
-        // If we are here, then there must be a bound variable compatible with
-        // me
-        if ( isThereABoundVariableToSet() == true ) {
-            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
-            variable.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    con.setNature( FieldData.TYPE_VARIABLE );
-                    doTypeChosen( form );
-                }
-            } );
-            form.addAttribute( Constants.INSTANCE.AVariable(),
-                               widgets( variable,
-                                        new InfoPopup( Constants.INSTANCE.ABoundVariable(),
-                                                       Constants.INSTANCE.BoundVariableTip() ) ) );
-        }
-        if ( isItAList() == true ) {
-            Button variable = new Button( Constants.INSTANCE.GuidedList() );
-            variable.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    String factCollectionType = sce.getParametricFieldType( factType,
-                                                                            field.getName() );
-                    con.setNature( FieldData.TYPE_COLLECTION,
-                                   factCollectionType );
-                    doTypeChosen( form );
-                }
-            } );
-            form.addAttribute( Constants.INSTANCE.AVariable(),
-                               widgets( variable,
-                                        new InfoPopup( Constants.INSTANCE.AGuidedList(),
-                                                       Constants.INSTANCE.AGuidedListTip() ) ) );
-        }
-        form.show();
-    }
-
-    private boolean isThereABoundVariableToSet() {
-        boolean retour = false;
-        List< ? > vars = scenario.getFactNamesInScope( this.executionTrace,
-                                                       true );
-        if ( vars.size() > 0 ) {
-            for ( int i = 0; i < vars.size(); i++ ) {
-                String var = (String) vars.get( i );
-                FactData f = (FactData) scenario.getFactTypes().get( var );
-                String fieldType = null;
-                if ( field.collectionType == null ) {
-                    fieldType = sce.getFieldType( this.factType,
-                                                  field.getName() );
+            @Override
+            public void onSelection(SelectionEvent<Integer> selectionEvent) {
+                if (selectionEvent.getSelectedItem() == FieldData.TYPE_COLLECTION) {
+                    con.setNature(
+                            FieldData.TYPE_COLLECTION,
+                            helper.getParametricFieldType());
                 } else {
-                    fieldType = field.collectionType;
+                    con.setNature(selectionEvent.getSelectedItem());
                 }
-                if ( f.getType().equals( fieldType ) ) {
-                    retour = true;
-                    break;
-                }
+
+                refreshEditor();
             }
-        }
-        return retour;
+        });
+
+        typeChoiceForm.show();
     }
 
-    private boolean isItAList() {
-        boolean retour = false;
-        String fieldType = sce.getFieldType( this.factType,
-                                             field.getName() );
-        if ( fieldType != null && fieldType.equals( "Collection" ) ) {
-            retour = true;
-        }
-        return retour;
+    private void valueHasChanged(String newValue) {
+        ValueChangeEvent.fire(this, newValue);
     }
 
-    private void doTypeChosen(final FormStylePopup form) {
-        refreshEditor();
-        form.hide();
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> stringValueChangeHandler) {
+        return addHandler(stringValueChangeHandler, ValueChangeEvent.getType());
     }
-
-    private Panel widgets(Widget left,
-                          Widget right) {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add( left );
-        panel.add( right );
-        panel.setWidth( "100%" );
-        return panel;
-    }
-
 }

@@ -16,22 +16,12 @@
 
 package org.drools.ide.common.server.testscenarios;
 
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.Expectation;
+import org.drools.ide.common.client.modeldriven.testing.*;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 
@@ -86,7 +76,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                 new FactData(
                         "Cheese",
                         "f1",
-                        asList(
+                        Arrays.<Field>asList(
                                 new FieldData(
                                         "type",
                                         "cheddar"),
@@ -100,7 +90,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                 new FactData(
                         "Person",
                         "f2",
-                        asList(
+                        Arrays.<Field>asList(
                                 new FieldData(
                                         "name",
                                         "michael"),
@@ -209,7 +199,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         FactData cheeseFactData = new FactData(
                 "Cheese",
                 "c1",
-                asList(fieldData),
+                Arrays.<Field>asList(fieldData),
                 false);
 
         FieldData cheeseType = new FieldData(
@@ -220,7 +210,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         FactData f1 = new FactData(
                 "Cheese",
                 "f1",
-                asList(cheeseType),
+                Arrays.<Field>asList(cheeseType),
                 false
         );
 
@@ -370,7 +360,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         FactData[] facts = new FactData[]{new FactData("Cheese",
                 "c1",
-                ls(new FieldData("type",
+                Arrays.<Field>asList(new FieldData("type",
                         "cheddar"),
                         new FieldData("price",
                                 "42")),
@@ -454,7 +444,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         FactData[] facts = new FactData[]{new FactData("Cheese",
                 "c1",
-                ls(new FieldData("type",
+                Arrays.<Field>asList(new FieldData("type",
                         "cheddar"),
                         new FieldData("price",
                                 "42")),
@@ -527,7 +517,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario scenario = new Scenario();
         FactData[] facts = new FactData[]{new FactData("Coolness",
                 "c",
-                ls(new FieldData("num",
+                Arrays.<Field>asList(new FieldData("num",
                         "42"),
                         new FieldData("name",
                                 "mic")),
@@ -591,7 +581,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario scenario = new Scenario();
         Fixture[] given = new Fixture[]{new FactData("Coolness",
                 "c",
-                ls(new FieldData("num",
+                Arrays.<Field>asList(new FieldData("num",
                         "42"),
                         new FieldData("name",
                                 "mic")),
@@ -652,7 +642,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().clear();
         given = new Fixture[]{new FactData("Coolness",
                 "c",
-                ls(new FieldData("num",
+                Arrays.<Field>asList(new FieldData("num",
                         "42"),
                         new FieldData("name",
                                 "mic")),
@@ -681,14 +671,14 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         sc.getFixtures().add(new FactData("Cheese",
                 "c1",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "1")),
                 false));
         ExecutionTrace ex = new ExecutionTrace();
         sc.getFixtures().add(ex);
         sc.getFixtures().add(new FactData("Cheese",
                 "c2",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "2")),
                 false));
         sc.getFixtures().add(new VerifyFact("c1",
@@ -721,7 +711,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         sc.getFixtures().add(new FactData("Cheese",
                 "c1",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "1")),
                 false));
 
@@ -734,7 +724,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         sc.getFixtures().add(new FactData("Cheese",
                 "c1",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "42")),
                 true));
         sc.getFixtures().add(new ExecutionTrace());
@@ -763,14 +753,14 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         sc.getFixtures().add(new FactData("Cheese",
                 "c1",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "46"),
                         new FieldData("type",
                                 "XXX")),
                 false));
         sc.getFixtures().add(new FactData("Cheese",
                 "c2",
-                ls(new FieldData("price",
+                Arrays.<Field>asList(new FieldData("price",
                         "42")),
                 false));
         sc.getFixtures().add(new ExecutionTrace());
@@ -842,7 +832,7 @@ public class ScenarioRunnerTest extends RuleUnit {
     private Expectation[] populateScenarioForFailure(Scenario sc) {
         FactData[] facts = new FactData[]{new FactData("Cheese",
                 "c1",
-                ls(new FieldData("type",
+                Arrays.<Field>asList(new FieldData("type",
                         "cheddar"),
                         new FieldData("price",
                                 "42")),

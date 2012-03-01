@@ -17,14 +17,7 @@
 package org.drools.guvnor.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
@@ -71,7 +64,7 @@ public class FormStyleLayout extends Composite {
      * @return Index of row created
      */
     public int addAttribute(String lbl,
-                            Widget editor) {
+                            IsWidget editor) {
         int row = numInLayout;
         HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
         layout.setWidget( numInLayout,

@@ -16,21 +16,17 @@
 
 package org.drools.ide.common.server.testscenarios;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Expectation;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.*;
 import org.drools.ide.common.server.testscenarios.executors.MethodExecutor;
 import org.drools.ide.common.server.testscenarios.verifiers.FactVerifier;
 import org.drools.ide.common.server.testscenarios.verifiers.RuleFiredVerifier;
 import org.drools.time.impl.PseudoClockScheduler;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TestScenarioWorkingMemoryWrapper {
 
@@ -71,11 +67,7 @@ public class TestScenarioWorkingMemoryWrapper {
         if (expectation instanceof VerifyFact) {
             factVerifier.verify((VerifyFact) expectation);
         } else if (expectation instanceof VerifyRuleFired) {
-            if (eventListener.getFiringCounts() != null) {
-                ruleFiredVerifier.verifyFiringCounts((VerifyRuleFired) expectation);
-            } else {
-                ruleFiredVerifier.verifyFiringCounts((VerifyRuleFired) expectation);
-            }
+            ruleFiredVerifier.verifyFiringCounts((VerifyRuleFired) expectation);
         }
     }
 

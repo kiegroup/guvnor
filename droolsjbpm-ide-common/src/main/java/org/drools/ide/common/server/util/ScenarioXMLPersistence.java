@@ -16,19 +16,10 @@
 
 package org.drools.ide.common.server.util;
 
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Expectation;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
-
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.ide.common.client.modeldriven.testing.*;
 
 
 /**
@@ -36,7 +27,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class ScenarioXMLPersistence {
 
-    private XStream                     xt;
+    private XStream xt;
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
@@ -46,25 +37,36 @@ public class ScenarioXMLPersistence {
         xt.alias("expectation", Expectation.class);
         xt.alias("fact-data", FactData.class);
         xt.alias("field-data", FieldData.class);
+        xt.alias("field-data", FactAssignmentField.class);
         xt.alias("fixture", Fixture.class);
         xt.alias("retract-fact", RetractFact.class);
         xt.alias("expect-fact", VerifyFact.class);
         xt.alias("expect-field", VerifyField.class);
         xt.alias("expect-rule", VerifyRuleFired.class);
+
+
         xt.omitField(ExecutionTrace.class, "rulesFired");
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
-}
+        xt.aliasPackage("org.drools.guvnor.client", "org.drools.ide.common.client");
+
+
+        ConverterLookup converterLookup = xt.getConverterLookup();
+//        Converter defaultConverter = converterLookup.lookupConverterForType(Field.class);
+        xt.registerConverter(
+                new FieldConverter(xt));
+
+//        xt.addDefaultImplementation(FieldData.class, Field.class);
+//        xt.addDefaultImplementation(FactAssignmentField.class, Field.class);
+    }
 
     public static ScenarioXMLPersistence getInstance() {
         return INSTANCE;
     }
 
 
-
     public String marshal(Scenario sc) {
-        if (sc.getFixtures().size() > 1  && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
+        if (sc.getFixtures().size() > 1 && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
             Object f = sc.getFixtures().get(sc.getFixtures().size() - 2);
 
             if (f instanceof Expectation) {

@@ -21,13 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.*;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -185,9 +179,9 @@ public class NewDataButton extends TestScenarioButton {
                 List<FactData> existingFactData = scenario.getFactTypesToFactData().get( factType );
                 if ( existingFactData != null ) {
                     if ( existingFactData.size() > 0 ) {
-                        for ( FieldData fieldData : existingFactData.get( 0 ).getFieldData() )
-                            fd.getFieldData().add( new FieldData( fieldData.getName(),
-                                                                  "" ) );
+                        for (Field field : existingFactData.get(0).getFieldData())
+                            fd.getFieldData().add(new FieldData(field.getName(),
+                                    ""));
                     }
                 }
 

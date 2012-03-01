@@ -35,42 +35,42 @@ import com.google.gwt.user.client.ui.Image;
 
 public class ActivateRuleFlowWidget extends Composite {
 
-    private final ScenarioWidget parent;
+    private final ScenarioParentWidget parent;
 
     public ActivateRuleFlowWidget(FixtureList retList,
                                   Scenario sc,
-                                  ScenarioWidget parent) {
+                                  ScenarioParentWidget parent) {
         FlexTable outer = new FlexTable();
-        render( retList,
+        render(retList,
                 outer,
-                sc );
+                sc);
 
         this.parent = parent;
 
-        initWidget( outer );
+        initWidget(outer);
     }
 
     private void render(final FixtureList retList,
                         final FlexTable outer,
                         final Scenario sc) {
         outer.clear();
-        outer.getCellFormatter().setStyleName( 0,
-                                               0,
-                                               "modeller-fact-TypeHeader" );
-        outer.getCellFormatter().setAlignment( 0,
-                                               0,
-                                               HasHorizontalAlignment.ALIGN_CENTER,
-                                               HasVerticalAlignment.ALIGN_MIDDLE );
-        outer.setStyleName( "modeller-fact-pattern-Widget" );
-        outer.setWidget( 0,
-                         0,
-                         new SmallLabel( Constants.INSTANCE.ActivateRuleFlowGroup() ) );
-        outer.getFlexCellFormatter().setColSpan( 0,
-                                                 0,
-                                                 2 );
+        outer.getCellFormatter().setStyleName(0,
+                0,
+                "modeller-fact-TypeHeader");
+        outer.getCellFormatter().setAlignment(0,
+                0,
+                HasHorizontalAlignment.ALIGN_CENTER,
+                HasVerticalAlignment.ALIGN_MIDDLE);
+        outer.setStyleName("modeller-fact-pattern-Widget");
+        outer.setWidget(0,
+                0,
+                new SmallLabel(Constants.INSTANCE.ActivateRuleFlowGroup()));
+        outer.getFlexCellFormatter().setColSpan(0,
+                0,
+                2);
 
         int row = 1;
-        for ( Fixture fixture : retList ) {
+        for (Fixture fixture : retList) {
             final ActivateRuleFlowGroup acticateRuleFlowGroup = (ActivateRuleFlowGroup) fixture;
             outer.setWidget( row,
                              0,

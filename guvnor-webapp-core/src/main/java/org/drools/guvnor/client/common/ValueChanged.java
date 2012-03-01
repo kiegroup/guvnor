@@ -17,8 +17,9 @@
 package org.drools.guvnor.client.common;
 
 /**
- * Well this should be pretty obvious.
+  * Use ValueChangeHandler instead.
  */
+@Deprecated
 public interface ValueChanged {
         public void valueChanged(String newValue);
 }

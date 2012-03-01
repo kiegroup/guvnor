@@ -18,6 +18,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 import java.util.ArrayList;
@@ -48,29 +49,32 @@ abstract class FactPopulatorBase implements Populator {
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
 
         for (int i = 0; i < fact.getFieldData().size(); i++) {
-            FieldData field = fact.getFieldData().get(i);
+            Field field = fact.getFieldData().get(i);
 
-            if (field.getValue() != null) {
-                if (field.getValue().startsWith("=")) {
-                    fieldPopulators.add(
-                            new ExpressionFieldPopulator(
-                                    factObject,
-                                    field.getName(),
-                                    field.getValue().substring(1)));
+            if (field instanceof FieldData) {
+                FieldData fieldData=(FieldData)field;
+                if (fieldData.getValue() != null) {
+                    if (fieldData.getValue().startsWith("=")) {
+                        fieldPopulators.add(
+                                new ExpressionFieldPopulator(
+                                        factObject,
+                                        fieldData.getName(),
+                                        fieldData.getValue().substring(1)));
 
-                } else if (field.getNature() == FieldData.TYPE_ENUM) {
-                    fieldPopulators.add(
-                            new EnumFieldPopulator(
-                                    factObject,
-                                    field.getName(),
-                                    field.getValue(),
-                                    typeResolver));
-                } else {
-                    fieldPopulators.add(
-                            new SimpleFieldPopulator(
-                                    factObject,
-                                    field.getName(),
-                                    field.getValue()));
+                    } else if (fieldData.getNature() == FieldData.TYPE_ENUM) {
+                        fieldPopulators.add(
+                                new EnumFieldPopulator(
+                                        factObject,
+                                        fieldData.getName(),
+                                        fieldData.getValue(),
+                                        typeResolver));
+                    } else {
+                        fieldPopulators.add(
+                                new SimpleFieldPopulator(
+                                        factObject,
+                                        fieldData.getName(),
+                                        fieldData.getValue()));
+                    }
                 }
             }
         }

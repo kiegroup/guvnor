@@ -17,9 +17,10 @@
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 
 public class ModifyFactWidget extends FactWidget {
@@ -27,13 +28,15 @@ public class ModifyFactWidget extends FactWidget {
     public ModifyFactWidget(String factType,
                             FixtureList definitionList,
                             Scenario scenario,
-                            ScenarioWidget parent,
+                            SuggestionCompletionEngine suggestionCompletionEngine,
+                            ScenarioParentWidget parent,
                             ExecutionTrace executionTrace) {
-        super( factType,
-               definitionList,
-               scenario,
-               parent,
-               executionTrace,
-               Constants.INSTANCE.modifyForScenario( factType ) );
+        super(factType,
+                definitionList,
+                scenario,
+                suggestionCompletionEngine,
+                parent,
+                executionTrace,
+                Constants.INSTANCE.modifyForScenario(factType));
     }
 }

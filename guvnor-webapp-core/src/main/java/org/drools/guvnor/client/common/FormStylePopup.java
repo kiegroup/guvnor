@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -61,7 +62,7 @@ public class FormStylePopup extends Popup {
     }
 
     public int addAttribute(String label,
-                             Widget wid) {
+                             IsWidget wid) {
         return form.addAttribute( label,
                                   wid );
     }

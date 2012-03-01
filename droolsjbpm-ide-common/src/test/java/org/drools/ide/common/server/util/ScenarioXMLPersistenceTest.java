@@ -64,6 +64,9 @@ public class ScenarioXMLPersistenceTest {
 
         assertEquals(origSize + 1, sc.getFixtures().size());
         String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+        
+        System.out.println(xml);
+        
         Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
         assertEquals(origSize, sc_.getFixtures().size());

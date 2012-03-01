@@ -20,6 +20,7 @@ import org.drools.FactHandle;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.server.testscenarios.MockWorkingMemory;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class GlobalFactPopulatorTest {
 
         FactData global = new FactData("Cheese",
                 "c",
-                Arrays.asList(new FieldData("type",
+                Arrays.<Field>asList(new FieldData("type",
                         "cheddar")),
                 false);
 

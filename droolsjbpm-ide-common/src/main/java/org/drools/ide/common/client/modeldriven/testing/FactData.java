@@ -34,7 +34,8 @@ public class FactData
      */
     private String name;
 
-    private List<FieldData>   fieldData        = new ArrayList<FieldData>();
+
+    private List<Field>   fieldData        = new ArrayList<Field>();
 
     /**
      * If its a modify, obviously we are modifying existing data in working memory.
@@ -46,7 +47,7 @@ public class FactData
 
     public FactData(String type,
                     String name,
-                    List<FieldData> fieldData,
+                    List<Field> fieldData,
                     boolean modify) {
         this( type,
               name,
@@ -80,11 +81,11 @@ public class FactData
         return name;
     }
 
-    public void setFieldData(List<FieldData> fieldData) {
+    public void setFieldData(List<Field> fieldData) {
         this.fieldData = fieldData;
     }
 
-    public List<FieldData> getFieldData() {
+    public List<Field> getFieldData() {
         return fieldData;
     }
 

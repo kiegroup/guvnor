@@ -61,7 +61,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite
     implements
-    EditorWidget {
+    EditorWidget,
+    ScenarioParentWidget{
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
@@ -116,7 +117,7 @@ public class ScenarioWidget extends Composite
                                 widget );
     }
 
-    void renderEditor() {
+    public void renderEditor() {
 
         if ( this.layout.getWidgetCount() == 2 ) {
             this.layout.remove( 1 );
