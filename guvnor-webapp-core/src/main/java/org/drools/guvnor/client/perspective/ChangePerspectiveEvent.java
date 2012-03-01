@@ -27,14 +27,14 @@ public class ChangePerspectiveEvent extends GwtEvent<ChangePerspectiveEvent.Hand
 
     public static Type<ChangePerspectiveEvent.Handler> TYPE = new Type<ChangePerspectiveEvent.Handler>();
 
-    private final Workspace workspace;
+    private final Perspective perspective;
 
-    public ChangePerspectiveEvent(Workspace workspace) {
-        this.workspace = workspace;
+    public ChangePerspectiveEvent(Perspective perspective) {
+        this.perspective = perspective;
     }
 
-    public Workspace getWorkspace() {
-        return workspace;
+    public Perspective getPerspective() {
+        return perspective;
     }
 
     @Override

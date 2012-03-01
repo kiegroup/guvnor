@@ -30,7 +30,7 @@ import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.perspective.drools.AuthorWorkspace;
+import org.drools.guvnor.client.perspective.drools.AuthorPerspective;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,14 +73,14 @@ public class PerspectivesPanelTest {
         when(
                 perspectiveFactory.getPerspective("author")
         ).thenReturn(
-                new AuthorWorkspace()
+                new AuthorPerspective()
                 
         );
         
         when(
                 perspectiveFactory.getPerspective("runtime")
         ).thenReturn(
-                new RunTimeWorkspace()
+                new RunTimePerspective()
                 
         );        
         
@@ -136,14 +136,14 @@ public class PerspectivesPanelTest {
         presenter.onChangePerspective("runtime");
 
         assertTrue(eventBus.getLatestEvent() instanceof ChangePerspectiveEvent);
-        assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getWorkspace() instanceof RunTimeWorkspace);
+        assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getPerspective() instanceof RunTimePerspective);
     }
 
     private void verifyPerspectiveChangedToAuthor(int times) {
         ArgumentCaptor<ChangePerspectiveEvent> changePerspectiveEventArgumentCaptor = ArgumentCaptor.forClass(ChangePerspectiveEvent.class);
         verify(eventBus, times(times)).fireEvent(changePerspectiveEventArgumentCaptor.capture());
 
-        assertTrue(changePerspectiveEventArgumentCaptor.getValue().getWorkspace() instanceof AuthorWorkspace);
+        assertTrue(changePerspectiveEventArgumentCaptor.getValue().getPerspective() instanceof AuthorPerspective);
     }
 
     class EventBusMock extends EventBus {

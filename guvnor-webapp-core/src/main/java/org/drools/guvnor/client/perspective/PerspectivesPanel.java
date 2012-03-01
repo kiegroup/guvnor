@@ -51,8 +51,8 @@ public class PerspectivesPanel implements Presenter {
         }
     }
 
-    private void setPerspective(Workspace workspace) {
-        eventBus.fireEvent(new ChangePerspectiveEvent(workspace));
+    private void setPerspective(Perspective perspective) {
+        eventBus.fireEvent(new ChangePerspectiveEvent(perspective));
     }
 
     public PerspectivesPanelView getView() {

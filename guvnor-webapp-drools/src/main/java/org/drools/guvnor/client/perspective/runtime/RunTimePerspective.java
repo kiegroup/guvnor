@@ -26,9 +26,9 @@ import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigatio
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksNavigationItemBuilder;
-import org.drools.guvnor.client.perspective.Workspace;
+import org.drools.guvnor.client.perspective.Perspective;
 
-public class RunTimeWorkspace extends Workspace {
+public class RunTimePerspective extends Perspective {
 
     @Override
     public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {

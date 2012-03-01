@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
-public abstract class Workspace {
+public abstract class Perspective {
 
     public abstract Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus);
 }

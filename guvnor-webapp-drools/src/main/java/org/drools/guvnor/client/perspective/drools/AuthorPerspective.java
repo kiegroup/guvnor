@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.helloworld;
+package org.drools.guvnor.client.perspective.drools;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,10 +24,12 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeBuilder;
-import org.drools.guvnor.client.perspective.Workspace;
+import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
+import org.drools.guvnor.client.perspective.Perspective;
 
-public class HelloWorldWorkspace extends Workspace {
+public class AuthorPerspective extends Perspective {
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
     
     public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
@@ -37,6 +39,10 @@ public class HelloWorldWorkspace extends Workspace {
         navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory, eventBus));
 
         navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
+
+        navigationItemBuilders.add(new QATreeBuilder(clientFactory));
+
+        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory));
 
         navigationItemBuilders.add(new AdminTreeBuilder(clientFactory));
 
