@@ -421,8 +421,9 @@ public class RepositoryModuleOperations {
         log.info( "USER:" + getCurrentUserName() + " CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
 
         if ( replaceExisting ) {
-            rulesRepository.removeModuleSnapshot( moduleName,
-                    snapshotName );
+            if(rulesRepository.containsSnapshot(moduleName, snapshotName)) {
+                rulesRepository.removeModuleSnapshot( moduleName, snapshotName );
+            }
         }
 
         rulesRepository.createModuleSnapshot( moduleName,

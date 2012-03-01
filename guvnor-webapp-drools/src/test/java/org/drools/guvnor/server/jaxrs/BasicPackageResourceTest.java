@@ -876,7 +876,21 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testCreatePackageFromJson(@ArquillianResource URL baseURL) {
         //TODO: implement test
     }
+    
+    @Test @RunAsClient
+    public void testCreatePackageSnapshot(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/snapshot/testsnapshot");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("POST");
+        connection.setUseCaches (false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
 
+        assertEquals (204, connection.getResponseCode());
+    }
+    
     @Test @RunAsClient
     public void testGetPackageSource(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/source");
@@ -1098,6 +1112,16 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/rule1", linksMap.get("rule1").getHref().getPath());
 		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/rule2", linksMap.get("rule2").getHref().getPath());
 		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/model1", linksMap.get("model1").getHref().getPath());
+		
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
+        assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
+        assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        assertEquals("version2", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+        ExtensibleElement versionNumberExtension = metadataExtension.getExtension(Translator.VERSION_NUMBER);  
+        assertEquals("2", versionNumberExtension.getSimpleExtension(Translator.VALUE));		
 	}    
 
     @Test @RunAsClient
