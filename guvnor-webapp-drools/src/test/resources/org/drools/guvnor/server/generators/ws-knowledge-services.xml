@@ -29,9 +29,12 @@
 
   <drools:kbase id="kbase1" node="node1">
       <drools:resources>
-            <drools:resource  type="drl" source="http://localhost/c/source" />
-            <drools:resource  type="drl" source="http://localhost/cc/source" />
-            <drools:resource  type="change_set" source="http://localhost/cd/source" />
+
+            <drools:resource type="drl" source="http://localhost/c/source"/>
+
+            <drools:resource type="drl" source="http://localhost/cc/source"/>
+
+            <drools:resource type="change_set" source="http://localhost/cd/source"/>
 
     </drools:resources>
   </drools:kbase>
