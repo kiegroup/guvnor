@@ -275,6 +275,15 @@ public class GuidedDTDRLPersistence {
                                               binding );
                 }
 
+                //Binding is used to group related field setters together. It is essential for
+                //ActionInsertFactCol and ActionSetFieldCol52 columns as these represent single
+                //fields and need to be grouped together it is not essential for IAction's as
+                //these contain their own list of fields. If a BRL fragment does not set
+                //the binding use a unique identifier, in this case the Object itself.
+                if ( binding == null ) {
+                    binding = action.toString();
+                }
+
                 if ( a == null ) {
                     a = new LabelledAction();
                     a.boundName = binding;

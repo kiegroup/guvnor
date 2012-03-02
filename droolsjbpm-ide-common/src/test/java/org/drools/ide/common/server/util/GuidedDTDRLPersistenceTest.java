@@ -3219,6 +3219,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Simple Action
         ActionInsertFactCol52 a1 = new ActionInsertFactCol52();
+        a1.setBoundName( "$b" );
         a1.setFactType( "Baddie" );
         a1.setFactField( "name" );
         a1.setType( SuggestionCompletionEngine.TYPE_STRING );
@@ -3393,6 +3394,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Simple Action
         ActionInsertFactCol52 a1 = new ActionInsertFactCol52();
+        a1.setBoundName( "$b" );
         a1.setFactType( "Baddie" );
         a1.setFactField( "name" );
         a1.setType( SuggestionCompletionEngine.TYPE_STRING );
@@ -3443,78 +3445,78 @@ public class GuidedDTDRLPersistenceTest {
         //Row 0
         ruleStartIndex = drl.indexOf( "#from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
-        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+        action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+        action1StartIndex = drl.indexOf( "$b.setName( \"Gargamel\" );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "insert( fact0 );",
+        action1StartIndex = drl.indexOf( "insert( $b );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
 
-        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+        action2StartIndex = drl.indexOf( "Smurf fact0 = new Smurf();",
                                          ruleStartIndex );
         assertFalse( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+        action2StartIndex = drl.indexOf( "fact0.setName( \"Pupa\" );",
                                          action2StartIndex );
         assertFalse( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+        action2StartIndex = drl.indexOf( "fact0.setAge( 50 );",
                                          action2StartIndex );
         assertFalse( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "insert( fact1 );",
+        action2StartIndex = drl.indexOf( "insert( fact0 );",
                                          action2StartIndex );
         assertFalse( action2StartIndex == -1 );
 
         //Row 1
         ruleStartIndex = drl.indexOf( "#from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
-        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+        action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+        action1StartIndex = drl.indexOf( "$b.setName( \"Gargamel\" );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "insert( fact0 );",
+        action1StartIndex = drl.indexOf( "insert( $b );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
 
-        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+        action2StartIndex = drl.indexOf( "Smurf fact0 = new Smurf();",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+        action2StartIndex = drl.indexOf( "fact0.setName( \"Pupa\" );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+        action2StartIndex = drl.indexOf( "fact0.setAge( 50 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "insert( fact1 );",
+        action2StartIndex = drl.indexOf( "insert( fact0 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
 
         //Row 2
         ruleStartIndex = drl.indexOf( "#from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
-        action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
+        action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "fact0.setName( \"Gargamel\" );",
+        action1StartIndex = drl.indexOf( "$b.setName( \"Gargamel\" );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
-        action1StartIndex = drl.indexOf( "insert( fact0 );",
+        action1StartIndex = drl.indexOf( "insert( $b );",
                                          action1StartIndex );
         assertFalse( action1StartIndex == -1 );
 
-        action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
+        action2StartIndex = drl.indexOf( "Smurf fact0 = new Smurf();",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
+        action2StartIndex = drl.indexOf( "fact0.setName( \"Pupa\" );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
+        action2StartIndex = drl.indexOf( "fact0.setAge( 50 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "insert( fact1 );",
+        action2StartIndex = drl.indexOf( "insert( fact0 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
     }

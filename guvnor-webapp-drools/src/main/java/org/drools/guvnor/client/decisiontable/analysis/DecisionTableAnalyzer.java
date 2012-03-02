@@ -68,7 +68,7 @@ public class DecisionTableAnalyzer {
         List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
         List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
         for ( List<DTCellValue52> row : data ) {
-            final Integer rowNumber = ((Integer) row.get( 0 ).getNumericValue()) - 1;
+            final Long rowNumber = ((Long) row.get( 0 ).getNumericValue()) - 1;
             RowDetector rowDetector = new RowDetector( rowNumber );
             for ( Pattern52 pattern : model.getPatterns() ) {
                 for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
