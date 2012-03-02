@@ -27,12 +27,7 @@ import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.helloworld.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.OperatorsResource;
-import org.drools.guvnor.client.resources.RoundedCornersResource;
-import org.drools.guvnor.client.resources.WizardCellListResources;
-import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.resources.*;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 
@@ -68,8 +63,8 @@ public class GuvnorDroolsEntryPoint
 
     private void loadStyles() {
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
-        GuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
-        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        DroolsGuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
+        DroolsGuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
         WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();

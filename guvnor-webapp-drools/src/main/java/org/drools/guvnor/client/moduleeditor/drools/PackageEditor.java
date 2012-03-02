@@ -30,7 +30,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -215,7 +215,7 @@ public class PackageEditor extends AbstractModuleEditor {
     private void doValidatePackageConfiguration(final Command refresh) {
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add( new Label( Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait() ) );
-        busy.add( new Image( Images.INSTANCE.redAnime() ) );
+        busy.add( new Image( DroolsGuvnorImages.INSTANCE.redAnime() ) );
 
         packageConfigurationValidationResult.add( busy );
 
@@ -256,7 +256,7 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
+        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -270,7 +270,7 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( Images.INSTANCE.edit() );
+        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.edit() );
         add.setTitle( Constants.INSTANCE.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {
@@ -299,7 +299,7 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     protected void showCatRuleSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.config(),
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.config(),
                 Constants.INSTANCE.AddACategoryRuleToThePackage() );
         final Button addbutton = new Button( Constants.INSTANCE.OK() );
         final TextBox ruleName = new TextBox();
@@ -339,7 +339,7 @@ public class PackageEditor extends AbstractModuleEditor {
         packageConfigurationValidationResult.clear();
 
         if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith( "Class" ) ) {
-            Image img = new Image( Images.INSTANCE.warning() );
+            Image img = new Image( DroolsGuvnorImages.INSTANCE.warning() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + Constants.INSTANCE.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
@@ -353,7 +353,7 @@ public class PackageEditor extends AbstractModuleEditor {
             } );
             packageConfigurationValidationResult.add( show );
         } else {
-            Image img = new Image( Images.INSTANCE.greenTick() );
+            Image img = new Image( DroolsGuvnorImages.INSTANCE.greenTick() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + Constants.INSTANCE.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );

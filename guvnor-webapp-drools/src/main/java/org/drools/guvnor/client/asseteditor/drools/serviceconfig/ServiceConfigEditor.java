@@ -58,7 +58,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesService;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesServiceAsync;
 import org.drools.guvnor.client.rpc.Asset;
@@ -90,7 +90,7 @@ public class ServiceConfigEditor extends DirtyableComposite
     private static ServiceConfigEditorBinder uiBinder = GWT.create(ServiceConfigEditorBinder.class);
     ArtifactDependenciesServiceAsync mavenArtifactsAsync = (ArtifactDependenciesServiceAsync) GWT.create(ArtifactDependenciesService.class);
 
-    private static Images images = GWT.create(Images.class);
+    private static DroolsGuvnorImages images = GWT.create(DroolsGuvnorImages.class);
 
     public static final Map<String, ImageResource> FORMAT_IMAGES = new HashMap<String, ImageResource>() {{
         put(BUSINESS_RULE, images.ruleAsset());

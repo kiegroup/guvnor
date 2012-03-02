@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.deployment;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.user.client.Command;
@@ -32,7 +32,7 @@ public class DeploymentNewMenu {
 
         MenuBar createNewMenu = new MenuBar( true );
 
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.snapshotSmall(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.snapshotSmall(),
                                Constants.INSTANCE.NewDeploymentSnapshot() ).asString(),
                                true,
                                new Command() {
@@ -46,7 +46,7 @@ public class DeploymentNewMenu {
                                    }
                                } );
 
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.refresh(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.refresh(),
                                                Constants.INSTANCE.RebuildAllSnapshotBinaries() ).asString(),
                                true,
                                new Command() {

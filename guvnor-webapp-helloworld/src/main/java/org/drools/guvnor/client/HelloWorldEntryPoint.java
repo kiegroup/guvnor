@@ -31,12 +31,8 @@ import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.helloworld.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
-import org.drools.guvnor.client.resources.WizardCellListResources;
-import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 
@@ -64,10 +60,6 @@ public class HelloWorldEntryPoint
         GuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
         GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
-        OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
-        WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
-        WizardResources.INSTANCE.style().ensureInjected();
-        DecisionTableResources.INSTANCE.style().ensureInjected();
     }
 
     /**

@@ -29,7 +29,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -159,7 +159,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            Image clickme = new Image( Images.INSTANCE.edit() );
+            Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -198,7 +198,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
@@ -352,7 +352,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         String msg = Constants.INSTANCE.FormulaEvaluateToAValue();
-        Image img = new Image( Images.INSTANCE.functionAssets() );
+        Image img = new Image( DroolsGuvnorImages.INSTANCE.functionAssets() );
         img.setTitle( msg );
         box.setTitle( msg );
         box.addChangeHandler( new ChangeHandler() {
@@ -406,7 +406,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 Window.alert( "Unexpected constraint type!" );
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( Images.INSTANCE.newexWiz(),
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                                          Constants.INSTANCE.FieldValue(),
                                                                          customFormConfiguration );
 
@@ -427,7 +427,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

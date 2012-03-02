@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.container {
-    padding: 0px;
-    padding: 0px;
-}
+package org.drools.guvnor.client.resources;
 
-.parameter {
-    width: 25px;
-    margin-right: 1px;
-    font-size: smaller;
+import com.google.gwt.resources.client.CssResource;
+
+/**
+ * General CSS for Guvnor. Use of standalone CSS files should be migrated to here
+ */
+public interface DroolsGuvnorCss
+    extends
+    CssResource {
+
+    String workItemParameter();
+
 }

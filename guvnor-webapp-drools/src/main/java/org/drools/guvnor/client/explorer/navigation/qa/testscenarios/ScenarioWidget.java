@@ -26,7 +26,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
@@ -262,7 +262,7 @@ public class ScenarioWidget extends Composite
 
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
-                    final Image busy = new Image( Images.INSTANCE.searching() );
+                    final Image busy = new Image( DroolsGuvnorImages.INSTANCE.searching() );
                     final Label loading = new SmallLabel( Constants.INSTANCE.loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );

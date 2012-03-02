@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -29,7 +29,6 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -48,7 +47,7 @@ public class NewDataButton extends TestScenarioButton {
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super( Images.INSTANCE.newItem(),
+        super( DroolsGuvnorImages.INSTANCE.newItem(),
                Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
@@ -64,7 +63,7 @@ public class NewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( Images.INSTANCE.ruleAsset(),
+            super( DroolsGuvnorImages.INSTANCE.ruleAsset(),
                    Constants.INSTANCE.NewInput() );
 
             addAttribute( Constants.INSTANCE.InsertANewFact1(),

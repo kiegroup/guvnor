@@ -22,7 +22,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
@@ -183,7 +183,7 @@ public class PopupCreator {
      */
     public void showPatternPopupForComposite(Widget w,
                                              final HasConstraints hasConstraints) {
-        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                          Constants.INSTANCE.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
@@ -273,7 +273,7 @@ public class PopupCreator {
                                              con );
 
         String title = (con == null) ? Constants.INSTANCE.ModifyConstraintsFor0( fp.getFactType() ) : Constants.INSTANCE.AddSubFieldConstraint();
-        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                          title );
 
         final ListBox box = new ListBox();

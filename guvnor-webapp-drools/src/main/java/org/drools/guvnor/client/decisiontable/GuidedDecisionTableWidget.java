@@ -35,7 +35,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -175,7 +175,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( Images.INSTANCE.information() ).getHTML()
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( DroolsGuvnorImages.INSTANCE.information() ).getHTML()
                                                + "&nbsp;"
                                                + Constants.INSTANCE.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
@@ -280,7 +280,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         if ( c instanceof ActionWorkItemSetFieldCol52 ) {
             final ActionWorkItemSetFieldCol52 awisf = (ActionWorkItemSetFieldCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -302,7 +302,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionSetFieldCol52 ) {
             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -324,7 +324,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemInsertFactCol52 ) {
             final ActionWorkItemInsertFactCol52 awiif = (ActionWorkItemInsertFactCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -346,7 +346,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionInsertFactCol52 ) {
             final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -368,7 +368,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionRetractFactCol52 ) {
             final ActionRetractFactCol52 arf = (ActionRetractFactCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -389,7 +389,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemCol52 ) {
             final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -413,7 +413,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof LimitedEntryBRLActionColumn ) {
             final LimitedEntryBRLActionColumn column = (LimitedEntryBRLActionColumn) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -431,7 +431,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof BRLActionColumn ) {
             final BRLActionColumn column = (BRLActionColumn) c;
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -453,7 +453,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget removeAction(final ActionCol52 c) {
         if ( c instanceof LimitedEntryBRLActionColumn ) {
-            return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                     Constants.INSTANCE.RemoveThisActionColumn(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -466,7 +466,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         } else if ( c instanceof BRLActionColumn ) {
-            return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                     Constants.INSTANCE.RemoveThisActionColumn(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -479,7 +479,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         }
-        return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+        return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                 Constants.INSTANCE.RemoveThisActionColumn(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
@@ -722,7 +722,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showMetaDataAndAttribute() {
                         // show choice of attributes
-                        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.config(),
+                        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.config(),
                                                                        Constants.INSTANCE.AddAnOptionToTheRule() );
                         final ListBox list = RuleAttributeWidget.getAttributeList();
 
@@ -739,7 +739,7 @@ public class GuidedDecisionTableWidget extends Composite
                             }
                         }
 
-                        final Image addbutton = new ImageButton( Images.INSTANCE.newItem() );
+                        final Image addbutton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
                         final TextBox box = new TextBox();
                         box.setVisibleLength( 15 );
 
@@ -1103,7 +1103,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget editCondition(final Pattern52 origPattern,
                                  final ConditionCol52 origCol) {
-        return new ImageButton( Images.INSTANCE.edit(),
+        return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                 Constants.INSTANCE.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
@@ -1131,7 +1131,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget editCondition(final BRLConditionColumn origCol) {
         if ( origCol instanceof LimitedEntryBRLConditionColumn ) {
-            return new ImageButton( Images.INSTANCE.edit(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                     Constants.INSTANCE.EditThisColumnsConfiguration(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -1147,7 +1147,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     } );
         }
-        return new ImageButton( Images.INSTANCE.edit(),
+        return new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                 Constants.INSTANCE.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
@@ -1174,7 +1174,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget removeCondition(final ConditionCol52 c) {
         if ( c instanceof LimitedEntryBRLConditionColumn ) {
-            return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                     Constants.INSTANCE.RemoveThisConditionColumn(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -1191,7 +1191,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         } else if ( c instanceof BRLConditionColumn ) {
-            return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                     Constants.INSTANCE.RemoveThisConditionColumn(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent w) {
@@ -1208,7 +1208,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         }
-        return new ImageButton( Images.INSTANCE.deleteItemSmall(),
+        return new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                 Constants.INSTANCE.RemoveThisConditionColumn(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
@@ -1376,7 +1376,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAttr(final AttributeCol52 at) {
-        Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+        Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                      Constants.INSTANCE.RemoveThisAttribute(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
@@ -1392,7 +1392,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeMeta(final MetadataCol52 md) {
-        Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+        Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                      Constants.INSTANCE.RemoveThisMetadata(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {

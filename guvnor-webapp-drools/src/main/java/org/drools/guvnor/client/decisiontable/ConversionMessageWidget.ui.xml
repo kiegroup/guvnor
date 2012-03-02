@@ -19,7 +19,7 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.DroolsGuvnorImages" />
   <ui:with field="wizardResources" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:HorizontalPanel width="500px">

@@ -24,7 +24,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
@@ -88,7 +88,7 @@ public class Connectives {
                 hp.add( connectiveValueEditor( con ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+                    Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
                     clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                   i ) );

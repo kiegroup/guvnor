@@ -23,12 +23,11 @@ import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -221,7 +220,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                                      ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
 

@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
@@ -109,7 +109,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     }
 
     public ImageResource getIcon() {
-        return Images.INSTANCE.decisionTable();
+        return DroolsGuvnorImages.INSTANCE.decisionTable();
     }
 
     public String getOverallStyleName() {

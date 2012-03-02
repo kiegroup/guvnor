@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.deployment;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -32,7 +31,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -71,7 +70,7 @@ public class DeploymentTree extends NavigationItemBuilderOld
     }
 
     public ImageResource getImage() {
-        return Images.INSTANCE.deploy();
+        return DroolsGuvnorImages.INSTANCE.deploy();
     }
 
     public IsWidget createContent() {

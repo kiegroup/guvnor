@@ -21,12 +21,11 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +47,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                   boolean lockLHS,
                                   boolean lockRHS,
                                   final Command refresh) {
-        super( Images.INSTANCE.config(),
+        super( DroolsGuvnorImages.INSTANCE.config(),
                Constants.INSTANCE.AddAnOptionToTheRule() );
 
         setTextBox( model,
@@ -145,7 +144,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
     private Image getAddButton(final RuleModel model,
                                final Command refresh,
                                final TextBox box) {
-        final Image addbutton = new ImageButton( Images.INSTANCE.newItem() );
+        final Image addbutton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
         addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
 
         addbutton.addClickHandler( new ClickHandler() {

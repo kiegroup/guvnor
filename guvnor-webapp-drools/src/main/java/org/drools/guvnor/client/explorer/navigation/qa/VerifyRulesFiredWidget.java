@@ -20,12 +20,11 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -91,7 +90,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 if ( !v.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( Images.INSTANCE.warning() ) );
+                                    new Image( DroolsGuvnorImages.INSTANCE.warning() ) );
                     data.setWidget( i,
                                     4,
                                     new HTML( Constants.INSTANCE.ActualResult(v.getActualResult().toString()) ) );
@@ -103,7 +102,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( Images.INSTANCE.testPassed() ) );
+                                    new Image( DroolsGuvnorImages.INSTANCE.testPassed() ) );
                 }
 
             }
@@ -165,7 +164,7 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisRuleExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

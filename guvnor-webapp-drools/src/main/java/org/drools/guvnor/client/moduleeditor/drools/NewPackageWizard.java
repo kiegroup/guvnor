@@ -32,7 +32,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
@@ -47,7 +47,7 @@ public class NewPackageWizard extends FormStylePopup {
     private final EventBus eventBus;
 
     public NewPackageWizard(ClientFactory clientFactory, EventBus eventBus) {
-        super(Images.INSTANCE.newexWiz(),
+        super(DroolsGuvnorImages.INSTANCE.newexWiz(),
                 Constants.INSTANCE.CreateANewPackage());
         this.eventBus = eventBus;
         nameBox = new TextBox();
@@ -193,7 +193,7 @@ public class NewPackageWizard extends FormStylePopup {
         panel.add(hp);
 
 
-        final FormStylePopup packageNamePopup = new FormStylePopup(Images.INSTANCE.packageLarge(),
+        final FormStylePopup packageNamePopup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.packageLarge(),
                 Constants.INSTANCE.PackageName());
         HorizontalPanel packageNamePanel = new HorizontalPanel();
         packageNamePopup.addRow(new Label(Constants.INSTANCE.ImportedDRLContainsNoNameForThePackage()));

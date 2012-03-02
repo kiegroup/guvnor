@@ -15,35 +15,22 @@
  */
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-public interface AuditEventsImages
+public interface DroolsGuvnorResources
     extends
     ClientBundle {
 
-    @Source("images/audit_events/misc_event.gif")
-    ImageResource miscEvent();
-    
-    @Source("images/audit_events/1.gif")
-    ImageResource image1(); 
-    
-    @Source("images/audit_events/2.gif")
-    ImageResource image2();    
+    DroolsGuvnorResources INSTANCE = GWT.create( DroolsGuvnorResources.class );
 
-    @Source("images/audit_events/3.gif")
-    ImageResource image3();    
+    @Source("css/TitledTextCell.css")
+    TitledTextCellCss titledTextCellCss();
 
-    @Source("images/audit_events/4.gif")
-    ImageResource image4();
-
-    @Source("images/audit_events/5.gif")
-    ImageResource image5();
-
-    @Source("images/audit_events/6.gif")
-    ImageResource image6();
-
-    @Source("images/audit_events/7.gif")
-    ImageResource image7();
+    @Source("css/DroolsGuvnor.css")
+    DroolsGuvnorCss guvnorCss();
 
 }

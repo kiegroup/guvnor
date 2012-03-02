@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -216,7 +216,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     private Widget choice() {
-        Image clickme = new Image( Images.INSTANCE.edit() );
+        Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -227,7 +227,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                         Constants.INSTANCE.FieldValue() );
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

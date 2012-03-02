@@ -40,7 +40,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -434,7 +434,7 @@ public class AssetEditorActionToolbar extends Composite {
 
                     public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
-                        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+                        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
                                 Constants.INSTANCE.VerificationReport() );
                         ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                 false ) );
@@ -579,7 +579,7 @@ public class AssetEditorActionToolbar extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.warningLarge(),
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.warningLarge(),
                 Constants.INSTANCE.WARNINGUnCommittedChanges() );
         Button dis = new Button( Constants.INSTANCE.Discard() );
         Button can = new Button( Constants.INSTANCE.Cancel() );
@@ -608,7 +608,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doCopy() {
-        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
                 Constants.INSTANCE.CopyThisItem() );
         final TextBox newName = new TextBox();
         form.addAttribute( Constants.INSTANCE.NewName(),
@@ -660,7 +660,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.packageLarge(),
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.packageLarge(),
                 Constants.INSTANCE.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( asset.getName() );

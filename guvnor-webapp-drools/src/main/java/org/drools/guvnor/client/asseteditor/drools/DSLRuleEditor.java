@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 
@@ -25,7 +24,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -94,7 +93,7 @@ public class DSLRuleEditor extends DirtyableComposite {
 
         VerticalPanel vert = new VerticalPanel();
 
-        Image lhsOptions = new ImageButton(Images.INSTANCE.newDSLPattern());
+        Image lhsOptions = new ImageButton(DroolsGuvnorImages.INSTANCE.newDSLPattern());
         final String msg = Constants.INSTANCE.AddANewCondition();
         lhsOptions.setTitle(msg);
         lhsOptions.addClickHandler(new ClickHandler() {
@@ -103,7 +102,7 @@ public class DSLRuleEditor extends DirtyableComposite {
             }
         });
 
-        Image rhsOptions = new ImageButton(Images.INSTANCE.newDSLAction());
+        Image rhsOptions = new ImageButton(DroolsGuvnorImages.INSTANCE.newDSLAction());
         final String msg2 = Constants.INSTANCE.AddAnAction();
         rhsOptions.setTitle(msg2);
         rhsOptions.addClickHandler(new ClickHandler() {

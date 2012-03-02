@@ -20,11 +20,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface Images
+public interface DroolsGuvnorImages
     extends
     ClientBundle {
 
-    Images INSTANCE = GWT.create(Images.class);
+    DroolsGuvnorImages INSTANCE = GWT.create(DroolsGuvnorImages.class);
 
     @Source("images/package.gif")
     ImageResource packageImage();

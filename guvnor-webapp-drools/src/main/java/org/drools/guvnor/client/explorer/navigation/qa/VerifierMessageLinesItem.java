@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation.qa;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
 
@@ -74,7 +74,7 @@ class VerifierMessageLinesItem extends TreeItem {
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
             HorizontalPanel rule = new HorizontalPanel();
-            rule.add(new Image(Images.INSTANCE.ruleAsset()));
+            rule.add(new Image(DroolsGuvnorImages.INSTANCE.ruleAsset()));
             rule.add(new Label(line.impactedRules.get( ruleAssetGuid )));
             
             // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised

@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,7 +27,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
@@ -72,7 +71,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image addNewConstraint = new ImageButton(Images.INSTANCE.newItem());
+        Image addNewConstraint = new ImageButton(DroolsGuvnorImages.INSTANCE.newItem());
         addNewConstraint.setTitle(Constants.INSTANCE.AddNewConstraint());
 
         addNewConstraint.addClickHandler(new ClickHandler() {
@@ -81,7 +80,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image removeConstraint = new Image(Images.INSTANCE.trash());
+        Image removeConstraint = new Image(DroolsGuvnorImages.INSTANCE.trash());
         removeConstraint.setTitle(Constants.INSTANCE.removeConstraint());
         removeConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -226,7 +225,7 @@ public class FactsConstraintsEditorPanel extends Composite {
 
     private void showNewConstrainPop() {
         final FormStylePopup pop = new FormStylePopup(
-                Images.INSTANCE.config(),
+                DroolsGuvnorImages.INSTANCE.config(),
                 Constants.INSTANCE.AddNewConstraint());
         final Button addbutton = new Button(Constants.INSTANCE.OK());
         final ListBox consDefsCombo = new ListBox(false);
