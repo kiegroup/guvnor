@@ -1146,6 +1146,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
     }
     
+    //REVISIT: https://issues.jboss.org/browse/GUVNOR-1232: Force a pacakge rebuild before every package check in operation. 
     @Test @RunAsClient 
     public void testGetHistoricalPackageBinary(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage2/versions/2/binary");
