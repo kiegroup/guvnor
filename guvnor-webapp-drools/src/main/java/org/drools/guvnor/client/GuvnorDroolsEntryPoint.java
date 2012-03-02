@@ -63,6 +63,7 @@ public class GuvnorDroolsEntryPoint
 
     private void loadStyles() {
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         DroolsGuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
         DroolsGuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
