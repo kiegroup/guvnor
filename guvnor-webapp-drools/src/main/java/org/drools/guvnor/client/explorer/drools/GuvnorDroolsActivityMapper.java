@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.helloworld;
+package org.drools.guvnor.client.explorer.drools;
 
 import org.drools.guvnor.client.explorer.AssetEditorActivity;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;

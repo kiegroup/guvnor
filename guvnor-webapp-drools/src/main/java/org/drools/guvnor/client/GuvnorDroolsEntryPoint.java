@@ -24,7 +24,7 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
-import org.drools.guvnor.client.explorer.helloworld.ClientFactoryImpl;
+import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.*;
