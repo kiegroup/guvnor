@@ -275,7 +275,7 @@ public class GuidedDTDRLPersistence {
                                               binding );
                 }
 
-                if ( a == null && binding != null ) {
+                if ( a == null ) {
                     a = new LabelledAction();
                     a.boundName = binding;
                     a.action = action;

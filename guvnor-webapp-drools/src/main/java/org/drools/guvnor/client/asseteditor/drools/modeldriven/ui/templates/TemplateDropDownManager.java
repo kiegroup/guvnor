@@ -40,8 +40,6 @@ public class TemplateDropDownManager
     private final TemplateModel model;
     private final DynamicData   data;
 
-    //TODO {manstis} This needs the UI columns NOT model. 
-    //The model may not have been updated before the cell is rendered.
     public TemplateDropDownManager(final TemplateModel model,
                                    final DynamicData data) {
         this.model = model;
