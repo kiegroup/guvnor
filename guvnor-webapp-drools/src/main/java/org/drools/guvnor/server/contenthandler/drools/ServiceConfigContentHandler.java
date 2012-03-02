@@ -16,60 +16,26 @@
 
 package org.drools.guvnor.server.contenthandler.drools;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
-import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.repository.AssetItem;
 
-import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.*;
+public class ServiceConfigContentHandler extends ContentHandler {
 
-public class ServiceConfigContentHandler extends PlainTextContentHandler implements IHasCustomValidator {
+    @Override public void retrieveAssetContent(Asset asset, AssetItem item) throws SerializationException {
+        final ServiceConfig model = new ServiceConfig(item.getContent());
 
-    private static final Set<String> VALID_PROTOCOLS = new HashSet<String>() {{
-        add(REST.toString());
-        add(WEB_SERVICE.toString());
-        add("ws");
-        add("rs");
-    }};
+        asset.setContent(model);
+    }
 
-    public String validate(final String content) {
-        final String[] lines = content.trim().split("\n");
-        for (final String line : lines) {
-            if (line.startsWith("polling=")) {
-                try {
-                    Integer.parseInt(line.substring(8));
-                } catch (NumberFormatException ex) {
-                    return "Invalid polling format.";
-                }
-            } else if (line.startsWith("protocol=")) {
-                if (!VALID_PROTOCOLS.contains(line.substring(9))) {
-                    return "Invalid protocol.";
-                }
-            } else if (line.startsWith("resource=")) {
-                final String[] values = line.substring(9).split("\\|");
-                if (values.length != 5) {
-                    return "Invalid resource format.";
-                }
-            } else if (line.startsWith("model=")) {
-                final String[] values = line.substring(6).split("\\|");
-                if (values.length != 5) {
-                    return "Invalid model format.";
-                }
-            } else if (line.startsWith("excluded.artifact=")) {
-                final String[] values = line.substring(18).split("\\:");
-                if (values.length < 5 || values.length > 6) {
-                    return "Invalid excluded artifact format.";
-                }
-            } else if (line.trim().length() != 0) {
-                return "Invalid data entry";
-            }
-        }
-        return "";
+    @Override public void storeAssetContent(Asset asset, AssetItem repoAsset) throws SerializationException {
+        ServiceConfig data = (ServiceConfig) asset.getContent();
+        repoAsset.updateContent(marshal(data));
+    }
+
+    private String marshal(final ServiceConfig data) {
+        return data.toContent();
     }
 }

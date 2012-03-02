@@ -68,6 +68,7 @@ import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesExpl
 import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesReadyCommand;
 import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
 import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.*;
 import static com.google.gwt.user.client.ui.AbstractImagePrototype.*;
@@ -123,8 +124,8 @@ public class ServiceConfigEditor extends DirtyableComposite
     @UiField
     protected Tree resourceTree;
 
+    final private Asset asset;
     final private ClientFactory clientFactory;
-    final private RuleContentText data;
     final private String assetPackageName;
     final private String assetPackageUUID;
     final private String assetUUID;
@@ -145,21 +146,15 @@ public class ServiceConfigEditor extends DirtyableComposite
 
         this.initWidget(uiBinder.createAndBindUi(this));
 
+        this.asset = asset;
         this.clientFactory = clientFactory;
-        this.data = (RuleContentText) asset.getContent();
-
-        if (data.content == null) {
-            data.content = "";
-        }
-
         this.assetUUID = asset.getUuid();
         this.assetPackageUUID = asset.getMetaData().getModuleUUID();
         this.assetPackageName = asset.getMetaData().getModuleName();
         this.assetName = asset.getName();
+        this.config = (ServiceConfig) asset.getContent();
 
         this.customizeUIElements();
-
-        this.config = new ServiceConfig(data.content);
 
         this.root = resourceTree.addItem(treeItemFormat(asset.getName(), images.enumeration()));
 
@@ -247,7 +242,7 @@ public class ServiceConfigEditor extends DirtyableComposite
 
         this.config = new ServiceConfig(pollingFrequency, protocol, resources, models, excludedArtifacts);
 
-        data.content = config.toContent();
+        asset.setContent(config);
     }
 
     public void onAfterSave() {

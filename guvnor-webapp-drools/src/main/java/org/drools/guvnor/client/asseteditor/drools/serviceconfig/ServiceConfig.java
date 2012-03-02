@@ -20,21 +20,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.guvnor.client.rpc.MavenArtifact;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import static java.util.Collections.*;
 import static org.drools.guvnor.client.util.Preconditions.*;
 
-public class ServiceConfig {
+public class ServiceConfig
+        implements PortableObject {
+
+    private static final long serialVersionUID = -660354431823570247L;
 
     public enum Protocol {
         REST, WEB_SERVICE;
     }
 
-    final int pollingFrequency;
-    final Protocol protocol;
-    final Collection<AssetReference> resources;
-    final Collection<AssetReference> models;
-    final Collection<MavenArtifact> excludedArtifacts;
+    private int pollingFrequency;
+    private Protocol protocol;
+    private Collection<AssetReference> resources;
+    private Collection<AssetReference> models;
+    private Collection<MavenArtifact> excludedArtifacts;
+
+    public ServiceConfig(){
+    }
 
     public ServiceConfig(final String assetContent) {
         checkNotNull("assetContent", assetContent);
@@ -191,13 +198,19 @@ public class ServiceConfig {
         return result;
     }
 
-    public static class AssetReference {
+    public static class AssetReference
+            implements PortableObject {
 
-        private final String pkg;
-        private final String name;
-        private final String format;
-        private final String url;
-        private final String uuid;
+        private static final long serialVersionUID = 6831529719441561353L;
+
+        private String pkg;
+        private String name;
+        private String format;
+        private String url;
+        private String uuid;
+
+        public AssetReference(){
+        }
 
         public AssetReference(final String value) {
             checkNotEmpty("value", value);
