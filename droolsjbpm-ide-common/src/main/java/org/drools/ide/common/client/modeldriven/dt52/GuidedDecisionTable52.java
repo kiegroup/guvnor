@@ -333,7 +333,7 @@ public class GuidedDecisionTable52
 
     private String getType(AttributeCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = null;
+        String type = SuggestionCompletionEngine.TYPE_STRING;
         String attrName = col.getAttribute();
         if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
             type = SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER;
