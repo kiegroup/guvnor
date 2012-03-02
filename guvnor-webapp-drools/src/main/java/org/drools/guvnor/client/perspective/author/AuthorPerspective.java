@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.drools;
+package org.drools.guvnor.client.perspective.author;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -30,7 +30,7 @@ import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.perspective.drools.AuthorPerspective;
+import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
