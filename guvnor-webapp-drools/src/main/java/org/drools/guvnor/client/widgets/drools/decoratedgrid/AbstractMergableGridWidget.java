@@ -1168,8 +1168,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                   this.columns.remove( sourceColumnIndex ) );
                 for ( int iRow = 0; iRow < data.size(); iRow++ ) {
                     DynamicDataRow row = data.get( iRow );
-                    row.add( targetColumnIndex,
-                             row.remove( sourceColumnIndex ) );
+                    row.move( targetColumnIndex,
+                              sourceColumnIndex );
                 }
             }
         } else if ( targetColumnIndex < sourceColumnIndex ) {
@@ -1178,8 +1178,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                   this.columns.remove( sourceColumnIndex ) );
                 for ( int iRow = 0; iRow < data.size(); iRow++ ) {
                     DynamicDataRow row = data.get( iRow );
-                    row.add( targetColumnIndex,
-                             row.remove( sourceColumnIndex ) );
+                    row.move( targetColumnIndex,
+                              sourceColumnIndex );
                 }
                 sourceColumnIndex++;
                 targetColumnIndex++;
@@ -1195,9 +1195,12 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     public void onSortData(SortDataEvent event) {
-        //Remove merging
-        ToggleMergingEvent tme = new ToggleMergingEvent( false );
-        eventBus.fireEvent( tme );
+
+        //Remove grouping, if applicable
+        if ( data.isGrouped() ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            eventBus.fireEvent( tme );
+        }
 
         //Sort data
         List<SortConfiguration> sortConfiguration = event.getSortConfiguration();
