@@ -17,11 +17,14 @@
 package org.drools.guvnor.server.contenthandler.drools;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.files.MockHTTPRequest;
 import org.drools.guvnor.server.files.MockHTTPResponse;
@@ -34,11 +37,17 @@ import static org.junit.Assert.*;
 
 public class ServiceWarBuilderAndDownloadHandlerTest extends GuvnorTestBase {
 
-    private static final String REST_SERVICE_CONFIG_CONTENT = "polling=70\n" +
-            "protocol=REST\n" +
-            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
-            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
-            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
+    private static final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>() {{
+        add(new ServiceConfig.AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
+        add(new ServiceConfig.AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
+        add(new ServiceConfig.AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+    }};
+
+    private static final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>() {{
+        add(new ServiceConfig.AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
+    }};
+
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig("70", "rest", resources, models, null);
 
     @Inject
     private ServiceWarBuilderAndDownloadHandler serviceHandler;
@@ -50,7 +59,7 @@ public class ServiceWarBuilderAndDownloadHandlerTest extends GuvnorTestBase {
                 "");
         final AssetItem ass = pkg.addAsset("myAsset", "");
         ass.updateFormat("serviceConfig");
-        ass.updateContent(REST_SERVICE_CONFIG_CONTENT);
+        ass.updateContent(ServiceConfigPersistence.getInstance().marshal(REST_SERVICE_CONFIG));
         ass.checkin("hey ho, let's go!");
 
         assertNotNull(serviceHandler);

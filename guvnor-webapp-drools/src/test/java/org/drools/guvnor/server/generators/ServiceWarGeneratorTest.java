@@ -55,17 +55,18 @@ import static org.junit.Assert.*;
 
 public class ServiceWarGeneratorTest {
 
-    private static final String REST_SERVICE_CONFIG = "polling=70\n" +
-            "protocol=REST\n" +
-            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
-            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
-            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
+    private static final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>() {{
+        add(new ServiceConfig.AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
+        add(new ServiceConfig.AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
+        add(new ServiceConfig.AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+    }};
 
-    private static final String WS_SERVICE_CONFIG = "polling=70\n" +
-            "protocol=WEB_SERVICE\n" +
-            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
-            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
-            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
+    private static final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>() {{
+        add(new ServiceConfig.AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
+    }};
+
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig("70", "rest", resources, models, null);
+    private static final ServiceConfig WS_SERVICE_CONFIG = new ServiceConfig("70", "ws", resources, models, null);
 
     private static final Set<String> LIBS = new HashSet<String>() {{
         add("log4j-1.2.16.jar");

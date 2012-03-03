@@ -42,9 +42,8 @@ public class ServiceConfigTest {
         //ws is also an option
         assertEquals(WEB_SERVICE, new ServiceConfig("70", "ws", null, null, null).getProtocol());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        assertEquals(basicConfig, new ServiceConfig(basicConfig));
+        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig).hashCode());
     }
 
     @Test
@@ -61,14 +60,13 @@ public class ServiceConfigTest {
         //default is always rest
         assertEquals(REST, new ServiceConfig("70", "some", null, null, null).getProtocol());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        assertEquals(basicConfig, new ServiceConfig(basicConfig));
+        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig).hashCode());
     }
 
     @Test
-    public void testConstructorEmptyString() {
-        final ServiceConfig basicConfig = new ServiceConfig("");
+    public void testConstructorDefaultValues() {
+        final ServiceConfig basicConfig = new ServiceConfig();
 
         assertNotNull(basicConfig);
         assertEquals(REST, basicConfig.getProtocol());
@@ -77,22 +75,21 @@ public class ServiceConfigTest {
         assertEquals(emptyList(), basicConfig.getResources());
         assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        assertEquals(basicConfig, new ServiceConfig(basicConfig));
+        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig).hashCode());
     }
 
     @Test
     public void testAdvancedSetup() {
 
         final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>() {{
-            add(new ServiceConfig.AssetReference("myPkg|a|drl|http://localhost/c/source|uuid1"));
-            add(new ServiceConfig.AssetReference("myPkg|aa|drl|http://localhost/cc/source|uuid2"));
-            add(new ServiceConfig.AssetReference("myPkg|ab|change_set|http://localhost/cd/source|uuid3"));
+            add(new ServiceConfig.AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
+            add(new ServiceConfig.AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
+            add(new ServiceConfig.AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
         }};
 
         final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>() {{
-            add(new ServiceConfig.AssetReference("myPkg|a.jar|model|http://localhost/a.jar|uudi44"));
+            add(new ServiceConfig.AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
         }};
 
         final ServiceConfig basicConfig = new ServiceConfig("70", "rest", resources, models, null);
@@ -104,8 +101,7 @@ public class ServiceConfigTest {
         assertEquals(resources, basicConfig.getResources());
         assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
 
-        //toContent consistency
-        final ServiceConfig rebuild = new ServiceConfig(basicConfig.toContent());
+        final ServiceConfig rebuild = new ServiceConfig(basicConfig);
         assertEquals(basicConfig, rebuild);
         assertEquals(basicConfig.hashCode(), rebuild.hashCode());
 
@@ -120,8 +116,8 @@ public class ServiceConfigTest {
         assertFalse(basicConfig.hashCode() == rebuild.hashCode());
 
         //now consistency with excluded artifacts
-        assertEquals(rebuild, new ServiceConfig(rebuild.toContent()));
-        assertEquals(rebuild.hashCode(), new ServiceConfig(rebuild.toContent()).hashCode());
+        assertEquals(rebuild, new ServiceConfig(rebuild));
+        assertEquals(rebuild.hashCode(), new ServiceConfig(rebuild).hashCode());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -132,18 +128,6 @@ public class ServiceConfigTest {
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullString() {
         new ServiceConfig(null);
-    }
-
-    @Test
-    public void testAssetReferenceConstructor() {
-        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a|b|c|d|e");
-
-        assertNotNull(assetReference);
-        assertEquals("a", assetReference.getPkg());
-        assertEquals("b", assetReference.getName());
-        assertEquals("c", assetReference.getFormat());
-        assertEquals("d", assetReference.getUrl());
-        assertEquals("e", assetReference.getUuid());
     }
 
     @Test
@@ -160,30 +144,10 @@ public class ServiceConfigTest {
 
     @Test
     public void testAssetReferenceToValueConsistency() {
-        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a|b|c|d|e");
+        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a", "b", "c", "d", "e");
 
-        assertEquals(assetReference, new ServiceConfig.AssetReference(assetReference.toValue()));
-        assertEquals(assetReference.hashCode(), new ServiceConfig.AssetReference(assetReference.toValue()).hashCode());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceEmptyConstructor() {
-        new ServiceConfig.AssetReference("");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor1() {
-        new ServiceConfig.AssetReference("a");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor2() {
-        new ServiceConfig.AssetReference("a|b");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor3() {
-        new ServiceConfig.AssetReference("a|b|c|d|e|f|e|g|D");
+        assertEquals(assetReference, new ServiceConfig.AssetReference(assetReference));
+        assertEquals(assetReference.hashCode(), new ServiceConfig.AssetReference(assetReference).hashCode());
     }
 
     @Test(expected = IllegalArgumentException.class)

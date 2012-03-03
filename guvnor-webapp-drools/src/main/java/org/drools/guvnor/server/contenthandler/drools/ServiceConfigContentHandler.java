@@ -25,17 +25,13 @@ import org.drools.repository.AssetItem;
 public class ServiceConfigContentHandler extends ContentHandler {
 
     @Override public void retrieveAssetContent(Asset asset, AssetItem item) throws SerializationException {
-        final ServiceConfig model = new ServiceConfig(item.getContent());
+        final ServiceConfig model = ServiceConfigPersistence.getInstance().unmarshal(item.getContent());
 
         asset.setContent(model);
     }
 
     @Override public void storeAssetContent(Asset asset, AssetItem repoAsset) throws SerializationException {
         ServiceConfig data = (ServiceConfig) asset.getContent();
-        repoAsset.updateContent(marshal(data));
-    }
-
-    private String marshal(final ServiceConfig data) {
-        return data.toContent();
+        repoAsset.updateContent(ServiceConfigPersistence.getInstance().marshal(data));
     }
 }

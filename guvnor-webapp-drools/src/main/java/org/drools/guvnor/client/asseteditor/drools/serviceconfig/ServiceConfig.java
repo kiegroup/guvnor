@@ -34,40 +34,23 @@ public class ServiceConfig
         REST, WEB_SERVICE;
     }
 
-    private int pollingFrequency;
-    private Protocol protocol;
-    private Collection<AssetReference> resources;
-    private Collection<AssetReference> models;
-    private Collection<MavenArtifact> excludedArtifacts;
+    final String version = "1.0";
+    int pollingFrequency = 60;
+    Protocol protocol = Protocol.REST;
+    Collection<AssetReference> resources = new ArrayList<AssetReference>();
+    Collection<AssetReference> models = new ArrayList<AssetReference>();
+    Collection<MavenArtifact> excludedArtifacts = new ArrayList<MavenArtifact>();
 
-    public ServiceConfig(){
+    public ServiceConfig() {
     }
 
-    public ServiceConfig(final String assetContent) {
-        checkNotNull("assetContent", assetContent);
-        this.resources = new ArrayList<AssetReference>();
-        this.models = new ArrayList<AssetReference>();
-        this.excludedArtifacts = new ArrayList<MavenArtifact>();
-        int localPollingFrequency = 60;
-        Protocol localProtocol = Protocol.REST;
-
-        final String[] lines = assetContent.split("\n");
-        for (final String line : lines) {
-            if (line.startsWith("polling=")) {
-                localPollingFrequency = Integer.valueOf(line.substring(8));
-            } else if (line.startsWith("protocol=")) {
-                localProtocol = convertToProtocol(line.substring(9));
-            } else if (line.startsWith("resource=")) {
-                this.resources.add(new AssetReference(line.substring(9)));
-            } else if (line.startsWith("model=")) {
-                this.models.add(new AssetReference(line.substring(6)));
-            } else if (line.startsWith("excluded.artifact=")) {
-                this.excludedArtifacts.add(new MavenArtifact(line.substring(18)));
-            }
-        }
-
-        this.pollingFrequency = localPollingFrequency;
-        this.protocol = localProtocol;
+    public ServiceConfig(final ServiceConfig source) {
+        checkNotNull("source", source);
+        this.pollingFrequency = source.pollingFrequency;
+        this.protocol = source.protocol;
+        this.resources.addAll(source.resources);
+        this.models.addAll(source.models);
+        this.excludedArtifacts.addAll(source.excludedArtifacts);
     }
 
     public ServiceConfig(final String pollingFrequency, final String protocol,
@@ -130,32 +113,9 @@ public class ServiceConfig
         return excludedArtifacts;
     }
 
-    public synchronized void setExcludedArtifacts(Collection<MavenArtifact> excludedItems) {
+    public synchronized void setExcludedArtifacts(final Collection<MavenArtifact> excludedItems) {
         this.excludedArtifacts.clear();
         this.excludedArtifacts.addAll(excludedItems);
-    }
-
-    public String toContent() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("polling=")
-                .append(pollingFrequency)
-                .append("\nprotocol=")
-                .append(protocol.toString())
-                .append('\n');
-
-        for (AssetReference resource : resources) {
-            sb.append("resource=").append(resource.toValue()).append('\n');
-        }
-
-        for (AssetReference model : models) {
-            sb.append("model=").append(model.toValue()).append('\n');
-        }
-
-        for (MavenArtifact artifact : excludedArtifacts) {
-            sb.append("excluded.artifact=").append(artifact.toValue()).append('\n');
-        }
-
-        return sb.toString();
     }
 
     @Override
@@ -209,19 +169,17 @@ public class ServiceConfig
         private String url;
         private String uuid;
 
-        public AssetReference(){
+        public AssetReference() {
         }
 
-        public AssetReference(final String value) {
-            checkNotEmpty("value", value);
-            final String[] values = value.split("\\|");
-            checkCondition("invalid string format", values.length == 5);
+        public AssetReference(final AssetReference source) {
+            checkNotNull("source", source);
 
-            this.pkg = values[0];
-            this.name = values[1];
-            this.format = values[2];
-            this.url = values[3];
-            this.uuid = values[4];
+            this.pkg = source.pkg;
+            this.name = source.name;
+            this.format = source.format;
+            this.url = source.url;
+            this.uuid = source.uuid;
         }
 
         public AssetReference(final String packageRef, final String name, final String format, final String url, final String uuid) {
@@ -250,10 +208,6 @@ public class ServiceConfig
 
         public String getUrl() {
             return url;
-        }
-
-        public String toValue() {
-            return pkg + "|" + name + "|" + format + "|" + url + "|" + uuid;
         }
 
         @Override
