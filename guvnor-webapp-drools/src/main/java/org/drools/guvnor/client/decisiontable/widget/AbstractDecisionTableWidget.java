@@ -941,7 +941,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        //Insert new columns for the edited definition, copying existing data if applicable
+        //Copy existing data for re-use if applicable
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLActionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getExpandedColumns().indexOf( variable );
@@ -954,7 +954,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      columnData );
         }
 
-        int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
+        //Insert new variable columns setting data from that above, if applicable
         for ( BRLActionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLActionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
@@ -962,18 +962,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 columnData = cellValueFactory.makeColumnData( variable );
             }
 
-            InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( variable,
-                                                                                     columnData,
-                                                                                     index++,
-                                                                                     true );
-            eventBus.fireEvent( dce );
+            //Add new variable(s) with data to model
+            origColumn.getChildColumns().add( variable );
+            addColumn( variable,
+                       columnData,
+                       true );
         }
 
         //Delete columns for the original definition
         for ( int iCol = 0; iCol < origColumn.getChildColumns().size(); iCol++ ) {
-            DeleteColumnEvent dce = new DeleteColumnEvent( index,
-                                                           true );
-            eventBus.fireEvent( dce );
+            BRLActionVariableColumn columnToDelete = origColumn.getChildColumns().get( iCol );
+            if ( !editColumn.getChildColumns().contains( columnToDelete ) ) {
+                int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
+                DeleteColumnEvent dce = new DeleteColumnEvent( index,
+                                                               true );
+                eventBus.fireEvent( dce );
+            }
         }
 
         // Copy new values into original column definition
@@ -1003,7 +1007,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        //Insert new columns for the edited definition, copying existing data if applicable
+        //Copy existing data for re-use if applicable
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
         for ( BRLConditionVariableColumn variable : origColumn.getChildColumns() ) {
             int iCol = model.getExpandedColumns().indexOf( variable );
@@ -1016,7 +1020,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      columnData );
         }
 
-        int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
+        //Insert new variable columns setting data from that above, if applicable
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLConditionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
@@ -1024,18 +1028,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 columnData = cellValueFactory.makeColumnData( variable );
             }
 
-            InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( variable,
-                                                                                     columnData,
-                                                                                     index++,
-                                                                                     true );
-            eventBus.fireEvent( dce );
+            //Add new variable(s) with data to model
+            origColumn.getChildColumns().add( variable );
+            addColumn( variable,
+                       columnData,
+                       true );
         }
 
         //Delete columns for the original definition
         for ( int iCol = 0; iCol < origColumn.getChildColumns().size(); iCol++ ) {
-            DeleteColumnEvent dce = new DeleteColumnEvent( index,
-                                                           true );
-            eventBus.fireEvent( dce );
+            BRLConditionVariableColumn columnToDelete = origColumn.getChildColumns().get( iCol );
+            if ( !editColumn.getChildColumns().contains( columnToDelete ) ) {
+                int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
+                DeleteColumnEvent dce = new DeleteColumnEvent( index,
+                                                               true );
+                eventBus.fireEvent( dce );
+            }
         }
 
         // Copy new values into original column definition

@@ -129,7 +129,13 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
             variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
         }
-        return Arrays.asList( variables );
+
+        //Convert the array into a mutable list (Arrays.toList provides an immutable list)
+        List<BRLActionVariableColumn> variableList = new ArrayList<BRLActionVariableColumn>();
+        for ( BRLActionVariableColumn variable : variables ) {
+            variableList.add( variable );
+        }
+        return variableList;
     }
 
     @Override

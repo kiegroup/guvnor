@@ -61,6 +61,7 @@ import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
@@ -146,7 +147,15 @@ public class GuidedDTDRLPersistence {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( ActionCol52 c : actionCols ) {
 
-            if ( c instanceof BRLActionColumn ) {
+            if ( c instanceof LimitedEntryBRLActionColumn ) {
+                doAction( allColumns,
+                          (LimitedEntryBRLActionColumn) c,
+                          actions,
+                          rowDataProvider,
+                          row,
+                          rm );
+
+            } else if ( c instanceof BRLActionColumn ) {
                 doAction( allColumns,
                           (BRLActionColumn) c,
                           actions,
@@ -212,22 +221,46 @@ public class GuidedDTDRLPersistence {
     }
 
     private void doAction(List<BaseColumn> allColumns,
+                          LimitedEntryBRLActionColumn column,
+                          List<LabelledAction> actions,
+                          TemplateDataProvider rowDataProvider,
+                          List<DTCellValue52> row,
+                          RuleModel rm) {
+        final BRLActionVariableColumn variableColumn = column.getChildColumns().get( 0 );
+        final int index = allColumns.indexOf( variableColumn );
+        final DTCellValue52 dcv = row.get( index );
+        if ( dcv.getBooleanValue() ) {
+            for ( IAction action : column.getDefinition() ) {
+                addAction( action,
+                           actions );
+            }
+        }
+    }
+
+    private void doAction(List<BaseColumn> allColumns,
                           BRLActionColumn column,
                           List<LabelledAction> actions,
                           TemplateDataProvider rowDataProvider,
                           List<DTCellValue52> row,
                           RuleModel rm) {
 
-        for ( IAction action : column.getDefinition() ) {
+        //Check whether the parameter-less BRL fragment needs inclusion
+        if ( !hasVariables( column ) ) {
+            final BRLActionVariableColumn variableColumn = column.getChildColumns().get( 0 );
+            final int index = allColumns.indexOf( variableColumn );
+            final DTCellValue52 dcv = row.get( index );
+            if ( dcv.getBooleanValue() ) {
+                for ( IAction action : column.getDefinition() ) {
+                    addAction( action,
+                                   actions );
+                }
+            }
 
-            boolean addAction = true;
+        } else {
 
-            if ( column instanceof LimitedEntryCol ) {
-                int index = allColumns.indexOf( column );
-                DTCellValue52 dcv = row.get( index );
-                addAction = dcv.getBooleanValue();
+            for ( IAction action : column.getDefinition() ) {
 
-            } else {
+                boolean addAction = true;
 
                 //Get interpolation variables used by the Action
                 Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
@@ -245,54 +278,62 @@ public class GuidedDTDRLPersistence {
                             break;
                         }
                     }
-                } else {
-
-                    //Check whether the parameter-less BRL fragment needs inclusion
-                    for ( BRLActionVariableColumn variableColumn : column.getChildColumns() ) {
-                        int index = allColumns.indexOf( variableColumn );
-                        DTCellValue52 dcv = row.get( index );
-                        if ( !dcv.getBooleanValue() ) {
-                            addAction = false;
-                            break;
-                        }
-                    }
                 }
+
+                if ( addAction ) {
+                    addAction( action,
+                               actions );
+                }
+
             }
-
-            if ( addAction ) {
-                String binding = null;
-                LabelledAction a = null;
-                if ( action instanceof ActionInsertFact ) {
-                    final ActionInsertFact af = (ActionInsertFact) action;
-                    binding = af.getBoundName();
-                    a = findByLabelledAction( actions,
-                                              binding );
-
-                } else if ( action instanceof ActionSetField ) {
-                    final ActionSetField af = (ActionSetField) action;
-                    binding = af.variable;
-                    a = findByLabelledAction( actions,
-                                              binding );
-                }
-
-                //Binding is used to group related field setters together. It is essential for
-                //ActionInsertFactCol and ActionSetFieldCol52 columns as these represent single
-                //fields and need to be grouped together it is not essential for IAction's as
-                //these contain their own list of fields. If a BRL fragment does not set
-                //the binding use a unique identifier, in this case the Object itself.
-                if ( binding == null ) {
-                    binding = action.toString();
-                }
-
-                if ( a == null ) {
-                    a = new LabelledAction();
-                    a.boundName = binding;
-                    a.action = action;
-                    actions.add( a );
-                }
-            }
-
         }
+
+    }
+
+    private boolean hasVariables(BRLActionColumn column) {
+        Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+        RuleModel rm = new RuleModel();
+        for ( IAction action : column.getDefinition() ) {
+            rm.addRhsItem( action );
+        }
+        RuleModelVisitor rmv = new RuleModelVisitor( ivs );
+        rmv.visit( rm );
+        return ivs.size() > 0;
+    }
+
+    private void addAction(IAction action,
+                           List<LabelledAction> actions) {
+        String binding = null;
+        LabelledAction a = null;
+        if ( action instanceof ActionInsertFact ) {
+            final ActionInsertFact af = (ActionInsertFact) action;
+            binding = af.getBoundName();
+            a = findByLabelledAction( actions,
+                                      binding );
+
+        } else if ( action instanceof ActionSetField ) {
+            final ActionSetField af = (ActionSetField) action;
+            binding = af.variable;
+            a = findByLabelledAction( actions,
+                                      binding );
+        }
+
+        //Binding is used to group related field setters together. It is essential for
+        //ActionInsertFactCol and ActionSetFieldCol52 columns as these represent single
+        //fields and need to be grouped together it is not essential for IAction's as
+        //these contain their own list of fields. If a BRL fragment does not set
+        //the binding use a unique identifier, in this case the Object itself.
+        if ( binding == null ) {
+            binding = action.toString();
+        }
+
+        if ( a == null ) {
+            a = new LabelledAction();
+            a.boundName = binding;
+            a.action = action;
+            actions.add( a );
+        }
+
     }
 
     private void doAction(List<LabelledAction> actions,
@@ -488,22 +529,44 @@ public class GuidedDTDRLPersistence {
     }
 
     private void doCondition(List<BaseColumn> allColumns,
+                             LimitedEntryBRLConditionColumn column,
+                             List<IPattern> patterns,
+                             TemplateDataProvider rowDataProvider,
+                             List<DTCellValue52> row,
+                             RuleModel rm) {
+        final BRLConditionVariableColumn variableColumn = column.getChildColumns().get( 0 );
+        final int index = allColumns.indexOf( variableColumn );
+        final DTCellValue52 dcv = row.get( index );
+        if ( dcv.getBooleanValue() ) {
+            for ( IPattern pattern : column.getDefinition() ) {
+                patterns.add( pattern );
+            }
+        }
+    }
+
+    private void doCondition(List<BaseColumn> allColumns,
                              BRLConditionColumn column,
                              List<IPattern> patterns,
                              TemplateDataProvider rowDataProvider,
                              List<DTCellValue52> row,
                              RuleModel rm) {
 
-        for ( IPattern pattern : column.getDefinition() ) {
+        //Check whether the parameter-less BRL fragment needs inclusion
+        if ( !hasVariables( column ) ) {
+            final BRLConditionVariableColumn variableColumn = column.getChildColumns().get( 0 );
+            final int index = allColumns.indexOf( variableColumn );
+            final DTCellValue52 dcv = row.get( index );
+            if ( dcv.getBooleanValue() ) {
+                for ( IPattern pattern : column.getDefinition() ) {
+                    patterns.add( pattern );
+                }
+            }
 
-            boolean addPattern = true;
+        } else {
 
-            if ( column instanceof LimitedEntryCol ) {
-                int index = allColumns.indexOf( column );
-                DTCellValue52 dcv = row.get( index );
-                addPattern = dcv.getBooleanValue();
+            for ( IPattern pattern : column.getDefinition() ) {
 
-            } else {
+                boolean addPattern = true;
 
                 //Get interpolation variables used by the Pattern
                 Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
@@ -521,26 +584,26 @@ public class GuidedDTDRLPersistence {
                             break;
                         }
                     }
-                } else {
+                }
 
-                    //Check whether the parameter-less BRL fragment needs inclusion
-                    for ( BRLConditionVariableColumn variableColumn : column.getChildColumns() ) {
-                        int index = allColumns.indexOf( variableColumn );
-                        DTCellValue52 dcv = row.get( index );
-                        if ( !dcv.getBooleanValue() ) {
-                            addPattern = false;
-                            break;
-                        }
-                    }
+                if ( addPattern ) {
+                    patterns.add( pattern );
                 }
 
             }
-
-            if ( addPattern ) {
-                patterns.add( pattern );
-            }
-
         }
+
+    }
+
+    private boolean hasVariables(BRLConditionColumn column) {
+        Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+        RuleModel rm = new RuleModel();
+        for ( IPattern pattern : column.getDefinition() ) {
+            rm.addLhsItem( pattern );
+        }
+        RuleModelVisitor rmv = new RuleModelVisitor( ivs );
+        rmv.visit( rm );
+        return ivs.size() > 0;
     }
 
     private void doCondition(List<BaseColumn> allColumns,
