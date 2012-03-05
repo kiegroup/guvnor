@@ -1282,7 +1282,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                          true );
                 }
             }
-        } else if ( data.isMerged() ) {
+        } else if ( selections.size() > 1 ) {
 
             data.assertModelMerging();
 
