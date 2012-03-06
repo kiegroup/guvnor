@@ -59,20 +59,20 @@ public final class ServiceWarGenerator {
 
     public static void buildWar(final ServiceConfig config, final RulesRepository repository, final OutputStream out) {
         final Map<String, File> models = new HashMap<String, File>();
-//        for (final AssetReference model : config.getModels()) {
-//            try {
-//                final AssetItem asset = repository.loadAssetByUUID(model.getUrl());
-//                final File temp = File.createTempFile(asset.getBinaryContentAttachmentFileName(), ".jar");
-//                temp.deleteOnExit();
-//                final FileOutputStream tempStream = new FileOutputStream(temp);
-//                IOUtils.copy(asset.getBinaryContentAttachment(), tempStream);
-//                tempStream.flush();
-//                tempStream.close();
-//                models.put(asset.getBinaryContentAttachmentFileName(), temp);
-//            } catch (IOException e) {
-//                log.error(e.getMessage());
-//            }
-//        }
+        for (final AssetReference model : config.getModels()) {
+            try {
+                final AssetItem asset = repository.loadAssetByUUID(model.getUrl());
+                final File temp = File.createTempFile(asset.getBinaryContentAttachmentFileName(), ".jar");
+                temp.deleteOnExit();
+                final FileOutputStream tempStream = new FileOutputStream(temp);
+                IOUtils.copy(asset.getBinaryContentAttachment(), tempStream);
+                tempStream.flush();
+                tempStream.close();
+                models.put(asset.getBinaryContentAttachmentFileName(), temp);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
         buildWar(config, models, out);
     }
 

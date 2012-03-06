@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.junit.Test;
 
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.junit.Assert.*;
 
 public class ServiceConfigTest {
@@ -174,6 +175,55 @@ public class ServiceConfigTest {
         assertEquals("kbase4", serviceConfig.getNextKBaseName());
     }
 
+    @Test
+    public void testHasProtocolReference() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        assertFalse(serviceConfig.hasProtocolReference(REST));
+        assertFalse(serviceConfig.hasProtocolReference(WEB_SERVICE));
+
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        kbase1.addKsession(ksession1);
+        serviceConfig.addKBase(kbase1);
+
+        assertTrue(serviceConfig.hasProtocolReference(REST));
+        assertFalse(serviceConfig.hasProtocolReference(WEB_SERVICE));
+
+        final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
+        final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession2");
+        ksession2.setProtocol(WEB_SERVICE);
+        kbase2.addKsession(ksession2);
+        serviceConfig.addKBase(kbase2);
+
+        assertTrue(serviceConfig.hasProtocolReference(REST));
+        assertTrue(serviceConfig.hasProtocolReference(WEB_SERVICE));
+    }
+
+    @Test
+    public void testGetModels() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        assertEquals(0, serviceConfig.getModels().size());
+
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
+        serviceConfig.addKBase(kbase1);
+        serviceConfig.addKBase(kbase2);
+        assertEquals(0, serviceConfig.getModels().size());
+
+        kbase1.addModel(new AssetReference("a", "b", "c", "d", "e"));
+        kbase1.addModel(new AssetReference("a2", "b2", "c2", "d2", "e2"));
+
+        assertEquals(2, serviceConfig.getModels().size());
+
+        kbase2.addModel(new AssetReference("a", "b", "c", "d", "e"));
+        kbase2.addModel(new AssetReference("a4", "b4", "c4", "d4", "e4"));
+        kbase2.addModel(new AssetReference("a5", "b5", "c5", "d5", "e5"));
+
+        assertEquals(4, serviceConfig.getModels().size());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNullOnCopy() {
         new ServiceConfig(null);
@@ -189,6 +239,12 @@ public class ServiceConfigTest {
         final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
         serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
         serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullOnHasProtocolReference() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+        serviceConfig.hasProtocolReference(null);
     }
 
 }

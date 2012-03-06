@@ -91,6 +91,26 @@ public class ServiceConfig
         }
     }
 
+    public Collection<AssetReference> getModels() {
+        final Set<AssetReference> result = new HashSet<AssetReference>();
+        for (final ServiceKBaseConfig kbase : kbases.values()) {
+            result.addAll(kbase.getModels());
+        }
+        return result;
+    }
+
+    public boolean hasProtocolReference(final ProtocolOption protocol) {
+        checkNotNull("protocol", protocol);
+        for (final ServiceKBaseConfig kbase : kbases.values()) {
+            for (final ServiceKSessionConfig ksession : kbase.getKsessions()) {
+                if (ksession.getProtocol().equals(protocol)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isNumeric(final String value) {
         try {
             Integer.valueOf(value);

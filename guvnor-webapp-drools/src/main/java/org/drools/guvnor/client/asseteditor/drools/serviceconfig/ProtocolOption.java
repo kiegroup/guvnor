@@ -18,12 +18,4 @@ package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum ProtocolOption {
     REST, WEB_SERVICE;
-
-//    private ProtocolOption convertToProtocol(final String value) {
-//        if (value.toLowerCase().equals("ws") || value.toLowerCase().equals("web_service")) {
-//            return ProtocolOption.WEB_SERVICE;
-//        }
-//        return ProtocolOption.REST;
-//    }
-
 }
