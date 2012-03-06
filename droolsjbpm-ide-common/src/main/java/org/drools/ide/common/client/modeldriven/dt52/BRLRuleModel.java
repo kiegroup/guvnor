@@ -16,7 +16,9 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -53,7 +55,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getLHSBoundFacts() {
-        List<String> facts = new ArrayList<String>();
+        Set<String> facts = new HashSet<String>();
         for ( CompositeColumn< ? extends BaseColumn> col : dtable.getConditions() ) {
             if ( col instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) col;
@@ -72,7 +74,8 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return facts;
+        facts.addAll( super.getLHSBoundFacts() );
+        return new ArrayList<String>( facts );
     }
 
     @Override
@@ -95,7 +98,7 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return null;
+        return super.getLHSBoundFact( var );
     }
 
     @Override
@@ -123,7 +126,7 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return null;
+        return super.getLHSBoundField( var );
     }
 
     @Override
@@ -160,7 +163,7 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return null;
+        return super.getLHSBindingType( var );
     }
 
     @Override
@@ -195,12 +198,12 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return null;
+        return super.getLHSParentFactPatternForBinding( var );
     }
 
     @Override
     public List<String> getAllVariables() {
-        List<String> variables = new ArrayList<String>();
+        Set<String> variables = new HashSet<String>();
         for ( CompositeColumn< ? extends BaseColumn> col : dtable.getConditions() ) {
             if ( col instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) col;
@@ -259,7 +262,8 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return variables;
+        variables.addAll( super.getAllVariables() );
+        return new ArrayList<String>( variables );
     }
 
     @Override
@@ -309,12 +313,12 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return false;
+        return super.isBoundFactUsed( binding );
     }
 
     @Override
     public List<String> getBoundVariablesInScope(BaseSingleFieldConstraint con) {
-        List<String> variables = new ArrayList<String>();
+        Set<String> variables = new HashSet<String>();
         for ( CompositeColumn< ? extends BaseColumn> col : dtable.getConditions() ) {
             if ( col instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) col;
@@ -335,8 +339,8 @@ public class BRLRuleModel extends RuleModel {
                 variables.addAll( rm.getBoundVariablesInScope( con ) );
             }
         }
-
-        return variables;
+        variables.addAll( super.getBoundVariablesInScope( con ) );
+        return new ArrayList<String>( variables );
     }
 
     @Override
@@ -346,7 +350,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getRHSBoundFacts() {
-        final List<String> variables = new ArrayList<String>();
+        final Set<String> variables = new HashSet<String>();
         for ( ActionCol52 col : dtable.getActionCols() ) {
             if ( col instanceof ActionInsertFactCol52 ) {
                 ActionInsertFactCol52 action = (ActionInsertFactCol52) col;
@@ -364,7 +368,8 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return variables;
+        variables.addAll( super.getRHSBoundFacts() );
+        return new ArrayList<String>( variables );
     }
 
     @Override
@@ -393,7 +398,7 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        return null;
+        return super.getRHSBoundFact( var );
     }
 
     public static class Pattern52FactPatternAdaptor extends FactPattern {
