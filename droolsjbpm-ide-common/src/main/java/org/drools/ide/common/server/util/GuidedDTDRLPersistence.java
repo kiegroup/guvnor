@@ -226,8 +226,7 @@ public class GuidedDTDRLPersistence {
                           TemplateDataProvider rowDataProvider,
                           List<DTCellValue52> row,
                           RuleModel rm) {
-        final BRLActionVariableColumn variableColumn = column.getChildColumns().get( 0 );
-        final int index = allColumns.indexOf( variableColumn );
+        final int index = allColumns.indexOf( column );
         final DTCellValue52 dcv = row.get( index );
         if ( dcv.getBooleanValue() ) {
             for ( IAction action : column.getDefinition() ) {
@@ -534,8 +533,7 @@ public class GuidedDTDRLPersistence {
                              TemplateDataProvider rowDataProvider,
                              List<DTCellValue52> row,
                              RuleModel rm) {
-        final BRLConditionVariableColumn variableColumn = column.getChildColumns().get( 0 );
-        final int index = allColumns.indexOf( variableColumn );
+        final int index = allColumns.indexOf( column );
         final DTCellValue52 dcv = row.get( index );
         if ( dcv.getBooleanValue() ) {
             for ( IPattern pattern : column.getDefinition() ) {
