@@ -204,6 +204,14 @@ public class BRLRuleModel extends RuleModel {
     @Override
     public List<String> getAllVariables() {
         Set<String> variables = new HashSet<String>();
+        variables.addAll( getAllLHSVariables() );
+        variables.addAll( getAllRHSVariables() );
+        return new ArrayList<String>( variables );
+    }
+
+    @Override
+    public List<String> getAllLHSVariables() {
+        Set<String> variables = new HashSet<String>();
         for ( CompositeColumn< ? extends BaseColumn> col : dtable.getConditions() ) {
             if ( col instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) col;
@@ -245,6 +253,13 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
+        variables.addAll( super.getAllLHSVariables() );
+        return new ArrayList<String>( variables );
+    }
+
+    @Override
+    public List<String> getAllRHSVariables() {
+        Set<String> variables = new HashSet<String>();
         for ( ActionCol52 col : dtable.getActionCols() ) {
             if ( col instanceof ActionInsertFactCol52 ) {
                 ActionInsertFactCol52 action = (ActionInsertFactCol52) col;
@@ -262,7 +277,7 @@ public class BRLRuleModel extends RuleModel {
                 }
             }
         }
-        variables.addAll( super.getAllVariables() );
+        variables.addAll( super.getAllRHSVariables() );
         return new ArrayList<String>( variables );
     }
 
