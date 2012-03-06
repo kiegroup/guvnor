@@ -262,9 +262,14 @@ public class RuleModelVisitor {
     }
 
     private void visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
+        String genericType = sfexp.getExpressionLeftSide().getGenericType();
+        String factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+        if ( factType == null ) {
+            factType = sfexp.getExpressionLeftSide().getClassType();
+        }
         InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
-                                                               sfexp.getExpressionLeftSide().getGenericType(),
-                                                               factPattern.getFactType(),
+                                                               genericType,
+                                                               factType,
                                                                sfexp.getFieldName() );
         if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( var ) ) {
             vars.put( var,
@@ -276,8 +281,8 @@ public class RuleModelVisitor {
             for ( int i = 0; i < sfexp.connectives.length; i++ ) {
                 final ConnectiveConstraint cc = sfexp.connectives[i];
                 InterpolationVariable ccVar = new InterpolationVariable( cc.getValue(),
-                                                                         sfexp.getExpressionLeftSide().getGenericType(),
-                                                                         factPattern.getFactType(),
+                                                                         genericType,
+                                                                         factType,
                                                                          cc.getFieldName() );
                 if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
                     vars.put( ccVar,
