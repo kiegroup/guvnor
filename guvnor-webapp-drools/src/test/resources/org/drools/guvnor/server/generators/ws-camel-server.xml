@@ -18,17 +18,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cxf="http://camel.apache.org/schema/cxf"
-
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-
     ">
     
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-
-
   <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
 
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
@@ -57,7 +53,6 @@
       <entry key="defaultOperationName" value="execute"/>
     </cxf:properties>
   </cxf:cxfEndpoint>
-
 
   <!-- Leave this, as it's needed to make Camel "drools" aware -->
   <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />

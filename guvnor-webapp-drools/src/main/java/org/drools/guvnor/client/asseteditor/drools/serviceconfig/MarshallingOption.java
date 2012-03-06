@@ -17,5 +17,5 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum MarshallingOption {
-    JSON, XSTREAN, JAXB
+    JSON, XSTREAM, JAXB
 }

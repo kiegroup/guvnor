@@ -51,7 +51,7 @@ public class ServiceKSessionConfig
     }
 
     public ServiceKSessionConfig(final String name) {
-        setupNewInstance(name, name, STATELESS, REST, XSTREAN, null, null, null);
+        setupNewInstance(name, name, STATELESS, REST, XSTREAM, null, null, null);
     }
 
     public ServiceKSessionConfig(final ServiceKSessionConfig ksession) {
@@ -97,7 +97,7 @@ public class ServiceKSessionConfig
             this.protocol = protocol;
         }
         if (marshalling == null) {
-            this.marshalling = XSTREAN;
+            this.marshalling = XSTREAM;
         } else {
             this.marshalling = marshalling;
         }
@@ -108,6 +108,13 @@ public class ServiceKSessionConfig
         } else {
             this.listeners = new HashMap<ListenerType, Set<String>>();
         }
+    }
+
+    public boolean hasConfig() {
+        if (clockType != null || keepReference != null || getListeners().size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     public String getName() {

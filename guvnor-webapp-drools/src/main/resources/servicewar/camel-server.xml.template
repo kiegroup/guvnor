@@ -17,21 +17,18 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:cxf="http://camel.apache.org/schema/cxf"
-@{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST) ? '       xmlns:jaxrs="http://cxf.apache.org/jaxrs"' : ''}
+       xmlns:cxf="http://camel.apache.org/schema/cxf"@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"@end{}
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-@{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST) ? '       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd' : ''}
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
+       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd@end{}
     ">
     
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
-  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
-@end{}
-@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
+@end{}@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
 @end{}
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
@@ -53,8 +50,7 @@
        <cxf:providers>
            <bean class="org.drools.jax.rs.CommandMessageBodyReader"/>
        </cxf:providers>
-  </cxf:rsServer>
-@end{}
+  </cxf:rsServer>@end{}
 @if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
   <cxf:cxfEndpoint id="soapServer"
             address="/soap"
@@ -66,8 +62,7 @@
       <entry key="dataFormat" value="MESSAGE"/>
       <entry key="defaultOperationName" value="execute"/>
     </cxf:properties>
-  </cxf:cxfEndpoint>
-@end{}
+  </cxf:cxfEndpoint>@end{}
 
   <!-- Leave this, as it's needed to make Camel "drools" aware -->
   <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />

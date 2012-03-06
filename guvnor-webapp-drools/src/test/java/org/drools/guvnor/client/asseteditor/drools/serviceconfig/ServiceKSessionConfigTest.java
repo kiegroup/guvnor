@@ -37,8 +37,9 @@ public class ServiceKSessionConfigTest {
         assertEquals("ksession1", ksession.getName());
         assertEquals("ksession1", ksession.getUrl());
         assertEquals(REST, ksession.getProtocol());
-        assertEquals(XSTREAN, ksession.getMarshalling());
+        assertEquals(XSTREAM, ksession.getMarshalling());
         assertEquals(STATELESS, ksession.getType());
+        assertFalse(ksession.hasConfig());
         assertNull(ksession.getClockType());
         assertNull(ksession.getKeepReference());
 
@@ -51,8 +52,8 @@ public class ServiceKSessionConfigTest {
         assertEquals(ksession, new ServiceKSessionConfig(ksession.getName()));
         assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName()).hashCode());
 
-        assertEquals(ksession, new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()));
-        assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()).hashCode());
+        assertEquals(ksession, new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAM, null, null, new HashMap<ListenerType, Set<String>>()));
+        assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAM, null, null, new HashMap<ListenerType, Set<String>>()).hashCode());
 
         assertEquals(ksession, ksession);
         assertEquals(ksession, new ServiceKSessionConfig(ksession));
@@ -62,7 +63,7 @@ public class ServiceKSessionConfigTest {
     @Test
     public void testEqualsOnProtocol() {
         final ServiceKSessionConfig ksession1a = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, null, null, null);
-        final ServiceKSessionConfig ksession1b = new ServiceKSessionConfig("ksession1", "url_ksession1", null, WEB_SERVICE, XSTREAN, null, null, null);
+        final ServiceKSessionConfig ksession1b = new ServiceKSessionConfig("ksession1", "url_ksession1", null, WEB_SERVICE, XSTREAM, null, null, null);
         final ServiceKSessionConfig ksession1c = new ServiceKSessionConfig("ksession1", "url_ksession1", null, REST, JSON, null, null, null);
 
         assertFalse(ksession1a.equals(ksession1b));
@@ -72,7 +73,7 @@ public class ServiceKSessionConfigTest {
         ksession1b.setProtocol(REST);
         assertTrue(ksession1a.equals(ksession1b));
 
-        ksession1c.setMarshalling(XSTREAN);
+        ksession1c.setMarshalling(XSTREAM);
         assertTrue(ksession1a.equals(ksession1c));
 
         ksession1b.setUrl("custom_url");
@@ -97,14 +98,17 @@ public class ServiceKSessionConfigTest {
         assertFalse(ksession1crf.equals(ksession1dpf));
 
         ksession1apn.setKeepReference(true);
+        assertTrue(ksession1apn.hasConfig());
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
         assertFalse(ksession1apn.equals(ksession1dpf));
 
         ksession1apn.setKeepReference(false);
+        assertTrue(ksession1apn.hasConfig());
         assertTrue(ksession1apn.equals(ksession1dpf));
 
         ksession1bnt.setClockType(REALTIME_CLOCK);
+        assertTrue(ksession1bnt.hasConfig());
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
         assertFalse(ksession1bnt.equals(ksession1crf));
@@ -112,6 +116,7 @@ public class ServiceKSessionConfigTest {
         assertFalse(ksession1crf.equals(ksession1dpf));
 
         ksession1bnt.setKeepReference(false);
+        assertTrue(ksession1bnt.hasConfig());
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
         assertFalse(ksession1bnt.equals(ksession1dpf));
@@ -152,6 +157,7 @@ public class ServiceKSessionConfigTest {
         assertEquals(3, ksession.getAgendaListeners().size());
         assertEquals(0, ksession.getProcessListeners().size());
         assertEquals(0, ksession.getWorkingMemoryListeners().size());
+        assertTrue(ksession.hasConfig());
 
         ksession.addProcessListener("a.b.Ccc");
         ksession.addProcessListener("a.b.Ddd");

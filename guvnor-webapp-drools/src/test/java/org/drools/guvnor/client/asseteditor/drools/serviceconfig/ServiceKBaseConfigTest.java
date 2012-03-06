@@ -64,6 +64,7 @@ public class ServiceKBaseConfigTest {
         assertNull(kbase.getAssertBehavior());
         assertNull(kbase.getAssetsUser());
         assertNull(kbase.getAssetsPassword());
+        assertFalse(kbase.hasConfig());
 
         assertNotNull(kbase.getResources());
         assertNotNull(kbase.getModels());
@@ -103,6 +104,7 @@ public class ServiceKBaseConfigTest {
 
         assertNotNull(kbase.getResources());
         assertNotNull(kbase.getModels());
+        assertFalse(kbase.hasConfig());
 
         assertEquals(3, kbase.getResources().size());
         assertEquals(1, kbase.getModels().size());
@@ -125,20 +127,24 @@ public class ServiceKBaseConfigTest {
         assertFalse(kbase1.hashCode() == new ServiceKBaseConfig("kbase2").hashCode());
 
         kbase1.setAssertBehavior(EQUALITY);
+        assertTrue(kbase1.hasConfig());
         assertFalse(new ServiceKBaseConfig("kbase1").equals(kbase1));
 
         kbase1 = new ServiceKBaseConfig("kbase1");
         kbase1.setEventProcessingMode(CLOUD);
+        assertTrue(kbase1.hasConfig());
         assertFalse(new ServiceKBaseConfig("kbase1").equals(kbase1));
         assertFalse(kbase1.hashCode() == new ServiceKBaseConfig("kbase1").hashCode());
 
         kbase1 = new ServiceKBaseConfig("kbase1");
         kbase1.setAssetsPassword("password");
+        assertFalse(kbase1.hasConfig());
         assertFalse(new ServiceKBaseConfig("kbase1").equals(kbase1));
         assertFalse(kbase1.hashCode() == new ServiceKBaseConfig("kbase1").hashCode());
 
         kbase1 = new ServiceKBaseConfig("kbase1");
         kbase1.setAssetsUser("user");
+        assertFalse(kbase1.hasConfig());
         assertFalse(new ServiceKBaseConfig("kbase1").equals(kbase1));
         assertFalse(kbase1.hashCode() == new ServiceKBaseConfig("kbase1").hashCode());
 

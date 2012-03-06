@@ -61,6 +61,7 @@ public final class ServiceWarGenerator {
         addNamedTemplate("kagent.def", compileTemplate(getResourceContent("servicewar/kagent.def.template")));
         addNamedTemplate("ksession.def", compileTemplate(getResourceContent("servicewar/ksession.def.template")));
         addNamedTemplate("resource.def", compileTemplate(getResourceContent("servicewar/resource.def.template")));
+        addNamedTemplate("kbase-config.def", compileTemplate(getResourceContent("servicewar/kbase-config.def.template")));
     }};
 
     private ServiceWarGenerator() {

@@ -132,6 +132,14 @@ public class ServiceKBaseConfig
         }
     }
 
+    public boolean hasConfig() {
+        if (mbeans != null || eventProcessingMode != null ||
+                assertBehavior != null || maxThreads != null) {
+            return true;
+        }
+        return false;
+    }
+
     public String getName() {
         return name;
     }

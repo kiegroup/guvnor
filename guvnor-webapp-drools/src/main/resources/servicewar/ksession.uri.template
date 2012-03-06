@@ -2,18 +2,18 @@
     <route>
        <from uri="cxfrs://bean://rsServer"/>
        <policy ref="droolsPolicy">
-         <unmarshal ref="xstream" />
+         <unmarshal ref="@{ksession.marshalling.toString().toLowerCase()}" />
          <to uri="drools:node1/@{ksession.url}" />
-         <marshal ref="xstream" />
+         <marshal ref="@{ksession.marshalling.toString().toLowerCase()}" />
        </policy>
     </route>
 @else{}
     <route>
       <from uri="cxf://bean://soapServer"/>
       <policy ref="droolsPolicy">
-        <unmarshal ref="xstream" />
+        <unmarshal ref="@{ksession.marshalling.toString().toLowerCase()}" />
         <to uri="drools:node1/@{ksession.url}" />
-        <marshal ref="xstream" />
+        <marshal ref="@{ksession.marshalling.toString().toLowerCase()}" />
       </policy>
     </route>
 @end{}
