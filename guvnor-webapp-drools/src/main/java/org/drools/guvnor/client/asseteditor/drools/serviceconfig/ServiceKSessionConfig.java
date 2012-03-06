@@ -29,6 +29,7 @@ import static java.util.Collections.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ListenerType.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.SessionType.*;
 import static org.drools.guvnor.client.util.Preconditions.*;
 
 public class ServiceKSessionConfig
@@ -40,6 +41,7 @@ public class ServiceKSessionConfig
     private String url;
     private ProtocolOption protocol;
     private MarshallingOption marshalling;
+    private SessionType type;
     private ClockType clockType;
     private Boolean keepReference;
     private Map<ListenerType, Set<String>> listeners;
@@ -49,28 +51,30 @@ public class ServiceKSessionConfig
     }
 
     public ServiceKSessionConfig(final String name) {
-        setupNewInstance(name, name, REST, XSTREAN, null, null, null);
+        setupNewInstance(name, name, STATELESS, REST, XSTREAN, null, null, null);
     }
 
     public ServiceKSessionConfig(final ServiceKSessionConfig ksession) {
         checkNotNull("ksession", ksession);
-        setupNewInstance(ksession.name, ksession.url, ksession.protocol,
+        setupNewInstance(ksession.name, ksession.url, ksession.type, ksession.protocol,
                 ksession.marshalling, ksession.clockType, ksession.keepReference,
                 ksession.listeners);
     }
 
     public ServiceKSessionConfig(final String name,
             final String url,
+            final SessionType type,
             final ProtocolOption protocol,
             final MarshallingOption marshalling,
             final ClockType clockType,
             final Boolean keepReference,
             final Map<ListenerType, Set<String>> listeners) {
-        setupNewInstance(name, url, protocol, marshalling, clockType, keepReference, listeners);
+        setupNewInstance(name, url, type, protocol, marshalling, clockType, keepReference, listeners);
     }
 
     private void setupNewInstance(final String name,
             final String url,
+            final SessionType type,
             final ProtocolOption protocol,
             final MarshallingOption marshalling,
             final ClockType clockType,
@@ -81,6 +85,11 @@ public class ServiceKSessionConfig
             this.url = name;
         } else {
             this.url = url;
+        }
+        if (type == null) {
+            this.type = STATELESS;
+        } else {
+            this.type = type;
         }
         if (protocol == null) {
             this.protocol = REST;
@@ -109,6 +118,10 @@ public class ServiceKSessionConfig
         return url;
     }
 
+    public SessionType getType() {
+        return type;
+    }
+
     public ProtocolOption getProtocol() {
         return protocol;
     }
@@ -127,6 +140,10 @@ public class ServiceKSessionConfig
 
     public void setUrl(final String url) {
         this.url = checkNotEmpty("url", url);
+    }
+
+    public void setType(final SessionType type) {
+        this.type = checkNotNull("type", type);
     }
 
     public void setProtocol(final ProtocolOption protocol) {
@@ -225,20 +242,8 @@ public class ServiceKSessionConfig
             return false;
         }
 
-        final ServiceKSessionConfig that = (ServiceKSessionConfig) o;
+        ServiceKSessionConfig that = (ServiceKSessionConfig) o;
 
-        if (!name.equals(that.name)) {
-            return false;
-        }
-        if (!url.equals(that.url)) {
-            return false;
-        }
-        if (protocol != that.protocol) {
-            return false;
-        }
-        if (marshalling != that.marshalling) {
-            return false;
-        }
         if (clockType != that.clockType) {
             return false;
         }
@@ -246,6 +251,21 @@ public class ServiceKSessionConfig
             return false;
         }
         if (listeners != null ? !listeners.equals(that.listeners) : that.listeners != null) {
+            return false;
+        }
+        if (marshalling != that.marshalling) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (protocol != that.protocol) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
+        if (!url.equals(that.url)) {
             return false;
         }
 
@@ -258,6 +278,7 @@ public class ServiceKSessionConfig
         result = 31 * result + url.hashCode();
         result = 31 * result + protocol.hashCode();
         result = 31 * result + marshalling.hashCode();
+        result = 31 * result + type.hashCode();
         result = 31 * result + (clockType != null ? clockType.hashCode() : 0);
         result = 31 * result + (keepReference != null ? keepReference.hashCode() : 0);
         result = 31 * result + (listeners != null ? listeners.hashCode() : 0);

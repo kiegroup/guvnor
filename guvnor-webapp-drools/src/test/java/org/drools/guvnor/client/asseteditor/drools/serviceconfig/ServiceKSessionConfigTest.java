@@ -24,19 +24,21 @@ import org.junit.Test;
 import static org.drools.ClockType.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.SessionType.*;
 import static org.junit.Assert.*;
 
 public class ServiceKSessionConfigTest {
 
     @Test
     public void testDefaultValues() {
-        final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1", null, null, null, null, null, null);
+        final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1", null, null, null, null, null, null, null);
 
         assertNotNull(ksession);
         assertEquals("ksession1", ksession.getName());
         assertEquals("ksession1", ksession.getUrl());
         assertEquals(REST, ksession.getProtocol());
         assertEquals(XSTREAN, ksession.getMarshalling());
+        assertEquals(STATELESS, ksession.getType());
         assertNull(ksession.getClockType());
         assertNull(ksession.getKeepReference());
 
@@ -49,8 +51,8 @@ public class ServiceKSessionConfigTest {
         assertEquals(ksession, new ServiceKSessionConfig(ksession.getName()));
         assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName()).hashCode());
 
-        assertEquals(ksession, new ServiceKSessionConfig(ksession.getName(), null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()));
-        assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName(), null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()).hashCode());
+        assertEquals(ksession, new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()));
+        assertEquals(ksession.hashCode(), new ServiceKSessionConfig(ksession.getName(), null, null, REST, XSTREAN, null, null, new HashMap<ListenerType, Set<String>>()).hashCode());
 
         assertEquals(ksession, ksession);
         assertEquals(ksession, new ServiceKSessionConfig(ksession));
@@ -59,9 +61,9 @@ public class ServiceKSessionConfigTest {
 
     @Test
     public void testEqualsOnProtocol() {
-        final ServiceKSessionConfig ksession1a = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, null, null);
-        final ServiceKSessionConfig ksession1b = new ServiceKSessionConfig("ksession1", "url_ksession1", WEB_SERVICE, XSTREAN, null, null, null);
-        final ServiceKSessionConfig ksession1c = new ServiceKSessionConfig("ksession1", "url_ksession1", REST, JSON, null, null, null);
+        final ServiceKSessionConfig ksession1a = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, null, null, null);
+        final ServiceKSessionConfig ksession1b = new ServiceKSessionConfig("ksession1", "url_ksession1", null, WEB_SERVICE, XSTREAN, null, null, null);
+        final ServiceKSessionConfig ksession1c = new ServiceKSessionConfig("ksession1", "url_ksession1", null, REST, JSON, null, null, null);
 
         assertFalse(ksession1a.equals(ksession1b));
         assertFalse(ksession1a.equals(ksession1c));
@@ -83,10 +85,10 @@ public class ServiceKSessionConfigTest {
 
     @Test
     public void testEqualsOnGeneral() {
-        final ServiceKSessionConfig ksession1apn = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, PSEUDO_CLOCK, null, null);
-        final ServiceKSessionConfig ksession1bnt = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, true, null);
-        final ServiceKSessionConfig ksession1crf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, REALTIME_CLOCK, false, null);
-        final ServiceKSessionConfig ksession1dpf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, PSEUDO_CLOCK, false, null);
+        final ServiceKSessionConfig ksession1apn = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO_CLOCK, null, null);
+        final ServiceKSessionConfig ksession1bnt = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, null, true, null);
+        final ServiceKSessionConfig ksession1crf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, REALTIME_CLOCK, false, null);
+        final ServiceKSessionConfig ksession1dpf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO_CLOCK, false, null);
 
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
@@ -120,6 +122,11 @@ public class ServiceKSessionConfigTest {
     @Test
     public void simpleEquals() {
         final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession1");
+
+        ksession2.setType(STATEFUL);
+
+        assertFalse(ksession1.equals(ksession2));
 
         assertTrue(ksession1.equals(ksession1));
         assertFalse(ksession1.equals(new ServiceKSessionConfig("mmm")));
@@ -247,4 +254,11 @@ public class ServiceKSessionConfigTest {
         final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
         ksession.setUrl("");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullOnType() {
+        final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
+        ksession.setType(null);
+    }
+
 }
