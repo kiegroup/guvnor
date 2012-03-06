@@ -18,7 +18,14 @@ package org.drools.guvnor.server.contenthandler.drools;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ListenerType;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 
 public class ServiceConfigPersistence {
@@ -31,9 +38,19 @@ public class ServiceConfigPersistence {
         xt = new XStream(new DomDriver());
 
         xt.alias("service-config", ServiceConfig.class);
-        xt.alias("protocol", ServiceConfig.Protocol.class);
-        xt.alias("asset-reference", ServiceConfig.AssetReference.class);
+
+        xt.alias("kbase-config", ServiceKBaseConfig.class);
+        xt.alias("ksession-config", ServiceKSessionConfig.class);
+        xt.alias("kagent-config", ServiceKAgentConfig.class);
+
+        xt.alias("asset-reference", AssetReference.class);
         xt.alias("maven-artifact", MavenArtifact.class);
+
+        xt.alias("listener-type", ListenerType.class);
+        xt.alias("protocol", ProtocolOption.class);
+        xt.alias("marshalling-option", MarshallingOption.class);
+        xt.alias("protocol-option", ProtocolOption.class);
+
         xt.omitField(MavenArtifact.class, "child");
     }
 

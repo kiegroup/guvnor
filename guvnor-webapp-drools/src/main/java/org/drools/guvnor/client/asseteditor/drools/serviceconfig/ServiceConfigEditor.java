@@ -63,16 +63,14 @@ import org.drools.guvnor.client.rpc.ArtifactDependenciesService;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesServiceAsync;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.MavenArtifact;
-import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesExplorerWidget;
 import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesReadyCommand;
 import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
 import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.*;
 import static com.google.gwt.user.client.ui.AbstractImagePrototype.*;
-import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.drools.guvnor.client.common.AssetFormats.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.AssetDownloadLinkUtil.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
@@ -165,19 +163,19 @@ public class ServiceConfigEditor extends DirtyableComposite
 
         this.pollingFrequency.setText(String.valueOf(config.getPollingFrequency()));
 
-        if (config.getProtocol().equals(REST)) {
-            this.listProtocol.setSelectedIndex(0);
-        } else {
-            this.listProtocol.setSelectedIndex(1);
-        }
-
-        for (ServiceConfig.AssetReference assetReference : config.getResources()) {
-            addResource(assetReference);
-        }
-
-        for (ServiceConfig.AssetReference modelReference : config.getModels()) {
-            addResource(modelReference);
-        }
+//        if (config.getProtocol().equals(REST)) {
+//            this.listProtocol.setSelectedIndex(0);
+//        } else {
+//            this.listProtocol.setSelectedIndex(1);
+//        }
+//
+//        for (AssetReference assetReference : config.getResources()) {
+//            addResource(assetReference);
+//        }
+//
+//        for (AssetReference modelReference : config.getModels()) {
+//            addResource(modelReference);
+//        }
 
         mavenArtifactsAsync.getDependencies(new AsyncCallback<Collection<MavenArtifact>>() {
             public void onFailure(final Throwable e) {
@@ -221,16 +219,16 @@ public class ServiceConfigEditor extends DirtyableComposite
     public void onSave() {
         final String pollingFrequency = this.pollingFrequency.getText();
         final String protocol = listProtocol.getValue(listProtocol.getSelectedIndex());
-        final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>();
-        final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>();
+        final Collection<AssetReference> resources = new ArrayList<AssetReference>();
+        final Collection<AssetReference> models = new ArrayList<AssetReference>();
         final Collection<MavenArtifact> excludedArtifacts = new ArrayList<MavenArtifact>();
 
         final Iterator<TreeItem> iterator = resourceTree.treeItemIterator();
         while (iterator.hasNext()) {
             final TreeItem item = iterator.next();
             if (item.getUserObject() != null) {
-                final ServiceConfig.AssetReference assetReference = (ServiceConfig.AssetReference) item.getUserObject();
-                if (assetReference.getFormat().equals(AssetFormats.MODEL)){
+                final AssetReference assetReference = (AssetReference) item.getUserObject();
+                if (assetReference.getFormat().equals(AssetFormats.MODEL)) {
                     models.add(assetReference);
                 } else {
                     resources.add(assetReference);
@@ -240,7 +238,7 @@ public class ServiceConfigEditor extends DirtyableComposite
 
         excludedArtifacts.addAll(this.config.getExcludedArtifacts());
 
-        this.config = new ServiceConfig(pollingFrequency, protocol, resources, models, excludedArtifacts);
+        this.config = null;//new ServiceConfig(pollingFrequency, protocol, resources, models, excludedArtifacts);
 
         asset.setContent(config);
     }
@@ -254,7 +252,7 @@ public class ServiceConfigEditor extends DirtyableComposite
         buildExcludedList(root, result);
         for (final TreeItem item : result) {
             if (item.getUserObject() != null) {
-                removeFromIndexes((ServiceConfig.AssetReference) item.getUserObject());
+                removeFromIndexes((AssetReference) item.getUserObject());
             }
             if (item.getUserObject() != null) {
                 item.remove();
@@ -262,17 +260,17 @@ public class ServiceConfigEditor extends DirtyableComposite
         }
     }
 
-    private void removeFromIndexes(final ServiceConfig.AssetReference userObject) {
+    private void removeFromIndexes(final AssetReference userObject) {
         removeFromIndex(userObject, packageIndex);
         for (final Map<String, TreeItem> pkgItem : resourcesIndex.values()) {
             removeFromIndex(userObject, pkgItem);
         }
     }
 
-    private void removeFromIndex(ServiceConfig.AssetReference userObject, Map<String, TreeItem> index) {
+    private void removeFromIndex(AssetReference userObject, Map<String, TreeItem> index) {
         for (final Map.Entry<String, TreeItem> element : index.entrySet()) {
             if (element.getValue().getUserObject() != null) {
-                final ServiceConfig.AssetReference activeAsset = (ServiceConfig.AssetReference) element.getValue().getUserObject();
+                final AssetReference activeAsset = (AssetReference) element.getValue().getUserObject();
                 if (activeAsset.getUuid().equals(userObject.getUuid())) {
                     index.remove(element.getKey());
                     break;
@@ -310,7 +308,7 @@ public class ServiceConfigEditor extends DirtyableComposite
 
                         public void onSuccess(String packageRef, Asset[] result, String name, String description) {
                             for (final Asset asset : result) {
-                                final ServiceConfig.AssetReference reference = new ServiceConfig.AssetReference(packageRef,
+                                final AssetReference reference = new AssetReference(packageRef,
                                         asset.getName(),
                                         asset.getFormat(),
                                         buildDownloadLink(asset, packageRef),
@@ -369,35 +367,35 @@ public class ServiceConfigEditor extends DirtyableComposite
         Window.open(GWT.getModuleBaseURL() + "serviceWarBuilderAndDownloadHandler?uuid=" + assetUUID, "service download", "");
     }
 
-    private void addResource(final ServiceConfig.AssetReference asset) {
+    private void addResource(final AssetReference asset) {
 
-        if (!resourcesIndex.containsKey(asset.getPkg())) {
-            packageIndex.put(asset.getPkg(), buildTreeItem(root, asset.getPkg(), images.packageImage(), null));
-            resourcesIndex.put(asset.getPkg(), new HashMap<String, TreeItem>());
+        if (!resourcesIndex.containsKey(asset.getPackageRef())) {
+            packageIndex.put(asset.getPackageRef(), buildTreeItem(root, asset.getPackageRef(), images.packageImage(), null));
+            resourcesIndex.put(asset.getPackageRef(), new HashMap<String, TreeItem>());
         }
 
-        final TreeItem pkg = packageIndex.get(asset.getPkg());
+        final TreeItem pkg = packageIndex.get(asset.getPackageRef());
 
-        if (!resourcesIndex.get(asset.getPkg()).containsKey(asset.getFormat())) {
+        if (!resourcesIndex.get(asset.getPackageRef()).containsKey(asset.getFormat())) {
             final TreeItem newFormat = buildTreeItem(pkg, asset.getFormat(), FORMAT_IMAGES.get(asset.getFormat()), null);
-            resourcesIndex.get(asset.getPkg()).put(asset.getFormat(), newFormat);
+            resourcesIndex.get(asset.getPackageRef()).put(asset.getFormat(), newFormat);
         }
 
-        final TreeItem parent = resourcesIndex.get(asset.getPkg()).get(asset.getFormat());
+        final TreeItem parent = resourcesIndex.get(asset.getPackageRef()).get(asset.getFormat());
 
         buildTreeItem(parent, asset.getName(), images.rules(), asset);
 
         makeDirty();
     }
 
-    private TreeItem buildTreeItem(final TreeItem parent, final String text, final ImageResource image, final ServiceConfig.AssetReference asset) {
+    private TreeItem buildTreeItem(final TreeItem parent, final String text, final ImageResource image, final AssetReference asset) {
 
         if (asset != null) {
             for (int i = 0; i < parent.getChildCount(); i++) {
                 if (parent.getChild(i).getUserObject() == null) {
                     continue;
                 }
-                final ServiceConfig.AssetReference currentAsset = (ServiceConfig.AssetReference) parent.getChild(i).getUserObject();
+                final AssetReference currentAsset = (AssetReference) parent.getChild(i).getUserObject();
                 if (currentAsset.getName().equals(text)) {
                     return parent.getChild(i);
                 }
