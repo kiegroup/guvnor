@@ -1,0 +1,1 @@
+  <drools:kagent id="@{kagent.name}" kbase="@{kbase.name}" @if{kagent.newInstance != null}new-instance="@{kagent.newInstance}"@end{}/>

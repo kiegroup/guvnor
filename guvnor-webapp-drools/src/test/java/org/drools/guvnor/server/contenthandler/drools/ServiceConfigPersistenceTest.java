@@ -21,10 +21,14 @@ import java.util.Collection;
 
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE;
 
 public class ServiceConfigPersistenceTest {
 
@@ -38,13 +42,37 @@ public class ServiceConfigPersistenceTest {
         add(new AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
     }};
 
-    private static final Collection<MavenArtifact> exclucedArtifacts = new ArrayList<MavenArtifact>() {{
-        add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-        add(new MavenArtifact("org.apache.camel:camel-core:test-jar:tests:2.4.0:test"));
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
     }};
 
-    private static final ServiceConfig REST_SERVICE_CONFIG = null;//new ServiceConfig("70", "rest", resources, models, null);
-    private static final ServiceConfig WS_SERVICE_CONFIG = null;//new ServiceConfig("70", "ws", resources, models, exclucedArtifacts);
+    private static final ServiceConfig WS_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        ksession1.setProtocol(WEB_SERVICE);
+
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
 
     @Test
     public void testEmpty() {

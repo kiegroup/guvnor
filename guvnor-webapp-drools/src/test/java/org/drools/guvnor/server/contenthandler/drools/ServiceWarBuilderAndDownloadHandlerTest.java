@@ -26,6 +26,9 @@ import javax.servlet.ServletException;
 
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.files.MockHTTPRequest;
 import org.drools.guvnor.server.files.MockHTTPResponse;
@@ -34,6 +37,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.util.codec.Base64;
 import org.junit.Test;
 
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE;
 import static org.junit.Assert.*;
 
 public class ServiceWarBuilderAndDownloadHandlerTest extends GuvnorTestBase {
@@ -48,7 +52,20 @@ public class ServiceWarBuilderAndDownloadHandlerTest extends GuvnorTestBase {
         add(new AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
     }};
 
-    private static final ServiceConfig REST_SERVICE_CONFIG = null;//new ServiceConfig("70", "rest", resources, models, null);
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
 
     @Inject
     private ServiceWarBuilderAndDownloadHandler serviceHandler;

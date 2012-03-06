@@ -18,18 +18,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cxf="http://camel.apache.org/schema/cxf"
-@{serviceConfig.protocol == org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.REST ? '       xmlns:jaxrs="http://cxf.apache.org/jaxrs"' : ''}
+@{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST) ? '       xmlns:jaxrs="http://cxf.apache.org/jaxrs"' : ''}
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-@{serviceConfig.protocol == org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.REST ? '       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd' : ''}
+@{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST) ? '       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd' : ''}
     ">
     
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-@if{serviceConfig.protocol == org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.REST}
+@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
   <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
-@else{}
+@end{}
+@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
   <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
 @end{}
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
@@ -45,7 +46,7 @@
    !   Copy and paste this element, changing id and the address, to expose services on different urls.
    !   Different Camel routes can handle different end point paths.
     -->
-@if{serviceConfig.protocol == org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.REST}
+@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
   <cxf:rsServer id="rsServer"
                 address="/rest"
                 serviceClass="org.drools.jax.rs.CommandExecutorImpl">
@@ -53,7 +54,8 @@
            <bean class="org.drools.jax.rs.CommandMessageBodyReader"/>
        </cxf:providers>
   </cxf:rsServer>
-@else{}
+@end{}
+@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
   <cxf:cxfEndpoint id="soapServer"
             address="/soap"
              serviceName="ns:CommandExecutor"
@@ -71,30 +73,7 @@
   <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />
 
   <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
-@if{serviceConfig.protocol == org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.REST}
-    <!--
-     ! Routes incoming messages from end point id="rsServer".
-     ! Example route unmarshals the messages with xstream and executes against ksession1.
-     ! Copy and paste this element, changing marshallers and the 'to' uri, to target different sessions, as needed.
-     !-->
-    <route>
-       <from uri="cxfrs://bean://rsServer"/>
-       <policy ref="droolsPolicy">
-         <unmarshal ref="xstream" />
-         <to uri="drools:node1/ksession1" />
-         <marshal ref="xstream" />
-       </policy>
-    </route>
-@else{}
-    <route>
-      <from uri="cxf://bean://soapServer"/>
-      <policy ref="droolsPolicy">
-        <unmarshal ref="xstream" />
-        <to uri="drools:node1/ksession1" />
-        <marshal ref="xstream" />
-      </policy>
-    </route>
-@end{}
+@foreach{kbase : serviceConfig.kbases}@foreach{ksession : kbase.ksessions}@includeNamed{'ksession.uri'; ksession=ksession}@end{}@end{}
   </camelContext>
 
 </beans>

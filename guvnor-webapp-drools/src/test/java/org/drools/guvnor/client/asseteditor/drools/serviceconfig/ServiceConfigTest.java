@@ -44,9 +44,9 @@ public class ServiceConfigTest {
         final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
 
         assertNull(serviceConfig.getPollingFrequency());
-        assertNotNull(serviceConfig.getKBases());
+        assertNotNull(serviceConfig.getKbases());
         assertNotNull(serviceConfig.getExcludedArtifacts());
-        assertEquals(0, serviceConfig.getKBases().size());
+        assertEquals(0, serviceConfig.getKbases().size());
         assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
         assertEquals(serviceConfig, new ServiceConfig(null, null, null));
@@ -61,9 +61,9 @@ public class ServiceConfigTest {
         final ServiceConfig serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
 
         assertEquals(new Integer(70), serviceConfig.getPollingFrequency());
-        assertNotNull(serviceConfig.getKBases());
+        assertNotNull(serviceConfig.getKbases());
         assertNotNull(serviceConfig.getExcludedArtifacts());
-        assertEquals(2, serviceConfig.getKBases().size());
+        assertEquals(2, serviceConfig.getKbases().size());
         assertEquals(2, serviceConfig.getExcludedArtifacts().size());
 
         assertFalse(serviceConfig.equals(new ServiceConfig(null, null, null)));
@@ -144,7 +144,7 @@ public class ServiceConfigTest {
 
         serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
         serviceConfig.addKBase(null);
-        assertEquals(1, serviceConfig.getKBases().size());
+        assertEquals(1, serviceConfig.getKbases().size());
 
         assertEquals(serviceConfig.getKbase("kbase1"), new ServiceKBaseConfig("kbase1"));
         assertNull(serviceConfig.getKbase("kbase2"));
@@ -153,13 +153,13 @@ public class ServiceConfigTest {
 
         serviceConfig.addKBase(new ServiceKBaseConfig("kbase2"));
         serviceConfig.addKBase(new ServiceKBaseConfig("kbase3"));
-        assertEquals(3, serviceConfig.getKBases().size());
+        assertEquals(3, serviceConfig.getKbases().size());
 
         serviceConfig.removeKBase("kbase3");
         serviceConfig.removeKBase("sss");
         serviceConfig.removeKBase("");
         serviceConfig.removeKBase(null);
-        assertEquals(2, serviceConfig.getKBases().size());
+        assertEquals(2, serviceConfig.getKbases().size());
     }
 
     @Test

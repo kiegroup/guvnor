@@ -1,0 +1,1 @@
+  <drools:ksession id="@{ksession.name}" type="stateless" kbase="@{kbase_name}" node="node1"/>

@@ -39,7 +39,9 @@ public class ServiceConfig
     private Map<String, ServiceKBaseConfig> kbases;
 
     public ServiceConfig() {
-        //necessary for serialization
+        this.pollingFrequency = null;
+        this.excludedArtifacts = new HashSet<MavenArtifact>();
+        this.kbases = new HashMap<String, ServiceKBaseConfig>();
     }
 
     public ServiceConfig(final ServiceConfig source) {
@@ -135,7 +137,7 @@ public class ServiceConfig
         return kbases.get(kbaseName.toLowerCase());
     }
 
-    public Collection<ServiceKBaseConfig> getKBases() {
+    public Collection<ServiceKBaseConfig> getKbases() {
         return kbases.values();
     }
 

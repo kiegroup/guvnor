@@ -40,6 +40,9 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -50,6 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.apache.commons.io.FilenameUtils.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.drools.guvnor.server.generators.ServiceWarGenerator.*;
 import static org.drools.guvnor.server.maven.cache.GuvnorArtifactCacheSupport.*;
 import static org.junit.Assert.*;
@@ -66,8 +70,40 @@ public class ServiceWarGeneratorTest {
         add(new AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
     }};
 
-    private static final ServiceConfig REST_SERVICE_CONFIG = null;//new ServiceConfig("70", "rest", resources, models, null);
-    private static final ServiceConfig WS_SERVICE_CONFIG = null;//new ServiceConfig("70", "ws", resources, models, null);
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
+
+    private static final ServiceConfig WS_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        ksession1.setProtocol(WEB_SERVICE);
+
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
+
+    //new ServiceConfig("70", "rest", resources, models, null);
+//    private static final ServiceConfig  = null;//new ServiceConfig("70", "ws", resources, models, null);
 
     private static final Set<String> LIBS = new HashSet<String>() {{
         add("log4j-1.2.16.jar");

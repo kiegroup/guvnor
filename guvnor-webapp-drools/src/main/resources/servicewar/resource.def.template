@@ -1,0 +1,1 @@
+            <drools:resource type="@{resource.format}" source="@{resource.url}"/>

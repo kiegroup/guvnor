@@ -35,6 +35,8 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,13 @@ public final class ServiceWarGenerator {
         put("WEB-INF/classes/camel-server.xml", compileTemplate(getResourceContent("servicewar/camel-server.xml.template")));
         put("WEB-INF/classes/knowledge-services.xml", compileTemplate(getResourceContent("servicewar/knowledge-services.xml.template")));
         put("WEB-INF/classes/web.xml", compileTemplate(getResourceContent("servicewar/web.xml.template")));
+    }};
+
+    private static final TemplateRegistry templateRegistry = new SimpleTemplateRegistry() {{
+        addNamedTemplate("ksession.uri", compileTemplate(getResourceContent("servicewar/ksession.uri.template")));
+        addNamedTemplate("kagent.def", compileTemplate(getResourceContent("servicewar/kagent.def.template")));
+        addNamedTemplate("ksession.def", compileTemplate(getResourceContent("servicewar/ksession.def.template")));
+        addNamedTemplate("resource.def", compileTemplate(getResourceContent("servicewar/resource.def.template")));
     }};
 
     private ServiceWarGenerator() {
@@ -87,7 +96,7 @@ public final class ServiceWarGenerator {
         final WebArchive archive = ShrinkWrap.create(WebArchive.class, "drools-service.war");
 
         for (Map.Entry<String, CompiledTemplate> activeTemplate : templateMap.entrySet()) {
-            final String content = (String) TemplateRuntime.execute(activeTemplate.getValue(), data);
+            final String content = (String) TemplateRuntime.execute(activeTemplate.getValue(), null, data, templateRegistry);
             archive.add(new StringAsset(content), activeTemplate.getKey());
         }
 
