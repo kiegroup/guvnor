@@ -16,75 +16,101 @@
 
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.rpc.MavenArtifact;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-import static java.util.Collections.*;
 import static org.drools.guvnor.client.util.Preconditions.*;
 
-public class ServiceConfig {
+public class ServiceConfig
+        implements PortableObject {
 
-    public enum Protocol {
-        REST, WEB_SERVICE;
+    private static final long serialVersionUID = -5738821650999392917L;
+
+    private final String version = "1.0";
+
+    private Integer pollingFrequency;
+    private Set<MavenArtifact> excludedArtifacts;
+    private Map<String, ServiceKBaseConfig> kbases;
+
+    public ServiceConfig() {
+        this.pollingFrequency = null;
+        this.excludedArtifacts = new HashSet<MavenArtifact>();
+        this.kbases = new HashMap<String, ServiceKBaseConfig>();
     }
 
-    final int pollingFrequency;
-    final Protocol protocol;
-    final Collection<AssetReference> resources;
-    final Collection<AssetReference> models;
-    final Collection<MavenArtifact> excludedArtifacts;
-
-    public ServiceConfig(final String assetContent) {
-        checkNotNull("assetContent", assetContent);
-        this.resources = new ArrayList<AssetReference>();
-        this.models = new ArrayList<AssetReference>();
-        this.excludedArtifacts = new ArrayList<MavenArtifact>();
-        int localPollingFrequency = 60;
-        Protocol localProtocol = Protocol.REST;
-
-        final String[] lines = assetContent.split("\n");
-        for (final String line : lines) {
-            if (line.startsWith("polling=")) {
-                localPollingFrequency = Integer.valueOf(line.substring(8));
-            } else if (line.startsWith("protocol=")) {
-                localProtocol = convertToProtocol(line.substring(9));
-            } else if (line.startsWith("resource=")) {
-                this.resources.add(new AssetReference(line.substring(9)));
-            } else if (line.startsWith("model=")) {
-                this.models.add(new AssetReference(line.substring(6)));
-            } else if (line.startsWith("excluded.artifact=")) {
-                this.excludedArtifacts.add(new MavenArtifact(line.substring(18)));
+    public ServiceConfig(final ServiceConfig source) {
+        checkNotNull("source", source);
+        this.pollingFrequency = source.pollingFrequency;
+        if (source.excludedArtifacts == null) {
+            this.excludedArtifacts = new HashSet<MavenArtifact>();
+        } else {
+            this.excludedArtifacts = new HashSet<MavenArtifact>(source.excludedArtifacts.size());
+            for (final MavenArtifact excludedArtifact : source.excludedArtifacts) {
+                this.excludedArtifacts.add(new MavenArtifact(excludedArtifact));
             }
         }
 
-        this.pollingFrequency = localPollingFrequency;
-        this.protocol = localProtocol;
+        if (source.kbases == null) {
+            this.kbases = new HashMap<String, ServiceKBaseConfig>();
+        } else {
+            this.kbases = new HashMap<String, ServiceKBaseConfig>(source.kbases.size());
+            for (Map.Entry<String, ServiceKBaseConfig> activeKBase : source.kbases.entrySet()) {
+                kbases.put(activeKBase.getKey().toLowerCase(), new ServiceKBaseConfig(activeKBase.getValue()));
+            }
+        }
     }
 
-    public ServiceConfig(final String pollingFrequency, final String protocol,
-            final Collection<AssetReference> resources, final Collection<AssetReference> models,
-            final Collection<MavenArtifact> excludedArtifacts) {
-        checkCondition("pollingFrequency must be numeric", isNumeric(pollingFrequency));
+    public ServiceConfig(final String pollingFrequency,
+            final Collection<MavenArtifact> excludedArtifacts,
+            final Collection<ServiceKBaseConfig> kbases) {
+        if (pollingFrequency != null) {
+            checkCondition("pollingFrequency must be numeric", isNumeric(pollingFrequency));
+            this.pollingFrequency = Integer.valueOf(pollingFrequency);
+        }
 
-        this.pollingFrequency = Integer.valueOf(pollingFrequency);
-        this.protocol = convertToProtocol(protocol);
-        if (resources == null) {
-            this.resources = emptyList();
-        } else {
-            this.resources = new ArrayList<AssetReference>(resources);
-        }
-        if (models == null) {
-            this.models = emptyList();
-        } else {
-            this.models = new ArrayList<AssetReference>(models);
-        }
         if (excludedArtifacts == null) {
-            this.excludedArtifacts = emptyList();
+            this.excludedArtifacts = new HashSet<MavenArtifact>();
         } else {
-            this.excludedArtifacts = new ArrayList<MavenArtifact>(excludedArtifacts);
+            this.excludedArtifacts = new HashSet<MavenArtifact>(excludedArtifacts.size());
+            for (final MavenArtifact excludedArtifact : excludedArtifacts) {
+                this.excludedArtifacts.add(new MavenArtifact(excludedArtifact));
+            }
         }
+
+        if (kbases == null) {
+            this.kbases = new HashMap<String, ServiceKBaseConfig>();
+        } else {
+            this.kbases = new HashMap<String, ServiceKBaseConfig>(kbases.size());
+            for (ServiceKBaseConfig activeKBase : kbases) {
+                this.kbases.put(activeKBase.getName().toLowerCase(), new ServiceKBaseConfig(activeKBase));
+            }
+        }
+    }
+
+    public Collection<AssetReference> getModels() {
+        final Set<AssetReference> result = new HashSet<AssetReference>();
+        for (final ServiceKBaseConfig kbase : kbases.values()) {
+            result.addAll(kbase.getModels());
+        }
+        return result;
+    }
+
+    public boolean hasProtocolReference(final ProtocolOption protocol) {
+        checkNotNull("protocol", protocol);
+        for (final ServiceKBaseConfig kbase : kbases.values()) {
+            for (final ServiceKSessionConfig ksession : kbase.getKsessions()) {
+                if (ksession.getProtocol().equals(protocol)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isNumeric(final String value) {
@@ -96,59 +122,91 @@ public class ServiceConfig {
         }
     }
 
-    private Protocol convertToProtocol(final String value) {
-        if (value.toLowerCase().equals("ws") || value.toLowerCase().equals("web_service")) {
-            return Protocol.WEB_SERVICE;
-        }
-        return Protocol.REST;
-    }
-
-    public int getPollingFrequency() {
+    public Integer getPollingFrequency() {
         return pollingFrequency;
     }
 
-    public Protocol getProtocol() {
-        return protocol;
+    public void setPollingFrequency(int pollingFrequency) {
+        this.pollingFrequency = pollingFrequency;
     }
 
-    public Collection<AssetReference> getResources() {
-        return resources;
+    public ServiceKBaseConfig getKbase(final String kbaseName) {
+        if (kbaseName == null || kbaseName.trim().length() == 0) {
+            return null;
+        }
+        return kbases.get(kbaseName.toLowerCase());
     }
 
-    public Collection<AssetReference> getModels() {
-        return models;
+    public Collection<ServiceKBaseConfig> getKbases() {
+        return kbases.values();
+    }
+
+    public void addKBase(final ServiceKBaseConfig kbase) {
+        if (kbase == null) {
+            return;
+        }
+
+        if (kbases.containsKey(kbase.getName().toLowerCase())) {
+            throw new IllegalArgumentException("KBase already exists.");
+        }
+        kbases.put(kbase.getName().toLowerCase(), kbase);
+    }
+
+    public void removeKBase(final String kbase) {
+        if (kbase == null || kbase.trim().length() == 0) {
+            return;
+        }
+        kbases.remove(kbase.toLowerCase());
     }
 
     public Collection<MavenArtifact> getExcludedArtifacts() {
         return excludedArtifacts;
     }
 
-    public synchronized void setExcludedArtifacts(Collection<MavenArtifact> excludedItems) {
-        this.excludedArtifacts.clear();
-        this.excludedArtifacts.addAll(excludedItems);
+    public void setExcludedArtifacts(final Collection<MavenArtifact> excludedItems) {
+        if (excludedItems == null) {
+            return;
+        }
+        excludedArtifacts = new HashSet<MavenArtifact>(excludedItems);
     }
 
-    public String toContent() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("polling=")
-                .append(pollingFrequency)
-                .append("\nprotocol=")
-                .append(protocol.toString())
-                .append('\n');
-
-        for (AssetReference resource : resources) {
-            sb.append("resource=").append(resource.toValue()).append('\n');
+    public void addExcludedArtifacts(final Collection<MavenArtifact> excludedItems) {
+        if (excludedItems == null || excludedItems.size() == 0) {
+            return;
         }
+        excludedArtifacts.addAll(excludedItems);
+    }
 
-        for (AssetReference model : models) {
-            sb.append("model=").append(model.toValue()).append('\n');
+    public void addExcludedArtifact(final MavenArtifact artifact) {
+        if (artifact == null) {
+            return;
         }
+        excludedArtifacts.add(artifact);
+    }
 
-        for (MavenArtifact artifact : excludedArtifacts) {
-            sb.append("excluded.artifact=").append(artifact.toValue()).append('\n');
+    public void removeExcludedArtifacts(final Collection<MavenArtifact> excludedItems) {
+        if (excludedItems == null || excludedItems.size() == 0) {
+            return;
         }
+        excludedArtifacts.removeAll(excludedItems);
+    }
 
-        return sb.toString();
+    public void removeExcludedArtifact(final MavenArtifact artifact) {
+        if (artifact == null) {
+            return;
+        }
+        excludedArtifacts.remove(artifact);
+    }
+
+    public String getNextKBaseName() {
+        int i = 0;
+        while (true) {
+            i++;
+            final String name = "kbase" + i;
+            if (!kbases.containsKey(name)) {
+                return name;
+            }
+        }
     }
 
     @Override
@@ -160,21 +218,15 @@ public class ServiceConfig {
             return false;
         }
 
-        ServiceConfig config = (ServiceConfig) o;
+        ServiceConfig that = (ServiceConfig) o;
 
-        if (pollingFrequency != config.pollingFrequency) {
+        if (!excludedArtifacts.equals(that.excludedArtifacts)) {
             return false;
         }
-        if (!excludedArtifacts.equals(config.excludedArtifacts)) {
+        if (!kbases.equals(that.kbases)) {
             return false;
         }
-        if (!models.equals(config.models)) {
-            return false;
-        }
-        if (protocol != config.protocol) {
-            return false;
-        }
-        if (!resources.equals(config.resources)) {
+        if (pollingFrequency != null ? !pollingFrequency.equals(that.pollingFrequency) : that.pollingFrequency != null) {
             return false;
         }
 
@@ -183,104 +235,9 @@ public class ServiceConfig {
 
     @Override
     public int hashCode() {
-        int result = pollingFrequency;
-        result = 31 * result + protocol.hashCode();
-        result = 31 * result + resources.hashCode();
-        result = 31 * result + models.hashCode();
+        int result = pollingFrequency != null ? pollingFrequency.hashCode() : 0;
         result = 31 * result + excludedArtifacts.hashCode();
+        result = 31 * result + kbases.hashCode();
         return result;
-    }
-
-    public static class AssetReference {
-
-        private final String pkg;
-        private final String name;
-        private final String format;
-        private final String url;
-        private final String uuid;
-
-        public AssetReference(final String value) {
-            checkNotEmpty("value", value);
-            final String[] values = value.split("\\|");
-            checkCondition("invalid string format", values.length == 5);
-
-            this.pkg = values[0];
-            this.name = values[1];
-            this.format = values[2];
-            this.url = values[3];
-            this.uuid = values[4];
-        }
-
-        public AssetReference(final String packageRef, final String name, final String format, final String url, final String uuid) {
-            this.pkg = checkNotEmpty("packageRef", packageRef);
-            this.name = checkNotEmpty("name", name);
-            this.format = checkNotEmpty("format", format);
-            this.url = checkNotEmpty("format", url);
-            this.uuid = checkNotEmpty("format", uuid);
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public String getPkg() {
-            return pkg;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getFormat() {
-            return format;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public String toValue() {
-            return pkg + "|" + name + "|" + format + "|" + url + "|" + uuid;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            AssetReference that = (AssetReference) o;
-
-            if (!pkg.equals(that.pkg)) {
-                return false;
-            }
-            if (!format.equals(that.format)) {
-                return false;
-            }
-            if (!format.equals(that.format)) {
-                return false;
-            }
-            if (!url.equals(that.url)) {
-                return false;
-            }
-            if (!uuid.equals(that.uuid)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = pkg.hashCode();
-            result = 31 * result + format.hashCode();
-            result = 31 * result + format.hashCode();
-            result = 31 * result + url.hashCode();
-            result = 31 * result + uuid.hashCode();
-            return result;
-        }
     }
 }

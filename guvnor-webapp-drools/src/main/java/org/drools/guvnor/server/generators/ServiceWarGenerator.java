@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
@@ -33,22 +34,42 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.*;
 import static org.drools.guvnor.server.maven.cache.GuvnorArtifactCacheSupport.*;
+import static org.mvel2.templates.TemplateCompiler.*;
 
 public final class ServiceWarGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceWarGenerator.class);
+
+    private static final Map<String, CompiledTemplate> templateMap = new HashMap<String, CompiledTemplate>(5) {{
+        put("WEB-INF/classes/beans.xml", compileTemplate(getResourceContent("servicewar/beans.xml.template")));
+        put("WEB-INF/classes/camel-server.xml", compileTemplate(getResourceContent("servicewar/camel-server.xml.template")));
+        put("WEB-INF/classes/knowledge-services.xml", compileTemplate(getResourceContent("servicewar/knowledge-services.xml.template")));
+        put("WEB-INF/classes/web.xml", compileTemplate(getResourceContent("servicewar/web.xml.template")));
+    }};
+
+    private static final TemplateRegistry templateRegistry = new SimpleTemplateRegistry() {{
+        addNamedTemplate("ksession.uri", compileTemplate(getResourceContent("servicewar/ksession.uri.template")));
+        addNamedTemplate("kagent.def", compileTemplate(getResourceContent("servicewar/kagent.def.template")));
+        addNamedTemplate("ksession.def", compileTemplate(getResourceContent("servicewar/ksession.def.template")));
+        addNamedTemplate("resource.def", compileTemplate(getResourceContent("servicewar/resource.def.template")));
+        addNamedTemplate("kbase-config.def", compileTemplate(getResourceContent("servicewar/kbase-config.def.template")));
+    }};
 
     private ServiceWarGenerator() {
     }
 
     public static void buildWar(final ServiceConfig config, final RulesRepository repository, final OutputStream out) {
         final Map<String, File> models = new HashMap<String, File>();
-        for (final ServiceConfig.AssetReference model : config.getModels()) {
+        for (final AssetReference model : config.getModels()) {
             try {
                 final AssetItem asset = repository.loadAssetByUUID(model.getUrl());
                 final File temp = File.createTempFile(asset.getBinaryContentAttachmentFileName(), ".jar");
@@ -69,33 +90,16 @@ public final class ServiceWarGenerator {
         checkNotNull(config);
         checkNotNull(out);
 
-        final String xmlCamelServer;
-        if (config.getProtocol().equals(ServiceConfig.Protocol.REST)) {
-            xmlCamelServer = getResourceContent("servicewar/camel-rest-server.xml.template");
-        } else {
-            xmlCamelServer = getResourceContent("servicewar/camel-ws-server.xml.template");
+        final Map<String, Object> data = new HashMap<String, Object>() {{
+            put("serviceConfig", config);
+        }};
+
+        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "drools-service.war");
+
+        for (Map.Entry<String, CompiledTemplate> activeTemplate : templateMap.entrySet()) {
+            final String content = (String) TemplateRuntime.execute(activeTemplate.getValue(), null, data, templateRegistry);
+            archive.add(new StringAsset(content), activeTemplate.getKey());
         }
-        final String xmlBeans = getResourceContent("servicewar/beans.xml.template");
-        final String xmlTempKservices = getResourceContent("servicewar/knowledge-services.xml.template");
-        final String xmlWeb = getResourceContent("servicewar/web.xml.template");
-
-        final StringBuilder sbRes = new StringBuilder();
-        for (ServiceConfig.AssetReference assetRef : config.getResources()) {
-            sbRes.append("            <drools:resource  type=\"")
-                    .append(assetRef.getFormat())
-                    .append("\" source=\"")
-                    .append(assetRef.getUrl())
-                    .append("\" />\n");
-        }
-
-        final String temp = xmlTempKservices.replace("{__drools__resources__here__}", sbRes.toString());
-        final String xmlKservices = temp.replace("{__polling_frequency__}", String.valueOf(config.getPollingFrequency()));
-
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "drools-service.war")
-                .add(new StringAsset(xmlBeans), "WEB-INF/classes/beans.xml")
-                .add(new StringAsset(xmlCamelServer), "WEB-INF/classes/camel-server.xml")
-                .add(new StringAsset(xmlKservices), "WEB-INF/classes/knowledge-services.xml")
-                .add(new StringAsset(xmlWeb), "WEB-INF/classes/web.xml");
 
         for (final File lib : resolveArtifacts(config.getExcludedArtifacts())) {
             archive.addAsLibraries(lib);

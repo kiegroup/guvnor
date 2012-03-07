@@ -637,3 +637,21 @@ input,.constraint-value-Editor {
 .icon-bar-item:hover {
     background-color: rgb(180,180,180);
 }
+
+a.serviceTab, a.serviceTab:link, a.serviceTab:visited {
+    font-weight: bold;
+    text-decoration: none;
+    color: #000000;
+}
+
+a.serviceTab:hover {
+    font-weight: bold;
+    text-decoration: underline;
+    color: #000000;
+}
+
+a.serviceTab:active {
+    font-weight: bold;
+    text-decoration: none;
+    color: #000000;
+}

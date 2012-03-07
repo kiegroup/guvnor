@@ -26,6 +26,7 @@
     
   <import resource="classpath:META-INF/cxf/cxf.xml" />
   <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
   <!--
@@ -38,7 +39,9 @@
    !   Define the server end point.
    !   Copy and paste this element, changing id and the address, to expose services on different urls.
    !   Different Camel routes can handle different end point paths.
-    --> 
+    -->
+
+
   <cxf:cxfEndpoint id="soapServer"
             address="/soap"
              serviceName="ns:CommandExecutor"
@@ -52,19 +55,19 @@
   </cxf:cxfEndpoint>
 
   <!-- Leave this, as it's needed to make Camel "drools" aware -->
-  <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />  
-    
-  <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">    
+  <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />
+
+  <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
 
     <route>
       <from uri="cxf://bean://soapServer"/>
       <policy ref="droolsPolicy">
-        <unmarshal ref="xstream" />       
+        <unmarshal ref="xstream" />
         <to uri="drools:node1/ksession1" />
         <marshal ref="xstream" />
       </policy>
     </route>
-        
+
   </camelContext>
 
 </beans>
