@@ -919,9 +919,13 @@ public interface Constants
 
     String RenameThisItem();
 
+    String RenameThisKBase();
+
     String NewNameAsset();
 
     String RenameItem();
+
+    String RenameKBase();
 
     String ItemHasBeenRenamed();
 

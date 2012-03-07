@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.conf.AssertBehaviorOption;
-import org.drools.conf.EventProcessingOption;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import static org.drools.guvnor.client.util.Preconditions.*;
@@ -76,6 +74,15 @@ public class ServiceKBaseConfig
         setupNewInstance(name, maxThreads, mbeans, eventProcessingMode,
                 assertBehavior, assetsUser, assetsPassword,
                 resources, models, ksessions, kagents);
+    }
+
+    public ServiceKBaseConfig(final String newName, final ServiceKBaseConfig value) {
+        checkNotNull("value", value);
+        checkNotEmpty("name", newName);
+        setupNewInstance(newName, value.maxThreads, value.mbeans, value.eventProcessingMode,
+                value.assertBehavior, value.assetsUser, value.assetsPassword,
+                value.resources, value.models, value.ksessions.values(),
+                value.kagents.values());
     }
 
     private void setupNewInstance(final String name,
@@ -176,6 +183,10 @@ public class ServiceKBaseConfig
         return models;
     }
 
+    public ServiceKSessionConfig getKsession(final String name) {
+        return ksessions.get(name);
+    }
+
     public Collection<ServiceKSessionConfig> getKsessions() {
         return ksessions.values();
     }
@@ -192,20 +203,40 @@ public class ServiceKBaseConfig
         this.mbeans = mbeans;
     }
 
+    public void setMbeansToNull() {
+        this.mbeans = null;
+    }
+
     public void setEventProcessingMode(final EventProcessingOption eventProcessingMode) {
         this.eventProcessingMode = checkNotNull("eventProcessingMode", eventProcessingMode);
+    }
+
+    public void setEventProcessingModeToNull() {
+        this.eventProcessingMode = null;
     }
 
     public void setAssertBehavior(final AssertBehaviorOption assertBehavior) {
         this.assertBehavior = checkNotNull("assertBehavior", assertBehavior);
     }
 
+    public void setAssertBehaviorToNull() {
+        this.assertBehavior = null;
+    }
+
     public void setAssetsUser(final String assetsUser) {
         this.assetsUser = checkNotEmpty("assetsUser", assetsUser);
     }
 
+    public void setAssetsUserToNull() {
+        this.assetsUser = null;
+    }
+
     public void setAssetsPassword(final String assetsPassword) {
         this.assetsPassword = checkNotNull("assetsPassword", assetsPassword);
+    }
+
+    public void setAssetsPasswordToNull() {
+        this.assetsPassword = null;
     }
 
     public void addResource(final AssetReference resource) {
@@ -219,6 +250,15 @@ public class ServiceKBaseConfig
         if (resources == null || resources.size() == 0) {
             return;
         }
+        this.resources.addAll(resources);
+    }
+
+    public void setResources(Collection<AssetReference> resources) {
+        this.resources.clear();
+        if (resources == null || resources.size() == 0) {
+            return;
+        }
+
         this.resources.addAll(resources);
     }
 
@@ -240,6 +280,15 @@ public class ServiceKBaseConfig
         if (models == null || models.size() == 0) {
             return;
         }
+        this.models.addAll(models);
+    }
+
+    public void setModels(final Collection<AssetReference> models) {
+        this.models.clear();
+        if (models == null || models.size() == 0) {
+            return;
+        }
+
         this.models.addAll(models);
     }
 

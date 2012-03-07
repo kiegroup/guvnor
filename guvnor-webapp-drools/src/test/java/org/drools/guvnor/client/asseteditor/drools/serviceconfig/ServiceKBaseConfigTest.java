@@ -21,8 +21,8 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import static org.drools.conf.AssertBehaviorOption.*;
-import static org.drools.conf.EventProcessingOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssertBehaviorOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.EventProcessingOption.*;
 import static org.junit.Assert.*;
 
 public class ServiceKBaseConfigTest {
@@ -114,6 +114,9 @@ public class ServiceKBaseConfigTest {
 
         assertEquals(2, kbase.getKsessions().size());
         assertEquals(2, kbase.getKagents().size());
+
+        assertNull(kbase.getKsession("notExists"));
+        assertNotNull(kbase.getKsession("ksession1"));
     }
 
     @Test
@@ -188,6 +191,12 @@ public class ServiceKBaseConfigTest {
         kbase1.addModel(null);
 
         assertEquals(1, kbase1.getModels().size());
+
+        kbase1.setModels(null);
+        assertEquals(0, kbase1.getModels().size());
+
+        kbase1.setModels(models);
+        assertEquals(1, kbase1.getModels().size());
     }
 
     @Test
@@ -220,6 +229,12 @@ public class ServiceKBaseConfigTest {
         kbase1.addResource(null);
 
         assertEquals(1, kbase1.getResources().size());
+
+        kbase1.setResources(null);
+        assertEquals(0, kbase1.getResources().size());
+
+        kbase1.setResources(resources);
+        assertEquals(3, kbase1.getResources().size());
     }
 
     @Test
@@ -304,6 +319,18 @@ public class ServiceKBaseConfigTest {
         assertEquals("kagent4", kbase1.getNextKAgentName());
     }
 
+    @Test
+    public void testCloneWithDifferentName() {
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.setMbeans(true);
+        kbase1.setModels(models);
+
+        final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2", kbase1);
+
+        assertTrue(kbase2.getMbeans());
+        assertEquals(1, kbase2.getModels().size());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNullName() {
         new ServiceKBaseConfig((String) null);
@@ -325,9 +352,19 @@ public class ServiceKBaseConfigTest {
         kbase.setAssetsPassword(null);
     }
 
+    @Test
     public void testEmptyOnAssetsPassword() {
         final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
         kbase.setAssetsPassword("");
+    }
+
+    @Test
+    public void testNullOnAssetsPassword2() {
+        final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
+        kbase.setAssetsPassword("sss");
+        assertNotNull(kbase.getAssetsPassword());
+        kbase.setAssetsPasswordToNull();
+        assertNull(kbase.getAssetsPassword());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -342,16 +379,52 @@ public class ServiceKBaseConfigTest {
         kbase.setAssetsUser("");
     }
 
+    @Test
+    public void testEmptyOnAssetsUser2() {
+        final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
+        kbase.setAssetsUser("sss");
+        assertNotNull(kbase.getAssetsUser());
+        kbase.setAssetsUserToNull();
+        assertNull(kbase.getAssetsUser());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNullOnEventProcessing() {
         final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
         kbase.setEventProcessingMode(null);
     }
 
+    @Test
+    public void testNullOnEventProcessing2() {
+        final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
+        kbase.setEventProcessingMode(CLOUD);
+        assertNotNull(kbase.getEventProcessingMode());
+        kbase.setEventProcessingModeToNull();
+        assertNull(kbase.getEventProcessingMode());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNullOnAssertBehavior() {
         final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
         kbase.setAssertBehavior(null);
+    }
+
+    @Test
+    public void testNullOnAssertBehavior2() {
+        final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
+        kbase.setAssertBehavior(EQUALITY);
+        assertNotNull(kbase.getAssertBehavior());
+        kbase.setAssertBehaviorToNull();
+        assertNull(kbase.getAssertBehavior());
+    }
+
+    @Test
+    public void testNullOnMbeans() {
+        final ServiceKBaseConfig kbase = new ServiceKBaseConfig("kbase1");
+        kbase.setMbeans(true);
+        assertNotNull(kbase.getMbeans());
+        kbase.setMbeansToNull();
+        assertNull(kbase.getMbeans());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -367,4 +440,10 @@ public class ServiceKBaseConfigTest {
         kbase.addKagent(new ServiceKAgentConfig("kagent1"));
         kbase.addKagent(new ServiceKAgentConfig("kagent1"));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCloneNull() {
+        new ServiceKBaseConfig("kbase2", null);
+    }
+
 }

@@ -50,9 +50,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.apache.commons.io.FilenameUtils.*;
-import static org.drools.ClockType.*;
-import static org.drools.conf.AssertBehaviorOption.*;
-import static org.drools.conf.EventProcessingOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssertBehaviorOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ClockType.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.EventProcessingOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.SessionType.*;
@@ -94,7 +94,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             ksession1.setType(STATEFUL);
             ksession1.setUrl("myksession1");
             ksession1.setKeepReference(true);
-            ksession1.setClockType(PSEUDO_CLOCK);
+            ksession1.setClockType(PSEUDO);
 
             final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession2");
             ksession2.setUrl("myksession2");
@@ -116,7 +116,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             final ServiceKSessionConfig ksession3 = new ServiceKSessionConfig("ksession3");
             ksession3.setUrl("myksession3");
             ksession3.setProtocol(WEB_SERVICE);
-            ksession3.setClockType(REALTIME_CLOCK);
+            ksession3.setClockType(REALTIME);
 
             final ServiceKSessionConfig ksession4 = new ServiceKSessionConfig("ksession4");
             ksession4.setProtocol(WEB_SERVICE);
@@ -163,7 +163,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             ksession1.setType(STATEFUL);
             ksession1.setUrl("myksession1");
             ksession1.setKeepReference(true);
-            ksession1.setClockType(PSEUDO_CLOCK);
+            ksession1.setClockType(PSEUDO);
 
             final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession2");
             ksession2.setUrl("myksession2");
@@ -197,7 +197,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             final ServiceKSessionConfig ksession3 = new ServiceKSessionConfig("ksession3");
             ksession3.setUrl("myksession3");
             ksession3.setProtocol(WEB_SERVICE);
-            ksession3.setClockType(REALTIME_CLOCK);
+            ksession3.setClockType(REALTIME);
 
             final ServiceKSessionConfig ksession4 = new ServiceKSessionConfig("ksession4");
             ksession4.setProtocol(WEB_SERVICE);

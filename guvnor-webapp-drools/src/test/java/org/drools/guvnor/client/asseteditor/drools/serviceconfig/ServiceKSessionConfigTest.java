@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import static org.drools.ClockType.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ClockType.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.SessionType.*;
@@ -86,10 +86,10 @@ public class ServiceKSessionConfigTest {
 
     @Test
     public void testEqualsOnGeneral() {
-        final ServiceKSessionConfig ksession1apn = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO_CLOCK, null, null);
+        final ServiceKSessionConfig ksession1apn = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO, null, null);
         final ServiceKSessionConfig ksession1bnt = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, null, true, null);
-        final ServiceKSessionConfig ksession1crf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, REALTIME_CLOCK, false, null);
-        final ServiceKSessionConfig ksession1dpf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO_CLOCK, false, null);
+        final ServiceKSessionConfig ksession1crf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, REALTIME, false, null);
+        final ServiceKSessionConfig ksession1dpf = new ServiceKSessionConfig("ksession1", "url_ksession1", null, null, null, PSEUDO, false, null);
 
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
@@ -107,7 +107,7 @@ public class ServiceKSessionConfigTest {
         assertTrue(ksession1apn.hasConfig());
         assertTrue(ksession1apn.equals(ksession1dpf));
 
-        ksession1bnt.setClockType(REALTIME_CLOCK);
+        ksession1bnt.setClockType(REALTIME);
         assertTrue(ksession1bnt.hasConfig());
         assertFalse(ksession1apn.equals(ksession1bnt));
         assertFalse(ksession1apn.equals(ksession1crf));
@@ -216,6 +216,18 @@ public class ServiceKSessionConfigTest {
         assertEquals(1, ksession.getAgendaListeners().size());
     }
 
+    @Test
+    public void testCloneWithDifferentName() {
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        ksession1.setUrl("aaa");
+        ksession1.setType(STATEFUL);
+
+        final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession2", ksession1);
+
+        assertEquals("aaa", ksession2.getUrl());
+        assertEquals(STATEFUL, ksession2.getType());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNullName() {
         new ServiceKSessionConfig((String) null);
@@ -235,6 +247,24 @@ public class ServiceKSessionConfigTest {
     public void testNullOnClockType() {
         final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
         ksession.setClockType(null);
+    }
+
+    @Test
+    public void testNullOnClockType2() {
+        final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
+        ksession.setClockType(PSEUDO);
+        assertNotNull(ksession.getClockType());
+        ksession.setClockTypeToNull();
+        assertNull(ksession.getClockType());
+    }
+
+    @Test
+    public void testNullOnKeepReference() {
+        final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
+        ksession.setKeepReference(true);
+        assertNotNull(ksession.getKeepReference());
+        ksession.setKeepReferenceToNull();
+        assertNull(ksession.getKeepReference());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -266,5 +296,11 @@ public class ServiceKSessionConfigTest {
         final ServiceKSessionConfig ksession = new ServiceKSessionConfig("ksession1");
         ksession.setType(null);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCloneNull() {
+        new ServiceKSessionConfig("ksession", null);
+    }
+
 
 }

@@ -169,7 +169,10 @@ public interface Images
 
     @Source("images/new_item.gif")
     ImageResource newItem();
-    
+
+    @Source("images/delete_obj.gif")
+    ImageResource removeItem();
+
     @Source("images/new_item_disabled.gif")
     ImageResource newItemDisabled();
     
@@ -352,5 +355,4 @@ public interface Images
 
     @Source("images/info-large.png")
     ImageResource infoLarge();
-
 }

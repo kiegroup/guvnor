@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.ClockType;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import static java.util.Collections.*;
@@ -70,6 +69,14 @@ public class ServiceKSessionConfig
             final Boolean keepReference,
             final Map<ListenerType, Set<String>> listeners) {
         setupNewInstance(name, url, type, protocol, marshalling, clockType, keepReference, listeners);
+    }
+
+    public ServiceKSessionConfig(String name, ServiceKSessionConfig ksession) {
+        checkNotNull("ksession", ksession);
+        checkNotEmpty("name", name);
+        setupNewInstance(name, ksession.url, ksession.type, ksession.protocol,
+                ksession.marshalling, ksession.clockType, ksession.keepReference,
+                ksession.listeners);
     }
 
     private void setupNewInstance(final String name,
@@ -165,8 +172,16 @@ public class ServiceKSessionConfig
         this.clockType = checkNotNull("clockType", clockType);
     }
 
+    public void setClockTypeToNull() {
+        this.clockType = null;
+    }
+
     public void setKeepReference(final boolean keepReference) {
         this.keepReference = keepReference;
+    }
+
+    public void setKeepReferenceToNull() {
+        this.keepReference = null;
     }
 
     public void addAgendaListener(final String className) {

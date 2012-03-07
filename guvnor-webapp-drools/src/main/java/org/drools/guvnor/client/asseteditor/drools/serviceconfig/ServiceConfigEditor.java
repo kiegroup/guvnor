@@ -19,164 +19,145 @@ package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesService;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesServiceAsync;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesExplorerWidget;
 import org.drools.guvnor.client.widgets.drools.explorer.ArtifactDependenciesReadyCommand;
-import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
-import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
-
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.*;
-import static com.google.gwt.user.client.ui.AbstractImagePrototype.*;
-import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
-import static org.drools.guvnor.client.common.AssetFormats.*;
-import static org.drools.guvnor.client.widgets.drools.explorer.AssetDownloadLinkUtil.*;
-import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 
 public class ServiceConfigEditor extends DirtyableComposite
-        implements
-        EditorWidget, SaveEventListener {
+        implements EditorWidget, SaveEventListener {
 
     // UI
-    interface ServiceConfigEditorBinder
-            extends
-            UiBinder<Widget, ServiceConfigEditor> {
+    interface ServiceConfigEditorBinder extends UiBinder<Widget, ServiceConfigEditor> {
 
     }
 
     private static ServiceConfigEditorBinder uiBinder = GWT.create(ServiceConfigEditorBinder.class);
-    ArtifactDependenciesServiceAsync mavenArtifactsAsync = (ArtifactDependenciesServiceAsync) GWT.create(ArtifactDependenciesService.class);
-
-    private static Images images = GWT.create(Images.class);
-
-    public static final Map<String, ImageResource> FORMAT_IMAGES = new HashMap<String, ImageResource>() {{
-        put(BUSINESS_RULE, images.ruleAsset());
-        put(DRL, images.technicalRuleAssets());
-        put(DSL, images.dsl());
-        put(BPMN2_PROCESS, images.ruleflowSmall());
-        put(DECISION_TABLE_GUIDED, images.gdst());
-        put(CHANGE_SET, images.enumeration());
-        put(MODEL, images.modelAsset());
-    }};
-
-    @UiField
-    protected ListBox listProtocol;
-
-    @UiField
-    protected TextBox pollingFrequency;
 
     @UiField
     protected Button btnDownloadWar;
 
     @UiField
-    protected Button btnAssetResource;
-
-    @UiField
-    protected Button btnRemoveSelected;
-
-    @UiField
     protected Button btnArtifacts;
 
     @UiField
-    protected Tree resourceTree;
+    protected TabLayoutPanel tabPanel;
+
+    final ArtifactDependenciesServiceAsync mavenArtifactsAsync = (ArtifactDependenciesServiceAsync) GWT.create(ArtifactDependenciesService.class);
 
     final private Asset asset;
-    final private ClientFactory clientFactory;
-    final private String assetPackageName;
-    final private String assetPackageUUID;
     final private String assetUUID;
     final private String assetName;
     private ServiceConfig config;
-    private final TreeItem root;
 
     private Collection<MavenArtifact> serviceArtifacts = null;
-
-    private final Map<String, Map<String, TreeItem>> resourcesIndex = new HashMap<String, Map<String, TreeItem>>();
-    private final Map<String, TreeItem> packageIndex = new HashMap<String, TreeItem>();
 
     public ServiceConfigEditor(final Asset a, final RuleViewer v, final ClientFactory clientFactory, final EventBus eventBus) {
         this(a, clientFactory);
     }
 
     public ServiceConfigEditor(final Asset asset, final ClientFactory clientFactory) {
-
-        this.initWidget(uiBinder.createAndBindUi(this));
-
         this.asset = asset;
-        this.clientFactory = clientFactory;
         this.assetUUID = asset.getUuid();
-        this.assetPackageUUID = asset.getMetaData().getModuleUUID();
-        this.assetPackageName = asset.getMetaData().getModuleName();
         this.assetName = asset.getName();
         this.config = (ServiceConfig) asset.getContent();
 
-        this.customizeUIElements();
+        this.initWidget(uiBinder.createAndBindUi(this));
 
-        this.root = resourceTree.addItem(treeItemFormat(asset.getName(), images.enumeration()));
+        for (final ServiceKBaseConfig activeKbase : config.getKbases()) {
+            addKBasePainel(activeKbase, clientFactory);
+        }
+
+        final Anchor linkNewKBase = new Anchor("[+]");
+        linkNewKBase.setStyleName("serviceTab");
+        tabPanel.add(new FlowPanel(), linkNewKBase);
+        linkNewKBase.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                tabPanel.remove(tabPanel.getWidgetCount() - 1);
+                final ServiceKBaseConfig newKbase = new ServiceKBaseConfig(config.getNextKBaseName());
+                newKbase.addKsession(new ServiceKSessionConfig(newKbase.getNextKSessionName()));
+                config.addKBase(newKbase);
+                addKBasePainel(newKbase, clientFactory);
+                tabPanel.add(new FlowPanel(), linkNewKBase);
+                tabPanel.selectTab(tabPanel.getWidgetCount() - 2);
+            }
+        });
+
+        tabPanel.selectTab(0);
 
         this.loadContent();
     }
 
+    private void addKBasePainel(final ServiceKBaseConfig kbase, final ClientFactory clientFactory) {
+        final HorizontalPanel panel = new HorizontalPanel();
+        final Label kbaseLabel = new Label(kbase.getName());
+        kbaseLabel.setStyleName("serviceTab");
+
+        final Anchor closeLink = new Anchor(" [X]");
+        closeLink.setStyleName("serviceTab");
+
+        panel.add(kbaseLabel);
+        panel.add(closeLink);
+
+        final UpdateTabEvent updateTabEvent = new UpdateTabEvent() {
+            public void onUpdate(String newName) {
+                kbaseLabel.setText(newName);
+            }
+        };
+
+        tabPanel.add(new KBaseConfigPanel(config, kbase, updateTabEvent, asset.getMetaData().getModuleUUID(), asset.getMetaData().getModuleName(), clientFactory), panel);
+
+        closeLink.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                if (tabPanel.getWidgetCount() <= 2) {
+                    Window.alert("Can't delete this kbase.");
+                    return;
+                }
+                if (!Window.confirm("Confirm remove this kbase?")) {
+                    return;
+                }
+                for (int i = 0; i < tabPanel.getWidgetCount(); i++) {
+                    if (tabPanel.getWidget(i) instanceof KBaseConfigPanel) {
+                        final KBaseConfigPanel editor = (KBaseConfigPanel) tabPanel.getWidget(i);
+                        if (editor.getKBase().getName().equals(kbase.getName())) {
+                            config.removeKBase(kbase.getName());
+                            tabPanel.remove(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private void loadContent() {
-
-        this.pollingFrequency.setText(String.valueOf(config.getPollingFrequency()));
-
-//        if (config.getProtocol().equals(REST)) {
-//            this.listProtocol.setSelectedIndex(0);
-//        } else {
-//            this.listProtocol.setSelectedIndex(1);
-//        }
-//
-//        for (AssetReference assetReference : config.getResources()) {
-//            addResource(assetReference);
-//        }
-//
-//        for (AssetReference modelReference : config.getModels()) {
-//            addResource(modelReference);
-//        }
-
         mavenArtifactsAsync.getDependencies(new AsyncCallback<Collection<MavenArtifact>>() {
             public void onFailure(final Throwable e) {
                 ErrorPopup.showMessage(e.getMessage());
@@ -188,147 +169,17 @@ public class ServiceConfigEditor extends DirtyableComposite
         });
     }
 
-    private void customizeUIElements() {
-        listProtocol.addItem("REST", REST.toString());
-        listProtocol.addItem("WebService", WEB_SERVICE.toString());
-
-        listProtocol.addChangeHandler(new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                makeDirty();
-            }
-        });
-
-        pollingFrequency.addKeyPressHandler(new KeyPressHandler() {
-            public void onKeyPress(final KeyPressEvent event) {
-                final TextBox sender = (TextBox) event.getSource();
-                final int keyCode = event.getNativeEvent().getKeyCode();
-
-                if (!(Character.isDigit(event.getCharCode()))
-                        && !(keyCode == KeyCodes.KEY_TAB) && !(keyCode == KeyCodes.KEY_DELETE)
-                        && !(keyCode == KeyCodes.KEY_ENTER) && !(keyCode == KeyCodes.KEY_HOME)
-                        && !(keyCode == KeyCodes.KEY_END) && !(keyCode == KeyCodes.KEY_BACKSPACE)
-                        && !(keyCode == KeyCodes.KEY_UP) && !(keyCode == KeyCodes.KEY_DOWN)
-                        && !(keyCode == KeyCodes.KEY_LEFT) && !(keyCode == KeyCodes.KEY_RIGHT)) {
-                    sender.cancelKey();
-                }
-                makeDirty();
-            }
-        });
-    }
-
     public void onSave() {
-        final String pollingFrequency = this.pollingFrequency.getText();
-        final String protocol = listProtocol.getValue(listProtocol.getSelectedIndex());
-        final Collection<AssetReference> resources = new ArrayList<AssetReference>();
-        final Collection<AssetReference> models = new ArrayList<AssetReference>();
-        final Collection<MavenArtifact> excludedArtifacts = new ArrayList<MavenArtifact>();
-
-        final Iterator<TreeItem> iterator = resourceTree.treeItemIterator();
-        while (iterator.hasNext()) {
-            final TreeItem item = iterator.next();
-            if (item.getUserObject() != null) {
-                final AssetReference assetReference = (AssetReference) item.getUserObject();
-                if (assetReference.getFormat().equals(AssetFormats.MODEL)) {
-                    models.add(assetReference);
-                } else {
-                    resources.add(assetReference);
-                }
+        for (int i = 0; i < tabPanel.getWidgetCount(); i++) {
+            if (tabPanel.getWidget(i) instanceof KBaseConfigPanel) {
+                final KBaseConfigPanel kbaseEditor = (KBaseConfigPanel) tabPanel.getWidget(i);
+                kbaseEditor.onSave();
             }
         }
-
-        excludedArtifacts.addAll(this.config.getExcludedArtifacts());
-
-        this.config = null;//new ServiceConfig(pollingFrequency, protocol, resources, models, excludedArtifacts);
-
         asset.setContent(config);
     }
 
     public void onAfterSave() {
-    }
-
-    @UiHandler("btnRemoveSelected")
-    public void removeSelectedElements(final ClickEvent e) {
-        final List<TreeItem> result = new ArrayList<TreeItem>();
-        buildExcludedList(root, result);
-        for (final TreeItem item : result) {
-            if (item.getUserObject() != null) {
-                removeFromIndexes((AssetReference) item.getUserObject());
-            }
-            if (item.getUserObject() != null) {
-                item.remove();
-            }
-        }
-    }
-
-    private void removeFromIndexes(final AssetReference userObject) {
-        removeFromIndex(userObject, packageIndex);
-        for (final Map<String, TreeItem> pkgItem : resourcesIndex.values()) {
-            removeFromIndex(userObject, pkgItem);
-        }
-    }
-
-    private void removeFromIndex(AssetReference userObject, Map<String, TreeItem> index) {
-        for (final Map.Entry<String, TreeItem> element : index.entrySet()) {
-            if (element.getValue().getUserObject() != null) {
-                final AssetReference activeAsset = (AssetReference) element.getValue().getUserObject();
-                if (activeAsset.getUuid().equals(userObject.getUuid())) {
-                    index.remove(element.getKey());
-                    break;
-                }
-            }
-        }
-    }
-
-    private void buildExcludedList(final TreeItem item, final List<TreeItem> result) {
-        if (item.getWidget() != null) {
-            if (((CheckBox) item.getWidget()).getValue()) {
-                result.add(item);
-            }
-        }
-
-        if (item.getChildCount() > 0) {
-            for (int i = 0; i < item.getChildCount(); i++) {
-                buildExcludedList(item.getChild(i), result);
-            }
-        }
-    }
-
-    @UiHandler("btnAssetResource")
-    public void addNewAssetResource(final ClickEvent e) {
-        final AssetResourceExplorerWidget widget = new AssetResourceExplorerWidget(assetPackageUUID,
-                assetPackageName, clientFactory, SERVICE_CONFIG_RESOURCE, HIDE_NAME_AND_DESCRIPTION);
-
-        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
-
-        popup.addOkButtonClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                try {
-                    widget.processSelectedResources(new ResourceElementReadyCommand() {
-
-                        public void onSuccess(String packageRef, Asset[] result, String name, String description) {
-                            for (final Asset asset : result) {
-                                final AssetReference reference = new AssetReference(packageRef,
-                                        asset.getName(),
-                                        asset.getFormat(),
-                                        buildDownloadLink(asset, packageRef),
-                                        asset.getUuid());
-                                addResource(reference);
-                            }
-                        }
-
-                        public void onFailure(Throwable cause) {
-                            ErrorPopup.showMessage(cause.getMessage());
-                        }
-                    });
-
-                } catch (Exception e) {
-                    ErrorPopup.showMessage(e.getMessage());
-                }
-                popup.hide();
-            }
-        });
-        popup.show();
     }
 
     @UiHandler("btnArtifacts")
@@ -367,79 +218,6 @@ public class ServiceConfigEditor extends DirtyableComposite
         Window.open(GWT.getModuleBaseURL() + "serviceWarBuilderAndDownloadHandler?uuid=" + assetUUID, "service download", "");
     }
 
-    private void addResource(final AssetReference asset) {
-
-        if (!resourcesIndex.containsKey(asset.getPackageRef())) {
-            packageIndex.put(asset.getPackageRef(), buildTreeItem(root, asset.getPackageRef(), images.packageImage(), null));
-            resourcesIndex.put(asset.getPackageRef(), new HashMap<String, TreeItem>());
-        }
-
-        final TreeItem pkg = packageIndex.get(asset.getPackageRef());
-
-        if (!resourcesIndex.get(asset.getPackageRef()).containsKey(asset.getFormat())) {
-            final TreeItem newFormat = buildTreeItem(pkg, asset.getFormat(), FORMAT_IMAGES.get(asset.getFormat()), null);
-            resourcesIndex.get(asset.getPackageRef()).put(asset.getFormat(), newFormat);
-        }
-
-        final TreeItem parent = resourcesIndex.get(asset.getPackageRef()).get(asset.getFormat());
-
-        buildTreeItem(parent, asset.getName(), images.rules(), asset);
-
-        makeDirty();
-    }
-
-    private TreeItem buildTreeItem(final TreeItem parent, final String text, final ImageResource image, final AssetReference asset) {
-
-        if (asset != null) {
-            for (int i = 0; i < parent.getChildCount(); i++) {
-                if (parent.getChild(i).getUserObject() == null) {
-                    continue;
-                }
-                final AssetReference currentAsset = (AssetReference) parent.getChild(i).getUserObject();
-                if (currentAsset.getName().equals(text)) {
-                    return parent.getChild(i);
-                }
-            }
-        }
-
-        final CheckBox checkBox = new CheckBox(treeItemFormat(text, image));
-        final TreeItem newTreeItem = parent.addItem(checkBox);
-        newTreeItem.setUserObject(asset);
-
-        checkBox.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                final CheckBox me = ((CheckBox) event.getSource());
-                boolean checked = me.getValue();
-                if (newTreeItem.getChildCount() > 0) {
-                    for (int i = 0; i < newTreeItem.getChildCount(); i++) {
-                        defineState(newTreeItem.getChild(i), checked);
-                    }
-                }
-            }
-
-            private void defineState(TreeItem currentItem, boolean checked) {
-                ((CheckBox) currentItem.getWidget()).setValue(checked);
-                if (currentItem.getChildCount() > 0) {
-                    for (int i = 0; i < currentItem.getChildCount(); i++) {
-                        defineState(currentItem.getChild(i), checked);
-                    }
-                }
-            }
-        });
-
-        parent.setState(true, false);
-        newTreeItem.setState(true, false);
-
-        return newTreeItem;
-    }
-
-    private SafeHtml treeItemFormat(final String text, final ImageResource image) {
-        return new SafeHtmlBuilder()
-                .append(fromTrustedString(create(image).getHTML()))
-                .appendEscaped(" ")
-                .appendEscaped(text).toSafeHtml();
-    }
-
     private class NewResourcePopup extends FormStylePopup {
 
         private final Button ok = new Button(Constants.INSTANCE.OK());
@@ -466,5 +244,10 @@ public class ServiceConfigEditor extends DirtyableComposite
         public void addOkButtonClickHandler(final ClickHandler clickHandler) {
             ok.addClickHandler(clickHandler);
         }
+    }
+
+    public static interface UpdateTabEvent {
+
+        public void onUpdate(final String newName);
     }
 }

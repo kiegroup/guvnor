@@ -30,6 +30,12 @@ import org.drools.guvnor.client.rpc.MavenArtifact;
 
 public class ServiceConfigPersistence {
 
+    private static final ServiceConfig BASE = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addKsession(new ServiceKSessionConfig("ksession1"));
+        addKBase(kbase1);
+    }};
+
     private static final ServiceConfigPersistence INSTANCE = new ServiceConfigPersistence();
 
     private final XStream xt;
@@ -67,7 +73,7 @@ public class ServiceConfigPersistence {
 
     public ServiceConfig unmarshal(final String xml) {
         if (xml == null || xml.trim().equals("")) {
-            return new ServiceConfig();
+            return new ServiceConfig(BASE);
         }
 
         return (ServiceConfig) xt.fromXML(xml);
