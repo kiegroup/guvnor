@@ -24,11 +24,10 @@ import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
-import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 
 public class ServiceConfigPersistenceTest {
 
@@ -76,12 +75,18 @@ public class ServiceConfigPersistenceTest {
 
     @Test
     public void testEmpty() {
+        final ServiceConfig BASE = new ServiceConfig() {{
+            final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+            kbase1.addKsession(new ServiceKSessionConfig("ksession1"));
+            addKBase(kbase1);
+        }};
+
         final String result = ServiceConfigPersistence.getInstance().marshal(null);
         assertEquals("", result);
 
-        final ServiceConfig config = ServiceConfigPersistence.getInstance().unmarshal("");
+        final ServiceConfig config = ServiceConfigPersistence.getInstance().unmarshal(result);
         assertNotNull(config);
-        assertEquals(new ServiceConfig(), config);
+        assertTrue(new ServiceConfig(BASE).equals(config));
     }
 
     @Test
