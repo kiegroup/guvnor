@@ -16,14 +16,13 @@
 
 package org.drools.guvnor.client.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.drools.guvnor.client.util.Preconditions.checkNotEmpty;
-import static org.drools.guvnor.client.util.Preconditions.checkNotNull;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import static org.drools.guvnor.client.util.Preconditions.*;
 
 public class MavenArtifact implements Serializable, IsSerializable {
 
@@ -66,6 +65,22 @@ public class MavenArtifact implements Serializable, IsSerializable {
         }
         this.necessaryOnRuntime = checkNecessaryOnRuntime();
         this.child = new ArrayList<MavenArtifact>();
+    }
+
+    public MavenArtifact(final MavenArtifact source) {
+        checkNotNull("source", source);
+        this.group = source.group;
+        this.artifact = source.artifact;
+        this.complement = source.complement;
+        this.version = source.version;
+        this.type = source.type;
+        this.scope = source.scope;
+        this.necessaryOnRuntime = source.necessaryOnRuntime;
+        if (source.child == null || source.child.size() == 0) {
+            this.child = new ArrayList<MavenArtifact>();
+        } else {
+            this.child = new ArrayList<MavenArtifact>(source.child);
+        }
     }
 
     private boolean checkNecessaryOnRuntime() {
@@ -128,17 +143,33 @@ public class MavenArtifact implements Serializable, IsSerializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         MavenArtifact artifact1 = (MavenArtifact) o;
 
-        if (!artifact.equals(artifact1.artifact)) return false;
-        if (complement != null ? !complement.equals(artifact1.complement) : artifact1.complement != null) return false;
-        if (!group.equals(artifact1.group)) return false;
-        if (!scope.equals(artifact1.scope)) return false;
-        if (!type.equals(artifact1.type)) return false;
-        if (!version.equals(artifact1.version)) return false;
+        if (!artifact.equals(artifact1.artifact)) {
+            return false;
+        }
+        if (complement != null ? !complement.equals(artifact1.complement) : artifact1.complement != null) {
+            return false;
+        }
+        if (!group.equals(artifact1.group)) {
+            return false;
+        }
+        if (!scope.equals(artifact1.scope)) {
+            return false;
+        }
+        if (!type.equals(artifact1.type)) {
+            return false;
+        }
+        if (!version.equals(artifact1.version)) {
+            return false;
+        }
 
         return true;
     }

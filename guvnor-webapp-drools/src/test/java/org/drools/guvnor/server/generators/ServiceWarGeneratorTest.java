@@ -38,7 +38,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssetReference;
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKAgentConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfig;
+import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKSessionConfig;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -49,23 +53,57 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.apache.commons.io.FilenameUtils.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.drools.guvnor.server.generators.ServiceWarGenerator.*;
 import static org.drools.guvnor.server.maven.cache.GuvnorArtifactCacheSupport.*;
 import static org.junit.Assert.*;
 
 public class ServiceWarGeneratorTest {
 
-    private static final String REST_SERVICE_CONFIG = "polling=70\n" +
-            "protocol=REST\n" +
-            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
-            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
-            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
+    private static final Collection<AssetReference> resources = new ArrayList<AssetReference>() {{
+        add(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
+        add(new AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
+        add(new AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+    }};
 
-    private static final String WS_SERVICE_CONFIG = "polling=70\n" +
-            "protocol=WEB_SERVICE\n" +
-            "resource=pkgRef|a|drl|http://localhost/c/source|uuid1\n" +
-            "resource=pkgRef|aa|drl|http://localhost/cc/source|uuid2\n" +
-            "resource=pkgRef|ab|change_set|http://localhost/cd/source|uuid3\n";
+    private static final Collection<AssetReference> models = new ArrayList<AssetReference>() {{
+        add(new AssetReference("myPkg", "a.jar", "model", "http://localhost/a.jar", "uudi44"));
+    }};
+
+    private static final ServiceConfig REST_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
+
+    private static final ServiceConfig WS_SERVICE_CONFIG = new ServiceConfig() {{
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        kbase1.addModels(models);
+        kbase1.addResources(resources);
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        ksession1.setProtocol(WEB_SERVICE);
+
+        final ServiceKAgentConfig kagent = new ServiceKAgentConfig("kagent1");
+        kagent.setNewInstance(false);
+
+        kbase1.addKsession(ksession1);
+        kbase1.addKagent(kagent);
+
+        addKBase(kbase1);
+        setPollingFrequency(70);
+    }};
+
+    //new ServiceConfig("70", "rest", resources, models, null);
+//    private static final ServiceConfig  = null;//new ServiceConfig("70", "ws", resources, models, null);
 
     private static final Set<String> LIBS = new HashSet<String>() {{
         add("log4j-1.2.16.jar");

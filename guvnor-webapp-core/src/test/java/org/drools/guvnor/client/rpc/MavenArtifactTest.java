@@ -77,6 +77,9 @@ public class MavenArtifactTest {
 
         assertEquals(new MavenArtifact("org.springframework:spring:jar:2.5.6:compile"), parent);
         assertEquals(new MavenArtifact("org.springframework:spring:jar:2.5.6:compile").hashCode(), parent.hashCode());
+
+        assertEquals(new MavenArtifact(artifact), artifact);
+        assertEquals(new MavenArtifact(artifact).hashCode(), artifact.hashCode());
     }
 
     @Test
@@ -120,7 +123,12 @@ public class MavenArtifactTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructNull() {
-        new MavenArtifact(null);
+        new MavenArtifact((String) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructNull2() {
+        new MavenArtifact((MavenArtifact) null);
     }
 
     @Test(expected = IllegalArgumentException.class)

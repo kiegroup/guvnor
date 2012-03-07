@@ -22,223 +22,229 @@ import java.util.Collection;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.junit.Test;
 
-import static java.util.Collections.*;
-import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig.Protocol.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 import static org.junit.Assert.*;
 
 public class ServiceConfigTest {
 
+    final Collection<MavenArtifact> excludedArtifacts = new ArrayList<MavenArtifact>() {{
+        add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        add(new MavenArtifact("org.apache.camel:camel-core:test-jar:tests:2.4.0:test"));
+    }};
+
+    final Collection<ServiceKBaseConfig> kbases = new ArrayList<ServiceKBaseConfig>() {{
+        add(new ServiceKBaseConfig("kbase1"));
+        add(new ServiceKBaseConfig("kbase1"));
+        add(new ServiceKBaseConfig("kbase2"));
+    }};
+
     @Test
-    public void testConstructorWebService() {
-        final ServiceConfig basicConfig = new ServiceConfig("70", "web_service", null, null, null);
+    public void testNullConstructor() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
 
-        assertNotNull(basicConfig);
-        assertEquals(WEB_SERVICE, basicConfig.getProtocol());
-        assertEquals(70, basicConfig.getPollingFrequency());
-        assertEquals(emptyList(), basicConfig.getModels());
-        assertEquals(emptyList(), basicConfig.getResources());
-        assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
+        assertNull(serviceConfig.getPollingFrequency());
+        assertNotNull(serviceConfig.getKbases());
+        assertNotNull(serviceConfig.getExcludedArtifacts());
+        assertEquals(0, serviceConfig.getKbases().size());
+        assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
-        //ws is also an option
-        assertEquals(WEB_SERVICE, new ServiceConfig("70", "ws", null, null, null).getProtocol());
+        assertEquals(serviceConfig, new ServiceConfig(null, null, null));
+        assertTrue(serviceConfig.hashCode() == new ServiceConfig(null, null, null).hashCode());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        assertEquals(serviceConfig, new ServiceConfig(serviceConfig));
+        assertTrue(serviceConfig.hashCode() == new ServiceConfig(serviceConfig).hashCode());
     }
 
     @Test
-    public void testConstructorRest() {
-        final ServiceConfig basicConfig = new ServiceConfig("70", "rest", null, null, null);
+    public void testConstructor() {
+        final ServiceConfig serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
 
-        assertNotNull(basicConfig);
-        assertEquals(REST, basicConfig.getProtocol());
-        assertEquals(70, basicConfig.getPollingFrequency());
-        assertEquals(emptyList(), basicConfig.getModels());
-        assertEquals(emptyList(), basicConfig.getResources());
-        assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
+        assertEquals(new Integer(70), serviceConfig.getPollingFrequency());
+        assertNotNull(serviceConfig.getKbases());
+        assertNotNull(serviceConfig.getExcludedArtifacts());
+        assertEquals(2, serviceConfig.getKbases().size());
+        assertEquals(2, serviceConfig.getExcludedArtifacts().size());
 
-        //default is always rest
-        assertEquals(REST, new ServiceConfig("70", "some", null, null, null).getProtocol());
+        assertFalse(serviceConfig.equals(new ServiceConfig(null, null, null)));
+        assertFalse(serviceConfig.hashCode() == new ServiceConfig(null, null, null).hashCode());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        assertEquals(serviceConfig, new ServiceConfig(serviceConfig));
+        assertTrue(serviceConfig.hashCode() == new ServiceConfig(serviceConfig).hashCode());
     }
 
     @Test
-    public void testConstructorEmptyString() {
-        final ServiceConfig basicConfig = new ServiceConfig("");
+    public void testEquals() {
+        ServiceConfig serviceConfig = new ServiceConfig("71", excludedArtifacts, kbases);
 
-        assertNotNull(basicConfig);
-        assertEquals(REST, basicConfig.getProtocol());
-        assertEquals(60, basicConfig.getPollingFrequency());
-        assertEquals(emptyList(), basicConfig.getModels());
-        assertEquals(emptyList(), basicConfig.getResources());
-        assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
+        assertFalse(serviceConfig.equals(new ServiceConfig("70", excludedArtifacts, kbases)));
+        assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
 
-        //toContent consistency
-        assertEquals(basicConfig, new ServiceConfig(basicConfig.toContent()));
-        assertEquals(basicConfig.hashCode(), new ServiceConfig(basicConfig.toContent()).hashCode());
+        serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        assertFalse(serviceConfig.equals(new ServiceConfig("70", excludedArtifacts, kbases)));
+        assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
+
+        serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
+        serviceConfig.removeKBase("kbase2");
+        assertFalse(serviceConfig.equals(new ServiceConfig("70", excludedArtifacts, kbases)));
+        assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
+
+        serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
+
+        serviceConfig.setPollingFrequency(71);
+        assertFalse(serviceConfig.equals(new ServiceConfig("70", excludedArtifacts, kbases)));
+        assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
+
+        assertEquals(serviceConfig, serviceConfig);
+        assertFalse(serviceConfig.equals(null));
+        assertFalse(serviceConfig.equals("??"));
     }
 
     @Test
-    public void testAdvancedSetup() {
+    public void testAddRemoveExcludedArtifacts() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
 
-        final Collection<ServiceConfig.AssetReference> resources = new ArrayList<ServiceConfig.AssetReference>() {{
-            add(new ServiceConfig.AssetReference("myPkg|a|drl|http://localhost/c/source|uuid1"));
-            add(new ServiceConfig.AssetReference("myPkg|aa|drl|http://localhost/cc/source|uuid2"));
-            add(new ServiceConfig.AssetReference("myPkg|ab|change_set|http://localhost/cd/source|uuid3"));
-        }};
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifact(null);
+        assertEquals(1, serviceConfig.getExcludedArtifacts().size());
 
-        final Collection<ServiceConfig.AssetReference> models = new ArrayList<ServiceConfig.AssetReference>() {{
-            add(new ServiceConfig.AssetReference("myPkg|a.jar|model|http://localhost/a.jar|uudi44"));
-        }};
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
-        final ServiceConfig basicConfig = new ServiceConfig("70", "rest", resources, models, null);
+        serviceConfig.setExcludedArtifacts(excludedArtifacts);
+        serviceConfig.setExcludedArtifacts(null);
+        assertEquals(2, serviceConfig.getExcludedArtifacts().size());
 
-        assertNotNull(basicConfig);
-        assertEquals(REST, basicConfig.getProtocol());
-        assertEquals(70, basicConfig.getPollingFrequency());
-        assertEquals(models, basicConfig.getModels());
-        assertEquals(resources, basicConfig.getResources());
-        assertEquals(emptyList(), basicConfig.getExcludedArtifacts());
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(null);
+        assertEquals(1, serviceConfig.getExcludedArtifacts().size());
 
-        //toContent consistency
-        final ServiceConfig rebuild = new ServiceConfig(basicConfig.toContent());
-        assertEquals(basicConfig, rebuild);
-        assertEquals(basicConfig.hashCode(), rebuild.hashCode());
+        serviceConfig.setExcludedArtifacts(new ArrayList<MavenArtifact>());
+        assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
-        final Collection<MavenArtifact> exclucedArtifacts = new ArrayList<MavenArtifact>() {{
-            add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-            add(new MavenArtifact("org.apache.camel:camel-core:test-jar:tests:2.4.0:test"));
-        }};
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifacts(excludedArtifacts);
+        serviceConfig.addExcludedArtifacts(new ArrayList<MavenArtifact>());
+        serviceConfig.addExcludedArtifacts(null);
+        assertEquals(3, serviceConfig.getExcludedArtifacts().size());
 
-        rebuild.setExcludedArtifacts(exclucedArtifacts);
+        serviceConfig.removeExcludedArtifacts(excludedArtifacts);
+        serviceConfig.removeExcludedArtifacts(new ArrayList<MavenArtifact>());
+        serviceConfig.removeExcludedArtifacts(null);
+        assertEquals(1, serviceConfig.getExcludedArtifacts().size());
 
-        assertFalse(basicConfig.equals(rebuild));
-        assertFalse(basicConfig.hashCode() == rebuild.hashCode());
-
-        //now consistency with excluded artifacts
-        assertEquals(rebuild, new ServiceConfig(rebuild.toContent()));
-        assertEquals(rebuild.hashCode(), new ServiceConfig(rebuild.toContent()).hashCode());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testConstructorInvalidFrequency() {
-        new ServiceConfig("70a", "web_service", null, null, null);
+    @Test
+    public void testAddRemoveKBases() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
+        serviceConfig.addKBase(null);
+        assertEquals(1, serviceConfig.getKbases().size());
+
+        assertEquals(serviceConfig.getKbase("kbase1"), new ServiceKBaseConfig("kbase1"));
+        assertNull(serviceConfig.getKbase("kbase2"));
+        assertNull(serviceConfig.getKbase(""));
+        assertNull(serviceConfig.getKbase(null));
+
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase2"));
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase3"));
+        assertEquals(3, serviceConfig.getKbases().size());
+
+        serviceConfig.removeKBase("kbase3");
+        serviceConfig.removeKBase("sss");
+        serviceConfig.removeKBase("");
+        serviceConfig.removeKBase(null);
+        assertEquals(2, serviceConfig.getKbases().size());
+    }
+
+    @Test
+    public void testNextKBaseName() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        assertEquals("kbase1", serviceConfig.getNextKBaseName());
+        assertEquals("kbase1", serviceConfig.getNextKBaseName());
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase3"));
+        assertEquals("kbase2", serviceConfig.getNextKBaseName());
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase2"));
+        assertEquals("kbase4", serviceConfig.getNextKBaseName());
+    }
+
+    @Test
+    public void testHasProtocolReference() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        assertFalse(serviceConfig.hasProtocolReference(REST));
+        assertFalse(serviceConfig.hasProtocolReference(WEB_SERVICE));
+
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        final ServiceKSessionConfig ksession1 = new ServiceKSessionConfig("ksession1");
+        kbase1.addKsession(ksession1);
+        serviceConfig.addKBase(kbase1);
+
+        assertTrue(serviceConfig.hasProtocolReference(REST));
+        assertFalse(serviceConfig.hasProtocolReference(WEB_SERVICE));
+
+        final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
+        final ServiceKSessionConfig ksession2 = new ServiceKSessionConfig("ksession2");
+        ksession2.setProtocol(WEB_SERVICE);
+        kbase2.addKsession(ksession2);
+        serviceConfig.addKBase(kbase2);
+
+        assertTrue(serviceConfig.hasProtocolReference(REST));
+        assertTrue(serviceConfig.hasProtocolReference(WEB_SERVICE));
+    }
+
+    @Test
+    public void testGetModels() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+
+        assertEquals(0, serviceConfig.getModels().size());
+
+        final ServiceKBaseConfig kbase1 = new ServiceKBaseConfig("kbase1");
+        final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
+        serviceConfig.addKBase(kbase1);
+        serviceConfig.addKBase(kbase2);
+        assertEquals(0, serviceConfig.getModels().size());
+
+        kbase1.addModel(new AssetReference("a", "b", "c", "d", "e"));
+        kbase1.addModel(new AssetReference("a2", "b2", "c2", "d2", "e2"));
+
+        assertEquals(2, serviceConfig.getModels().size());
+
+        kbase2.addModel(new AssetReference("a", "b", "c", "d", "e"));
+        kbase2.addModel(new AssetReference("a4", "b4", "c4", "d4", "e4"));
+        kbase2.addModel(new AssetReference("a5", "b5", "c5", "d5", "e5"));
+
+        assertEquals(4, serviceConfig.getModels().size());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNullString() {
+    public void testNullOnCopy() {
         new ServiceConfig(null);
     }
 
-    @Test
-    public void testAssetReferenceConstructor() {
-        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a|b|c|d|e");
-
-        assertNotNull(assetReference);
-        assertEquals("a", assetReference.getPkg());
-        assertEquals("b", assetReference.getName());
-        assertEquals("c", assetReference.getFormat());
-        assertEquals("d", assetReference.getUrl());
-        assertEquals("e", assetReference.getUuid());
-    }
-
-    @Test
-    public void testAssetReferenceExplicitConstructor() {
-        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a", "b", "c", "d", "e");
-
-        assertNotNull(assetReference);
-        assertEquals("a", assetReference.getPkg());
-        assertEquals("b", assetReference.getName());
-        assertEquals("c", assetReference.getFormat());
-        assertEquals("d", assetReference.getUrl());
-        assertEquals("e", assetReference.getUuid());
-    }
-
-    @Test
-    public void testAssetReferenceToValueConsistency() {
-        final ServiceConfig.AssetReference assetReference = new ServiceConfig.AssetReference("a|b|c|d|e");
-
-        assertEquals(assetReference, new ServiceConfig.AssetReference(assetReference.toValue()));
-        assertEquals(assetReference.hashCode(), new ServiceConfig.AssetReference(assetReference.toValue()).hashCode());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceEmptyConstructor() {
-        new ServiceConfig.AssetReference("");
-    }
-
     @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor1() {
-        new ServiceConfig.AssetReference("a");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor2() {
-        new ServiceConfig.AssetReference("a|b");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testAssetReferenceInvalidConstructor3() {
-        new ServiceConfig.AssetReference("a|b|c|d|e|f|e|g|D");
+    public void testPollingFrequencyNotNumeric() {
+        new ServiceConfig("70a", excludedArtifacts, kbases);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceNullConstructor() {
-        new ServiceConfig.AssetReference(null);
+    public void testAddKBaseAlreadyExists() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
+        serviceConfig.addKBase(new ServiceKBaseConfig("kbase1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorNull1() {
-        new ServiceConfig.AssetReference(null, "b", "c", "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorEmpty1() {
-        new ServiceConfig.AssetReference("", "b", "c", "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorNull2() {
-        new ServiceConfig.AssetReference("a", null, "c", "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorEmpty2() {
-        new ServiceConfig.AssetReference("a", "", "c", "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorNull3() {
-        new ServiceConfig.AssetReference("a", "b", null, "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorEmpty3() {
-        new ServiceConfig.AssetReference("a", "b", "", "d", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorNull4() {
-        new ServiceConfig.AssetReference("a", "b", "c", null, "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorEmpty4() {
-        new ServiceConfig.AssetReference("a", "b", "c", "", "e");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorNull5() {
-        new ServiceConfig.AssetReference("a", "b", "c", "d", null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAssetReferenceExplicitConstructorEmpty5() {
-        new ServiceConfig.AssetReference("a", "b", "c", "d", "");
+    public void testNullOnHasProtocolReference() {
+        final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
+        serviceConfig.hasProtocolReference(null);
     }
 
 }
