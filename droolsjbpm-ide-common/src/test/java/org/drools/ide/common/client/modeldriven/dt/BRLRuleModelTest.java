@@ -415,4 +415,264 @@ public class BRLRuleModelTest {
 
     }
 
+    @Test
+    public void testRuleModelLHSBoundFacts() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        //Setup Decision Table columns
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Driver" );
+        p1.setBoundName( "$p1" );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "name" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1.setBinding( "$c1" );
+
+        p1.getChildColumns().add( c1 );
+        dt.getConditions().add( p1 );
+
+        //Setup RuleModel columns (new BRLConditionColumn being added)
+        BRLRuleModel model = new BRLRuleModel( dt );
+        FactPattern fp = new FactPattern( "Driver" );
+        fp.setBoundName( "$brl1" );
+
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldBinding( "$sfc1" );
+        sfc1.setOperator( "==" );
+        sfc1.setFactType( "Driver" );
+        sfc1.setFieldName( "name" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+
+        fp.addConstraint( sfc1 );
+        model.addLhsItem( fp );
+
+        //Checks
+        assertNotNull( model.getLHSBoundFacts() );
+        assertEquals( 2,
+                      model.getLHSBoundFacts().size() );
+        assertTrue( model.getLHSBoundFacts().contains( "$p1" ) );
+        assertTrue( model.getLHSBoundFacts().contains( "$brl1" ) );
+
+        assertNotNull( model.getLHSBindingType( "$p1" ) );
+        assertEquals( "Driver",
+                      model.getLHSBindingType( "$p1" ) );
+        assertNotNull( model.getLHSBindingType( "$brl1" ) );
+        assertEquals( "Driver",
+                      model.getLHSBindingType( "$brl1" ) );
+
+        FactPattern r1 = model.getLHSBoundFact( "$p1" );
+        assertNotNull( r1 );
+        assertTrue( r1 instanceof BRLRuleModel.Pattern52FactPatternAdaptor );
+        BRLRuleModel.Pattern52FactPatternAdaptor raif1 = (BRLRuleModel.Pattern52FactPatternAdaptor) r1;
+        assertEquals( "Driver",
+                      raif1.getFactType() );
+
+        FactPattern r2 = model.getLHSBoundFact( "$brl1" );
+        assertNotNull( r2 );
+        assertEquals( "Driver",
+                      r2.getFactType() );
+    }
+
+    @Test
+    public void testRuleModelLHSBoundFacts_NoDuplicates() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        //Setup Decision Table columns (with existing BRLConditionColumn)
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Driver" );
+        p1.setBoundName( "$p1" );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "name" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1.setBinding( "$c1" );
+
+        p1.getChildColumns().add( c1 );
+        dt.getConditions().add( p1 );
+
+        BRLConditionColumn brlCondition = new BRLConditionColumn();
+        FactPattern fp1 = new FactPattern( "Driver" );
+        fp1.setBoundName( "$brl1" );
+
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldBinding( "$sfc1" );
+        sfc1.setOperator( "==" );
+        sfc1.setFactType( "Driver" );
+        sfc1.setFieldName( "name" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+
+        fp1.addConstraint( sfc1 );
+        brlCondition.getDefinition().add( fp1 );
+        dt.getConditions().add( brlCondition );
+
+        //Setup RuleModel columns (existing BRLConditionColumn being edited)
+        BRLRuleModel model = new BRLRuleModel( dt );
+        FactPattern fp2 = new FactPattern( "Driver" );
+        fp2.setBoundName( "$brl1" );
+
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFieldBinding( "$sfc1" );
+        sfc2.setOperator( "==" );
+        sfc2.setFactType( "Driver" );
+        sfc2.setFieldName( "name" );
+        sfc2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+
+        fp2.addConstraint( sfc2 );
+        model.addLhsItem( fp2 );
+
+        //Checks
+        assertNotNull( model.getLHSBoundFacts() );
+        assertEquals( 2,
+                      model.getLHSBoundFacts().size() );
+        assertTrue( model.getLHSBoundFacts().contains( "$p1" ) );
+        assertTrue( model.getLHSBoundFacts().contains( "$brl1" ) );
+
+        assertNotNull( model.getLHSBindingType( "$p1" ) );
+        assertEquals( "Driver",
+                      model.getLHSBindingType( "$p1" ) );
+        assertNotNull( model.getLHSBindingType( "$brl1" ) );
+        assertEquals( "Driver",
+                      model.getLHSBindingType( "$brl1" ) );
+
+        FactPattern r1 = model.getLHSBoundFact( "$p1" );
+        assertNotNull( r1 );
+        assertTrue( r1 instanceof BRLRuleModel.Pattern52FactPatternAdaptor );
+        BRLRuleModel.Pattern52FactPatternAdaptor raif1 = (BRLRuleModel.Pattern52FactPatternAdaptor) r1;
+        assertEquals( "Driver",
+                      raif1.getFactType() );
+
+        FactPattern r2 = model.getLHSBoundFact( "$brl1" );
+        assertNotNull( r2 );
+        assertEquals( "Driver",
+                      r2.getFactType() );
+    }
+
+    @Test
+    public void testRuleModelRHSBoundFacts() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        //Setup Decision Table columns
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
+        ins.setBoundName( "$ins" );
+        ins.setFactField( "rating" );
+        ins.setFactType( "Person" );
+        ins.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add( ins );
+
+        //Setup RuleModel columns (new BRLActionColumn being added)
+        BRLRuleModel model = new BRLRuleModel( dt );
+        ActionInsertFact aif = new ActionInsertFact( "Person" );
+        aif.setBoundName( "$aif" );
+        aif.addFieldValue( new ActionFieldValue( "rating",
+                                                 null,
+                                                 SuggestionCompletionEngine.TYPE_STRING ) );
+        aif.fieldValues[0].nature = BaseSingleFieldConstraint.TYPE_LITERAL;
+        model.addRhsItem( aif );
+
+        //Checks
+        assertNotNull( model.getRHSBoundFacts() );
+        assertEquals( 2,
+                      model.getRHSBoundFacts().size() );
+        assertTrue( model.getRHSBoundFacts().contains( "$ins" ) );
+        assertTrue( model.getRHSBoundFacts().contains( "$aif" ) );
+
+        ActionInsertFact r1 = model.getRHSBoundFact( "$ins" );
+        assertNotNull( r1 );
+        assertTrue( r1 instanceof BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor );
+        BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor raif1 = (BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor) r1;
+        assertEquals( "Person",
+                      raif1.factType );
+        assertEquals( "rating",
+                      raif1.fieldValues[0].field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      raif1.fieldValues[0].type );
+        assertNull( raif1.fieldValues[0].value );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      raif1.fieldValues[0].nature );
+
+        ActionInsertFact r2 = model.getRHSBoundFact( "$aif" );
+        assertNotNull( r2 );
+        assertTrue( r2 instanceof ActionInsertFact );
+        ActionInsertFact raif2 = (ActionInsertFact) r2;
+        assertEquals( "Person",
+                      raif2.factType );
+        assertEquals( "rating",
+                      raif2.fieldValues[0].field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      raif2.fieldValues[0].type );
+        assertNull( raif2.fieldValues[0].value );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      raif2.fieldValues[0].nature );
+    }
+
+    @Test
+    public void testRuleModelRHSBoundFacts_NoDuplicates() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        //Setup Decision Table columns (with existing BRLActionColumn)
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
+        ins.setBoundName( "$ins" );
+        ins.setFactField( "rating" );
+        ins.setFactType( "Person" );
+        ins.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add( ins );
+
+        BRLActionColumn brlAction = new BRLActionColumn();
+        ActionInsertFact aif1 = new ActionInsertFact( "Person" );
+        aif1.setBoundName( "$aif" );
+        aif1.addFieldValue( new ActionFieldValue( "rating",
+                                                  null,
+                                                  SuggestionCompletionEngine.TYPE_STRING ) );
+        aif1.fieldValues[0].nature = BaseSingleFieldConstraint.TYPE_LITERAL;
+
+        brlAction.getDefinition().add( aif1 );
+        dt.getActionCols().add( brlAction );
+
+        //Setup RuleModel columns (existing BRLActionColumn being edited)
+        BRLRuleModel model = new BRLRuleModel( dt );
+        ActionInsertFact aif2 = new ActionInsertFact( "Person" );
+        aif2.setBoundName( "$aif" );
+        aif2.addFieldValue( new ActionFieldValue( "rating",
+                                                  null,
+                                                  SuggestionCompletionEngine.TYPE_STRING ) );
+        aif2.fieldValues[0].nature = BaseSingleFieldConstraint.TYPE_LITERAL;
+        model.addRhsItem( aif2 );
+
+        //Checks
+        assertNotNull( model.getRHSBoundFacts() );
+        assertEquals( 2,
+                      model.getRHSBoundFacts().size() );
+        assertTrue( model.getRHSBoundFacts().contains( "$ins" ) );
+        assertTrue( model.getRHSBoundFacts().contains( "$aif" ) );
+
+        ActionInsertFact r1 = model.getRHSBoundFact( "$ins" );
+        assertNotNull( r1 );
+        assertTrue( r1 instanceof BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor );
+        BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor raif1 = (BRLRuleModel.ActionInsertFactCol52ActionInsertFactAdaptor) r1;
+        assertEquals( "Person",
+                      raif1.factType );
+        assertEquals( "rating",
+                      raif1.fieldValues[0].field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      raif1.fieldValues[0].type );
+        assertNull( raif1.fieldValues[0].value );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      raif1.fieldValues[0].nature );
+
+        ActionInsertFact r2 = model.getRHSBoundFact( "$aif" );
+        assertNotNull( r2 );
+        assertTrue( r2 instanceof ActionInsertFact );
+        ActionInsertFact raif2 = (ActionInsertFact) r2;
+        assertEquals( "Person",
+                      raif2.factType );
+        assertEquals( "rating",
+                      raif2.fieldValues[0].field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      raif2.fieldValues[0].type );
+        assertNull( raif2.fieldValues[0].value );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      raif2.fieldValues[0].nature );
+    }
+
 }
