@@ -554,7 +554,7 @@ public class GuidedDTDRLPersistence {
             final BRLConditionVariableColumn variableColumn = column.getChildColumns().get( 0 );
             final int index = allColumns.indexOf( variableColumn );
             final DTCellValue52 dcv = row.get( index );
-            if ( dcv.getBooleanValue() ) {
+            if ( dcv != null && dcv.getBooleanValue() ) {
                 for ( IPattern pattern : column.getDefinition() ) {
                     patterns.add( pattern );
                 }
