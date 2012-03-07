@@ -30,7 +30,7 @@ public class RulesRepositoryConfigurator {
     private RulesRepositoryConfigurator() {
     }
 
-    public Repository getJCRRepository() throws RepositoryException {
+    public Repository getJCRRepository() {
         return jcrRepository;
     }
 
@@ -41,7 +41,7 @@ public class RulesRepositoryConfigurator {
      * @return RulesRepositoryConfigurator
      * @throws RepositoryException
      */
-    public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException {
+    public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) {
         if (rulesRepositoryConfigurator == null) {
             log.info("Creating an instance of the RulesRepositoryConfigurator.");
             rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
@@ -54,28 +54,38 @@ public class RulesRepositoryConfigurator {
                     try {
                         properties.load(propStream);
                     } catch (IOException ioe) {
-                        throw new RepositoryException(ioe);
+                        throw new RulesRepositoryException(ioe);
                     } finally {
                         try {
                             propStream.close();
                         } catch (IOException ioe) {
-                            throw new RepositoryException(ioe);
+                            throw new RulesRepositoryException(ioe);
                         }
                     }
                 } else {
-                    throw new RepositoryException("Cannot load properties from " + PROPERTIES_FILE);
+                    throw new RulesRepositoryException("Cannot load properties from " + PROPERTIES_FILE);
                 }
             }
 
-            try {
-                String configuratorClazz = properties.getProperty(CONFIGURATOR_CLASS);
-                if (configuratorClazz == null) throw new RepositoryException("User must define a '" +
+            String configuratorClazz = properties.getProperty(CONFIGURATOR_CLASS);
+            if (configuratorClazz == null) {
+                throw new RulesRepositoryException("User must define a '" +
                         CONFIGURATOR_CLASS + "' property.");
+            }
+            try {
                 Class<?> clazz = ClassUtil.forName(configuratorClazz, rulesRepositoryConfigurator.getClass());
                 jcrRepositoryConfigurator = (JCRRepositoryConfigurator) clazz.newInstance();
+            } catch (ClassNotFoundException e) {
+                throw new RulesRepositoryException(e);
+            } catch (InstantiationException e) {
+                throw new RulesRepositoryException(e);
+            } catch (IllegalAccessException e) {
+                throw new RulesRepositoryException(e);
+            }
+            try {
                 jcrRepository = jcrRepositoryConfigurator.getJCRRepository(properties);
-            } catch (Exception ex) {
-                throw new RepositoryException(ex);
+            } catch (RepositoryException e) {
+                throw new RulesRepositoryException(e);
             }
         }
         return rulesRepositoryConfigurator;
@@ -117,7 +127,6 @@ public class RulesRepositoryConfigurator {
 
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/rule_node_type.cnd", session, ws);
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/rulepackage_node_type.cnd", session, ws);
-
 
             }
 
@@ -161,8 +170,7 @@ public class RulesRepositoryConfigurator {
             RulesRepository.addNodeIfNew(repositoryNode.getNode(RulesRepository.SCHEMA_AREA), RulesRepository.WORKSPACE_AREA, "nt:folder");
 
             session.save();
-        } catch (Exception e) {
-            log.error("Caught Exception", e);
+        } catch (RuntimeException e) {
             throw new RepositoryException(e);
         }
     }

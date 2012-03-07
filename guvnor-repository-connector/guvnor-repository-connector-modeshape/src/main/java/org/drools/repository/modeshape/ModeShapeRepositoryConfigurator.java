@@ -1,5 +1,6 @@
 package org.drools.repository.modeshape;
 
+import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -28,7 +29,7 @@ public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
         try {
             reader.read(cndFileName);
             workspace.getNodeTypeManager().registerNodeTypes(reader.getNodeTypeDefinitions(), false);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RepositoryException("Registering node types for repository failed.", e);
         }
     }

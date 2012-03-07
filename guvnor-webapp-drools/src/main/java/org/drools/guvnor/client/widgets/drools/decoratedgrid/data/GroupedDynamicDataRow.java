@@ -44,6 +44,16 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
         return this.groupedRows;
     }
 
+    /**
+     * Set a value at the given index. All grouped child cells will be set to
+     * the same value. Caution should be exercised if the value was first read
+     * from a GroupedDynamicDataRow as the value will be a GroupedCellValue
+     * which, if added back to the row, will not give the desired result.
+     * 
+     * @param index
+     * @param element
+     *            The CellValue
+     */
     @Override
     public CellValue< ? extends Comparable< ? >> set(int index,
                                                      CellValue< ? extends Comparable< ? >> element) {
@@ -55,6 +65,15 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
                           element );
     }
 
+    /**
+     * Add a value. Child cells will be created and set to the same value.
+     * Caution should be exercised if the value was first read from a
+     * GroupedDynamicDataRow as the value will be a GroupedCellValue which, if
+     * added back to the row, will not give the desired result.
+     * 
+     * @param element
+     *            The CellValue
+     */
     @Override
     public boolean add(CellValue< ? extends Comparable< ? >> e) {
         for ( DynamicDataRow groupedRow : this.groupedRows ) {
@@ -63,6 +82,16 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
         return super.add( e );
     }
 
+    /**
+     * Add a value at the given index. Child cells will be created and set to
+     * the same value. Caution should be exercised if the value was first read
+     * from a GroupedDynamicDataRow as the value will be a GroupedCellValue
+     * which, if added back to the row, will not give the desired result.
+     * 
+     * @param index
+     * @param element
+     *            The CellValue
+     */
     @Override
     public void add(int index,
                     CellValue< ? extends Comparable< ? >> element) {
@@ -93,12 +122,34 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
         super.clear();
     }
 
+    /**
+     * Remove a value at the given index
+     */
     @Override
     public CellValue< ? extends Comparable< ? >> remove(int index) {
         for ( DynamicDataRow groupedRow : this.groupedRows ) {
             groupedRow.remove( index );
         }
         return super.remove( index );
+    }
+
+    /**
+     * Move an element at the given source index to the given target index. This
+     * should be used in preference to calling add\remove when repositioning
+     * elements is required.
+     * 
+     * @param targetColumnIndex
+     * @param sourceColumnIndex
+     */
+    @Override
+    public void move(int targetColumnIndex,
+                     int sourceColumnIndex) {
+        for ( DynamicDataRow groupedRow : this.groupedRows ) {
+            groupedRow.add( targetColumnIndex,
+                            groupedRow.remove( sourceColumnIndex ) );
+        }
+        super.move( targetColumnIndex,
+                    sourceColumnIndex );
     }
 
 }

@@ -49,20 +49,16 @@ public abstract class RepositoryStartupService {
     protected Session sessionForSetup;
 
     public Repository getRepositoryInstance() {
-        try {
-            // Convert Map to Properties object
-            Properties properties = new Properties();
-            properties.putAll(guvnorBootstrapConfiguration.getProperties());
-            configurator = RulesRepositoryConfigurator.getInstance(properties);
-            repository = configurator.getJCRRepository();
-        } catch (RepositoryException e) {
-            throw new RulesRepositoryException(e);
-        }
+        // Convert Map to Properties object
+        Properties properties = new Properties();
+        properties.putAll(guvnorBootstrapConfiguration.getProperties());
+        configurator = RulesRepositoryConfigurator.getInstance(properties);
+        repository = configurator.getJCRRepository();
         return repository;
     }
 
     @PostConstruct
-    public void create() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void create() {
         repository = getRepositoryInstance();
         String adminUsername = guvnorBootstrapConfiguration.extractAdminUsername();
         String adminPassword = guvnorBootstrapConfiguration.extractAdminPassword();

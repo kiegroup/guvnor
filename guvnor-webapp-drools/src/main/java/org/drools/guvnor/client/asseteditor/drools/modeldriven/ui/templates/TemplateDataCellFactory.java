@@ -17,13 +17,15 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 import com.google.gwt.event.shared.EventBus;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
+
+    private CellTableDropDownDataValueMapProvider dropDownManager;
 
     /**
      * Construct a Cell Factory for a specific Template Data Widget
@@ -42,6 +44,18 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
     }
 
     /**
+     * Set the DropDownManager
+     * 
+     * @param dropDownManager
+     */
+    public void setDropDownManager(CellTableDropDownDataValueMapProvider dropDownManager) {
+        if ( dropDownManager == null ) {
+            throw new IllegalArgumentException( "dropDownManager cannot be null" );
+        }
+        this.dropDownManager = dropDownManager;
+    }
+
+    /**
      * Create a Cell for the given TemplateDataColumn
      * 
      * @param column
@@ -53,20 +67,17 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = null;
 
         //Check if the column has an enumeration
-        String[] vals = null;
         String factType = column.getFactType();
         String factField = column.getFactField();
+        if ( sce.hasEnums( factType,
+                           factField ) ) {
 
-        //Check for enumerations
-        if ( factType != null && factField != null ) {
-            vals = sce.getEnumValues( factType,
-                                      factField );
-        }
-
-        //Make a drop-down or plain cell
-        if ( vals != null && vals.length > 0 ) {
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-            pudd.setItems( vals );
+            // Columns with lists of values, enums etc are always Text (for now)
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
+                                                                    factField,
+                                                                    sce,
+                                                                    dropDownManager,
+                                                                    isReadOnly );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                               eventBus );
 

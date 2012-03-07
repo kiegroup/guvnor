@@ -29,7 +29,7 @@ import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -40,7 +40,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionT
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -93,7 +92,7 @@ public class NewAssetWizard extends FormStylePopup {
                            String format,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
-        super( Images.INSTANCE.newWiz(),
+        super( DroolsGuvnorImages.INSTANCE.newWiz(),
                getTitle( format,
                          clientFactory ) );
         this.format = format;

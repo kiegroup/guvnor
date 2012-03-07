@@ -32,7 +32,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -146,7 +146,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
-                    Image clickme = new Image( Images.INSTANCE.edit() );
+                    Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
                             showTypeChoice( w,
@@ -174,8 +174,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                            String fieldName,
                                            String initialValue) {
         final TextBox tb = TextBoxFactory.getTextBox( dataType );
-        tb.setText( initialValue );
-        tb.setTitle( Constants.INSTANCE.ValueFor0( fieldName ) );
+        tb.setText(initialValue);
+        tb.setTitle(Constants.INSTANCE.ValueFor0(fieldName));
         tb.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
@@ -254,7 +254,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                                                                     executionTrace );
             hpanel.add( fieldElement );
             final int index = i;
-            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                          Constants.INSTANCE.AElementToDelInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -266,7 +266,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             hpanel.add( del );
 
-            Image addPattern = new ImageButton( Images.INSTANCE.newItemBelow() );
+            Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItemBelow() );
             addPattern.setTitle( Constants.INSTANCE.AddElementBelow() );
 
             addPattern.addClickHandler( new ClickHandler() {
@@ -281,7 +281,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 }
             } );
             hpanel.add( addPattern );
-            Image moveDown = new ImageButton( Images.INSTANCE.shuffleDown() );
+            Image moveDown = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleDown() );
             moveDown.setTitle( Constants.INSTANCE.MoveDownListMove() );
             moveDown.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -299,7 +299,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             } );
             hpanel.add( moveDown );
 
-            Image moveUp = new ImageButton( Images.INSTANCE.shuffleUp() );
+            Image moveUp = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleUp() );
             moveUp.setTitle( Constants.INSTANCE.MoveUpList() );
             moveUp.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -321,7 +321,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
 
         if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( Images.INSTANCE.newItem(),
+            Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
                                          Constants.INSTANCE.AElementToAddInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -355,7 +355,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(ClickEvent w,
                                 final FieldData con) {
-        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

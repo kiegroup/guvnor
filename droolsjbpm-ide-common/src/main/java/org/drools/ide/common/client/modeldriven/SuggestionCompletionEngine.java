@@ -409,7 +409,8 @@ public class SuggestionCompletionEngine
             if ( _typeFields instanceof String ) {
                 String typeFields = (String) _typeFields;
 
-                String dataEnumListsKey = type + "." + field;
+                StringBuilder dataEnumListsKeyBuilder = new StringBuilder(type);
+                dataEnumListsKeyBuilder.append(".").append(field);
 
                 boolean addOpeninColumn = true;
                 String[] splitTypeFields = typeFields.split( "," );
@@ -421,23 +422,23 @@ public class SuggestionCompletionEngine
                         String fieldValue = currentValueEntry.getValue();
                         if ( fieldName.trim().equals( typeField.trim() ) ) {
                             if ( addOpeninColumn ) {
-                                dataEnumListsKey += "[";
+                                dataEnumListsKeyBuilder.append("[");
                                 addOpeninColumn = false;
                             }
-                            dataEnumListsKey += typeField + "=" + fieldValue;
+                            dataEnumListsKeyBuilder.append(typeField).append("=").append(fieldValue);
 
                             if ( j != (splitTypeFields.length - 1) ) {
-                                dataEnumListsKey += ",";
+                                dataEnumListsKeyBuilder.append(",");
                             }
                         }
                     }
                 }
 
                 if ( !addOpeninColumn ) {
-                    dataEnumListsKey += "]";
+                    dataEnumListsKeyBuilder.append("]");
                 }
 
-                DropDownData data = DropDownData.create( this.dataEnumLists.get( dataEnumListsKey ) );
+                DropDownData data = DropDownData.create( this.dataEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
                 if ( data != null ) {
                     return data;
                 }
@@ -527,6 +528,21 @@ public class SuggestionCompletionEngine
         return this.getDataEnumList( factType + "." + field );
     }
 
+    public boolean hasEnums(String factType,
+                            String field) {
+        return this.hasEnums( factType + "." + field );
+    }
+
+    public boolean hasEnums(String type) {
+        boolean hasEnums = false;
+        for ( String e : this.dataEnumLists.keySet() ) {
+            if ( e.startsWith( type ) ) {
+                return true;
+            }
+        }
+        return hasEnums;
+    }
+
     /**
      * This is only used by enums that are like Fact.field[something=X] and so
      * on.
@@ -545,18 +561,17 @@ public class SuggestionCompletionEngine
                     if ( predicate.indexOf( '=' ) > -1 ) {
 
                         String[] bits = predicate.split( "," );
-                        String typeField = "";
+                        StringBuilder typeFieldBuilder = new StringBuilder();
 
                         for ( int i = 0; i < bits.length; i++ ) {
-                            typeField += bits[i].substring( 0,
-                                                            bits[i].indexOf( '=' ) );
+                            typeFieldBuilder.append(bits[i].substring( 0,
+                                                            bits[i].indexOf( '=' ) ));
                             if ( i != (bits.length - 1) ) {
-                                typeField += ",";
+                                typeFieldBuilder.append(",");
                             }
                         }
 
-                        dataEnumLookupFields.put( factField,
-                                                  typeField );
+                        dataEnumLookupFields.put( factField, typeFieldBuilder.toString() );
                     } else {
                         String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {

@@ -25,7 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -34,7 +34,6 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -129,7 +128,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -157,7 +156,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( Images.INSTANCE.edit(),
+                h.add( new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
                                         Constants.INSTANCE.AddFirstNewField(),
                                         new ClickHandler() {
 
@@ -203,7 +202,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                          Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();

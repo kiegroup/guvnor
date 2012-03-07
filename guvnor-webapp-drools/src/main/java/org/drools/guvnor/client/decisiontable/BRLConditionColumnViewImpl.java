@@ -131,7 +131,13 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
             variable.setHideColumn( editingCol.isHideColumn() );
             variables[index] = variable;
         }
-        return Arrays.asList( variables );
+
+        //Convert the array into a mutable list (Arrays.toList provides an immutable list)
+        List<BRLConditionVariableColumn> variableList = new ArrayList<BRLConditionVariableColumn>();
+        for ( BRLConditionVariableColumn variable : variables ) {
+            variableList.add( variable );
+        }
+        return variableList;
     }
 
     @Override

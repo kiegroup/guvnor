@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.NewPackageWizard;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.util.Util;
 
 public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
@@ -67,7 +67,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewFileMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newFile(), Constants.INSTANCE.CreateAFile() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newFile(), Constants.INSTANCE.CreateAFile() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -77,7 +77,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewTestScenarioMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -87,7 +87,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewEnumerationMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newEnumeration(), Constants.INSTANCE.NewEnumeration() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewEnumeration() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -97,7 +97,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewWorkItemDefinitionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newEnumeration(), Constants.INSTANCE.NewWorkitemDefinition() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewWorkitemDefinition() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -107,7 +107,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewBPMN2ProcessMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewBPMN2Process() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewBPMN2Process() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -117,7 +117,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewFormDefinitionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.formDefIcon(), Constants.INSTANCE.FormDefinition() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.formDefIcon(), Constants.INSTANCE.FormDefinition() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -127,7 +127,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewRuleFlowMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewRuleFlow() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewRuleFlow() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -137,7 +137,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewDSLMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.dsl(), Constants.INSTANCE.NewDSL() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.dsl(), Constants.INSTANCE.NewDSL() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -147,7 +147,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewFunctionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.functionAssets(), Constants.INSTANCE.NewFunction() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.functionAssets(), Constants.INSTANCE.NewFunction() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -157,7 +157,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewDeclarativeModelMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.modelAsset(), Constants.INSTANCE.NewDeclarativeModel() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.NewDeclarativeModel() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -167,7 +167,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewPojoModelMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.modelAsset(), Constants.INSTANCE.UploadPOJOModelJar() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.UploadPOJOModelJar() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -177,7 +177,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewRuleTemplateMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newTemplate(), Constants.INSTANCE.NewRuleTemplate() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newTemplate(), Constants.INSTANCE.NewRuleTemplate() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -187,7 +187,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewRuleMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.ruleAsset(), Constants.INSTANCE.NewRule() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleAsset(), Constants.INSTANCE.NewRule() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -197,7 +197,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewWorkingSetMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newPackage(), Constants.INSTANCE.NewWorkingSet() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newPackage(), Constants.INSTANCE.NewWorkingSet() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -207,7 +207,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewSpringContextMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newEnumeration(), Constants.INSTANCE.NewSpringContext() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewSpringContext() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -217,7 +217,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewServiceConfigMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newEnumeration(), Constants.INSTANCE.NewServiceConfig() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewServiceConfig() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -227,7 +227,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewPackageMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newPackage(), Constants.INSTANCE.NewPackage1() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newPackage(), Constants.INSTANCE.NewPackage1() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -237,7 +237,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
     
     private void addNewChangeSetMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.newEnumeration(), Constants.INSTANCE.NewChangeSet() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewChangeSet() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -288,7 +288,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void rebuildAllPackagesMenuItem() {
-        createNewMenu.addItem( Util.getHeader( Images.INSTANCE.refresh(), Constants.INSTANCE.RebuildAllPackageBinariesQ() ).asString(),
+        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.refresh(), Constants.INSTANCE.RebuildAllPackageBinariesQ() ).asString(),
                 true,
                 new Command() {
                     public void execute() {

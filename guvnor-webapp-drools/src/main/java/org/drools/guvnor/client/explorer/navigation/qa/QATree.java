@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -30,7 +29,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
@@ -66,7 +65,7 @@ public class QATree extends NavigationItemBuilderOld
     }
 
     public ImageResource getImage() {
-        return Images.INSTANCE.analyze();
+        return DroolsGuvnorImages.INSTANCE.analyze();
     }
 
     public IsWidget createContent() {
@@ -105,7 +104,7 @@ public class QATree extends NavigationItemBuilderOld
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( Images.INSTANCE.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.name ) );
 
                         node.addItem( pkg );
@@ -122,7 +121,7 @@ public class QATree extends NavigationItemBuilderOld
                     removeAnalysisIDs( itemWidgets );
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( Images.INSTANCE.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.name ) );
 
                         node.addItem( pkg );

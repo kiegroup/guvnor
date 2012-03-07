@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager;
+import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
+import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -42,12 +45,14 @@ import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
  */
 public class RowExpander {
 
-    private Map<BaseColumn, ColumnValues> expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
-    private List<ColumnValues>            columns;
-    private GuidedDecisionTable52         dtable;
-    private SuggestionCompletionEngine    sce;
+    private Map<BaseColumn, ColumnValues>     expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
+    private List<ColumnValues>                columns;
 
-    private static final String[]         EMPTY_VALUE     = new String[0];
+    private final LimitedEntryDropDownManager dropDownManager;
+    private final GuidedDecisionTable52       dtable;
+    private final SuggestionCompletionEngine  sce;
+
+    private static final String[]             EMPTY_VALUE     = new String[0];
 
     /**
      * Constructor
@@ -58,6 +63,7 @@ public class RowExpander {
     RowExpander(GuidedDecisionTable52 dtable,
                 SuggestionCompletionEngine sce) {
         this.columns = new ArrayList<ColumnValues>();
+        this.dropDownManager = new LimitedEntryDropDownManager( dtable );
         this.dtable = dtable;
         this.sce = sce;
 
@@ -113,17 +119,34 @@ public class RowExpander {
 
     private void addColumn(Pattern52 p) {
         for ( ConditionCol52 c : p.getChildColumns() ) {
-            addColumn( c );
+            addColumn( p,
+                       c );
         }
     }
 
-    private void addColumn(ConditionCol52 c) {
+    private void addColumn(Pattern52 p,
+                           ConditionCol52 c) {
         String[] values = new String[]{};
         switch ( dtable.getTableFormat() ) {
             case EXTENDED_ENTRY :
-                values = dtable.getValueList( c,
-                                              sce );
-                values = getValues( values );
+                if ( dtable.hasValueList( c ) ) {
+                    values = dtable.getValueList( c,
+                                                  sce );
+                    values = getValues( values );
+                } else if ( sce.hasEnums( p.getFactType(),
+                                          c.getFactField() ) ) {
+                    final Context context = new Context( p,
+                                                         c );
+                    final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
+                    final DropDownData dd = sce.getEnums( p.getFactType(),
+                                                          c.getFactField(),
+                                                          currentValueMap );
+                    if ( dd == null ) {
+                        values = EMPTY_VALUE;
+                    } else {
+                        values = getValues( dd.fixedList );
+                    }
+                }
                 break;
             case LIMITED_ENTRY :
                 values = new String[]{"true", "false"};

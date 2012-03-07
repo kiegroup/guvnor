@@ -70,7 +70,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
     public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException {
         try {
             //Read in the CND file
-            Reader in = new InputStreamReader(this.getClass().getResourceAsStream( cndFileName ));
+            Reader in = new InputStreamReader(this.getClass().getResourceAsStream( cndFileName ), "UTF-8");
             CndImporter.registerNodeTypes(in, session);
         } catch (Exception e) {
             throw new RepositoryException("Registering node types for repository failed.", e);

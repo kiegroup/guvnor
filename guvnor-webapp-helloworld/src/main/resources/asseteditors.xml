@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<asseteditors>
+    <!-- If two or more asset editors (that are associated with different formats) have same titles,
+	they will be grouped together and displayed as one node on the package tree. -->
+	
+    <!--  business rules group   -->   
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller</class> 
+        <format>brl</format>
+        <icon>images.ruleAsset()</icon>
+        <title>constants.BusinessRuleAssets()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper</class> 
+        <format>dslr</format>
+        <icon>images.ruleAsset()</icon>
+        <title>constants.BusinessRuleAssets()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget</class> 
+        <format>xls</format>
+        <icon>images.spreadsheetSmall()</icon>
+        <title>constants.BusinessRuleAssets()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget</class> 
+        <format>gdst</format>
+        <icon>images.gdst()</icon>
+        <title>constants.BusinessRuleAssets()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.RuleTemplateEditor</class> 
+        <format>template</format>
+        <icon>images.ruleAsset()</icon>
+        <title>constants.BusinessRuleAssets()</title>    
+    </asseteditor>
+    <!--  end of business rules group-->
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.DrlEditor</class> 
+        <format>drl</format>
+        <icon>images.technicalRuleAssets()</icon>
+        <title>constants.TechnicalRuleAssets()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.FunctionEditor</class> 
+        <format>function</format>
+        <icon>images.functionAssets()</icon>
+        <title>constants.Functions()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
+        <format>dsl</format>
+        <icon>images.dsl()</icon>
+        <title>constants.DSLConfigurations()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.POJOModelUploadWidget</class> 
+        <format>jar</format>
+        <icon>images.modelAsset()</icon>
+        <title>constants.Model()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.factmodel.FactModelsWidget</class> 
+        <format>model.drl</format>
+        <icon>images.modelAsset()</icon>
+        <title>constants.Model()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.changeset.ChangeSetEditor</class> 
+        <format>changeset</format>
+        <icon>images.enumeration()</icon>
+        <title>constants.ChangeSets()</title>    
+    </asseteditor>  
+    
+    <!-- jBPM editor group   -->
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
+        <format>rf</format>
+        <icon>images.ruleflowSmall()</icon>
+        <title>constants.RuleFlows()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.BusinessProcessEditor</class> 
+        <format>bpmn</format>
+        <icon>images.ruleflowSmall()</icon>
+        <title>constants.RuleFlows()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.BusinessProcessEditor</class> 
+        <format>bpmn2</format>
+        <icon>images.ruleflowSmall()</icon>
+        <title>constants.RuleFlows()</title>    
+    </asseteditor>
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
+        <format>rf</format>
+        <icon>images.ruleflowSmall()</icon>
+        <title>constants.RuleFlows()</title>    
+    </asseteditor>
+    <!--  end of jBPM editor group   -->
+        
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
+        <format>enumeration</format>
+        <icon>images.enumeration()</icon>
+        <title>constants.Enumerations()</title>    
+    </asseteditor>       
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
+        <format>scenario</format>
+        <icon>images.testManager()</icon>
+        <title>constants.TestScenarios()</title>    
+    </asseteditor>       
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
+        <format>properties</format>
+        <icon>images.newFile()</icon>
+        <title>constants.XMLProperties()</title>    
+    </asseteditor>   
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.XmlFileWidget</class> 
+        <format>xml</format>
+        <icon>images.newFile()</icon>
+        <title>constants.XMLProperties()</title>    
+    </asseteditor> 
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
+        <format></format>
+        <icon>images.newFile()</icon>
+        <title>constants.OtherAssetsDocumentation()</title>    
+    </asseteditor>
+
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.WorkingSetEditor</class> 
+        <format>workingset</format>
+        <icon>images.workingset()</icon>
+        <title>constants.WorkingSets()</title>    
+    </asseteditor>   
+            
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.springcontext.SpringContextEditor</class> 
+        <format>springContext</format>
+        <icon>images.enumeration()</icon>
+        <title>constants.SpringContext()</title>    
+    </asseteditor>    
+    
+    <asseteditor>
+        <class>org.drools.guvnor.client.asseteditor.drools.workitem.WorkitemDefinitionEditor</class> 
+        <format>wid</format>
+        <icon>images.enumeration()</icon>
+        <title>constants.WorkItemDefinition()</title>    
+    </asseteditor>           
+    
+</asseteditors>

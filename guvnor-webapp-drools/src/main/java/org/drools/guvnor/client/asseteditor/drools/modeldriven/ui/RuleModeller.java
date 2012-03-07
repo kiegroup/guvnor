@@ -38,7 +38,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Asset;
@@ -153,7 +153,7 @@ public class RuleModeller extends DirtyableComposite
         layout.clear();
         this.currentLayoutRow = 0;
 
-        Image addPattern = new ImageButton( Images.INSTANCE.newItem() );
+        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
         addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
@@ -189,7 +189,7 @@ public class RuleModeller extends DirtyableComposite
                               0,
                               new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
 
-            Image addAction = new ImageButton( Images.INSTANCE.newItem() );
+            Image addAction = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
             addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
@@ -313,7 +313,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton( Images.INSTANCE.newItem() );
+        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
         add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
@@ -365,7 +365,7 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
             remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
@@ -564,7 +564,7 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
@@ -650,15 +650,15 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = new ImageButton( Images.INSTANCE.newItemBelow() );
+        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItemBelow() );
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = new ImageButton( Images.INSTANCE.shuffleDown() );
+        Image moveDown = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleDown() );
         moveDown.setTitle( Constants.INSTANCE.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = new ImageButton( Images.INSTANCE.shuffleUp() );
+        Image moveUp = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleUp() );
         moveUp.setTitle( Constants.INSTANCE.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
@@ -770,7 +770,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
                     this.addLineIcon( warning.patternOrderNumber + 1,
-                                      Images.INSTANCE.warning(),
+                                      DroolsGuvnorImages.INSTANCE.warning(),
                                       warning.description );
                 }
             }
@@ -779,7 +779,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.patternOrderNumber != null ) {
                     this.addLineIcon( error.patternOrderNumber + 1,
-                                      Images.INSTANCE.error(),
+                                      DroolsGuvnorImages.INSTANCE.error(),
                                       error.description );
                 }
             }

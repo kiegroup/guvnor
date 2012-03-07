@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -262,7 +262,7 @@ public class PackageBuilderWidget extends Composite {
 
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add(new Label(Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait()));
-        busy.add(new Image(Images.INSTANCE.redAnime()));
+        busy.add(new Image(DroolsGuvnorImages.INSTANCE.redAnime()));
 
         buildResults.add(busy);
 
@@ -329,7 +329,7 @@ public class PackageBuilderWidget extends Composite {
                                   String name) {
         int windowWidth = Window.getClientWidth() / 2;
         int windowHeight = Window.getClientHeight() / 2;
-        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.viewSource(),
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.viewSource(),
                                                        Constants.INSTANCE.ViewingSourceFor0( name ),
                                                        windowWidth );
 
@@ -443,7 +443,7 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add(new HTML(AbstractImagePrototype.create(Images.INSTANCE.greenTick()).getHTML()
+        vert.add(new HTML(AbstractImagePrototype.create(DroolsGuvnorImages.INSTANCE.greenTick()).getHTML()
                 + "<i>"
                 + Constants.INSTANCE.PackageBuiltSuccessfully()
                 + " "
@@ -503,7 +503,7 @@ public class PackageBuilderWidget extends Composite {
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
-        final FormStylePopup form = new FormStylePopup(Images.INSTANCE.snapshot(),
+        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.snapshot(),
                 Constants.INSTANCE.CreateASnapshotForDeployment());
         form.addRow(new HTML(Constants.INSTANCE.SnapshotDescription()));
 

@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -115,7 +115,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                              1 + col,
                              valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( Images.INSTANCE.deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
@@ -199,7 +199,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(Widget w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                          Constants.INSTANCE.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );

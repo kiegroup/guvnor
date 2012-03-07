@@ -70,14 +70,22 @@ public class GuidedDecisionTableUpgradeHelper2
 
             //Salience should be an Integer
             if ( iSalienceColumnIndex != null ) {
-                final int salienceValue = row.get( iSalienceColumnIndex ).getNumericValue().intValue();
-                row.get( iSalienceColumnIndex ).setNumericValue( salienceValue );
+                final Number salienceValue = row.get( iSalienceColumnIndex ).getNumericValue();
+                if ( salienceValue == null ) {
+                    row.get( iSalienceColumnIndex ).setNumericValue( (Integer) null );
+                } else {
+                    row.get( iSalienceColumnIndex ).setNumericValue( salienceValue.intValue() );
+                }
             }
 
             //Duration should be a Long
             if ( iDurationColumnIndex != null ) {
-                final Long durationValue = row.get( iDurationColumnIndex ).getNumericValue().longValue();
-                row.get( iDurationColumnIndex ).setNumericValue( durationValue );
+                final Number durationValue = row.get( iDurationColumnIndex ).getNumericValue();
+                if ( durationValue == null ) {
+                    row.get( iDurationColumnIndex ).setNumericValue( (Long) null );
+                } else {
+                    row.get( iDurationColumnIndex ).setNumericValue( durationValue.longValue() );
+                }
             }
         }
 

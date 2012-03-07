@@ -72,28 +72,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52((Boolean) null),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((Boolean) null),
                         new DTCellValue52(Boolean.TRUE),
@@ -145,28 +145,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(new Integer("20")),
                         new DTCellValue52(new Integer("50")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(new Integer("40")),
                         new DTCellValue52(new Integer("30")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52((Integer) null),
                         new DTCellValue52(new Integer("50")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(new Integer("20")),
                         new DTCellValue52((Integer) null),
@@ -224,7 +224,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52("Bart"),
@@ -232,7 +232,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52("Homer"),
@@ -240,7 +240,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52((String) null),
@@ -248,7 +248,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((String) null),
                         new DTCellValue52("Bart"),
@@ -256,7 +256,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(5l),
+                        new DTCellValue52(5),
                         new DTCellValue52("Row 5 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52((String) null),
@@ -311,28 +311,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52((Date) null),
                         new DTCellValue52(dateFormat.parse("2001-01-01")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(dateFormat.parse("1981-01-01")),
                         new DTCellValue52((Date) null),
@@ -390,7 +390,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52(new Integer("20")),
@@ -398,7 +398,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52(new Integer("40")),
@@ -406,7 +406,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52((String) null),
                         new DTCellValue52(new Integer("40")),
@@ -414,7 +414,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52("Homer"),
                         new DTCellValue52(new Integer("20")),
@@ -422,7 +422,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(5l),
+                        new DTCellValue52(5),
                         new DTCellValue52("Row 5 description"),
                         new DTCellValue52((String) null),
                         new DTCellValue52((Integer) null),
@@ -478,21 +478,21 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.TRUE),
@@ -544,28 +544,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52((Integer) null),
                         new DTCellValue52(new Integer("20")),
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(new Integer("21")),
                         new DTCellValue52(new Integer("40")),
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(new Integer("30")),
                         new DTCellValue52(new Integer("60")),
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(new Integer("50")),
                         new DTCellValue52((Integer) null),
@@ -628,7 +628,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52((Integer) null),
                         new DTCellValue52(new Integer("20")),
@@ -636,7 +636,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(new Integer("21")),
                         new DTCellValue52(new Integer("40")),
@@ -644,7 +644,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(new Integer("41")),
                         new DTCellValue52((Integer) null),
@@ -652,7 +652,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 3 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((Integer) null),
                         new DTCellValue52(new Integer("25")),
@@ -660,7 +660,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 4 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(5l),
+                        new DTCellValue52(5),
                         new DTCellValue52("Row 5 description"),
                         new DTCellValue52(new Integer("26")),
                         new DTCellValue52(new Integer("60")),
@@ -668,7 +668,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 5 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(6l),
+                        new DTCellValue52(6),
                         new DTCellValue52("Row 6 description"),
                         new DTCellValue52(new Integer("50")),
                         new DTCellValue52((Integer) null),
@@ -732,7 +732,7 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52(Boolean.TRUE),
                         new DTCellValue52(Boolean.FALSE),
@@ -740,7 +740,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 1 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.TRUE),
@@ -748,7 +748,7 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 2 message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(Boolean.FALSE),
                         new DTCellValue52(Boolean.FALSE),
@@ -801,28 +801,28 @@ public class DecisionTableAnalyzerTest {
         @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                        new DTCellValue52(1l),
+                        new DTCellValue52(1),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52((Integer) null),
                         new DTCellValue52(new Integer("20")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(2l),
+                        new DTCellValue52(2),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52(new Integer("21")),
                         new DTCellValue52(new Integer("40")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(3l),
+                        new DTCellValue52(3),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52(new Integer("30")),
                         new DTCellValue52(new Integer("60")),
                         new DTCellValue52("Same message")
                 ),
                 Arrays.asList(
-                        new DTCellValue52(4l),
+                        new DTCellValue52(4),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(new Integer("50")),
                         new DTCellValue52((Integer) null),

@@ -26,12 +26,11 @@ import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -522,7 +521,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                     public void onClick(ClickEvent event) {
                         final CustomFormPopUp customFormPopUp = 
-                                new CustomFormPopUp( Images.INSTANCE.newexWiz(),
+                                new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                 Constants.INSTANCE.FieldValue(),
                                 DSLCustomFormButton.this.customFormConfiguration );
                         

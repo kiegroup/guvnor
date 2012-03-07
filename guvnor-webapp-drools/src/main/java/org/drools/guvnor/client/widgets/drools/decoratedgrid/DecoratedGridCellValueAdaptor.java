@@ -17,7 +17,7 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateSelectedCellsEvent;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -93,7 +93,7 @@ public class DecoratedGridCellValueAdaptor<T extends Comparable<T>> extends Abst
                              new ValueUpdater<T>() {
 
                                  public void update(T value) {
-                                     eventBus.fireEvent( new CellValueChangedEvent( value ) );
+                                     eventBus.fireEvent( new UpdateSelectedCellsEvent( value ) );
                                  }
 
                              } );

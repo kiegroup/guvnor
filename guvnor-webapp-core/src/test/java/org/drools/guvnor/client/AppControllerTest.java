@@ -99,7 +99,7 @@ public class AppControllerTest {
 
         eventBus = mock( EventBus.class );
 
-        new AppController( clientFactory, eventBus );
+        new AppControllerImpl( clientFactory, eventBus );
     }
 
     @Test

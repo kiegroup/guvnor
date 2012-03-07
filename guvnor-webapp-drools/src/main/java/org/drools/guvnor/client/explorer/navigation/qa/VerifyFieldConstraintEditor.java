@@ -38,7 +38,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -153,7 +153,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
-                    Image clickme = new Image( Images.INSTANCE.edit() );
+                    Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
                     clickme.addClickHandler( new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -233,7 +233,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(Widget w,
                                 final VerifyField con) {
-        final FormStylePopup form = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

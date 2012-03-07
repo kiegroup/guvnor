@@ -17,6 +17,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.util.GWTDateConverter;
@@ -201,35 +202,41 @@ public class TemplateDataTableWidget extends Composite
     public void onUpdateModel(UpdateModelEvent event) {
 
         //Copy data into the underlying model
-        List<List<CellValue< ? extends Comparable< ? >>>> changedData = event.getData();
-        Coordinate originCoordinate = event.getOriginCoordinate();
-        int originRowIndex = originCoordinate.getRow();
-        int originColumnIndex = originCoordinate.getCol();
+        Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> updates = event.getUpdates();
+        for ( Map.Entry<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> e : updates.entrySet() ) {
 
-        InterpolationVariable[] vars = model.getInterpolationVariablesList();
+            //Coordinate of change
+            Coordinate originCoordinate = e.getKey();
+            int originRowIndex = originCoordinate.getRow();
+            int originColumnIndex = originCoordinate.getCol();
 
-        for ( int iRow = 0; iRow < changedData.size(); iRow++ ) {
-            List<CellValue< ? extends Comparable< ? >>> changedRow = changedData.get( iRow );
-            int targetRowIndex = originRowIndex + iRow;
-            for ( int iCol = 0; iCol < changedRow.size(); iCol++ ) {
-                int targetColumnIndex = originColumnIndex + iCol;
-                CellValue< ? extends Comparable< ? >> changedCell = changedRow.get( iCol );
+            //Changed data
+            List<List<CellValue< ? extends Comparable< ? >>>> data = e.getValue();
 
-                InterpolationVariable var = vars[targetColumnIndex];
-                TemplateDataColumn col = new TemplateDataColumn( var.getVarName(),
-                                                                 var.getDataType(),
-                                                                 var.getFactType(),
-                                                                 var.getFactField() );
+            InterpolationVariable[] vars = model.getInterpolationVariablesList();
 
-                String dcv = cellValueFactory.convertToModelCell( col,
-                                                                  changedCell );
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                List<CellValue< ? extends Comparable< ? >>> rowData = data.get( iRow );
+                int targetRowIndex = originRowIndex + iRow;
+                for ( int iCol = 0; iCol < rowData.size(); iCol++ ) {
+                    int targetColumnIndex = originColumnIndex + iCol;
+                    CellValue< ? extends Comparable< ? >> changedCell = rowData.get( iCol );
 
-                List<String> columnData = model.getTable().get( var.getVarName() );
-                columnData.set( targetRowIndex,
-                                dcv );
+                    InterpolationVariable var = vars[targetColumnIndex];
+                    TemplateDataColumn col = new TemplateDataColumn( var.getVarName(),
+                                                                     var.getDataType(),
+                                                                     var.getFactType(),
+                                                                     var.getFactField() );
+
+                    String dcv = cellValueFactory.convertToModelCell( col,
+                                                                      changedCell );
+
+                    List<String> columnData = model.getTable().get( var.getVarName() );
+                    columnData.set( targetRowIndex,
+                                    dcv );
+                }
             }
         }
-
     }
 
 }

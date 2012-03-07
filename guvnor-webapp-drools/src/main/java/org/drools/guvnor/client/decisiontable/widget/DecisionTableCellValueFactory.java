@@ -278,10 +278,10 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                                       sce );
     }
 
-    //If the Decision Table model has been converted from the legacy text based
-    //class then all values are held in the DTCellValue's StringValue. This
-    //function attempts to set the correct DTCellValue property based on
-    //the DTCellValue's data type.
+    //The column-data type is looked up from the SuggestionCompletionEngine and represents 
+    //the *true* data-type that the column represents. The data-type associated with the Cell 
+    //Value can be incorrect for legacy models. For pre-5.2 they will always be String and 
+    //for pre-5.4 numerical fields are always Numeric
     private void assertDTCellValue(DTDataTypes52 dataType,
                                    DTCellValue52 dcv) {
         //If already converted exit
@@ -289,6 +289,23 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
             return;
         }
 
+        switch ( dcv.getDataType() ) {
+            case NUMERIC :
+                convertDTCellValueFromNumeric( dataType,
+                                               dcv );
+                break;
+            default :
+                convertDTCellValueFromString( dataType,
+                                              dcv );
+        }
+    }
+
+    //If the Decision Table model has been converted from the legacy text based
+    //class then all values are held in the DTCellValue's StringValue. This
+    //function attempts to set the correct DTCellValue property based on
+    //the DTCellValue's data type.
+    private void convertDTCellValueFromString(DTDataTypes52 dataType,
+                                              DTCellValue52 dcv) {
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN :
@@ -396,6 +413,42 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
                 } catch ( Exception e ) {
                 }
                 dcv.setNumericValue( shortValue );
+                break;
+        }
+
+    }
+
+    //If the Decision Table model was pre-5.4 Numeric data-types were always stored as 
+    //BigDecimals. This function attempts to set the correct DTCellValue property based 
+    //on the *true* data type.
+    private void convertDTCellValueFromNumeric(DTDataTypes52 dataType,
+                                               DTCellValue52 dcv) {
+        //Generic type NUMERIC was always stored as a BigDecimal
+        final BigDecimal value = (BigDecimal) dcv.getNumericValue();
+        switch ( dataType ) {
+            case NUMERIC_BIGDECIMAL :
+                dcv.setNumericValue( value );
+                break;
+            case NUMERIC_BIGINTEGER :
+                dcv.setNumericValue( value.toBigInteger() );
+                break;
+            case NUMERIC_BYTE :
+                dcv.setNumericValue( value.byteValue() );
+                break;
+            case NUMERIC_DOUBLE :
+                dcv.setNumericValue( value.doubleValue() );
+                break;
+            case NUMERIC_FLOAT :
+                dcv.setNumericValue( value.floatValue() );
+                break;
+            case NUMERIC_INTEGER :
+                dcv.setNumericValue( value.intValue() );
+                break;
+            case NUMERIC_LONG :
+                dcv.setNumericValue( value.longValue() );
+                break;
+            case NUMERIC_SHORT :
+                dcv.setNumericValue( value.shortValue() );
                 break;
         }
 

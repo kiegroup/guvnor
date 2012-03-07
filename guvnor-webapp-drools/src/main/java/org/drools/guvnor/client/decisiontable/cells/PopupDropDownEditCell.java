@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.Scheduler;
@@ -33,11 +36,26 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 public class PopupDropDownEditCell extends
         AbstractPopupEditCell<String, String> {
 
-    private final ListBox listBox;
-    private String[][]    items;
+    private final ListBox                               listBox;
+    private String[][]                                  items;
 
-    public PopupDropDownEditCell(boolean isReadOnly) {
+    private final String                                factType;
+    private final String                                factField;
+
+    private final SuggestionCompletionEngine            sce;
+    private final CellTableDropDownDataValueMapProvider ddValueMapProvider;
+
+    public PopupDropDownEditCell(final String factType,
+                                 final String factField,
+                                 final SuggestionCompletionEngine sce,
+                                 final CellTableDropDownDataValueMapProvider ddValueMapProvider,
+                                 final boolean isReadOnly) {
         super( isReadOnly );
+        this.factType = factType;
+        this.factField = factField;
+        this.ddValueMapProvider = ddValueMapProvider;
+        this.sce = sce;
+
         this.listBox = new ListBox();
 
         // Tabbing out of the ListBox commits changes
@@ -61,18 +79,28 @@ public class PopupDropDownEditCell extends
     public void render(Context context,
                        String value,
                        SafeHtmlBuilder sb) {
+
+        //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
+        //Since the content of the list may be different for each cell (dependent enumerations) the list
+        //has to be populated "on demand". 
+        DropDownData dd = sce.getEnums( this.factType,
+                                        this.factField,
+                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
+        if ( dd == null ) {
+            return;
+        }
+        setItems( dd.fixedList );
+
+        //Render value
         if ( value != null ) {
             String label = getLabel( value );
             sb.append( renderer.render( label ) );
         }
     }
 
-    /**
-     * Set content of drop-down
-     * 
-     * @param items
-     */
-    public void setItems(String[] items) {
+    // Set content of drop-down
+    private void setItems(String[] items) {
+        this.listBox.clear();
         this.items = new String[items.length][2];
         for ( int i = 0; i < items.length; i++ ) {
             String item = items[i].trim();
@@ -98,7 +126,7 @@ public class PopupDropDownEditCell extends
                 return items[i][1];
             }
         }
-        return "";
+        return value;
     }
 
     // Commit the change
@@ -126,6 +154,17 @@ public class PopupDropDownEditCell extends
     protected void startEditing(final Context context,
                                 final Element parent,
                                 final String value) {
+
+        //We need to get the list of potential values for the enumeration. Since the content 
+        //of the list may be different for each cell (dependent enumerations) the list
+        //has to be populated "on demand". 
+        DropDownData dd = sce.getEnums( this.factType,
+                                        this.factField,
+                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
+        if ( dd == null ) {
+            return;
+        }
+        setItems( dd.fixedList );
 
         // Select the appropriate item
         boolean emptyValue = (value == null);

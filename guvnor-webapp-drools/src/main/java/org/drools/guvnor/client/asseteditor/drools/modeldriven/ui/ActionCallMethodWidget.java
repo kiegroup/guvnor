@@ -25,7 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -173,7 +173,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( model.state == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( Images.INSTANCE.addFieldToFact() );
+            Image edit = new ImageButton( DroolsGuvnorImages.INSTANCE.addFieldToFact() );
             edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
 
@@ -198,7 +198,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( Images.INSTANCE.newexWiz(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );

@@ -152,7 +152,7 @@ public class RuleModelCloneVisitorTests {
         ActionFieldValue aif0f1 = new ActionFieldValue( "AIF0F1",
                                                         "AIF0F1Value",
                                                         SuggestionCompletionEngine.TYPE_STRING );
-        aif0f0.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
+        aif0f1.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         aif0.addFieldValue( aif0f1 );
         model.rhs[0] = aif0;
 
@@ -272,7 +272,7 @@ public class RuleModelCloneVisitorTests {
         ActionFieldValue asf0f1 = new ActionFieldValue( "ASF0F1",
                                                         "ASF0F1Value",
                                                         SuggestionCompletionEngine.TYPE_STRING );
-        asf0f0.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
+        asf0f1.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         asf0.addFieldValue( asf0f1 );
         model.rhs[0] = asf0;
 
@@ -388,7 +388,7 @@ public class RuleModelCloneVisitorTests {
         ActionFieldValue auf0f1 = new ActionFieldValue( "AUF0F1",
                                                         "AUF0F1Value",
                                                         SuggestionCompletionEngine.TYPE_STRING );
-        auf0f0.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
+        auf0f1.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         auf0.addFieldValue( auf0f1 );
         model.rhs[0] = auf0;
 

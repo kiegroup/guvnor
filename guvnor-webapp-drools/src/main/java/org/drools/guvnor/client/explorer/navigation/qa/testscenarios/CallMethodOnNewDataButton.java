@@ -19,13 +19,11 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * 
@@ -40,7 +38,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
                                      final Scenario scenario,
                                      final ExecutionTrace currentEx,
                                      ScenarioWidget scenarioWidget) {
-        super( Images.INSTANCE.newItem(),
+        super( DroolsGuvnorImages.INSTANCE.newItem(),
                Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
@@ -56,7 +54,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( Images.INSTANCE.ruleAsset(),
+            super( DroolsGuvnorImages.INSTANCE.ruleAsset(),
                    Constants.INSTANCE.NewInput() );
             List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
                                                                      false );

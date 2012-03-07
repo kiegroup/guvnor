@@ -85,9 +85,15 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     switch ( dtable.getTableFormat() ) {
                         case EXTENDED_ENTRY :
-                            String[] values = dtable.getValueList( c,
-                                                                   sce );
-                            if ( values != null && values.length > 1 ) {
+                            if ( dtable.hasValueList( c ) ) {
+                                String[] values = dtable.getValueList( c,
+                                                                       sce );
+                                if ( values != null && values.length > 1 ) {
+                                    availableColumns.add( c );
+                                }
+
+                            } else if ( sce.hasEnums( p.getFactType(),
+                                                      c.getFactField() ) ) {
                                 availableColumns.add( c );
                             }
                             break;

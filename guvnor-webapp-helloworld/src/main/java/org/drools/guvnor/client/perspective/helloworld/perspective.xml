@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<perspective>
+  <!--  name>author</name>
+  <class>org.drools.guvnor.client.perspectives.author.AuthorPerspective</class>
+  <title>constants.AuthorPerspective()</title-->
+
+  <NavigationPanelHeader>
+    <icon>images.chartOrganisation()</icon>
+    <title>constants.Services()</title>
+  </NavigationPanelHeader>
+
+
+  <ModuleTreeHeader>
+    <icon>images.chartOrganisation()</icon>
+    <title>constants.Services()</title>
+  </ModuleTreeHeader>
+
+  <CreateNewMenu>org.drools.guvnor.client.explorer.navigation.modules.ServicesNewAssetMenu
+  </CreateNewMenu>
+
+  <moduleeditors>
+    <moduleeditor>
+      <class>org.drools.guvnor.client.moduleeditor.HelloWorldModuleEditor</class>
+      <format>package</format>
+      <asseteditorformats></asseteditorformats>
+    </moduleeditor>
+  </moduleeditors>
+
+ </perspective>  

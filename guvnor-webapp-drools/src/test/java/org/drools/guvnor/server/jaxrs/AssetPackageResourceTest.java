@@ -537,8 +537,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     }
 
     @Test @RunAsClient
-    public void testCreateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {
-        
+    public void testCreateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {        
         //Check there is no model1-New asset
         AbderaClient client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
@@ -553,11 +552,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
             fail("I was expecting an HTTP 500 Error because 'model1-New' shouldn't exist. "
                     + "Instead of that I got-> "+resp.getStatus()+": "+resp.getStatusText());
         }
-        
-        
-        //--------------------------------------------------------------
-        
-        
+               
         //Get asset 'model1' from Guvnor
         client = new AbderaClient(abdera);
         client.addCredentials(baseURL.toExternalForm(), null, null,
@@ -574,14 +569,13 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Get the entry element
         Document<Entry> doc = resp.getDocument();
-        Entry entry = doc.getRoot();
-        
-        
-        //--------------------------------------------------------------
-        
-        
-        //Change the title of the asset
-        entry.setTitle(entry.getTitle()+"-New");
+        Entry entry = doc.getRoot();      
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA);       
+        ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+        assertEquals("AssetPackageResourceTestCategory", categoryExtension.getSimpleExtension(Translator.VALUE));   
+        //Update asset
+        entry.setTitle(entry.getTitle()+"-New");        
+        //categoryExtension.addSimpleExtension(Translator.VALUE, "AssetPackageResourceTestCategory2");
         
         //Save it as a new Asset
         client = new AbderaClient(abdera);
@@ -595,10 +589,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't store 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
-        }
-        
-        
-        //--------------------------------------------------------------
+        }       
         
         
         //Check that the new asset is in the repository
@@ -613,13 +604,15 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
         }
-        
-        //Get the entry element
+
         doc = resp.getDocument();
         entry = doc.getRoot();
         
-        //Compare the title :P
-        assertEquals(entry.getTitle(),"model1-New");
+        //Verify the new asset
+        assertEquals(entry.getTitle(),"model1-New");  
+        ExtensibleElement metadataExtension2  = entry.getExtension(Translator.METADATA);       
+        ExtensibleElement categoryExtension2 = metadataExtension2.getExtension(Translator.CATEGORIES);     
+        assertEquals("AssetPackageResourceTestCategory", categoryExtension2.getSimpleExtension(Translator.VALUE));   
     }
 
     @Test @RunAsClient

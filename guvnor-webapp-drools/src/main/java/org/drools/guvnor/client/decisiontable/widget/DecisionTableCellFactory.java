@@ -18,13 +18,15 @@ package org.drools.guvnor.client.decisiontable.widget;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupDialectDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupValueListDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -41,7 +43,6 @@ import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
@@ -52,9 +53,8 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
-    private static String[]       DIALECTS = {"java", "mvel"};
-
-    private GuidedDecisionTable52 model;
+    private GuidedDecisionTable52                 model;
+    private CellTableDropDownDataValueMapProvider dropDownManager;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -84,6 +84,18 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
+    }
+
+    /**
+     * Set the DropDownManager
+     * 
+     * @param dropDownManager
+     */
+    public void setDropDownManager(CellTableDropDownDataValueMapProvider dropDownManager) {
+        if ( dropDownManager == null ) {
+            throw new IllegalArgumentException( "dropDownManager cannot be null" );
+        }
+        this.dropDownManager = dropDownManager;
     }
 
     /**
@@ -136,7 +148,11 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                 cell = makeBooleanCell();
             }
 
+        } else if ( column instanceof LimitedEntryCol ) {
+            cell = makeBooleanCell();
+
         } else if ( column instanceof BRLConditionVariableColumn ) {
+            //Before ConditionCol52 as this is a sub-class
             cell = derieveCellFromCondition( (BRLConditionVariableColumn) column );
 
         } else if ( column instanceof ConditionCol52 ) {
@@ -162,9 +178,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         } else if ( column instanceof ActionWorkItemCol52 ) {
             cell = makeBooleanCell();
 
-        } else if ( column instanceof LimitedEntryBRLActionColumn ) {
-            cell = derieveCellFromAction( (LimitedEntryBRLActionColumn) column );
-
         } else if ( column instanceof BRLActionVariableColumn ) {
             cell = derieveCellFromAction( (BRLActionVariableColumn) column );
 
@@ -179,37 +192,79 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     // Make a new Cell for Condition columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromCondition(ConditionCol52 col) {
 
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
-        }
-
         //Operators "is null" and "is not null" require a boolean cell
         if ( col.getOperator() != null && (col.getOperator().equals( "== null" ) || col.getOperator().equals( "!= null" )) ) {
             return makeBooleanCell();
         }
 
-        return derieveCellFromModel( col );
-    }
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = model.getPattern( col ).getFactType();
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
 
-    // Make a new Cell for Actions columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionCol52 col) {
-
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
         }
 
         return derieveCellFromModel( col );
     }
 
-    // Make a new Cell for Actions columns
+    // Make a new Cell for BRLConditionVariableColumn columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromCondition(BRLConditionVariableColumn col) {
+
+        //Check if the column has an enumeration
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( sce.hasEnums( factType,
+                           fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionSetField columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionSetFieldCol52 col) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = model.getBoundFactType( col.getBoundName() );
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
+
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionInsertFact columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionInsertFactCol52 col) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( model.hasValueList( col ) ) {
+            return makeValueListCell( col );
+
+        } else if ( sce.hasEnums( factType,
+                                  fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for ActionRetractFactCol52 columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionRetractFactCol52 col) {
-
-        //Limited Entry are simply boolean
-        if ( col instanceof LimitedEntryCol ) {
-            return makeBooleanCell();
-        }
 
         //Drop down of possible patterns
         PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus,
@@ -220,62 +275,61 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
                                                           eventBus );
     }
 
+    // Make a new Cell for BRLActionVariableColumn columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(BRLActionVariableColumn col) {
+
+        //Check if the column has an enumeration
+        final String factType = col.getFactType();
+        final String fieldName = col.getFactField();
+        if ( sce.hasEnums( factType,
+                           fieldName ) ) {
+            return makeEnumCell( factType,
+                                 fieldName );
+        }
+
+        return derieveCellFromModel( col );
+    }
+
     //Get Cell applicable to Model's data-type
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromModel(DTColumnConfig52 col) {
 
         //Extended Entry...
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
+
+        //Get a cell based upon the data-type
         String type = model.getType( col,
                                      sce );
 
-        //Retrieve "Guvnor" enums
-        String[] vals = model.getValueList( col,
-                                            sce );
-        if ( vals.length == 0 ) {
-
-            //Null means the field is free-format
-            if ( type == null ) {
-                return cell;
-            }
-
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                cell = makeNumericCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-                cell = makeNumericBigDecimalCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-                cell = makeNumericBigIntegerCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-                cell = makeNumericByteCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-                cell = makeNumericDoubleCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-                cell = makeNumericFloatCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-                cell = makeNumericIntegerCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-                cell = makeNumericLongCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-                cell = makeNumericShortCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                cell = makeBooleanCell();
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                cell = makeDateCell();
-            }
-        } else {
-
-            // Columns with lists of values, enums etc are always Text (for now)
-            PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-            pudd.setItems( vals );
-            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
-                                                              eventBus );
+        if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            cell = makeNumericCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            cell = makeNumericBigDecimalCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
+            cell = makeNumericBigIntegerCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
+            cell = makeNumericByteCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
+            cell = makeNumericDoubleCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
+            cell = makeNumericFloatCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
+            cell = makeNumericIntegerCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
+            cell = makeNumericLongCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
+            cell = makeNumericShortCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            cell = makeBooleanCell();
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            cell = makeDateCell();
         }
+
         return cell;
     }
 
     // Make a new Cell for Dialect columns
     private DecoratedGridCellValueAdaptor<String> makeDialectCell() {
-        PopupDropDownEditCell pudd = new PopupDropDownEditCell( isReadOnly );
-        pudd.setItems( DIALECTS );
+        PopupDialectDropDownEditCell pudd = new PopupDialectDropDownEditCell( isReadOnly );
         return new DecoratedGridCellValueAdaptor<String>( pudd,
                                                           eventBus );
     }
@@ -302,6 +356,33 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     private DecoratedGridCellValueAdaptor<Analysis> makeRowAnalysisCell() {
         return new DecoratedGridCellValueAdaptor<Analysis>( new AnalysisCell(),
                                                             eventBus );
+    }
+
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> makeValueListCell(DTColumnConfig52 col) {
+
+        // Columns with "Value Lists" are always Text (for now)
+        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col,
+                                                                                                      sce ),
+                                                                                  isReadOnly );
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                                                                                    eventBus );
+        return cell;
+    }
+
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> makeEnumCell(String factType,
+                                                                                   String fieldName) {
+
+        // Columns with enumerations are always Text
+        PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
+                                                                fieldName,
+                                                                sce,
+                                                                dropDownManager,
+                                                                isReadOnly );
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                                                                                    eventBus );
+        return cell;
     }
 
 }

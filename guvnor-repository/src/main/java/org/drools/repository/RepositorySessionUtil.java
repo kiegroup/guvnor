@@ -67,15 +67,15 @@ public class RepositorySessionUtil {
             deleteDir( dir );
             log.info( "TEST repo was deleted." );
 
+            //configurator = new JackrabbitRepository
+            // create a repo instance (startup)
+
+            multiThreadedRepository = RulesRepositoryConfigurator.getInstance( null ).getJCRRepository();
+
+            // create a session
+            //Session session;
+
             try {
-                //configurator = new JackrabbitRepository
-                // create a repo instance (startup)
-
-                multiThreadedRepository = RulesRepositoryConfigurator.getInstance( null ).getJCRRepository();
-
-                // create a session
-                //Session session;
-
                 session = multiThreadedRepository.login( new SimpleCredentials( "alan_parsons",
                                                                                 "password".toCharArray() ) );
                 RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( session );
@@ -92,7 +92,9 @@ public class RepositorySessionUtil {
                 // loonie hack
                 // DroolsRepositoryAccessManager.adminThreadlocal.set( adminSession );
                 repo.set( repoInstance );
-            } catch ( Exception e ) {
+            } catch ( LoginException e ) {
+                throw new RulesRepositoryException( e );
+            } catch ( RepositoryException e ) {
                 throw new RulesRepositoryException( e );
             }
         }
@@ -122,7 +124,7 @@ public class RepositorySessionUtil {
                     admin.clearRulesRepository();
                 }
                 RulesRepositoryConfigurator.getInstance( null ).setupRepository( session );
-            } catch ( Exception e ) {
+            } catch ( RepositoryException e ) {
                 throw new RulesRepositoryException( e );
             }
         }
@@ -142,7 +144,7 @@ public class RepositorySessionUtil {
         return null;
     }
 
-    public static void shutdown() throws RepositoryException {
+    public static void shutdown() {
         RulesRepositoryConfigurator.getInstance( null ).shutdown();
         session = null;
         repo.set( null );

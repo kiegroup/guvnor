@@ -41,7 +41,8 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
 
-    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real. -Geoffrey-
+    // TODO ( Or write a separate integration test, so we can keep this one failing fast -Rikkola- )
 
     private final RulesRepository             rulesRepository             = mock( RulesRepository.class );
     private final RepositoryModuleOperations repositoryPackageOperations = new RepositoryModuleOperations();
@@ -275,6 +276,8 @@ public class RepositoryPackageOperationsTest {
         final String comment = "comment";
 
         ModuleItem packageItem = mock( ModuleItem.class );
+        when(this.rulesRepository.containsSnapshot(packageName,
+                                                    snapshotName)).thenReturn( true );
         when( this.rulesRepository.loadModuleSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
         this.repositoryPackageOperations.createModuleSnapshot( packageName,

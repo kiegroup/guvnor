@@ -22,7 +22,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateSelectedCellsEvent;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -300,7 +300,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
             for ( CellValue< ? > cell : selections ) {
                 cell.removeState( CellState.OTHERWISE );
             }
-            eventBus.fireEvent( new CellValueChangedEvent( null ) );
+            eventBus.fireEvent( new UpdateSelectedCellsEvent( null ) );
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT

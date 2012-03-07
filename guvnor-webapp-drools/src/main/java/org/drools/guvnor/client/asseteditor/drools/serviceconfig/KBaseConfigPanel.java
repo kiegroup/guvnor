@@ -66,7 +66,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.drools.explorer.AssetResourceExplorerWidget;
 import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyCommand;
@@ -85,7 +85,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
 
     }
 
-    private static Images images = GWT.create(Images.class);
+    private static DroolsGuvnorImages images = GWT.create(DroolsGuvnorImages.class);
 
     private static KBaseConfigEditorBinder uiBinder = GWT.create(KBaseConfigEditorBinder.class);
 
@@ -473,7 +473,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
 
     @UiHandler("btnRename")
     public void doRename(final ClickEvent e) {
-        final FormStylePopup pop = new FormStylePopup(Images.INSTANCE.packageLarge(), Constants.INSTANCE.RenameThisKBase());
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.packageLarge(), Constants.INSTANCE.RenameThisKBase());
         final TextBox box = new TextBox();
         box.setText(kbase.getName());
         pop.addAttribute(Constants.INSTANCE.NewNameAsset(), box);

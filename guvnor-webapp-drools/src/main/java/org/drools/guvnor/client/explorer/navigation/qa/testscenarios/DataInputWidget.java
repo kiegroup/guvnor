@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -270,7 +270,7 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFactColumnButton extends ImageButton {
 
         public DeleteFactColumnButton(final FactData factData) {
-            super( Images.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                     Constants.INSTANCE.RemoveTheColumnForScenario( factData.getName() ) );
 
             addClickHandler( new ClickHandler() {
@@ -292,7 +292,7 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFieldRowButton extends ImageButton {
         public DeleteFieldRowButton(final String factName,
                                     final String fieldName) {
-            super( Images.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                    Constants.INSTANCE.RemoveThisRow() );
 
             addClickHandler( new ClickHandler() {

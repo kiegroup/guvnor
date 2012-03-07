@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -30,7 +29,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
@@ -71,7 +70,7 @@ public class ScenarioPackageScreen extends Composite {
 
         vert.add( run );
 
-        pf.addHeader( Images.INSTANCE.scenarioLarge(),
+        pf.addHeader( DroolsGuvnorImages.INSTANCE.scenarioLarge(),
                 vert );
 
         layout.add( pf );

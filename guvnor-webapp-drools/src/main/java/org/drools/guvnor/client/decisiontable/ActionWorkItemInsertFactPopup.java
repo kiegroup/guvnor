@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -103,8 +103,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        ImageButton changePattern = new ImageButton( Images.INSTANCE.edit(),
-                                                     Images.INSTANCE.editDisabled(),
+        ImageButton changePattern = new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
+                                                     DroolsGuvnorImages.INSTANCE.editDisabled(),
                                                      Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -120,8 +120,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( Images.INSTANCE.edit(),
-                                                 Images.INSTANCE.editDisabled(),
+        ImageButton editField = new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
+                                                 DroolsGuvnorImages.INSTANCE.editDisabled(),
                                                  Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {

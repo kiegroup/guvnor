@@ -21,7 +21,7 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -236,7 +236,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
+        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
@@ -249,7 +249,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( Images.INSTANCE.deleteItemSmall() );
+        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {

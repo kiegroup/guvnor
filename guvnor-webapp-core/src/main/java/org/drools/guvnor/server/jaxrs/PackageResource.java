@@ -250,7 +250,7 @@ public class PackageResource extends Resource {
                 result = p.getCompiledBinaryBytes();
             } else {
                 BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
-                if (builderResult != null) {
+                if (builderResult != null && !builderResult.getLines().isEmpty()) {
                     StringBuilder errs = new StringBuilder();
                     errs.append("Unable to build package name [").append(packageName).append("]\n");
                     for (BuilderResultLine resultLine : builderResult.getLines()) {
@@ -332,6 +332,8 @@ public class PackageResource extends Resource {
                                                @PathParam("versionNumber") long versionNumber) throws SerializationException {
         ModuleItem p = rulesRepository.loadModule(packageName, versionNumber);
         byte[] result = p.getCompiledBinaryBytes();
+        
+        //REVISIT: https://issues.jboss.org/browse/GUVNOR-1232: Force a package rebuild before every package check in operation. 
         if (result != null) {
             ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
             String fileName = packageName + "." + moduleAssembler.getBinaryExtension();

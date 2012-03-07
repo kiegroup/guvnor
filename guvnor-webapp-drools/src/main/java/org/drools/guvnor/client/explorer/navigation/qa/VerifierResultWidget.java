@@ -18,11 +18,10 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -47,17 +46,17 @@ public class VerifierResultWidget extends Composite {
         Tree tree = new Tree();
 
         TreeItem errors = doMessageLines( Constants.INSTANCE.Errors(),
-                                          Images.INSTANCE.error(),
+                                          DroolsGuvnorImages.INSTANCE.error(),
                                           report.errors );
         tree.addItem( errors );
 
         TreeItem warnings = doMessageLines( Constants.INSTANCE.Warnings(),
-                                            Images.INSTANCE.warning(),
+                                            DroolsGuvnorImages.INSTANCE.warning(),
                                             report.warnings );
         tree.addItem( warnings );
 
         TreeItem notes = doMessageLines( Constants.INSTANCE.Notes(),
-                                         Images.INSTANCE.note(),
+                                         DroolsGuvnorImages.INSTANCE.note(),
                                          report.notes );
         tree.addItem( notes );
 

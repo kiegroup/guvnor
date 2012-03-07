@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>guvnor</artifactId>
+    <version>5.4.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>guvnor-webapp-helloworld</artifactId>
+  <packaging>war</packaging>
+
+  <name>Guvnor web application Next Generation</name>
+  <description>Example project for Guvnor NG.</description>
+
+  <properties>
+    <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
+    <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
+    <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
+    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
+    <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
+    <!--<appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${appserver.tomcat6.version}</appserver.tomcat6.home>-->
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--use -Dgwt.compiler.skip=true to skip GWT compiler -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>2.3.0-1</version>
+        <configuration>
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <!-- The default profile needs to be fast, so we only build 1 permutation
+            { -->
+          <module>org.drools.guvnor.FastCompiledGuvnor</module>
+          <draftCompile>true</draftCompile>
+          <!-- } -->
+          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
+          </compileSourcesArtifacts>
+          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath><!-- The GWT compiler must the correct JDT version -->
+          <localWorkers>2</localWorkers><!-- Using all workers can temporarily hang the mouse and isn't much faster -->
+          <extraJvmArgs>-Xmx512m</extraJvmArgs>
+        </configuration>
+        <!--<dependencies> -->
+        <!--&lt;!&ndash; Explicitly declare gwt dependencies to ensure the 
+          use of the same GWT version. &ndash;&gt; -->
+        <!--<dependency> -->
+        <!--<groupId>com.google.gwt</groupId> -->
+        <!--<artifactId>gwt-servlet</artifactId> -->
+        <!--<version>${gwt.version}</version> -->
+        <!--</dependency> -->
+        <!--<dependency> -->
+        <!--<groupId>com.google.gwt</groupId> -->
+        <!--<artifactId>gwt-user</artifactId> -->
+        <!--<version>${gwt.version}</version> -->
+        <!--</dependency> -->
+        <!--<dependency> -->
+        <!--<groupId>com.google.gwt</groupId> -->
+        <!--<artifactId>gwt-dev</artifactId> -->
+        <!--<version>${gwt.version}</version> -->
+        <!--</dependency> -->
+        <!--</dependencies> -->
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>clean repository</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
+                <delete dir="repository" />
+                <delete file="repository.xml" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/webapp</directory>
+            </resource>
+            <resource>
+              <directory>${basedir}/src/main/filtered-webapp</directory>
+              <filtering>true</filtering>
+            </resource>
+          </webResources>
+          <!-- Only excludes them from the war file, not from the exploded directory -->
+          <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- Overwrite the surefire plugin to run after instead of before the package phase -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin><!-- Keep in sync with soa profile -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <!-- Build all GWT permutations and optimize them -->
+              <module>org.drools.guvnor.Guvnor</module>
+              <draftCompile>false</draftCompile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>soaProfile</id>
+      <activation>
+        <property>
+          <name>soa</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin><!-- Keep in sync with full profile -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <!-- Build all GWT permutations and optimize them -->
+              <module>org.drools.guvnor.Guvnor</module>
+              <draftCompile>false</draftCompile>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>soa_overlay</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <replace
+                      dir="${basedir}/src/main/java/org/drools/guvnor/client/messages/">
+                      <include name="*.properties" />
+                      <replacefilter token=" Guvnor"
+                        value=" BRMS" />
+                    </replace>
+                    <replace
+                      file="${basedir}/src/main/java/org/drools/guvnor/client/resources/Images.java">
+                      <replacefilter token="header_logo.gif"
+                        value="hdrlogo_brms.gif" />
+                    </replace>
+                    <replace
+                      dir="${basedir}/src/main/java/org/drools/guvnor/public"
+                      includes="Guvnor.jsp *.html">
+                      <replacefilter token="JBoss Guvnor"
+                        value="JBoss BRMS" />
+                    </replace>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- This profile is active by default -->
+      <id>jboss-as-arquillian-container-managed</id>
+      <activation>
+        <property>
+          <name>!test.arquillian.jboss.remote</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- Download JBoss AS and unpack it to have it available during tests -->
+                <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
+                <id>unpack</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.jboss.as</groupId>
+                      <artifactId>jboss-as-dist</artifactId>
+                      <version>${appserver.jboss7.version}</version>
+                      <type>zip</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
+          <groupId>org.jboss.arquillian.protocol</groupId>
+          <artifactId>arquillian-protocol-servlet</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <version>${appserver.jboss7.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jboss-as-arquillian-container-remote</id>
+      <activation>
+        <property>
+          <name>test.arquillian.jboss.remote</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
+          <groupId>org.jboss.arquillian.protocol</groupId>
+          <artifactId>arquillian-protocol-servlet</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-remote</artifactId>
+          <version>${appserver.jboss7.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <!--<profile>-->
+      <!--<id>arquillian-tomcat-managed-6</id>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<inherited>false</inherited>-->
+            <!--<executions>-->
+              <!--<execution> -->
+              <!--<id>download-and-unzip-managed-tomcat6</id> -->
+              <!--<phase>generate-test-resources</phase> -->
+              <!--<configuration> -->
+              <!--<tasks> -->
+              <!--<mkdir dir="${appserver.download.dir}"/> -->
+              <!--<get -->
+              <!--src="http://archive.apache.org/dist/tomcat/tomcat-6/v${appserver.tomcat6.version}/bin/apache-tomcat-${appserver.tomcat6.version}.zip" -->
+              <!--dest="${appserver.download.dir}" verbose="true" skipexisting="true"/> -->
+              <!--<unzip src="${appserver.download.dir}/apache-tomcat-${appserver.tomcat6.version}.zip" -->
+              <!--dest="${project.build.directory}"/> -->
+              <!--</tasks> -->
+              <!--</configuration> -->
+              <!--<goals> -->
+              <!--<goal>run</goal> -->
+              <!--</goals> -->
+              <!--</execution> -->
+            <!--</executions>-->
+          <!--</plugin>-->
+          <!--<plugin> -->
+          <!--<artifactId>maven-resources-plugin</artifactId> -->
+          <!--<executions> -->
+          <!--<execution> -->
+          <!--<id>copy-tomcat6-conf</id> -->
+          <!--<phase>process-test-resources</phase> -->
+          <!--<goals> -->
+          <!--<goal>copy-resources</goal> -->
+          <!--</goals> -->
+          <!--<configuration> -->
+          <!--<outputDirectory>${appserver.tomcat6.home}/conf</outputDirectory> -->
+          <!--<overwrite>true</overwrite> -->
+          <!--<resources> -->
+          <!--<resource> -->
+          <!--<directory>${basedir}/src/test/conf/tomcat6</directory> -->
+          <!--</resource> -->
+          <!--</resources> -->
+          <!--</configuration> -->
+          <!--</execution> -->
+          <!--</executions> -->
+          <!--</plugin> -->
+        <!--</plugins>-->
+        <!--<dependencies>-->
+          <!--<dependency>-->
+            <!--<groupId>org.jboss.arquillian.container</groupId>-->
+            <!--<artifactId>arquillian-tomcat-managed-6</artifactId>-->
+            <!--<scope>test</scope>-->
+          <!--</dependency>-->
+        <!--</dependencies>-->
+      <!--</build>-->
+    <!--</profile>-->
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <type>pom</type>
+        <version>1.0.0.CR7</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-webapp-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-webapp-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency><!-- Needed by GWT IDE plugin -->
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <scope>provided</scope><!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Arquillian container profiles are defined in the profiles -->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api</artifactId>
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-client</artifactId>
+      <version>1.1.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwt.version}</version>
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+    </dependency>
+
+  </dependencies>
+</project>

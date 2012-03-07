@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -75,7 +75,7 @@ public class ActivateRuleFlowWidget extends Composite {
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
-            Image del = new ImageButton( Images.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisRuleFlowActivation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

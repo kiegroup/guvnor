@@ -249,6 +249,20 @@ public class DynamicData
         return isMerged;
     }
 
+    /**
+     * Return the state of grouping
+     * 
+     * @return true if any rows are grouped
+     */
+    public boolean isGrouped() {
+        for ( DynamicDataRow row : this.data ) {
+            if ( row instanceof GroupedDynamicDataRow ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Iterator<DynamicDataRow> iterator() {
         return data.iterator();
     }

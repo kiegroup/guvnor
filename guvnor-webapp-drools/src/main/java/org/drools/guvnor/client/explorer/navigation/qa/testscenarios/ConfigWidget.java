@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class ConfigWidget extends Composite {
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( Images.INSTANCE.newItem(),
+        final Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
                                            Constants.INSTANCE.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -55,7 +55,7 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( Images.INSTANCE.trash(),
+        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
                                               Constants.INSTANCE.RemoveSelectedRule() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -122,7 +122,7 @@ public class ConfigWidget extends Composite {
                                String packageName,
                                final List<String> filterList,
                                ScenarioWidget scw) {
-        final FormStylePopup pop = new FormStylePopup( Images.INSTANCE.ruleAsset(),
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
                                                        Constants.INSTANCE.SelectRule() );
 
         Widget ruleSelector = scw.getRuleSelectionWidget( packageName,
