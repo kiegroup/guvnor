@@ -38,7 +38,7 @@ public class FactPopulator {
         this.populatedData = populatedData;
     }
 
-    public void populate() throws ClassNotFoundException {
+    public void populate() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
 
         for (Populator populator : toBePopulatedData.values()) {

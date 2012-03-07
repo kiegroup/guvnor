@@ -16,21 +16,19 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
-import java.util.*;
-
-import org.drools.Cheese;
-import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
-import org.drools.ide.common.client.modeldriven.testing.Field;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.server.testscenarios.MockWorkingMemory;
-import org.drools.ide.common.server.testscenarios.ScenarioRunner;
-import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.*;
 

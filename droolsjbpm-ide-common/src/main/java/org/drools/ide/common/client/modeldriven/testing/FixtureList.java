@@ -19,8 +19,26 @@ package org.drools.ide.common.client.modeldriven.testing;
 import java.util.ArrayList;
 
 public class FixtureList extends ArrayList<Fixture>
-    implements
-    Fixture {
+        implements
+        Fixture {
+
     private static final long serialVersionUID = 510l;
 
+    public FactData getFirstFactData() {
+        for (Fixture fixture : this) {
+            if (fixture instanceof FactData) {
+                return (FactData) fixture;
+            }
+        }
+        return null;
+    }
+
+    public boolean isFieldNameInUse(String fieldName) {
+        for (Fixture fixture : this) {
+            if (fixture instanceof FactData && ((FactData) fixture).isFieldNameInUse(fieldName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

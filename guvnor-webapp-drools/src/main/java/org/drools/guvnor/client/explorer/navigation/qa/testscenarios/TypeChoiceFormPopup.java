@@ -35,7 +35,7 @@ public class TypeChoiceFormPopup
         implements HasSelectionHandlers<Integer> {
 
 
-    public TypeChoiceFormPopup(FieldDataConstraintHelper helper) {
+    public TypeChoiceFormPopup(FieldConstraintHelper helper) {
         super(DroolsGuvnorImages.INSTANCE.newexWiz(),
                 Constants.INSTANCE.FieldValue());
 
@@ -78,8 +78,6 @@ public class TypeChoiceFormPopup
             public void onClick(ClickEvent w) {
                 fireSelection(FieldData.TYPE_LITERAL);
             }
-
-
         });
         addAttribute(Constants.INSTANCE.LiteralValue() + ":",
                 widgets(lit,

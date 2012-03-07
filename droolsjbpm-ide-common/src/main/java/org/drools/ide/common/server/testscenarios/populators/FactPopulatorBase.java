@@ -19,7 +19,6 @@ package org.drools.ide.common.server.testscenarios.populators;
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Field;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,42 +43,18 @@ abstract class FactPopulatorBase implements Populator {
         return fact.getName();
     }
 
-    protected List<FieldPopulator> getFieldPopulators(Object factObject) {
+    protected List<FieldPopulator> getFieldPopulators(Object factObject) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver);
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
-
-        for (int i = 0; i < fact.getFieldData().size(); i++) {
-            Field field = fact.getFieldData().get(i);
-
-            if (field instanceof FieldData) {
-                FieldData fieldData=(FieldData)field;
-                if (fieldData.getValue() != null) {
-                    if (fieldData.getValue().startsWith("=")) {
-                        fieldPopulators.add(
-                                new ExpressionFieldPopulator(
-                                        factObject,
-                                        fieldData.getName(),
-                                        fieldData.getValue().substring(1)));
-
-                    } else if (fieldData.getNature() == FieldData.TYPE_ENUM) {
-                        fieldPopulators.add(
-                                new EnumFieldPopulator(
-                                        factObject,
-                                        fieldData.getName(),
-                                        fieldData.getValue(),
-                                        typeResolver));
-                    } else {
-                        fieldPopulators.add(
-                                new SimpleFieldPopulator(
-                                        factObject,
-                                        fieldData.getName(),
-                                        fieldData.getValue()));
-                    }
-                }
-            }
+        for (Field field : fact.getFieldData()) {
+            fieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(field));
         }
+
         return fieldPopulators;
     }
+
 
     protected String getTypeName(
             TypeResolver resolver,

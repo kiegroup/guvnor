@@ -199,7 +199,9 @@ public class PermissionsPagedTablePresenter implements Presenter {
             public void onClick(ClickEvent w) {
                 LoadingPopup.showMessage(constants.Updating());
                 RepositoryServiceFactory.getService().updateUserPermissions(
-                        userName, perms, new GenericCallback<java.lang.Void>() {
+                        userName,
+                        perms,
+                        new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void a) {
                                 LoadingPopup.close();
                                 view.refresh();

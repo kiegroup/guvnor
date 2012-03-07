@@ -9,12 +9,12 @@ public class NewFactWidgetTest {
 
     private NewFactWidgetView view;
     private NewFactWidgetView.Presenter presenter;
-    private FieldDataConstraintHelper helper;
+    private FieldConstraintHelper helper;
 
     @Before
     public void setUp() throws Exception {
         view = mock(NewFactWidgetView.class);
-        helper = mock(FieldDataConstraintHelper.class);
+        helper = mock(FieldConstraintHelper.class);
     }
 
     private void createNewFactWidget() {

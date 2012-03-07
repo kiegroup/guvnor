@@ -19,10 +19,11 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.resources.DroolsGuvnorResources;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -31,22 +32,26 @@ public class FactAssignmentFieldWidget implements IsWidget {
 
     private final DirtyableFlexTable widget;
 
-    public FactAssignmentFieldWidget(FactData factType,
-                                     FixtureList definitionList,
+    public FactAssignmentFieldWidget(final FactAssignmentField factAssignmentField,
+                                     final FixtureList definitionList,
                                      Scenario scenario,
                                      SuggestionCompletionEngine suggestionCompletionEngine,
-                                     ScenarioParentWidget parent,
+                                     final ScenarioParentWidget parent,
                                      ExecutionTrace executionTrace) {
 
         widget = new DirtyableFlexTable();
-        widget.setStyleName(GuvnorResources.INSTANCE.guvnorCss().greyBorderWithRoundCorners());
+
+        widget.setStyleName(DroolsGuvnorResources.INSTANCE.droolsGuvnorCss().greyBorderWithRoundCorners());
         new FactDataWidgetFactory(
                 scenario,
                 suggestionCompletionEngine,
                 definitionList,
                 executionTrace,
                 parent,
-                widget).build(factType.getType(), factType);
+                widget
+        ).build(
+                factAssignmentField.getFact().getType(),
+                factAssignmentField.getFact());
 
     }
 

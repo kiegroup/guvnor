@@ -8,26 +8,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FieldDataConstraintHelper {
+public class FieldConstraintHelper {
 
     private final Scenario scenario;
     private final ExecutionTrace executionTrace;
     private final SuggestionCompletionEngine sce;
     private final String factType;
-    private final FieldData field;
-    private final FactData givenFact;
+    private Field field;
+    private final Fact fact;
 
-    public FieldDataConstraintHelper(Scenario scenario,
-                                     ExecutionTrace executionTrace,
-                                     SuggestionCompletionEngine sce,
-                                     String factType,
-                                     FieldData field, FactData givenFact) {
+    public FieldConstraintHelper(Scenario scenario,
+                                 ExecutionTrace executionTrace,
+                                 SuggestionCompletionEngine sce,
+                                 String factType,
+                                 Field field,
+                                 Fact fact) {
         this.scenario = scenario;
         this.executionTrace = executionTrace;
         this.sce = sce;
         this.factType = factType;
         this.field = field;
-        this.givenFact = givenFact;
+        this.fact = fact;
     }
 
     boolean isThereABoundVariableToSet() {
@@ -45,10 +46,10 @@ public class FieldDataConstraintHelper {
     }
 
     String resolveFieldType() {
-        if (field.collectionType == null) {
-            return sce.getFieldType(factType, field.getName());
+        if (field instanceof FieldData && ((FieldData) field).collectionType != null) {
+            return ((FieldData) field).collectionType;
         } else {
-            return field.collectionType;
+            return sce.getFieldType(factType, field.getName());
         }
     }
 
@@ -77,7 +78,7 @@ public class FieldDataConstraintHelper {
 
     DropDownData getEnums() {
         Map<String, String> currentValueMap = new HashMap<String, String>();
-        for (Field f : givenFact.getFieldData()) {
+        for (Field f : fact.getFieldData()) {
             if (f instanceof FieldData) {
                 FieldData otherFieldData = (FieldData) f;
                 currentValueMap.put(otherFieldData.getName(),
@@ -104,9 +105,16 @@ public class FieldDataConstraintHelper {
         return new FieldDataConstraintEditor(
                 fieldData.collectionType,
                 fieldData,
-                givenFact,
+                fact,
                 sce,
                 scenario,
                 executionTrace);
+    }
+
+    public void replaceFieldWith(Field newField) {
+        fact.getFieldData().set(
+                fact.getFieldData().indexOf(field),
+                newField);
+        field = newField;
     }
 }

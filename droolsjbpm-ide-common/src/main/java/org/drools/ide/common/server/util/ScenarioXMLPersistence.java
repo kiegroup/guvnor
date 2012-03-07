@@ -17,7 +17,6 @@
 package org.drools.ide.common.server.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
@@ -36,6 +35,9 @@ public class ScenarioXMLPersistence {
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);
         xt.alias("fact-data", FactData.class);
+        xt.alias("fact", Fact.class);
+        xt.alias("field-data", Field.class);
+        xt.alias("field-data", FieldPlaceHolder.class);
         xt.alias("field-data", FieldData.class);
         xt.alias("field-data", FactAssignmentField.class);
         xt.alias("fixture", Fixture.class);
@@ -50,14 +52,8 @@ public class ScenarioXMLPersistence {
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage("org.drools.guvnor.client", "org.drools.ide.common.client");
 
+        xt.registerConverter(new FieldConverter(xt));
 
-        ConverterLookup converterLookup = xt.getConverterLookup();
-//        Converter defaultConverter = converterLookup.lookupConverterForType(Field.class);
-        xt.registerConverter(
-                new FieldConverter(xt));
-
-//        xt.addDefaultImplementation(FieldData.class, Field.class);
-//        xt.addDefaultImplementation(FactAssignmentField.class, Field.class);
     }
 
     public static ScenarioXMLPersistence getInstance() {
@@ -80,7 +76,8 @@ public class ScenarioXMLPersistence {
     public Scenario unmarshal(String xml) {
         if (xml == null) return new Scenario();
         if (xml.trim().equals("")) return new Scenario();
-        return (Scenario) xt.fromXML(xml);
+        Object o = xt.fromXML(xml);
+        return (Scenario) o;
     }
 
 }

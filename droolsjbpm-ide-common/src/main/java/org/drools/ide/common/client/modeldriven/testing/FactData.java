@@ -16,31 +16,23 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FactData
-    implements
-    Fixture {
+        extends Fact
+        implements Fixture {
     private static final long serialVersionUID = 510l;
 
-    /**
-     * The type (class)
-     */
-    private String            type;
 
     /**
      * The name of the "variable"
      */
     private String name;
 
-
-    private List<Field>   fieldData        = new ArrayList<Field>();
-
     /**
      * If its a modify, obviously we are modifying existing data in working memory.
      */
-    private boolean           isModify;
+    private boolean isModify;
 
     public FactData() {
     }
@@ -49,28 +41,17 @@ public class FactData
                     String name,
                     List<Field> fieldData,
                     boolean modify) {
-        this( type,
-              name,
-              modify );
-        this.setFieldData( fieldData );
+        this(type, name, modify);
+        this.setFieldData(fieldData);
 
     }
 
     public FactData(String type,
                     String name,
                     boolean modify) {
-
-        this.type = type;
+        super(type);
         this.name = name;
         this.isModify = modify;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setName(String name) {
@@ -79,14 +60,6 @@ public class FactData
 
     public String getName() {
         return name;
-    }
-
-    public void setFieldData(List<Field> fieldData) {
-        this.fieldData = fieldData;
-    }
-
-    public List<Field> getFieldData() {
-        return fieldData;
     }
 
     public void setModify(boolean modify) {

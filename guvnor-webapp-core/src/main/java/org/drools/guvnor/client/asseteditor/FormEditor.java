@@ -7,9 +7,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.asseteditor.EditorWidget;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.SaveEventListener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;

@@ -4,20 +4,23 @@ public class FactAssignmentField implements Field {
 
     private String fieldName;
 
-    private FactData factData;
+    private Fact fact;
+
+    public FactAssignmentField() {
+    }
 
     public FactAssignmentField(String fieldName, String factType) {
         this.fieldName = fieldName;
-        this.factData = new FactData(factType, "", false);
+        this.fact = new Fact(factType);
     }
 
 
-    public void setFieldName(String fieldName) {
+    public void setName(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    public void setFactData(FactData factData) {
-        this.factData = factData;
+    public void setFact(Fact fact) {
+        this.fact = fact;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class FactAssignmentField implements Field {
         return fieldName;
     }
 
-    public FactData getFactData() {
-        return factData;
+    public Fact getFact() {
+        return fact;
     }
 }

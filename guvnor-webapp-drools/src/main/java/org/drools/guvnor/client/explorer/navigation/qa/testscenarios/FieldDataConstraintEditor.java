@@ -20,7 +20,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
@@ -31,7 +33,7 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Fact;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -40,25 +42,28 @@ import java.util.List;
 /**
  * Constraint editor for the FieldData in the Given Section
  */
-public class FieldDataConstraintEditor extends DirtyableComposite implements HasValueChangeHandlers<String> {
+public class FieldDataConstraintEditor
+        extends DirtyableComposite
+        implements HasValueChangeHandlers<String>, ScenarioParentWidget {
 
     private FieldData field;
     private final Panel panel = new SimplePanel();
-    private final FieldDataConstraintHelper helper;
+    private final FieldConstraintHelper helper;
 
     public FieldDataConstraintEditor(String factType,
                                      FieldData field,
-                                     FactData givenFact,
+                                     Fact givenFact,
                                      SuggestionCompletionEngine sce,
                                      Scenario scenario,
                                      ExecutionTrace executionTrace) {
         this.field = field;
-        helper = new FieldDataConstraintHelper(scenario, executionTrace, sce, factType, field, givenFact);
-        refreshEditor();
-        initWidget( panel );
+        helper = new FieldConstraintHelper(scenario, executionTrace, sce, factType, field, givenFact);
+        renderEditor();
+        initWidget(panel);
     }
 
-    private void refreshEditor() {
+    @Override
+    public void renderEditor() {
         String flType = helper.getFieldType();
         panel.clear();
 
@@ -107,15 +112,11 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                         field.setNature(FieldData.TYPE_LITERAL);
                     }
                 }
-                if ( field.getNature() == FieldData.TYPE_UNDEFINED && (helper.isThereABoundVariableToSet() == true || helper.isItAList() == true) ) {
-                    Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
-                    clickme.addClickHandler( new ClickHandler() {
-                        public void onClick(ClickEvent w) {
-                            showTypeChoice(w,
-                                    field);
-                        }
-                    });
-                    panel.add(clickme);
+                if (field.getNature() == FieldData.TYPE_UNDEFINED && (helper.isThereABoundVariableToSet() == true || helper.isItAList() == true)) {
+                    panel.add(new FieldSelectorWidget(
+                            field,
+                            helper,
+                            this));
                 } else if (field.getNature() == FieldData.TYPE_VARIABLE) {
                     panel.add(variableEditor());
                 } else if (field.getNature() == FieldData.TYPE_COLLECTION) {
@@ -125,7 +126,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                             new ValueChanged() {
                                 @Override
                                 public void valueChanged(String newValue) {
-                                    valueChanged(newValue);
+                                    valueHasChanged(newValue);
                                 }
                             },
                             flType,
@@ -141,15 +142,15 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                                            final String dataType,
                                            String fieldName,
                                            String initialValue) {
-        final TextBox tb = TextBoxFactory.getTextBox( dataType );
+        final TextBox tb = TextBoxFactory.getTextBox(dataType);
         tb.setText(initialValue);
         tb.setTitle(Constants.INSTANCE.ValueFor0(fieldName));
-        tb.addChangeHandler( new ChangeHandler() {
+        tb.addChangeHandler(new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                changed.valueChanged( tb.getText() );
+                changed.valueChanged(tb.getText());
             }
-        } );
+        });
 
         return tb;
     }
@@ -215,7 +216,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                         public void onClick(ClickEvent w) {
                             field.collectionFieldList.remove(index);
                             calculateValueFromList();
-                            refreshEditor();
+                            renderEditor();
                         }
                     }));
 
@@ -230,7 +231,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                     field.collectionFieldList.add(index + 1,
                             newFieldData);
                     calculateValueFromList();
-                    refreshEditor();
+                    renderEditor();
                 }
             });
             hpanel.add(addPattern);
@@ -246,7 +247,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                         field.collectionFieldList.set(index,
                                 onDown);
                         calculateValueFromList();
-                        refreshEditor();
+                        renderEditor();
                     }
                 }
             });
@@ -264,7 +265,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                         field.collectionFieldList.set(index - 1,
                                 onMyLine);
                         calculateValueFromList();
-                        refreshEditor();
+                        renderEditor();
                     }
                 }
             });
@@ -283,7 +284,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
                             newFieldData.collectionType = field.collectionType;
                             field.collectionFieldList.add(newFieldData);
                             calculateValueFromList();
-                            refreshEditor();
+                            renderEditor();
                         }
                     });
             panel.add(add);
@@ -304,30 +305,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite implements Has
             }
         }
         this.field.setValue("=[" + listContent.substring(1) + "]");
-    }
-
-    private void showTypeChoice(ClickEvent w,
-                                final FieldData con) {
-
-
-        TypeChoiceFormPopup typeChoiceForm = new TypeChoiceFormPopup(helper);
-        typeChoiceForm.addSelectionHandler(new SelectionHandler<Integer>() {
-
-            @Override
-            public void onSelection(SelectionEvent<Integer> selectionEvent) {
-                if (selectionEvent.getSelectedItem() == FieldData.TYPE_COLLECTION) {
-                    con.setNature(
-                            FieldData.TYPE_COLLECTION,
-                            helper.getParametricFieldType());
-                } else {
-                    con.setNature(selectionEvent.getSelectedItem());
-                }
-
-                refreshEditor();
-            }
-        });
-
-        typeChoiceForm.show();
     }
 
     private void valueHasChanged(String newValue) {

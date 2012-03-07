@@ -88,6 +88,15 @@ public class FieldData
 
     public String collectionType;
 
+    public FieldData() {
+    }
+
+    public FieldData(String name,
+                     String value) {
+        this.setName(name);
+        this.setValue(value);
+    }
+
     public long getNature() {
         return this.nature;
     }
@@ -99,15 +108,6 @@ public class FieldData
             collectionFieldList = new ArrayList<FieldData>();
             this.collectionType = collectionType;
         }
-    }
-
-    public FieldData() {
-    }
-
-    public FieldData(String name,
-                     String value) {
-        this.setName(name);
-        this.setValue(value);
     }
 
     public void setName(String name) {

@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-.workItemParameter {
-}
+package org.drools.ide.common.client.modeldriven.testing;
 
-.greyBorderWithRoundCorners {
-    border-radius: 5px;
-    border: 1px solid rgb(204, 204, 204);
-}
+/**
+ * This is just a place holder for empty field cells.
+ */
+public class FieldPlaceHolder implements Field {
 
+    private String name;
+
+    public FieldPlaceHolder(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+}

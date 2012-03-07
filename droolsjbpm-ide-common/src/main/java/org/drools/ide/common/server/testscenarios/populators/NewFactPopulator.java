@@ -49,7 +49,7 @@ class NewFactPopulator extends FactPopulatorBase {
     }
 
     @Override
-    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException {
+    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         return getFieldPopulators(factObject);
     }
 

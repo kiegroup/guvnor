@@ -22,9 +22,9 @@
   <ui:with field='resources' type='org.drools.guvnor.client.resources.DroolsGuvnorResources'/>
 
   <gwt:HorizontalPanel spacing="2">
-    <gwt:Label ui:field="parameterName" styleName="{resources.guvnorCss.workItemParameter}"/>
-    <gwt:TextBox ui:field="parameterEditor" styleName="{resources.guvnorCss.workItemParameter}"/>
-    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.guvnorCss.workItemParameter}"/>
+    <gwt:Label ui:field="parameterName" styleName="{resources.droolsGuvnorCss.workItemParameter}"/>
+    <gwt:TextBox ui:field="parameterEditor" styleName="{resources.droolsGuvnorCss.workItemParameter}"/>
+    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.droolsGuvnorCss.workItemParameter}"/>
   </gwt:HorizontalPanel>
 
 </ui:UiBinder>

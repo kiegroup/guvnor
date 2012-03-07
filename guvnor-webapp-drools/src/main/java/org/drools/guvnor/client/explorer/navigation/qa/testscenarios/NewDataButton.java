@@ -16,20 +16,18 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import java.util.List;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.TextBox;
+import java.util.List;
 
 /**
- * 
  * This button gives a choice of modifying data, based on the positional
  * context.
  */
@@ -41,11 +39,11 @@ public class NewDataButton extends TestScenarioButton {
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super( DroolsGuvnorImages.INSTANCE.newItem(),
-               Constants.INSTANCE.AddANewDataInputToThisScenario(),
-               previousEx,
-               scenario,
-               scenarioWidget );
+        super(DroolsGuvnorImages.INSTANCE.newItem(),
+                Constants.INSTANCE.AddANewDataInputToThisScenario(),
+                previousEx,
+                scenario,
+                scenarioWidget);
 
         this.currentEx = currentEx;
     }
@@ -57,26 +55,26 @@ public class NewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( DroolsGuvnorImages.INSTANCE.ruleAsset(),
-                   Constants.INSTANCE.NewInput() );
+            super(DroolsGuvnorImages.INSTANCE.ruleAsset(),
+                    Constants.INSTANCE.NewInput());
 
-            addAttribute( Constants.INSTANCE.InsertANewFact1(),
-                          new InsertFactPanel() );
+            addAttribute(Constants.INSTANCE.InsertANewFact1(),
+                    new InsertFactPanel());
 
-            List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
-                                                                     false );
+            List<String> varsInScope = scenario.getFactNamesInScope(currentEx,
+                    false);
             //now we do modifies & retracts
-            if ( varsInScope.size() > 0 ) {
-                addAttribute( Constants.INSTANCE.ModifyAnExistingFactScenario(),
-                              new ModifyFactPanel( varsInScope ) );
+            if (varsInScope.size() > 0) {
+                addAttribute(Constants.INSTANCE.ModifyAnExistingFactScenario(),
+                        new ModifyFactPanel(varsInScope));
 
-                addAttribute( Constants.INSTANCE.RetractAnExistingFactScenario(),
-                              new ExtractFactPanel( varsInScope ) );
+                addAttribute(Constants.INSTANCE.RetractAnExistingFactScenario(),
+                        new ExtractFactPanel(varsInScope));
 
             }
 
-            addAttribute( Constants.INSTANCE.ActivateRuleFlowGroup(),
-                          new ActivateRuleFlowPanel() );
+            addAttribute(Constants.INSTANCE.ActivateRuleFlowGroup(),
+                    new ActivateRuleFlowPanel());
         }
 
         class ActivateRuleFlowPanel extends BasePanel<TextBox> {
@@ -88,38 +86,38 @@ public class NewDataButton extends TestScenarioButton {
 
             @Override
             public Fixture getFixture() {
-                return new ActivateRuleFlowGroup( valueWidget.getText() );
+                return new ActivateRuleFlowGroup(valueWidget.getText());
             }
         }
 
         class ExtractFactPanel extends ListBoxBasePanel {
 
             public ExtractFactPanel(List<String> listItems) {
-                super( listItems );
+                super(listItems);
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
 
-                return new RetractFact( factName );
+                return new RetractFact(factName);
             }
         }
 
         class ModifyFactPanel extends ListBoxBasePanel {
 
             public ModifyFactPanel(List<String> listItems) {
-                super( listItems );
+                super(listItems);
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
-                String type = scenario.getVariableTypes().get( factName );
+                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
+                String type = scenario.getVariableTypes().get(factName);
 
-                return new FactData( type,
-                                     factName,
-                                     true );
+                return new FactData(type,
+                        factName,
+                        true);
 
             }
         }
@@ -128,64 +126,63 @@ public class NewDataButton extends TestScenarioButton {
             TextBox factNameTextBox;
 
             public InsertFactPanel() {
-                super( suggestionCompletionEngine.getFactTypes() );
+                super(suggestionCompletionEngine.getFactTypes());
             }
 
             @Override
             protected void addAddButtonClickHandler() {
-                add.addClickHandler( new ClickHandler() {
+                add.addClickHandler(new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
                         String factName = ("" + factNameTextBox.getText()).trim();
-                        if ( factName.equals( "" ) || factNameTextBox.getText().indexOf( ' ' ) > -1 ) {
-                            Window.alert( Constants.INSTANCE.YouMustEnterAValidFactName() );
+                        if (factName.equals("") || factNameTextBox.getText().indexOf(' ') > -1) {
+                            Window.alert(Constants.INSTANCE.YouMustEnterAValidFactName());
                         } else {
-                            if ( scenario.isFactNameReserved( factName ) ) {
-                                Window.alert( Constants.INSTANCE.TheFactName0IsAlreadyInUsePleaseChooseAnotherName( factName ) );
+                            if (scenario.isFactNameReserved(factName)) {
+                                Window.alert(Constants.INSTANCE.TheFactName0IsAlreadyInUsePleaseChooseAnotherName(factName));
                             } else {
-                                scenario.insertBetween( previousEx,
-                                                        getFixture() );
+                                scenario.insertBetween(previousEx,
+                                        getFixture());
                                 parent.renderEditor();
                                 hide();
                             }
                         }
                     }
-                } );
+                });
 
             }
 
             @Override
             protected void initWidgets() {
                 factNameTextBox = new TextBox();
-                factNameTextBox.setVisibleLength( 5 );
+                factNameTextBox.setVisibleLength(5);
 
-                add( valueWidget );
-                add( new SmallLabel( Constants.INSTANCE.FactName() ) );
-                add( factNameTextBox );
-                add( add );
+                add(valueWidget);
+                add(new SmallLabel(Constants.INSTANCE.FactName()));
+                add(factNameTextBox);
+                add(add);
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = factNameTextBox.getText();
-                String factType = valueWidget.getItemText( valueWidget.getSelectedIndex() );
-                FactData fd = new FactData( factType,
-                                            factName,
-                                            false );
+                String factType = valueWidget.getItemText(valueWidget.getSelectedIndex());
+                FactData factData = new FactData(
+                        factType,
+                        factNameTextBox.getText(),
+                        false);
 
-                //Create new FieldData objects for new Fixture based upon the first existing of the same data-type
+                //Create new Field objects for new Fixture based upon the first existing of the same data-type
                 //Only the "first" existing of the same data-type is checked as second, third etc should have been
                 //based upon the first if they were all created after this fix for GUVNOR-1139 was implemented.
-                List<FactData> existingFactData = scenario.getFactTypesToFactData().get( factType );
-                if ( existingFactData != null ) {
-                    if ( existingFactData.size() > 0 ) {
-                        for (Field field : existingFactData.get(0).getFieldData())
-                            fd.getFieldData().add(new FieldData(field.getName(),
-                                    ""));
+                List<FactData> existingFactData = scenario.getFactTypesToFactData().get(factType);
+                if (existingFactData != null && existingFactData.size() > 0) {
+                    for (Field field : existingFactData.get(0).getFieldData()) {
+                        factData.getFieldData().add(
+                                new FieldPlaceHolder(field.getName()));
                     }
                 }
 
-                return fd;
+                return factData;
             }
         }
     }

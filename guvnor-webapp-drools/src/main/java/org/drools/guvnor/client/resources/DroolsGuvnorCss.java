@@ -26,4 +26,5 @@ public interface DroolsGuvnorCss
 
     String workItemParameter();
 
+    String greyBorderWithRoundCorners();
 }

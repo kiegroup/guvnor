@@ -21,16 +21,15 @@ import com.google.gwt.resources.client.CssResource;
  * General CSS for Guvnor. Use of standalone CSS files should be migrated to here
  */
 public interface GuvnorCss
-    extends
-    CssResource {
+        extends
+        CssResource {
 
     String warningContainer();
-    
+
     String warningMessage();
 
     String popupListWidgetButtonBar();
-    
+
     String popupListWidgetCaption();
 
-    String greyBorderWithRoundCorners();
 }

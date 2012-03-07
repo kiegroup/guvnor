@@ -16,19 +16,15 @@
 
 package org.drools.ide.common.server.util;
 
+import org.drools.ide.common.client.modeldriven.testing.*;
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.junit.Test;
 import static org.junit.Assert.*;
-
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 public class ScenarioXMLPersistenceTest {
 
@@ -64,24 +60,69 @@ public class ScenarioXMLPersistenceTest {
 
         assertEquals(origSize + 1, sc.getFixtures().size());
         String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
-        
-        System.out.println(xml);
-        
+
         Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
         assertEquals(origSize, sc_.getFixtures().size());
 
-
-
-
-
-
+        verifyFieldDataNamesAreNotNull(sc_);
     }
 
+    @Test
+    public void testLoadLegacyTestScenario() throws Exception {
+
+        StringBuffer contents = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("testLoadLegacyTestScenario.xml")));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                contents.append(text);
+            }
+
+        } catch (Exception e) {
+            if (reader != null) {
+                reader.close();
+            }
+            throw new IllegalStateException("Error while reading file.", e);
+        }
+
+        Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(contents.toString());
+
+        verifyFieldDataNamesAreNotNull(scenario);
+    }
+
+    @Test
+    public void testLoadAssignedFactTestScenario() throws Exception {
+
+        StringBuffer contents = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("testLoadAssignedFactTestScenario.xml")));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                contents.append(text);
+            }
+
+        } catch (Exception e) {
+            if (reader != null) {
+                reader.close();
+            }
+            throw new IllegalStateException("Error while reading file.", e);
+        }
+
+        Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(contents.toString());
+
+        verifyFieldDataNamesAreNotNull(scenario);
+    }
 
     @Test
     public void testNewScenario() {
-        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
+        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[]{new FieldData("age", "42"), new FieldData("name", "david")}), false);
         Scenario sc = new Scenario();
         sc.getFixtures().add(d1);
         sc.getFixtures().add(new ExecutionTrace());
@@ -100,12 +141,26 @@ public class ScenarioXMLPersistenceTest {
         assertEquals(1, sc_.getFixtures().size());
     }
 
+    private void verifyFieldDataNamesAreNotNull(Scenario sc) {
+        for (Fixture fixture : sc.getFixtures()) {
+            if (fixture instanceof FactData) {
+                FactData factData = (FactData) fixture;
+                for (Field field : factData.getFieldData()) {
+                    if (field instanceof FieldData) {
+                        FieldData fieldData = (FieldData) field;
+                        assertNotNull(fieldData.getName());
+                    }
+                }
+            }
+        }
+    }
+
     private Scenario getDemo() {
         //Sample data
-        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
-        FactData d2 = new FactData("Driver", "d2", ls(new FieldData[] {new FieldData("name", "michael")}), false);
-        FactData d3 = new FactData("Driver", "d3", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
-        FactData d4 = new FactData("Accident", "a1", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
+        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[]{new FieldData("age", "42"), new FieldData("name", "david")}), false);
+        FactData d2 = new FactData("Driver", "d2", ls(new FieldData[]{new FieldData("name", "michael")}), false);
+        FactData d3 = new FactData("Driver", "d3", ls(new FieldData[]{new FieldData("name", "michael2")}), false);
+        FactData d4 = new FactData("Accident", "a1", ls(new FieldData[]{new FieldData("name", "michael2")}), false);
         Scenario sc = new Scenario();
         sc.getFixtures().add(d1);
         sc.getFixtures().add(d2);
@@ -118,16 +173,16 @@ public class ScenarioXMLPersistenceTest {
 
         List fields = new ArrayList();
         VerifyField vfl = new VerifyField("age", "42", "==");
-        vfl.setActualResult( "43" );
-        vfl.setSuccessResult( new Boolean(false) );
-        vfl.setExplanation( "Not cool jimmy." );
+        vfl.setActualResult("43");
+        vfl.setSuccessResult(new Boolean(false));
+        vfl.setExplanation("Not cool jimmy.");
 
         fields.add(vfl);
 
         vfl = new VerifyField("name", "michael", "!=");
-        vfl.setActualResult( "bob" );
-        vfl.setSuccessResult( new Boolean(true) );
-        vfl.setExplanation( "Yeah !" );
+        vfl.setActualResult("bob");
+        vfl.setSuccessResult(new Boolean(true));
+        vfl.setExplanation("Yeah !");
         fields.add(vfl);
 
         VerifyFact vf = new VerifyFact("d1", fields);
@@ -135,14 +190,14 @@ public class ScenarioXMLPersistenceTest {
         sc.getFixtures().add(vf);
 
         VerifyRuleFired vf1 = new VerifyRuleFired("Life unverse and everything", new Integer(42), null);
-        vf1.setActualResult( new Integer(42) );
-        vf1.setSuccessResult( new Boolean(true) );
-        vf1.setExplanation( "All good here." );
+        vf1.setActualResult(new Integer(42));
+        vf1.setSuccessResult(new Boolean(true));
+        vf1.setExplanation("All good here.");
 
         VerifyRuleFired vf2 = new VerifyRuleFired("Everything else", null, new Boolean(true));
-        vf2.setActualResult( new Integer(0) );
-        vf2.setSuccessResult( new Boolean(false) );
-        vf2.setExplanation( "Not so good here." );
+        vf2.setActualResult(new Integer(0));
+        vf2.setSuccessResult(new Boolean(false));
+        vf2.setExplanation("Not so good here.");
         sc.getFixtures().add(vf1);
         sc.getFixtures().add(vf2);
 

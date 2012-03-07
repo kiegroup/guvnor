@@ -18,12 +18,17 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.*;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
 import java.util.Map;
 
-public class GivenPanel extends VerticalPanel {
+public class GivenPanel
+        extends VerticalPanel {
+
     public GivenPanel(List<ExecutionTrace> listExecutionTrace,
                       int executionTraceLine,
                       FixturesMap given,
@@ -44,8 +49,7 @@ public class GivenPanel extends VerticalPanel {
                         scenario,
                         parent));
             } else {
-                FactData first = (FactData) itemList.get(0);
-                if (first.isModify()) {
+                if (itemList.getFirstFactData().isModify()) {
                     add(new ModifyFactWidget(
                             e.getKey(),
                             itemList,

@@ -16,6 +16,16 @@
 
 package org.drools.guvnor.client;
 
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
@@ -30,17 +40,6 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.*;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This is the main launching/entry point for the Guvnor web console. It
@@ -65,7 +64,8 @@ public class GuvnorDroolsEntryPoint
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
         GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         DroolsGuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
-        DroolsGuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        DroolsGuvnorResources.INSTANCE.droolsGuvnorCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
         WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
@@ -141,7 +141,7 @@ public class GuvnorDroolsEntryPoint
         EventBus eventBus = new SimpleEventBus();
         SuggestionCompletionCache.getInstance().setEventBus(eventBus);
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
-        appController = new AppControllerImpl(clientFactory,eventBus);
+        appController = new AppControllerImpl(clientFactory, eventBus);
 
         if (Window.Location.getPath().contains("StandaloneEditor.html")) {
             RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
@@ -151,13 +151,13 @@ public class GuvnorDroolsEntryPoint
         }
 
         askToInstallSampleRepository();
-        
+
         //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
         clientFactory.getPlaceController().goTo(new FindPlace());
     }
 
     private void askToInstallSampleRepository() {
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
+        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
             SampleRepositoryInstaller.askToInstall();
         }
     }

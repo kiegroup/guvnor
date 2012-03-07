@@ -7,9 +7,12 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.ide.common.client.modeldriven.testing.Fact;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
+
+import java.security.InvalidParameterException;
 
 public class FieldConverter implements Converter {
 
@@ -27,9 +30,41 @@ public class FieldConverter implements Converter {
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        Class<?> resultType = getResultType(reader);
-        Object result = xt.getReflectionProvider().newInstance(resultType);
-        return context.convertAnother(result, resultType, getDefaultConverter());
+
+        reader.moveDown();
+        String name = reader.getValue();
+        reader.moveUp();
+
+        reader.moveDown();
+
+        if (reader.getNodeName().equals("value")) {
+            FieldData fieldData = new FieldData();
+
+            fieldData.setName(name);
+
+            fieldData.setValue(reader.getValue());
+            reader.moveUp();
+
+            if (reader.hasMoreChildren()) {
+                reader.moveDown();
+                fieldData.setNature(Integer.parseInt(reader.getValue()));
+                reader.moveUp();
+            }
+
+            return fieldData;
+
+        } else if (reader.getNodeName().equals("fact")) {
+
+            FactAssignmentField factAssignmentField = new FactAssignmentField();
+            factAssignmentField.setName(name);
+
+            factAssignmentField.setFact((Fact) context.convertAnother(factAssignmentField, Fact.class));
+            reader.moveUp();
+
+            return factAssignmentField;
+        }
+
+        throw new InvalidParameterException("Unknown Field instance.");
     }
 
     @Override
@@ -37,29 +72,9 @@ public class FieldConverter implements Converter {
         return Field.class.isAssignableFrom(type);
     }
 
+
     private ReflectionConverter getDefaultConverter() {
         return new ReflectionConverter(xt.getMapper(), xt.getReflectionProvider());
     }
 
-    private Class<?> getResultType(HierarchicalStreamReader reader) {
-        if (containsValueNode(reader)) {
-            return FieldData.class;
-        } else {
-            return FactAssignmentField.class;
-        }
-    }
-
-    public boolean containsValueNode(HierarchicalStreamReader reader) {
-        while (reader.hasMoreChildren()) {
-            reader.moveDown();
-
-            if (reader.getNodeName().equals("value")) {
-                reader.moveUp();
-                return true;
-            }
-
-            reader.moveUp();
-        }
-        return false;
-    }
 }

@@ -31,7 +31,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
-import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,14 +59,14 @@ public class FactDataWidgetFactory {
         this.executionTrace = executionTrace;
         this.parent = parent;
         this.widget = widget;
-
     }
 
 
     public void build(String headerText,
-                      FactData factData) {
+                      Fact fact) {
 
-        if (factData.getName() != null && !factData.getName().isEmpty()) {
+        if (fact instanceof FactData) {
+            FactData factData = (FactData) fact;
             widget.setWidget(0,
                     ++col,
                     new SmallLabel("[" + factData.getName() + "]"));
@@ -79,19 +78,13 @@ public class FactDataWidgetFactory {
                 0,
                 0,
                 new ClickableLabel(headerText,
-                        new FieldClickHandler(
-                                factData,
-                                suggestionCompletionEngine,
-                                definitionList,
-                                parent)));
-
+                        createAddFieldButton(fact)));
 
         // Sets row name and delete button.
-        for (final Field field : factData.getFieldData()) {
+        for (final Field field : fact.getFieldData()) {
             // Avoid duplicate field rows, only one for each name.
             if (rowIndexByFieldName.doesNotContain(field.getName())) {
-                newRow(factData.getName(),
-                        field.getName());
+                newRow(fact, field.getName());
             }
 
             // Sets row data
@@ -100,18 +93,38 @@ public class FactDataWidgetFactory {
                     col,
                     editableCell(
                             field,
-                            factData,
-                            factData.getType()));
+                            fact,
+                            fact.getType()));
         }
 
-        // Set Delete
-        widget.setWidget(
-                rowIndexByFieldName.amountOrRows() + 1,
-                col,
-                new DeleteFactColumnButton(factData));
+        if (fact instanceof FactData) {
+            DeleteFactColumnButton deleteFactColumnButton = new DeleteFactColumnButton((FactData) fact);
+
+            widget.setWidget(
+                    rowIndexByFieldName.amountOrRows() + 1,
+                    col,
+                    deleteFactColumnButton);
+        }
+
+
     }
 
-    private void newRow(final String factName,
+    private ClickHandler createAddFieldButton(Fact fact) {
+
+        if (fact instanceof FactData) {
+            return new AddFieldToFactDataClickHandler(
+                    definitionList,
+                    suggestionCompletionEngine,
+                    parent);
+        } else {
+            return new AddFieldToFactClickHandler(
+                    fact,
+                    suggestionCompletionEngine,
+                    parent);
+        }
+    }
+
+    private void newRow(final Fact fact,
                         final String fieldName) {
         rowIndexByFieldName.addRow(fieldName);
 
@@ -122,7 +135,7 @@ public class FactDataWidgetFactory {
                 createFieldNameWidget(fieldName));
         widget.setWidget(rowIndex,
                 definitionList.size() + 1,
-                new DeleteFieldRowButton(factName,
+                new DeleteFieldRowButton(fact,
                         fieldName));
         widget.getCellFormatter().setHorizontalAlignment(rowIndex,
                 0,
@@ -137,13 +150,13 @@ public class FactDataWidgetFactory {
      * @return
      */
     private IsWidget editableCell(final Field field,
-                                  FactData factData,
+                                  Fact fact,
                                   String factType) {
         if (field instanceof FieldData) {
             FieldDataConstraintEditor fieldDataConstraintEditor = new FieldDataConstraintEditor(
                     factType,
                     (FieldData) field,
-                    factData,
+                    fact,
                     suggestionCompletionEngine,
                     scenario,
                     executionTrace);
@@ -155,14 +168,24 @@ public class FactDataWidgetFactory {
             });
             return fieldDataConstraintEditor;
         } else if (field instanceof FactAssignmentField) {
-            FactAssignmentField factAssignmentField = (FactAssignmentField) field;
             return new FactAssignmentFieldWidget(
-                    factAssignmentField.getFactData(),
+                    (FactAssignmentField) field,
                     definitionList,
                     scenario,
                     suggestionCompletionEngine,
                     parent,
                     executionTrace);
+        } else if (field instanceof FieldPlaceHolder) {
+            return new FieldSelectorWidget(
+                    field,
+                    new FieldConstraintHelper(
+                            scenario,
+                            executionTrace,
+                            suggestionCompletionEngine,
+                            factType,
+                            field,
+                            fact),
+                    parent);
         }
 
         throw new IllegalArgumentException("Unknown field type: " + field.getClass());
@@ -179,40 +202,45 @@ public class FactDataWidgetFactory {
 
     class DeleteFactColumnButton extends ImageButton {
 
-        public DeleteFactColumnButton(final FactData factData) {
+        public DeleteFactColumnButton(final FactData fact) {
             super(DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
-                    Constants.INSTANCE.RemoveTheColumnForScenario(factData.getName()));
+                    Constants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
 
             addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if (scenario.isFactDataReferenced(factData)) {
-                        Window.alert(Constants.INSTANCE.CanTRemoveThisColumnAsTheName0IsBeingUsed(factData.getName()));
-                    } else if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveColumn0(factData.getName()))) {
-                        scenario.removeFixture(factData);
-                        definitionList.remove(factData);
+                    if (scenario.isFactDataReferenced(fact)) {
+                        Window.alert(Constants.INSTANCE.CanTRemoveThisColumnAsTheName0IsBeingUsed(fact.getName()));
+                    } else if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveColumn0(fact.getName()))) {
+                        scenario.removeFixture(fact);
+                        definitionList.remove(fact);
 
                         parent.renderEditor();
                     }
                 }
             });
         }
-
     }
 
     class DeleteFieldRowButton extends ImageButton {
-        public DeleteFieldRowButton(final String factName,
+        public DeleteFieldRowButton(final Fact fact,
                                     final String fieldName) {
             super(DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
                     Constants.INSTANCE.RemoveThisRow());
 
             addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveRow0(factName))) {
-                        ScenarioHelper.removeFields(definitionList,
-                                fieldName);
-
-                        parent.renderEditor();
+                    if (fact instanceof FactData) {
+                        if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveRow0(fieldName))) {
+                            ScenarioHelper.removeFields(definitionList,
+                                    fieldName);
+                        }
+                    } else if (fact instanceof Fact) {
+                        if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveRow0(fieldName))) {
+                            fact.removeField(fieldName);
+                        }
                     }
+
+                    parent.renderEditor();
                 }
             });
         }

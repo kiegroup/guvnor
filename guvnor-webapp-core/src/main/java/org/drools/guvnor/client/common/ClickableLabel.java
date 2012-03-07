@@ -24,21 +24,24 @@ public class ClickableLabel extends HTML {
     public ClickableLabel(String text,
                           ClickHandler event,
                           boolean enabled) {
-        super( doText( text,
-                       enabled ) );
-        if ( enabled ) this.addClickHandler( event );
+        super(doText(text,
+                enabled));
+        if (enabled) this.addClickHandler(event);
     }
 
     private static String doText(String text,
                                  boolean enabled) {
-        if ( enabled ) return "<div class='form-field'><span class='selectable-label'>" + text + "</span></div>";
-        else return "<div class='form-field'>" + text + "</div>";
+        if (enabled) {
+            return "<div class='form-field'><span class='selectable-label'>" + text + "</span></div>";
+        } else {
+            return "<div class='form-field'>" + text + "</div>";
+        }
     }
 
     public ClickableLabel(String text,
                           ClickHandler event) {
-        this( text,
-              event,
-              true );
+        this(text,
+                event,
+                true);
     }
 }

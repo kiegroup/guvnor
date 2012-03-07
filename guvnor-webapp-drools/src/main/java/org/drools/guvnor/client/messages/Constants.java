@@ -20,6 +20,7 @@ import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -2636,64 +2637,6 @@ public interface Constants
 
     String YouMustEnterAColumnField();
 
-    String OmittedOption();
-
-    String TrueOption();
-
-    String FalseOption();
-
-    String MBeansColon();
-
-    String EventProcessingModeColon();
-
-    String AssertBehaviorColon();
-
-    String EnableAuthentication();
-
-    String UrlCollon();
-
-    String ProtocolColon();
-
-    String MarshallingColon();
-
-    String ClockTypeColon();
-
-    String KeepReferenceColon();
-
-    String Pallete();
-
-    String AddAssetEllipsis();
-
-    String RemoveSelected();
-
-    String RenameKBaseEllipsis();
-
-    String AdvancedOptionsEllipsis();
-
-    String Sessions();
-
-    String ManageDependenciesEllipsis();
-
-    String DownloadWar();
-
-    String CantDeleteKBase();
-
-    String ConfirmDeleteKBase();
-
-    String KBaseNeedsOneKsession();
-
-    String KSessionNameAlreadyExists();
-
-    String Config();
-
-    String KBaseNameAlreadyExists();
-
-    String KSessionConfiguration();
-
-    String AddNewAsset();
-
-    String KBaseAdvancedOptions();
-    
     String CreateNewFact();
 
     String ChooseAFieldToAssignAFactTo();

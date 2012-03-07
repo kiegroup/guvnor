@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class NewFactWidget implements IsWidget, NewFactWidgetView.Presenter {
 
 
-    public NewFactWidget(FieldDataConstraintHelper helper, NewFactWidgetView view) {
+    public NewFactWidget(FieldConstraintHelper helper, NewFactWidgetView view) {
         view.setPresenter(this);
         view.setFactName("Address");
     }

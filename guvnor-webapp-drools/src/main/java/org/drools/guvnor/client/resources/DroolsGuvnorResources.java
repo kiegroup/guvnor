@@ -31,6 +31,6 @@ public interface DroolsGuvnorResources
     TitledTextCellCss titledTextCellCss();
 
     @Source("css/DroolsGuvnor.css")
-    DroolsGuvnorCss guvnorCss();
+    DroolsGuvnorCss droolsGuvnorCss();
 
 }

@@ -16,18 +16,17 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
 public class DataInputWidget extends DirtyableFlexTable implements ScenarioParentWidget {
 
-    private final Scenario                   scenario;
+    private final Scenario scenario;
     private final SuggestionCompletionEngine suggestionCompletionEngine;
     protected final String type;
     private final ScenarioParentWidget parent;
@@ -55,18 +54,17 @@ public class DataInputWidget extends DirtyableFlexTable implements ScenarioParen
         setStyles();
 
         renderEditor();
-
     }
 
     private void setStyles() {
-        getCellFormatter().setStyleName( 0,
-                                         0,
-                                         "modeller-fact-TypeHeader" ); //NON-NLS
-        getCellFormatter().setAlignment( 0,
-                                         0,
-                                         HasHorizontalAlignment.ALIGN_CENTER,
-                                         HasVerticalAlignment.ALIGN_MIDDLE );
-        setStyleName( "modeller-fact-pattern-Widget" ); //NON-NLS
+        getCellFormatter().setStyleName(0,
+                0,
+                "modeller-fact-TypeHeader"); //NON-NLS
+        getCellFormatter().setAlignment(0,
+                0,
+                HasHorizontalAlignment.ALIGN_CENTER,
+                HasVerticalAlignment.ALIGN_MIDDLE);
+        setStyleName("modeller-fact-pattern-Widget"); //NON-NLS
     }
 
 
@@ -88,30 +86,27 @@ public class DataInputWidget extends DirtyableFlexTable implements ScenarioParen
                 this);
         for (Fixture fixture : definitionList) {
             if (fixture instanceof FactData) {
-                factDataWidgetFactory.build(headerText, (FactData) fixture);
+                factDataWidgetFactory.build(
+                        headerText,
+                        (FactData) fixture);
             }
         }
 
-        getFlexCellFormatter().setHorizontalAlignment(factDataWidgetFactory.amountOrRows() + 1,
+        getFlexCellFormatter().setHorizontalAlignment(
+                factDataWidgetFactory.amountOrRows() + 1,
                 0,
                 HasHorizontalAlignment.ALIGN_RIGHT);
 
         if (factDataWidgetFactory.amountOrRows() == 0) {
-            Button b = new Button(Constants.INSTANCE.AddAField());
-            b.addClickHandler(new FieldClickHandler(getFactData(), suggestionCompletionEngine, definitionList, this));
-
-            setWidget(1,
+            setWidget(
                     1,
-                    b);
+                    1,
+                    new ClickableLabel(
+                            Constants.INSTANCE.AddAField(),
+                            new AddFieldToFactDataClickHandler(
+                                    definitionList,
+                                    suggestionCompletionEngine,
+                                    parent)));
         }
-    }
-
-    private FactData getFactData() {
-        for (Fixture fixture : definitionList) {
-            if (fixture instanceof FactData) {
-                return (FactData) fixture;
-            }
-        }
-        return null;
     }
 }

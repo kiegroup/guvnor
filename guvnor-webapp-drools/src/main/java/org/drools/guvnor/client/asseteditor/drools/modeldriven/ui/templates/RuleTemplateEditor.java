@@ -33,6 +33,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -98,7 +99,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         popUp.addAttribute( "",
                                                             table );
 
-                                        Button btnSaveAndClose = new Button( Constants.INSTANCE.SaveAndClose(),
+                                        Button btnSaveAndClose = new Button( ConstantsCore.INSTANCE.SaveAndClose(),
                                                                              new ClickHandler() {
                                                                                  public void onClick(ClickEvent event) {
                                                                                      popUp.hide();

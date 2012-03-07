@@ -27,7 +27,7 @@ public interface Populator {
     public String getName();
 
 
-    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException;
+    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException, IllegalAccessException, InstantiationException;
 
     public void populate(
             InternalWorkingMemory workingMemory,
