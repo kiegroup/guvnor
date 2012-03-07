@@ -110,11 +110,11 @@ public class ServiceConfigEditor extends DirtyableComposite
         tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
             public void onSelection(SelectionEvent<Integer> integerSelectionEvent) {
                 if (integerSelectionEvent.getSelectedItem() == tabPanel.getWidgetCount() - 1) {
-                    tabPanel.remove(tabPanel.getWidgetCount() - 1);
                     final ServiceKBaseConfig newKbase = new ServiceKBaseConfig(config.getNextKBaseName());
                     newKbase.addKsession(new ServiceKSessionConfig(newKbase.getNextKSessionName()));
                     config.addKBase(newKbase);
                     addKBasePainel(newKbase, clientFactory);
+                    tabPanel.remove(tabPanel.getWidgetCount() - 2);
                     tabPanel.add(new HTML(""), panel);
                     tabPanel.selectTab(tabPanel.getWidgetCount() - 2);
                 }
