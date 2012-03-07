@@ -23,6 +23,10 @@ import java.util.Collection;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,9 +35,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
@@ -43,6 +46,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ClosableLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesService;
 import org.drools.guvnor.client.rpc.ArtifactDependenciesServiceAsync;
@@ -95,18 +99,25 @@ public class ServiceConfigEditor extends DirtyableComposite
             addKBasePainel(activeKbase, clientFactory);
         }
 
+        final HorizontalPanel panel = new HorizontalPanel();
         final Anchor linkNewKBase = new Anchor("[+]");
         linkNewKBase.setStyleName("serviceTab");
-        tabPanel.add(new FlowPanel(), linkNewKBase);
-        linkNewKBase.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                tabPanel.remove(tabPanel.getWidgetCount() - 1);
-                final ServiceKBaseConfig newKbase = new ServiceKBaseConfig(config.getNextKBaseName());
-                newKbase.addKsession(new ServiceKSessionConfig(newKbase.getNextKSessionName()));
-                config.addKBase(newKbase);
-                addKBasePainel(newKbase, clientFactory);
-                tabPanel.add(new FlowPanel(), linkNewKBase);
-                tabPanel.selectTab(tabPanel.getWidgetCount() - 2);
+
+        panel.add(linkNewKBase);
+
+        tabPanel.add(new HTML(""), panel);
+
+        tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+            public void onSelection(SelectionEvent<Integer> integerSelectionEvent) {
+                if (integerSelectionEvent.getSelectedItem() == tabPanel.getWidgetCount() - 1) {
+                    tabPanel.remove(tabPanel.getWidgetCount() - 1);
+                    final ServiceKBaseConfig newKbase = new ServiceKBaseConfig(config.getNextKBaseName());
+                    newKbase.addKsession(new ServiceKSessionConfig(newKbase.getNextKSessionName()));
+                    config.addKBase(newKbase);
+                    addKBasePainel(newKbase, clientFactory);
+                    tabPanel.add(new HTML(""), panel);
+                    tabPanel.selectTab(tabPanel.getWidgetCount() - 2);
+                }
             }
         });
 
@@ -116,26 +127,19 @@ public class ServiceConfigEditor extends DirtyableComposite
     }
 
     private void addKBasePainel(final ServiceKBaseConfig kbase, final ClientFactory clientFactory) {
-        final HorizontalPanel panel = new HorizontalPanel();
-        final Label kbaseLabel = new Label(kbase.getName());
-        kbaseLabel.setStyleName("serviceTab");
 
-        final Anchor closeLink = new Anchor(" [X]");
-        closeLink.setStyleName("serviceTab");
-
-        panel.add(kbaseLabel);
-        panel.add(closeLink);
+        final ClosableLabel closableLabel = new ClosableLabel(kbase.getName());
 
         final UpdateTabEvent updateTabEvent = new UpdateTabEvent() {
             public void onUpdate(String newName) {
-                kbaseLabel.setText(newName);
+                closableLabel.setTitle(newName);
             }
         };
 
-        tabPanel.add(new KBaseConfigPanel(config, kbase, updateTabEvent, asset.getMetaData().getModuleUUID(), asset.getMetaData().getModuleName(), clientFactory), panel);
+        tabPanel.add(new KBaseConfigPanel(config, kbase, updateTabEvent, asset.getMetaData().getModuleUUID(), asset.getMetaData().getModuleName(), clientFactory), closableLabel);
 
-        closeLink.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        closableLabel.addCloseHandler(new CloseHandler<ClosableLabel>() {
+            public void onClose(CloseEvent<ClosableLabel> closableLabelCloseEvent) {
                 if (tabPanel.getWidgetCount() <= 2) {
                     Window.alert("Can't delete this kbase.");
                     return;
