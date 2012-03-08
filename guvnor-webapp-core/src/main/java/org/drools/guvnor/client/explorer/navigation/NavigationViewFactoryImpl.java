@@ -34,22 +34,6 @@ import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemViewImpl;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderViewImpl;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderViewImpl;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderView;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderViewImpl;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeView;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderViewImpl;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeViewImpl;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityViewImpl;
@@ -69,9 +53,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class NavigationViewFactoryImpl
     implements
     NavigationViewFactory {
-
-    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
 
     private final ClientFactory     clientFactory;
     private final EventBus          eventBus;

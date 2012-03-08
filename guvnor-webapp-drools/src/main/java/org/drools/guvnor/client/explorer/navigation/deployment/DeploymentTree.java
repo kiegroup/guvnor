@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
@@ -41,11 +43,11 @@ public class DeploymentTree extends NavigationItemBuilderOld
         implements
         OpenHandler<TreeItem> {
 
-    private final ClientFactory clientFactory;
+    private final PlaceController placeController;
 
-    public DeploymentTree(ClientFactory clientFactory) {
 
-        this.clientFactory = clientFactory;
+    public DeploymentTree(PlaceController placeController) {
+        this.placeController = placeController;
 
         mainTree.setAnimationEnabled( true );
         ExplorerNodeConfig.setupDeploymentTree( mainTree,
@@ -55,7 +57,7 @@ public class DeploymentTree extends NavigationItemBuilderOld
     }
 
     public MenuBar createMenu() {
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET ) ) {
+        if ( User.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET ) ) {
             return DeploymentNewMenu.getMenu( this );
         } else {
             return null;
@@ -89,7 +91,7 @@ public class DeploymentTree extends NavigationItemBuilderOld
         TreeItem item = event.getSelectedItem();
 
         if ( item.getUserObject() instanceof SnapshotPlace ) {
-            clientFactory.getPlaceController().goTo( (SnapshotPlace) item.getUserObject() );
+            placeController.goTo( (SnapshotPlace) item.getUserObject() );
         }
     }
 

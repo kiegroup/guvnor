@@ -29,13 +29,12 @@ import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class PerspectivesPanelTest {
@@ -67,13 +66,6 @@ public class PerspectivesPanelTest {
                 clientFactory.getPerspectiveFactory()
         ).thenReturn(
                 perspectiveFactory
-        );
-
-        when(
-                perspectiveFactory.getPerspective("author")
-        ).thenReturn(
-                new AuthorPerspective()
-
         );
 
         when(
@@ -111,22 +103,9 @@ public class PerspectivesPanelTest {
     }
 
     @Test
-    public void testSetUpDefaultPerspective() throws Exception {
-        verifyPerspectiveChangedToAuthor(1);
-    }
-
-    @Test
     public void testPerspectiveListIsLoaded() throws Exception {
         verify(view).addPerspective("author", "author");
         verify(view).addPerspective("runtime", "runtime");
-    }
-
-    @Test
-    public void testChangePerspectiveToAuthor() throws Exception {
-        presenter.onChangePerspective("author");
-
-        // Once because of the default and once more because of the selection
-        verifyPerspectiveChangedToAuthor(2);
     }
 
     @Test
@@ -136,13 +115,6 @@ public class PerspectivesPanelTest {
 
         assertTrue(eventBus.getLatestEvent() instanceof ChangePerspectiveEvent);
         assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getPerspective() instanceof RunTimePerspective);
-    }
-
-    private void verifyPerspectiveChangedToAuthor(int times) {
-        ArgumentCaptor<ChangePerspectiveEvent> changePerspectiveEventArgumentCaptor = ArgumentCaptor.forClass(ChangePerspectiveEvent.class);
-        verify(eventBus, times(times)).fireEvent(changePerspectiveEventArgumentCaptor.capture());
-
-        assertTrue(changePerspectiveEventArgumentCaptor.getValue().getPerspective() instanceof AuthorPerspective);
     }
 
     class EventBusMock extends EventBus {

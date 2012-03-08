@@ -19,7 +19,6 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -34,11 +33,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.resources.TableImageResources;
 
 public class ColumnPicker<T> {
 
-    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create( TableImageResources.class );
-    private final Image                      COLUMN_PICKER_IMAGE   = new Image( TABLE_IMAGE_RESOURCES.columnPicker() );
+    private final Image                      COLUMN_PICKER_IMAGE   = new Image( TableImageResources.INSTANCE.columnPicker() );
 
     private final CellTable<T>               cellTable;
     private List<ColumnMeta<T>>              columnMetaList        = new ArrayList<ColumnMeta<T>>();

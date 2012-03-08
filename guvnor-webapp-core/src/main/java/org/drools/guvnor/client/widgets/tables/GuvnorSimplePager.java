@@ -20,10 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.user.cellview.client.AbstractPager;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Event;
@@ -33,6 +31,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.view.client.HasRows;
 import com.google.gwt.view.client.Range;
+import org.drools.guvnor.client.resources.GuvnorSimplePagerResources;
 
 /**
  * Essentially a fork of GWT's SimplePager that maintains a set page size and
@@ -42,90 +41,6 @@ import com.google.gwt.view.client.Range;
  * GWTs code is largely private and not open to extension :(
  */
 public class GuvnorSimplePager extends AbstractPager {
-
-    /**
-     * A ClientBundle that provides images for this widget.
-     */
-    public static interface Resources
-        extends
-        ClientBundle {
-
-        /**
-         * The image used to skip ahead multiple pages.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerFastForward.png")
-        ImageResource simplePagerFastForward();
-
-        /**
-         * The disabled "fast forward" image.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerFastForwardDisabled.png")
-        ImageResource simplePagerFastForwardDisabled();
-
-        /**
-         * The image used to go to the first page.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerFirstPage.png")
-        ImageResource simplePagerFirstPage();
-
-        /**
-         * The disabled first page image.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerFirstPageDisabled.png")
-        ImageResource simplePagerFirstPageDisabled();
-
-        /**
-         * The image used to go to the last page.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerLastPage.png")
-        ImageResource simplePagerLastPage();
-
-        /**
-         * The disabled last page image.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerLastPageDisabled.png")
-        ImageResource simplePagerLastPageDisabled();
-
-        /**
-         * The image used to go to the next page.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerNextPage.png")
-        ImageResource simplePagerNextPage();
-
-        /**
-         * The disabled next page image.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerNextPageDisabled.png")
-        ImageResource simplePagerNextPageDisabled();
-
-        /**
-         * The image used to go to the previous page.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerPreviousPage.png")
-        ImageResource simplePagerPreviousPage();
-
-        /**
-         * The disabled previous page image.
-         */
-        @ImageOptions(flipRtl = true)
-        @Source("../../resources/images/simplepager/simplePagerPreviousPageDisabled.png")
-        ImageResource simplePagerPreviousPageDisabled();
-
-        /**
-         * The styles used in this widget.
-         */
-        @Source("../../resources/css/SimplePager.css")
-        Style simplePagerStyle();
-    }
 
     /**
      * Styles used by this widget.
@@ -206,11 +121,11 @@ public class GuvnorSimplePager extends AbstractPager {
     }
 
     private static int       DEFAULT_FAST_FORWARD_ROWS = 100;
-    private static Resources DEFAULT_RESOURCES;
+    private static GuvnorSimplePagerResources DEFAULT_RESOURCES;
 
-    private static Resources getDefaultResources() {
+    private static GuvnorSimplePagerResources getDefaultResources() {
         if ( DEFAULT_RESOURCES == null ) {
-            DEFAULT_RESOURCES = GWT.create( Resources.class );
+            DEFAULT_RESOURCES = GuvnorSimplePagerResources.INSTANCE;
         }
         return DEFAULT_RESOURCES;
     }
@@ -231,9 +146,9 @@ public class GuvnorSimplePager extends AbstractPager {
     private final ImageButton prevPage;
 
     /**
-     * The {@link Resources} used by this widget.
+     * The {@link org.drools.guvnor.client.resources.GuvnorSimplePagerResources} used by this widget.
      */
-    private final Resources   resources;
+    private final GuvnorSimplePagerResources resources;
 
     /**
      * The {@link Style} used by this widget.
@@ -270,7 +185,7 @@ public class GuvnorSimplePager extends AbstractPager {
      * @param location
      *            the location of the text relative to the buttons
      * @param resources
-     *            the {@link Resources} to use
+     *            the {@link org.drools.guvnor.client.resources.GuvnorSimplePagerResources} to use
      * @param showFastForwardButton
      *            if true, show a fast-forward button that advances by a larger
      *            increment than a single page
@@ -280,7 +195,7 @@ public class GuvnorSimplePager extends AbstractPager {
      *            if true, show a button to go the the last page
      */
     public GuvnorSimplePager(TextLocation location,
-                             Resources resources,
+                             GuvnorSimplePagerResources resources,
                              boolean showFastForwardButton,
                              final int fastForwardRows,
                              boolean showLastPageButton) {

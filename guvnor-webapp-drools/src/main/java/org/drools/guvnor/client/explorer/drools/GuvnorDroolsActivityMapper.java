@@ -27,12 +27,9 @@ import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListActivity;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierActivity;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
-import org.drools.guvnor.client.perspective.runtime.BpmConsoleActivityMapper;
 import org.drools.guvnor.client.util.Activity;
 
 public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
-
-    private BpmConsoleActivityMapper bpmConsoleActivityMapper;
 
     public GuvnorDroolsActivityMapper(ClientFactory clientFactory) {
         super(clientFactory);
@@ -43,10 +40,6 @@ public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
 
         if (activity == null) {
             activity = tryDroolsGuvnor(place);
-        }
-
-        if (activity == null) {
-            activity = tryBpmConsoleActivityMapper(place);
         }
 
         return activity;
@@ -77,12 +70,5 @@ public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
 
     private Activity tryParent(Place place) {
         return super.getActivity(place);
-    }
-
-    private Activity tryBpmConsoleActivityMapper(Place place) {
-        if (bpmConsoleActivityMapper == null) {
-            bpmConsoleActivityMapper = new BpmConsoleActivityMapper();
-        }
-        return bpmConsoleActivityMapper.getActivity(place);
     }
 }

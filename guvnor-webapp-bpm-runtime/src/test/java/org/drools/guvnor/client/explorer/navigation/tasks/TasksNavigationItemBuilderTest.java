@@ -15,21 +15,21 @@ public class TasksNavigationItemBuilderTest {
 
     @Before
     public void setUp() throws Exception {
-        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
-        tasksHeaderView = mock(TasksHeaderView.class);
-        when(
-                navigationViewFactory.getTasksHeaderView()
-        ).thenReturn(
-                tasksHeaderView
-        );
-        TasksTreeView tasksTreeView = mock(TasksTreeView.class);
-        when(
-                navigationViewFactory.getTasksTreeView()
-        ).thenReturn(
-                tasksTreeView
-        );
-        PlaceController placeController = mock(PlaceController.class);
-        builder = new TasksNavigationItemBuilder(navigationViewFactory, placeController);
+//        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+//        tasksHeaderView = mock(TasksHeaderView.class);
+//        when(
+//                navigationViewFactory.getTasksHeaderView()
+//        ).thenReturn(
+//                tasksHeaderView
+//        );
+//        TasksTreeView tasksTreeView = mock(TasksTreeView.class);
+//        when(
+//                navigationViewFactory.getTasksTreeView()
+//        ).thenReturn(
+//                tasksTreeView
+//        );
+//        PlaceController placeController = mock(PlaceController.class);
+//        builder = new TasksNavigationItemBuilder(navigationViewFactory, placeController);
     }
 
     @Test

@@ -3,23 +3,22 @@ package org.drools.guvnor.client.widgets.tables;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.drools.guvnor.client.resources.TableImageResources;
 
 /**
  * Based on GWT bikeshed example.
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
-    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create( TableImageResources.class );
-    private static final String              DOWN_ARROW            = makeImage( TABLE_IMAGE_RESOURCES.downArrow() );
-    private static final String              SMALL_DOWN_ARROW      = makeImage( TABLE_IMAGE_RESOURCES.smallDownArrow() );
-    private static final String              UP_ARROW              = makeImage( TABLE_IMAGE_RESOURCES.upArrow() );
-    private static final String              SMALL_UP_ARROW        = makeImage( TABLE_IMAGE_RESOURCES.smallUpArrow() );
+    private static final String              DOWN_ARROW            = makeImage(TableImageResources.INSTANCE.downArrow());
+    private static final String              SMALL_DOWN_ARROW      = makeImage( TableImageResources.INSTANCE.smallDownArrow() );
+    private static final String              UP_ARROW              = makeImage( TableImageResources.INSTANCE.upArrow() );
+    private static final String              SMALL_UP_ARROW        = makeImage( TableImageResources.INSTANCE.smallUpArrow() );
 
     private static String makeImage(ImageResource resource) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );

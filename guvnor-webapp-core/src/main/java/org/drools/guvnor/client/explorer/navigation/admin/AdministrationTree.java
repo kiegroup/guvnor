@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin;
 
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -33,10 +34,10 @@ public class AdministrationTree extends NavigationItemBuilderOld {
 
     private static ConstantsCore constants = GWT.create(ConstantsCore.class);
     private static ImagesCore images = GWT.create(ImagesCore.class);
-    private final ClientFactory clientFactory;
+    private final PlaceController placeController;
 
-    public AdministrationTree(ClientFactory clientFactory) {
-        this.clientFactory = clientFactory;
+    public AdministrationTree(PlaceController placeController) {
+        this.placeController = placeController;
         mainTree.addSelectionHandler(this);
     }
 
@@ -70,6 +71,6 @@ public class AdministrationTree extends NavigationItemBuilderOld {
         String widgetID = itemWidgets.get(item);
 
         int id = Integer.parseInt(widgetID);
-        clientFactory.getPlaceController().goTo( new ManagerPlace(id) );
+        placeController.goTo( new ManagerPlace(id) );
     }
 }

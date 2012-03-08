@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:s="urn:java:ee"
+    xmlns:weld="http://jboss.org/schema/weld/beans"
+    xmlns:security="urn:java:org.jboss.seam.security"
+    xmlns:guvnorRepository="urn:java:org.drools.guvnor.server.repository"
+    xmlns:guvnorSecurity="urn:java:org.drools.guvnor.server.security"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
+        http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
+
+  <guvnorRepository:GuvnorBootstrapConfiguration>
+    <s:modifies/>
+
+    <!-- JackRabbit  -->
+    <guvnorRepository:properties>
+      <s:entry><s:key>org.drools.repository.configurator</s:key><s:value>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</s:value></s:entry>
+      <!--  the root directory for the repo storage the directory must exist. -->
+      <!--<s:entry><s:key>repository.root.directory</s:key><s:value>/opt/yourpath</s:value></s:entry>-->
+    </guvnorRepository:properties>
+
+    <!-- ModeShape -->
+    <!--
+      passwords for the background users (logInAdmin and mailman), these need to match the setting
+      you provided for JAAS (used by ModeShape only).
+    -->
+    <!--<guvnorRepository:properties>-->
+      <!--<s:entry><s:key>org.drools.repository.configurator</s:key><s:value>org.drools.repository.modeshape.ModeShapeRepositoryConfigurator</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.modeshape.jcr.URL</s:key><s:value>jndi:jcr/local?repositoryName=brms</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.secure.passwords</s:key><s:value>false</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.logInAdmin.password</s:key><s:value>logInAdmin</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.mailman.password</s:key><s:value>mailman</s:value></s:entry>-->
+    <!--</guvnorRepository:properties>-->
+
+  </guvnorRepository:GuvnorBootstrapConfiguration>
+
+
+  <security:IdentityImpl>
+    <s:modifies/>
+
+    <!-- No real authentication: demo authentication for demo purposes -->
+    <security:authenticatorClass>org.drools.guvnor.server.security.DemoAuthenticator</security:authenticatorClass>
+
+    <!-- JAAS based authentication -->
+    <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
+
+    <!-- IDM based authentication (supports LDAP, see Seam 3 and PicketLink IDM documentation) -->
+    <!--<security:authenticatorClass>org.jboss.seam.security.management.IdmAuthenticator</security:authenticator>-->
+  </security:IdentityImpl>
+
+  <!--<security:jaas.JaasAuthenticator>-->
+    <!--<s:modifies/>-->
+    <!--
+      The following one will use the jaas configuration called "other",
+      which in jboss AS means you can use properties files for users.
+    -->
+    <!--<jaasConfigName>other</jaasConfigName>-->
+  <!--</security:jaas.JaasAuthenticator>-->
+
+
+  <!-- SECURITY AUTHORIZATION CONFIGURATION -->
+  <!--
+      This is used to enable or disable role-based authorization. By default it is disabled.
+  -->
+  <!--<guvnorSecurity:RoleBasedPermissionResolver>-->
+    <!--<s:modifies/>-->
+    <!--<guvnorSecurity:enableRoleBasedAuthorization>true</guvnorSecurity:enableRoleBasedAuthorization>-->
+  <!--</guvnorSecurity:RoleBasedPermissionResolver>-->
+
+  <weld:scan>
+    <!-- Disable the seam-security by drools rules -->
+    <weld:exclude name="org.jboss.seam.security.permission.RuleBasedPermissionResolver"/>
+    <!-- TODO remove me when GUVNOR-1196 is fixed -->
+    <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
+    <weld:exclude name="org.drools.guvnor.client.**"/>
+  </weld:scan>
+
+</beans>

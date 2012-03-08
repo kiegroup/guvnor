@@ -73,6 +73,7 @@
     <module>guvnor-webapp-drools</module>
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
+    <module>guvnor-webapp-bpm-runtime</module>
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
   </modules>

@@ -38,15 +38,7 @@ public class ModuleTreeItemTest {
     public void testSetRootItem() throws Exception {
         IsTreeItem treeItem = mock(IsTreeItem.class);
         ModuleTreeItemView view = mock(ModuleTreeItemView.class);
-        ClientFactory clientFactory = mock( ClientFactory.class );
 
-        AssetEditorFactory assetEditorFactory = mock( AssetEditorFactory.class );
-        when(
-                clientFactory.getAssetEditorFactory()
-        ).thenReturn(
-                assetEditorFactory
-        );
-        
         PerspectiveFactory perspectiveFactory = mock( PerspectiveFactory.class );
         when(
                 perspectiveFactory.getRegisteredAssetEditorFormats("package")
@@ -55,11 +47,6 @@ public class ModuleTreeItemTest {
         );
 
         NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
-        when(
-                clientFactory.getNavigationViewFactory()
-        ).thenReturn(
-                navigationViewFactory
-        );
         when(
                 navigationViewFactory.getModuleTreeItemView()
         ).thenReturn(
@@ -72,7 +59,7 @@ public class ModuleTreeItemTest {
         ).thenReturn(
                 "mockUuid"
         );
-        new ModuleTreeSelectableItem( clientFactory, treeItem, packageConfigData );
+        new ModuleTreeSelectableItem( navigationViewFactory, treeItem, packageConfigData );
 
         verify(view).setRootItem(treeItem);
 

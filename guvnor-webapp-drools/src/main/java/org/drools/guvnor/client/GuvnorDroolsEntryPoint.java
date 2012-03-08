@@ -22,7 +22,7 @@ import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorMa
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.configurations.User;
 import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
@@ -145,7 +145,7 @@ public class GuvnorDroolsEntryPoint
         EventBus eventBus = new SimpleEventBus();
         SuggestionCompletionCache.getInstance().setEventBus(eventBus);
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
-        appController = new AppControllerImpl(clientFactory, eventBus);
+        appController = new AppControllerImpl(clientFactory,eventBus);
 
         if (Window.Location.getPath().contains("StandaloneEditor.html")) {
             RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
