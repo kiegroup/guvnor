@@ -203,7 +203,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
         MyClickableImageCell removeRowCell = new MyClickableImageCell(new MyClickableImageCell.ImageCellClickHandler() {
             public void onClick(final Cell.Context context) {
                 if (dataProvider.getList().size() == 1) {
-                    Window.alert("KBase needs at least one ksession.");
+                    Window.alert(Constants.INSTANCE.KBaseNeedsOneKsession());
                 } else {
                     dataProvider.getList().remove(context.getIndex());
                     kbase.removeKsession((String) context.getKey());
@@ -229,7 +229,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
                 return object.getName();
             }
         };
-        cellTable.addColumn(nameColumn, "Name");
+        cellTable.addColumn(nameColumn, Constants.INSTANCE.Name());
         nameColumn.setFieldUpdater(new FieldUpdater<ServiceKSessionConfig, String>() {
             public void update(int index, ServiceKSessionConfig object, String value) {
                 // Called when the user changes the value.
@@ -238,7 +238,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
                 }
 
                 if (kbase.getKsession(value) != null) {
-                    Window.alert("Ksession name already exists");
+                    Window.alert(Constants.INSTANCE.KSessionNameAlreadyExists());
                     textCell.clearViewData(KEY_PROVIDER.getKey(object));
                     dataProvider.flush();
                     dataProvider.refresh();
@@ -267,7 +267,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
                 return object.getType().toString().toLowerCase();
             }
         };
-        cellTable.addColumn(typeColumn, "Type");
+        cellTable.addColumn(typeColumn, Constants.INSTANCE.Type());
         typeColumn.setFieldUpdater(new FieldUpdater<ServiceKSessionConfig, String>() {
             public void update(int index, ServiceKSessionConfig object, String value) {
                 // Called when the user changes the value.
@@ -284,12 +284,12 @@ public class KBaseConfigPanel extends DirtyableComposite {
                 return "...";
             }
         };
-        cellTable.addColumn(configAdvanced, "Config");
+        cellTable.addColumn(configAdvanced, Constants.INSTANCE.Config());
         configAdvanced.setFieldUpdater(new FieldUpdater<ServiceKSessionConfig, String>() {
             public void update(int index, ServiceKSessionConfig object, String value) {
 
                 final AdvancedKSessionConfigWidget widget = new AdvancedKSessionConfigWidget(object);
-                final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
+                final InternalPopup popup = new InternalPopup(widget.asWidget(), Constants.INSTANCE.KSessionConfiguration());
                 popup.addOkButtonClickHandler(new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
@@ -365,7 +365,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
         final AssetResourceExplorerWidget widget = new AssetResourceExplorerWidget(assetPackageUUID,
                 assetPackageName, clientFactory, SERVICE_CONFIG_RESOURCE, HIDE_NAME_AND_DESCRIPTION);
 
-        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
+        final InternalPopup popup = new InternalPopup(widget.asWidget(), Constants.INSTANCE.AddNewAsset());
 
         popup.addOkButtonClickHandler(new ClickHandler() {
 
@@ -488,7 +488,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
                 }
 
                 if (config.getKbase(newName) != null) {
-                    Window.alert("Name already exists");
+                    Window.alert(Constants.INSTANCE.KBaseNameAlreadyExists());
                     pop.hide();
                     return;
                 }
@@ -530,7 +530,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
     public void advancedOptions(final ClickEvent e) {
         final AdvancedKBaseConfigWidget widget = new AdvancedKBaseConfigWidget(kbase);
 
-        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
+        final InternalPopup popup = new InternalPopup(widget.asWidget(), Constants.INSTANCE.KBaseAdvancedOptions());
         popup.addOkButtonClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 widget.updateKBase();
@@ -544,12 +544,12 @@ public class KBaseConfigPanel extends DirtyableComposite {
         return kbase;
     }
 
-    private class NewResourcePopup extends FormStylePopup {
+    private class InternalPopup extends FormStylePopup {
 
         private final Button ok = new Button(Constants.INSTANCE.OK());
 
-        public NewResourcePopup(Widget content) {
-            setTitle(Constants.INSTANCE.NewResource());
+        public InternalPopup(final Widget content, final String title) {
+            setTitle(title);
 
             final HorizontalPanel hor = new HorizontalPanel();
             final Button cancel = new Button(Constants.INSTANCE.Cancel());

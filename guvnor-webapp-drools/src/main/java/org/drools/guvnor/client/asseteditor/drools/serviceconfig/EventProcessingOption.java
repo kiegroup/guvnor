@@ -17,5 +17,16 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum EventProcessingOption {
-    CLOUD, STREAM;
+    CLOUD("Cloud"), STREAM("Stream");
+
+    private final String displayValue;
+
+    EventProcessingOption(final String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String toDisplay() {
+        return displayValue;
+    }
+
 }

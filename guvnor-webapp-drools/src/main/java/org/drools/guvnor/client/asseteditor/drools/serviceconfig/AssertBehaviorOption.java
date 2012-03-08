@@ -17,5 +17,15 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum AssertBehaviorOption {
-    IDENTITY, EQUALITY;
+    IDENTITY("Identity"), EQUALITY("Equality");
+
+    private final String displayValue;
+
+    AssertBehaviorOption(final String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String toDisplay() {
+        return displayValue;
+    }
 }

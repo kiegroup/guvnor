@@ -24,6 +24,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.messages.Constants;
+
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ClockType.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.MarshallingOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.*;
 
 public class AdvancedKSessionConfigWidget extends DirtyableComposite {
 
@@ -53,41 +58,41 @@ public class AdvancedKSessionConfigWidget extends DirtyableComposite {
 
         this.textUrl.setText(ksession.getUrl());
 
-        this.listProtocol.addItem("Rest", ProtocolOption.REST.toString());
-        this.listProtocol.addItem("Web Service", ProtocolOption.WEB_SERVICE.toString());
+        this.listProtocol.addItem(REST.toDisplay(), REST.toString());
+        this.listProtocol.addItem(WEB_SERVICE.toDisplay(), WEB_SERVICE.toString());
 
-        if (ksession.getProtocol().equals(ProtocolOption.REST)) {
+        if (ksession.getProtocol().equals(REST)) {
             this.listProtocol.setSelectedIndex(0);
         } else {
             this.listProtocol.setSelectedIndex(1);
         }
 
-        this.listMarshalling.addItem("XStream", MarshallingOption.XSTREAM.toString());
-        this.listMarshalling.addItem("Jaxb", MarshallingOption.JAXB.toString());
-        this.listMarshalling.addItem("Json", MarshallingOption.JSON.toString());
+        this.listMarshalling.addItem(XSTREAM.toDisplay(), XSTREAM.toString());
+        this.listMarshalling.addItem(JAXB.toDisplay(), JAXB.toString());
+        this.listMarshalling.addItem(JSON.toDisplay(), JSON.toString());
 
-        if (ksession.getMarshalling().equals(MarshallingOption.XSTREAM)) {
+        if (ksession.getMarshalling().equals(XSTREAM)) {
             this.listMarshalling.setSelectedIndex(0);
-        } else if (ksession.getMarshalling().equals(MarshallingOption.JAXB)) {
+        } else if (ksession.getMarshalling().equals(JAXB)) {
             this.listMarshalling.setSelectedIndex(1);
         } else {
             this.listMarshalling.setSelectedIndex(2);
         }
 
-        listClockType.addItem("Omitted", "");
-        listClockType.addItem("Pseudo", ClockType.PSEUDO.toString());
-        listClockType.addItem("Real Time", ClockType.REALTIME.toString());
+        listClockType.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listClockType.addItem(PSEUDO.toDisplay(), PSEUDO.toString());
+        listClockType.addItem(REALTIME.toDisplay(), REALTIME.toString());
         if (ksession.getClockType() == null) {
             this.listClockType.setSelectedIndex(0);
-        } else if (ksession.getClockType().equals(ClockType.PSEUDO)) {
+        } else if (ksession.getClockType().equals(PSEUDO)) {
             this.listClockType.setSelectedIndex(1);
-        } else if (ksession.getClockType().equals(ClockType.REALTIME)) {
+        } else if (ksession.getClockType().equals(REALTIME)) {
             this.listClockType.setSelectedIndex(2);
         }
 
-        listKeepReference.addItem("Omitted", "");
-        listKeepReference.addItem("True", "true");
-        listKeepReference.addItem("False", "false");
+        listKeepReference.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listKeepReference.addItem(Constants.INSTANCE.TrueOption(), "true");
+        listKeepReference.addItem(Constants.INSTANCE.FalseOption(), "false");
         if (ksession.getKeepReference() == null) {
             this.listKeepReference.setSelectedIndex(0);
         } else if (ksession.getKeepReference().equals(true)) {

@@ -17,5 +17,16 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum MarshallingOption {
-    JSON, XSTREAM, JAXB
+    JSON("Json"), XSTREAM("XStream"), JAXB("Jaxb");
+
+    private final String displayValue;
+
+    MarshallingOption(final String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String toDisplay() {
+        return displayValue;
+    }
+
 }

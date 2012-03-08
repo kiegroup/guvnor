@@ -54,6 +54,10 @@ public class ClosableLabel extends Composite
         text.setText( title );
     }
 
+    public void updateTitle(final String title) {
+        text.setText( title );
+    }
+
     @UiHandler("basePanel")
     void showCloseButton(MouseOverEvent event) {
         closeButton.setVisible( true );

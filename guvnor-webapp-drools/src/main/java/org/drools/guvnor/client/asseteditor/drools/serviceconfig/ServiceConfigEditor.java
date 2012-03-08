@@ -132,7 +132,7 @@ public class ServiceConfigEditor extends DirtyableComposite
 
         final UpdateTabEvent updateTabEvent = new UpdateTabEvent() {
             public void onUpdate(String newName) {
-                closableLabel.setTitle(newName);
+                closableLabel.updateTitle(newName);
             }
         };
 
@@ -141,10 +141,10 @@ public class ServiceConfigEditor extends DirtyableComposite
         closableLabel.addCloseHandler(new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> closableLabelCloseEvent) {
                 if (tabPanel.getWidgetCount() <= 2) {
-                    Window.alert("Can't delete this kbase.");
+                    Window.alert(Constants.INSTANCE.CantDeleteKBase());
                     return;
                 }
-                if (!Window.confirm("Confirm remove this kbase?")) {
+                if (!Window.confirm(Constants.INSTANCE.ConfirmDeleteKBase())) {
                     return;
                 }
                 for (int i = 0; i < tabPanel.getWidgetCount(); i++) {
@@ -192,7 +192,7 @@ public class ServiceConfigEditor extends DirtyableComposite
         final ArtifactDependenciesExplorerWidget widget =
                 new ArtifactDependenciesExplorerWidget(assetName, serviceArtifacts, config.getExcludedArtifacts());
 
-        final NewResourcePopup popup = new NewResourcePopup(widget.asWidget());
+        final InternalPopup popup = new InternalPopup(widget.asWidget(), Constants.INSTANCE.ManageDependenciesEllipsis());
 
         popup.addOkButtonClickHandler(new ClickHandler() {
 
@@ -222,12 +222,12 @@ public class ServiceConfigEditor extends DirtyableComposite
         Window.open(GWT.getModuleBaseURL() + "serviceWarBuilderAndDownloadHandler?uuid=" + assetUUID, "service download", "");
     }
 
-    private class NewResourcePopup extends FormStylePopup {
+    private class InternalPopup extends FormStylePopup {
 
         private final Button ok = new Button(Constants.INSTANCE.OK());
 
-        public NewResourcePopup(Widget content) {
-            setTitle(Constants.INSTANCE.NewResource());
+        public InternalPopup(final Widget content, final String title) {
+            setTitle(title);
 
             final HorizontalPanel hor = new HorizontalPanel();
             final Button cancel = new Button(Constants.INSTANCE.Cancel());

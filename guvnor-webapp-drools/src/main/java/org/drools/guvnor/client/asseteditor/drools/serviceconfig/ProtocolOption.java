@@ -17,5 +17,15 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum ProtocolOption {
-    REST, WEB_SERVICE;
+    REST("Rest"), WEB_SERVICE("Web Service");
+
+    private final String displayValue;
+
+    ProtocolOption(final String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String toDisplay() {
+        return displayValue;
+    }
 }

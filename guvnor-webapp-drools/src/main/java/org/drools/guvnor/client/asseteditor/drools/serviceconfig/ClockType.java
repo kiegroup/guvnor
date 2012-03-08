@@ -17,5 +17,16 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum ClockType {
-    REALTIME, PSEUDO
+    REALTIME("Real Time"), PSEUDO("Pseudo");
+
+    private final String displayValue;
+
+    ClockType(final String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String toDisplay() {
+        return displayValue;
+    }
+
 }

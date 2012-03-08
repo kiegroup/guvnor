@@ -27,6 +27,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.messages.Constants;
+
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.AssertBehaviorOption.*;
+import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.EventProcessingOption.*;
 
 public class AdvancedKBaseConfigWidget extends DirtyableComposite {
 
@@ -57,9 +61,9 @@ public class AdvancedKBaseConfigWidget extends DirtyableComposite {
 
         this.initWidget(uiBinder.createAndBindUi(this));
 
-        listMBeans.addItem("Omitted", "");
-        listMBeans.addItem("True", "true");
-        listMBeans.addItem("False", "false");
+        listMBeans.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listMBeans.addItem(Constants.INSTANCE.TrueOption(), "true");
+        listMBeans.addItem(Constants.INSTANCE.FalseOption(), "false");
         if (kbase.getMbeans() == null) {
             this.listMBeans.setSelectedIndex(0);
         } else if (kbase.getMbeans().equals(true)) {
@@ -68,25 +72,25 @@ public class AdvancedKBaseConfigWidget extends DirtyableComposite {
             this.listMBeans.setSelectedIndex(2);
         }
 
-        this.listEventProcessingMode.addItem("Omitted", "");
-        this.listEventProcessingMode.addItem("Cloud", EventProcessingOption.CLOUD.toString());
-        this.listEventProcessingMode.addItem("Stream", EventProcessingOption.STREAM.toString());
+        this.listEventProcessingMode.addItem(Constants.INSTANCE.OmittedOption(), "");
+        this.listEventProcessingMode.addItem(CLOUD.toDisplay(), CLOUD.toString());
+        this.listEventProcessingMode.addItem(STREAM.toDisplay(), STREAM.toString());
 
         if (kbase.getEventProcessingMode() == null) {
             this.listEventProcessingMode.setSelectedIndex(0);
-        } else if (kbase.getEventProcessingMode().equals(EventProcessingOption.CLOUD)) {
+        } else if (kbase.getEventProcessingMode().equals(CLOUD)) {
             this.listEventProcessingMode.setSelectedIndex(1);
         } else {
             this.listEventProcessingMode.setSelectedIndex(2);
         }
 
-        this.listAssertBehavior.addItem("Omitted", "");
-        this.listAssertBehavior.addItem("Equality", AssertBehaviorOption.EQUALITY.toString());
-        this.listAssertBehavior.addItem("Identity", AssertBehaviorOption.IDENTITY.toString());
+        this.listAssertBehavior.addItem(Constants.INSTANCE.OmittedOption(), "");
+        this.listAssertBehavior.addItem(EQUALITY.toDisplay(), EQUALITY.toString());
+        this.listAssertBehavior.addItem(IDENTITY.toDisplay(), IDENTITY.toString());
 
         if (kbase.getAssertBehavior() == null) {
             this.listAssertBehavior.setSelectedIndex(0);
-        } else if (kbase.getAssertBehavior().equals(AssertBehaviorOption.EQUALITY)) {
+        } else if (kbase.getAssertBehavior().equals(EQUALITY)) {
             this.listAssertBehavior.setSelectedIndex(1);
         } else {
             this.listAssertBehavior.setSelectedIndex(2);
