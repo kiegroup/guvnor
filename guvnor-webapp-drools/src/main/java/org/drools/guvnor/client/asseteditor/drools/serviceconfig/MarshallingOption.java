@@ -29,4 +29,8 @@ public enum MarshallingOption {
         return displayValue;
     }
 
+    public String toXML() {
+        return toString().toLowerCase();
+    }
+
 }

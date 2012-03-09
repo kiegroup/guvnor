@@ -17,5 +17,10 @@
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 public enum SessionType {
-    STATELESS, STATEFUL
+    STATELESS, STATEFUL;
+
+    public String toXML() {
+        return toString().toLowerCase();
+    }
+
 }

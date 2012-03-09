@@ -28,4 +28,9 @@ public enum AssertBehaviorOption {
     public String toDisplay() {
         return displayValue;
     }
+
+    public String toXML() {
+        return toString();
+    }
+
 }

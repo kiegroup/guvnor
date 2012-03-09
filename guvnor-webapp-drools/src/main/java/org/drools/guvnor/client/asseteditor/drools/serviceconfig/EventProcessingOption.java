@@ -29,4 +29,8 @@ public enum EventProcessingOption {
         return displayValue;
     }
 
+    public String toXML() {
+        return toString();
+    }
+
 }
