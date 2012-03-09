@@ -39,6 +39,7 @@ import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
+import static org.drools.guvnor.client.widgets.drools.explorer.PackageDisplayMode.*;
 
 /**
  * Widget in charge of create the XML representation of a <Resource> to be added
@@ -56,6 +57,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
 
     //Package Info
     private String packageUUID;
+    private final PackageDisplayMode packageDisplayMode;
 
     //UI Elements
 
@@ -95,7 +97,8 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
             final String packageName,
             final ClientFactory clientFactory,
             final String[] formatList,
-            final ExplorerRenderMode mode) {
+            final ExplorerRenderMode mode,
+            final PackageDisplayMode packageDisplayMode) {
 
         this.initWidget(uiBinder.createAndBindUi(this));
 
@@ -105,6 +108,8 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
         this.assetService = clientFactory.getAssetService();
 
         this.clientFactory = clientFactory;
+
+        this.packageDisplayMode = packageDisplayMode;
 
         //store data
         this.packageUUID = packageUUID;
@@ -123,10 +128,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
 
     private void initializePackageList() {
 
-        //if we are in globalArea, then package list must be visible
-        //If not, the current package is fixed
-
-        if (this.globalArea) {
+        if (this.globalArea || packageDisplayMode.equals(ALL_PACKAGES)) {
             //Global Area Data
             this.packageService.loadGlobalModule(new AsyncCallback<Module>() {
 
@@ -135,7 +137,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
                 }
 
                 public void onSuccess(Module result) {
-                    populatePackageList(result);
+                    populatePackageList(result, packageUUID);
                 }
             });
 
@@ -149,7 +151,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
                 public void onSuccess(Module[] result) {
                     for (int i = 0; i < result.length; i++) {
                         final Module packageConfigData = result[i];
-                        populatePackageList(packageConfigData);
+                        populatePackageList(packageConfigData, packageUUID);
                     }
 
                     //once packages are loaded is time to load the asset table
@@ -165,7 +167,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
                         }
 
                         public void onSuccess(Module result) {
-                            populatePackageList(result);
+                            populatePackageList(result, null);
 
                             //once packages are loaded is time to load the asset table
                             loadAssetTable();
@@ -228,10 +230,14 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
         this.loadAssetTable();
     }
 
-    private void populatePackageList(Module packageConfigData) {
+    private void populatePackageList(final Module packageConfigData, final String uuidToBeSelected) {
         this.lstPackage.addItem(packageConfigData.getName(),
                 packageConfigData.getUuid());
-        this.lstPackage.setSelectedIndex(0);
+        if (uuidToBeSelected == null) {
+            this.lstPackage.setSelectedIndex(0);
+        } else if (packageConfigData.getUuid().equals(uuidToBeSelected)) {
+            this.lstPackage.setSelectedIndex(this.lstPackage.getItemCount() - 1);
+        }
     }
 
     public void processSelectedResources(final ResourceElementReadyCommand command) {

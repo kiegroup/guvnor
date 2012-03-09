@@ -77,6 +77,7 @@ import static org.drools.guvnor.client.common.AssetFormats.*;
 import static org.drools.guvnor.client.util.Preconditions.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.AssetDownloadLinkUtil.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
+import static org.drools.guvnor.client.widgets.drools.explorer.PackageDisplayMode.*;
 
 public class KBaseConfigPanel extends DirtyableComposite {
 
@@ -363,7 +364,10 @@ public class KBaseConfigPanel extends DirtyableComposite {
     @UiHandler("btnAssetResource")
     public void addNewAssetResource(final ClickEvent e) {
         final AssetResourceExplorerWidget widget = new AssetResourceExplorerWidget(assetPackageUUID,
-                assetPackageName, clientFactory, SERVICE_CONFIG_RESOURCE, HIDE_NAME_AND_DESCRIPTION);
+                assetPackageName, clientFactory,
+                SERVICE_CONFIG_RESOURCE,
+                HIDE_NAME_AND_DESCRIPTION,
+                ALL_PACKAGES);
 
         final InternalPopup popup = new InternalPopup(widget.asWidget(), Constants.INSTANCE.AddNewAsset());
 

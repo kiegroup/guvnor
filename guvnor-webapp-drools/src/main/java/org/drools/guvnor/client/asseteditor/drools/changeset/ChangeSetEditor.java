@@ -53,6 +53,7 @@ import org.drools.guvnor.client.widgets.drools.explorer.ResourceElementReadyComm
 import static org.drools.guvnor.client.common.AssetFormats.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.AssetDownloadLinkUtil.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
+import static org.drools.guvnor.client.widgets.drools.explorer.PackageDisplayMode.ALL_PACKAGES;
 
 /**
  * This is the default Change Set editor widget - more to come later.
@@ -256,7 +257,8 @@ public class ChangeSetEditor extends DirtyableComposite
                 assetPackageName,
                 clientFactory,
                 CHANGE_SET_RESOURCE,
-                DISPLAY_NAME_AND_DESCRIPTION));
+                DISPLAY_NAME_AND_DESCRIPTION,
+                ALL_PACKAGES));
     }
 
     private void addNewResource(final AssetResourceExplorerWidget widget) {
