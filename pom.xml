@@ -75,6 +75,7 @@
     <!--module>guvnor-webapp-helloworld</module-->
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
+    <module>guvnor-api</module>
   </modules>
 
   <profiles>

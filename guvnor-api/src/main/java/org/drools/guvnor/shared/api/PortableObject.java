@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.api;
+package org.drools.guvnor.shared.api;
 
 import java.io.Serializable;
 

@@ -2,7 +2,10 @@
 <module>
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
+  <inherits name="org.drools.guvnor.GuvnorApi"/>
+
   <source path='client'/>
   <source path='shared'/>
+
 
 </module>

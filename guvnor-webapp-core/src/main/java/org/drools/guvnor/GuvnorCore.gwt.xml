@@ -9,7 +9,7 @@
   <inherits name="com.google.gwt.resources.Resources"/>
   <inherits name="pl.balon.gwt.diagrams.Diagrams"/>
   <inherits name="org.cobogw.gwt.user.User"/>
-  <inherits name="org.drools.ide.common.Common"/>
+  <inherits name="org.drools.guvnor.GuvnorApi"/>
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.allen_sauer.gwt.dnd.gwt-dnd"/>
 
