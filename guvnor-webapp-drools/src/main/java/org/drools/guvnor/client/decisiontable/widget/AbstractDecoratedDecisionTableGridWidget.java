@@ -66,10 +66,12 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
     protected final DecisionTableCellValueFactory cellValueFactory;
+    protected final DecisionTableDropDownManager  dropDownManager;
 
     public AbstractDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
+                                                    DecisionTableDropDownManager dropDownManager,
                                                     EventBus eventBus,
                                                     Panel mainPanel,
                                                     Panel bodyPanel,
@@ -89,8 +91,12 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         if ( cellValueFactory == null ) {
             throw new IllegalArgumentException( "cellValueFactory cannot be null" );
         }
+        if ( dropDownManager == null ) {
+            throw new IllegalArgumentException( "dropDownManager cannot be null" );
+        }
         this.cellFactory = cellFactory;
         this.cellValueFactory = cellValueFactory;
+        this.dropDownManager = dropDownManager;
 
         //Wire-up event handlers
         eventBus.addHandler( SetGuidedDecisionTableModelEvent.TYPE,
@@ -109,8 +115,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
         //for dependent enumerations. This needs to be called before the columns are created.
-        this.cellFactory.setDropDownManager( new DecisionTableDropDownManager( model,
-                                                                               data ) );
+        this.dropDownManager.setData( data );
 
         setupInternalModel( model,
                             columns,

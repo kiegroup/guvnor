@@ -24,7 +24,6 @@ import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupValueListDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -53,8 +52,8 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
-    private GuidedDecisionTable52                 model;
-    private CellTableDropDownDataValueMapProvider dropDownManager;
+    private GuidedDecisionTable52        model;
+    private DecisionTableDropDownManager dropDownManager;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -91,7 +90,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
      * 
      * @param dropDownManager
      */
-    public void setDropDownManager(CellTableDropDownDataValueMapProvider dropDownManager) {
+    public void setDropDownManager(DecisionTableDropDownManager dropDownManager) {
         if ( dropDownManager == null ) {
             throw new IllegalArgumentException( "dropDownManager cannot be null" );
         }

@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Defines a service that can return a Map of Field Names and corresponding
@@ -24,5 +25,7 @@ import java.util.Map;
 public interface DropDownDataValueMapProvider<T> {
 
     Map<String, String> getCurrentValueMap(T context);
+
+    Set<Integer> getDependentColumnIndexes(int iBaseColIndex);
 
 }

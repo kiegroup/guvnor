@@ -109,6 +109,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected SuggestionCompletionEngine                  sce;
     protected DecisionTableCellFactory                    cellFactory;
     protected DecisionTableCellValueFactory               cellValueFactory;
+    protected DecisionTableDropDownManager                dropDownManager;
     protected DecisionTableControlsWidget                 dtableCtrls;
     protected final EventBus                              eventBus;
     protected final boolean                               isReadOnly;
@@ -143,6 +144,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.dtableCtrls.setDecisionTableWidget( this );
         this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
+
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //for dependent enumerations. This needs to be called before the columns are created.
+        this.dropDownManager = new DecisionTableDropDownManager( sce );
 
         //Wire-up the events
         eventBus.addHandler( InsertRowEvent.TYPE,
@@ -528,7 +533,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         this.model = model;
         this.cellFactory.setModel( model );
+        this.cellFactory.setDropDownManager( this.dropDownManager );
         this.cellValueFactory.setModel( model );
+        this.dropDownManager.setModel( model );
         this.rm = new BRLRuleModel( model );
 
         //Ensure field data-type is set (field did not exist before 5.2)
@@ -2141,6 +2148,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             int originRowIndex = originCoordinate.getRow();
             int originColumnIndex = originCoordinate.getCol();
 
+            //Get "dependent" column indexes
+            Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( originColumnIndex );
+
             //Changed data
             List<List<CellValue< ? extends Comparable< ? >>>> data = e.getValue();
 
@@ -2156,6 +2166,21 @@ public abstract class AbstractDecisionTableWidget extends Composite
                     model.getData().get( targetRowIndex ).set( targetColumnIndex,
                                                                dcv );
                 }
+
+                //Clear dependent cells' values
+                for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
+                    model.getData().get( targetRowIndex ).get( dependentColumnIndex ).clearValues();
+                }
+
+            }
+
+            //Signal update of UI dependent columns
+            for ( Integer iCol : dependentColumnIndexes ) {
+                BaseColumn columnToUpdate = model.getExpandedColumns().get( iCol );
+                List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnToUpdate );
+                UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
+                                                                                    columnData );
+                eventBus.fireEvent( updateColumnData );
             }
         }
 

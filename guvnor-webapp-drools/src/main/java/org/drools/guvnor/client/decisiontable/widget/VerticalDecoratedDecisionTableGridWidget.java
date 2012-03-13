@@ -32,11 +32,13 @@ public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedD
     public VerticalDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
+                                                    DecisionTableDropDownManager dropDownManager,
                                                     boolean isReadOnly,
                                                     EventBus eventBus) {
         super( resources,
                cellFactory,
                cellValueFactory,
+               dropDownManager,
                eventBus,
                new HorizontalPanel(),
                new VerticalPanel(),

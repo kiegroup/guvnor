@@ -16,13 +16,16 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -42,12 +45,46 @@ public class DecisionTableDropDownManager
     implements
     CellTableDropDownDataValueMapProvider {
 
-    private final GuidedDecisionTable52 model;
-    private final DynamicData           data;
+    private final SuggestionCompletionEngine sce;
+    private GuidedDecisionTable52            model;
+    private DynamicData                      data;
+
+    public DecisionTableDropDownManager(final SuggestionCompletionEngine sce) {
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
+        }
+        this.sce = sce;
+    }
 
     public DecisionTableDropDownManager(final GuidedDecisionTable52 model,
-                                        final DynamicData data) {
+                                        final DynamicData data,
+                                        final SuggestionCompletionEngine sce) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+        if ( data == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
+        }
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
+        }
         this.model = model;
+        this.data = data;
+        this.sce = sce;
+    }
+
+    public void setModel(GuidedDecisionTable52 model) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
+        }
+        this.model = model;
+    }
+
+    @Override
+    public void setData(DynamicData data) {
+        if ( data == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
+        }
         this.data = data;
     }
 
@@ -122,6 +159,65 @@ public class DecisionTableDropDownManager
         //in a Decision Table are always String-based hence we can safely call toString()
         //to retrieve the correct String representation of the CellValue's value.
         return dcv.getValue().toString();
+    }
+
+    @Override
+    public Set<Integer> getDependentColumnIndexes(int iBaseColIndex) {
+
+        final Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
+
+        //Get the column for the cell being edited
+        final List<BaseColumn> allColumns = this.model.getExpandedColumns();
+        final BaseColumn baseColumn = allColumns.get( iBaseColIndex );
+
+        //Get values for all Constraints or Actions on the same pattern as the baseColumn
+        if ( baseColumn instanceof ConditionCol52 ) {
+            final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
+            final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
+            for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
+                if ( sce.isDependentEnum( basePattern.getFactType(),
+                                          baseConditionColumn.getFactField(),
+                                          cc.getFactField() ) ) {
+                    dependentColumnIndexes.add( allColumns.indexOf( cc ) );
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
+            final ActionSetFieldCol52 baseActionColumn = (ActionSetFieldCol52) baseColumn;
+            final Pattern52 basePattern = model.getConditionPattern( baseActionColumn.getBoundName() );
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionSetFieldCol52 ) {
+                    final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                    if ( asf.getBoundName().equals( binding ) ) {
+                        if ( sce.isDependentEnum( basePattern.getFactType(),
+                                                  baseActionColumn.getFactField(),
+                                                  asf.getFactField() ) ) {
+                            dependentColumnIndexes.add( allColumns.indexOf( ac ) );
+                        }
+                    }
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
+            final ActionInsertFactCol52 baseActionColumn = (ActionInsertFactCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionInsertFactCol52 ) {
+                    final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
+                    if ( aif.getBoundName().equals( binding ) ) {
+                        if ( sce.isDependentEnum( baseActionColumn.getFactType(),
+                                                  baseActionColumn.getFactField(),
+                                                  aif.getFactField() ) ) {
+                            dependentColumnIndexes.add( allColumns.indexOf( ac ) );
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return dependentColumnIndexes;
     }
 
 }

@@ -291,14 +291,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     abstract void redraw();
 
     /**
-     * Redraw table column. Partial redraw
-     * 
-     * @param index
-     *            Column index
-     */
-    abstract void redrawColumn(int index);
-
-    /**
      * Redraw table columns. Partial redraw
      * 
      * @param startRedrawIndex
@@ -1132,7 +1124,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             }
         }
 
-        redrawColumn( iColIndex );
+        data.assertModelMerging();
+
+        redrawColumns( iColIndex,
+                       columns.size() - 1 );
     }
 
     public void onUpdateColumnDefinition(UpdateColumnDefinitionEvent event) {
@@ -1228,9 +1223,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     @SuppressWarnings("rawtypes")
     public void onUpdateSelectedCells(UpdateSelectedCellsEvent event) {
 
-        //TODO {manstis} This needs to see if other cells need to be updated as a result of the change to 
-        //a selected cell. For example, dependent enumerations. Access to a XXXDropDownManager would be nice. 
-        //We can then find the maximum extent of all cells to be updated so we redraw what is needed.
         Comparable< ? > value = event.getValue();
         boolean bUngroupCells = false;
         Coordinate selection = selections.first().getCoordinate();
@@ -1282,7 +1274,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                          true );
                 }
             }
-            
+
         } else if ( data.isMerged() || selections.size() > 1 || value == null ) {
 
             //If the data is merged changes to the cells' value can cause the need for a greater range of 

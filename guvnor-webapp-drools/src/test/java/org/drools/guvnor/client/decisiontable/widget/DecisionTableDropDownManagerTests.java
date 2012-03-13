@@ -41,6 +41,7 @@ public class DecisionTableDropDownManagerTests {
     private DynamicData                  data;
     private GuidedDecisionTable52        model;
     private DecisionTableDropDownManager manager;
+    private SuggestionCompletionEngine   sce;
 
     @Before
     public void setup() {
@@ -105,9 +106,13 @@ public class DecisionTableDropDownManagerTests {
                         makeColumnData( new String[]{"r0c5", "r1c5"} ),
                         true );
 
+        //---Setup SCE---
+        sce = new SuggestionCompletionEngine();
+
         //---Setup manager---
         manager = new DecisionTableDropDownManager( model,
-                                                    data );
+                                                    data,
+                                                    sce );
     }
 
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(final String[] values) {

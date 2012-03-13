@@ -409,8 +409,8 @@ public class SuggestionCompletionEngine
             if ( _typeFields instanceof String ) {
                 String typeFields = (String) _typeFields;
 
-                StringBuilder dataEnumListsKeyBuilder = new StringBuilder(type);
-                dataEnumListsKeyBuilder.append(".").append(field);
+                StringBuilder dataEnumListsKeyBuilder = new StringBuilder( type );
+                dataEnumListsKeyBuilder.append( "." ).append( field );
 
                 boolean addOpeninColumn = true;
                 String[] splitTypeFields = typeFields.split( "," );
@@ -422,20 +422,20 @@ public class SuggestionCompletionEngine
                         String fieldValue = currentValueEntry.getValue();
                         if ( fieldName.trim().equals( typeField.trim() ) ) {
                             if ( addOpeninColumn ) {
-                                dataEnumListsKeyBuilder.append("[");
+                                dataEnumListsKeyBuilder.append( "[" );
                                 addOpeninColumn = false;
                             }
-                            dataEnumListsKeyBuilder.append(typeField).append("=").append(fieldValue);
+                            dataEnumListsKeyBuilder.append( typeField ).append( "=" ).append( fieldValue );
 
                             if ( j != (splitTypeFields.length - 1) ) {
-                                dataEnumListsKeyBuilder.append(",");
+                                dataEnumListsKeyBuilder.append( "," );
                             }
                         }
                     }
                 }
 
                 if ( !addOpeninColumn ) {
-                    dataEnumListsKeyBuilder.append("]");
+                    dataEnumListsKeyBuilder.append( "]" );
                 }
 
                 DropDownData data = DropDownData.create( this.dataEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
@@ -544,6 +544,45 @@ public class SuggestionCompletionEngine
     }
 
     /**
+     * Check whether the childField is related to the parentField through a
+     * chain of enumeration dependencies. Both fields belong to the same Fact
+     * Type. Furthermore code consuming this function should ensure both
+     * parentField and childField relate to the same Fact Pattern
+     * 
+     * @param factType
+     * @param baseField
+     * @param childField
+     * @return
+     */
+    public boolean isDependentEnum(String factType,
+                                   String parentField,
+                                   String childField) {
+        Map<String, Object> enums = loadDataEnumLookupFields();
+        if ( enums.isEmpty() ) {
+            return false;
+        }
+        //Check if the childField is a direct descendant of the parentField
+        final String key = factType + "." + childField;
+        if ( !enums.containsKey( key ) ) {
+            return false;
+        }
+
+        //Otherwise follow the dependency chain...
+        final Object _parent = enums.get( key );
+        if ( _parent instanceof String ) {
+            final String _parentField = (String) _parent;
+            if ( _parentField.equals( parentField ) ) {
+                return true;
+            } else {
+                return isDependentEnum( factType,
+                                        parentField,
+                                        _parentField );
+            }
+        }
+        return false;
+    }
+
+    /**
      * This is only used by enums that are like Fact.field[something=X] and so
      * on.
      */
@@ -564,14 +603,15 @@ public class SuggestionCompletionEngine
                         StringBuilder typeFieldBuilder = new StringBuilder();
 
                         for ( int i = 0; i < bits.length; i++ ) {
-                            typeFieldBuilder.append(bits[i].substring( 0,
-                                                            bits[i].indexOf( '=' ) ));
+                            typeFieldBuilder.append( bits[i].substring( 0,
+                                                                        bits[i].indexOf( '=' ) ) );
                             if ( i != (bits.length - 1) ) {
-                                typeFieldBuilder.append(",");
+                                typeFieldBuilder.append( "," );
                             }
                         }
 
-                        dataEnumLookupFields.put( factField, typeFieldBuilder.toString() );
+                        dataEnumLookupFields.put( factField,
+                                                  typeFieldBuilder.toString() );
                     } else {
                         String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {

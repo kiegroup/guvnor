@@ -32,11 +32,13 @@ public class VerticalDecoratedTemplateDataGridWidget extends AbstractDecoratedTe
     public VerticalDecoratedTemplateDataGridWidget(ResourcesProvider<TemplateDataColumn> resources,
                                                    TemplateDataCellFactory cellFactory,
                                                    TemplateDataCellValueFactory cellValueFactory,
+                                                   TemplateDropDownManager dropDownManager,
                                                    boolean isReadOnly,
                                                    EventBus eventBus) {
         super( resources,
                cellFactory,
                cellValueFactory,
+               dropDownManager,
                eventBus,
                new HorizontalPanel(),
                new VerticalPanel(),

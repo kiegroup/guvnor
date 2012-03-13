@@ -43,17 +43,17 @@ public class PopupDropDownEditCell extends
     private final String                                factField;
 
     private final SuggestionCompletionEngine            sce;
-    private final CellTableDropDownDataValueMapProvider ddValueMapProvider;
+    private final CellTableDropDownDataValueMapProvider dropDownManager;
 
     public PopupDropDownEditCell(final String factType,
                                  final String factField,
                                  final SuggestionCompletionEngine sce,
-                                 final CellTableDropDownDataValueMapProvider ddValueMapProvider,
+                                 final CellTableDropDownDataValueMapProvider dropDownManager,
                                  final boolean isReadOnly) {
         super( isReadOnly );
         this.factType = factType;
         this.factField = factField;
-        this.ddValueMapProvider = ddValueMapProvider;
+        this.dropDownManager = dropDownManager;
         this.sce = sce;
 
         this.listBox = new ListBox();
@@ -85,7 +85,7 @@ public class PopupDropDownEditCell extends
         //has to be populated "on demand". 
         DropDownData dd = sce.getEnums( this.factType,
                                         this.factField,
-                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
+                                        this.dropDownManager.getCurrentValueMap( context ) );
         if ( dd == null ) {
             return;
         }
@@ -160,7 +160,7 @@ public class PopupDropDownEditCell extends
         //has to be populated "on demand". 
         DropDownData dd = sce.getEnums( this.factType,
                                         this.factField,
-                                        this.ddValueMapProvider.getCurrentValueMap( context ) );
+                                        this.dropDownManager.getCurrentValueMap( context ) );
         if ( dd == null ) {
             return;
         }

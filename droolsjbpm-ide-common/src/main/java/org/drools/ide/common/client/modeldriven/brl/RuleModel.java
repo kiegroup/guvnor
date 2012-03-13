@@ -325,10 +325,8 @@ public class RuleModel
      */
     public List<String> getAllVariables() {
         List<String> result = new ArrayList<String>();
-        
         result.addAll(this.getAllLHSVariables());
         result.addAll(this.getAllRHSVariables());
-
         return result;
     }
 

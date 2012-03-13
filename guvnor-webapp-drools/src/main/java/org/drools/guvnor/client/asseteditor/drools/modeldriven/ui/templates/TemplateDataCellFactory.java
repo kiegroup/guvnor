@@ -17,7 +17,6 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
@@ -25,7 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
 
-    private CellTableDropDownDataValueMapProvider dropDownManager;
+    private TemplateDropDownManager dropDownManager;
 
     /**
      * Construct a Cell Factory for a specific Template Data Widget
@@ -48,7 +47,7 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
      * 
      * @param dropDownManager
      */
-    public void setDropDownManager(CellTableDropDownDataValueMapProvider dropDownManager) {
+    public void setDropDownManager(TemplateDropDownManager dropDownManager) {
         if ( dropDownManager == null ) {
             throw new IllegalArgumentException( "dropDownManager cannot be null" );
         }

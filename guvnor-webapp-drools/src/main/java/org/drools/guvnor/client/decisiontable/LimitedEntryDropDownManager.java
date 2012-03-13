@@ -19,7 +19,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
 import org.drools.guvnor.client.util.DateConverter;
@@ -248,6 +250,14 @@ public class LimitedEntryDropDownManager
     private String convertStringValueToString(DTCellValue52 dcv) {
         final String value = dcv.getStringValue();
         return (value == null ? "" : value);
+    }
+
+    @Override
+    public Set<Integer> getDependentColumnIndexes(int originColumnIndex) {
+        //TODO {manstis} Get the actual column indexes
+        Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
+        dependentColumnIndexes.add( originColumnIndex + 1 );
+        return dependentColumnIndexes;
     }
 
 }

@@ -362,11 +362,12 @@ public class DTCellValue52
         this.dataType = DTDataTypes52.STRING;
     }
 
-    private void clearValues() {
+    public void clearValues() {
         this.valueBoolean = null;
         this.valueDate = null;
+        this.valueNumeric = null;
         this.valueString = null;
-        this.dataType = null;
+        this.isOtherwise = false;
     }
 
     public boolean hasValue() {

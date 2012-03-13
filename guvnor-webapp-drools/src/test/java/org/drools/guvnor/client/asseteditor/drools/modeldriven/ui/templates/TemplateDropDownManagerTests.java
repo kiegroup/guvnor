@@ -41,9 +41,10 @@ import com.google.gwt.cell.client.Cell.Context;
 
 public class TemplateDropDownManagerTests {
 
-    private DynamicData             data;
-    private TemplateModel           model;
-    private TemplateDropDownManager manager;
+    private DynamicData                data;
+    private TemplateModel              model;
+    private TemplateDropDownManager    manager;
+    private SuggestionCompletionEngine sce;
 
     @Before
     public void setup() {
@@ -143,9 +144,13 @@ public class TemplateDropDownManagerTests {
                         makeColumnData( new String[]{"r0c4", "r1c4"} ),
                         true );
 
+        //---Setup SCE---
+        sce = new SuggestionCompletionEngine();
+
         //---Setup manager---
         manager = new TemplateDropDownManager( model,
-                                               data );
+                                               data,
+                                               sce );
     }
 
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(final String[] values) {

@@ -180,26 +180,6 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
     }
 
     @Override
-    void redrawColumn(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero." );
-        }
-        if ( index > columns.size() ) {
-            throw new IllegalArgumentException( "index cannot be greater than the number of defined columns." );
-        }
-
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            TableRowElement tre = tbody.getRows().getItem( iRow );
-            DynamicDataRow rowData = data.get( iRow );
-            redrawTableRowElement( rowData,
-                                   tre,
-                                   index,
-                                   index );
-        }
-
-    }
-
-    @Override
     void redrawColumns(int startRedrawIndex,
                        int endRedrawIndex) {
         if ( startRedrawIndex < 0 ) {
@@ -465,7 +445,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
             if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
-                divGroup.setTitle(Constants.INSTANCE.groupCells());
+                divGroup.setTitle( Constants.INSTANCE.groupCells() );
                 divGroup.addClassName( resources.cellTableGroupDiv() );
                 if ( cellData.isGrouped() ) {
                     divGroup.setInnerHTML( selectorUngroupedCellsHtml );

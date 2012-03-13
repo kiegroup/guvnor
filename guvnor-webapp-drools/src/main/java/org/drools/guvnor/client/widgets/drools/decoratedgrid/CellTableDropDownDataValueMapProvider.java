@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+
 import com.google.gwt.cell.client.Cell.Context;
 
 /**
@@ -23,5 +25,7 @@ import com.google.gwt.cell.client.Cell.Context;
 public interface CellTableDropDownDataValueMapProvider
     extends
     DropDownDataValueMapProvider<Context> {
+
+    void setData(final DynamicData data);
 
 }

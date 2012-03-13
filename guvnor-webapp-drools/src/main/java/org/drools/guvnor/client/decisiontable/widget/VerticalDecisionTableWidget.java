@@ -50,6 +50,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
                                                                cellFactory,
                                                                cellValueFactory,
+                                                               dropDownManager,
                                                                isReadOnly,
                                                                eventBus );
 
