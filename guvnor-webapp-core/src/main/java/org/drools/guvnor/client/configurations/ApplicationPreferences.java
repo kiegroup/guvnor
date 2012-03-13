@@ -32,6 +32,10 @@ public class ApplicationPreferences {
     public static final String DESIGNER_CONTEXT = "designer.context";
     public static final String DESIGNER_PROFILE = "designer.profile";
 
+    public static final String FORMBUILDER_URL = "formbuilder.url";
+    public static final String FORMBUILDER_CONTEXT = "formbuilder.url";
+    public static final String FORMBUILDER_PROFILE = "formbuilder.profile";
+
     public static ApplicationPreferences instance;
     private Map<String, String> preferences;
 
@@ -44,10 +48,14 @@ public class ApplicationPreferences {
     }
 
     public static boolean getBooleanPref(String name) {
-        if ( instance.preferences.containsKey(name) ) {
+    	return getBooleanPref(name, false);
+    }
+    
+    public static boolean getBooleanPref(String name, boolean defaultValue) {
+    	if ( instance.preferences.containsKey(name) ) {
             return Boolean.parseBoolean(instance.preferences.get(name));
         } else {
-            return false;
+            return defaultValue;
         }
     }
 
@@ -66,7 +74,7 @@ public class ApplicationPreferences {
     public static boolean showVisualRuleFlow() {
         return getBooleanPref("visual-ruleflow");
     }
-    
+   
     public static String getDesignerURL() {
         return getStringPref(DESIGNER_URL);
     }
@@ -79,4 +87,15 @@ public class ApplicationPreferences {
         return getStringPref(DESIGNER_PROFILE);
     }
     
+    public static String getFormBuilderURL() {
+        return getStringPref(FORMBUILDER_URL);
+    }
+
+    public static String getFormBuilderContext() {
+        return getStringPref(FORMBUILDER_CONTEXT);
+    }
+
+    public static String getFormBuilderProfile() {
+        return getStringPref(FORMBUILDER_PROFILE);
+    }
 }

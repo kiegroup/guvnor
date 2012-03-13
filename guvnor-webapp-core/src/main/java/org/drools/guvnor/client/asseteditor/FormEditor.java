@@ -1,11 +1,12 @@
 package org.drools.guvnor.client.asseteditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.FormContentModel;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 
 import com.google.gwt.core.client.GWT;
@@ -57,7 +58,8 @@ EditorWidget {
              name = "/jbpm-form-builder/embed";
          } **/
 
-        name = "/jbpm-form-builder/embed?uuid=" + modelUUID + "&profile=guvnor";
+        name = "/" + ApplicationPreferences.getFormBuilderContext() + "/embed?uuid=" + 
+                modelUUID + "&profile=" + ApplicationPreferences.getFormBuilderProfile();
         if (username[0] != null) {
             name += "&username=" + username[0];
         }
@@ -108,11 +110,9 @@ EditorWidget {
     }
 
     private void exportFormToFtl(String jsonForm) {
-        String hostName = Window.Location.getHostName();
-        String portNumber = Window.Location.getPort();
-        String protocol = Window.Location.getProtocol();
-        protocol = protocol.charAt(protocol.length() -1) == ':' ? protocol : protocol + ":";
-        String url = protocol + "//" + hostName + ":" + portNumber + "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
+        String url = ApplicationPreferences.getFormBuilderURL() + "/" + 
+                ApplicationPreferences.getFormBuilderContext() + 
+                "/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {
