@@ -2640,4 +2640,66 @@ public interface Constants
     String CreateNewFact();
 
     String ChooseAFieldToAssignAFactTo();
+
+    String OmittedOption();
+
+    String TrueOption();
+
+    String FalseOption();
+
+    String CantDeleteKBase();
+
+    String ConfirmDeleteKBase();
+
+    String ManageDependenciesEllipsis();
+
+    String KBaseNeedsOneKsession();
+
+    String KSessionNameAlreadyExists();
+
+    String Config();
+
+    String KSessionConfiguration();
+
+    String AddNewAsset();
+
+    String RenameThisKBase();
+
+    String RenameKBase();
+
+    String KBaseNameAlreadyExists();
+
+    String KBaseAdvancedOptions();
+
+    String Pallete();
+
+    String AddAssetEllipsis();
+
+    String RemoveSelected();
+
+    String RenameKBaseEllipsis();
+
+    String AdvancedOptionsEllipsis();
+
+    String Sessions();
+
+    String UrlCollon();
+
+    String ProtocolColon();
+
+    String MarshallingColon();
+
+    String ClockTypeColon();
+
+    String KeepReferenceColon();
+
+    String MBeansColon();
+
+    String EventProcessingModeColon();
+
+    String AssertBehaviorColon();
+
+    String EnableAuthentication();
+
+    String DownloadWar();
 }

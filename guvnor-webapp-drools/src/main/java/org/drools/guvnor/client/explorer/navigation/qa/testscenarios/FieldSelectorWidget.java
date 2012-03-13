@@ -68,15 +68,15 @@ public class FieldSelectorWidget
         typeChoiceForm.show();
     }
 
-    private void createField(SelectionEvent<Integer> selectionEvent) {
+    private Field createField(SelectionEvent<Integer> selectionEvent) {
         if (selectionEvent.getSelectedItem() == FieldData.TYPE_FACT) {
-            helper.replaceFieldWith(new FactAssignmentField(field.getName(), helper.getFieldType()));
+            return new FactAssignmentField(field.getName(), helper.getFieldType());
         } else {
             FieldData fieldData = new FieldData(field.getName(), "");
-            helper.replaceFieldWith(fieldData);
             applyFieldDataNature(
                     fieldData,
                     selectionEvent.getSelectedItem());
+            return fieldData;
         }
     }
 
