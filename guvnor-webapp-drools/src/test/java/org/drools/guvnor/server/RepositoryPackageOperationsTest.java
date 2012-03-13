@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
 
-    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real. -Geoffrey-
+    // TODO this entire test must be rewritten to extend GuvnorIntegrationTest and test it for real. -Geoffrey-
     // TODO ( Or write a separate integration test, so we can keep this one failing fast -Rikkola- )
 
     private final RulesRepository             rulesRepository             = mock( RulesRepository.class );

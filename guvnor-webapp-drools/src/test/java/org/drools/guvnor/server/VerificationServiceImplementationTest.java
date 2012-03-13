@@ -40,7 +40,7 @@ import org.mockito.Matchers;
 
 public class VerificationServiceImplementationTest {
 
-    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+    // TODO this entire test must be rewritten to extend GuvnorIntegrationTest and test it for real
 
     private VerificationService verificationService;
     private ModuleItem packageItem;

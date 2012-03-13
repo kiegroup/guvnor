@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryAssetOperationsTest {
 
-    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+    // TODO this entire test must be rewritten to extend GuvnorIntegrationTest and test it for real
 
     @Test
     public void testRenameAsset() {

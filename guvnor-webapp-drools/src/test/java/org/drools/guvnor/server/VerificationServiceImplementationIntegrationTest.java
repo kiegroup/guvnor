@@ -24,12 +24,13 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.IO;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Test;
 
-public class VerificationServiceImplementationIntegrationTest extends GuvnorTestBase {
+public class VerificationServiceImplementationIntegrationTest extends GuvnorIntegrationTest {
 
     @Inject
     private VerificationServiceImplementation verificationService;

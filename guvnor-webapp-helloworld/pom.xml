@@ -110,20 +110,6 @@
           <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
         </configuration>
       </plugin>
-      <plugin>
-        <!-- Overwrite the surefire plugin to run after instead of before the package phase -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -221,7 +207,7 @@
                 <!-- Download JBoss AS and unpack it to have it available during tests -->
                 <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
                 <id>unpack</id>
-                <phase>process-test-classes</phase>
+                <phase>pre-integration-test</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -287,7 +273,7 @@
             <!--<executions>-->
               <!--<execution> -->
               <!--<id>download-and-unzip-managed-tomcat6</id> -->
-              <!--<phase>generate-test-resources</phase> -->
+              <!--<phase>pre-integration-test</phase> -->
               <!--<configuration> -->
               <!--<tasks> -->
               <!--<mkdir dir="${appserver.download.dir}"/> -->
@@ -309,7 +295,7 @@
           <!--<executions> -->
           <!--<execution> -->
           <!--<id>copy-tomcat6-conf</id> -->
-          <!--<phase>process-test-resources</phase> -->
+          <!--<phase>pre-integration-test</phase> -->
           <!--<goals> -->
           <!--<goal>copy-resources</goal> -->
           <!--</goals> -->
