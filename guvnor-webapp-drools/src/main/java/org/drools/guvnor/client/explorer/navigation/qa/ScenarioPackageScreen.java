@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -32,6 +33,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.TestScenarioServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import java.util.Arrays;
@@ -90,7 +92,8 @@ public class ScenarioPackageScreen extends Composite {
      */
     private void runAllScenarios(String uuid) {
         LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenarios() );
-        RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
+        TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioServiceAsync.class);
+        testScenarioService.runScenariosInPackage( uuid,
                 new GenericCallback<BulkTestRunResult>() {
                     public void onSuccess(BulkTestRunResult bulkTestRunResult) {
                         BulkRunResultViewImpl view = new BulkRunResultViewImpl( clientFactory );

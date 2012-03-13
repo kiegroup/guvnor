@@ -17,7 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 public interface ModuleService
         extends
@@ -72,16 +71,6 @@ public interface ModuleService
      *         Really.
      */
     public Module loadModule(String uuid);
-
-    /**
-     * Validate module configuration
-     *
-     * @return A ValidatedReponse, with any errors to be reported. No payload is
-     *         in the response. If there are any errors, the user should be
-     *         given the option to review them, and correct them if needed (but
-     *         a save will not be prevented this way - as its not an exception).
-     */
-    public ValidatedResponse validateModule(Module data) throws SerializationException;
 
     /**
      * Saves the module in place (does not create a new version of
@@ -237,19 +226,6 @@ public interface ModuleService
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
 
-    /**
-     * @param packageName The package name the scenario is to be run in.
-     * @param scenario    The scenario to run.
-     * @return The scenario, with the results fields populated.
-     * @throws SerializationException
-     */
-    public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializationException;
-
-    /**
-     * This should be pretty obvious what it does !
-     */
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
 
 
     public void updateDependency(String uuid, String dependencyPath);

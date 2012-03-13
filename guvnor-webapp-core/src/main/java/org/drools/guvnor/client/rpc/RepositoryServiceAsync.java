@@ -17,9 +17,6 @@
 package org.drools.guvnor.client.rpc;
 
 import java.util.List;
-import java.util.Set;
-
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -41,7 +38,6 @@ public interface RepositoryServiceAsync {
     public void loadTableConfig(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> cb);
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback<java.lang.String> cb);
     public void createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0, AsyncCallback<java.lang.String> cb);
-    public void createNewRule(org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration p0, AsyncCallback<java.lang.String> cb);
     public void doesAssetExistInModule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.Boolean> cb);
     public void createNewImportedRule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
     public void deleteUncheckedRule(java.lang.String p0, AsyncCallback cb);
@@ -54,7 +50,6 @@ public interface RepositoryServiceAsync {
     public void createState(java.lang.String p0, AsyncCallback<java.lang.String> cb);
     public void renameState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void removeState(java.lang.String p0, AsyncCallback cb);
-    public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine> cb);
     public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
     public void showLog(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.LogPageRow>> cb);
     public void showLog(AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> cb);
@@ -78,8 +73,6 @@ public interface RepositoryServiceAsync {
     public void loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.InboxPageRow>> cb);
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
-    public void loadWorkitemDefinitionElementData(AsyncCallback cb);
-    public void loadWorkItemDefinitions(String p0, AsyncCallback<Set<PortableWorkDefinition>> cb);
     
 }
 

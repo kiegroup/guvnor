@@ -16,13 +16,14 @@
 
 package org.drools.guvnor.client.asseteditor;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import java.io.Serializable;
 
 /**
  * key/value pair to be used as an exchange object for properties rule asset
  */
 public class PropertyHolder implements
-    PortableObject {
+        Serializable {
 
     private String name;
     private String value;

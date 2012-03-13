@@ -31,10 +31,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
@@ -219,7 +216,8 @@ public class PackageEditor extends AbstractModuleEditor {
 
         packageConfigurationValidationResult.add( busy );
 
-        RepositoryServiceFactory.getPackageService().validateModule( this.packageConfigData,
+        DroolsServiceAsync droolsService = GWT.create(DroolsServiceAsync.class);
+        droolsService.validateModule( this.packageConfigData,
                 new GenericCallback<ValidatedResponse>() {
                     public void onSuccess(ValidatedResponse data) {
                         showValidatePackageConfigurationResult( data );

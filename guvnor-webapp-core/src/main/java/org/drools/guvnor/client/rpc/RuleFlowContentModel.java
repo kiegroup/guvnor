@@ -23,11 +23,10 @@ import java.io.Serializable;
 
 import org.drools.guvnor.client.asseteditor.ruleflow.TransferConnection;
 import org.drools.guvnor.client.asseteditor.ruleflow.TransferNode;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public class RuleFlowContentModel
     implements
-    PortableObject {
+        Serializable {
 
     private List<TransferNode>             nodes       = new ArrayList<TransferNode>();
     private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();

@@ -1,11 +1,11 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,9 +22,10 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.TestScenarioService;
 import org.drools.guvnor.server.RepositoryModuleService;
-import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.TestScenarioServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -58,10 +59,8 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private RulesRepository rulesRepository;
 
     @Inject
-    private ServiceImplementation serviceImplementation;
+    private TestScenarioServiceImplementation testScenarioServiceImplementation;
 
-    @Inject
-    private RepositoryModuleService repositoryPackageService;
 
     @Inject
     private FileManagerService fileManagerService;
@@ -285,7 +284,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     helper.getVersion());
         }
         try {
-            BulkTestRunResult result = repositoryPackageService.runScenariosInPackage(pkg);
+            BulkTestRunResult result = testScenarioServiceImplementation.runScenariosInPackage(pkg);
             out.write(result.toString().getBytes());
         } catch (DetailedSerializationException e) {
             log.error("Unable to run scenarios.", e);

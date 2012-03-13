@@ -31,6 +31,10 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
     </dependency>
     <dependency>
@@ -52,10 +56,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>droolsjbpm-ide-common</artifactId>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

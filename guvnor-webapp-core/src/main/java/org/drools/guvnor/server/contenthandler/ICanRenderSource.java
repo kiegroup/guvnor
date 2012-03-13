@@ -15,7 +15,8 @@
  */
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import java.io.Serializable;
 
 /**
  * Implementations are able to render their source as text
@@ -28,7 +29,7 @@ public interface ICanRenderSource {
      * @param assetContent
      * @param stringBuilder
      */
-    public void assembleSource(PortableObject assetContent,
+    public void assembleSource(Serializable assetContent,
                                StringBuilder stringBuilder);
 
 }

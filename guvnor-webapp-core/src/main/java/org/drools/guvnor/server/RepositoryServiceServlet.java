@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +31,6 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
@@ -202,10 +199,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return moduleService.loadModule( p0 );
     }
 
-    public org.drools.guvnor.client.rpc.ValidatedResponse validateModule(org.drools.guvnor.client.rpc.Module p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.validateModule( p0 );
-    }
-
     public void saveModule(org.drools.guvnor.client.rpc.Module p0) throws com.google.gwt.user.client.rpc.SerializationException {
         moduleService.saveModule( p0 );
     }
@@ -311,17 +304,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
         return moduleService.compareSnapshots( p0 );
     }
-
-    public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0,
-                                                                         Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.runScenario( p0,
-                p1 );
-    }
-
-    public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.runScenariosInPackage( p0 );
-    }
-
 
     /**
      * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
@@ -544,10 +526,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.createNewRule( p0 );
     }
 
-    public String createNewRule(org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return serviceImplementation.createNewRule( p0 );
-    }
-
     public java.lang.String createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewImportedRule( p0,
@@ -620,10 +598,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public void removeState(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
         serviceImplementation.removeState( p0 );
-    }
-
-    public org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine loadSuggestionCompletionEngine(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return serviceImplementation.loadSuggestionCompletionEngine( p0 );
     }
 
     public java.lang.String[] getCustomSelectors() throws com.google.gwt.user.client.rpc.SerializationException {
@@ -740,14 +714,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.loadSpringContextElementData();
     }
 
-    public java.util.Map loadWorkitemDefinitionElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
-        return serviceImplementation.loadWorkitemDefinitionElementData();
-    }
-    
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
-        return serviceImplementation.loadWorkItemDefinitions( p0 );
-    }
-    
     public boolean doesAssetExistInModule(java.lang.String p0,
                                            java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.doesAssetExistInModule( p0,

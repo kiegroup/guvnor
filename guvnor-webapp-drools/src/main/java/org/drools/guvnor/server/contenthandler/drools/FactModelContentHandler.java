@@ -35,6 +35,7 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.repository.AssetItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class FactModelContentHandler extends ContentHandler
 
     }
 
-    public void assembleSource(PortableObject assetContent,
+    public void assembleSource(Serializable assetContent,
                                StringBuilder stringBuilder) {
         FactModels fms = (FactModels) assetContent;
         for ( FactMetaModel fm : fms.models ) {

@@ -738,6 +738,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
     @Test
     public void testPackageConfSave() throws Exception {
+
         String uuid = repositoryPackageService.createModule( "testPackageConfSave",
                                                              "a desc",
                                                              "package" );
@@ -748,7 +749,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         data.setExternalURI( "new URI" );
         repositoryPackageService.saveModule( data );
 
-        ValidatedResponse res = repositoryPackageService.validateModule( data );
+        ValidatedResponse res = droolsServiceImplementation.validateModule(data);
         assertNotNull( res );
         assertTrue( res.hasErrors );
         assertNotNull( res.errorMessage );
@@ -762,7 +763,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                       data.getExternalURI() );
 
         data.setHeader( "" );
-        res = repositoryPackageService.validateModule( data );
+        res = droolsServiceImplementation.validateModule( data );
         if ( res.hasErrors ) {
             System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
             System.out.println( res.errorMessage );

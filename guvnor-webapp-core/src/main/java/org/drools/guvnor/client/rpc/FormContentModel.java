@@ -1,8 +1,10 @@
 package org.drools.guvnor.client.rpc;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class FormContentModel implements PortableObject {
+import java.io.Serializable;
+
+public class FormContentModel
+        implements Serializable {
     
     private static final long serialVersionUID = 20110725140435L;
     

@@ -19,10 +19,6 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -45,10 +41,6 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     }
     
     public void createNewRule(NewAssetConfiguration p0, AsyncCallback<String> cb) {
-        
-    }
-
-    public void createNewRule(NewGuidedDecisionTableAssetConfiguration p0, AsyncCallback<String> cb) {
         
     }
 
@@ -112,14 +104,6 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     }
 
     public void removeState(String p0, AsyncCallback cb) {
-        
-    }
-
-    public void changeState(String p0, String p1, boolean p2, AsyncCallback cb) {
-        
-    }
-
-    public void loadSuggestionCompletionEngine(String p0, AsyncCallback<SuggestionCompletionEngine> cb) {
         
     }
 
@@ -223,12 +207,6 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
 
     public void loadSpringContextElementData(AsyncCallback cb) {
         
-    }
-
-    public void loadWorkitemDefinitionElementData(AsyncCallback cb) {
-    }
-    
-    public void loadWorkItemDefinitions(String p0, AsyncCallback<Set<PortableWorkDefinition>> cb) {
     }
 
     public void doesAssetExistInModule(String p0, String p1, AsyncCallback<Boolean> cb) {

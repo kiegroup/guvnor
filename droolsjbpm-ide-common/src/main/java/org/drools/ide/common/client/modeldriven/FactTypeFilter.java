@@ -16,8 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven;
 
-import java.io.Serializable;
-
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public interface FactTypeFilter extends PortableObject {

@@ -65,6 +65,7 @@
   </build>
 
   <modules>
+    <module>guvnor-api</module>
     <module>guvnor-repository-connector</module>
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>

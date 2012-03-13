@@ -15,17 +15,17 @@
  */
 package org.drools.guvnor.client.rpc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * A single result of a conversion process
  */
 public class ConversionResult
     implements
-    PortableObject {
+        Serializable {
 
     private static final long       serialVersionUID = 540L;
 
@@ -95,7 +95,7 @@ public class ConversionResult
      */
     public static class ConversionMessage
         implements
-        PortableObject {
+            Serializable {
 
         private static final long     serialVersionUID = 540L;
 
@@ -127,7 +127,7 @@ public class ConversionResult
      */
     public static class ConversionAsset
         implements
-        PortableObject {
+            Serializable {
 
         private static final long serialVersionUID = 540L;
 

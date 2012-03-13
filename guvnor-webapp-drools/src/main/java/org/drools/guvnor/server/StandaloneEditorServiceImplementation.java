@@ -22,6 +22,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.standalonededitor.BRLRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.NewRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.RuleAssetProvider;
@@ -35,11 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.StandaloneEditorInvocationParameters;
-import org.drools.guvnor.client.rpc.StandaloneEditorService;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+
 import org.drools.guvnor.server.util.LoggingHelper;
 
 /**

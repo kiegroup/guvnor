@@ -25,10 +25,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.AuditEventsImages;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.PercentageBar;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -70,7 +67,8 @@ public class TestRunnerWidget extends Composite {
 
             public void onClick(ClickEvent event) {
                 LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenario() );
-                RepositoryServiceFactory.getPackageService().runScenario( parent.getMetaData().getModuleName(),
+                TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioServiceAsync.class);
+                testScenarioService.runScenario( parent.getMetaData().getModuleName(),
                                                                    parent.getScenario(),
                                                                    new GenericCallback<SingleScenarioResult>() {
                                                                        public void onSuccess(SingleScenarioResult data) {

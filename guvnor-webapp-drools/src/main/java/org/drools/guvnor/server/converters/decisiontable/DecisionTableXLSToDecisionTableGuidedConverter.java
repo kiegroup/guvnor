@@ -17,6 +17,7 @@ package org.drools.guvnor.server.converters.decisiontable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -345,7 +346,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
     protected void createNewAsset(final AssetItem item,
                                   final NewAssetConfiguration config,
-                                  final PortableObject content,
+                                  final Serializable content,
                                   final ConversionResult result) throws SerializationException {
 
         //Create new asset

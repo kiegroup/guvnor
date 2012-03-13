@@ -692,43 +692,6 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
     }
 
-    @Test
-    public void testLoadSuggestionCompletionEngine() throws Exception {
-        // create our package
-        ModuleItem pkg = rulesRepository.createModule( "testSILoadSCE",
-                                                       "" );
-
-        AssetItem model = pkg.addAsset( "MyModel",
-                                        "" );
-        model.updateFormat( AssetFormats.MODEL );
-        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        model.checkin( "" );
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board",
-                                         pkg );
-
-        AssetItem m2 = pkg.addAsset( "MyModel2",
-                                     "" );
-        m2.updateFormat( AssetFormats.DRL_MODEL );
-        m2.updateContent( "declare Whee\n name: String\nend" );
-        m2.checkin( "" );
-
-        AssetItem r1 = pkg.addAsset( "garbage",
-                                     "" );
-        r1.updateFormat( AssetFormats.DRL );
-        r1.updateContent( "this will not compile" );
-        r1.checkin( "" );
-
-        SuggestionCompletionEngine eng = serviceImplementation.loadSuggestionCompletionEngine( pkg.getName() );
-        assertNotNull( eng );
-
-        //The loader could define extra imports
-        assertTrue( eng.getFactTypes().length >= 2 );
-        List<String> factTypes = Arrays.asList( eng.getFactTypes() );
-
-        assertTrue( factTypes.contains( "Board" ) );
-        assertTrue( factTypes.contains( "Whee" ) );
-
-    }
 
     @Test
     public void testDiscussion() throws Exception {

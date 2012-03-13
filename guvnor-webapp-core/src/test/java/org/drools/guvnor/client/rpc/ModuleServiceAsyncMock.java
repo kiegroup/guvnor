@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
 
@@ -43,9 +42,6 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
     }
 
     public void loadModule(String p0, AsyncCallback<Module> cb) {
-    }
-
-    public void validateModule(Module p0, AsyncCallback<ValidatedResponse> cb) {
     }
 
     public void saveModule(Module p0, AsyncCallback cb) {
@@ -97,12 +93,6 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
     }
 
     public void compareSnapshots(SnapshotComparisonPageRequest p0, AsyncCallback<SnapshotComparisonPageResponse> cb) {
-    }
-
-    public void runScenario(String p0, Scenario p1, AsyncCallback<SingleScenarioResult> cb) {
-    }
-
-    public void runScenariosInPackage(String p0, AsyncCallback<BulkTestRunResult> cb) {
     }
 
     public void updateDependency(String uuid, String dependencyPath, AsyncCallback cb) {

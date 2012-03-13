@@ -40,9 +40,18 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
+import org.junit.Before;
 import org.junit.Test;
 
 public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
+
+
+    private TestScenarioServiceImplementation testScenarioServiceImplementation;
+
+    @Before
+    public void setUp() throws Exception {
+        testScenarioServiceImplementation = new TestScenarioServiceImplementation();
+    }
 
     @Test
     public void testRunScenario() throws Exception {
@@ -90,14 +99,14 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
                 "42"));
         sc.getGlobals().add( cheese );
 
-        ScenarioRunResult res = repositoryPackageService.runScenario(pkg.getName(),
+        ScenarioRunResult res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
         assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
@@ -105,7 +114,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
         assertTrue(vr.wasSuccessful() );
 
         RuleBaseCache.getInstance().clearCache();
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNull(res.getErrors() );
         assertNotNull(res.getScenario());
@@ -121,7 +130,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
         RuleBaseCache.getInstance().clearCache();
         pkg.updateBinaryUpToDate(false);
         rulesRepository.save();
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNotNull( res.getErrors() );
         assertNull(res.getScenario());
@@ -193,7 +202,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
                                                   "==" ) );
         sc.getFixtures().add( vf );
 
-        SingleScenarioResult res_ = repositoryPackageService.runScenario( pkg.getName(),
+        SingleScenarioResult res_ = testScenarioServiceImplementation.runScenario( pkg.getName(),
                                                                           sc );
         assertTrue( res_.getAuditLog().size() > 0 );
 
@@ -286,7 +295,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
         scenario2.updateContent( ScenarioXMLPersistence.getInstance().marshal( sc ) );
         scenario2.checkin( "" );
 
-        BulkTestRunResult result = repositoryPackageService.runScenariosInPackage( pkg.getUUID() );
+        BulkTestRunResult result = testScenarioServiceImplementation.runScenariosInPackage( pkg.getUUID() );
         assertNull( result.getResult() );
 
         assertEquals( 50,
@@ -363,7 +372,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
                                                   "==" ) );
         sc.getFixtures().add( vf );
 
-        ScenarioRunResult res = repositoryPackageService.runScenario(pkg.getName(),
+        ScenarioRunResult res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -371,7 +380,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
 
         assertNull( res.getErrors() );
@@ -382,7 +391,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
         RuleBaseCache.getInstance().clearCache();
 
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -426,7 +435,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
         ScenarioRunResult res = null;
         try {
-            res = repositoryPackageService.runScenario(pkg.getName(),
+            res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                     sc).getResult();
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
@@ -436,7 +445,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
 
         assertNull( res.getErrors() );
@@ -445,7 +454,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
         RuleBaseCache.getInstance().clearCache();
 
-        res = repositoryPackageService.runScenario(pkg.getName(),
+        res = testScenarioServiceImplementation.runScenario(pkg.getName(),
                 sc).getResult();
 
         assertNull( res.getErrors() );
@@ -538,7 +547,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
         //love you
         long time = System.currentTimeMillis();
-        BulkTestRunResult result = repositoryPackageService.runScenariosInPackage( pkg.getUUID() );
+        BulkTestRunResult result = testScenarioServiceImplementation.runScenariosInPackage( pkg.getUUID() );
         System.err.println( "Time taken for runScenariosInPackage " + (System.currentTimeMillis() - time) );
         assertNull( result.getResult() );
 

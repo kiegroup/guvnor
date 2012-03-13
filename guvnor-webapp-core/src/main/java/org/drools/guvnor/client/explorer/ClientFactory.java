@@ -65,5 +65,5 @@ public interface ClientFactory {
     AssetServiceAsync getAssetService();
 
     SecurityServiceAsync getSecurityService();
-    
+
 }

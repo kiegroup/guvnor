@@ -22,11 +22,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +43,6 @@ import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
-import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -68,10 +65,6 @@ import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
-import org.drools.guvnor.server.ruleeditor.workitem.AssetWorkDefinitionsLoader;
-import org.drools.guvnor.server.ruleeditor.workitem.ConfigFileWorkDefinitionsLoader;
-import org.drools.guvnor.server.ruleeditor.workitem.WorkDefinitionsLoader;
-import org.drools.guvnor.server.ruleeditor.workitem.WorkitemDefinitionElementsManager;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
@@ -79,25 +72,6 @@ import org.drools.guvnor.server.util.DateUtil;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
-import org.drools.process.core.ParameterDefinition;
-import org.drools.process.core.WorkDefinition;
-import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.process.core.datatype.impl.type.EnumDataType;
-import org.drools.process.core.datatype.impl.type.FloatDataType;
-import org.drools.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.process.core.datatype.impl.type.ListDataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -114,7 +88,6 @@ import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -148,8 +121,6 @@ public class ServiceImplementation
     @Inject
     private RepositoryAssetOperations  repositoryAssetOperations;
 
-    @Inject
-    private RepositoryAssetService     repositoryAssetService;
 
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
@@ -263,39 +234,6 @@ public class ServiceImplementation
                               initialCategory,
                               packageName,
                               format );
-    }
-
-    /**
-     * This will create a new Guided Decision Table asset. The initial state
-     * will be the draft state. Returns the UUID of the asset. The new Asset
-     * will be SAVED and CHECKED-IN.
-     */
-    @WebRemote
-    @LoggedIn
-    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
-    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException {
-        String assetName = configuration.getAssetName();
-        String description = configuration.getDescription();
-        String initialCategory = configuration.getInitialCategory();
-        String packageName = configuration.getPackageName();
-        String format = configuration.getFormat();
-
-        //Create the asset
-        String uuid = createNewRule( assetName,
-                                     description,
-                                     initialCategory,
-                                     packageName,
-                                     format );
-
-        //Set the Table Format and check-in
-        //TODO Is it possible to alter the content and save without checking-in?
-        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
-        GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
-        content.setTableFormat( configuration.getTableFormat() );
-        asset.setCheckinComment( "Table Format automatically set to [" + configuration.getTableFormat().toString() + "]" );
-        repositoryAssetService.checkinVersion( asset );
-
-        return uuid;
     }
 
     /**
@@ -507,22 +445,6 @@ public class ServiceImplementation
 
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( rulesRepository.getSession() );
         admin.clearRulesRepository();
-    }
-
-    @WebRemote
-    @LoggedIn
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
-        //No need to check role based permission here. Package auto completion suggestion should be available to everybody. 
-        //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
-        SuggestionCompletionEngine suggestionCompletionEngine = null;
-        try {
-            ModuleItem packageItem = rulesRepository.loadModule( packageName );
-            suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor( packageItem );
-        } catch ( RulesRepositoryException e ) {
-            log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
-            throw new SerializationException( e.getMessage() );
-        }
-        return suggestionCompletionEngine;
     }
 
     @WebRemote
@@ -852,126 +774,6 @@ public class ServiceImplementation
             throw new DetailedSerializationException( "Error loading Spring Context Elements",
                                                       "View server logs for more information" );
         }
-    }
-
-    /**
-     * Returns the Workitem Definition elements specified by
-     * WorkitemDefinitionElementsManager
-     * 
-     * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException
-     */
-    public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException {
-        try {
-            return WorkitemDefinitionElementsManager.getInstance().getElements();
-        } catch ( IOException ex ) {
-            log.error( "Error loading Workitem Definition Elements",
-                       ex );
-            throw new DetailedSerializationException( "Error loading Workitem Definition Elements",
-                                                      "View server logs for more information" );
-        }
-    }
-
-    /**
-     * Load and return a Map of all parsed Work Definitions. The source of such
-     * Work Definitions is Assets defined in Guvnor and those defined in
-     * /workitem-definitions.xml
-     * 
-     * @param packageUUID
-     *            The Package from which to load Work Items
-     * @return
-     * @throws DetailedSerializationException
-     */
-    @LoggedIn
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
-        Map<String, org.drools.process.core.WorkDefinition> workDefinitions = new HashMap<String, org.drools.process.core.WorkDefinition>();
-        //Load WorkDefinitions from different sources
-
-        try {
-            // - Assets
-            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService,
-                                                                           packageUUID );
-            Map<String, org.drools.process.core.WorkDefinition> assetWorkDefinitions = loader.getWorkDefinitions();
-            for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : assetWorkDefinitions.entrySet() ) {
-                if ( !workDefinitions.containsKey( entry.getKey() ) ) {
-                    workDefinitions.put( entry.getKey(),
-                                         entry.getValue() );
-                }
-            }
-        } catch ( Exception e ) {
-            log.error( "Error loading Workitem Definitions for package [" + packageUUID + "]",
-                       e );
-            throw new DetailedSerializationException( "Error loading Workitem Definitions for package [" + packageUUID + "]",
-                                                      "View server logs for more information" );
-        }
-
-        try {
-            // - workitem-definitions.xml
-            Map<String, org.drools.process.core.WorkDefinition> configuredWorkDefinitions = ConfigFileWorkDefinitionsLoader.getInstance().getWorkDefinitions();
-            for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : configuredWorkDefinitions.entrySet() ) {
-                if ( !workDefinitions.containsKey( entry.getKey() ) ) {
-                    workDefinitions.put( entry.getKey(),
-                                         entry.getValue() );
-                }
-            }
-        } catch ( Exception e ) {
-            log.error( "Error loading Workitem Definitions from configuration file",
-                       e );
-            throw new DetailedSerializationException( "Error loading Workitem Definitions from configuration file",
-                                                      "View server logs for more information" );
-        }
-
-        //Copy the Work Items into Structures suitable for GWT
-        Set<PortableWorkDefinition> workItems = new HashSet<PortableWorkDefinition>();
-        for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
-            PortableWorkDefinition wid = new PortableWorkDefinition();
-            WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();
-            wid.setName( wd.getName() );
-            wid.setDisplayName( wd.getDisplayName() );
-            wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
-            wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
-            workItems.add( wid );
-        }
-        return workItems;
-    }
-
-    private Set<PortableParameterDefinition> convertWorkItemParameters(Set<ParameterDefinition> parameters) {
-        Set<PortableParameterDefinition> pps = new HashSet<PortableParameterDefinition>();
-        for ( ParameterDefinition pd : parameters ) {
-            DataType pdt = pd.getType();
-            PortableParameterDefinition ppd = null;
-            if ( pdt instanceof BooleanDataType ) {
-                ppd = new PortableBooleanParameterDefinition();
-            } else if ( pdt instanceof FloatDataType ) {
-                ppd = new PortableFloatParameterDefinition();
-            } else if ( pdt instanceof IntegerDataType ) {
-                ppd = new PortableIntegerParameterDefinition();
-            } else if ( pdt instanceof ListDataType ) {
-                //TODO ListDataType
-                //ppd = new PortableListParameterDefinition();
-            } else if ( pdt instanceof ObjectDataType ) {
-                ppd = new PortableObjectParameterDefinition();
-                PortableObjectParameterDefinition oppd = (PortableObjectParameterDefinition) ppd;
-                ObjectDataType odt = (ObjectDataType) pdt;
-                oppd.setClassName( odt.getClassName() );
-            } else if ( pd.getType() instanceof StringDataType ) {
-                ppd = new PortableStringParameterDefinition();
-            } else if ( pdt instanceof EnumDataType ) {
-                //TODO EnumDataType
-                //ppd = new PortableEnumParameterDefinition();
-                //PortableEnumParameterDefinition eppd = (PortableEnumParameterDefinition) ppd;
-                //EnumDataType epdt = (EnumDataType) pdt;
-                //eppd.setClassName( epdt.getClassName() );
-                //if ( epdt.getValueMap() != null ) {
-                //    eppd.setValues( epdt.getValueNames() );
-                //}
-            }
-            if ( ppd != null ) {
-                ppd.setName( pd.getName() );
-                pps.add( ppd );
-            }
-        }
-        return pps;
     }
 
     @WebRemote

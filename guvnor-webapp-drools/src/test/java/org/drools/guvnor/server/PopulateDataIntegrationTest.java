@@ -28,8 +28,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.SuggestionCompletionEngineService;
+import org.drools.guvnor.client.rpc.SuggestionCompletionEngineServiceAsync;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
@@ -115,7 +118,7 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
                 pkg);
         pkg.checkin( "added imports" );
 
-        SuggestionCompletionEngine eng = serviceImplementation.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
+        SuggestionCompletionEngine eng = new SuggestionCompletionEngineServiceImplementation().loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull( eng );
 
         //The loader could define extra imports

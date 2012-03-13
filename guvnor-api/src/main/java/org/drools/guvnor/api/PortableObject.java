@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.modeldriven.brl;
+package org.drools.guvnor.api;
 
 import java.io.Serializable;
 
@@ -24,6 +24,7 @@ import java.io.Serializable;
  * This is replaced in the BRMS with a GWT specific one, and only used here so the RuleModel
  * can compile. It does nothing, and is strictly a marker interface only.
  */
-public interface PortableObject extends Serializable {
+public interface PortableObject
+        extends Serializable {
 
 }

@@ -150,6 +150,9 @@ public abstract class GuvnorTestBase {
     protected RepositoryCategoryService repositoryCategoryService;
 
     @Inject
+    protected DroolsServiceImplementation droolsServiceImplementation;
+
+    @Inject
     protected Identity identity;
 
     @Inject

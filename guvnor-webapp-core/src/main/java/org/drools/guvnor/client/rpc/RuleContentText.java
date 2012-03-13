@@ -16,14 +16,15 @@
 
 package org.drools.guvnor.client.rpc;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import java.io.Serializable;
 
 /**
  * This is the guts of a plain text (advanced) rule.
  */
 public class RuleContentText
     implements
-        PortableObject {
+        Serializable {
     
     public String content;
 }

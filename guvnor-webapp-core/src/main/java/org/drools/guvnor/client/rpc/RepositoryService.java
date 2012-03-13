@@ -19,11 +19,8 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -82,13 +79,6 @@ public interface RepositoryService
      * saved in the repo.
      */
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException;
-
-    /**
-     * Creates a brand new Guided Decision Table rule with the initial category.
-     * Return the UUID of the item created. This will not check in the rule, but
-     * just leave it as saved in the repo.
-     */
-    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException;
 
     /**
      * Check whether an asset exists in a package
@@ -173,13 +163,6 @@ public interface RepositoryService
      * @throws SerializationException
      */
     public void removeState(String name) throws SerializationException;
-
-    /**
-     * Loads up the SuggestionCompletionEngine for the given package. As this
-     * doesn't change that often, its safe to cache. However, if a change is
-     * made to a package, should blow away the cache.
-     */
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
 
     /**
      * return custom selector names
@@ -349,26 +332,5 @@ public interface RepositoryService
      * @throws DetailedSerializationException
      */
     public Map<String, String> loadSpringContextElementData() throws DetailedSerializationException;
-
-    /**
-     * Returns the Workitem Definition elements specified by
-     * WorkitemDefinitionElementsManager
-     * 
-     * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException
-     */
-    public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException;
-
-    /**
-     * Load and return a List of all parsed Work Definitions. The source of such
-     * Work Definitions is Assets defined in Guvnor and those defined in
-     * /workitemDefinitionElements.properties.
-     * 
-     * @param packageUUID
-     *            The Package UUID for which Work Definitions should be loaded
-     * @return
-     * @throws DetailedSerializationException
-     */
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
 
 }

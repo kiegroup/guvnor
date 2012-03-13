@@ -18,7 +18,8 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import java.io.Serializable;
 
 /**
  * This is the "payload" of an asset.
@@ -28,6 +29,7 @@ public class Asset extends Artifact {
 
     public MetaData       metaData;
     public PortableObject content;
+
     public Asset setMetaData(MetaData metaData) {
         this.metaData = metaData;
         return this;
@@ -35,6 +37,7 @@ public class Asset extends Artifact {
     public MetaData getMetaData() {
         return metaData;
     }
+
     public Asset setContent(PortableObject content) {
         this.content = content;
         return this;
