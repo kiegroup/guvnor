@@ -33,7 +33,7 @@ public class ApplicationPreferences {
     public static final String DESIGNER_PROFILE = "designer.profile";
 
     public static final String FORMBUILDER_URL = "formbuilder.url";
-    public static final String FORMBUILDER_CONTEXT = "formbuilder.url";
+    public static final String FORMBUILDER_CONTEXT = "formbuilder.context";
     public static final String FORMBUILDER_PROFILE = "formbuilder.profile";
 
     public static ApplicationPreferences instance;
