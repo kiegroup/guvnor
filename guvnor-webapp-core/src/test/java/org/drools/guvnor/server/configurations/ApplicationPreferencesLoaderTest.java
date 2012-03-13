@@ -37,13 +37,13 @@ public class ApplicationPreferencesLoaderTest {
                       preferences.size() );
         assertTrue( preferences.containsKey( "visual-ruleflow" ) );
         assertTrue( preferences.containsKey( "verifier" ) );
-        assertTrue( preferences.containsKey( "formdef" ) );
+        assertTrue( preferences.containsKey( "asset.format.enabled.formdef" ) );
         assertEquals( "true",
                       preferences.get( "verifier" ) );
         assertEquals( "true",
                       preferences.get( "oryx-bpmn-editor" ) );
         assertEquals( "false",
-                      preferences.get( "formdef" ) );
+                      preferences.get( "asset.format.enabled.formdef" ) );
         assertEquals( "false",
                       preferences.get( "rule-modeller-onlyShowDSLStatements" ) );
     }
