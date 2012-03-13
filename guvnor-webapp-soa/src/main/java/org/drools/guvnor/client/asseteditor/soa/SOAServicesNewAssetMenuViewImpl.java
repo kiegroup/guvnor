@@ -73,13 +73,16 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
     private void addNewAssetMenuItem(final String format) {
         AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
         String title = "New " + assetEditorFactory.getAssetEditorTitle(format);
-        createNewMenu.addItem( Util.getHeader( assetEditorFactory.getAssetEditorIcon(format), title ).asString(),
+        MenuItem item = new MenuItem( Util.getHeader( assetEditorFactory.getAssetEditorIcon(format), title ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewAsset(format);
                     }
-                } );   
+                } );
+        boolean enabled = ApplicationProperties.enabledFormat( format );
+        item.setEnabled( enabled );
+        createNewMenu.addItem( item );   
     }
     
     public Widget asWidget() {

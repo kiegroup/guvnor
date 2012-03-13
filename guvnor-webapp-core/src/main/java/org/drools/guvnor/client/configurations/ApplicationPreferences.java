@@ -63,6 +63,10 @@ public class ApplicationPreferences {
         return instance.preferences.get(name);
     }
 
+    public static boolean enabledFormat(String format) {
+        return getBooleanPref("asset.format.enabled." + format, true);
+    }
+
     public static String getDroolsDateFormat() {
         return getStringPref(DATE_FORMAT);
     }

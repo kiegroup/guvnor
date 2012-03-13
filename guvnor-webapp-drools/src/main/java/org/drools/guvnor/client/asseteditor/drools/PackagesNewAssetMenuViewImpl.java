@@ -69,10 +69,10 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addItem(String text, boolean asHTML, Command command, String format) {
-    	MenuItem item = new MenuItem( text, asHTML, command );
-   		boolean enabled = ApplicationPreferences.getBooleanPref( format, true ); //enabled by default
-		item.setEnabled( enabled );
-    	createNewMenu.addItem( item );
+        MenuItem item = new MenuItem( text, asHTML, command );
+        boolean enabled = ApplicationPreferences.enabledFormat( format );
+        item.setEnabled( enabled );
+        createNewMenu.addItem( item );
     }
     
     private void addNewFileMenuItem() {
