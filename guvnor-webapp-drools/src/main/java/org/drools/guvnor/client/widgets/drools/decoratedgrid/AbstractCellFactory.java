@@ -42,34 +42,43 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public abstract class AbstractCellFactory<T> {
 
-    private static final String                DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final String                           DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    protected final SuggestionCompletionEngine sce;
+    protected final SuggestionCompletionEngine            sce;
 
-    protected final boolean                    isReadOnly;
+    protected final CellTableDropDownDataValueMapProvider dropDownManager;
 
-    protected final EventBus                   eventBus;
+    protected final boolean                               isReadOnly;
+
+    protected final EventBus                              eventBus;
 
     /**
      * Construct a Cell Factory for a specific grid widget
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
+     * @param dropDownManager
+     *            DropDownManager for dependent cells
      * @param isReadOnly
      *            Should cells be created for a read-only mode of operation
      * @param eventBus
      *            EventBus to which cells can send update events
      */
     public AbstractCellFactory(final SuggestionCompletionEngine sce,
+                               final CellTableDropDownDataValueMapProvider dropDownManager,
                                final boolean isReadOnly,
                                final EventBus eventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        if ( dropDownManager == null ) {
+            throw new IllegalArgumentException( "dropDownManager cannot be null" );
+        }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.sce = sce;
+        this.dropDownManager = dropDownManager;
         this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
     }

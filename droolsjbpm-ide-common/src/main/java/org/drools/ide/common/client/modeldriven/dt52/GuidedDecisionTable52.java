@@ -198,6 +198,30 @@ public class GuidedDecisionTable52
         throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
     }
 
+    public BRLConditionColumn getBRLColumn(BRLConditionVariableColumn col) {
+        for ( CompositeColumn< ? > cc : conditionPatterns ) {
+            if ( cc instanceof BRLConditionColumn ) {
+                BRLConditionColumn brl = (BRLConditionColumn) cc;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
+    }
+
+    public BRLActionColumn getBRLColumn(BRLActionVariableColumn col) {
+        for ( ActionCol52 ac : actionCols ) {
+            if ( ac instanceof BRLActionColumn ) {
+                BRLActionColumn brl = (BRLActionColumn) ac;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
+    }
+
     public long getConditionsCount() {
         long size = 0;
         for ( CompositeColumn< ? > cc : this.conditionPatterns ) {

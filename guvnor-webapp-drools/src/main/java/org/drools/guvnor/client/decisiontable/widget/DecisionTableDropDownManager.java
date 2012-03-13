@@ -26,9 +26,18 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelPeerVariableVisitor;
+import org.drools.ide.common.client.modeldriven.brl.templates.RuleModelPeerVariableVisitor.ValueHolder;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLActionVariableColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
+import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -110,7 +119,75 @@ public class DecisionTableDropDownManager
         BaseColumn baseColumn = allColumns.get( iBaseColIndex );
 
         //Get values for all Constraints or Actions on the same pattern as the baseColumn
-        if ( baseColumn instanceof ConditionCol52 ) {
+        if ( baseColumn instanceof BRLConditionVariableColumn ) {
+            final BRLConditionVariableColumn baseBRLConditionColumn = (BRLConditionVariableColumn) baseColumn;
+            final BRLConditionColumn brl = model.getBRLColumn( baseBRLConditionColumn );
+            final RuleModel rm = new RuleModel();
+            IPattern[] lhs = new IPattern[brl.getDefinition().size()];
+            brl.getDefinition().toArray( lhs );
+            rm.lhs = lhs;
+
+            final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( rm,
+                                                                                                       baseBRLConditionColumn.getVarName() );
+            List<ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
+
+            //Add other variables values
+            for ( ValueHolder valueHolder : peerVariables ) {
+                switch ( valueHolder.getType() ) {
+                    case TEMPLATE_KEY :
+                        final BRLConditionVariableColumn vc = getConditionVariableColumnIndex( brl.getChildColumns(),
+                                                                                               valueHolder.getValue() );
+                        final int iCol = model.getExpandedColumns().indexOf( vc );
+                        final String field = vc.getFactField();
+
+                        //The generic class CellValue can have different data-types however enumerations
+                        //in a Decision Table are always String-based hence we can safely cast to a String
+                        //to retrieve the correct String representation of the CellValue's value.
+                        final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
+                        currentValueMap.put( field,
+                                             value );
+                        break;
+                    case VALUE :
+                        currentValueMap.put( valueHolder.getFieldName(),
+                                             valueHolder.getValue() );
+                }
+            }
+
+        } else if ( baseColumn instanceof BRLActionVariableColumn ) {
+            final BRLActionVariableColumn baseBRLActionColumn = (BRLActionVariableColumn) baseColumn;
+            final BRLActionColumn brl = model.getBRLColumn( baseBRLActionColumn );
+            final RuleModel rm = new RuleModel();
+            IAction[] rhs = new IAction[brl.getDefinition().size()];
+            brl.getDefinition().toArray( rhs );
+            rm.rhs = rhs;
+
+            final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( rm,
+                                                                                                       baseBRLActionColumn.getVarName() );
+            List<ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
+
+            //Add other variables values
+            for ( ValueHolder valueHolder : peerVariables ) {
+                switch ( valueHolder.getType() ) {
+                    case TEMPLATE_KEY :
+                        final BRLActionVariableColumn vc = getActionVariableColumnIndex( brl.getChildColumns(),
+                                                                                         valueHolder.getValue() );
+                        final int iCol = model.getExpandedColumns().indexOf( vc );
+                        final String field = vc.getFactField();
+
+                        //The generic class CellValue can have different data-types however enumerations
+                        //in a Decision Table are always String-based hence we can safely cast to a String
+                        //to retrieve the correct String representation of the CellValue's value.
+                        final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
+                        currentValueMap.put( field,
+                                             value );
+                        break;
+                    case VALUE :
+                        currentValueMap.put( valueHolder.getFieldName(),
+                                             valueHolder.getValue() );
+                }
+            }
+
+        } else if ( baseColumn instanceof ConditionCol52 ) {
             final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
             final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
             for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
@@ -161,6 +238,28 @@ public class DecisionTableDropDownManager
         return dcv.getValue().toString();
     }
 
+    private BRLConditionVariableColumn getConditionVariableColumnIndex(final List<BRLConditionVariableColumn> definition,
+                                                                       final String variableName) {
+        for ( BRLConditionVariableColumn vc : definition ) {
+            if ( vc.getVarName().equals( variableName ) ) {
+                return vc;
+            }
+        }
+        //This should never happen
+        throw new IllegalArgumentException( "Variable '" + variableName + "' not found. This suggests an programming error." );
+    }
+
+    private BRLActionVariableColumn getActionVariableColumnIndex(final List<BRLActionVariableColumn> definition,
+                                                                 final String variableName) {
+        for ( BRLActionVariableColumn ac : definition ) {
+            if ( ac.getVarName().equals( variableName ) ) {
+                return ac;
+            }
+        }
+        //This should never happen
+        throw new IllegalArgumentException( "Variable '" + variableName + "' not found. This suggests an programming error." );
+    }
+
     @Override
     public Set<Integer> getDependentColumnIndexes(int iBaseColIndex) {
 
@@ -171,7 +270,63 @@ public class DecisionTableDropDownManager
         final BaseColumn baseColumn = allColumns.get( iBaseColIndex );
 
         //Get values for all Constraints or Actions on the same pattern as the baseColumn
-        if ( baseColumn instanceof ConditionCol52 ) {
+        if ( baseColumn instanceof BRLConditionVariableColumn ) {
+            final BRLConditionVariableColumn baseBRLConditionColumn = (BRLConditionVariableColumn) baseColumn;
+            final BRLConditionColumn brl = model.getBRLColumn( baseBRLConditionColumn );
+            final RuleModel rm = new RuleModel();
+            IPattern[] lhs = new IPattern[brl.getDefinition().size()];
+            brl.getDefinition().toArray( lhs );
+            rm.lhs = lhs;
+
+            final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( rm,
+                                                                                                       baseBRLConditionColumn.getVarName() );
+            List<ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
+
+            //Add other variables values
+            for ( ValueHolder valueHolder : peerVariables ) {
+                switch ( valueHolder.getType() ) {
+                    case TEMPLATE_KEY :
+                        if ( sce.isDependentEnum( baseBRLConditionColumn.getFactType(),
+                                                  baseBRLConditionColumn.getFactField(),
+                                                  valueHolder.getFieldName() ) ) {
+                            final BRLConditionVariableColumn vc = getConditionVariableColumnIndex( brl.getChildColumns(),
+                                                                                                   valueHolder.getValue() );
+                            final int iCol = model.getExpandedColumns().indexOf( vc );
+                            dependentColumnIndexes.add( iCol );
+                        }
+                        break;
+                }
+            }
+
+        } else if ( baseColumn instanceof BRLActionVariableColumn ) {
+            final BRLActionVariableColumn baseBRLActionColumn = (BRLActionVariableColumn) baseColumn;
+            final BRLActionColumn brl = model.getBRLColumn( baseBRLActionColumn );
+            final RuleModel rm = new RuleModel();
+            IAction[] rhs = new IAction[brl.getDefinition().size()];
+            brl.getDefinition().toArray( rhs );
+            rm.rhs = rhs;
+
+            final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( rm,
+                                                                                                       baseBRLActionColumn.getVarName() );
+            List<ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
+
+            //Add other variables values
+            for ( ValueHolder valueHolder : peerVariables ) {
+                switch ( valueHolder.getType() ) {
+                    case TEMPLATE_KEY :
+                        if ( sce.isDependentEnum( baseBRLActionColumn.getFactType(),
+                                                  baseBRLActionColumn.getFactField(),
+                                                  valueHolder.getFieldName() ) ) {
+                            final BRLActionVariableColumn vc = getActionVariableColumnIndex( brl.getChildColumns(),
+                                                                                             valueHolder.getValue() );
+                            final int iCol = model.getExpandedColumns().indexOf( vc );
+                            dependentColumnIndexes.add( iCol );
+                        }
+                        break;
+                }
+            }
+
+        } else if ( baseColumn instanceof ConditionCol52 ) {
             final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
             final Pattern52 basePattern = this.model.getPattern( baseConditionColumn );
             for ( ConditionCol52 cc : basePattern.getChildColumns() ) {

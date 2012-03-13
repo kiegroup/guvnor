@@ -38,7 +38,7 @@ public class MoveColumnsEvent extends GwtEvent<MoveColumnsEvent.Handler> {
     private final int                            numberOfColumns;
 
     /**
-     * Creates a value change event.
+     * Creates a Move Columns event.
      * 
      * @param sourceColumnIndex
      *            The index of the first column to move

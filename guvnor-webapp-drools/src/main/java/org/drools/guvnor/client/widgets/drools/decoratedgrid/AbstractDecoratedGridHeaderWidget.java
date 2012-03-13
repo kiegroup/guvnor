@@ -430,7 +430,9 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     }
 
     public void onDeleteColumn(final DeleteColumnEvent event) {
-        sortableColumns.remove( event.getIndex() );
+        for ( int iCol = 0; iCol < event.getNumberOfColumns(); iCol++ ) {
+            sortableColumns.remove( event.getFirstColumnIndex() );
+        }
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -441,8 +443,11 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     }
 
     public void onInsertInternalColumn(final InsertInternalColumnEvent<T> event) {
-        sortableColumns.add( event.getIndex(),
-                             event.getColumn() );
+        int iCol = event.getIndex();
+        for ( DynamicColumn<T> column : event.getColumns() ) {
+            sortableColumns.add( iCol++,
+                                 column );
+        }
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {

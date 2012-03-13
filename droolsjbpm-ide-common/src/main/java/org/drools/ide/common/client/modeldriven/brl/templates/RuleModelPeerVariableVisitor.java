@@ -43,7 +43,7 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftS
  */
 public class RuleModelPeerVariableVisitor {
 
-    private final TemplateModel     model;
+    private final RuleModel         model;
     private final String            baseVariableName;
     private final List<ValueHolder> peerVariables = new ArrayList<ValueHolder>();
 
@@ -80,7 +80,7 @@ public class RuleModelPeerVariableVisitor {
         }
     }
 
-    public RuleModelPeerVariableVisitor(final TemplateModel model,
+    public RuleModelPeerVariableVisitor(final RuleModel model,
                                         final String baseVariableName) {
         this.model = model;
         this.baseVariableName = baseVariableName;

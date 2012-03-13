@@ -24,34 +24,26 @@ import com.google.gwt.event.shared.EventBus;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
 
-    private TemplateDropDownManager dropDownManager;
-
     /**
      * Construct a Cell Factory for a specific Template Data Widget
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
+     * @param dropDownManager
+     *            DropDownManager for dependent cells
+     * @param isReadOnly
+     *            Should cells be created for a read-only mode of operation
      * @param eventBus
      *            EventBus to which cells can send update events
      */
     public TemplateDataCellFactory(SuggestionCompletionEngine sce,
+                                   TemplateDropDownManager dropDownManager,
                                    boolean isReadOnly,
                                    EventBus eventBus) {
         super( sce,
+               dropDownManager,
                isReadOnly,
                eventBus );
-    }
-
-    /**
-     * Set the DropDownManager
-     * 
-     * @param dropDownManager
-     */
-    public void setDropDownManager(TemplateDropDownManager dropDownManager) {
-        if ( dropDownManager == null ) {
-            throw new IllegalArgumentException( "dropDownManager cannot be null" );
-        }
-        this.dropDownManager = dropDownManager;
     }
 
     /**

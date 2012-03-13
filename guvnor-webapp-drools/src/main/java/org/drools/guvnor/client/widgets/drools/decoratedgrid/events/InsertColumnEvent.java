@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -32,13 +33,31 @@ public abstract class InsertColumnEvent<T, C> extends GwtEvent<InsertColumnEvent
         void onInsertColumn(InsertColumnEvent<T, C> event);
     }
 
-    private int     index;
+    private int           index;
 
-    private boolean redraw = true;
+    private boolean       redraw = true;
 
-    private T       column;
+    private List<T>       columns;
 
-    private List<C> columnData;
+    private List<List<C>> columnsData;
+
+    public InsertColumnEvent(List<T> columns,
+                             List<List<C>> columnsData,
+                             int index,
+                             boolean redraw) {
+        this( columns,
+              columnsData,
+              index );
+        this.redraw = redraw;
+    }
+
+    public InsertColumnEvent(List<T> columns,
+                             List<List<C>> columnsData,
+                             int index) {
+        this.columns = columns;
+        this.columnsData = columnsData;
+        this.index = index;
+    }
 
     public InsertColumnEvent(T column,
                              List<C> columnData,
@@ -53,17 +72,19 @@ public abstract class InsertColumnEvent<T, C> extends GwtEvent<InsertColumnEvent
     public InsertColumnEvent(T column,
                              List<C> columnData,
                              int index) {
-        this.column = column;
-        this.columnData = columnData;
+        this.columns = new ArrayList<T>();
+        this.columnsData = new ArrayList<List<C>>();
+        this.columns.add( column );
+        this.columnsData.add( columnData );
         this.index = index;
     }
 
-    public T getColumn() {
-        return this.column;
+    public List<T> getColumns() {
+        return this.columns;
     }
 
-    public List<C> getColumnData() {
-        return this.columnData;
+    public List<List<C>> getColumnsData() {
+        return this.columnsData;
     }
 
     public int getIndex() {

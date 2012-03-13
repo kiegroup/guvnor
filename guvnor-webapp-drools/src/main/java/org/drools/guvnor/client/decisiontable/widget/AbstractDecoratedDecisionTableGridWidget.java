@@ -66,12 +66,10 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
     protected final DecisionTableCellValueFactory cellValueFactory;
-    protected final DecisionTableDropDownManager  dropDownManager;
 
     public AbstractDecoratedDecisionTableGridWidget(ResourcesProvider<BaseColumn> resources,
                                                     DecisionTableCellFactory cellFactory,
                                                     DecisionTableCellValueFactory cellValueFactory,
-                                                    DecisionTableDropDownManager dropDownManager,
                                                     EventBus eventBus,
                                                     Panel mainPanel,
                                                     Panel bodyPanel,
@@ -91,12 +89,8 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         if ( cellValueFactory == null ) {
             throw new IllegalArgumentException( "cellValueFactory cannot be null" );
         }
-        if ( dropDownManager == null ) {
-            throw new IllegalArgumentException( "dropDownManager cannot be null" );
-        }
         this.cellFactory = cellFactory;
         this.cellValueFactory = cellValueFactory;
-        this.dropDownManager = dropDownManager;
 
         //Wire-up event handlers
         eventBus.addHandler( SetGuidedDecisionTableModelEvent.TYPE,
@@ -112,10 +106,6 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         DynamicData data = new DynamicData();
         GuidedDecisionTable52 model = event.getModel();
         List<DynamicColumn<BaseColumn>> columns = new ArrayList<DynamicColumn<BaseColumn>>();
-
-        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
-        //for dependent enumerations. This needs to be called before the columns are created.
-        this.dropDownManager.setData( data );
 
         setupInternalModel( model,
                             columns,
@@ -400,18 +390,28 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
     }
 
     public void onInsertColumn(InsertColumnEvent<BaseColumn, DTCellValue52> event) {
-        DynamicColumn<BaseColumn> column = new DynamicColumn<BaseColumn>( event.getColumn(),
-                                                                          cellFactory.getCell( event.getColumn() ),
+        List<DynamicColumn<BaseColumn>> columns = new ArrayList<DynamicColumn<BaseColumn>>();
+        List<List<CellValue< ? extends Comparable< ? >>>> columnsData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+        List<BaseColumn> allColumns = event.getColumns();
+        List<List<DTCellValue52>> allColumnsData = event.getColumnsData();
+        for ( int iCol = 0; iCol < event.getColumns().size(); iCol++ ) {
+            final BaseColumn column = allColumns.get( iCol );
+            final List<DTCellValue52> columnData = allColumnsData.get( iCol );
+            DynamicColumn<BaseColumn> dc = new DynamicColumn<BaseColumn>( column,
+                                                                          cellFactory.getCell( column ),
                                                                           eventBus );
-        column.setVisible( !event.getColumn().isHideColumn() );
-        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.convertColumnData( event.getColumn(),
-                                                                                               event.getColumnData() );
+            dc.setVisible( !column.isHideColumn() );
+            List<CellValue< ? extends Comparable< ? >>> dcd = cellValueFactory.convertColumnData( column,
+                                                                                                  columnData );
+            columns.add( dc );
+            columnsData.add( dcd );
+        }
 
         //Raise event setting data and columns for UI components
-        InsertInternalDecisionTableColumnEvent ice = new InsertInternalDecisionTableColumnEvent( column,
+        InsertInternalDecisionTableColumnEvent ice = new InsertInternalDecisionTableColumnEvent( columns,
+                                                                                                 columnsData,
                                                                                                  event.getIndex(),
-                                                                                                 event.redraw(),
-                                                                                                 data );
+                                                                                                 event.redraw() );
         eventBus.fireEvent( ice );
 
         //Assert dimensions once column has been added

@@ -26,6 +26,24 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
  */
 public class InsertDecisionTableColumnEvent extends InsertColumnEvent<BaseColumn, DTCellValue52> {
 
+    public InsertDecisionTableColumnEvent(List<BaseColumn> columns,
+                                          List<List<DTCellValue52>> columnsData,
+                                          int index,
+                                          boolean redraw) {
+        super( columns,
+               columnsData,
+               index,
+               redraw );
+    }
+
+    public InsertDecisionTableColumnEvent(List<BaseColumn> columns,
+                                          List<List<DTCellValue52>> columnsData,
+                                          int index) {
+        super( columns,
+               columnsData,
+               index );
+    }
+
     public InsertDecisionTableColumnEvent(BaseColumn column,
                                           List<DTCellValue52> columnData,
                                           int index,

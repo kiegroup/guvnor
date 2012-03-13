@@ -37,8 +37,13 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         VerticalPanel vp = new VerticalPanel();
 
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //for dependent enumerations. This needs to be called before the columns are created.
+        this.dropDownManager = new DecisionTableDropDownManager( sce );
+
         //Factories for new cell elements
         this.cellFactory = new DecisionTableCellFactory( sce,
+                                                         dropDownManager,
                                                          isReadOnly,
                                                          eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce );

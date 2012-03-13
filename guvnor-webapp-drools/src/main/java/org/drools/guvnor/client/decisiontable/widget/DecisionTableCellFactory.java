@@ -52,23 +52,26 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
-    private GuidedDecisionTable52        model;
-    private DecisionTableDropDownManager dropDownManager;
+    private GuidedDecisionTable52 model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
+     * @param dropDownManager
+     *            DropDownManager for dependent cells
      * @param isReadOnly
      *            Should cells be created for a read-only mode of operation
      * @param eventBus
      *            An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
+                                    DecisionTableDropDownManager dropDownManager,
                                     boolean isReadOnly,
                                     EventBus eventBus) {
         super( sce,
+               dropDownManager,
                isReadOnly,
                eventBus );
     }
@@ -83,18 +86,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
-    }
-
-    /**
-     * Set the DropDownManager
-     * 
-     * @param dropDownManager
-     */
-    public void setDropDownManager(DecisionTableDropDownManager dropDownManager) {
-        if ( dropDownManager == null ) {
-            throw new IllegalArgumentException( "dropDownManager cannot be null" );
-        }
-        this.dropDownManager = dropDownManager;
     }
 
     /**

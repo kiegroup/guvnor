@@ -53,11 +53,14 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
     private CellHeightCalculatorImpl cellHeightCalculator = GWT.create( CellHeightCalculatorImpl.class );
 
     public AbstractVerticalMergableGridWidget(ResourcesProvider<T> resources,
+                                              AbstractCellFactory<T> cellFactory,
                                               AbstractCellValueFactory<T, ? > cellValueFactory,
-                                              boolean isReadOnly,
+                                              CellTableDropDownDataValueMapProvider dropDownManager,                                              boolean isReadOnly,
                                               EventBus eventBus) {
         super( resources,
+               cellFactory,
                cellValueFactory,
+               dropDownManager,
                isReadOnly,
                eventBus );
     }

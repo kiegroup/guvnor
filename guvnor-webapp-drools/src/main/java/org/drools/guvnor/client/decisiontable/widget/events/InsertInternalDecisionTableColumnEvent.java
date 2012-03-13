@@ -27,14 +27,14 @@ import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
  */
 public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumnEvent<BaseColumn> {
 
-    public InsertInternalDecisionTableColumnEvent(DynamicColumn<BaseColumn> column,
+    public InsertInternalDecisionTableColumnEvent(List<DynamicColumn<BaseColumn>> columns,
+                                                  List<List<CellValue< ? extends Comparable< ? >>>> columnsData,
                                                   int index,
-                                                  boolean redraw,
-                                                  List<CellValue< ? extends Comparable< ? >>> data) {
-        super( column,
+                                                  boolean redraw) {
+        super( columns,
+               columnsData,
                index,
-               redraw,
-               data );
+               redraw );
     }
 
     public static Type<InsertInternalColumnEvent.Handler<BaseColumn>> TYPE = new Type<InsertInternalColumnEvent.Handler<BaseColumn>>();

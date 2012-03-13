@@ -17,7 +17,9 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -188,7 +190,9 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     protected List<DynamicColumn<T>>                         columns;
     protected DynamicData                                    data;
     protected RowMapper                                      rowMapper;
+    protected AbstractCellFactory<T>                         cellFactory;
     protected AbstractCellValueFactory<T, ? >                cellValueFactory;
+    protected CellTableDropDownDataValueMapProvider          dropDownManager;
 
     //Properties for multi-cell selection
     protected CellValue< ? >                                 rangeOriginCell;
@@ -208,11 +212,15 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      * A grid of cells.
      */
     public AbstractMergableGridWidget(ResourcesProvider<T> resources,
+                                      AbstractCellFactory<T> cellFactory,
                                       AbstractCellValueFactory<T, ? > cellValueFactory,
+                                      CellTableDropDownDataValueMapProvider dropDownManager,
                                       boolean isReadOnly,
                                       EventBus eventBus) {
         this.resources = resources;
+        this.cellFactory = cellFactory;
         this.cellValueFactory = cellValueFactory;
+        this.dropDownManager = dropDownManager;
         this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;
 
@@ -1016,30 +1024,35 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
-        int index = event.getIndex();
+
+        int firstColumnIndex = event.getFirstColumnIndex();
+        boolean bRedraw = event.redraw();
+        boolean bRedrawSidebar = false;
 
         //Expand any merged cells in column
-        boolean bRedrawSidebar = false;
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            CellValue< ? > cv = data.get( iRow ).get( index );
-            if ( cv.isGrouped() ) {
-                removeModelGrouping( cv,
-                                     false );
-                bRedrawSidebar = true;
+        for ( int iCol = 0; iCol < event.getNumberOfColumns(); iCol++ ) {
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                CellValue< ? > cv = data.get( iRow ).get( firstColumnIndex + iCol );
+                if ( cv.isGrouped() ) {
+                    removeModelGrouping( cv,
+                                         false );
+                    bRedrawSidebar = true;
+                }
             }
         }
 
         // Clear any selections
         clearSelection();
 
-        // Delete column from grid
-        columns.remove( index );
+        // Delete columns and data from grid
+        for ( int iCol = 0; iCol < event.getNumberOfColumns(); iCol++ ) {
+            columns.remove( firstColumnIndex );
+            data.deleteColumn( firstColumnIndex );
+        }
         reindexColumns();
 
-        data.deleteColumn( index );
-
         // Redraw
-        if ( event.redraw() ) {
+        if ( bRedraw ) {
             redraw();
             if ( bRedrawSidebar ) {
                 eventBus.fireEvent( ROW_GROUPING_EVENT );
@@ -1049,25 +1062,26 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
     public void onInsertInternalColumn(InsertInternalColumnEvent<T> event) {
 
-        DynamicColumn<T> column = event.getColumn();
         int index = event.getIndex();
-        boolean redraw = event.redraw();
-        List<CellValue< ? extends Comparable< ? >>> columnData = event.getData();
+        boolean bRedraw = event.redraw();
 
         // Clear any selections
         clearSelection();
 
-        // Add column definition
-        columns.add( index,
-                     column );
+        // Add column definitions and data
+        for ( int iCol = 0; iCol < event.getColumns().size(); iCol++ ) {
+            DynamicColumn<T> column = event.getColumns().get( iCol );
+            List<CellValue< ? extends Comparable< ? >>> columnData = event.getColumnsData().get( iCol );
+            columns.add( index + iCol,
+                         column );
+            data.addColumn( index + iCol,
+                            columnData,
+                            column.isVisible() );
+        }
         reindexColumns();
 
-        data.addColumn( index,
-                        columnData,
-                        column.isVisible() );
-
         // Redraw
-        if ( redraw ) {
+        if ( bRedraw ) {
             redrawColumns( index,
                            columns.size() - 1 );
         }
@@ -1075,6 +1089,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     public void onSetInternalModel(SetInternalModelEvent<M, T> event) {
+        this.dropDownManager.setData( event.getData() );
         this.setColumns( event.getColumns() );
         this.setData( event.getData() );
         this.redraw();
@@ -1224,11 +1239,13 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     public void onUpdateSelectedCells(UpdateSelectedCellsEvent event) {
 
         Comparable< ? > value = event.getValue();
-        boolean bUngroupCells = false;
-        Coordinate selection = selections.first().getCoordinate();
-        List<List<CellValue< ? extends Comparable< ? >>>> changedData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+        Map<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>> changedData = new HashMap<Coordinate, List<List<CellValue< ? extends Comparable< ? >>>>>();
+        List<List<CellValue< ? extends Comparable< ? >>>> changedBlock;
+        List<CellValue< ? extends Comparable< ? >>> changedRow;
+        Coordinate firstSelection = selections.first().getCoordinate();
 
         //If selections span multiple cells, any of which are grouped we should ungroup them
+        boolean bUngroupCells = false;
         if ( selections.size() > 1 ) {
             for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
                 if ( cell instanceof GroupedCellValue ) {
@@ -1238,7 +1255,9 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             }
         }
 
-        // Update underlying data (update before ungrouping as selections would need to be expanded too)
+        //---Update selected cells (before ungrouping otherwise selections would need to be expanded too)---
+        changedBlock = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+        changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
             Coordinate c = cell.getCoordinate();
             if ( !columns.get( c.getCol() ).isSystemControlled() ) {
@@ -1252,17 +1271,53 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                 if ( cell instanceof GroupedCellValue ) {
                     GroupedCellValue gcv = (GroupedCellValue) cell;
                     for ( int iChildValueIndex = 0; iChildValueIndex < gcv.getGroupedCells().size(); iChildValueIndex++ ) {
-                        List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
                         changedRow.add( data.get( c ) );
-                        changedData.add( changedRow );
+                        changedBlock.add( changedRow );
                     }
                 } else {
-                    List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
                     changedRow.add( data.get( c ) );
-                    changedData.add( changedRow );
+                    changedBlock.add( changedRow );
+                }
+            }
+        }
+        Coordinate originSelected = new Coordinate( rowMapper.mapToAbsoluteRow( firstSelection.getRow() ),
+                                                    firstSelection.getCol() );
+        changedData.put( originSelected,
+                         changedBlock );
+
+        //---Clear dependent cells' values---
+        Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( firstSelection.getCol() );
+        for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
+            changedBlock = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+            changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                Coordinate dc = new Coordinate( cell.getCoordinate().getRow(),
+                                                dependentColumnIndex );
+                if ( !columns.get( dc.getCol() ).isSystemControlled() ) {
+                    data.set( dc,
+                              null );
+                    if ( value != null ) {
+                        cell.removeState( CellState.OTHERWISE );
+                    }
+
+                    //Copy data that is changing for an event to update the underlying model
+                    if ( cell instanceof GroupedCellValue ) {
+                        GroupedCellValue gcv = (GroupedCellValue) cell;
+                        for ( int iChildValueIndex = 0; iChildValueIndex < gcv.getGroupedCells().size(); iChildValueIndex++ ) {
+                            changedRow.add( data.get( dc ) );
+                            changedBlock.add( changedRow );
+                        }
+                    } else {
+                        changedRow.add( data.get( dc ) );
+                        changedBlock.add( changedRow );
+                    }
                 }
 
             }
+            Coordinate originDependent = new Coordinate( rowMapper.mapToAbsoluteRow( firstSelection.getRow() ),
+                                                         dependentColumnIndex );
+            changedData.put( originDependent,
+                             changedBlock );
         }
 
         //Ungroup if applicable
@@ -1299,14 +1354,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         }
 
         //Re-select applicable cells, following change to merge
-        startSelecting( selection );
+        startSelecting( firstSelection );
 
         //Raise event for underlying model to update itself, converting logical row to physical
-        Coordinate c = selections.first().getCoordinate();
-        int iRow = rowMapper.mapToAbsoluteRow( c.getRow() );
-        UpdateModelEvent dce = new UpdateModelEvent( new Coordinate( iRow,
-                                                                     c.getCol() ),
-                                                     changedData );
+        UpdateModelEvent dce = new UpdateModelEvent( changedData );
         eventBus.fireEvent( dce );
     }
 

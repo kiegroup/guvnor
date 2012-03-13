@@ -35,23 +35,27 @@ public abstract class InsertInternalColumnEvent<T> extends GwtEvent<InsertIntern
         void onInsertInternalColumn(InsertInternalColumnEvent<T> event);
     }
 
-    private DynamicColumn<T>                            column;
-    private int                                         index;
-    private boolean                                     redraw;
-    private List<CellValue< ? extends Comparable< ? >>> data;
+    private List<DynamicColumn<T>>                            columns;
+    private List<List<CellValue< ? extends Comparable< ? >>>> columnsData;
+    private int                                               index;
+    private boolean                                           redraw;
 
-    public InsertInternalColumnEvent(DynamicColumn<T> column,
+    public InsertInternalColumnEvent(List<DynamicColumn<T>> columns,
+                                     List<List<CellValue< ? extends Comparable< ? >>>> columnsData,
                                      int index,
-                                     boolean redraw,
-                                     List<CellValue< ? extends Comparable< ? >>> data) {
-        this.column = column;
+                                     boolean redraw) {
+        this.columns = columns;
+        this.columnsData = columnsData;
         this.index = index;
         this.redraw = redraw;
-        this.data = data;
     }
 
-    public DynamicColumn<T> getColumn() {
-        return this.column;
+    public List<DynamicColumn<T>> getColumns() {
+        return this.columns;
+    }
+
+    public List<List<CellValue< ? extends Comparable< ? >>>> getColumnsData() {
+        return this.columnsData;
     }
 
     public int getIndex() {
@@ -60,10 +64,6 @@ public abstract class InsertInternalColumnEvent<T> extends GwtEvent<InsertIntern
 
     public boolean redraw() {
         return redraw;
-    }
-
-    public List<CellValue< ? extends Comparable< ? >>> getData() {
-        return data;
     }
 
     @Override

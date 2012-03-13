@@ -18,7 +18,6 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.util.GWTDateConverter;
@@ -31,7 +30,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CopyRowsEven
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.PasteRowsEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
@@ -88,15 +86,16 @@ public class TemplateDataTableWidget extends Composite
         this.sce = sce;
         this.globalEventBus = globalEventBus;
 
-        //Factories for new cell elements
-        this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        isReadOnly,
-                                                        eventBus );
-        this.cellValueFactory = new TemplateDataCellValueFactory( sce );
-
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
         //for dependent enumerations. This needs to be called before the columns are created.
         this.dropDownManager = new TemplateDropDownManager( sce );
+
+        //Factories for new cell elements
+        this.cellFactory = new TemplateDataCellFactory( sce,
+                                                        dropDownManager,
+                                                        isReadOnly,
+                                                        eventBus );
+        this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedTemplateDataGridWidget( resources,
@@ -142,7 +141,6 @@ public class TemplateDataTableWidget extends Composite
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
-        this.cellFactory.setDropDownManager( this.dropDownManager );
         this.cellValueFactory.setModel( model );
         this.dropDownManager.setModel( model );
 
@@ -220,9 +218,6 @@ public class TemplateDataTableWidget extends Composite
             int originRowIndex = originCoordinate.getRow();
             int originColumnIndex = originCoordinate.getCol();
 
-            //Get "dependent" column indexes
-            Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( originColumnIndex );
-
             //Changed data
             List<List<CellValue< ? extends Comparable< ? >>>> data = e.getValue();
 
@@ -248,42 +243,9 @@ public class TemplateDataTableWidget extends Composite
                     columnData.set( targetRowIndex,
                                     dcv );
                 }
-
-                //Clear dependent cells' values
-                for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
-                    InterpolationVariable var = vars[dependentColumnIndex];
-                    List<String> columnData = model.getTable().get( var.getVarName() );
-                    columnData.set( targetRowIndex,
-                                    null );
-                }
-
             }
-
-            //Signal update of UI dependent columns
-            for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
-                InterpolationVariable var = vars[dependentColumnIndex];
-                List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( var );
-                UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( dependentColumnIndex,
-                                                                                    columnData );
-                eventBus.fireEvent( updateColumnData );
-            }
-
         }
 
-    }
-
-    // Retrieve the data for a particular column
-    private List<CellValue< ? extends Comparable< ? >>> getColumnData(final InterpolationVariable var) {
-        final List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        final TemplateDataColumn col = new TemplateDataColumn( var.getVarName(),
-                                                               var.getDataType(),
-                                                               var.getFactType(),
-                                                               var.getFactField() );
-        for ( String dcv : model.getTable().get( var.getVarName() ) ) {
-            columnData.add( cellValueFactory.convertModelCellValue( col,
-                                                                    dcv ) );
-        }
-        return columnData;
     }
 
 }
