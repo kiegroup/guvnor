@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.drools.toolbar;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.BusinessProcessEditor;
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;
@@ -303,6 +304,11 @@ public class AssetEditorActionToolbar extends Composite {
             } );
             setViewSourceCommand( new Command() {
                 public void execute() {
+                	if( editor instanceof BusinessProcessEditor ) {
+                        if ( ((BusinessProcessEditor) editor).hasErrors()) {
+                        	return;
+                        }
+                    }
                     onSave();
                     LoadingPopup.showMessage( Constants.INSTANCE.CalculatingSource() );
                     RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
@@ -387,6 +393,12 @@ public class AssetEditorActionToolbar extends Composite {
                     doCheckinConfirm( closeAfter );
                 }
             } );
+        } else if( editor instanceof BusinessProcessEditor ) {
+            if ( ((BusinessProcessEditor) editor).hasErrors()) {
+            	return;
+            } else {
+            	doCheckinConfirm( closeAfter );
+            }
         } else {
             doCheckinConfirm( closeAfter );
         }
