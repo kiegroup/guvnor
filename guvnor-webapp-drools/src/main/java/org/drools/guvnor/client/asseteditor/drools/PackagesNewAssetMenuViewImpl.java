@@ -23,7 +23,9 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.NewPackageWizard;
@@ -51,7 +53,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         addNewRuleFlowMenuItem();
         addNewBPMN2ProcessMenuItem();
         addNewWorkItemDefinitionMenuItem();
-        addNewFormDefinitionMenuItem();
+       	addNewFormDefinitionMenuItem();
         addNewEnumerationMenuItem();
         addNewTestScenarioMenuItem();
         addNewFileMenuItem();
@@ -66,8 +68,15 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         return rootMenuBar;
     }
 
+    private void addItem(String text, boolean asHTML, Command command, String format) {
+    	MenuItem item = new MenuItem( text, asHTML, command );
+   		boolean enabled = ApplicationPreferences.getBooleanPref( format, true ); //enabled by default
+		item.setEnabled( enabled );
+    	createNewMenu.addItem( item );
+    }
+    
     private void addNewFileMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newFile(), Constants.INSTANCE.CreateAFile() ).asString(),
+    	createNewMenu.addItem(Util.getHeader( DroolsGuvnorImages.INSTANCE.newFile(), Constants.INSTANCE.CreateAFile() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
@@ -77,113 +86,124 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewTestScenarioMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewTestScenario();
                     }
-                } );
+                },
+                AssetFormats.TEST_SCENARIO );
     }
 
     private void addNewEnumerationMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewEnumeration() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewEnumeration() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewEnumeration();
                     }
-                } );
+                },
+                AssetFormats.ENUMERATION );
     }
 
     private void addNewWorkItemDefinitionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewWorkitemDefinition() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewWorkitemDefinition() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewWorkitemDefinition();
                     }
-                } );
+                },
+                AssetFormats.WORKITEM_DEFINITION );
     }
 
     private void addNewBPMN2ProcessMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewBPMN2Process() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewBPMN2Process() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewBPMN2Process();
                     }
-                } );
+                },
+                AssetFormats.BPMN2_PROCESS );
     }
 
     private void addNewFormDefinitionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.formDefIcon(), Constants.INSTANCE.FormDefinition() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.formDefIcon(), Constants.INSTANCE.FormDefinition() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewFormDefinition();
                     }
-                });
+                },
+                AssetFormats.FORM_DEFINITION );
     }
 
     private void addNewRuleFlowMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewRuleFlow() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.ruleflowSmall(), Constants.INSTANCE.NewRuleFlow() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewRuleFlow();
                     }
-                } );
+                },
+                AssetFormats.RULE_FLOW_RF );
     }
 
     private void addNewDSLMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.dsl(), Constants.INSTANCE.NewDSL() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.dsl(), Constants.INSTANCE.NewDSL() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewDSL();
                     }
-                } );
+                }, 
+                AssetFormats.DSL );
     }
 
     private void addNewFunctionMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.functionAssets(), Constants.INSTANCE.NewFunction() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.functionAssets(), Constants.INSTANCE.NewFunction() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewFunction();
                     }
-                } );
+                }, 
+                AssetFormats.FUNCTION );
     }
 
     private void addNewDeclarativeModelMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.NewDeclarativeModel() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.NewDeclarativeModel() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewDeclarativeModel();
                     }
-                } );
+                }, 
+                AssetFormats.DRL_MODEL );
     }
 
     private void addNewPojoModelMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.UploadPOJOModelJar() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.modelAsset(), Constants.INSTANCE.UploadPOJOModelJar() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewPojoModel();
                     }
-                } );
+                }, 
+                AssetFormats.MODEL );
     }
 
     private void addNewRuleTemplateMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newTemplate(), Constants.INSTANCE.NewRuleTemplate() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newTemplate(), Constants.INSTANCE.NewRuleTemplate() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewRuleTemplate();
                     }
-                } );
+                }, 
+                AssetFormats.RULE_TEMPLATE );
     }
 
     private void addNewRuleMenuItem() {
@@ -197,33 +217,36 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewWorkingSetMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newPackage(), Constants.INSTANCE.NewWorkingSet() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newPackage(), Constants.INSTANCE.NewWorkingSet() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewWorkingSet();
                     }
-                } );
+                },
+                AssetFormats.WORKING_SET );
     }
 
     private void addNewSpringContextMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewSpringContext() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewSpringContext() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewSpringContext();
                     }
-                } );
+                },
+                AssetFormats.SPRING_CONTEXT );
     }
 
     private void addNewServiceConfigMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewServiceConfig() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewServiceConfig() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewServiceConfig();
                     }
-                } );
+                },
+                AssetFormats.SPRING_CONTEXT );
     }
 
     private void addNewPackageMenuItem() {
@@ -237,13 +260,14 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
     
     private void addNewChangeSetMenuItem() {
-        createNewMenu.addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewChangeSet() ).asString(),
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.newEnumeration(), Constants.INSTANCE.NewChangeSet() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewChangeSet();
                     }
-                } );
+                }, 
+                AssetFormats.CHANGE_SET );
     }
 
     public Widget asWidget() {

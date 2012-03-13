@@ -33,14 +33,17 @@ public class ApplicationPreferencesLoaderTest {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
 
         assertNotNull( preferences );
-        assertEquals( 10,
+        assertEquals( 14,
                       preferences.size() );
         assertTrue( preferences.containsKey( "visual-ruleflow" ) );
         assertTrue( preferences.containsKey( "verifier" ) );
+        assertTrue( preferences.containsKey( "formdef" ) );
         assertEquals( "true",
                       preferences.get( "verifier" ) );
         assertEquals( "true",
                       preferences.get( "oryx-bpmn-editor" ) );
+        assertEquals( "false",
+                      preferences.get( "formdef" ) );
         assertEquals( "false",
                       preferences.get( "rule-modeller-onlyShowDSLStatements" ) );
     }
