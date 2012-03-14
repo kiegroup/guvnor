@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.examples;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 

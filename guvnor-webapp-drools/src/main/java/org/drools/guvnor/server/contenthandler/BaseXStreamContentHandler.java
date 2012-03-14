@@ -21,13 +21,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepositoryException;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
 
-public abstract class BaseXStreamContentHandler<T extends Serializable> extends ContentHandler {
+public abstract class BaseXStreamContentHandler<T extends PortableObject>
+        extends ContentHandler {
     private final Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
     private static final XStream xt = new XStream(new DomDriver());

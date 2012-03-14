@@ -16,8 +16,10 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.TableDataResult;
 
 import com.google.gwt.core.client.Scheduler;
@@ -64,7 +66,8 @@ public class GlobalAreaAssetSelector extends Composite {
     }
 
     private void loadAssetList() {
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( "globalArea",
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.listAssetsWithPackageName( "globalArea",
                                                                               formats,
                                                                               0,
                                                                               -1,

@@ -42,7 +42,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
  * This passes on all requests unmolested to the underlying ServiceImplemention class.
  */
-public class RepositoryServiceServlet extends RemoteServiceServlet
+public class RepositoryServiceServlet
+        extends RemoteServiceServlet
         implements
         RepositoryService,
         AssetService,

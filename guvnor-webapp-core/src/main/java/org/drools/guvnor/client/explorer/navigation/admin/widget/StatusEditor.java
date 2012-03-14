@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.user.client.Command;
@@ -30,6 +29,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
 /**
  * This provides a popup for editing a status (name etc).
@@ -73,7 +74,8 @@ public class StatusEditor extends FormStylePopup {
 
     private void createStatus(final TextBox box) {
         LoadingPopup.showMessage( constants.CreatingStatus() );
-        RepositoryServiceFactory.getService().createState( box.getText(),
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.createState( box.getText(),
                                                            new GenericCallback<String>() {
                                                                public void onSuccess(String data) {
                                                                    if ( data != null ) {

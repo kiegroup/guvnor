@@ -300,7 +300,8 @@ public class PackageEditorActionToolbar extends Composite {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getPackageService().renameModule( packageConfigData.getUuid(),
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.renameModule( packageConfigData.getUuid(),
                         name.getText(),
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
@@ -349,7 +350,8 @@ public class PackageEditorActionToolbar extends Composite {
                     return;
                 }
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().copyModule( packageConfigData.getName(),
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.copyModule( packageConfigData.getName(),
                         name.getText(),
                         new GenericCallback<String>() {
                             public void onSuccess(String uuid) {
@@ -373,7 +375,8 @@ public class PackageEditorActionToolbar extends Composite {
     private void doSave(final Command refresh) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
-        RepositoryServiceFactory.getPackageService().saveModule( this.packageConfigData,
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.saveModule( this.packageConfigData,
                 new GenericCallback<Void>() {
                     public void onSuccess(Void data) {
                         refreshCommand.execute();

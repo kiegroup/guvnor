@@ -43,7 +43,8 @@ import java.util.Map.Entry;
 /**
  * This is the module editor for Drools Package.
  */
-public class PackageEditor extends AbstractModuleEditor {
+public class PackageEditor
+        extends AbstractModuleEditor {
 
     private final Module packageConfigData;
     private boolean isHistoricalReadOnly = false;
@@ -198,7 +199,8 @@ public class PackageEditor extends AbstractModuleEditor {
             }
         };
 
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.packageConfigData.getName(),
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.listAssetsWithPackageName( this.packageConfigData.getName(),
                 new String[]{AssetFormats.SPRING_CONTEXT},
                 0,
                 -1,
@@ -216,7 +218,7 @@ public class PackageEditor extends AbstractModuleEditor {
 
         packageConfigurationValidationResult.add( busy );
 
-        DroolsServiceAsync droolsService = GWT.create(DroolsServiceAsync.class);
+        DroolsServiceAsync droolsService = GWT.create(DroolsService.class);
         droolsService.validateModule( this.packageConfigData,
                 new GenericCallback<ValidatedResponse>() {
                     public void onSuccess(ValidatedResponse data) {

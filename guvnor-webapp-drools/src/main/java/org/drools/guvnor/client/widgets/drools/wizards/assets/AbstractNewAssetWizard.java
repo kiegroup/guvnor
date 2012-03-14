@@ -15,17 +15,16 @@
  */
 package org.drools.guvnor.client.widgets.drools.wizards.assets;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.NewAssetConfiguration;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.shared.api.PortableObject;
 
 /**
  * A Wizard representing new assets
@@ -54,7 +53,8 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      */
     protected void save(final NewAssetConfiguration config,
                         final T content) {
-        RepositoryServiceFactory.getService().createNewRule( config,
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.createNewRule( config,
                                                              createCreateAssetCallback( content ) );
     }
 
@@ -72,8 +72,9 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
                     presenter.hideSavingIndicator();
                     presenter.showDuplicateAssetNameError();
                 } else {
-                    RepositoryServiceFactory.getAssetService().loadRuleAsset( uuid,
-                                                                              createSetContentCallback( content ) );
+                    AssetServiceAsync assetService = GWT.create(AssetService.class);
+                    assetService.loadRuleAsset(uuid,
+                            createSetContentCallback(content));
                 }
             }
         };
@@ -93,8 +94,9 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
             public void onSuccess(Asset asset) {
                 asset.setContent( content );
                 asset.setCheckinComment( "Created from Wizard" );
-                RepositoryServiceFactory.getAssetService().checkinVersion( asset,
-                                                                           createCheckedInCallback() );
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+                assetService.checkinVersion(asset,
+                        createCheckedInCallback());
             }
         };
         return cb;

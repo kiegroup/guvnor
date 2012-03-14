@@ -41,9 +41,9 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.converters.AbstractConverter;
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.guvnor.shared.modules.ModuleHeader;
 import org.drools.guvnor.shared.modules.ModuleHeaderHelper;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.AssetItem;
 import org.drools.template.model.Global;
@@ -346,7 +346,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
     protected void createNewAsset(final AssetItem item,
                                   final NewAssetConfiguration config,
-                                  final Serializable content,
+                                  final PortableObject content,
                                   final ConversionResult result) throws SerializationException {
 
         //Create new asset

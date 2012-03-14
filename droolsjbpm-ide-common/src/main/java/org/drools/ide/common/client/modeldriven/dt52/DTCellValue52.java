@@ -15,11 +15,11 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Holder for cell value and other attributes. This is serialised by GWT RPC and
@@ -28,7 +28,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class DTCellValue52
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long serialVersionUID = -3547167997433925031L;
 

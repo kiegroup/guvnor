@@ -16,16 +16,7 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
@@ -38,8 +29,20 @@ import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.*;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SecurityService;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
+
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This is the main launching/entry point for the Guvnor web console. It
@@ -78,7 +81,8 @@ public class GuvnorDroolsEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
+        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
+        securityService.getCurrentUser(new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
                 if (userName != null) {

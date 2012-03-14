@@ -30,15 +30,16 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceManager extends Composite {
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
-    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private RepositoryServiceAsync repositoryService = GWT.create( RepositoryService.class );
+    private ModuleServiceAsync moduleService = GWT.create( ModuleService.class );
 
     private ListBox       availableWorkspacesListBox;
     private ListBox       availableModulesListBox = new ListBox( true );
@@ -104,13 +105,13 @@ public class WorkspaceManager extends Composite {
     private void removeWorkspace() {
         String name = availableWorkspacesListBox.getItemText( availableWorkspacesListBox.getSelectedIndex() );
 
-        RepositoryServiceFactory.getService().removeWorkspace( name,
-                                                           new GenericCallback<java.lang.Void>() {
-                                                               public void onSuccess(Void v) {
-                                                                   Window.alert( constants.WorkspaceRemoved() );
-                                                                   refreshWorkspaceList();
-                                                               }
-                                                           } );
+        repositoryService.removeWorkspace(name,
+                new GenericCallback<java.lang.Void>() {
+                    public void onSuccess(Void v) {
+                        Window.alert(constants.WorkspaceRemoved());
+                        refreshWorkspaceList();
+                    }
+                });
     }
     
     private void updateWorkspace() {
@@ -127,20 +128,20 @@ public class WorkspaceManager extends Composite {
         availableModuleList.removeAll(selectedModulesList);
         LoadingPopup.showMessage( constants.LoadingStatuses() );
         
-        RepositoryServiceFactory.getService().updateWorkspace(name, 
+        repositoryService.updateWorkspace(name,
                 selectedModulesList.toArray(new String[selectedModulesList.size()]),
                 availableModuleList.toArray(new String[availableModuleList.size()]),
                 new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void v) {
-                        Window.alert( constants.WorkspaceUpdated() );
+                        Window.alert(constants.WorkspaceUpdated());
                         refreshWorkspaceList();
                     }
-                } );
+                });
     }
 
     private void refreshWorkspaceList() {
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getService().listWorkspaces( new GenericCallback<String[]>() {
+        repositoryService.listWorkspaces(new GenericCallback<String[]>() {
             public void onSuccess(String[] workspaces) {
                 availableWorkspacesListBox.clear();
                 for (String workspace : workspaces) {
@@ -148,7 +149,7 @@ public class WorkspaceManager extends Composite {
                 }
                 LoadingPopup.close();
             }
-        } );
+        });
     }
     
     private void refreshModuleList(String selectedWorkspaceName) {
@@ -157,7 +158,7 @@ public class WorkspaceManager extends Composite {
         }
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getPackageService().listModules(selectedWorkspaceName,  new GenericCallback<Module[]>() {
+        moduleService.listModules(selectedWorkspaceName,  new GenericCallback<Module[]>() {
             public void onSuccess(Module[] packageConfigData) {
                 selectedModulesListBox.clear();
                 for ( Module p : packageConfigData) {
@@ -168,7 +169,7 @@ public class WorkspaceManager extends Composite {
         } );
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+        moduleService.listModules( new GenericCallback<Module[]>() {
             public void onSuccess(Module[] packageConfigData) {
                 availableModulesListBox.clear();
                 for ( Module p : packageConfigData) {

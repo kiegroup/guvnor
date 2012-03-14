@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.springcontext;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
@@ -34,9 +35,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.Map;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.*;
 
 public class SpringContextElementsBrowser extends Composite {
     
@@ -84,7 +83,8 @@ public class SpringContextElementsBrowser extends Composite {
         this.elementSelectedItem = elementSelectedItem;
 
         //load Spring Context Element data from server
-        RepositoryServiceFactory.getService().loadSpringContextElementData(new AsyncCallback<Map<String, String>>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.loadSpringContextElementData(new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
             }
@@ -114,31 +114,32 @@ public class SpringContextElementsBrowser extends Composite {
         final TreeItem rootItem = new TreeItem(Constants.INSTANCE.Packages());
 
         //Global Area Data
-        RepositoryServiceFactory.getPackageService().loadGlobalModule(new AsyncCallback<Module>()   {
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.loadGlobalModule(new AsyncCallback<Module>() {
 
-            public void onFailure(Throwable caught) {
-                ErrorPopup.showMessage("Error listing Global Area information!");
-            }
+                                public void onFailure(Throwable caught) {
+                                    ErrorPopup.showMessage("Error listing Global Area information!");
+                                }
 
-            public void onSuccess(Module result) {
-                populatePackageTree(result, rootItem);
-            }
-        });
+                                public void onSuccess(Module result) {
+                                    populatePackageTree(result, rootItem);
+                                }
+                            });
 
         //Packages Data
-        RepositoryServiceFactory.getPackageService().listModules(new AsyncCallback<Module[]>()    {
+        moduleService.listModules(new AsyncCallback<Module[]>() {
 
-            public void onFailure(Throwable caught) {
-                ErrorPopup.showMessage("Error listing package information!");
-            }
+                                public void onFailure(Throwable caught) {
+                                    ErrorPopup.showMessage("Error listing package information!");
+                                }
 
-            public void onSuccess(Module[] result) {
-                for (int i = 0; i < result.length; i++) {
-                    final Module packageConfigData = result[i];
-                    populatePackageTree(packageConfigData, rootItem);
-                }
-            }
-        });
+                                public void onSuccess(Module[] result) {
+                                    for (int i = 0; i < result.length; i++) {
+                                        final Module packageConfigData = result[i];
+                                        populatePackageTree(packageConfigData, rootItem);
+                                    }
+                                }
+                            });
 
         resourcesTree.addItem(rootItem);
         resourcesTree.setStyleName("category-explorer-Tree"); //NON-NLS
@@ -174,30 +175,32 @@ public class SpringContextElementsBrowser extends Composite {
         
         packageItem.addItem(leafItem);
 
-        RepositoryServiceFactory.getPackageService().listSnapshots(packageConfigData.getName(), new AsyncCallback<SnapshotInfo[]>()    {
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.listSnapshots(packageConfigData.getName(), new AsyncCallback<SnapshotInfo[]>() {
 
-            public void onFailure(Throwable caught) {
-                ErrorPopup.showMessage("Error listing snapshots information!");
-            }
+                                public void onFailure(Throwable caught) {
+                                    ErrorPopup.showMessage("Error listing snapshots information!");
+                                }
 
-            public void onSuccess(SnapshotInfo[] result) {
-                for (int j = 0; j < result.length; j++) {
-                    final SnapshotInfo snapshotInfo = result[j];
-                    RepositoryServiceFactory.getPackageService().loadModule( snapshotInfo.getUuid(), new AsyncCallback<Module>()    {
+                                public void onSuccess(SnapshotInfo[] result) {
+                                    for (int j = 0; j < result.length; j++) {
+                                        final SnapshotInfo snapshotInfo = result[j];
+                                        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                                        moduleService.loadModule(snapshotInfo.getUuid(), new AsyncCallback<Module>() {
 
-                        public void onFailure(Throwable caught) {
-                            ErrorPopup.showMessage("Error listing snapshots information!");
-                        }
+                                            public void onFailure(Throwable caught) {
+                                                ErrorPopup.showMessage("Error listing snapshots information!");
+                                            }
 
-                        public void onSuccess(Module result) {
-                            TreeItem leafItem = new TreeItem(new ClickableLabel( snapshotInfo.getName(), new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
-                            packageItem.addItem(leafItem);
-                        }
-                    });
+                                            public void onSuccess(Module result) {
+                                                TreeItem leafItem = new TreeItem(new ClickableLabel(snapshotInfo.getName(), new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
+                                                packageItem.addItem(leafItem);
+                                            }
+                                        });
 
-                }
-            }
-        });
+                                    }
+                                }
+                            });
 
         rootItem.addItem(packageItem);
     }

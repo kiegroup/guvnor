@@ -16,12 +16,14 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 /**
  * This holds values for rule attributes (eg salience, agenda-group etc).
  */
 public class RuleAttribute
     implements
-    PortableObject {
+        PortableObject {
 
     private static final String NOLOOP         = "no-loop";
     private static final String SALIENCE       = "salience";

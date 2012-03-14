@@ -19,12 +19,14 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IDirtyable;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
@@ -121,27 +123,28 @@ public class EnumDropDown extends ListBox
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
                     LoadingPopup.showMessage( Constants.INSTANCE.RefreshingList() );
-                    RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
-                                                                                  dropData.queryExpression,
-                                                                                  new GenericCallback<String[]>() {
-                                                                                      public void onSuccess(String[] data) {
-                                                                                          LoadingPopup.close();
+                    RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+                    repositoryService.loadDropDownExpression(dropData.valuePairs,
+                            dropData.queryExpression,
+                            new GenericCallback<String[]>() {
+                                public void onSuccess(String[] data) {
+                                    LoadingPopup.close();
 
-                                                                                          if ( data.length == 0 ) {
-                                                                                              data = new String[]{Constants.INSTANCE.UnableToLoadList()};
-                                                                                          }
+                                    if (data.length == 0) {
+                                        data = new String[]{Constants.INSTANCE.UnableToLoadList()};
+                                    }
 
-                                                                                          fillDropDown( currentValue,
-                                                                                                        data );
-                                                                                      }
+                                    fillDropDown(currentValue,
+                                            data);
+                                }
 
-                                                                                      public void onFailure(Throwable t) {
-                                                                                          LoadingPopup.close();
-                                                                                          //just do an empty drop down...
-                                                                                          fillDropDown( currentValue,
-                                                                                                        new String[]{Constants.INSTANCE.UnableToLoadList()} );
-                                                                                      }
-                                                                                  } );
+                                public void onFailure(Throwable t) {
+                                    LoadingPopup.close();
+                                    //just do an empty drop down...
+                                    fillDropDown(currentValue,
+                                            new String[]{Constants.INSTANCE.UnableToLoadList()});
+                                }
+                            });
                 }
             } );
 

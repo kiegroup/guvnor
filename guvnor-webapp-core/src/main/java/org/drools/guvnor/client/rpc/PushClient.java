@@ -55,7 +55,8 @@ public class PushClient {
         Timer timer = new Timer() {
 
             public void run() {
-                RepositoryServiceFactory.getService().subscribe(new AsyncCallback<List<PushResponse>>() {
+                RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+                repositoryService.subscribe(new AsyncCallback<List<PushResponse>>() {
                     public void onFailure(Throwable caught) {
                         System.err.println("FAIL" + System.currentTimeMillis());
                     }
@@ -71,7 +72,8 @@ public class PushClient {
 
         timer.scheduleRepeating( 60000 );
 /*        
-        RepositoryServiceFactory.getService().subscribe(new AsyncCallback<List<PushResponse>>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.subscribe(new AsyncCallback<List<PushResponse>>() {
             public void onFailure(Throwable caught) {
                 System.err.println("FAIL" + System.currentTimeMillis());
                 

@@ -22,7 +22,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -30,14 +29,16 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
 /**
  * This provides a popup for creating a workspace.
  */
 public class WorkspaceEditor extends FormStylePopup {
 
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
-    private static ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
+    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private TextBox          name      = new TextBox();
     private Command          refresh;
@@ -71,7 +72,10 @@ public class WorkspaceEditor extends FormStylePopup {
 
     private void createWorkspace(final TextBox box) {
         LoadingPopup.showMessage( constants.CreatingStatus() );
-        RepositoryServiceFactory.getService().createWorkspace( box.getText(),
+
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+
+        repositoryService.createWorkspace( box.getText(),
                                                            new GenericCallback<Void>() {
                                                                public void onSuccess(Void v) {
 

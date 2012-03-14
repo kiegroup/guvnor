@@ -16,6 +16,8 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -24,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This represents a test scenario. It also encapsulates the result of a
@@ -32,7 +33,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class Scenario
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long serialVersionUID = 510l;
 

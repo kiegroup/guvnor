@@ -15,6 +15,8 @@
  */
 
 package org.drools.guvnor.client.asseteditor;
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.List;
  * Properties representation used for RPC data exchange
  */
 public class PropertiesHolder
-        implements Serializable {
+        implements PortableObject {
 
     public List<PropertyHolder> list = new ArrayList<PropertyHolder>();
 

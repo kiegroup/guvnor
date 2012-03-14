@@ -16,12 +16,14 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 /**
  * This holds values for rule metadata (eg @foo(bar), @foo2(bar2)).
  */
 public class RuleMetadata
     implements
-    PortableObject {
+        PortableObject {
 
     public static String HIDE_LHS_IN_EDITOR        = "HideLHSInEditor";
     public static String HIDE_RHS_IN_EDITOR        = "HideRHSInEditor";

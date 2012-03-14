@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
@@ -28,8 +29,9 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
@@ -271,7 +273,8 @@ public class ScenarioWidget extends Composite
                     Scheduler scheduler = Scheduler.get();
                     scheduler.scheduleDeferred( new Command() {
                         public void execute() {
-                            RepositoryServiceFactory.getPackageService().listRulesInPackage( packageName,
+                            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.listRulesInPackage( packageName,
                                                                                       createGenericCallback( horizontalPanel,
                                                                                                              ruleNameTextBox,
                                                                                                              busy,

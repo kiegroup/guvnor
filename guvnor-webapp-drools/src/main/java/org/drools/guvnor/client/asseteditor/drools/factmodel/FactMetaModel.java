@@ -16,17 +16,18 @@
 
 package org.drools.guvnor.client.asseteditor.drools.factmodel;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Represents the GUI data for a fact model definition.
  */
 public class FactMetaModel
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long         serialVersionUID = 510L;
 

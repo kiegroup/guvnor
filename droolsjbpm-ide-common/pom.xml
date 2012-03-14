@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>droolsjbpm-ide-common</artifactId>
-  <packaging>jar</packaging>
+  <!--<packaging>jar</packaging>-->
   
   <name>Drools and jBPM IDE common</name>
   <description>Common code between Guvnor and the Eclipse plugins</description>

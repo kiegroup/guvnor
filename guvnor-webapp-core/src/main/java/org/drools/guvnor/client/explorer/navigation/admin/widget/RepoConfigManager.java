@@ -22,8 +22,8 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RdbmsConfigurable;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
+import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -55,7 +55,7 @@ public class RepoConfigManager extends Composite {
     private static ImagesCore images             = (ImagesCore) GWT.create( ImagesCore.class );
     private ConstantsCore constants          = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
-    private RepositoryServiceAsync service            = RepositoryServiceFactory.getService();
+    private RepositoryServiceAsync service            = GWT.create(RepositoryService.class);
     private RdbmsConfigurable      rdbmsConf          = new RdbmsConfigurable();
     private VerticalPanel          vPanel2            = new VerticalPanel();
     private RichTextArea           repoDisplayArea    = new RichTextArea();

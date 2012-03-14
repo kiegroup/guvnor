@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -25,6 +25,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
 /**
  * A rule package selector widget.
@@ -59,7 +61,8 @@ public class RulePackageSelector extends Composite {
     }
 
     private void loadPackageList() {
-        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.listModules( new GenericCallback<Module[]>() {
 
             public void onSuccess(Module[] list) {
                 for ( int i = 0; i < list.length; i++ ) {

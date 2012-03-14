@@ -16,11 +16,12 @@
 
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import static org.drools.guvnor.client.util.Preconditions.*;
 

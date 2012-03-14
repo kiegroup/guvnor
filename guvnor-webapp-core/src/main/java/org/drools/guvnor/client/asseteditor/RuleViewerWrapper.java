@@ -22,7 +22,8 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.widgets.MessageWidget;
 
 import com.google.gwt.core.client.GWT;
@@ -126,7 +127,8 @@ public class RuleViewerWrapper extends GuvnorEditor
         //AssetUUID == null means to refresh all asset editors contained by the specified module. 
         if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getModuleName().equals(refreshAssetEditorEvent.getModuleName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
             LoadingPopup.showMessage( constants.RefreshingItem() );
-            RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
+            AssetServiceAsync assetService = GWT.create(AssetService.class);
+            assetService.loadRuleAsset( asset.getUuid(),
                                                                       new GenericCallback<Asset>() {
                                                                           public void onSuccess(Asset a) {
                                                                               asset = a;

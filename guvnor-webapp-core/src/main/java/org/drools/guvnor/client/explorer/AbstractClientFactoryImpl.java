@@ -16,40 +16,32 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.ConfigurationService;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.ModuleServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
+import org.drools.guvnor.client.perspective.PerspectiveFactory;
+import org.drools.guvnor.client.rpc.*;
 
 public abstract class AbstractClientFactoryImpl
         implements
         ClientFactory {
 
-	protected final PlaceController     placeController;
+    protected final PlaceController placeController;
     protected NavigationViewFactoryImpl navigationViewFactory;
 
-    protected AssetEditorFactory        assetEditorFactory;
-    protected PerspectiveFactory        perspectiveFactory;
-    protected PlaceHistoryHandler       placeHistoryHandler;
-    protected GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
-    protected final EventBus            eventBus;
+    protected AssetEditorFactory assetEditorFactory;
+    protected PerspectiveFactory perspectiveFactory;
+    protected PlaceHistoryHandler placeHistoryHandler;
+    protected GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
+    protected final EventBus eventBus;
 
     public AbstractClientFactoryImpl(EventBus eventBus) {
         this.eventBus = eventBus;
-        this.placeController = new PlaceController( eventBus );
+        this.placeController = new PlaceController(eventBus);
     }
 
     public PlaceController getPlaceController() {
@@ -57,15 +49,15 @@ public abstract class AbstractClientFactoryImpl
     }
 
     public NavigationViewFactory getNavigationViewFactory() {
-        if ( navigationViewFactory == null ) {
-            navigationViewFactory = new NavigationViewFactoryImpl( this,
-                                                                   eventBus );
+        if (navigationViewFactory == null) {
+            navigationViewFactory = new NavigationViewFactoryImpl(this,
+                    eventBus);
         }
         return navigationViewFactory;
     }
 
     public ConfigurationServiceAsync getConfigurationService() {
-        return GWT.create( ConfigurationService.class );
+        return GWT.create(ConfigurationService.class);
     }
 
     public MultiActivityManager getActivityManager() {
@@ -74,47 +66,47 @@ public abstract class AbstractClientFactoryImpl
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
-        if ( placeHistoryHandler == null ) {
-            placeHistoryHandler = new PlaceHistoryHandler( getPlaceHistoryMapper() );
+        if (placeHistoryHandler == null) {
+            placeHistoryHandler = new PlaceHistoryHandler(getPlaceHistoryMapper());
         }
         return placeHistoryHandler;
     }
 
     public ModuleServiceAsync getModuleService() {
-        return RepositoryServiceFactory.getPackageService();
+        return GWT.create(ModuleService.class);
     }
 
     public RepositoryServiceAsync getService() {
-        return RepositoryServiceFactory.getService();
+        return GWT.create(RepositoryService.class);
     }
 
     public AssetEditorFactory getAssetEditorFactory() {
-        if ( assetEditorFactory == null ) {
-            assetEditorFactory = GWT.create( AssetEditorFactory.class );
+        if (assetEditorFactory == null) {
+            assetEditorFactory = GWT.create(AssetEditorFactory.class);
         }
         return assetEditorFactory;
     }
 
     public PerspectiveFactory getPerspectiveFactory() {
-        if ( perspectiveFactory == null ) {
-            perspectiveFactory = GWT.create( PerspectiveFactory.class );
+        if (perspectiveFactory == null) {
+            perspectiveFactory = GWT.create(PerspectiveFactory.class);
         }
         return perspectiveFactory;
     }
 
     public RepositoryServiceAsync getRepositoryService() {
-        return RepositoryServiceFactory.getService();
+        return GWT.create(RepositoryService.class);
     }
 
     public CategoryServiceAsync getCategoryService() {
-        return RepositoryServiceFactory.getCategoryService();
+        return GWT.create(CategoryService.class);
     }
 
     public AssetServiceAsync getAssetService() {
-        return RepositoryServiceFactory.getAssetService();
+        return GWT.create(AssetService.class);
     }
 
     public SecurityServiceAsync getSecurityService() {
-        return RepositoryServiceFactory.getSecurityService();
+        return GWT.create(SecurityService.class);
     }
 }

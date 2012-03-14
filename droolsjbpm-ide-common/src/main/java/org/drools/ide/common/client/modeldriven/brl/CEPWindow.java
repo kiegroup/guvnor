@@ -15,6 +15,8 @@
  */
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +25,8 @@ import java.util.Map;
  */
 public class CEPWindow
     implements
-    PortableObject,
-    HasParameterizedOperator {
+        PortableObject,
+        HasParameterizedOperator {
 
     protected String              operator;
     protected Map<String, String> parameters;

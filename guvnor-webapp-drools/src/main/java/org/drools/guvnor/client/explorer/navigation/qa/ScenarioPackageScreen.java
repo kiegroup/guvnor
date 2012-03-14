@@ -32,7 +32,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.TestScenarioService;
 import org.drools.guvnor.client.rpc.TestScenarioServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
@@ -42,7 +42,8 @@ import java.util.Arrays;
  * This shows a list of scenarios in a package.
  * And allows them to be run in bulk.
  */
-public class ScenarioPackageScreen extends Composite {
+public class ScenarioPackageScreen
+        extends Composite {
 
     private final VerticalPanel layout = new VerticalPanel();
 
@@ -92,7 +93,7 @@ public class ScenarioPackageScreen extends Composite {
      */
     private void runAllScenarios(String uuid) {
         LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenarios() );
-        TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioServiceAsync.class);
+        TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioService.class);
         testScenarioService.runScenariosInPackage( uuid,
                 new GenericCallback<BulkTestRunResult>() {
                     public void onSuccess(BulkTestRunResult bulkTestRunResult) {

@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,6 +29,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import org.drools.guvnor.client.rpc.CategoryService;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 
 /**
  * This provides a popup for editing a category (name etc).
@@ -95,7 +96,8 @@ public class CategoryEditor extends FormStylePopup {
         if ( "".equals( this.name.getText() ) ) {
             ErrorPopup.showMessage( constants.CanNotHaveAnEmptyCategoryName() );
         } else {
-            RepositoryServiceFactory.getCategoryService().createCategory( path,
+            CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+            categoryService.createCategory( path,
                                                                   name.getText(),
                                                                   description.getText(),
                                                                   cb );

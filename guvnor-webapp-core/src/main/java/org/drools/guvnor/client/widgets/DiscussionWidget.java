@@ -25,13 +25,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
-import org.drools.guvnor.client.rpc.PushClient;
-import org.drools.guvnor.client.rpc.PushResponse;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Util;
@@ -60,6 +54,7 @@ public class DiscussionWidget extends Composite {
 
     private static ConstantsCore constants        = GWT.create( ConstantsCore.class );
     private static ImagesCore images           = GWT.create( ImagesCore.class );
+    private static AssetServiceAsync assetService = GWT.create( AssetService.class );
 
     private VerticalPanel          commentList      = new VerticalPanel();
     private VerticalPanel          newCommentLayout = new VerticalPanel();
@@ -109,7 +104,7 @@ public class DiscussionWidget extends Composite {
 
     /** Hit up the server */
     public void refreshDiscussion() {
-        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( artifact.getUuid(),
+        assetService.loadDiscussionForAsset( artifact.getUuid(),
                                                                       new GenericCallback<List<DiscussionRecord>>() {
                                                                           public void onSuccess(List<DiscussionRecord> result) {
                                                                               updateCommentList( result );
@@ -171,7 +166,7 @@ public class DiscussionWidget extends Composite {
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
-                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( artifact.getUuid(),
+                        assetService.clearAllDiscussionsForAsset( artifact.getUuid(),
                                                                                            new GenericCallback<java.lang.Void>() {
                                                                                                public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
@@ -237,7 +232,7 @@ public class DiscussionWidget extends Composite {
     private void sendNewComment(String text) {
         newCommentLayout.clear();
         newCommentLayout.add( new Image( images.spinner() ) );
-        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( artifact.getUuid(),
+        assetService.addToDiscussionForAsset( artifact.getUuid(),
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {
                                                                            public void onSuccess(List<DiscussionRecord> result) {

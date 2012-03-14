@@ -16,7 +16,8 @@
 
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import org.drools.guvnor.shared.api.PortableObject;
 
 import static org.drools.guvnor.client.common.AssetFormats.*;
 import static org.drools.guvnor.client.util.Preconditions.*;

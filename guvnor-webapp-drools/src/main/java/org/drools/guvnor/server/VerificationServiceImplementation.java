@@ -41,7 +41,9 @@ import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.verification.TemporalBRLAssetVerifier;
 import org.drools.repository.ModuleItem;
 
-public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
+public class VerificationServiceImplementation
+        extends RemoteServiceServlet
+        implements VerificationService {
 
     private static final long serialVersionUID = 510l;
 

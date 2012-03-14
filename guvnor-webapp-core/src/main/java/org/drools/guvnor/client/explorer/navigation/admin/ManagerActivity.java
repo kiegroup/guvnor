@@ -15,8 +15,8 @@ import org.drools.guvnor.client.explorer.navigation.admin.widget.RepoConfigManag
 import org.drools.guvnor.client.explorer.navigation.admin.widget.StateManager;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.WorkspaceManager;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.core.client.GWT;
@@ -73,7 +73,7 @@ public class ManagerActivity extends Activity {
 
             case 4 :
                 EventLogPresenter.EventLogView eventLogView = new EventLogViewImpl();
-                RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
+                RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
                 new EventLogPresenter( repositoryService,
                                        eventLogView );
                 tabbedPanel.add( constants.EventLog(),

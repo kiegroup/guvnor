@@ -287,7 +287,8 @@ public class MetaDataWidget extends Composite {
                     Window.alert(constants.YouNeedToPickADifferentPackageToMoveThisTo());
                     return;
                 }
-                RepositoryServiceFactory.getAssetService().changeAssetPackage(uuid,
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+                assetService.changeAssetPackage(uuid,
                         sel.getSelectedPackage(),
                         constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {

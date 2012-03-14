@@ -18,6 +18,8 @@ package org.drools.ide.common.client.modeldriven.testing;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.ArrayList;
 import java.util.List;
 

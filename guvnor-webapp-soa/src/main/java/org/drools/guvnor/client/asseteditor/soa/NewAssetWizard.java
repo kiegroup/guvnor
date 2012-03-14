@@ -350,7 +350,8 @@ public class NewAssetWizard extends FormStylePopup {
         final Command cmdSave = new Command() {
 
             public void execute() {
-                RepositoryServiceFactory.getService().createNewRule( config,
+                RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.createNewRule( config,
                                                                      createGenericCallbackForOk() );
             }
         };
@@ -360,7 +361,8 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInModule( config.getAssetName(),
+                RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.doesAssetExistInModule( config.getAssetName(),
                                                                                config.getPackageName(),
                                                                                createGenericCallBackForCheckingIfExists( cmdSave ) );
             }
@@ -375,7 +377,8 @@ public class NewAssetWizard extends FormStylePopup {
      */
     void importOK() {
         LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-        RepositoryServiceFactory.getService().createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
                                                                      importedPackageSelector.getSelectedPackage(),
                                                                      createGenericCallbackForImportOk() );
     }

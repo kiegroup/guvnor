@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -28,10 +29,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.guvnor.client.rpc.*;
 
 
 public class WorkingSetSelectorPopup {
@@ -48,8 +46,8 @@ public class WorkingSetSelectorPopup {
         pop = new FormStylePopup();
         pop.setTitle(Constants.INSTANCE.SelectWorkingSets());
         Grid g = buildDoubleList(null);
-
-        RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().getModuleUUID(),
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.listAssets(asset.getMetaData().getModuleUUID(),
                 new String[]{AssetFormats.WORKING_SET}, 0, -1, "workingsetList",
                 new GenericCallback<TableDataResult>() {
 

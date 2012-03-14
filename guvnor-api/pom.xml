@@ -26,6 +26,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>guvnor-api</artifactId>
+  <packaging>jar</packaging>
 
-
+      <dependencies>
+        <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
+        <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-user</artifactId>
+          <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+        </dependency>
+      </dependencies>
 </project>

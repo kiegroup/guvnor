@@ -27,10 +27,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.QueryPageRequest;
-import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.tables.QueryPagedTable;
 
 import java.util.ArrayList;
@@ -143,7 +140,8 @@ public class QuickFindWidget extends Composite {
                 isCaseSensitive,
                 0,
                 5 );
-        RepositoryServiceFactory.getAssetService().quickFindAsset( queryRequest,
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.quickFindAsset( queryRequest,
                 new GenericCallback<PageResponse<QueryPageRow>>() {
 
                     public void onSuccess( PageResponse<QueryPageRow> result ) {

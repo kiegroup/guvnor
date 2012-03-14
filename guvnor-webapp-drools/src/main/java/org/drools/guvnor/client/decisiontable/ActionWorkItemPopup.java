@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.WorkItemService;
 import org.drools.guvnor.client.rpc.WorkItemServiceAsync;
 import org.drools.guvnor.client.widgets.drools.workitems.WorkItemParametersWidget;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -252,7 +253,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemsListBox.clear();
         workItemsListBox.addItem(Constants.INSTANCE.NoWorkItemsAvailable());
         workItemsListBox.setEnabled(false);
-        WorkItemServiceAsync workItemService= GWT.create(WorkItemServiceAsync.class);
+        WorkItemServiceAsync workItemService= GWT.create(WorkItemService.class);
         workItemService.loadWorkItemDefinitions( packageUUID,
                                                             new GenericCallback<Set<PortableWorkDefinition>>() {
 

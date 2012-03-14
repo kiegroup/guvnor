@@ -16,10 +16,12 @@
 
 package org.drools.ide.common.client.modeldriven.dt;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import org.drools.guvnor.shared.api.PortableObject;
 
 @Deprecated
-public class DTColumnConfig implements PortableObject {
+public class DTColumnConfig
+        implements PortableObject {
 
     /**
      * If this is not -1, then this is the width which will be displayed.

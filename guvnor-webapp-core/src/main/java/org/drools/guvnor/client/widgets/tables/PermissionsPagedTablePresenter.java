@@ -30,11 +30,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.PageRequest;
-import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.PermissionsPageRow;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.query.OpenItemCommand;
@@ -61,9 +57,9 @@ import com.google.gwt.view.client.HasData;
 
 
 public class PermissionsPagedTablePresenter implements Presenter {
-    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
-    protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
+    protected RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
     private final PermissionsPagedTableView view;
    
     public PermissionsPagedTablePresenter(PermissionsPagedTableView view) {
@@ -88,7 +84,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                     public void onClick(ClickEvent event) {
                         if ( userName.getText() != null
                              && userName.getText().length() != 0 ) {
-                            RepositoryServiceFactory.getService().createUser( userName.getText(),
+                            repositoryService.createUser( userName.getText(),
                                                                               new GenericCallback<java.lang.Void>() {
                                                                                   public void onSuccess(Void a) {
                                                                                       view.refresh();
@@ -113,7 +109,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                 final String userName = view.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
                         && Window.confirm( constants.AreYouSureYouWantToDeleteUser0( userName ) ) ) {
-                    RepositoryServiceFactory.getService().deleteUser( userName,
+                    repositoryService.deleteUser( userName,
                                                                          new GenericCallback<java.lang.Void>() {
                                                                              public void onSuccess(Void a) {
                                                                                  view.refresh();
@@ -157,7 +153,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
 
     private void showEditor(final String userName) {
         LoadingPopup.showMessage( constants.LoadingUsersPermissions() );
-        RepositoryServiceFactory.getService().retrieveUserPermissions( userName,
+        repositoryService.retrieveUserPermissions( userName,
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
                                                                                doPermissionEditor(userName ,perms);
@@ -198,10 +194,8 @@ public class PermissionsPagedTablePresenter implements Presenter {
         return new ClickHandler() {
             public void onClick(ClickEvent w) {
                 LoadingPopup.showMessage(constants.Updating());
-                RepositoryServiceFactory.getService().updateUserPermissions(
-                        userName,
-                        perms,
-                        new GenericCallback<java.lang.Void>() {
+                repositoryService.updateUserPermissions(
+                        userName, perms, new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void a) {
                                 LoadingPopup.close();
                                 view.refresh();
@@ -304,7 +298,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                 pop.addAttribute( constants.PermissionType(),
                                   hp );
 
-                RepositoryServiceFactory.getService().listAvailablePermissionRoleTypes( new GenericCallback<List<String>>() {
+                repositoryService.listAvailablePermissionRoleTypes( new GenericCallback<List<String>>() {
                     public void onSuccess(List<String> items) {
                         permTypeBox.clear();
                         permTypeBox.addItem( constants.pleaseChoose1() );

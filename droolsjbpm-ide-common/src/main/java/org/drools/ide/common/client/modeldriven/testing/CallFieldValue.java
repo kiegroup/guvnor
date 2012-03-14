@@ -16,13 +16,16 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.FieldNature;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Holds field and value for "action" parts of the rule.
  */
-public class CallFieldValue implements  FieldNature,PortableObject {
+public class CallFieldValue
+        implements
+        FieldNature,
+        PortableObject {
 
     public String field;
     public String value;

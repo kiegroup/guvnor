@@ -16,6 +16,8 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +27,9 @@ import java.util.Map;
  */
 public class BaseSingleFieldConstraint
     implements
-    HasParameterizedOperator,
-    HasExpressionConstraint,
-    PortableObject {
+        HasParameterizedOperator,
+        HasExpressionConstraint,
+        PortableObject {
 
     /**
      * This is used only when constraint is first created. This means that there

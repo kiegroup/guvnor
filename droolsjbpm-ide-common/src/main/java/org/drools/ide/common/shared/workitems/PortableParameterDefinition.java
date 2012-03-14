@@ -15,7 +15,8 @@
  */
 package org.drools.ide.common.shared.workitems;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import org.drools.guvnor.shared.api.PortableObject;
 
 /**
  * A ParameterDefinition used in Guvnor.
@@ -24,7 +25,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public abstract class PortableParameterDefinition
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long serialVersionUID = 540L;
 

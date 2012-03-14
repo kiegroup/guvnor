@@ -16,13 +16,14 @@
 
 package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 import static java.util.Collections.*;
 import static org.drools.guvnor.client.asseteditor.drools.serviceconfig.ListenerType.*;

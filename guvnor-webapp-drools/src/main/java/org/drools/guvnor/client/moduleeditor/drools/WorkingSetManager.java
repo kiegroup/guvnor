@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
@@ -59,7 +61,8 @@ public class WorkingSetManager {
      * @see #applyWorkingSets(java.lang.String, java.util.Set, com.google.gwt.user.client.Command)
      */
     public void applyWorkingSets(final String packageName, final String[] wsUUIDs, final Command done) {
-        RepositoryServiceFactory.getAssetService().loadRuleAssets(wsUUIDs, new GenericCallback<Asset[]>() {
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.loadRuleAssets(wsUUIDs, new GenericCallback<Asset[]>() {
 
             public void onSuccess(Asset[] result) {
                 final Set<Asset> wss = new HashSet<Asset>();

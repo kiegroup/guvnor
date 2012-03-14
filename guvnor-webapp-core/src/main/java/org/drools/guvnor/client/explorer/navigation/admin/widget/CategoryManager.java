@@ -20,7 +20,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.CategoryService;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.widgets.categorynav.CategoryEditor;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
@@ -127,7 +128,8 @@ public class CategoryManager extends Composite {
         String name = Window.prompt( constants.CategoryNewNamePleaseEnter(),
                                      "" );
         if ( name != null ) {
-            RepositoryServiceFactory.getCategoryService().renameCategory( explorer.getSelectedPath(),
+            CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+            categoryService.renameCategory( explorer.getSelectedPath(),
                                                                   name,
                                                                   new GenericCallback<java.lang.Void>() {
                                                                       public void onSuccess(Void v) {
@@ -140,7 +142,8 @@ public class CategoryManager extends Composite {
 
     private void deleteSelected() {
         if ( Window.confirm( constants.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedPath() ) ) {
-            RepositoryServiceFactory.getCategoryService().removeCategory( explorer.getSelectedPath(),
+            CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+            categoryService.removeCategory( explorer.getSelectedPath(),
                                                                   new GenericCallback<java.lang.Void>() {
 
                                                                       public void onSuccess(Void v) {

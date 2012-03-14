@@ -15,17 +15,18 @@
  */
 package org.drools.ide.common.client.modeldriven;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * An annotation on a Fact type
  */
 public class ModelAnnotation
     implements
-    PortableObject {
+        PortableObject {
 
     private String              annotationName;
     private Map<String, String> annotationValues = new HashMap<String, String>();

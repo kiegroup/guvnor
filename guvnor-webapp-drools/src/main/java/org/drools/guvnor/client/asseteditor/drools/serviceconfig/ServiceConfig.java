@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.rpc.MavenArtifact;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import org.drools.guvnor.shared.api.PortableObject;
 
 import static org.drools.guvnor.client.util.Preconditions.*;
 

@@ -97,7 +97,8 @@ public class NewSOAServiceWizard extends FormStylePopup {
     private void createSOAServiceAction(final String name,
                                         final String descr) {
         LoadingPopup.showMessage(constants.CreatingPackagePleaseWait());
-        RepositoryServiceFactory.getPackageService().createModule(name,
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.createModule(name,
                 descr, "soaservice",
                 new GenericCallback<java.lang.String>() {
                     public void onSuccess(String uuid) {

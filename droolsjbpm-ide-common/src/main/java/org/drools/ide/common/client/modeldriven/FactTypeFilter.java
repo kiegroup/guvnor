@@ -16,9 +16,11 @@
 
 package org.drools.ide.common.client.modeldriven;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public interface FactTypeFilter extends PortableObject {
+import org.drools.guvnor.shared.api.PortableObject;
+
+public interface FactTypeFilter
+        extends PortableObject {
 
     /**
      * Indicates if a fact should be filtered or not.

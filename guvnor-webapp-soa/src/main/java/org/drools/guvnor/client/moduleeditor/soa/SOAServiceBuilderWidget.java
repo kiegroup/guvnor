@@ -225,7 +225,8 @@ public class SOAServiceBuilderWidget extends Composite {
     }
 
     private void loadCustomSelectorList(final ListBox customSelector) {
-        RepositoryServiceFactory.getService().getCustomSelectors(new GenericCallback<String[]>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.getCustomSelectors(new GenericCallback<String[]>() {
 
             public void onSuccess(String[] list) {
                 for (int i = 0; i < list.length; i++) {
@@ -255,7 +256,8 @@ public class SOAServiceBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackage(conf.getUuid(),
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.buildPackage(conf.getUuid(),
                         true,
                         buildMode,
                         statusOperator,
@@ -297,7 +299,8 @@ public class SOAServiceBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildModuleSource(uuid,
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.buildModuleSource(uuid,
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String content) {
                                 showSource(content,

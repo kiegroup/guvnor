@@ -291,7 +291,8 @@ public class AssetEditorActionToolbar extends Composite {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.CalculatingSource() );
-                    RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
+                    AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.buildAssetSource( asset,
                             new GenericCallback<String>() {
 
                                 public void onSuccess(String src) {
@@ -312,7 +313,8 @@ public class AssetEditorActionToolbar extends Composite {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
-                    RepositoryServiceFactory.getAssetService().validateAsset( asset,
+                    AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.validateAsset( asset,
                             new GenericCallback<BuilderResult>() {
 
                                 public void onSuccess(BuilderResult results) {
@@ -469,7 +471,8 @@ public class AssetEditorActionToolbar extends Composite {
 
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
-        RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.deleteUncheckedRule( this.asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
@@ -479,7 +482,8 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doArchive() {
-        RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
@@ -494,7 +498,8 @@ public class AssetEditorActionToolbar extends Composite {
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-        RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.checkinVersion( this.asset,
                 new GenericCallback<String>() {
 
                     public void onSuccess(String uuid) {
@@ -605,7 +610,8 @@ public class AssetEditorActionToolbar extends Composite {
                     return;
                 }
                 String name = newName.getText().trim();
-                RepositoryServiceFactory.getAssetService().copyAsset( asset.getUuid(),
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.copyAsset( asset.getUuid(),
                         sel.getSelectedPackage(),
                         name,
                         new GenericCallback<String>() {
@@ -649,7 +655,8 @@ public class AssetEditorActionToolbar extends Composite {
                 ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                RepositoryServiceFactory.getAssetService().renameAsset( asset.getUuid(),
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.renameAsset( asset.getUuid(),
                         box.getText(),
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
@@ -680,7 +687,8 @@ public class AssetEditorActionToolbar extends Composite {
             return;
         }
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
-            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
+            AssetServiceAsync assetService = GWT.create(AssetService.class);
+            assetService.promoteAssetToGlobalArea( asset.getUuid(),
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );

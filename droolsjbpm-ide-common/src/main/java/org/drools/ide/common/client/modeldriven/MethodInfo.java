@@ -16,12 +16,14 @@
 
 package org.drools.ide.common.client.modeldriven;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class MethodInfo implements PortableObject {
+public class MethodInfo
+        implements PortableObject {
 
     private String name;
     private List<String> params;

@@ -18,18 +18,18 @@ package org.drools.ide.common.client.modeldriven.dt52;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * A Fact Pattern to which column definitions can be added
  */
 public class Pattern52
     implements
-    PortableObject,
-    CompositeColumn<ConditionCol52>,
-    HasCEPWindow {
+        PortableObject,
+        CompositeColumn<ConditionCol52>,
+        HasCEPWindow {
 
     // The type of the fact - class - eg Driver, Person, Cheese etc.
     private String               factType;

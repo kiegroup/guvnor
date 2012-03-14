@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,6 +29,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
 /**
  * To be shown when the user opens repo for the first time.
@@ -58,13 +59,14 @@ public class NewRepositoryDialog extends FormStylePopup {
             public void onClick(ClickEvent event) {
                 if ( !Window.confirm( constants.AboutToInstallSampleRepositoryAreYouSure() ) ) return;
                 LoadingPopup.showMessage( constants.ImportingAndProcessing() );
-                RepositoryServiceFactory.getPackageService().installSampleRepository( new GenericCallback<java.lang.Void>() {
-                    public void onSuccess(Void v) {
-                        Window.alert( constants.RepositoryInstalledSuccessfully() );
-                        hide();
-                        Window.Location.reload();
-                    }
-                } );
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                moduleService.installSampleRepository(new GenericCallback<java.lang.Void>() {
+                                public void onSuccess(Void v) {
+                                    Window.alert(constants.RepositoryInstalledSuccessfully());
+                                    hide();
+                                    Window.Location.reload();
+                                }
+                            });
             }
         } );
         no.addClickHandler( new ClickHandler() {

@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 /**
@@ -36,7 +36,7 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
  */
 public class SuggestionCompletionEngine
     implements
-    PortableObject {
+        PortableObject {
 
     /** These are the explicit types supported */
     public static final String                      TYPE_COLLECTION          = "Collection";

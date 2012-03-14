@@ -20,15 +20,12 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -72,18 +69,19 @@ public class ExplorerNodeConfig {
     }
 
     private static void deploymentListPackages( final TreeItem root ) {
-        RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
-            public void onSuccess( Module[] values ) {
+        ModuleServiceAsync moduleService= GWT.create(ModuleService.class);
+        moduleService.listModules(new GenericCallback<Module[]>() {
+            public void onSuccess(Module[] values) {
                 PackageView ph = new PackageHierarchicalView();
 
                 for (Module val : values) {
-                    ph.addPackage( val );
+                    ph.addPackage(val);
                 }
                 for (Folder hf : ph.getRootFolder().getChildren()) {
-                    buildDeploymentTree( root, hf );
+                    buildDeploymentTree(root, hf);
                 }
             }
-        } );
+        });
     }
 
     private static void buildDeploymentTree( TreeItem root, Folder fldr ) {
@@ -103,7 +101,8 @@ public class ExplorerNodeConfig {
 
     private static void doCategoryNode( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets ) {
         infanticide( treeItem );
-        RepositoryServiceFactory.getCategoryService().loadChildCategories( path, createGenericCallbackForLoadChildCategories( treeItem, path, itemWidgets ) );
+        CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+        categoryService.loadChildCategories( path, createGenericCallbackForLoadChildCategories( treeItem, path, itemWidgets ) );
     }
 
     private static GenericCallback<String[]> createGenericCallbackForLoadChildCategories( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets ) {

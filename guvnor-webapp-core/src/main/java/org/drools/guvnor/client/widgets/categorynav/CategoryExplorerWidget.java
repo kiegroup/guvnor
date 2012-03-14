@@ -19,8 +19,8 @@ package org.drools.guvnor.client.widgets.categorynav;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
+import org.drools.guvnor.client.rpc.CategoryService;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -56,7 +56,7 @@ public class CategoryExplorerWidget extends Composite
 
     private Tree                  navTreeWidget   = new Tree();
     private VerticalPanel         panel           = new VerticalPanel();
-    private CategoryServiceAsync  categoryService = RepositoryServiceFactory.getCategoryService();
+    private CategoryServiceAsync  categoryService = GWT.create(CategoryService.class);
     private CategorySelectHandler categorySelectHandler;
     private String                selectedPath;
     private Panel                 emptyCategories;

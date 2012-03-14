@@ -15,12 +15,9 @@
  */
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.LogPageRow;
-import org.drools.guvnor.client.rpc.PageRequest;
-import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -85,7 +82,8 @@ public class EventLogPresenter {
 
     private void doClearEventLog() {
         view.showClearingLogMessage();
-        RepositoryServiceFactory.getService().cleanLog( new GenericCallback<java.lang.Void>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.cleanLog( new GenericCallback<java.lang.Void>() {
             public void onSuccess(Void v) {
                 view.refresh();
                 view.hideClearingLogMessage();

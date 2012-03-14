@@ -16,6 +16,9 @@
   -->
 
 <module>
+
+  <inherits name="com.google.gwt.user.User"/>
+
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
   <source path='client'/>

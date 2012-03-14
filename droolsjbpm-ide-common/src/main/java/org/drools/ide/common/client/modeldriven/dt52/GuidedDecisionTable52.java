@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -36,7 +36,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class GuidedDecisionTable52
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long                            serialVersionUID      = 510l;
 

@@ -28,6 +28,7 @@ import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Iterator;
 
 @ApplicationScoped
@@ -41,6 +42,7 @@ public class DroolsServiceImplementation
     private final ServiceSecurity serviceSecurity;
 
     @Inject
+    @Named("org.drools.guvnor.client.rpc.RepositoryService")
     private RepositoryService repositoryService;
 
     @Inject
@@ -48,7 +50,8 @@ public class DroolsServiceImplementation
 
 
     @Inject
-    public DroolsServiceImplementation(RulesRepository rulesRepository, ServiceSecurity serviceSecurity) {
+    public DroolsServiceImplementation(RulesRepository rulesRepository,
+                                       ServiceSecurity serviceSecurity) {
         this.rulesRepository = rulesRepository;
         this.serviceSecurity = serviceSecurity;
     }

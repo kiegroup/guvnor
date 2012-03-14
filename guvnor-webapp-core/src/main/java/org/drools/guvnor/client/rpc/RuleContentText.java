@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.rpc;
 
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.io.Serializable;
 
 /**
@@ -24,7 +26,7 @@ import java.io.Serializable;
  */
 public class RuleContentText
     implements
-        Serializable {
+        PortableObject {
     
     public String content;
 }

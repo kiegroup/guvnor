@@ -15,7 +15,8 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+import org.drools.guvnor.shared.api.PortableObject;
 
 /**
  * Explicit DataTypes handled by the Mergable Grid Widgets

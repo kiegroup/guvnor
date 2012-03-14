@@ -16,13 +16,15 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class RuleModel
     implements
-    PortableObject {
+        PortableObject {
 
     /**
      * This name is generally not used - the asset name or the file name is

@@ -27,7 +27,6 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,6 +47,8 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
 /**
  * This is the wizard used when creating new packages or importing them.
@@ -148,16 +149,17 @@ public class NewSubPackageWizard extends FormStylePopup {
                                         String parentPackage,
                                         final Command refresh) {
         LoadingPopup.showMessage( Constants.INSTANCE.CreatingPackagePleaseWait() );
-        RepositoryServiceFactory.getPackageService().createSubModule( name,
-                                                                descr,
-                                                                parentPackage,
-                                                                new GenericCallback<String>() {
-                                                                    public void onSuccess(String data) {
-                                                                        RulePackageSelector.currentlySelectedPackage = name;
-                                                                        LoadingPopup.close();
-                                                                        refresh.execute();
-                                                                    }
-                                                                } );
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.createSubModule(name,
+                                    descr,
+                                    parentPackage,
+                                    new GenericCallback<String>() {
+                                        public void onSuccess(String data) {
+                                            RulePackageSelector.currentlySelectedPackage = name;
+                                            LoadingPopup.close();
+                                            refresh.execute();
+                                        }
+                                    });
     }
 
     public static Widget newImportWidget(final Command afterCreatedEvent,

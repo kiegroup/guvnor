@@ -28,7 +28,6 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;

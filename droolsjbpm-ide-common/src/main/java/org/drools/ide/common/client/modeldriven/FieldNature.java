@@ -1,6 +1,5 @@
 package org.drools.ide.common.client.modeldriven;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public interface FieldNature{
 

@@ -19,11 +19,12 @@ package org.drools.guvnor.client.rpc;
 import java.io.Serializable;
 import java.util.List;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
 public class WorkingSetConfigData
-        implements Serializable {
+        implements PortableObject {
     private static final long serialVersionUID = 510l;
 
     public String name;

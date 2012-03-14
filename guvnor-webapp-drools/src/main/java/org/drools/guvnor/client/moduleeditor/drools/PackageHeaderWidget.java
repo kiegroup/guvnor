@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
@@ -23,7 +24,8 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.shared.modules.ModuleHeader;
 import org.drools.guvnor.shared.modules.ModuleHeader.Global;
 import org.drools.guvnor.shared.modules.ModuleHeader.Import;
@@ -302,7 +304,8 @@ public class PackageHeaderWidget extends Composite {
         final ListBox factList = new ListBox();
         factList.addItem( Constants.INSTANCE.loadingList() );
 
-        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.getUuid(),
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.listTypesInPackage( this.conf.getUuid(),
                                                                          createGenericCallbackForListTypesInPackage( global,
                                                                                                                      factList ) );
 

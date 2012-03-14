@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 public class TemplateModel extends RuleModel
     implements
-    PortableObject {
+        PortableObject {
 
     public static final String        ID_COLUMN_NAME = "__ID_KOL_NAME__";
     private long                      idCol          = 0;

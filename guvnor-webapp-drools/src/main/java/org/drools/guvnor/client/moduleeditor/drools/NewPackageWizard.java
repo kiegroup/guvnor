@@ -33,7 +33,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
  * This is the wizard used when creating new packages or importing them.
@@ -45,10 +44,12 @@ public class NewPackageWizard extends FormStylePopup {
     private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
     private final EventBus eventBus;
+    private final ClientFactory clientFactory;
 
     public NewPackageWizard(ClientFactory clientFactory, EventBus eventBus) {
         super(DroolsGuvnorImages.INSTANCE.newexWiz(),
                 Constants.INSTANCE.CreateANewPackage());
+        this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         nameBox = new TextBox();
         descBox = new TextBox();
@@ -144,15 +145,15 @@ public class NewPackageWizard extends FormStylePopup {
     private void createPackageAction(final String name,
                                      final String descr) {
         LoadingPopup.showMessage(Constants.INSTANCE.CreatingPackagePleaseWait());
-        RepositoryServiceFactory.getPackageService().createModule(name,
-                descr, "package",
-                new GenericCallback<java.lang.String>() {
-                    public void onSuccess(String uuid) {
-                        RulePackageSelector.currentlySelectedPackage = name;
-                        LoadingPopup.close();
-                        eventBus.fireEvent(new RefreshModuleListEvent());
-                    }
-                });
+        clientFactory.getModuleService().createModule(name,
+                                    descr, "package",
+                                    new GenericCallback<java.lang.String>() {
+                                        public void onSuccess(String uuid) {
+                                            RulePackageSelector.currentlySelectedPackage = name;
+                                            LoadingPopup.close();
+                                            eventBus.fireEvent(new RefreshModuleListEvent());
+                                        }
+                                    });
     }
 
     private Widget newImportWidget(final FormStylePopup parent) {

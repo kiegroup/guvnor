@@ -16,11 +16,14 @@
 
 package org.drools.ide.common.client.modeldriven;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class ModelField implements PortableObject {
+import org.drools.guvnor.shared.api.PortableObject;
 
-    public static enum FIELD_CLASS_TYPE implements PortableObject{
+public class ModelField
+        implements PortableObject {
+
+    public static enum FIELD_CLASS_TYPE
+            implements PortableObject{
         REGULAR_CLASS,
         TYPE_DECLARATION_CLASS
     }

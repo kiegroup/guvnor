@@ -28,10 +28,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.drools.tables.BuildPackageErrorsSimpleTable;
@@ -239,7 +236,8 @@ public class PackageBuilderWidget extends Composite {
     }
 
     private void loadCustomSelectorList(final ListBox customSelector) {
-        RepositoryServiceFactory.getService().getCustomSelectors(new GenericCallback<String[]>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.getCustomSelectors(new GenericCallback<String[]>() {
 
             public void onSuccess(String[] list) {
                 for (int i = 0; i < list.length; i++) {
@@ -269,7 +267,8 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackage(conf.getUuid(),
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                moduleService.buildPackage(conf.getUuid(),
                         true,
                         buildMode,
                         statusOperator,
@@ -311,7 +310,8 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildModuleSource(uuid,
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                moduleService.buildModuleSource(uuid,
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String content) {
                                 showSource(content,
@@ -514,8 +514,8 @@ public class PackageBuilderWidget extends Composite {
         final TextBox newName = new TextBox();
         final String newSnapshotText = Constants.INSTANCE.NEW()
                 + ": ";
-
-        RepositoryServiceFactory.getPackageService().listSnapshots(packageName,
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.listSnapshots(packageName,
                 new GenericCallback<SnapshotInfo[]>() {
                     public void onSuccess(SnapshotInfo[] result) {
                         for (int i = 0; i < result.length; i++) {
@@ -577,20 +577,21 @@ public class PackageBuilderWidget extends Composite {
                 }
 
                 LoadingPopup.showMessage(Constants.INSTANCE.PleaseWaitDotDotDot());
-                RepositoryServiceFactory.getPackageService().createModuleSnapshot(packageName,
-                        name,
-                        replace,
-                        comment.getText(),
-                        new GenericCallback<java.lang.Void>() {
-                            public void onSuccess(Void v) {
-                                Window.alert(Constants.INSTANCE.TheSnapshotCalled0WasSuccessfullyCreated(name));
-                                form.hide();
-                                if (refreshCmd != null) {
-                                    refreshCmd.execute();
-                                }
-                                LoadingPopup.close();
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                moduleService.createModuleSnapshot(packageName,
+                    name,
+                    replace,
+                    comment.getText(),
+                    new GenericCallback<java.lang.Void>() {
+                        public void onSuccess(Void v) {
+                            Window.alert(Constants.INSTANCE.TheSnapshotCalled0WasSuccessfullyCreated(name));
+                            form.hide();
+                            if (refreshCmd != null) {
+                                refreshCmd.execute();
                             }
-                        });
+                            LoadingPopup.close();
+                        }
+                    });
             }
         });
         form.show();

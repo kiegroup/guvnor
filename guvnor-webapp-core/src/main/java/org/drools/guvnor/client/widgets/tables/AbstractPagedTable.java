@@ -16,12 +16,8 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.rpc.AbstractPageRow;
-import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.ModuleServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.rpc.*;
 
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -30,13 +26,14 @@ import com.google.gwt.view.client.AsyncDataProvider;
 /**
  * Widget that shows rows of paged data.
  */
-public abstract class AbstractPagedTable<T extends AbstractPageRow> extends AbstractSimpleTable<T> {
+public abstract class AbstractPagedTable<T extends AbstractPageRow>
+        extends AbstractSimpleTable<T> {
 
     // TODO use (C)DI (first GWT/Seam needs to behave properly in hosted mode)
-    protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
-    protected AssetServiceAsync      assetService      = RepositoryServiceFactory.getAssetService();
-    protected ModuleServiceAsync    packageService    = RepositoryServiceFactory.getPackageService();
-    protected CategoryServiceAsync   categoryService = RepositoryServiceFactory.getCategoryService();
+    protected RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+    protected AssetServiceAsync      assetService      = GWT.create(AssetService.class);
+    protected ModuleServiceAsync    packageService    = GWT.create(ModuleService.class);
+    protected CategoryServiceAsync   categoryService = GWT.create(CategoryService.class);
 
     protected int                    pageSize;
     protected AsyncDataProvider<T>   dataProvider;
@@ -46,7 +43,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Abst
 
     /**
      * Constructor
-     * 
+     *
      * @param pageSize
      */
     public AbstractPagedTable(int pageSize) {
@@ -77,7 +74,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Abst
 
     /**
      * Link a data provider to the table
-     * 
+     *
      * @param dataProvider
      */
     public void setDataProvider(AsyncDataProvider<T> dataProvider) {

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -34,7 +34,8 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * table of data to produce rule models.
  */
 @Deprecated
-public class GuidedDecisionTable implements PortableObject {
+public class GuidedDecisionTable
+        implements PortableObject {
 
     /**
      * Number of internal elements before ( used for offsets in serialization )

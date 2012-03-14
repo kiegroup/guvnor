@@ -15,14 +15,14 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import org.drools.guvnor.shared.api.PortableObject;
 
 /**
  * Details of section made; wrapping display text and associated value
  */
 public class OperatorSelection
     implements
-    PortableObject {
+        PortableObject {
 
     private String value;
     private String displayText;

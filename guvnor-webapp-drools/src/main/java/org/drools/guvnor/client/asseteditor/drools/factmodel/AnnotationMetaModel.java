@@ -15,14 +15,14 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.factmodel;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
-
 public class AnnotationMetaModel
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long  serialVersionUID = 510l;
     public String              name;

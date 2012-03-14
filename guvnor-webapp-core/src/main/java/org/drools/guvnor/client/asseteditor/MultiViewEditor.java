@@ -34,8 +34,9 @@ import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -181,7 +182,8 @@ public class MultiViewEditor extends GuvnorEditor {
                                         content,
                                         assets.get( row.getUuid() ) );
                             } else {
-                                RepositoryServiceFactory.getAssetService().loadRuleAsset( row.getUuid(),
+                                AssetServiceAsync assetService = GWT.create(AssetService.class);
+                                assetService.loadRuleAsset( row.getUuid(),
                                         new GenericCallback<Asset>() {
 
                                             public void onSuccess(final Asset asset) {
@@ -284,7 +286,8 @@ public class MultiViewEditor extends GuvnorEditor {
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-        RepositoryServiceFactory.getAssetService().checkinVersion( asset,
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.checkinVersion( asset,
                 new GenericCallback<String>() {
 
                     public void onSuccess(String uuid) {

@@ -15,13 +15,14 @@
  */
 package org.drools.ide.common.shared.workitems;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * A WorkDefinition used in Guvnor.
@@ -30,7 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class PortableWorkDefinition
     implements
-    PortableObject {
+        PortableObject {
 
     private static final long                        serialVersionUID = 540L;
 

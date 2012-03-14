@@ -42,12 +42,7 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.VerificationService;
-import org.drools.guvnor.client.rpc.VerificationServiceAsync;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
@@ -82,7 +77,6 @@ public class AssetEditorActionToolbar extends Composite {
             extends
             UiBinder<Widget, AssetEditorActionToolbar> {
     }
-
 
     private static ActionToolbarBinder uiBinder = GWT.create(ActionToolbarBinder.class);
 
@@ -128,6 +122,8 @@ public class AssetEditorActionToolbar extends Composite {
     @UiField
     MenuItem sourceMenu;
 
+    private AssetServiceAsync assetService = GWT.create(AssetService.class);
+    
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
     protected Asset asset;
     final Widget editor;
@@ -311,7 +307,7 @@ public class AssetEditorActionToolbar extends Composite {
                     }
                     onSave();
                     LoadingPopup.showMessage( Constants.INSTANCE.CalculatingSource() );
-                    RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
+                    assetService.buildAssetSource( asset,
                             new GenericCallback<String>() {
 
                                 public void onSuccess(String src) {
@@ -332,7 +328,7 @@ public class AssetEditorActionToolbar extends Composite {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( Constants.INSTANCE.ValidatingItemPleaseWait() );
-                    RepositoryServiceFactory.getAssetService().validateAsset( asset,
+                    assetService.validateAsset( asset,
                             new GenericCallback<BuilderResult>() {
 
                                 public void onSuccess(BuilderResult results) {
@@ -495,7 +491,8 @@ public class AssetEditorActionToolbar extends Composite {
 
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
-        RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.deleteUncheckedRule( this.asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
@@ -505,7 +502,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doArchive() {
-        RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
+        assetService.archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
@@ -520,7 +517,7 @@ public class AssetEditorActionToolbar extends Composite {
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( Constants.INSTANCE.SavingPleaseWait() );
-        RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
+        assetService.checkinVersion( this.asset,
                 new GenericCallback<String>() {
 
                     public void onSuccess(String uuid) {
@@ -639,7 +636,7 @@ public class AssetEditorActionToolbar extends Composite {
                     return;
                 }
                 String name = newName.getText().trim();
-                RepositoryServiceFactory.getAssetService().copyAsset( asset.getUuid(),
+                assetService.copyAsset( asset.getUuid(),
                         sel.getSelectedPackage(),
                         name,
                         new GenericCallback<String>() {
@@ -683,7 +680,7 @@ public class AssetEditorActionToolbar extends Composite {
                 ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                RepositoryServiceFactory.getAssetService().renameAsset( asset.getUuid(),
+                assetService.renameAsset( asset.getUuid(),
                         box.getText(),
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
@@ -714,7 +711,7 @@ public class AssetEditorActionToolbar extends Composite {
             return;
         }
         if ( Window.confirm( Constants.INSTANCE.PromoteAreYouSure() ) ) {
-            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
+            assetService.promoteAssetToGlobalArea( asset.getUuid(),
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             Window.alert( Constants.INSTANCE.Promoted() );

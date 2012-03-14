@@ -21,7 +21,8 @@ import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SecurityService;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,8 @@ public class ConfigurationsLoader {
     }
 
     public static void loadUserCapabilities(final Command command) {
-        RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<List<Capability>>() {
+        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
+        securityService.getUserCapabilities(new GenericCallback<List<Capability>>() {
             public void onSuccess(List<Capability> capabilities) {
                 UserCapabilities.setUp(capabilities);
                 executeCommand(command);

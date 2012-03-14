@@ -67,7 +67,7 @@ public class TestRunnerWidget extends Composite {
 
             public void onClick(ClickEvent event) {
                 LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenario() );
-                TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioServiceAsync.class);
+                TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioService.class);
                 testScenarioService.runScenario( parent.getMetaData().getModuleName(),
                                                                    parent.getScenario(),
                                                                    new GenericCallback<SingleScenarioResult>() {

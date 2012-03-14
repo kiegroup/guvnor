@@ -125,7 +125,8 @@ public class VersionBrowser extends Composite {
      */
     protected void loadHistoryData() {
 
-        RepositoryServiceFactory.getAssetService().loadItemHistory( this.uuid,
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        assetService.loadItemHistory( this.uuid,
                 new GenericCallback<TableDataResult>() {
 
                     public void onSuccess( TableDataResult table ) {
@@ -204,7 +205,8 @@ public class VersionBrowser extends Composite {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
         if ( isPackage ) {
-            RepositoryServiceFactory.getPackageService().loadModule( versionUUID,
+            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+            moduleService.loadModule( versionUUID,
                     new GenericCallback<Module>() {
                         public void onSuccess( Module conf ) {
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
@@ -227,7 +229,8 @@ public class VersionBrowser extends Composite {
                         }
                     } );
         } else {
-            RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
+            AssetServiceAsync assetService = GWT.create(AssetService.class);
+            assetService.loadRuleAsset( versionUUID,
                     new GenericCallback<Asset>() {
 
                         public void onSuccess(final Asset asset ) {
@@ -279,7 +282,8 @@ public class VersionBrowser extends Composite {
         final CheckinPopup pop = new CheckinPopup( constants.RestoreThisVersionQ() );
         pop.setCommand( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getAssetService().restoreVersion( versionUUID,
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+                assetService.restoreVersion( versionUUID,
                         uuid,
                         pop.getCheckinComment(),
                         new GenericCallback<Void>() {

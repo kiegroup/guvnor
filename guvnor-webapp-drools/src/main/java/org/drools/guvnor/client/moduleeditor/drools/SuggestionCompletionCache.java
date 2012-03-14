@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SuggestionCompletionEngineService;
 import org.drools.guvnor.client.rpc.SuggestionCompletionEngineServiceAsync;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -41,7 +41,9 @@ import com.google.gwt.user.client.Command;
  * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
  */
-public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Handler {
+public class SuggestionCompletionCache
+        implements RefreshModuleDataModelEvent.Handler {
+
     private static SuggestionCompletionCache INSTANCE = null;
 
     Map<String, SuggestionCompletionEngine> cache = new HashMap<String, SuggestionCompletionEngine>();
@@ -90,7 +92,7 @@ public class SuggestionCompletionCache implements RefreshModuleDataModelEvent.Ha
         //removes any existing filter
         this.filters.remove(packageName);
 
-        SuggestionCompletionEngineServiceAsync suggestionCompletionEngineService = GWT.create(SuggestionCompletionEngineServiceAsync.class);
+        SuggestionCompletionEngineServiceAsync suggestionCompletionEngineService = GWT.create(SuggestionCompletionEngineService.class);
         suggestionCompletionEngineService.loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );

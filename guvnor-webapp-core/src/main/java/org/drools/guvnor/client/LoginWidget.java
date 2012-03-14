@@ -16,81 +16,77 @@
 
 package org.drools.guvnor.client;
 
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.ConstantsCore;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
+import org.drools.guvnor.client.rpc.SecurityService;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 
 /**
  * Used for logging in, obviously !
  */
 public class LoginWidget {
 
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
-    private Command       loggedInEvent;
-    private String        userNameLoggedIn;
+    private Command loggedInEvent;
+    private String userNameLoggedIn;
 
     public void show() {
-        final FormStylePopup pop = new FormStylePopup( images.login(),
-                                                       constants.Login() );
+        final FormStylePopup pop = new FormStylePopup(images.login(),
+                constants.Login());
 
         final TextBox userName = new TextBox();
-        pop.addAttribute( constants.UserName(),
-                          userName );
+        pop.addAttribute(constants.UserName(),
+                userName);
         final PasswordTextBox password = new PasswordTextBox();
-        pop.addAttribute( constants.Password(),
-                          password );
+        pop.addAttribute(constants.Password(),
+                password);
 
         KeyPressHandler kph = new KeyPressHandler() {
             public void onKeyPress(KeyPressEvent event) {
-                if ( KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode() ) {
-                    doLogin( userName,
-                             password,
-                             pop );
+                if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode()) {
+                    doLogin(userName,
+                            password,
+                            pop);
                 }
             }
         };
-        userName.addKeyPressHandler( kph );
-        password.addKeyPressHandler( kph );
+        userName.addKeyPressHandler(kph);
+        password.addKeyPressHandler(kph);
 
-        Button b = new Button( constants.OK() );
-        b.addClickHandler( new ClickHandler() {
+        Button b = new Button(constants.OK());
+        b.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                doLogin( userName,
-                         password,
-                         pop );
+                doLogin(userName,
+                        password,
+                        pop);
             }
-        } );
+        });
 
-        pop.addAttribute( "",
-                          b );
-       
-        pop.setAfterShow( new Command() {
+        pop.addAttribute("",
+                b);
+
+        pop.setAfterShow(new Command() {
             public void execute() {
                 Scheduler scheduler = Scheduler.get();
-                scheduler.scheduleDeferred( new Command() {
+                scheduler.scheduleDeferred(new Command() {
                     public void execute() {
-                        userName.setFocus( true );
+                        userName.setFocus(true);
                     }
                 });
             }
-        } );
+        });
 
         pop.show();
     }
@@ -98,22 +94,23 @@ public class LoginWidget {
     private void doLogin(final TextBox userName,
                          PasswordTextBox password,
                          final FormStylePopup pop) {
-        LoadingPopup.showMessage( constants.Authenticating() );
-        RepositoryServiceFactory.login( userName.getText(),
-                                        password.getText(),
-                                        new GenericCallback() {
-                                            public void onSuccess(Object o) {
-                                                userNameLoggedIn = userName.getText();
-                                                LoadingPopup.close();
-                                                Boolean success = (Boolean) o;
-                                                if ( !success) {
-                                                    com.google.gwt.user.client.Window.alert( constants.IncorrectUsernameOrPassword() );
-                                                } else {
-                                                    loggedInEvent.execute();
-                                                    pop.hide();
-                                                }
-                                            }
-                                        } );
+        LoadingPopup.showMessage(constants.Authenticating());
+        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
+        securityService.login(userName.getText(),
+                password.getText(),
+                new GenericCallback() {
+                    public void onSuccess(Object o) {
+                        userNameLoggedIn = userName.getText();
+                        LoadingPopup.close();
+                        Boolean success = (Boolean) o;
+                        if (!success) {
+                            com.google.gwt.user.client.Window.alert(constants.IncorrectUsernameOrPassword());
+                        } else {
+                            loggedInEvent.execute();
+                            pop.hide();
+                        }
+                    }
+                });
     }
 
     /**

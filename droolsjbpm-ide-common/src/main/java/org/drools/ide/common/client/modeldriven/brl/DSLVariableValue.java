@@ -15,11 +15,14 @@
  */
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 /**
  * This class represents the value of a simple variable inside a DSLSentence.
  * "Simple variable" means that it only contains a single value.
  */
-public class DSLVariableValue implements PortableObject {
+public class DSLVariableValue
+        implements PortableObject {
     private String value;
 
     public DSLVariableValue() {

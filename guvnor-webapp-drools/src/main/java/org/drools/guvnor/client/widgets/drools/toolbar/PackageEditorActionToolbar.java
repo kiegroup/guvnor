@@ -30,7 +30,8 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 import com.google.gwt.core.client.GWT;
@@ -104,6 +105,8 @@ public class PackageEditorActionToolbar extends Composite {
 
     @UiField
     MenuItem sourceMenu;
+    
+    private ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider = new PackageActionToolbarButtonsConfigurationProvider();
     private Module packageConfigData;
@@ -299,7 +302,7 @@ public class PackageEditorActionToolbar extends Composite {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getPackageService().renameModule( packageConfigData.getUuid(),
+                moduleService.renameModule( packageConfigData.getUuid(),
                         name.getText(),
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
@@ -348,7 +351,7 @@ public class PackageEditorActionToolbar extends Composite {
                     return;
                 }
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().copyModule( packageConfigData.getName(),
+                moduleService.copyModule( packageConfigData.getName(),
                         name.getText(),
                         new GenericCallback<String>() {
                             public void onSuccess(String uuid) {
@@ -372,7 +375,7 @@ public class PackageEditorActionToolbar extends Composite {
     private void doSave(final Command refresh) {
         LoadingPopup.showMessage( Constants.INSTANCE.SavingPackageConfigurationPleaseWait() );
 
-        RepositoryServiceFactory.getPackageService().saveModule( this.packageConfigData,
+        moduleService.saveModule( this.packageConfigData,
                 new GenericCallback<Void>() {
                     public void onSuccess(Void data) {
                         refreshCommand.execute();

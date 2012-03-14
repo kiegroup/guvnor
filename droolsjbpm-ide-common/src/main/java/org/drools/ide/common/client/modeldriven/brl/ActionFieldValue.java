@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 
 /**
@@ -23,8 +24,8 @@ import org.drools.ide.common.client.modeldriven.FieldNature;
  */
 public class ActionFieldValue
     implements
-    PortableObject,
-    FieldNature {
+        PortableObject,
+        FieldNature {
 
     public String field;
     public String value;

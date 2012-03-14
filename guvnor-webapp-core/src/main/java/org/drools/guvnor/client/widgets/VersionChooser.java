@@ -30,10 +30,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.client.rpc.*;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -53,6 +50,7 @@ public class VersionChooser extends Composite {
 
     private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private static ImagesCore images    = GWT.create( ImagesCore.class );
+    private AssetServiceAsync assetService = GWT.create(AssetService.class);
 
     private String        packageUUID;
     private String        assetName;
@@ -97,7 +95,7 @@ public class VersionChooser extends Composite {
      * Actually load the history data, as demanded.
      */
     protected void loadHistoryData() {
-        RepositoryServiceFactory.getAssetService().loadAssetHistory( packageUUID,
+        assetService.loadAssetHistory( packageUUID,
         		                                                assetName,
                                                                 new GenericCallback<TableDataResult>() {
                                                                     public void onSuccess(TableDataResult table) {
@@ -168,7 +166,7 @@ public class VersionChooser extends Composite {
     private void showVersion(final String versionUUID) {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
+        assetService.loadRuleAsset( versionUUID,
                                                              new GenericCallback<Asset>() {
 
                                                                  public void onSuccess(Asset asset) {

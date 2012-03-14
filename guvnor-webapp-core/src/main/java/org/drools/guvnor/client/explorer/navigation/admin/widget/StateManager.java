@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,11 +32,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
 public class StateManager extends Composite {
 
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
-    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+    private static ImagesCore images    = GWT.create( ImagesCore.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private ListBox       currentStatuses;
 
@@ -112,13 +114,13 @@ public class StateManager extends Composite {
     private void removeStatus() {
         String name = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
 
-        RepositoryServiceFactory.getService().removeState( name,
-                                                           new GenericCallback<java.lang.Void>() {
-                                                               public void onSuccess(Void v) {
-                                                                   Window.alert( constants.StatusRemoved() );
-                                                                   refreshList();
-                                                               }
-                                                           } );
+        repositoryService.removeState(name,
+                new GenericCallback<java.lang.Void>() {
+                    public void onSuccess(Void v) {
+                        Window.alert(constants.StatusRemoved());
+                        refreshList();
+                    }
+                });
     }
 
     private void renameSelected() {
@@ -129,7 +131,7 @@ public class StateManager extends Composite {
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
 
         if ( newName != null ) {
-            RepositoryServiceFactory.getService().renameState( oldName,
+            repositoryService.renameState( oldName,
                                                                newName,
                                                                new GenericCallback<Void>() {
                                                                    public void onSuccess(Void data) {
@@ -142,7 +144,7 @@ public class StateManager extends Composite {
 
     private void refreshList() {
         LoadingPopup.showMessage( constants.LoadingStatuses() );
-        RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
+        repositoryService.listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] statii) {
                 currentStatuses.clear();
                 for (String aStatii : statii) {

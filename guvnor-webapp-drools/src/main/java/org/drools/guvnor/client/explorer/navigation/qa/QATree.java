@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -31,7 +32,8 @@ import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.util.Util;
 
 import java.util.Iterator;
@@ -97,23 +99,24 @@ public class QATree extends NavigationItemBuilderOld
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
         if ( ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
-                public void onSuccess(Module[] conf) {
-                    node.removeItems();
-                    removeTestScenarioIDs( itemWidgets );
+            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+            moduleService.listModules(new GenericCallback<Module[]>() {
+                                public void onSuccess(Module[] conf) {
+                                    node.removeItems();
+                                    removeTestScenarioIDs(itemWidgets);
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.getName() ) );
 
-                        node.addItem( pkg );
-                        pkg.setUserObject( c );
-                        itemWidgets.put( pkg,
-                                ExplorerNodeConfig.TEST_SCENARIOS_ID );
-                    }
-                }
-            } );
+                                        node.addItem(pkg);
+                                        pkg.setUserObject(c);
+                                        itemWidgets.put(pkg,
+                                                ExplorerNodeConfig.TEST_SCENARIOS_ID);
+                                    }
+                                }
+                            });
         } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
             RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
                 public void onSuccess(Module[] conf) {
@@ -124,13 +127,13 @@ public class QATree extends NavigationItemBuilderOld
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.getName() ) );
 
-                        node.addItem( pkg );
-                        pkg.setUserObject( c );
-                        itemWidgets.put( pkg,
-                                ExplorerNodeConfig.ANALYSIS_ID );
-                    }
-                }
-            } );
+                                        node.addItem(pkg);
+                                        pkg.setUserObject(c);
+                                        itemWidgets.put(pkg,
+                                                ExplorerNodeConfig.ANALYSIS_ID);
+                                    }
+                                }
+                            });
         }
     }
 

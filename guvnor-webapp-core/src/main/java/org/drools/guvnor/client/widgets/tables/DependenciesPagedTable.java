@@ -23,7 +23,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
@@ -74,7 +75,8 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
         setDataProvider( new AsyncDataProvider<DependenciesPageRow>() {
             protected void onRangeChanged(HasData<DependenciesPageRow> display) {
                 LoadingPopup.showMessage("please wait...");
-                RepositoryServiceFactory.getPackageService().getDependencies( uuid,
+                ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                moduleService.getDependencies( uuid,
                         new GenericCallback<String[]>() {
                             public void onSuccess(String[] dependencies) {
                                 LoadingPopup.close();

@@ -30,8 +30,8 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
@@ -164,7 +164,8 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                     public void onSuccess(SnapshotInfo[] result) {
                         for (int j = 0; j < result.length; j++) {
                             final SnapshotInfo snapshotInfo = result[j];
-                            RepositoryServiceFactory.getPackageService().loadModule(snapshotInfo.getUuid(),
+                            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                            moduleService.loadModule(snapshotInfo.getUuid(),
                                     new AsyncCallback<Module>() {
 
                                         public void onFailure(Throwable caught) {

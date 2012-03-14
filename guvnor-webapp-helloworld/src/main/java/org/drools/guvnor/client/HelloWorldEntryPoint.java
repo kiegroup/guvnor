@@ -67,7 +67,8 @@ public class HelloWorldEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
+        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
+        RepositoryServiceFactory.getCurrentUser(new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
                 if (userName != null) {

@@ -18,8 +18,8 @@ package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
 /**
  * Well this one should be pretty obvious what it does.
@@ -60,15 +62,16 @@ public class StatusChangePopup extends FormStylePopup {
         final ListBox box = new ListBox();
 
         LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-        RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
+        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.listStates(new GenericCallback<String[]>() {
             public void onSuccess(String[] list) {
-                box.addItem( constants.ChooseOne() );
+                box.addItem(constants.ChooseOne());
                 for (String aList : list) {
                     box.addItem(aList);
                 }
                 LoadingPopup.close();
             }
-        } );
+        });
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 newStatus = box.getItemText( box.getSelectedIndex() );
@@ -101,7 +104,7 @@ public class StatusChangePopup extends FormStylePopup {
     /** Apply the state change */
     private void changeState(String newState) {
         LoadingPopup.showMessage( constants.UpdatingStatus() );
-        AssetServiceAsync assetService = RepositoryServiceFactory.getAssetService();
+        AssetServiceAsync assetService = GWT.create(AssetService.class);
         if ( isPackage ) {
             assetService.changePackageState( uuid,
                                              newStatus,

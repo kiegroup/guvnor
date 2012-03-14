@@ -15,12 +15,12 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import org.drools.guvnor.shared.api.PortableObject;
 
 public class DTColumnConfig52
     implements
-    BaseColumn,
-    PortableObject {
+        BaseColumn,
+        PortableObject {
 
     private static final long serialVersionUID  = 510l;
 

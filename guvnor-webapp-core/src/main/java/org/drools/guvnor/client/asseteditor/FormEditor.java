@@ -37,7 +37,8 @@ EditorWidget {
     public FormEditor(Asset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus bus) {
         this.asset = asset;
         modelUUID = asset.getUuid();
-        RepositoryServiceFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
+        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
+        securityService.getCurrentUser(new AsyncCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext result) {
                 username[0] = result.getUserName();
             }

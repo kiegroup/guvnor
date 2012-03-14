@@ -16,8 +16,10 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import org.drools.guvnor.shared.api.PortableObject;
+
 public interface IAction
     extends
-    PortableObject {
+        PortableObject {
 
 }
