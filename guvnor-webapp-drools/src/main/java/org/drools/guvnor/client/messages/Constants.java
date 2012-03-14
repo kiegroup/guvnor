@@ -2641,7 +2641,7 @@ public interface Constants
 
     String ChooseAFieldToAssignAFactTo();
 
-    String OmittedOption();
+    String DefaultOption();
 
     String TrueOption();
 

@@ -61,7 +61,7 @@ public class AdvancedKBaseConfigWidget extends DirtyableComposite {
 
         this.initWidget(uiBinder.createAndBindUi(this));
 
-        listMBeans.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listMBeans.addItem(Constants.INSTANCE.DefaultOption(), "");
         listMBeans.addItem(Constants.INSTANCE.TrueOption(), "true");
         listMBeans.addItem(Constants.INSTANCE.FalseOption(), "false");
         if (kbase.getMbeans() == null) {
@@ -72,7 +72,7 @@ public class AdvancedKBaseConfigWidget extends DirtyableComposite {
             this.listMBeans.setSelectedIndex(2);
         }
 
-        this.listEventProcessingMode.addItem(Constants.INSTANCE.OmittedOption(), "");
+        this.listEventProcessingMode.addItem(Constants.INSTANCE.DefaultOption(), "");
         this.listEventProcessingMode.addItem(CLOUD.toDisplay(), CLOUD.toString());
         this.listEventProcessingMode.addItem(STREAM.toDisplay(), STREAM.toString());
 
@@ -84,7 +84,7 @@ public class AdvancedKBaseConfigWidget extends DirtyableComposite {
             this.listEventProcessingMode.setSelectedIndex(2);
         }
 
-        this.listAssertBehavior.addItem(Constants.INSTANCE.OmittedOption(), "");
+        this.listAssertBehavior.addItem(Constants.INSTANCE.DefaultOption(), "");
         this.listAssertBehavior.addItem(EQUALITY.toDisplay(), EQUALITY.toString());
         this.listAssertBehavior.addItem(IDENTITY.toDisplay(), IDENTITY.toString());
 

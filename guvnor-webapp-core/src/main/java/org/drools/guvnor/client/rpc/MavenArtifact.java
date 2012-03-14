@@ -26,12 +26,15 @@ import static org.drools.guvnor.client.util.Preconditions.*;
 
 public class MavenArtifact implements Serializable, IsSerializable {
 
+    //groupId:artifactId:packaging:classifier:version:scope
+    //org.apache.camel:camel-core:test-jar:tests:2.4.0:test
+
     private static final String MAVEN_TEST_SCOPE = "test";
     private static final String MAVEN_PROVIDED_SCOPE = "provided";
 
     private String group;
     private String artifact;
-    private String complement;
+    private String classifier;
     private String version;
     private String type;
     private String scope;
@@ -52,14 +55,14 @@ public class MavenArtifact implements Serializable, IsSerializable {
             this.group = values[0];
             this.artifact = values[1];
             this.type = values[2];
-            this.complement = null;
+            this.classifier = null;
             this.version = values[3];
             this.scope = values[4];
         } else {
             this.group = values[0];
             this.artifact = values[1];
             this.type = values[2];
-            this.complement = values[3];
+            this.classifier = values[3];
             this.version = values[4];
             this.scope = values[5];
         }
@@ -71,7 +74,7 @@ public class MavenArtifact implements Serializable, IsSerializable {
         checkNotNull("source", source);
         this.group = source.group;
         this.artifact = source.artifact;
-        this.complement = source.complement;
+        this.classifier = source.classifier;
         this.version = source.version;
         this.type = source.type;
         this.scope = source.scope;
@@ -91,11 +94,11 @@ public class MavenArtifact implements Serializable, IsSerializable {
     }
 
     public String toValue() {
-        if (complement == null) {
+        if (classifier == null) {
             return group + ":" + artifact + ":" + type + ":" + version + ":" + scope;
         }
 
-        return group + ":" + artifact + ":" + type + ":" + complement + ":" + version + ":" + scope;
+        return group + ":" + artifact + ":" + type + ":" + classifier + ":" + version + ":" + scope;
     }
 
     public String toLabel() {
@@ -117,8 +120,8 @@ public class MavenArtifact implements Serializable, IsSerializable {
     }
 
     public String toFileName() {
-        if (complement != null) {
-            return artifact + "-" + version + "-" + complement + "." + getFileExtension();
+        if (classifier != null) {
+            return artifact + "-" + version + "-" + classifier + "." + getFileExtension();
         }
 
         return artifact + "-" + version + "." + getFileExtension();
@@ -155,7 +158,7 @@ public class MavenArtifact implements Serializable, IsSerializable {
         if (!artifact.equals(artifact1.artifact)) {
             return false;
         }
-        if (complement != null ? !complement.equals(artifact1.complement) : artifact1.complement != null) {
+        if (classifier != null ? !classifier.equals(artifact1.classifier) : artifact1.classifier != null) {
             return false;
         }
         if (!group.equals(artifact1.group)) {
@@ -178,7 +181,7 @@ public class MavenArtifact implements Serializable, IsSerializable {
     public int hashCode() {
         int result = group.hashCode();
         result = 31 * result + artifact.hashCode();
-        result = 31 * result + (complement != null ? complement.hashCode() : 0);
+        result = 31 * result + (classifier != null ? classifier.hashCode() : 0);
         result = 31 * result + version.hashCode();
         result = 31 * result + type.hashCode();
         result = 31 * result + scope.hashCode();

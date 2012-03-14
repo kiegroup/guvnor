@@ -79,7 +79,7 @@ public class AdvancedKSessionConfigWidget extends DirtyableComposite {
             this.listMarshalling.setSelectedIndex(2);
         }
 
-        listClockType.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listClockType.addItem(Constants.INSTANCE.DefaultOption(), "");
         listClockType.addItem(PSEUDO.toDisplay(), PSEUDO.toString());
         listClockType.addItem(REALTIME.toDisplay(), REALTIME.toString());
         if (ksession.getClockType() == null) {
@@ -90,7 +90,7 @@ public class AdvancedKSessionConfigWidget extends DirtyableComposite {
             this.listClockType.setSelectedIndex(2);
         }
 
-        listKeepReference.addItem(Constants.INSTANCE.OmittedOption(), "");
+        listKeepReference.addItem(Constants.INSTANCE.DefaultOption(), "");
         listKeepReference.addItem(Constants.INSTANCE.TrueOption(), "true");
         listKeepReference.addItem(Constants.INSTANCE.FalseOption(), "false");
         if (ksession.getKeepReference() == null) {
