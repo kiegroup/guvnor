@@ -4,7 +4,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 [
 
   [
-    "name" : "My Task",
+    "name" : "MyTask",
     "parameters" : [
     	"MyFirstParam" : new StringDataType(),
     	"MySecondParam" : new StringDataType(),
