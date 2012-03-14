@@ -17,12 +17,12 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager;
 import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -45,14 +45,13 @@ import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
  */
 public class RowExpander {
 
-    private Map<BaseColumn, ColumnValues>     expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
-    private List<ColumnValues>                columns;
+    private Map<BaseColumn, ColumnValues>    expandedColumns = new IdentityHashMap<BaseColumn, ColumnValues>();
+    private List<ColumnValues>               columns;
 
-    private final LimitedEntryDropDownManager dropDownManager;
-    private final GuidedDecisionTable52       dtable;
-    private final SuggestionCompletionEngine  sce;
+    private final GuidedDecisionTable52      dtable;
+    private final SuggestionCompletionEngine sce;
 
-    private static final String[]             EMPTY_VALUE     = new String[0];
+    private static final String[]            EMPTY_VALUE     = new String[0];
 
     /**
      * Constructor
@@ -63,8 +62,6 @@ public class RowExpander {
     RowExpander(GuidedDecisionTable52 dtable,
                 SuggestionCompletionEngine sce) {
         this.columns = new ArrayList<ColumnValues>();
-        this.dropDownManager = new LimitedEntryDropDownManager( dtable,
-                                                                sce );
         this.dtable = dtable;
         this.sce = sce;
 
@@ -127,31 +124,53 @@ public class RowExpander {
 
     private void addColumn(Pattern52 p,
                            ConditionCol52 c) {
-        String[] values = new String[]{};
         switch ( dtable.getTableFormat() ) {
             case EXTENDED_ENTRY :
-                if ( dtable.hasValueList( c ) ) {
-                    values = dtable.getValueList( c,
-                                                  sce );
-                    values = getValues( values );
-                } else if ( sce.hasEnums( p.getFactType(),
-                                          c.getFactField() ) ) {
-                    final Context context = new Context( p,
-                                                         c );
-                    final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
-                    final DropDownData dd = sce.getEnums( p.getFactType(),
-                                                          c.getFactField(),
-                                                          currentValueMap );
-                    if ( dd == null ) {
-                        values = EMPTY_VALUE;
-                    } else {
-                        values = getValues( dd.fixedList );
-                    }
-                }
+                addExtendedEntryColumn( p,
+                                        c );
                 break;
             case LIMITED_ENTRY :
-                values = new String[]{"true", "false"};
+                addLimitedEntryColumn( c );
+                break;
         }
+    }
+
+    private void addExtendedEntryColumn(Pattern52 p,
+                                        ConditionCol52 c) {
+        ColumnValues cv = null;
+        String[] values = new String[]{};
+        if ( dtable.hasValueList( c ) ) {
+            values = dtable.getValueList( c,
+                                          sce );
+            values = getSplitValues( values );
+            cv = new ColumnValues( columns,
+                                    values,
+                                    c.getDefaultValue() );
+
+        } else if ( sce.hasEnums( p.getFactType(),
+                                  c.getFactField() ) ) {
+            final Context context = new Context( p,
+                                                 c );
+            cv = new ColumnDynamicValues( columns,
+                                          sce,
+                                          context,
+                                          c.getDefaultValue() );
+
+        } else {
+            cv = new ColumnValues( columns,
+                                   values,
+                                   c.getDefaultValue() );
+        }
+
+        if ( cv != null ) {
+            this.expandedColumns.put( c,
+                                      cv );
+            this.columns.add( cv );
+        }
+    }
+
+    private void addLimitedEntryColumn(ConditionCol52 c) {
+        String[] values = new String[]{"true", "false"};
         ColumnValues cv = new ColumnValues( columns,
                                             values,
                                             c.getDefaultValue() );
@@ -160,7 +179,7 @@ public class RowExpander {
         this.columns.add( cv );
     }
 
-    private String[] getValues(String[] values) {
+    private String[] getSplitValues(String[] values) {
         String[] splitValues = new String[values.length];
         for ( int i = 0; i < values.length; i++ ) {
             String v = values[i];
@@ -241,11 +260,28 @@ public class RowExpander {
         //so a ripple effect can be observed, with one column advancing the next, which
         //advances the next and so on...
         public List<String> next() {
-            List<String> row = new ArrayList<String>();
-            for ( ColumnValues cv : columns ) {
-                row.add( cv.getCurrentValue() );
-            }
-            columns.get( 0 ).advanceColumnValue();
+
+            //We have a row that is potentially partially populated as the dependent enum data has not been set
+            //So ask columns to update their value lists based on the current row definition. This will force
+            //the dependent enumeration value lists to be populated.
+            boolean refreshRow = false;
+            List<String> row;
+            do {
+                refreshRow = false;
+                row = new ArrayList<String>();
+                for ( ColumnValues cv : columns ) {
+                    row.add( cv.getCurrentValue() );
+                }
+                for ( ColumnValues cv : columns ) {
+                    if ( cv instanceof ColumnDynamicValues ) {
+                        final ColumnDynamicValues cdv = (ColumnDynamicValues) cv;
+                        refreshRow = refreshRow || cdv.assertValueList( row );
+                    }
+                }
+            } while ( refreshRow );
+
+            //Advance the first column to the next value
+            columns.get( columns.size() - 1 ).advanceColumnValue();
             return row;
         }
 
@@ -332,8 +368,8 @@ public class RowExpander {
                 this.iterator = values.iterator();
                 value = iterator.next();
                 int myIndex = columns.indexOf( this );
-                if ( myIndex < columns.size() - 1 ) {
-                    columns.get( myIndex + 1 ).advanceColumnValue();
+                if ( myIndex > 0 ) {
+                    columns.get( myIndex - 1 ).advanceColumnValue();
                 }
             }
         }
@@ -348,4 +384,89 @@ public class RowExpander {
         }
 
     }
+
+    /**
+     * Container for a columns values that are dynamically generated
+     */
+    static class ColumnDynamicValues extends ColumnValues {
+
+        private final Context                    context;
+        private final SuggestionCompletionEngine sce;
+
+        ColumnDynamicValues(List<ColumnValues> columns,
+                            SuggestionCompletionEngine sce,
+                            Context context,
+                            String defaultValue) {
+            super( columns,
+                   EMPTY_VALUE,
+                   defaultValue );
+            this.sce = sce;
+            this.context = context;
+
+            //Check if there is an enumeration
+            final DropDownData dd = sce.getEnums( context.getBasePattern().getFactType(),
+                                                  ((ConditionCol52) context.getBaseColumn()).getFactField(),
+                                                  new HashMap<String, String>() );
+            if ( dd != null ) {
+                this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
+                this.originalValues = this.values;
+                this.isAllValuesUsed = false;
+            }
+
+            //Initialise value to the first in the list
+            this.iterator = this.values.iterator();
+            advanceColumnValue();
+        }
+
+        private String[] getSplitValues(String[] values) {
+            String[] splitValues = new String[values.length];
+            for ( int i = 0; i < values.length; i++ ) {
+                String v = values[i];
+                String[] splut = ConstraintValueEditorHelper.splitValue( v );
+                splitValues[i] = splut[0];
+            }
+            return splitValues;
+        }
+
+        /**
+         * Assert that the Value List is correct for data contained in the row
+         * 
+         * @param row
+         * @returns true if the Value List has changed and the row should be
+         *          refreshed
+         */
+        boolean assertValueList(List<String> row) {
+            final boolean refreshRow = this.isAllValuesUsed;
+            if ( this.isAllValuesUsed ) {
+                Map<String, String> currentValueMap = new HashMap<String, String>();
+                for ( int iCol = 0; iCol < this.columns.size(); iCol++ ) {
+                    ColumnValues cv = this.columns.get( iCol );
+                    if ( cv instanceof ColumnDynamicValues ) {
+                        final ColumnDynamicValues cdv = (ColumnDynamicValues) cv;
+                        if ( cdv.context.getBasePattern().equals( this.context.getBasePattern() ) ) {
+                            final ConditionCol52 cc = (ConditionCol52) cdv.context.getBaseColumn();
+                            final String value = row.get( iCol );
+                            currentValueMap.put( cc.getFactField(),
+                                                 value );
+                        }
+                    }
+                }
+                final DropDownData dd = sce.getEnums( context.getBasePattern().getFactType(),
+                                                      ((ConditionCol52) context.getBaseColumn()).getFactField(),
+                                                      currentValueMap );
+                if ( dd != null ) {
+                    this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
+                    this.originalValues = this.values;
+                    this.isAllValuesUsed = false;
+
+                    //Initialise value to the first in the list
+                    this.iterator = this.values.iterator();
+                    advanceColumnValue();
+                }
+            }
+            return refreshRow;
+        }
+
+    }
+
 }

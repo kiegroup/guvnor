@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
+import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.RowExpander.ColumnDynamicValues;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.RowExpander.ColumnValues;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.RowExpander.RowIterator;
 import org.drools.ide.common.client.modeldriven.ModelField;
@@ -435,6 +436,375 @@ public class RowExpanderTests {
 
     }
 
+    @Test
+    public void testExpansionWithGuvnorDependentEnums_2enum_x_3values() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Fact\n"
+                     + "field1 : String\n"
+                     + "field2 : String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b', 'f1c'], "
+                                       + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b', 'f1af2c'], "
+                                       + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b', 'f1bf2c'], "
+                                       + "'Fact.field2[field1=f1c]' : ['f1cf2a', 'f1cf2b', 'f1cf2c']";
+
+        enums.add( enumDefinitions );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Fact" );
+        dtable.getConditions().add( p1 );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "field1" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+
+        ConditionCol52 c2 = new ConditionCol52();
+        c2.setFactField( "field2" );
+        c2.setOperator( "==" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c2 );
+
+        ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
+        a1.setBoundName( "f1" );
+        a1.setFactField( "field1" );
+        dtable.getActionCols().add( a1 );
+
+        ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
+        a2.setBoundName( "f2" );
+        a2.setFactType( "Fact" );
+        a2.setFactField( "field1" );
+        dtable.getActionCols().add( a2 );
+
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 6,
+                      columns.size() );
+
+        assertTrue( columns.get( 0 ) instanceof ColumnValues );
+        assertTrue( columns.get( 1 ) instanceof ColumnValues );
+        assertTrue( columns.get( 2 ) instanceof ColumnValues );
+        assertTrue( columns.get( 3 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 4 ) instanceof ColumnValues );
+        assertTrue( columns.get( 5 ) instanceof ColumnValues );
+
+        //Can't check size of values for ColumnDynamicValues as they depend on the other columns
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 3,
+                      columns.get( 2 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 4 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 5 ).values.size() );
+
+        //Expected data
+        // --> f1a, f1af2a
+        // --> f1a, f1af2b
+        // --> f1a, f1af2c
+        // --> f1b, f1bf2a
+        // --> f1b, f1bf2b
+        // --> f1b, f1bf2c
+        // --> f1c, f1cf2a
+        // --> f1c, f1cf2b
+        // --> f1c, f1cf2c
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+        List<String> row0 = ri.next();
+        assertEquals( 6,
+                      row0.size() );
+        assertEquals( "f1a",
+                      row0.get( 2 ) );
+        assertEquals( "f1af2a",
+                      row0.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row1 = ri.next();
+        assertEquals( 6,
+                      row1.size() );
+        assertEquals( "f1a",
+                      row1.get( 2 ) );
+        assertEquals( "f1af2b",
+                      row1.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row2 = ri.next();
+        assertEquals( 6,
+                      row2.size() );
+        assertEquals( "f1a",
+                      row2.get( 2 ) );
+        assertEquals( "f1af2c",
+                      row2.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row3 = ri.next();
+        assertEquals( 6,
+                      row3.size() );
+        assertEquals( "f1b",
+                      row3.get( 2 ) );
+        assertEquals( "f1bf2a",
+                      row3.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row4 = ri.next();
+        assertEquals( 6,
+                      row4.size() );
+        assertEquals( "f1b",
+                      row4.get( 2 ) );
+        assertEquals( "f1bf2b",
+                      row4.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row5 = ri.next();
+        assertEquals( 6,
+                      row5.size() );
+        assertEquals( "f1b",
+                      row5.get( 2 ) );
+        assertEquals( "f1bf2c",
+                      row5.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row6 = ri.next();
+        assertEquals( 6,
+                      row6.size() );
+        assertEquals( "f1c",
+                      row6.get( 2 ) );
+        assertEquals( "f1cf2a",
+                      row6.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row7 = ri.next();
+        assertEquals( 6,
+                      row7.size() );
+        assertEquals( "f1c",
+                      row7.get( 2 ) );
+        assertEquals( "f1cf2b",
+                      row7.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row8 = ri.next();
+        assertEquals( 6,
+                      row8.size() );
+        assertEquals( "f1c",
+                      row8.get( 2 ) );
+        assertEquals( "f1cf2c",
+                      row8.get( 3 ) );
+
+        assertFalse( ri.hasNext() );
+    }
+
+    @Test
+    public void testExpansionWithGuvnorDependentEnums_3enum_x_2values() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Fact\n"
+                     + "field1 : String\n"
+                     + "field2 : String\n"
+                     + "field3 : String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
+                                       + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
+                                       + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b'], "
+                                       + "'Fact.field3[field2=f1af2a]' : ['f1af2af3a', 'f1af2af3b'], "
+                                       + "'Fact.field3[field2=f1af2b]' : ['f1af2bf3a', 'f1af2bf3b'], "
+                                       + "'Fact.field3[field2=f1bf2a]' : ['f1bf2af3a', 'f1bf2af3b'], "
+                                       + "'Fact.field3[field2=f1bf2b]' : ['f1bf2bf3a', 'f1bf2bf3b']";
+
+        enums.add( enumDefinitions );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Fact" );
+        dtable.getConditions().add( p1 );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "field1" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+
+        ConditionCol52 c2 = new ConditionCol52();
+        c2.setFactField( "field2" );
+        c2.setOperator( "==" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c2 );
+
+        ConditionCol52 c3 = new ConditionCol52();
+        c3.setFactField( "field3" );
+        c3.setOperator( "==" );
+        c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c3 );
+
+        ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
+        a1.setBoundName( "f1" );
+        a1.setFactField( "field1" );
+        dtable.getActionCols().add( a1 );
+
+        ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
+        a2.setBoundName( "f2" );
+        a2.setFactType( "Fact" );
+        a2.setFactField( "field1" );
+        dtable.getActionCols().add( a2 );
+
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 7,
+                      columns.size() );
+
+        assertTrue( columns.get( 0 ) instanceof ColumnValues );
+        assertTrue( columns.get( 1 ) instanceof ColumnValues );
+        assertTrue( columns.get( 2 ) instanceof ColumnValues );
+        assertTrue( columns.get( 3 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 4 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 5 ) instanceof ColumnValues );
+        assertTrue( columns.get( 6 ) instanceof ColumnValues );
+
+        //Can't check size of values for ColumnDynamicValues as they depend on the other columns
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 2,
+                      columns.get( 2 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 5 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 6 ).values.size() );
+
+        //Expected data
+        // --> f1a, f1af2a, f1af2af3a
+        // --> f1a, f1af2a, f1af2af3b
+        // --> f1a, f1af2b, f1af2bf3a
+        // --> f1a, f1af2b, f1af2bf3b
+        // --> f1b, f1bf2a, f1bf2af3a
+        // --> f1b, f1bf2a, f1bf2af3b
+        // --> f1b, f1bf2b, f1bf2bf3a
+        // --> f1b, f1bf2b, f1bf2bf3b
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+        List<String> row0 = ri.next();
+        assertEquals( 7,
+                      row0.size() );
+        assertEquals( "f1a",
+                      row0.get( 2 ) );
+        assertEquals( "f1af2a",
+                      row0.get( 3 ) );
+        assertEquals( "f1af2af3a",
+                      row0.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row1 = ri.next();
+        assertEquals( 7,
+                      row1.size() );
+        assertEquals( "f1a",
+                      row1.get( 2 ) );
+        assertEquals( "f1af2a",
+                      row1.get( 3 ) );
+        assertEquals( "f1af2af3b",
+                      row1.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row2 = ri.next();
+        assertEquals( 7,
+                      row2.size() );
+        assertEquals( "f1a",
+                      row2.get( 2 ) );
+        assertEquals( "f1af2b",
+                      row2.get( 3 ) );
+        assertEquals( "f1af2bf3a",
+                      row2.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row3 = ri.next();
+        assertEquals( 7,
+                      row3.size() );
+        assertEquals( "f1a",
+                      row3.get( 2 ) );
+        assertEquals( "f1af2b",
+                      row3.get( 3 ) );
+        assertEquals( "f1af2bf3b",
+                      row3.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row4 = ri.next();
+        assertEquals( 7,
+                      row4.size() );
+        assertEquals( "f1b",
+                      row4.get( 2 ) );
+        assertEquals( "f1bf2a",
+                      row4.get( 3 ) );
+        assertEquals( "f1bf2af3a",
+                      row4.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row5 = ri.next();
+        assertEquals( 7,
+                      row5.size() );
+        assertEquals( "f1b",
+                      row5.get( 2 ) );
+        assertEquals( "f1bf2a",
+                      row5.get( 3 ) );
+        assertEquals( "f1bf2af3b",
+                      row5.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row6 = ri.next();
+        assertEquals( 7,
+                      row6.size() );
+        assertEquals( "f1b",
+                      row6.get( 2 ) );
+        assertEquals( "f1bf2b",
+                      row6.get( 3 ) );
+        assertEquals( "f1bf2bf3a",
+                      row6.get( 4 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row7 = ri.next();
+        assertEquals( 7,
+                      row7.size() );
+        assertEquals( "f1b",
+                      row7.get( 2 ) );
+        assertEquals( "f1bf2b",
+                      row7.get( 3 ) );
+        assertEquals( "f1bf2bf3b",
+                      row7.get( 4 ) );
+
+        assertFalse( ri.hasNext() );
+    }
+
     @SuppressWarnings("serial")
     @Test
     public void testColumnValues() {
@@ -615,15 +985,15 @@ public class RowExpanderTests {
                       rows.get( 0 ).get( 3 ) );
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "c1b",
+        assertEquals( "c1a",
                       rows.get( 1 ).get( 2 ) );
-        assertEquals( "c2a",
+        assertEquals( "c2b",
                       rows.get( 1 ).get( 3 ) );
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "c1a",
+        assertEquals( "c1b",
                       rows.get( 2 ).get( 2 ) );
-        assertEquals( "c2b",
+        assertEquals( "c2a",
                       rows.get( 2 ).get( 3 ) );
         assertNull( rows.get( 3 ).get( 0 ) );
         assertNull( rows.get( 3 ).get( 1 ) );
@@ -720,17 +1090,17 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "c1b",
+        assertEquals( "c1a",
                       rows.get( 1 ).get( 2 ) );
-        assertEquals( "c2a",
+        assertEquals( "c2b",
                       rows.get( 1 ).get( 3 ) );
         assertNull( rows.get( 1 ).get( 4 ) );
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "c1a",
+        assertEquals( "c1b",
                       rows.get( 2 ).get( 2 ) );
-        assertEquals( "c2b",
+        assertEquals( "c2a",
                       rows.get( 2 ).get( 3 ) );
         assertNull( rows.get( 2 ).get( 4 ) );
 
@@ -834,18 +1204,18 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "c1b",
+        assertEquals( "c1a",
                       rows.get( 1 ).get( 2 ) );
-        assertEquals( "c2a",
+        assertEquals( "c2b",
                       rows.get( 1 ).get( 3 ) );
         assertEquals( "c3default",
                       rows.get( 1 ).get( 4 ) );
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "c1a",
+        assertEquals( "c1b",
                       rows.get( 2 ).get( 2 ) );
-        assertEquals( "c2b",
+        assertEquals( "c2a",
                       rows.get( 2 ).get( 3 ) );
         assertEquals( "c3default",
                       rows.get( 2 ).get( 4 ) );
@@ -1127,18 +1497,18 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "c1b",
+        assertEquals( "c1a",
                       rows.get( 1 ).get( 2 ) );
         assertNull( rows.get( 1 ).get( 3 ) );
-        assertEquals( "c3a",
+        assertEquals( "c3b",
                       rows.get( 1 ).get( 4 ) );
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "c1a",
+        assertEquals( "c1b",
                       rows.get( 2 ).get( 2 ) );
         assertNull( rows.get( 2 ).get( 3 ) );
-        assertEquals( "c3b",
+        assertEquals( "c3a",
                       rows.get( 2 ).get( 4 ) );
 
         assertNull( rows.get( 3 ).get( 0 ) );
@@ -1243,20 +1613,20 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "c1b",
+        assertEquals( "c1a",
                       rows.get( 1 ).get( 2 ) );
         assertEquals( "c2default",
                       rows.get( 1 ).get( 3 ) );
-        assertEquals( "c3a",
+        assertEquals( "c3b",
                       rows.get( 1 ).get( 4 ) );
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "c1a",
+        assertEquals( "c1b",
                       rows.get( 2 ).get( 2 ) );
         assertEquals( "c2default",
                       rows.get( 2 ).get( 3 ) );
-        assertEquals( "c3b",
+        assertEquals( "c3a",
                       rows.get( 2 ).get( 4 ) );
 
         assertNull( rows.get( 3 ).get( 0 ) );
@@ -1397,9 +1767,9 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 1 ).get( 0 ) );
         assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "false",
-                      rows.get( 1 ).get( 2 ) );
         assertEquals( "true",
+                      rows.get( 1 ).get( 2 ) );
+        assertEquals( "false",
                       rows.get( 1 ).get( 3 ) );
         assertEquals( "false",
                       rows.get( 1 ).get( 4 ) );
@@ -1408,9 +1778,9 @@ public class RowExpanderTests {
 
         assertNull( rows.get( 2 ).get( 0 ) );
         assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "true",
-                      rows.get( 2 ).get( 2 ) );
         assertEquals( "false",
+                      rows.get( 2 ).get( 2 ) );
+        assertEquals( "true",
                       rows.get( 2 ).get( 3 ) );
         assertEquals( "false",
                       rows.get( 2 ).get( 4 ) );
