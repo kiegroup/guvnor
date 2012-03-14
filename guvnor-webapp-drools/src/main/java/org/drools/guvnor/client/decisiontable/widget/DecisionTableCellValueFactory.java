@@ -155,6 +155,14 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         DTCellValue52 dcv = null;
         if ( column instanceof LimitedEntryCol ) {
             dcv = new DTCellValue52( Boolean.FALSE );
+        } else if ( column instanceof AttributeCol52 ) {
+            AttributeCol52 ac = (AttributeCol52) column;
+            if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
+                dcv = new DTCellValue52( RuleAttributeWidget.DEFAULT_DIALECT );
+            } else {
+                dcv = new DTCellValue52( column.getDefaultValue() );
+            }
+
         } else {
             dcv = new DTCellValue52( column.getDefaultValue() );
         }
@@ -427,28 +435,28 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         final BigDecimal value = (BigDecimal) dcv.getNumericValue();
         switch ( dataType ) {
             case NUMERIC_BIGDECIMAL :
-                dcv.setNumericValue( value );
+                dcv.setNumericValue( value == null ? null : value );
                 break;
             case NUMERIC_BIGINTEGER :
-                dcv.setNumericValue( value.toBigInteger() );
+                dcv.setNumericValue( value == null ? null : value.toBigInteger() );
                 break;
             case NUMERIC_BYTE :
-                dcv.setNumericValue( value.byteValue() );
+                dcv.setNumericValue( value == null ? null : value.byteValue() );
                 break;
             case NUMERIC_DOUBLE :
-                dcv.setNumericValue( value.doubleValue() );
+                dcv.setNumericValue( value == null ? null : value.doubleValue() );
                 break;
             case NUMERIC_FLOAT :
-                dcv.setNumericValue( value.floatValue() );
+                dcv.setNumericValue( value == null ? null : value.floatValue() );
                 break;
             case NUMERIC_INTEGER :
-                dcv.setNumericValue( value.intValue() );
+                dcv.setNumericValue( value == null ? null : value.intValue() );
                 break;
             case NUMERIC_LONG :
-                dcv.setNumericValue( value.longValue() );
+                dcv.setNumericValue( value == null ? null : value.longValue() );
                 break;
             case NUMERIC_SHORT :
-                dcv.setNumericValue( value.shortValue() );
+                dcv.setNumericValue( value == null ? null : value.shortValue() );
                 break;
         }
 
