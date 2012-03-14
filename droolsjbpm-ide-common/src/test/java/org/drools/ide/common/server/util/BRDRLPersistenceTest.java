@@ -1066,6 +1066,162 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
+    public void testLiteralBigDecimalMvel() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal bigdecimal";
+
+        m.addAttribute( new RuleAttribute( "dialect",
+                                           "mvel" ) );
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+        
+        ActionInsertFact ai = new ActionInsertFact( "Person" );
+        ai.addFieldValue( new ActionFieldValue( "field1",
+                                                "55",
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) );
+        m.addRhsItem( ai );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
+                                      + "\tdialect \"mvel\"\n when \n"
+                                      + "     Person(field1 == 44.0B) \n"
+                                      + " then \n" 
+                                      + "Person fact0 = new Person(); \n"
+                                      + "fact0.setField1( 55.0B ); \n"
+                                      + "insert( fact0 ); \n"
+                                      + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLiteralBigIntegerMvel() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal biginteger";
+
+        m.addAttribute( new RuleAttribute( "dialect",
+                                           "mvel" ) );
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+        
+        ActionInsertFact ai = new ActionInsertFact( "Person" );
+        ai.addFieldValue( new ActionFieldValue( "field1",
+                                                "55",
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) );
+        m.addRhsItem( ai );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n" 
+                                      + "\tdialect \"mvel\"\n when \n"
+                                      + "     Person(field1 == 44I ) \n"
+                                      + " then \n" 
+                                      + "Person fact0 = new Person(); \n"
+                                      + "fact0.setField1( 55I ); \n"
+                                      + "insert( fact0 ); \n"
+                                      + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLiteralBigDecimalJava() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal bigdecimal";
+
+        m.addAttribute( new RuleAttribute( "dialect",
+                                           "java" ) );
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+        
+        ActionInsertFact ai = new ActionInsertFact( "Person" );
+        ai.addFieldValue( new ActionFieldValue( "field1",
+                                                "55",
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) );
+        m.addRhsItem( ai );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
+                                      + "\tdialect \"java\"\n when \n"
+                                      + "     Person(field1 == 44.0B) \n"
+                                      + " then \n" 
+                                      + "Person fact0 = new Person(); \n"
+                                      + "fact0.setField1( new BigDecimal( \"55\" ) ); \n"
+                                      + "insert( fact0 ); \n"
+                                      + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLiteralBigIntegerJava() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal biginteger";
+
+        m.addAttribute( new RuleAttribute( "dialect",
+                                           "java" ) );
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+        
+        ActionInsertFact ai = new ActionInsertFact( "Person" );
+        ai.addFieldValue( new ActionFieldValue( "field1",
+                                                "55",
+                                                SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) );
+        m.addRhsItem( ai );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n" 
+                                      + "\tdialect \"java\"\n when \n"
+                                      + "     Person(field1 == 44I ) \n"
+                                      + " then \n" 
+                                      + "Person fact0 = new Person(); \n"
+                                      + "fact0.setField1( new BigInteger( \"55\" ) ); \n"
+                                      + "insert( fact0 ); \n"
+                                      + "end",
+                                      result );
+    }
+    
+    @Test
     public void testLiteralBooleans() {
 
         RuleModel m = new RuleModel();

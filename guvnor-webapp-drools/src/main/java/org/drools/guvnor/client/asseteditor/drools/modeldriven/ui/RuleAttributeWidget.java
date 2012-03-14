@@ -68,6 +68,8 @@ public class RuleAttributeWidget extends Composite {
     public static final String  LOCK_LHS              = "freeze_conditions";
     public static final String  LOCK_RHS              = "freeze_actions";
 
+    public static final String  DEFAULT_DIALECT       = "mvel";
+
     /**
      * If the rule attribute is represented visually by a checkbox, these are
      * the values that will be stored in the model when checked/unchecked

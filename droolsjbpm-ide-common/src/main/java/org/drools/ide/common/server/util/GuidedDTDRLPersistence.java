@@ -73,6 +73,9 @@ import org.drools.ide.common.server.util.GuidedDTDRLOtherwiseHelper.OtherwiseBui
  */
 public class GuidedDTDRLPersistence {
 
+    //This is the default dialect for rules not specifying one explicitly
+    private DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( BRDRLPersistence.DEFAULT_DIALECT );
+
     public static GuidedDTDRLPersistence getInstance() {
         return new GuidedDTDRLPersistence();
     }
@@ -781,6 +784,9 @@ public class GuidedDTDRLPersistence {
                 if ( at.getAttribute().equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
                     rm.setNegated( Boolean.valueOf( cell ) );
                 } else {
+                    if ( at.getAttribute().equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
+                        constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( cell );
+                    }
                     attribs.add( new RuleAttribute( at.getAttribute(),
                                                     cell ) );
                 }
@@ -876,7 +882,8 @@ public class GuidedDTDRLPersistence {
                                                       List<BaseColumn> allColumns,
                                                       List<List<DTCellValue52>> data) {
 
-        OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );
+        OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c,
+                                                                          constraintValueBuilder );
         return builder.makeFieldConstraint( c,
                                             allColumns,
                                             data );

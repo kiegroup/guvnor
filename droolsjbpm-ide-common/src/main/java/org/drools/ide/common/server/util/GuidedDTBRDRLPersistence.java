@@ -50,6 +50,7 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
                                       rowDataProvider,
                                       bindingsPatterns,
                                       bindingsFields,
+                                      constraintValueBuilder,
                                       buf,
                                       nestedIndentation,
                                       isNegated );
@@ -63,6 +64,7 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
                                      rowDataProvider,
                                      bindingsPatterns,
                                      bindingsFields,
+                                     constraintValueBuilder,
                                      buf,
                                      indentation );
     }
@@ -76,12 +78,14 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
                                  TemplateDataProvider rowDataProvider,
                                  Map<String, IFactPattern> bindingsPatterns,
                                  Map<String, FieldConstraint> bindingsFields,
+                                 DRLConstraintValueBuilder constraintValueBuilder,
                                  StringBuilder b,
                                  String indentation,
                                  boolean isPatternNegated) {
             super( isDSLEnhanced,
                    bindingsPatterns,
                    bindingsFields,
+                   constraintValueBuilder,
                    b,
                    indentation,
                    isPatternNegated );
@@ -94,10 +98,10 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
                                                String value,
                                                StringBuilder buf) {
             buf.append( " " );
-            DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                          type,
-                                                          fieldType,
-                                                          rowDataProvider.getTemplateKeyValue( value ) );
+            constraintValueBuilder.buildLHSFieldValue( buf,
+                                                       type,
+                                                       fieldType,
+                                                       rowDataProvider.getTemplateKeyValue( value ) );
             buf.append( " " );
         }
 
@@ -129,11 +133,13 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
                                 TemplateDataProvider rowDataProvider,
                                 Map<String, IFactPattern> bindingsPatterns,
                                 Map<String, FieldConstraint> bindingsFields,
+                                DRLConstraintValueBuilder constraintValueBuilder,
                                 StringBuilder b,
                                 String indentation) {
             super( isDSLEnhanced,
                    bindingsPatterns,
                    bindingsFields,
+                   constraintValueBuilder,
                    b,
                    indentation );
             this.rowDataProvider = rowDataProvider;
@@ -142,9 +148,9 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
         @Override
         protected void buildTemplateFieldValue(ActionFieldValue fieldValue,
                                                StringBuilder buf) {
-            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                          fieldValue.type,
-                                                          rowDataProvider.getTemplateKeyValue( fieldValue.value ) );
+            constraintValueBuilder.buildRHSFieldValue( buf,
+                                                       fieldValue.type,
+                                                       rowDataProvider.getTemplateKeyValue( fieldValue.value ) );
         }
 
         @Override

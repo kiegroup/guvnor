@@ -72,9 +72,14 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final String            WORKITEM_PREFIX = "wi";
+    private static final String            WORKITEM_PREFIX        = "wi";
 
-    private static final BRLPersistence    INSTANCE        = new BRDRLPersistence();
+    private static final BRLPersistence    INSTANCE               = new BRDRLPersistence();
+
+    public static final String             DEFAULT_DIALECT        = "mvel";
+
+    //This is the default dialect for rules not specifying one explicitly
+    protected DRLConstraintValueBuilder    constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DEFAULT_DIALECT );
 
     //Keep a record of all variable bindings for Actions that depend on them
     protected Map<String, IFactPattern>    bindingsPatterns;
@@ -164,13 +169,14 @@ public class BRDRLPersistence
 
             buf.append( "\n" );
             if ( attr.attributeName.equals( "dialect" ) ) {
+                constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( attr.value );
                 hasDialect = true;
             }
         }
         // Un comment below for mvel
         if ( !hasDialect ) {
             RuleAttribute attr = new RuleAttribute( "dialect",
-                                                    "mvel" );
+                                                    DEFAULT_DIALECT );
             buf.append( "\t" );
             buf.append( attr );
             buf.append( "\n" );
@@ -236,6 +242,7 @@ public class BRDRLPersistence
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
+                                      constraintValueBuilder,
                                       buf,
                                       nestedIndentation,
                                       isNegated );
@@ -276,6 +283,7 @@ public class BRDRLPersistence
         return new RHSActionVisitor( isDSLEnhanced,
                                      bindingsPatterns,
                                      bindingsFields,
+                                     constraintValueBuilder,
                                      buf,
                                      indentation );
     }
@@ -316,18 +324,21 @@ public class BRDRLPersistence
         private String                       indentation;
         private Map<String, IFactPattern>    bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
+        protected DRLConstraintValueBuilder  constraintValueBuilder;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
                                  Map<String, IFactPattern> bindingsPatterns,
                                  Map<String, FieldConstraint> bindingsFields,
+                                 DRLConstraintValueBuilder constraintValueBuilder,
                                  StringBuilder b,
                                  String indentation,
                                  boolean isPatternNegated) {
-            this.isPatternNegated = isPatternNegated;
             this.isDSLEnhanced = isDSLEnhanced;
-            this.indentation = indentation;
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
+            this.constraintValueBuilder = constraintValueBuilder;
+            this.indentation = indentation;
+            this.isPatternNegated = isPatternNegated;
             buf = b;
         }
 
@@ -791,10 +802,10 @@ public class BRDRLPersistence
             } else {
                 if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                     buf.append( " " );
-                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                  type,
-                                                                  fieldType,
-                                                                  value );
+                    constraintValueBuilder.buildLHSFieldValue( buf,
+                                                               type,
+                                                               fieldType,
+                                                               value );
                 }
             }
             buf.append( " " );
@@ -814,10 +825,10 @@ public class BRDRLPersistence
                                                String value,
                                                StringBuilder buf) {
             buf.append( " " );
-            DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                          type,
-                                                          fieldType,
-                                                          "@{" + value + "}" );
+            constraintValueBuilder.buildLHSFieldValue( buf,
+                                                       type,
+                                                       fieldType,
+                                                       "@{" + value + "}" );
             buf.append( " " );
         }
 
@@ -833,10 +844,10 @@ public class BRDRLPersistence
             } else {
                 if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                     buf.append( " " );
-                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                  type,
-                                                                  fieldType,
-                                                                  value );
+                    constraintValueBuilder.buildLHSFieldValue( buf,
+                                                               type,
+                                                               fieldType,
+                                                               value );
                 }
             }
             buf.append( " " );
@@ -862,6 +873,7 @@ public class BRDRLPersistence
         private int                          idx = 0;
         private Map<String, IFactPattern>    bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
+        protected DRLConstraintValueBuilder  constraintValueBuilder;
 
         //Keep a record of Work Items that are instantiated for Actions that depend on them
         private Set<String>                  instantiatedWorkItems;
@@ -869,13 +881,15 @@ public class BRDRLPersistence
         public RHSActionVisitor(boolean isDSLEnhanced,
                                 Map<String, IFactPattern> bindingsPatterns,
                                 Map<String, FieldConstraint> bindingsFields,
+                                DRLConstraintValueBuilder constraintValueBuilder,
                                 StringBuilder b,
                                 String indentation) {
             this.isDSLEnhanced = isDSLEnhanced;
-            this.indentation = indentation;
-            this.instantiatedWorkItems = new HashSet<String>();
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
+            this.constraintValueBuilder = constraintValueBuilder;
+            this.indentation = indentation;
+            this.instantiatedWorkItems = new HashSet<String>();
             buf = b;
         }
 
@@ -1111,9 +1125,9 @@ public class BRDRLPersistence
 
         protected void buildTemplateFieldValue(ActionFieldValue fieldValue,
                                                StringBuilder buf) {
-            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                          fieldValue.type,
-                                                          "@{" + fieldValue.value + "}" );
+            constraintValueBuilder.buildRHSFieldValue( buf,
+                                                       fieldValue.type,
+                                                       "@{" + fieldValue.value + "}" );
         }
 
         protected void buildWorkItemFieldValue(ActionWorkItemFieldValue afv,
@@ -1134,9 +1148,9 @@ public class BRDRLPersistence
 
         protected void buildDefaultFieldValue(ActionFieldValue fieldValue,
                                               StringBuilder buf) {
-            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                          fieldValue.type,
-                                                          fieldValue.value );
+            constraintValueBuilder.buildRHSFieldValue( buf,
+                                                       fieldValue.type,
+                                                       fieldValue.value );
         }
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,

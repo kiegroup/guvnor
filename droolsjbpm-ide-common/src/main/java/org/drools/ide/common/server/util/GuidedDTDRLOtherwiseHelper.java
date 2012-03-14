@@ -37,6 +37,12 @@ public class GuidedDTDRLOtherwiseHelper {
      */
     public static class EqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
+        private DRLConstraintValueBuilder constraintValueBuilder;
+
+        private EqualsOtherwiseBuilder(DRLConstraintValueBuilder constraintValueBuilder) {
+            this.constraintValueBuilder = constraintValueBuilder;
+        }
+
         @Override
         FieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
                                                        List<DTCellValue52> columnData) {
@@ -54,10 +60,10 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        DRLConstraintValueBuilder.buildLHSFieldValue( value,
-                                                                      c.getConstraintValueType(),
-                                                                      c.getFieldType(),
-                                                                      scv );
+                        constraintValueBuilder.buildLHSFieldValue( value,
+                                                                   c.getConstraintValueType(),
+                                                                   c.getFieldType(),
+                                                                   scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );
@@ -80,6 +86,12 @@ public class GuidedDTDRLOtherwiseHelper {
      */
     public static class NotEqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
+        private DRLConstraintValueBuilder constraintValueBuilder;
+
+        private NotEqualsOtherwiseBuilder(DRLConstraintValueBuilder constraintValueBuilder) {
+            this.constraintValueBuilder = constraintValueBuilder;
+        }
+
         @Override
         SingleFieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
                                                              List<DTCellValue52> columnData) {
@@ -97,10 +109,10 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        DRLConstraintValueBuilder.buildLHSFieldValue( value,
-                                                                      c.getConstraintValueType(),
-                                                                      c.getFieldType(),
-                                                                      scv );
+                        constraintValueBuilder.buildLHSFieldValue( value,
+                                                                   c.getConstraintValueType(),
+                                                                   c.getFieldType(),
+                                                                   scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );
@@ -175,12 +187,13 @@ public class GuidedDTDRLOtherwiseHelper {
      * @param c
      * @return
      */
-    public static OtherwiseBuilder getBuilder(ConditionCol52 c) {
+    public static OtherwiseBuilder getBuilder(ConditionCol52 c,
+                                              DRLConstraintValueBuilder constraintValueBuilder) {
 
         if ( c.getOperator().equals( "==" ) ) {
-            return new EqualsOtherwiseBuilder();
+            return new EqualsOtherwiseBuilder( constraintValueBuilder );
         } else if ( c.getOperator().equals( "!=" ) ) {
-            return new NotEqualsOtherwiseBuilder();
+            return new NotEqualsOtherwiseBuilder( constraintValueBuilder );
         }
         throw new IllegalArgumentException( "ConditionCol operator does not support Otherwise values" );
     }

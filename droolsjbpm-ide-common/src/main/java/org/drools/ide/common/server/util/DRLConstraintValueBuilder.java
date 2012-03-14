@@ -15,15 +15,19 @@
  */
 package org.drools.ide.common.server.util;
 
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-
 /**
  * A Helper class for building parts of DRL from higher-order representations
  * (i.e. Guided Rule Editor, Guided Template Rule Editor and Guided Decision
  * Table).
  */
-public class DRLConstraintValueBuilder {
+public abstract class DRLConstraintValueBuilder {
+
+    public static DRLConstraintValueBuilder getBuilder(String dialect) {
+        if ( BRDRLPersistence.DEFAULT_DIALECT.equalsIgnoreCase( dialect ) ) {
+            return new MvelDRLConstraintValueBuilder();
+        }
+        return new JavaDRLConstraintValueBuilder();
+    }
 
     /**
      * Concatenate a String to the provided buffer suitable for the fieldValue
@@ -37,62 +41,10 @@ public class DRLConstraintValueBuilder {
      * @param fieldType
      * @param fieldValue
      */
-    public static void buildLHSFieldValue(StringBuilder buf,
-                                          int constraintType,
-                                          String fieldType,
-                                          String fieldValue) {
-        if ( fieldType == null || fieldType.length() == 0 ) {
-            //This should ideally be an error however we show leniency to legacy code
-            if ( fieldValue == null ) {
-                return;
-            }
-            if ( !fieldValue.startsWith( "\"" ) ) {
-                buf.append( "\"" );
-            }
-            buf.append( fieldValue );
-            if ( !fieldValue.endsWith( "\"" ) ) {
-                buf.append( "\"" );
-            }
-            return;
-        }
-
-        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            buf.append( "\"" );
-            buf.append( fieldValue );
-            buf.append( "\"" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            buf.append( fieldValue + "B" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-            buf.append( fieldValue + "I" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            buf.append( "\"" );
-            buf.append( fieldValue );
-            buf.append( "\"" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
-            buf.append( fieldValue );
-        } else {
-            addQuote( constraintType,
-                      buf );
-            buf.append( fieldValue );
-            addQuote( constraintType,
-                      buf );
-        }
-
-    }
+    public abstract void buildLHSFieldValue(StringBuilder buf,
+                                            int constraintType,
+                                            String fieldType,
+                                            String fieldValue);
 
     /**
      * Concatenate a String to the provided buffer suitable for the fieldType
@@ -106,64 +58,7 @@ public class DRLConstraintValueBuilder {
      * @param fieldType
      * @param fieldValue
      */
-    public static void buildRHSFieldValue(StringBuilder buf,
-                                          String fieldType,
-                                          String fieldValue) {
-        if ( fieldType == null || fieldType.length() == 0 ) {
-            //This should ideally be an error however we show leniency to legacy code
-            if ( fieldValue == null ) {
-                return;
-            }
-            if ( !fieldValue.startsWith( "\"" ) ) {
-                buf.append( "\"" );
-            }
-            buf.append( fieldValue );
-            if ( !fieldValue.endsWith( "\"" ) ) {
-                buf.append( "\"" );
-            }
-            return;
-        }
-
-        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            buf.append( "sdf.parse(\"" );
-            buf.append( fieldValue );
-            buf.append( "\")" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            buf.append( fieldValue + "B" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-            buf.append( fieldValue + "I" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            buf.append( "\"" );
-            buf.append( fieldValue );
-            buf.append( "\"" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
-            buf.append( fieldValue );
-        } else {
-            buf.append( fieldValue );
-        }
-
-    }
-
-    //Add a quote to literal values, if applicable
-    private static void addQuote(int constraintType,
-                                 StringBuilder buf) {
-        if ( constraintType == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            buf.append( "\"" );
-        }
-    }
-
+    public abstract void buildRHSFieldValue(StringBuilder buf,
+                                            String fieldType,
+                                            String fieldValue);
 }
