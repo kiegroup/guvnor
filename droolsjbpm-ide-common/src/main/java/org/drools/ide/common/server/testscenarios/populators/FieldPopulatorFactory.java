@@ -34,8 +34,9 @@ class FieldPopulatorFactory {
     public FieldPopulator getFieldPopulator(Field field) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         if (field instanceof FieldData) {
             FieldData fieldData = (FieldData) field;
-            if (fieldData.getValue() != null) {
-
+            if (fieldData.getValue() == null) {
+                throw new IllegalArgumentException("Field value can not be null");
+            } else {
                 return getFieldDataPopulator(factObject, fieldData);
             }
         } else if (field instanceof FactAssignmentField) {

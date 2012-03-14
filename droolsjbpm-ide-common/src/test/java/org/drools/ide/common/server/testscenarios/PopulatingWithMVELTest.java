@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 import org.mvel2.MVEL;
 
-public class FactPopulatorTest {
+public class PopulatingWithMVELTest {
 
     @Test
     public void testMVELPopulate() throws Exception {

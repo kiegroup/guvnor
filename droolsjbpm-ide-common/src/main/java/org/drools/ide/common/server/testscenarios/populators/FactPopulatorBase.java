@@ -49,7 +49,12 @@ abstract class FactPopulatorBase implements Populator {
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
         for (Field field : fact.getFieldData()) {
-            fieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(field));
+            try {
+                fieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(field));
+            } catch (IllegalArgumentException e) {
+                // This should never happen, but I don't trust myself or the legacy test scenarios we have.
+                // If the field value is null then it is safe to ignore it.
+            }
         }
 
         return fieldPopulators;

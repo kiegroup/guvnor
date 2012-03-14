@@ -35,9 +35,19 @@ public class FactAssignmentFieldPopulator
                                         TypeResolver resolver) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         super(factObject, field.getName());
         fact = resolver.resolveType(resolver.getFullTypeName(field.getFact().getType())).newInstance();
+
+        initSubFieldPopulators(field, resolver);
+    }
+
+    private void initSubFieldPopulators(FactAssignmentField field, TypeResolver resolver) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(fact, resolver);
         for (Field subField : field.getFact().getFieldData()) {
-            subFieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(subField));
+            try {
+                subFieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(subField));
+            } catch (IllegalArgumentException e) {
+                // This should never happen, but I don't trust myself or the legacy test scenarios we have.
+                // If the field value is null then it is safe to ignore it.
+            }
         }
     }
 

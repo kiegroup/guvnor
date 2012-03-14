@@ -17,29 +17,44 @@
 package org.drools.ide.common.server.testscenarios.populators;
 
 import org.drools.base.TypeResolver;
+import org.drools.ide.common.client.modeldriven.testing.Fact;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
+import org.drools.ide.common.server.testscenarios.Cheese;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FieldPopulatorFactoryTest {
 
     private FieldPopulatorFactory fieldPopulatorFactory;
+    private TypeResolver typeResolver;
 
     @Before
     public void setUp() throws Exception {
         Object factObject = mock(Object.class);
-        TypeResolver typeResolver = mock(TypeResolver.class);
+        typeResolver = mock(TypeResolver.class);
         fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver);
     }
 
     @Test
     public void testFactAssignmentField() throws Exception {
 
-        FieldPopulator fieldPopulator = fieldPopulatorFactory.getFieldPopulator(new FactAssignmentField());
+        FactAssignmentField field = new FactAssignmentField();
+        field.setFact(new Fact());
+
+
+        when(
+                typeResolver.resolveType(Matchers.<String>any())
+        ).thenReturn(
+                Cheese.class
+        );
+
+        FieldPopulator fieldPopulator = fieldPopulatorFactory.getFieldPopulator(field);
 
         assertNotNull(fieldPopulator);
     }

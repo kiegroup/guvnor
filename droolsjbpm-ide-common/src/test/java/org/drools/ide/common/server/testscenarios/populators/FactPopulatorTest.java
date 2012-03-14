@@ -90,7 +90,7 @@ public class FactPopulatorTest {
                 null);
         FactData factData = new FactData("Cheese",
                 "c1",
-                asList((Field)fieldData),
+                asList((Field) fieldData),
                 false);
 
         factPopulator.add(new NewFactPopulator(populatedData, getTypeResolver(), factData));
@@ -125,7 +125,7 @@ public class FactPopulatorTest {
         FactData outerFactData = new FactData(
                 "OuterFact",
                 "p1",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData(
                                 "name",
                                 "mic"),
@@ -153,7 +153,7 @@ public class FactPopulatorTest {
         FactData outerFactData = new FactData(
                 "OuterFact",
                 "p1",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData(
                                 "name",
                                 "mic"),
@@ -167,7 +167,7 @@ public class FactPopulatorTest {
         FactData cheeseFactData = new FactData(
                 "Cheese",
                 "c1",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData(
                                 "type",
                                 "cheddar"),
@@ -216,20 +216,21 @@ public class FactPopulatorTest {
                 "x",
                 cheese);
 
-        factPopulator.add(new ExistingFactPopulator(
-                populatedData,
-                getTypeResolver(),
-                new FactData(
-                        "Cheese",
-                        "x",
-                        Arrays.< Field >asList(
-                                new FieldData(
-                                        "type",
-                                        null),
-                                new FieldData(
-                                        "price",
-                                        "42")),
-                        false)));
+        factPopulator.add(
+                new ExistingFactPopulator(
+                        populatedData,
+                        getTypeResolver(),
+                        new FactData(
+                                "Cheese",
+                                "x",
+                                Arrays.<Field>asList(
+                                        new FieldData(
+                                                "type",
+                                                null),
+                                        new FieldData(
+                                                "price",
+                                                "42")),
+                                false)));
 
         factPopulator.populate();
 
@@ -247,7 +248,7 @@ public class FactPopulatorTest {
                         new FactData(
                                 "Cheese",
                                 "c1",
-                                Arrays.< Field >asList(
+                                Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
                                                 "cheddar"),
@@ -262,7 +263,7 @@ public class FactPopulatorTest {
                         new FactData(
                                 "OuterFact",
                                 "p1",
-                                Arrays.< Field >asList(
+                                Arrays.<Field>asList(
                                         new FieldData(
                                                 "name",
                                                 "mic"),
@@ -290,7 +291,7 @@ public class FactPopulatorTest {
                         getTypeResolver(),
                         new FactData("Cheese",
                                 "c1",
-                                Arrays.< Field >asList(
+                                Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
                                                 "cheddar"),
@@ -305,7 +306,7 @@ public class FactPopulatorTest {
                         new FactData(
                                 "Cheese",
                                 "c2",
-                                Arrays.< Field >asList(
+                                Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
                                                 "= c1.type")),
@@ -341,10 +342,10 @@ public class FactPopulatorTest {
                         new FactData(
                                 "Cheese",
                                 "x",
-                                Arrays.< Field >asList(
+                                Arrays.<Field>asList(
                                         new FieldData(
-                                        "type",
-                                        ""),
+                                                "type",
+                                                ""),
                                         new FieldData(
                                                 "price",
                                                 "42")),
@@ -363,9 +364,9 @@ public class FactPopulatorTest {
 
         FactData fd1 = new FactData("Cheese",
                 "f1",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData("type",
-                        ""),
+                                ""),
                         new FieldData("price",
                                 "42")),
                 false);
@@ -374,9 +375,9 @@ public class FactPopulatorTest {
 
         FactData fd2 = new FactData("Cheese",
                 "f2",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData("type",
-                        ""),
+                                ""),
                         new FieldData("price",
                                 "43")),
                 false);
@@ -384,9 +385,9 @@ public class FactPopulatorTest {
 
         FactData fd3 = new FactData("Cheese",
                 "f3",
-                Arrays.< Field >asList(
+                Arrays.<Field>asList(
                         new FieldData("type",
-                        ""),
+                                ""),
                         new FieldData("price",
                                 "45")),
                 false);
