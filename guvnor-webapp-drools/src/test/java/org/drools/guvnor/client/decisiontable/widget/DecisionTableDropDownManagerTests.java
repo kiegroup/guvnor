@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
@@ -31,6 +33,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,6 +74,33 @@ public class DecisionTableDropDownManagerTests {
 
         model.getConditions().add( p0 );
 
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "$fact" );
+        p1.setFactType( "Fact" );
+
+        ConditionCol52 c0p1 = new ConditionCol52();
+        c0p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c0p1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        c0p1.setFactField( "field1" );
+        c0p1.setOperator( "==" );
+        p1.getChildColumns().add( c0p1 );
+
+        ConditionCol52 c1p1 = new ConditionCol52();
+        c1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1p1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        c1p1.setFactField( "field2" );
+        c1p1.setOperator( "==" );
+        p1.getChildColumns().add( c1p1 );
+
+        ConditionCol52 c2p1 = new ConditionCol52();
+        c2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c2p1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        c2p1.setFactField( "field3" );
+        c2p1.setOperator( "==" );
+        p1.getChildColumns().add( c2p1 );
+
+        model.getConditions().add( p1 );
+
         //Setup RHS
         ActionSetFieldCol52 asf0 = new ActionSetFieldCol52();
         asf0.setBoundName( "$f0" );
@@ -82,6 +113,24 @@ public class DecisionTableDropDownManagerTests {
         asf1.setType( SuggestionCompletionEngine.TYPE_STRING );
         asf1.setFactField( "asf1" );
         model.getActionCols().add( asf1 );
+
+        ActionSetFieldCol52 asf2 = new ActionSetFieldCol52();
+        asf2.setBoundName( "$fact" );
+        asf2.setType( SuggestionCompletionEngine.TYPE_STRING );
+        asf2.setFactField( "field1" );
+        model.getActionCols().add( asf2 );
+
+        ActionSetFieldCol52 asf3 = new ActionSetFieldCol52();
+        asf3.setBoundName( "$fact" );
+        asf3.setType( SuggestionCompletionEngine.TYPE_STRING );
+        asf3.setFactField( "field2" );
+        model.getActionCols().add( asf3 );
+
+        ActionSetFieldCol52 asf4 = new ActionSetFieldCol52();
+        asf4.setBoundName( "$fact" );
+        asf4.setType( SuggestionCompletionEngine.TYPE_STRING );
+        asf4.setFactField( "field3" );
+        model.getActionCols().add( asf4 );
 
         //---Setup data---
         data = new DynamicData();
@@ -100,14 +149,44 @@ public class DecisionTableDropDownManagerTests {
                         makeColumnData( new String[]{"r0c3", "r1c3"} ),
                         true );
         data.addColumn( 4,
-                        makeColumnData( new String[]{"r0c4", "r1c4"} ),
+                        makeColumnData( new String[]{"val1", "val1"} ),
                         true );
         data.addColumn( 5,
+                        makeColumnData( new String[]{"val1a", "val1b"} ),
+                        true );
+        data.addColumn( 6,
+                        makeColumnData( new String[]{"val1a1", "val1b1"} ),
+                        true );
+        data.addColumn( 7,
+                        makeColumnData( new String[]{"r0c4", "r1c4"} ),
+                        true );
+        data.addColumn( 8,
                         makeColumnData( new String[]{"r0c5", "r1c5"} ),
+                        true );
+        data.addColumn( 9,
+                        makeColumnData( new String[]{"val1", "val1"} ),
+                        true );
+        data.addColumn( 10,
+                        makeColumnData( new String[]{"val1a", "val1b"} ),
+                        true );
+        data.addColumn( 11,
+                        makeColumnData( new String[]{"val1a1", "val1b1"} ),
                         true );
 
         //---Setup SCE---
-        sce = new SuggestionCompletionEngine();
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+        final String enumDefinition = "'Fact.field1' : ['val1', 'val2'], "
+                                      + "'Fact.field2[field1=val1]' : ['val1a', 'val1b'], "
+                                      + "'Fact.field3[field2=val1a]' : ['val1a1', 'val1a2'], "
+                                      + "'Fact.field3[field2=val1b]' : ['val1b1', 'val1b2']";
+        enums.add( enumDefinition );
+
+        sce = loader.getSuggestionEngine( "",
+                                          new ArrayList<JarInputStream>(),
+                                          new ArrayList<DSLTokenizedMappingFile>(),
+                                          enums );
 
         //---Setup manager---
         manager = new DecisionTableDropDownManager( model,
@@ -210,9 +289,9 @@ public class DecisionTableDropDownManagerTests {
         Context context;
         Map<String, String> values;
 
-        //Row 0, Column 4
+        //Row 0, Column 7
         context = new Context( 0,
-                               4,
+                               7,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -229,9 +308,9 @@ public class DecisionTableDropDownManagerTests {
         assertEquals( "r0c5",
                       values.get( "asf1" ) );
 
-        //Row 1, Column 4
+        //Row 1, Column 7
         context = new Context( 1,
-                               4,
+                               7,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -248,9 +327,9 @@ public class DecisionTableDropDownManagerTests {
         assertEquals( "r1c5",
                       values.get( "asf1" ) );
 
-        //Row 0, Column 5
+        //Row 0, Column 8
         context = new Context( 0,
-                               5,
+                               8,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -267,9 +346,9 @@ public class DecisionTableDropDownManagerTests {
         assertEquals( "r0c5",
                       values.get( "asf1" ) );
 
-        //Row 1, Column 5
+        //Row 1, Column 8
         context = new Context( 1,
-                               5,
+                               8,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -285,6 +364,44 @@ public class DecisionTableDropDownManagerTests {
         assertNotNull( values.get( "asf1" ) );
         assertEquals( "r1c5",
                       values.get( "asf1" ) );
+    }
+
+    @Test
+    public void testConstraintsEnumDependencies() {
+
+        Set<Integer> columns;
+
+        columns = manager.getDependentColumnIndexes( 4 );
+        assertNotNull( columns );
+        assertEquals( 2,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 5 ) ) );
+        assertTrue( columns.contains( new Integer( 6 ) ) );
+
+        columns = manager.getDependentColumnIndexes( 5 );
+        assertNotNull( columns );
+        assertEquals( 1,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 6 ) ) );
+    }
+
+    @Test
+    public void testActionsEnumDependencies() {
+
+        Set<Integer> columns;
+
+        columns = manager.getDependentColumnIndexes( 9 );
+        assertNotNull( columns );
+        assertEquals( 2,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 10 ) ) );
+        assertTrue( columns.contains( new Integer( 11 ) ) );
+
+        columns = manager.getDependentColumnIndexes( 10 );
+        assertNotNull( columns );
+        assertEquals( 1,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 11 ) ) );
     }
 
 }

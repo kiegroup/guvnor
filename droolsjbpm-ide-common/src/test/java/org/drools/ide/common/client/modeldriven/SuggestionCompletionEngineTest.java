@@ -120,40 +120,6 @@ public class SuggestionCompletionEngineTest {
     }
 
     @Test
-    public void testDataEnums3() {
-        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
-
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-
-        List<String> enums = new ArrayList<String>();
-
-        enums.add( "'Fact.f1' : ['a1', 'a2'] \n 'Fact.f2' : ['def1', 'def2', 'def3'] \n 'Fact.f2[f1=a2]' : ['c1', 'c2']" );
-
-        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
-                                                                        new ArrayList<JarInputStream>(),
-                                                                        new ArrayList<DSLTokenizedMappingFile>(),
-                                                                        enums );
-        assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
-                                           "name" ) );
-
-        FactPattern pat = new FactPattern( "Fact" );
-        SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
-        f1.setValue( "a1" );
-        pat.addConstraint( f1 );
-        pat.addConstraint( new SingleFieldConstraint( "f2" ) );
-
-        DropDownData data = engine.getEnums( pat.getFactType(),
-                                             pat.constraintList,
-                                             "f2" );
-
-        assertNotNull( data );
-        assertEquals( 3,
-                      data.fixedList.length );
-
-    }
-
-    @Test
     public void testDataEnums2() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
@@ -215,6 +181,40 @@ public class SuggestionCompletionEngineTest {
                       items[0] );
         assertEquals( "val2",
                       items[1] );
+
+    }
+
+    @Test
+    public void testDataEnums3() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        enums.add( "'Fact.f1' : ['a1', 'a2'] \n 'Fact.f2' : ['def1', 'def2', 'def3'] \n 'Fact.f2[f1=a2]' : ['c1', 'c2']" );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        enums );
+        assertEquals( "String",
+                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                                           "name" ) );
+
+        FactPattern pat = new FactPattern( "Fact" );
+        SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
+        f1.setValue( "a1" );
+        pat.addConstraint( f1 );
+        pat.addConstraint( new SingleFieldConstraint( "f2" ) );
+
+        DropDownData data = engine.getEnums( pat.getFactType(),
+                                             pat.constraintList,
+                                             "f2" );
+
+        assertNotNull( data );
+        assertEquals( 3,
+                      data.fixedList.length );
 
     }
 
@@ -1246,6 +1246,8 @@ public class SuggestionCompletionEngineTest {
     public static class Fact {
         private String field1;
         private String field2;
+        private String field3;
+        private String field4;
 
         public String getField1() {
             return field1;
@@ -1261,6 +1263,22 @@ public class SuggestionCompletionEngineTest {
 
         public void setField2(String field2) {
             this.field2 = field2;
+        }
+
+        public String getField3() {
+            return field3;
+        }
+
+        public void setField3(String field3) {
+            this.field3 = field3;
+        }
+
+        public String getField4() {
+            return field4;
+        }
+
+        public void setField4(String field4) {
+            this.field4 = field4;
         }
 
     }
@@ -1336,7 +1354,7 @@ public class SuggestionCompletionEngineTest {
     }
 
     @Test
-    public void testDataHasEnums2() {
+    public void testDataHasEnums() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
@@ -1361,4 +1379,41 @@ public class SuggestionCompletionEngineTest {
                                      "field2" ) );
     }
 
+    @Test
+    public void testDependentEnums() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinition = "'Fact.field1' : ['val1', 'val2'], "
+                                      + "'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], "
+                                      + "'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b'], "
+                                      + "'Fact.field3[field2=f1val1a]' : ['f1val1a1a', 'f1val1a1b'], "
+                                      + "'Fact.field3[field2=f1val1b]' : ['f1val1b1a', 'f1val1b1b'], "
+                                      + "'Fact.field3[field2=f1val2a]' : ['f1val2a1a', 'f1val2a1b'], "
+                                      + "'Fact.field3[field2=f1val2b]' : ['f1val2a2a', 'f1val2b2b'], "
+                                      + "'Fact.field4' : ['f4val1', 'f4val2']";
+        enums.add( enumDefinition );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        enums );
+
+        assertTrue( engine.isDependentEnum( "Fact",
+                                            "field1",
+                                            "field2" ) );
+        assertTrue( engine.isDependentEnum( "Fact",
+                                            "field1",
+                                            "field3" ) );
+        assertTrue( engine.isDependentEnum( "Fact",
+                                            "field2",
+                                            "field3" ) );
+        assertFalse( engine.isDependentEnum( "Fact",
+                                             "field1",
+                                             "field4" ) );
+    }
+    
 }

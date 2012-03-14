@@ -18,6 +18,8 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
@@ -30,6 +32,8 @@ import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.templates.TemplateModel;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +57,7 @@ public class TemplateDropDownManagerTests {
         model = new TemplateModel();
 
         //Setup LHS
-        model.lhs = new IPattern[2];
+        model.lhs = new IPattern[3];
 
         //Both fields are Template Keys
         FactPattern fp0 = new FactPattern();
@@ -107,8 +111,44 @@ public class TemplateDropDownManagerTests {
 
         model.lhs[1] = fp1;
 
+        //Dependent enumerations
+        FactPattern fp2 = new FactPattern();
+        fp2.setFactType( "Fact" );
+
+        SingleFieldConstraint sfc0p2 = new SingleFieldConstraint();
+        sfc0p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        sfc0p2.setFieldBinding( "$sfc0p2" );
+        sfc0p2.setFactType( "Fact" );
+        sfc0p2.setFieldName( "field1" );
+        sfc0p2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc0p2.setOperator( "==" );
+        sfc0p2.setValue( "enum1" );
+        fp2.addConstraint( sfc0p2 );
+
+        SingleFieldConstraint sfc1p2 = new SingleFieldConstraint();
+        sfc1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        sfc1p2.setFieldBinding( "$sfc1p2" );
+        sfc1p2.setFactType( "Fact" );
+        sfc1p2.setFieldName( "field2" );
+        sfc1p2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc1p2.setOperator( "==" );
+        sfc1p2.setValue( "enum2" );
+        fp2.addConstraint( sfc1p2 );
+
+        SingleFieldConstraint sfc2p2 = new SingleFieldConstraint();
+        sfc2p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        sfc2p2.setFieldBinding( "$sfc2p2" );
+        sfc2p2.setFactType( "Fact" );
+        sfc2p2.setFieldName( "field3" );
+        sfc2p2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc2p2.setOperator( "==" );
+        sfc2p2.setValue( "enum3" );
+        fp2.addConstraint( sfc2p2 );
+
+        model.lhs[2] = fp2;
+        
         //Setup RHS
-        model.rhs = new IAction[1];
+        model.rhs = new IAction[2];
 
         //Both fields are Template Keys
         ActionInsertFact aif0 = new ActionInsertFact( "AIF0" );
@@ -124,6 +164,25 @@ public class TemplateDropDownManagerTests {
         aif0.addFieldValue( aif0f1 );
         model.rhs[0] = aif0;
 
+        //Dependent enumerations
+        ActionInsertFact aif1 = new ActionInsertFact( "Fact" );
+        ActionFieldValue aif1f0 = new ActionFieldValue( "field1",
+                                                        "AIF1F0Value",
+                                                        SuggestionCompletionEngine.TYPE_STRING );
+        aif1f0.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        aif1.addFieldValue( aif1f0 );
+        ActionFieldValue aif1f1 = new ActionFieldValue( "field2",
+                                                        "AIF1F1Value",
+                                                        SuggestionCompletionEngine.TYPE_STRING );
+        aif1f1.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        aif1.addFieldValue( aif1f1 );
+        ActionFieldValue aif1f2 = new ActionFieldValue( "field3",
+                                                        "AIF1F2Value",
+                                                        SuggestionCompletionEngine.TYPE_STRING );
+        aif1f2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        aif1.addFieldValue( aif1f2 );
+        model.rhs[1] = aif1;
+        
         //---Setup data---
         data = new DynamicData();
         data.addRow();
@@ -138,14 +197,44 @@ public class TemplateDropDownManagerTests {
                         makeColumnData( new String[]{"r0c2", "r1c2"} ),
                         true );
         data.addColumn( 3,
-                        makeColumnData( new String[]{"r0c3", "r1c3"} ),
+                        makeColumnData( new String[]{"val1", "val1"} ),
                         true );
         data.addColumn( 4,
+                        makeColumnData( new String[]{"val1a", "val1b"} ),
+                        true );
+        data.addColumn( 5,
+                        makeColumnData( new String[]{"val1a1", "val1b1"} ),
+                        true );
+        data.addColumn( 6,
+                        makeColumnData( new String[]{"r0c3", "r1c3"} ),
+                        true );
+        data.addColumn( 7,
                         makeColumnData( new String[]{"r0c4", "r1c4"} ),
+                        true );
+        data.addColumn( 8,
+                        makeColumnData( new String[]{"val1", "val1"} ),
+                        true );
+        data.addColumn( 9,
+                        makeColumnData( new String[]{"val1a", "val1b"} ),
+                        true );
+        data.addColumn( 10,
+                        makeColumnData( new String[]{"val1a1", "val1b1"} ),
                         true );
 
         //---Setup SCE---
-        sce = new SuggestionCompletionEngine();
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+        final String enumDefinition = "'Fact.field1' : ['val1', 'val2'], "
+                                      + "'Fact.field2[field1=val1]' : ['val1a', 'val1b'], "
+                                      + "'Fact.field3[field2=val1a]' : ['val1a1', 'val1a2'], "
+                                      + "'Fact.field3[field2=val1b]' : ['val1b1', 'val1b2']";
+        enums.add( enumDefinition );
+
+        sce = loader.getSuggestionEngine( "",
+                                          new ArrayList<JarInputStream>(),
+                                          new ArrayList<DSLTokenizedMappingFile>(),
+                                          enums );
 
         //---Setup manager---
         manager = new TemplateDropDownManager( model,
@@ -286,9 +375,9 @@ public class TemplateDropDownManagerTests {
         Context context;
         Map<String, String> values;
 
-        //Row 0, Column 3
+        //Row 0, Column 6
         context = new Context( 0,
-                               3,
+                               6,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -305,9 +394,9 @@ public class TemplateDropDownManagerTests {
         assertEquals( "r0c4",
                       values.get( "AIF0F1" ) );
 
-        //Row 1, Column 3
+        //Row 1, Column 6
         context = new Context( 1,
-                               3,
+                               6,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -324,9 +413,9 @@ public class TemplateDropDownManagerTests {
         assertEquals( "r1c4",
                       values.get( "AIF0F1" ) );
 
-        //Row 0, Column 4
+        //Row 0, Column 7
         context = new Context( 0,
-                               4,
+                               7,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -343,9 +432,9 @@ public class TemplateDropDownManagerTests {
         assertEquals( "r0c4",
                       values.get( "AIF0F1" ) );
 
-        //Row 1, Column 4
+        //Row 1, Column 7
         context = new Context( 1,
-                               4,
+                               7,
                                null );
         values = manager.getCurrentValueMap( context );
         assertNotNull( values );
@@ -361,6 +450,44 @@ public class TemplateDropDownManagerTests {
         assertNotNull( values.get( "AIF0F1" ) );
         assertEquals( "r1c4",
                       values.get( "AIF0F1" ) );
+    }
+
+    @Test
+    public void testConstraintsEnumDependencies() {
+
+        Set<Integer> columns;
+
+        columns = manager.getDependentColumnIndexes( 3 );
+        assertNotNull( columns );
+        assertEquals( 2,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 4 ) ) );
+        assertTrue( columns.contains( new Integer( 5 ) ) );
+
+        columns = manager.getDependentColumnIndexes( 4 );
+        assertNotNull( columns );
+        assertEquals( 1,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 5 ) ) );
+    }
+
+    @Test
+    public void testActionsEnumDependencies() {
+
+        Set<Integer> columns;
+
+        columns = manager.getDependentColumnIndexes( 8 );
+        assertNotNull( columns );
+        assertEquals( 2,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 9 ) ) );
+        assertTrue( columns.contains( new Integer( 10 ) ) );
+
+        columns = manager.getDependentColumnIndexes( 9 );
+        assertNotNull( columns );
+        assertEquals( 1,
+                      columns.size() );
+        assertTrue( columns.contains( new Integer( 10 ) ) );
     }
 
 }
