@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable;
+package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,10 +23,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
+import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
 import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DropDownDataValueMapProvider;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -45,13 +46,22 @@ public class LimitedEntryDropDownManager
     implements
     DropDownDataValueMapProvider<Context> {
 
-    private final GuidedDecisionTable52 model;
+    private final SuggestionCompletionEngine sce;
+    private final GuidedDecisionTable52      model;
 
     // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
-    protected static DateConverter      DATE_CONVERTOR = GWTDateConverter.getInstance();
+    protected static DateConverter           DATE_CONVERTOR = GWTDateConverter.getInstance();
 
-    public LimitedEntryDropDownManager(final GuidedDecisionTable52 model) {
+    public LimitedEntryDropDownManager(final GuidedDecisionTable52 model,
+                                       final SuggestionCompletionEngine sce) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
+        }
         this.model = model;
+        this.sce = sce;
     }
 
     /**
@@ -253,10 +263,58 @@ public class LimitedEntryDropDownManager
     }
 
     @Override
-    public Set<Integer> getDependentColumnIndexes(int originColumnIndex) {
-        //TODO {manstis} Get the actual column indexes
-        Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
-        dependentColumnIndexes.add( originColumnIndex + 1 );
+    public Set<Integer> getDependentColumnIndexes(Context context) {
+
+        final Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
+
+        final Pattern52 basePattern = context.getBasePattern();
+        final BaseColumn baseColumn = context.getBaseColumn();
+
+        //Get values for all Constraints or Actions on the same pattern as the baseColumn
+        if ( baseColumn instanceof ConditionCol52 ) {
+            final ConditionCol52 baseConditionColumn = (ConditionCol52) baseColumn;
+            for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
+                if ( sce.isDependentEnum( basePattern.getFactType(),
+                                          baseConditionColumn.getFactField(),
+                                          cc.getFactField() ) ) {
+                    dependentColumnIndexes.add( model.getExpandedColumns().indexOf( cc ) );
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
+            final ActionSetFieldCol52 baseActionColumn = (ActionSetFieldCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionSetFieldCol52 ) {
+                    final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                    if ( asf.getBoundName().equals( binding ) ) {
+                        if ( sce.isDependentEnum( basePattern.getFactType(),
+                                                  baseActionColumn.getFactField(),
+                                                  asf.getFactField() ) ) {
+                            dependentColumnIndexes.add( model.getExpandedColumns().indexOf( ac ) );
+                        }
+                    }
+                }
+            }
+
+        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
+            final ActionInsertFactCol52 baseActionColumn = (ActionInsertFactCol52) baseColumn;
+            final String binding = baseActionColumn.getBoundName();
+            for ( ActionCol52 ac : this.model.getActionCols() ) {
+                if ( ac instanceof ActionInsertFactCol52 ) {
+                    final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
+                    if ( aif.getBoundName().equals( binding ) ) {
+                        if ( sce.isDependentEnum( baseActionColumn.getFactType(),
+                                                  baseActionColumn.getFactField(),
+                                                  aif.getFactField() ) ) {
+                            dependentColumnIndexes.add( model.getExpandedColumns().indexOf( ac ) );
+                        }
+                    }
+                }
+            }
+
+        }
+
         return dependentColumnIndexes;
     }
 

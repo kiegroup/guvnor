@@ -369,16 +369,23 @@ public class DecisionTableDropDownManagerTests {
     @Test
     public void testConstraintsEnumDependencies() {
 
+        Context context;
         Set<Integer> columns;
 
-        columns = manager.getDependentColumnIndexes( 4 );
+        context = new Context( 0,
+                               4,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 2,
                       columns.size() );
         assertTrue( columns.contains( new Integer( 5 ) ) );
         assertTrue( columns.contains( new Integer( 6 ) ) );
 
-        columns = manager.getDependentColumnIndexes( 5 );
+        context = new Context( 0,
+                               5,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 1,
                       columns.size() );
@@ -388,16 +395,23 @@ public class DecisionTableDropDownManagerTests {
     @Test
     public void testActionsEnumDependencies() {
 
+        Context context;
         Set<Integer> columns;
 
-        columns = manager.getDependentColumnIndexes( 9 );
+        context = new Context( 0,
+                               9,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 2,
                       columns.size() );
         assertTrue( columns.contains( new Integer( 10 ) ) );
         assertTrue( columns.contains( new Integer( 11 ) ) );
 
-        columns = manager.getDependentColumnIndexes( 10 );
+        context = new Context( 0,
+                               10,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 1,
                       columns.size() );

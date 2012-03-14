@@ -53,6 +53,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateSelectedCellsEvent;
 
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCellElement;
@@ -1286,7 +1287,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                          changedBlock );
 
         //---Clear dependent cells' values---
-        Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( firstSelection.getCol() );
+        final Context context = new Context( 0,
+                                             firstSelection.getCol(),
+                                             null );
+        final Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( context );
         for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
             changedBlock = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
             changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();

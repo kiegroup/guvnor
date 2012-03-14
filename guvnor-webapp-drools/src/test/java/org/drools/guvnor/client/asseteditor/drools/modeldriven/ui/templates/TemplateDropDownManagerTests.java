@@ -146,7 +146,7 @@ public class TemplateDropDownManagerTests {
         fp2.addConstraint( sfc2p2 );
 
         model.lhs[2] = fp2;
-        
+
         //Setup RHS
         model.rhs = new IAction[2];
 
@@ -182,7 +182,7 @@ public class TemplateDropDownManagerTests {
         aif1f2.setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
         aif1.addFieldValue( aif1f2 );
         model.rhs[1] = aif1;
-        
+
         //---Setup data---
         data = new DynamicData();
         data.addRow();
@@ -455,16 +455,23 @@ public class TemplateDropDownManagerTests {
     @Test
     public void testConstraintsEnumDependencies() {
 
+        Context context;
         Set<Integer> columns;
 
-        columns = manager.getDependentColumnIndexes( 3 );
+        context = new Context( 0,
+                               3,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 2,
                       columns.size() );
         assertTrue( columns.contains( new Integer( 4 ) ) );
         assertTrue( columns.contains( new Integer( 5 ) ) );
 
-        columns = manager.getDependentColumnIndexes( 4 );
+        context = new Context( 0,
+                               4,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 1,
                       columns.size() );
@@ -474,16 +481,23 @@ public class TemplateDropDownManagerTests {
     @Test
     public void testActionsEnumDependencies() {
 
+        Context context;
         Set<Integer> columns;
 
-        columns = manager.getDependentColumnIndexes( 8 );
+        context = new Context( 0,
+                               8,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 2,
                       columns.size() );
         assertTrue( columns.contains( new Integer( 9 ) ) );
         assertTrue( columns.contains( new Integer( 10 ) ) );
 
-        columns = manager.getDependentColumnIndexes( 9 );
+        context = new Context( 0,
+                               9,
+                               null );
+        columns = manager.getDependentColumnIndexes( context );
         assertNotNull( columns );
         assertEquals( 1,
                       columns.size() );

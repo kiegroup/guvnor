@@ -146,8 +146,9 @@ public class TemplateDropDownManager
     }
 
     @Override
-    public Set<Integer> getDependentColumnIndexes(int iBaseColIndex) {
+    public Set<Integer> getDependentColumnIndexes(final Context context) {
 
+        final int iBaseColIndex = context.getColumn();
         final Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
 
         //Get variable for the column being edited

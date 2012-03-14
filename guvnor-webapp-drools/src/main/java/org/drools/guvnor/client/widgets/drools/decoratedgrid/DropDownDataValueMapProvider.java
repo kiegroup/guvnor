@@ -26,6 +26,6 @@ public interface DropDownDataValueMapProvider<T> {
 
     Map<String, String> getCurrentValueMap(T context);
 
-    Set<Integer> getDependentColumnIndexes(int iBaseColIndex);
+    Set<Integer> getDependentColumnIndexes(T context);
 
 }

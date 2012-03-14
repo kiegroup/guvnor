@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.AbstractRestrictedEntryTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
@@ -32,16 +33,19 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTe
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
+import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager;
+import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
@@ -76,7 +80,8 @@ public class DTCellValueWidgetFactory {
                                     boolean isReadOnly) {
         this.sce = sce;
         this.dtable = dtable;
-        this.dropDownManager = new LimitedEntryDropDownManager( dtable );
+        this.dropDownManager = new LimitedEntryDropDownManager( dtable,
+                                                                sce );
         this.isReadOnly = isReadOnly;
     }
 
@@ -137,9 +142,13 @@ public class DTCellValueWidgetFactory {
                                                   currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
+                                    pattern,
+                                    column,
                                     value );
             }
             return makeListBox( dd.fixedList,
+                                pattern,
+                                column,
                                 value );
         }
 
@@ -217,9 +226,13 @@ public class DTCellValueWidgetFactory {
                                                   currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
+                                    pattern,
+                                    column,
                                     value );
             }
             return makeListBox( dd.fixedList,
+                                pattern,
+                                column,
                                 value );
         }
 
@@ -275,9 +288,11 @@ public class DTCellValueWidgetFactory {
                                                   currentValueMap );
             if ( dd == null ) {
                 return makeListBox( new String[0],
+                                    column,
                                     value );
             }
             return makeListBox( dd.fixedList,
+                                column,
                                 value );
         }
 
@@ -333,6 +348,118 @@ public class DTCellValueWidgetFactory {
     }
 
     private ListBox makeListBox(final String[] completions,
+                                final Pattern52 basePattern,
+                                final ConditionCol52 baseCondition,
+                                final DTCellValue52 value) {
+        final ListBox lb = makeListBox( completions,
+                                        value );
+
+        // Wire up update handler
+        lb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            lb.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    int index = lb.getSelectedIndex();
+                    if ( index > -1 ) {
+                        //Set base column value
+                        value.setStringValue( lb.getValue( index ) );
+
+                        //Update any dependent enumerations
+                        final Context context = new Context( basePattern,
+                                                             baseCondition );
+                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
+                        for ( Integer iCol : dependentColumnIndexes ) {
+                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            if ( column instanceof LimitedEntryCol ) {
+                                ((LimitedEntryCol) column).setValue( null );
+                            }
+                        }
+                    } else {
+                        value.setStringValue( null );
+                    }
+                }
+
+            } );
+        }
+        return lb;
+    }
+
+    private ListBox makeListBox(final String[] completions,
+                                final Pattern52 basePattern,
+                                final ActionSetFieldCol52 baseAction,
+                                final DTCellValue52 value) {
+        final ListBox lb = makeListBox( completions,
+                                        value );
+
+        // Wire up update handler
+        lb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            lb.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    int index = lb.getSelectedIndex();
+                    if ( index > -1 ) {
+                        //Set base column value
+                        value.setStringValue( lb.getValue( index ) );
+
+                        //Update any dependent enumerations
+                        final Context context = new Context( basePattern,
+                                                             baseAction );
+                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
+                        for ( Integer iCol : dependentColumnIndexes ) {
+                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            if ( column instanceof LimitedEntryCol ) {
+                                ((LimitedEntryCol) column).setValue( null );
+                            }
+                        }
+                    } else {
+                        value.setStringValue( null );
+                    }
+                }
+
+            } );
+        }
+        return lb;
+    }
+
+    private ListBox makeListBox(final String[] completions,
+                                final ActionInsertFactCol52 baseAction,
+                                final DTCellValue52 value) {
+        final ListBox lb = makeListBox( completions,
+                                        value );
+
+        // Wire up update handler
+        lb.setEnabled( !isReadOnly );
+        if ( !isReadOnly ) {
+            lb.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    int index = lb.getSelectedIndex();
+                    if ( index > -1 ) {
+                        //Set base column value
+                        value.setStringValue( lb.getValue( index ) );
+
+                        //Update any dependent enumerations
+                        final Context context = new Context( baseAction );
+                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
+                        for ( Integer iCol : dependentColumnIndexes ) {
+                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            if ( column instanceof LimitedEntryCol ) {
+                                ((LimitedEntryCol) column).setValue( null );
+                            }
+                        }
+                    } else {
+                        value.setStringValue( null );
+                    }
+                }
+
+            } );
+        }
+        return lb;
+    }
+
+    private ListBox makeListBox(final String[] completions,
                                 final DTCellValue52 value) {
         int selectedIndex = -1;
         final ListBox lb = new ListBox();
@@ -348,28 +475,13 @@ public class DTCellValueWidgetFactory {
             }
         }
 
-        // Wire up update handler
-        lb.setEnabled( !isReadOnly );
-        if ( !isReadOnly ) {
-            lb.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    int index = lb.getSelectedIndex();
-                    if ( index > -1 ) {
-                        value.setStringValue( lb.getValue( index ) );
-                    } else {
-                        value.setStringValue( null );
-                    }
-                }
-
-            } );
-        }
-
         //If nothing has been selected, select the first value
         if ( selectedIndex == -1 ) {
             if ( lb.getItemCount() > 0 ) {
                 lb.setSelectedIndex( 0 );
                 value.setStringValue( lb.getValue( 0 ) );
+            } else {
+                value.setStringValue( null );
             }
         }
 

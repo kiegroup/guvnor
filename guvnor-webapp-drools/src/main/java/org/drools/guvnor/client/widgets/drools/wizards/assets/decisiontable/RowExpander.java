@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager;
-import org.drools.guvnor.client.decisiontable.LimitedEntryDropDownManager.Context;
+import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager;
+import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -63,7 +63,8 @@ public class RowExpander {
     RowExpander(GuidedDecisionTable52 dtable,
                 SuggestionCompletionEngine sce) {
         this.columns = new ArrayList<ColumnValues>();
-        this.dropDownManager = new LimitedEntryDropDownManager( dtable );
+        this.dropDownManager = new LimitedEntryDropDownManager( dtable,
+                                                                sce );
         this.dtable = dtable;
         this.sce = sce;
 
