@@ -613,6 +613,345 @@ public class RowExpanderTests {
     }
 
     @Test
+    public void testExpansionWithGuvnorDependentEnumsExplicitExpansion1_2enum_x_2values() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Fact\n"
+                     + "field1 : String\n"
+                     + "field2 : String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
+                                       + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
+                                       + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
+
+        enums.add( enumDefinitions );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Fact" );
+        dtable.getConditions().add( p1 );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "field1" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+
+        ConditionCol52 c2 = new ConditionCol52();
+        c2.setFactField( "field2" );
+        c2.setOperator( "==" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c2 );
+
+        ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
+        a1.setBoundName( "f1" );
+        a1.setFactField( "field1" );
+        dtable.getActionCols().add( a1 );
+
+        ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
+        a2.setBoundName( "f2" );
+        a2.setFactType( "Fact" );
+        a2.setFactField( "field1" );
+        dtable.getActionCols().add( a2 );
+
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        //Explicitly set which columns to expand
+        for ( ConditionCol52 c : p1.getChildColumns() ) {
+            re.setExpandColumn( c,
+                                true );
+        }
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 6,
+                      columns.size() );
+
+        assertTrue( columns.get( 0 ) instanceof ColumnValues );
+        assertTrue( columns.get( 1 ) instanceof ColumnValues );
+        assertTrue( columns.get( 2 ) instanceof ColumnValues );
+        assertTrue( columns.get( 3 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 4 ) instanceof ColumnValues );
+        assertTrue( columns.get( 5 ) instanceof ColumnValues );
+
+        //Can't check size of values for ColumnDynamicValues as they depend on the other columns
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 2,
+                      columns.get( 2 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 4 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 5 ).values.size() );
+
+        //Expected data
+        // --> f1a, f1af2a
+        // --> f1a, f1af2b
+        // --> f1b, f1bf2a
+        // --> f1b, f1bf2b
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+        List<String> row0 = ri.next();
+        assertEquals( 6,
+                      row0.size() );
+        assertEquals( "f1a",
+                      row0.get( 2 ) );
+        assertEquals( "f1af2a",
+                      row0.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row1 = ri.next();
+        assertEquals( 6,
+                      row1.size() );
+        assertEquals( "f1a",
+                      row1.get( 2 ) );
+        assertEquals( "f1af2b",
+                      row1.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row3 = ri.next();
+        assertEquals( 6,
+                      row3.size() );
+        assertEquals( "f1b",
+                      row3.get( 2 ) );
+        assertEquals( "f1bf2a",
+                      row3.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row4 = ri.next();
+        assertEquals( 6,
+                      row4.size() );
+        assertEquals( "f1b",
+                      row4.get( 2 ) );
+        assertEquals( "f1bf2b",
+                      row4.get( 3 ) );
+
+        assertFalse( ri.hasNext() );
+    }
+
+    @Test
+    public void testExpansionWithGuvnorDependentEnumsExplicitExpansion2_2enum_x_2values() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Fact\n"
+                     + "field1 : String\n"
+                     + "field2 : String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
+                                       + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
+                                       + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
+
+        enums.add( enumDefinitions );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Fact" );
+        dtable.getConditions().add( p1 );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "field1" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+
+        ConditionCol52 c2 = new ConditionCol52();
+        c2.setFactField( "field2" );
+        c2.setOperator( "==" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c2 );
+
+        ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
+        a1.setBoundName( "f1" );
+        a1.setFactField( "field1" );
+        dtable.getActionCols().add( a1 );
+
+        ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
+        a2.setBoundName( "f2" );
+        a2.setFactType( "Fact" );
+        a2.setFactField( "field1" );
+        dtable.getActionCols().add( a2 );
+
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        //Explicitly expand the first column, not the second
+        re.setExpandColumn( c1,
+                            true );
+        re.setExpandColumn( c2,
+                            false );
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 6,
+                      columns.size() );
+
+        assertTrue( columns.get( 0 ) instanceof ColumnValues );
+        assertTrue( columns.get( 1 ) instanceof ColumnValues );
+        assertTrue( columns.get( 2 ) instanceof ColumnValues );
+        assertTrue( columns.get( 3 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 4 ) instanceof ColumnValues );
+        assertTrue( columns.get( 5 ) instanceof ColumnValues );
+
+        //Can't check size of values for ColumnDynamicValues as they depend on the other columns
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 2,
+                      columns.get( 2 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 4 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 5 ).values.size() );
+
+        //Expected data
+        // --> f1a, null
+        // --> f1b, null
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+        List<String> row0 = ri.next();
+        assertEquals( 6,
+                      row0.size() );
+        assertEquals( "f1a",
+                      row0.get( 2 ) );
+        assertNull( row0.get( 3 ) );
+
+        assertTrue( ri.hasNext() );
+        List<String> row1 = ri.next();
+        assertEquals( 6,
+                      row1.size() );
+        assertEquals( "f1b",
+                      row1.get( 2 ) );
+        assertNull( row1.get( 3 ) );
+
+        assertFalse( ri.hasNext() );
+    }
+
+    @Test
+    public void testExpansionWithGuvnorDependentEnumsExplicitExpansion3_2enum_x_2values() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Fact\n"
+                     + "field1 : String\n"
+                     + "field2 : String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
+                                       + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
+                                       + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
+
+        enums.add( enumDefinitions );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Fact" );
+        dtable.getConditions().add( p1 );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "field1" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+
+        ConditionCol52 c2 = new ConditionCol52();
+        c2.setFactField( "field2" );
+        c2.setOperator( "==" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c2 );
+
+        ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
+        a1.setBoundName( "f1" );
+        a1.setFactField( "field1" );
+        dtable.getActionCols().add( a1 );
+
+        ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
+        a2.setBoundName( "f2" );
+        a2.setFactType( "Fact" );
+        a2.setFactField( "field1" );
+        dtable.getActionCols().add( a2 );
+
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        //Explicitly expand the first column, not the second
+        re.setExpandColumn( c1,
+                            false );
+        re.setExpandColumn( c2,
+                            true );
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 6,
+                      columns.size() );
+
+        assertTrue( columns.get( 0 ) instanceof ColumnValues );
+        assertTrue( columns.get( 1 ) instanceof ColumnValues );
+        assertTrue( columns.get( 2 ) instanceof ColumnValues );
+        assertTrue( columns.get( 3 ) instanceof ColumnDynamicValues );
+        assertTrue( columns.get( 4 ) instanceof ColumnValues );
+        assertTrue( columns.get( 5 ) instanceof ColumnValues );
+
+        //Can't check size of values for ColumnDynamicValues as they depend on the other columns
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 2 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 4 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 5 ).values.size() );
+
+        //Expected data
+        // --> null, null
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+        List<String> row0 = ri.next();
+        assertEquals( 6,
+                      row0.size() );
+        assertNull( row0.get( 2 ) );
+        assertNull( row0.get( 3 ) );
+
+        assertFalse( ri.hasNext() );
+    }
+
+    @Test
     public void testExpansionWithGuvnorDependentEnums_3enum_x_2values() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 

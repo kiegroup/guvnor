@@ -144,8 +144,8 @@ public class RowExpander {
                                           sce );
             values = getSplitValues( values );
             cv = new ColumnValues( columns,
-                                    values,
-                                    c.getDefaultValue() );
+                                   values,
+                                   c.getDefaultValue() );
 
         } else if ( sce.hasEnums( p.getFactType(),
                                   c.getFactField() ) ) {
@@ -317,15 +317,17 @@ public class RowExpander {
             if ( this.values.size() == 0 ) {
                 this.values = new ArrayList<String>();
                 this.values.add( defaultValue );
+                this.originalValues = this.values;
                 this.isAllValuesUsed = true;
             }
 
             //Initialise value to the first in the list
             this.iterator = this.values.iterator();
-            advanceColumnValue();
+            this.value = iterator.next();
         }
 
         void setExpandColumn(boolean expandColumn) {
+            this.expandColumn = expandColumn;
             if ( expandColumn ) {
                 this.values = this.originalValues;
                 this.isAllValuesUsed = false;
@@ -334,8 +336,9 @@ public class RowExpander {
                 this.values.add( defaultValue );
                 this.isAllValuesUsed = true;
             }
+            //Initialise value to the first in the list
             this.iterator = this.values.iterator();
-            advanceColumnValue();
+            this.value = iterator.next();
         }
 
         /**
@@ -355,18 +358,12 @@ public class RowExpander {
          * @return
          */
         void advanceColumnValue() {
-            if ( !this.expandColumn ) {
-                this.isAllValuesUsed = true;
-                this.value = this.defaultValue;
-                return;
-            }
-
             if ( iterator.hasNext() ) {
                 value = iterator.next();
             } else {
                 isAllValuesUsed = true;
-                this.iterator = values.iterator();
-                value = iterator.next();
+                this.iterator = this.values.iterator();
+                this.value = iterator.next();
                 int myIndex = columns.indexOf( this );
                 if ( myIndex > 0 ) {
                     columns.get( myIndex - 1 ).advanceColumnValue();
@@ -392,6 +389,7 @@ public class RowExpander {
 
         private final Context                    context;
         private final SuggestionCompletionEngine sce;
+        private boolean                          initialiseValueList = true;
 
         ColumnDynamicValues(List<ColumnValues> columns,
                             SuggestionCompletionEngine sce,
@@ -410,12 +408,13 @@ public class RowExpander {
             if ( dd != null ) {
                 this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
                 this.originalValues = this.values;
+                this.initialiseValueList = false;
                 this.isAllValuesUsed = false;
             }
 
             //Initialise value to the first in the list
             this.iterator = this.values.iterator();
-            advanceColumnValue();
+            this.value = iterator.next();
         }
 
         private String[] getSplitValues(String[] values) {
@@ -436,8 +435,11 @@ public class RowExpander {
          *          refreshed
          */
         boolean assertValueList(List<String> row) {
-            final boolean refreshRow = this.isAllValuesUsed;
-            if ( this.isAllValuesUsed ) {
+            if ( !this.expandColumn ) {
+                return false;
+            }
+            final boolean refreshRow = this.initialiseValueList;
+            if ( refreshRow ) {
                 Map<String, String> currentValueMap = new HashMap<String, String>();
                 for ( int iCol = 0; iCol < this.columns.size(); iCol++ ) {
                     ColumnValues cv = this.columns.get( iCol );
@@ -451,6 +453,7 @@ public class RowExpander {
                         }
                     }
                 }
+                this.initialiseValueList = false;
                 final DropDownData dd = sce.getEnums( context.getBasePattern().getFactType(),
                                                       ((ConditionCol52) context.getBaseColumn()).getFactField(),
                                                       currentValueMap );
@@ -458,13 +461,40 @@ public class RowExpander {
                     this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
                     this.originalValues = this.values;
                     this.isAllValuesUsed = false;
-
-                    //Initialise value to the first in the list
-                    this.iterator = this.values.iterator();
-                    advanceColumnValue();
+                } else {
+                    this.values = new ArrayList<String>();
+                    this.values.add( defaultValue );
+                    this.originalValues = this.values;
+                    this.isAllValuesUsed = true;
                 }
+
+                //Initialise value to the first in the list
+                this.iterator = this.values.iterator();
+                this.value = iterator.next();
             }
             return refreshRow;
+        }
+
+        /**
+         * Advance to the next value for the column, resetting to the beginning
+         * of the list if all values have been used. The reset operation also
+         * advances the next columns value.
+         * 
+         * @return
+         */
+        void advanceColumnValue() {
+            if ( iterator.hasNext() ) {
+                value = iterator.next();
+            } else {
+                isAllValuesUsed = true;
+                this.initialiseValueList = true;
+                this.iterator = values.iterator();
+                value = iterator.next();
+                int myIndex = columns.indexOf( this );
+                if ( myIndex > 0 ) {
+                    columns.get( myIndex - 1 ).advanceColumnValue();
+                }
+            }
         }
 
     }
