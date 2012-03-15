@@ -188,7 +188,7 @@ public class FactPopulatorTest {
     }
 
     @Test
-    public void testPopulateEmpty() throws Exception {
+    public void testPopulateFactWithoutFields() throws Exception {
 
         factPopulator.add(
                 new NewFactPopulator(
@@ -197,6 +197,27 @@ public class FactPopulatorTest {
                         new FactData("Cheese",
                                 "c1",
                                 new ArrayList(),
+                                false)));
+
+        factPopulator.populate();
+
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.get("c1") instanceof Cheese);
+    }
+
+    @Test
+    public void testPopulateEmptyIntegerField() throws Exception {
+
+        factPopulator.add(
+                new NewFactPopulator(
+                        populatedData,
+                        getTypeResolver(),
+                        new FactData("Cheese",
+                                "c1",
+                                Arrays.<Field>asList(
+                                        new FieldData(
+                                                "price",
+                                                "")),
                                 false)));
 
         factPopulator.populate();

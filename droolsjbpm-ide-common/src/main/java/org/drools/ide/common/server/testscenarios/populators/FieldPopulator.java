@@ -19,7 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mvel2.MVEL.*;
+import static org.mvel2.MVEL.eval;
 
 public abstract class FieldPopulator {
 
@@ -34,14 +34,21 @@ public abstract class FieldPopulator {
     public abstract void populate(Map<String, Object> populatedData);
 
     protected void populateField(Object value, Map<String, Object> populatedData) {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.putAll(populatedData);
-        vars.put("__val__",
-                value);
-        vars.put("__fact__",
-                factObject);
-        eval("__fact__." + fieldName + " = __val__",
-                vars);
+        try {
+            Map<String, Object> vars = new HashMap<String, Object>();
+            vars.putAll(populatedData);
+            vars.put("__val__", value);
+            vars.put("__fact__", factObject);
+
+            eval("__fact__." + fieldName + "= __val__", vars);
+
+        } catch (NumberFormatException e) {
+            if (value instanceof String && ((String) value).isEmpty()) {
+                // Empty Strings can be ignored.
+            } else {
+                throw e;
+            }
+        }
     }
 
 }
