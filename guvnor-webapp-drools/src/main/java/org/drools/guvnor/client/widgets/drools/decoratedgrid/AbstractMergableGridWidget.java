@@ -1258,8 +1258,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
         //---Update selected cells (before ungrouping otherwise selections would need to be expanded too)---
         changedBlock = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
-        changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+            changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
             Coordinate c = cell.getCoordinate();
             if ( !columns.get( c.getCol() ).isSystemControlled() ) {
                 data.set( c,
@@ -1293,8 +1293,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         final Set<Integer> dependentColumnIndexes = this.dropDownManager.getDependentColumnIndexes( context );
         for ( Integer dependentColumnIndex : dependentColumnIndexes ) {
             changedBlock = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
-            changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
             for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
                 Coordinate dc = new Coordinate( cell.getCoordinate().getRow(),
                                                 dependentColumnIndex );
                 if ( !columns.get( dc.getCol() ).isSystemControlled() ) {
