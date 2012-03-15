@@ -23,8 +23,6 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
  */
 public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
 
-    private static final String DECIMAL_SUFFIX = ".0";
-
     /**
      * Concatenate a String to the provided buffer suitable for the fieldValue
      * and fieldType. Strings and Dates are escaped with double-quotes, whilst
@@ -63,9 +61,6 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
             buf.append( fieldValue );
             buf.append( "\"" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            if ( fieldValue.indexOf( "." ) == -1 ) {
-                fieldValue = fieldValue + DECIMAL_SUFFIX;
-            }
             buf.append( fieldValue + "B" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
             buf.append( fieldValue + "I" );
@@ -110,8 +105,8 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
      * @param fieldValue
      */
     public void buildRHSFieldValue(StringBuilder buf,
-                                  String fieldType,
-                                  String fieldValue) {
+                                   String fieldType,
+                                   String fieldValue) {
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
             if ( fieldValue == null ) {
@@ -134,9 +129,6 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
             buf.append( fieldValue );
             buf.append( "\")" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            if ( fieldValue.indexOf( "." ) == -1 ) {
-                fieldValue = fieldValue + DECIMAL_SUFFIX;
-            }
             buf.append( fieldValue + "B" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
             buf.append( fieldValue + "I" );

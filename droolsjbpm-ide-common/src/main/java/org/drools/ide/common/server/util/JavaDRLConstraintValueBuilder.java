@@ -59,19 +59,19 @@ public class JavaDRLConstraintValueBuilder extends MvelDRLConstraintValueBuilder
             buf.append( fieldValue );
             buf.append( "\")" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            buf.append( "new BigDecimal(\"" + fieldValue + "\")" );
+            buf.append( "new java.math.BigDecimal(\"" + fieldValue + "\")" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BIGINTEGER ) ) {
-            buf.append( "new BigInteger(\"" + fieldValue + "\")" );
+            buf.append( "new java.math.BigInteger(\"" + fieldValue + "\")" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_BYTE ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_DOUBLE ) ) {
-            buf.append( fieldValue );
+            buf.append( fieldValue + "d" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_FLOAT ) ) {
-            buf.append( fieldValue );
+            buf.append( fieldValue + "f" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_LONG ) ) {
-            buf.append( fieldValue );
+            buf.append( fieldValue + "L" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {

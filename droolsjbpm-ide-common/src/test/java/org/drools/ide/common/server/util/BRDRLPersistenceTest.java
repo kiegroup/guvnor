@@ -1095,10 +1095,10 @@ public class BRDRLPersistenceTest {
 
         assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
                                       + "\tdialect \"mvel\"\n when \n"
-                                      + "     Person(field1 == 44.0B) \n"
+                                      + "     Person(field1 == 44B) \n"
                                       + " then \n" 
                                       + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( 55.0B ); \n"
+                                      + "fact0.setField1( 55B ); \n"
                                       + "insert( fact0 ); \n"
                                       + "end",
                                       result );
@@ -1173,10 +1173,10 @@ public class BRDRLPersistenceTest {
 
         assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
                                       + "\tdialect \"java\"\n when \n"
-                                      + "     Person(field1 == 44.0B) \n"
+                                      + "     Person(field1 == 44B) \n"
                                       + " then \n" 
                                       + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( new BigDecimal( \"55\" ) ); \n"
+                                      + "fact0.setField1( new java.math.BigDecimal( \"55\" ) ); \n"
                                       + "insert( fact0 ); \n"
                                       + "end",
                                       result );
@@ -1215,7 +1215,7 @@ public class BRDRLPersistenceTest {
                                       + "     Person(field1 == 44I ) \n"
                                       + " then \n" 
                                       + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( new BigInteger( \"55\" ) ); \n"
+                                      + "fact0.setField1( new java.math.BigInteger( \"55\" ) ); \n"
                                       + "insert( fact0 ); \n"
                                       + "end",
                                       result );
