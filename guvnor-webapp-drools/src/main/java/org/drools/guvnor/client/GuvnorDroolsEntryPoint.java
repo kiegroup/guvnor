@@ -17,6 +17,7 @@
 package org.drools.guvnor.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
@@ -81,8 +82,7 @@ public class GuvnorDroolsEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
-        securityService.getCurrentUser(new GenericCallback<UserSecurityContext>() {
+        SecurityServiceAsync.INSTANCE.getCurrentUser(new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
                 if (userName != null) {

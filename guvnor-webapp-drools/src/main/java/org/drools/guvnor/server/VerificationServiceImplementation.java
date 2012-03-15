@@ -47,7 +47,7 @@ public class VerificationServiceImplementation
 
     private static final long serialVersionUID = 510l;
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
+    private static final LoggingHelper log = LoggingHelper.getLogger(VerificationService.class);
 
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
     

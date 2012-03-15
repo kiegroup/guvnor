@@ -95,8 +95,7 @@ public class LoginWidget {
                          PasswordTextBox password,
                          final FormStylePopup pop) {
         LoadingPopup.showMessage(constants.Authenticating());
-        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
-        securityService.login(userName.getText(),
+        SecurityServiceAsync.INSTANCE.login(userName.getText(),
                 password.getText(),
                 new GenericCallback() {
                     public void onSuccess(Object o) {

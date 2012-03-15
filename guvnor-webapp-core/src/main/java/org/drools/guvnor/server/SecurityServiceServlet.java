@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.AuthorizationException;
+import org.jboss.solder.core.Veto;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,10 @@ import java.util.List;
 /**
  * Wrapper for GWT RPC.
  */
-public class SecurityServiceServlet extends RemoteServiceServlet implements SecurityService {
+@Veto
+public class SecurityServiceServlet
+        extends RemoteServiceServlet
+        implements SecurityService {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SecurityServiceServlet.class);
 

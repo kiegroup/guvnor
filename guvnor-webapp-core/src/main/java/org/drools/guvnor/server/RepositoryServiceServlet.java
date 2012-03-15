@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.rpc.AssetService;
@@ -37,18 +38,17 @@ import org.jboss.seam.security.NotLoggedInException;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.jboss.solder.core.Veto;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
  * This passes on all requests unmolested to the underlying ServiceImplemention class.
  */
+@Veto
 public class RepositoryServiceServlet
         extends RemoteServiceServlet
         implements
-        RepositoryService,
-        AssetService,
-        ModuleService,
-        CategoryService {
+        RepositoryService {
 
     private static final long serialVersionUID = 495822L;
 
@@ -56,15 +56,6 @@ public class RepositoryServiceServlet
 
     @Inject
     private ServiceImplementation serviceImplementation;
-
-    @Inject
-    private RepositoryAssetService assetService;
-
-    @Inject
-    private RepositoryModuleService moduleService;
-
-    @Inject
-    private RepositoryCategoryService categoryService;
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
@@ -126,366 +117,6 @@ public class RepositoryServiceServlet
         } finally {
             close( writer );
         }
-    }
-
-    /**
-     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
-     */
-
-    public java.lang.String[] loadChildCategories(java.lang.String p0) {
-        return categoryService.loadChildCategories( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult loadRuleListForCategories(java.lang.String p0, int p1, int p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
-        return categoryService.loadRuleListForCategories( p0, p1, p2, p3 );
-    }
-
-    public org.drools.guvnor.client.rpc.PageResponse loadRuleListForCategories(org.drools.guvnor.client.rpc.CategoryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return categoryService.loadRuleListForCategories( p0 );
-    }
-
-    public java.lang.Boolean createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2) {
-        return categoryService.createCategory( p0, p1, p2 );
-    }
-
-    public void removeCategory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        categoryService.removeCategory( p0 );
-    }
-
-    public void renameCategory(java.lang.String p0, java.lang.String p1) {
-        categoryService.renameCategory( p0, p1 );
-    }
-
-
-    /**
-     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
-     */
-
-    public org.drools.guvnor.client.rpc.Module[] listModules(java.lang.String p0) {
-        return moduleService.listModules( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.Module[] listModules() {
-        return moduleService.listModules();
-    }
-
-    public org.drools.guvnor.client.rpc.Module[] listArchivedModules() {
-        return moduleService.listArchivedModules();
-    }
-
-    public org.drools.guvnor.client.rpc.Module loadGlobalModule() {
-        return moduleService.loadGlobalModule();
-    }
-
-    public SnapshotInfo loadSnapshotInfo(String moduleName, String snapshotName) {
-        return moduleService.loadSnapshotInfo( moduleName, snapshotName );
-    }
-
-    public java.lang.String createModule(java.lang.String p0,
-                                          java.lang.String p1,
-                                          java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.createModule( p0,
-                p1, p2);
-    }
-
-    public java.lang.String createSubModule(java.lang.String p0,
-                                             java.lang.String p1,
-                                             java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.createSubModule( p0,
-                p1,
-                p2 );
-    }
-
-    public org.drools.guvnor.client.rpc.Module loadModule(java.lang.String p0) {
-        return moduleService.loadModule( p0 );
-    }
-
-    public void saveModule(org.drools.guvnor.client.rpc.Module p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        moduleService.saveModule( p0 );
-    }
-
-    public void createModuleSnapshot(java.lang.String p0,
-                                      java.lang.String p1,
-                                      boolean p2,
-                                      java.lang.String p3) {
-        moduleService.createModuleSnapshot( p0,
-                p1,
-                p2,
-                p3 );
-    }
-
-    public void copyOrRemoveSnapshot(java.lang.String p0,
-                                     java.lang.String p1,
-                                     boolean p2,
-                                     java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
-        moduleService.copyOrRemoveSnapshot( p0,
-                p1,
-                p2,
-                p3 );
-    }
-
-    public org.drools.guvnor.client.rpc.BuilderResult buildPackage(java.lang.String p0,
-                                                                   boolean p1,
-                                                                   java.lang.String p2,
-                                                                   java.lang.String p3,
-                                                                   java.lang.String p4,
-                                                                   boolean p5,
-                                                                   java.lang.String p6,
-                                                                   java.lang.String p7,
-                                                                   boolean p8,
-                                                                   java.lang.String p9) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.buildPackage( p0,
-                p1,
-                p2,
-                p3,
-                p4,
-                p5,
-                p6,
-                p7,
-                p8,
-                p9 );
-    }
-
-    public java.lang.String buildModuleSource(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.buildModuleSource( p0 );
-    }
-
-    public String copyModule(java.lang.String p0,
-                              java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.copyModule( p0,
-                p1 );
-    }
-
-    public void removeModule(java.lang.String p0) {
-        moduleService.removeModule( p0 );
-    }
-
-    public java.lang.String renameModule(java.lang.String p0,
-                                          java.lang.String p1) {
-        return moduleService.renameModule( p0,
-                p1 );
-    }
-
-    public void rebuildSnapshots() throws com.google.gwt.user.client.rpc.SerializationException {
-        moduleService.rebuildSnapshots();
-    }
-
-    public void rebuildPackages() throws com.google.gwt.user.client.rpc.SerializationException {
-        moduleService.rebuildPackages();
-    }
-
-    public java.lang.String[] listRulesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.listRulesInPackage( p0 );
-    }
-
-    public java.lang.String[] listImagesInModule(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.listImagesInModule( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.SnapshotInfo[] listSnapshots(java.lang.String p0) {
-        return moduleService.listSnapshots( p0 );
-    }
-
-    public java.lang.String[] listTypesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return moduleService.listTypesInPackage( p0 );
-    }
-
-    public void installSampleRepository() throws com.google.gwt.user.client.rpc.SerializationException {
-        moduleService.installSampleRepository();
-    }
-
-    public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0,
-                                                                       java.lang.String p1,
-                                                                       java.lang.String p2) {
-        return moduleService.compareSnapshots( p0,
-                p1,
-                p2 );
-    }
-
-    public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
-        return moduleService.compareSnapshots( p0 );
-    }
-
-    /**
-     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
-     */
-
-    public org.drools.guvnor.client.rpc.PageResponse quickFindAsset(org.drools.guvnor.client.rpc.QueryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.quickFindAsset( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult quickFindAsset(java.lang.String p0,
-                                                                       boolean p1,
-                                                                       int p2,
-                                                                       int p3) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.quickFindAsset( p0,
-                p1,
-                p2,
-                p3 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult queryFullText(java.lang.String p0,
-                                                                      boolean p1,
-                                                                      int p2,
-                                                                      int p3) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.queryFullText( p0,
-                p1,
-                p2,
-                p3 );
-    }
-
-    public java.lang.String getAssetLockerUserName(java.lang.String p0) {
-        return assetService.getAssetLockerUserName( p0 );
-    }
-
-    public void lockAsset(java.lang.String p0) {
-        assetService.lockAsset( p0 );
-    }
-
-    public void unLockAsset(java.lang.String p0) {
-        assetService.unLockAsset( p0 );
-    }
-
-    public void archiveAsset(java.lang.String p0) {
-        assetService.archiveAsset( p0 );
-    }
-
-    public void unArchiveAsset(java.lang.String p0) {
-        assetService.unArchiveAsset( p0 );
-    }
-
-    public void archiveAssets(java.lang.String[] p0,
-                              boolean p1) {
-        assetService.archiveAssets( p0,
-                p1 );
-    }
-
-    public void removeAsset(java.lang.String p0) {
-        assetService.removeAsset( p0 );
-    }
-
-    public void removeAssets(java.lang.String[] p0) {
-        assetService.removeAssets( p0 );
-    }
-
-    public java.lang.String buildAssetSource(org.drools.guvnor.client.rpc.Asset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.buildAssetSource( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.BuilderResult validateAsset(org.drools.guvnor.client.rpc.Asset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.validateAsset( p0 );
-    }
-
-    public java.lang.String renameAsset(java.lang.String p0,
-                                        java.lang.String p1) {
-        return assetService.renameAsset( p0,
-                p1 );
-    }
-
-    public org.drools.guvnor.client.rpc.Asset loadRuleAsset(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadRuleAsset( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.Asset[] loadRuleAssets(java.lang.String[] p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadRuleAssets( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0,
-                                                                         java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadAssetHistory( p0,
-                p1 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadItemHistory( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.PageResponse loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadArchivedAssets( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult loadArchivedAssets(int p0,
-                                                                           int p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.loadArchivedAssets( p0,
-                p1 );
-    }
-
-    public org.drools.guvnor.client.rpc.PageResponse findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.findAssetPage( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult listAssets(java.lang.String p0,
-                                                                   java.lang.String[] p1,
-                                                                   int p2,
-                                                                   int p3,
-                                                                   java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.listAssets( p0,
-                p1,
-                p2,
-                p3,
-                p4 );
-    }
-
-    public org.drools.guvnor.client.rpc.TableDataResult listAssetsWithPackageName(java.lang.String p0,
-                                                                                  java.lang.String[] p1,
-                                                                                  int p2,
-                                                                                  int p3,
-                                                                                  java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.listAssetsWithPackageName( p0,
-                p1,
-                p2,
-                p3,
-                p4 );
-    }
-
-    public java.lang.String copyAsset(java.lang.String p0,
-                                      java.lang.String p1,
-                                      java.lang.String p2) {
-        return assetService.copyAsset( p0,
-                p1,
-                p2 );
-    }
-
-    public void promoteAssetToGlobalArea(java.lang.String p0) {
-        assetService.promoteAssetToGlobalArea( p0 );
-    }
-
-    public void changeAssetPackage(java.lang.String p0,
-                                   java.lang.String p1,
-                                   java.lang.String p2) {
-        assetService.changeAssetPackage( p0,
-                p1,
-                p2 );
-    }
-
-    public void changeState(java.lang.String p0,
-                            java.lang.String p1) {
-        assetService.changeState( p0,
-                p1 );
-    }
-
-    public void changePackageState(java.lang.String p0,
-                                   java.lang.String p1) {
-        assetService.changePackageState( p0,
-                p1 );
-    }
-
-    public java.util.List loadDiscussionForAsset(java.lang.String p0) {
-        return assetService.loadDiscussionForAsset( p0 );
-    }
-
-    public java.util.List addToDiscussionForAsset(java.lang.String p0,
-                                                  java.lang.String p1) {
-        return assetService.addToDiscussionForAsset( p0,
-                p1 );
-    }
-
-    public void clearAllDiscussionsForAsset(java.lang.String p0) {
-        assetService.clearAllDiscussionsForAsset( p0 );
-    }
-    
-    public long getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.findAssetPage( p0 ).getTotalRowSize();
     }
 
     /**
@@ -557,28 +188,6 @@ public class RepositoryServiceServlet
                                 java.lang.String[] p1,
                                 java.lang.String[] p2) {
         serviceImplementation.updateWorkspace( p0,
-                p1,
-                p2 );
-    }
-
-    public void updateDependency(java.lang.String p0,
-                                 java.lang.String p1) {
-        moduleService.updateDependency( p0,
-                p1 );
-    }
-
-    public java.lang.String[] getDependencies(java.lang.String p0) {
-        return moduleService.getDependencies( p0 );
-    }
-
-    public java.lang.String checkinVersion(org.drools.guvnor.client.rpc.Asset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.checkinVersion( p0 );
-    }
-
-    public void restoreVersion(java.lang.String p0,
-                               java.lang.String p1,
-                               java.lang.String p2) {
-        assetService.restoreVersion( p0,
                 p1,
                 p2 );
     }
@@ -721,10 +330,4 @@ public class RepositoryServiceServlet
                                                      p1 );
     }
 
-    public ConversionResult convertAsset(String uuid,
-                                         String targetFormat) throws SerializationException {
-        return assetService.convertAsset( uuid,
-                                          targetFormat );
-    }
-    
 }

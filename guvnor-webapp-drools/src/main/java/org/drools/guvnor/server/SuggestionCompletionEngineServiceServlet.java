@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.drools.guvnor.client.rpc.SuggestionCompletionEngineService;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.jboss.solder.core.Veto;
 
+import javax.inject.Inject;
 
-@RemoteServiceRelativePath("suggestionCompletionEngineService")
-public interface SuggestionCompletionEngineService
-        extends
-        RemoteService {
+@Veto
+public class SuggestionCompletionEngineServiceServlet
+        extends RemoteServiceServlet
+        implements SuggestionCompletionEngineService {
 
-    /**
-     * Loads up the SuggestionCompletionEngine for the given package. As this
-     * doesn't change that often, its safe to cache. However, if a change is
-     * made to a package, should blow away the cache.
-     */
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
+    @Inject
+    private SuggestionCompletionEngineService suggestionCompletionEngineService;
+
+    @Override
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
+        return suggestionCompletionEngineService.loadSuggestionCompletionEngine(packageName);
+    }
 }

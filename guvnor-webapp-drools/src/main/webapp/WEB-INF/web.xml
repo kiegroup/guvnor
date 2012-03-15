@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
   <display-name>JBoss Guvnor for Drools</display-name>
 
@@ -10,12 +10,12 @@
   </welcome-file-list>
 
   <!--<filter>-->
-    <!--<filter-name>Seam Filter</filter-name>-->
-    <!--<filter-class>org.jboss.seam.web.ContextFilter</filter-class>-->
+  <!--<filter-name>Seam Filter</filter-name>-->
+  <!--<filter-class>org.jboss.seam.web.ContextFilter</filter-class>-->
   <!--</filter>-->
   <!--<filter-mapping>-->
-    <!--<filter-name>Seam Filter</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
+  <!--<filter-name>Seam Filter</filter-name>-->
+  <!--<url-pattern>/*</url-pattern>-->
   <!--</filter-mapping>-->
   <listener>
     <listener-class>org.drools.guvnor.server.repository.SafeWeldListener</listener-class>
@@ -28,13 +28,13 @@
     - jaxrs does the new REST stuff
   -->
   <!--<servlet>-->
-    <!--<servlet-name>Remoting Servlet</servlet-name>-->
-    <!--<servlet-class>org.jboss.seam.remoting.Remoting</servlet-class>-->
-    <!--<load-on-startup>1</load-on-startup>-->
+  <!--<servlet-name>Remoting Servlet</servlet-name>-->
+  <!--<servlet-class>org.jboss.seam.remoting.Remoting</servlet-class>-->
+  <!--<load-on-startup>1</load-on-startup>-->
   <!--</servlet>-->
   <!--<servlet-mapping>-->
-    <!--<servlet-name>Remoting Servlet</servlet-name>-->
-    <!--<url-pattern>/seam/resource/remoting/*</url-pattern>-->
+  <!--<servlet-name>Remoting Servlet</servlet-name>-->
+  <!--<url-pattern>/seam/resource/remoting/*</url-pattern>-->
   <!--</servlet-mapping>-->
 
   <!-- servlets - mostly to do with file management -->
@@ -45,7 +45,7 @@
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
         org.drools.guvnor.server.jaxrs.PackageResource
-        org.drools.guvnor.server.jaxrs.CategoryResource		      
+        org.drools.guvnor.server.jaxrs.CategoryResource
       </param-value>
     </init-param>
     <init-param>
@@ -59,8 +59,8 @@
     <!-- Use per-request life-cycle -->
     <!-- Enabling this breaks CDI injection in HackInjectCXFNonSpringJaxrsServlet -->
     <!--<init-param>-->
-      <!--<param-name>jaxrs.scope</param-name>-->
-      <!--<param-value>prototype</param-value>-->
+    <!--<param-name>jaxrs.scope</param-name>-->
+    <!--<param-value>prototype</param-value>-->
     <!--</init-param>-->
   </servlet>
 
@@ -78,8 +78,20 @@
     <servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>securityService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
+    <servlet-name>assetService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.AssetServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>categoryService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.CategoryServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>suggestionCompletionEngineService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.SuggestionCompletionEngineServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>testScenarioService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.TestScenarioServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>AssetFileServlet</servlet-name>
@@ -120,6 +132,14 @@
   <servlet>
     <servlet-name>guvnorAPI</servlet-name>
     <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>securityService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>moduleService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.ModuleServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>verificationService</servlet-name>
@@ -170,8 +190,20 @@
     <url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>securityService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
+    <servlet-name>assetService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/assetService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>categoryService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/categoryService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>suggestionCompletionEngineService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/suggestionCompletionEngineService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>testScenarioService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/testScenarioService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>
@@ -216,6 +248,14 @@
   <servlet-mapping>
     <servlet-name>verificationService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>securityService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>moduleService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/moduleService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>configurationService</servlet-name>

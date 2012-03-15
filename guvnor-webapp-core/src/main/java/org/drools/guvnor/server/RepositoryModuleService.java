@@ -16,6 +16,7 @@
 package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.io.IOUtils;
 import org.drools.*;
 import org.drools.base.ClassTypeResolver;
@@ -56,10 +57,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 @ApplicationScoped
-@Named("org.drools.guvnor.client.rpc.PackageService")
 public class RepositoryModuleService
-        implements
-        ModuleService {
+        implements ModuleService {
 
     private static final long serialVersionUID = 901123;
 

@@ -24,14 +24,14 @@ import org.junit.Test;
 public class ServletWrapperIntegrationTest extends GuvnorIntegrationTest {
 
     @Inject
-    private RepositoryServiceServlet repositoryServiceServlet;
+    private ModuleServiceServlet moduleServiceServlet;
 
     @Inject
     private SecurityServiceServlet securityServiceServlet;
 
     @Test
     public void testMainService() {
-        repositoryServiceServlet.listModules();
+        moduleServiceServlet.listModules();
     }
 
     @Test

@@ -21,10 +21,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.RepositoryCategoryService;
-import org.drools.guvnor.server.RepositoryModuleService;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.repository.TestRepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -158,6 +155,9 @@ public abstract class GuvnorIntegrationTest {
 
     @Inject
     protected Credentials credentials;
+
+    @Inject
+    protected DroolsServiceImplementation droolsServiceImplementation;
 
     protected boolean autoLoginAsAdmin = true;
 

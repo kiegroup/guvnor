@@ -17,10 +17,12 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.repository.ModuleItem;
 
+@RemoteServiceRelativePath("testScenarioService")
 public interface TestScenarioService
         extends
         RemoteService {

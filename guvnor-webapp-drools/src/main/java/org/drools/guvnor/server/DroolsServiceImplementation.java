@@ -37,17 +37,19 @@ public class DroolsServiceImplementation
 
     private static final LoggingHelper log = LoggingHelper.getLogger(DroolsService.class);
 
-    private final RulesRepository rulesRepository;
+    private RulesRepository rulesRepository;
 
-    private final ServiceSecurity serviceSecurity;
+    private ServiceSecurity serviceSecurity;
 
     @Inject
-    @Named("org.drools.guvnor.client.rpc.RepositoryService")
     private RepositoryService repositoryService;
 
     @Inject
     private RepositoryAssetService repositoryAssetService;
 
+    public DroolsServiceImplementation() {
+        // Never used, just here because the CDI spec says there has to be an empty constructor
+    }
 
     @Inject
     public DroolsServiceImplementation(RulesRepository rulesRepository,

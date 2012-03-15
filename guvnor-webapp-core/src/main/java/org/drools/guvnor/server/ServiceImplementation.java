@@ -103,7 +103,6 @@ import freemarker.template.Template;
  * RepositoryServiceServlet - and Seam manages instances of this.
  */
 @ApplicationScoped
-@Named("org.drools.guvnor.client.rpc.RepositoryService")
 public class ServiceImplementation
     implements
     RepositoryService {

@@ -17,6 +17,7 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
@@ -31,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class SuggestionCompletionEngineServiceImplementationTest
-        extends GuvnorTestBase {
+        extends GuvnorIntegrationTest {
 
     @Inject
     protected SuggestionCompletionEngineServiceImplementation suggestionCompletionEngineServiceImplementation;

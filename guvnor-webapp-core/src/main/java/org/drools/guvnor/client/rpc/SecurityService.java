@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.rpc;
 
 
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.drools.guvnor.client.configurations.Capability;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -26,7 +27,9 @@ import java.util.List;
 /**
  * Contains methods for authenticating/authorising from the front end.
  */
-public interface SecurityService extends RemoteService {
+@RemoteServiceRelativePath("securityService")
+public interface SecurityService
+        extends RemoteService {
 
     /**
      * This will do a password authentication, using the configured JAAS provider.

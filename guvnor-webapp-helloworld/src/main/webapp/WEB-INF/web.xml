@@ -72,6 +72,10 @@
     <servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>suggestionCompletionEngineService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.SuggestionCompletionEngineServiceImplementation</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>AssetFileServlet</servlet-name>
     <servlet-class>org.drools.guvnor.server.files.AssetFileServlet</servlet-class>
   </servlet>
@@ -154,6 +158,10 @@
   <servlet-mapping>
     <servlet-name>securityService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>suggestionCompletionEngineService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/suggestionCompletionEngineService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>

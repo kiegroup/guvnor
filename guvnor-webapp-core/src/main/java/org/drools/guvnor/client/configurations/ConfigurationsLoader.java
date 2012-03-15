@@ -40,8 +40,7 @@ public class ConfigurationsLoader {
     }
 
     public static void loadUserCapabilities(final Command command) {
-        SecurityServiceAsync securityService = GWT.create(SecurityService.class);
-        securityService.getUserCapabilities(new GenericCallback<List<Capability>>() {
+        SecurityServiceAsync.INSTANCE.getUserCapabilities(new GenericCallback<List<Capability>>() {
             public void onSuccess(List<Capability> capabilities) {
                 UserCapabilities.setUp(capabilities);
                 executeCommand(command);

@@ -22,13 +22,13 @@
 
   <servlet path="/guvnorAPI" class="org.drools.guvnor.server.GuvnorAPIServlet"/>
   <servlet path="/guvnorService" class="org.drools.guvnor.server.RepositoryServiceServlet"/>
-  <servlet path="/securityService" class="org.drools.guvnor.server.SecurityServiceServlet"/>
   <servlet path="/asset" class="org.drools.guvnor.server.files.AssetFileServlet"/>
   <servlet path="/backup" class="org.drools.guvnor.server.files.RepositoryBackupServlet"/>
   <servlet path="/package" class="org.drools.guvnor.server.files.PackageDeploymentServlet"/>
   <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
   <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
   <servlet path="/feed" class="org.drools.guvnor.server.files.FeedServlet"/>
+  <servlet path="/securityService" class="org.drools.guvnor.server.SecurityServiceServlet"/>
   <servlet path="/workflowmanager" class="org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet"/>
   <servlet path="/wsdlparser" class="org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet"/>
   <servlet path="/configurationService" class="org.drools.guvnor.server.ConfigurationServiceImplementation"/>

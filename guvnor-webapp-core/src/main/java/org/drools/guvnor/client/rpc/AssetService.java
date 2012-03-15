@@ -18,8 +18,10 @@ package org.drools.guvnor.client.rpc;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
 
+@RemoteServiceRelativePath("assetService")
 public interface AssetService
     extends
     RemoteService {

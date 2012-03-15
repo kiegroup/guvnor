@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is what the remote service will implement, as a servlet. (in
  * hosted/debug mode, you could also use an implementation that was in-process).
  */
+@RemoteServiceRelativePath("guvnorService")
 public interface RepositoryService
     extends
     RemoteService {

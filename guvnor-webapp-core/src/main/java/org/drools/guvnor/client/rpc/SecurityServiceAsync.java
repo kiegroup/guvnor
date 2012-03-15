@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.rpc;
 
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.configurations.Capability;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,6 +29,8 @@ import java.util.List;
  */
 public interface SecurityServiceAsync {
 
+
+    SecurityServiceAsync INSTANCE = GWT.create(SecurityService.class);
 
     public void login(String userName, String password, AsyncCallback cb);
 
