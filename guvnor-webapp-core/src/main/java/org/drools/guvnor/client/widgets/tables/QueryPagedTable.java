@@ -94,7 +94,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 request.setSearchArchived( searchArchived );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
-                assetService.queryFullText( request,
+                repositoryService.queryFullText( request,
                                                   new GenericCallback<PageResponse<QueryPageRow>>() {
                                                       public void onSuccess(PageResponse<QueryPageRow> response) {
                                                           updateRowCount( response.getTotalRowSize(),

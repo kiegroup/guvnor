@@ -557,43 +557,6 @@ public class RepositoryAssetOperations {
         log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");
         return response;
     }
-    
-    protected PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) {
-        // Setup parameters
-        String search = request.getSearchText().replace('*',
-                '%');
-        if (!search.startsWith("%")) {
-            search = "%" + search;
-        }
-        if (!search.endsWith("%")) {
-            search += "%";
-        }
-
-        // Do query
-        long start = System.currentTimeMillis();
-        AssetItemIterator iterator = rulesRepository.queryFullText(search,
-                                                                   request.isSearchArchived());
-        log.debug("Search time: " + (System.currentTimeMillis() - start));
-
-        // Populate response
-        List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
-                .withPageRequest(request)
-                .withIdentity(identity)
-                .withContent(iterator)
-                .build();
-
-        PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
-                .withStartRowIndex(request.getStartRowIndex())
-                .withPageRowList(rowList)
-                .withLastPage(!iterator.hasNext())
-                .buildWithTotalRowCount(-1);//its impossible to know the exact count selected until we'v reached
-        //the end of iterator
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");
-        return response;
-    }
-
 
     protected void lockAsset(String uuid) {
         String userName = credentials.getUsername();
