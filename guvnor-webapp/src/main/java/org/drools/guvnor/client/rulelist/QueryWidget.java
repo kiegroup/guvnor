@@ -35,9 +35,9 @@ import java.util.*;
 
 public class QueryWidget extends Composite {
 
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private Constants           constants = ((Constants) GWT.create( Constants.class ));
 
-    private VerticalPanel layout;
+    private VerticalPanel       layout;
     private final ClientFactory clientFactory;
 
     public QueryWidget(ClientFactory clientFactory) {
@@ -55,7 +55,7 @@ public class QueryWidget extends Composite {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
         advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
         advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setContent( new QuickFindWidget(clientFactory) );
+        advancedDisclosure.setContent( new QuickFindWidget( clientFactory ) );
         advancedDisclosure.setOpen( true );
 
         layout.add( advancedDisclosure );
@@ -72,32 +72,32 @@ public class QueryWidget extends Composite {
         FormStyleLayout ts = new FormStyleLayout();
         final TextBox tx = new TextBox();
         ts.addAttribute( constants.SearchFor(),
-                tx );
+                         tx );
 
-        final CheckBox caseSensitiveBox = new CheckBox();
-        caseSensitiveBox.setValue( false );
-        ts.addAttribute( constants.IsSearchCaseSensitive(),
-                caseSensitiveBox );
+        final CheckBox archiveBox = new CheckBox();
+        archiveBox.setValue( false );
+        ts.addAttribute( constants.IncludeArchivedAssetsInResults(),
+                         archiveBox );
 
         Button go = new Button();
         go.setText( constants.Search1() );
         ts.addAttribute( "",
-                go );
+                         go );
         ts.setWidth( "100%" );
 
         final SimplePanel resultsP = new SimplePanel();
         final ClickHandler cl = new ClickHandler() {
 
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick(ClickEvent arg0) {
                 if ( tx.getText().equals( "" ) ) {
                     Window.alert( constants.PleaseEnterSomeSearchText() );
                     return;
                 }
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable(
-                        tx.getText(),
-                        false,
-                        clientFactory);
+                                                             tx.getText(),
+                                                             archiveBox.getValue(),
+                                                             clientFactory );
                 resultsP.add( table );
             }
 
@@ -105,7 +105,7 @@ public class QueryWidget extends Composite {
 
         go.addClickHandler( cl );
         tx.addKeyPressHandler( new KeyPressHandler() {
-            public void onKeyPress( KeyPressEvent event ) {
+            public void onKeyPress(KeyPressEvent event) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
                     cl.onClick( null );
                 }
@@ -153,16 +153,16 @@ public class QueryWidget extends Composite {
         };
 
         FormStyleLayout fm = new FormStyleLayout();
-        for (Iterator<String> iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
+        for ( Iterator<String> iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
             String fieldName = (String) iterator.next();
             final MetaDataQuery q = (MetaDataQuery) atts.get( fieldName );
             final TextBox box = new TextBox();
             box.setTitle( constants.WildCardsSearchTip() );
             fm.addAttribute( fieldName
-                    + ":",
-                    box );
+                                     + ":",
+                             box );
             box.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent arg0 ) {
+                public void onChange(ChangeEvent arg0) {
                     q.valueList = box.getText();
                 }
             } );
@@ -180,7 +180,7 @@ public class QueryWidget extends Composite {
         created.add( createdBefore );
 
         fm.addAttribute( constants.DateCreated1(),
-                created );
+                         created );
 
         HorizontalPanel lastMod = new HorizontalPanel();
         lastMod.add( new SmallLabel( constants.AfterColon() ) );
@@ -194,36 +194,36 @@ public class QueryWidget extends Composite {
         lastMod.add( lastModBefore );
 
         fm.addAttribute( constants.LastModified1(),
-                lastMod );
+                         lastMod );
 
         final SimplePanel resultsP = new SimplePanel();
         Button search = new Button( constants.Search() );
         fm.addAttribute( "",
-                search );
+                         search );
         search.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick(ClickEvent arg0) {
                 resultsP.clear();
                 try {
                     List<MetaDataQuery> metadata = new ArrayList<MetaDataQuery>();
                     metadata.addAll( atts.values() );
                     QueryPagedTable table = new QueryPagedTable( metadata,
-                            getDate( createdAfter ),
-                            getDate( createdBefore ),
-                            getDate( lastModAfter ),
-                            getDate( lastModBefore ),
-                            false,
-                            clientFactory );
+                                                                 getDate( createdAfter ),
+                                                                 getDate( createdBefore ),
+                                                                 getDate( lastModAfter ),
+                                                                 getDate( lastModBefore ),
+                                                                 false,
+                                                                 clientFactory );
                     resultsP.add( table );
-                } catch (IllegalArgumentException e) {
+                } catch ( IllegalArgumentException e ) {
                     ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(
                             ApplicationPreferences.getDroolsDateFormat() ) );
                 }
             }
 
-            private Date getDate( final DatePickerTextBox datePicker ) {
+            private Date getDate(final DatePickerTextBox datePicker) {
                 try {
                     return datePicker.getDate();
-                } catch (IllegalArgumentException e) {
+                } catch ( IllegalArgumentException e ) {
                     datePicker.clear();
                     throw e;
                 }

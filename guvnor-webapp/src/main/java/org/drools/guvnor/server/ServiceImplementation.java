@@ -61,7 +61,6 @@ import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.ruleeditor.workitem.WorkitemDefinitionElementsManager;
-import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
@@ -353,8 +352,8 @@ public class ServiceImplementation
             if ( checkPackagePermissionHelper( packageFilter,
                                                ai,
                                                RoleType.PACKAGE_READONLY.getName() ) || checkCategoryPermissionHelper( categoryFilter,
-                                                                                                              ai,
-                                                                                                              RoleType.ANALYST_READ.getName() ) ) {
+                                                                                                                       ai,
+                                                                                                                       RoleType.ANALYST_READ.getName() ) ) {
                 resultList.add( ai );
             }
         }
@@ -463,7 +462,7 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listImagesInGlobalArea() throws SerializationException {
@@ -624,13 +623,13 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsAdmin();
         return RoleTypes.listAvailableTypes();
     }
-    
+
     @Restrict("#{identity.loggedIn}")
     public List<String> listAvailablePermissionRoleTypes() {
         serviceSecurity.checkSecurityIsAdmin();
         RoleType[] roleTypes = RoleType.values();
         List<String> values = new ArrayList<String>();
-        for(RoleType roleType: roleTypes){
+        for ( RoleType roleType : roleTypes ) {
             values.add( roleType.getName() );
         }
         return values;
@@ -742,9 +741,11 @@ public class ServiceImplementation
     }
 
     /**
-     * Returns the Spring context elements specified by SpringContextElementsManager
+     * Returns the Spring context elements specified by
+     * SpringContextElementsManager
+     * 
      * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException 
+     * @throws DetailedSerializationException
      */
     public Map<String, String> loadSpringContextElementData() throws DetailedSerializationException {
         try {
@@ -756,11 +757,13 @@ public class ServiceImplementation
                                                       "View server logs for more information" );
         }
     }
-    
+
     /**
-     * Returns the Workitem Definition elements specified by WorkitemDefinitionElementsManager
+     * Returns the Workitem Definition elements specified by
+     * WorkitemDefinitionElementsManager
+     * 
      * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException 
+     * @throws DetailedSerializationException
      */
     public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException {
         try {
@@ -798,13 +801,13 @@ public class ServiceImplementation
         List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder()
                                             .withPageRequest( request )
                                             .withContent( iterator )
-                                                .build();
+                                            .build();
         boolean bHasMoreRows = iterator.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                       .withStartRowIndex( request.getStartRowIndex() )
                                                       .withPageRowList( rowList )
                                                       .withLastPage( !bHasMoreRows )
-                                                          .buildWithTotalRowCount( -1 );
+                                                      .buildWithTotalRowCount( iterator.getSize() );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Full Text) for (" + request.getSearchText() + ") in " + methodDuration + " ms." );
@@ -841,8 +844,8 @@ public class ServiceImplementation
                                                 .withStartRowIndex( request.getStartRowIndex() )
                                                 .withPageRowList( rowList )
                                                 .withLastPage( !bHasMoreRows )
-                                                .buildWithTotalRowCount(-1);//its impossible to know the exact selected count until we'v reached
-                                                                            //the end of iterator
+                                                .buildWithTotalRowCount( iterator.getSize() );
+
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
@@ -901,13 +904,13 @@ public class ServiceImplementation
         List<StatePageRow> rowList = new StatePageRowBuilder()
                                             .withPageRequest( request )
                                             .withContent( result.assets.iterator() )
-                                                .build();
+                                            .build();
 
         PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )
                                                     .withLastPage( !bHasMoreRows )
-                                                        .buildWithTotalRowCount( -1 );
+                                                    .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
@@ -944,7 +947,7 @@ public class ServiceImplementation
     public List<PushResponse> subscribe() {
         return Backchannel.getInstance().subscribe();
     }
-    
+
     /**
      * Check whether an asset exists in a package
      * 
