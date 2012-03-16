@@ -22,7 +22,6 @@ import java.util.List;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -43,9 +42,9 @@ import com.google.gwt.view.client.HasData;
  */
 public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
-    private static final int PAGE_SIZE = 10;    
+    private static final int    PAGE_SIZE = 10;
     private final ClientFactory clientFactory;
-    
+
     public QueryPagedTable(final List<MetaDataQuery> metadata,
                            final Date createdAfter,
                            final Date createdBefore,
@@ -54,7 +53,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            final Boolean searchArchived,
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
-                clientFactory);
+                clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
@@ -85,7 +84,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            final Boolean searchArchived,
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
-                clientFactory);
+                clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
@@ -95,7 +94,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 request.setSearchArchived( searchArchived );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
-                assetService.quickFindAsset( request,
+                assetService.queryFullText( request,
                                                   new GenericCallback<PageResponse<QueryPageRow>>() {
                                                       public void onSuccess(PageResponse<QueryPageRow> response) {
                                                           updateRowCount( response.getTotalRowSize(),
@@ -120,7 +119,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            final Boolean isCaseSensitive,
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
-                clientFactory);
+                clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
@@ -152,7 +151,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
             public RuleFormatImageResource getValue(QueryPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
+                return new RuleFormatImageResource( row.getFormat(),
+                                                    factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,

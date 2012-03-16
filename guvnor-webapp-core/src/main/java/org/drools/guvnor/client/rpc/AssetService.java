@@ -80,6 +80,14 @@ public interface AssetService
      */
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
 
+    /**
+     * Runs a full text search using JCR.
+     * 
+     * @param queryRequest
+     *            The parameters for the search
+     */
+    public PageResponse<QueryPageRow> queryFullText(QueryPageRequest queryRequest) throws SerializationException;
+
     public void archiveAsset(String uuid);
 
     public void unArchiveAsset(String uuid);

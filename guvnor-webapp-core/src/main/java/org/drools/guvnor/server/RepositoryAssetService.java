@@ -440,6 +440,19 @@ public class RepositoryAssetService
         repositoryAssetOperations.unLockAsset( uuid );
     }
 
+    @WebRemote
+    @LoggedIn
+    public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
+
+        return repositoryAssetOperations.queryFullText( request );
+    }
+
     /**
      * @deprecated in favour of
      *             {@link ServiceImplementation#queryFullText(QueryPageRequest)}
