@@ -16,13 +16,13 @@
 
 package org.drools.ide.common.modeldriven;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.junit.Test;
 
 public class CompositeFieldConstraintTest {
 
@@ -76,6 +76,62 @@ public class CompositeFieldConstraintTest {
 
     }
     
+    @Test
+    public void testRemoveConstraintWithNonNullParent() {
+        final FactPattern fp = new FactPattern();
+        final SingleFieldConstraint con1 = new SingleFieldConstraint( "parent" );
+        fp.addConstraint( con1 );
+        final SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setParent( con1 );
+        fp.addConstraint( con2 );
+        final SingleFieldConstraint con3 = new SingleFieldConstraint();
+        con3.setParent( con2 );
+        fp.addConstraint( con3 );
+
+        assertEquals( 3,
+                      fp.constraintList.constraints.length );
+
+        fp.removeConstraint( 1 );
+
+        assertEquals( 2,
+                      fp.constraintList.constraints.length );
+
+        assertEquals( con1,
+                      fp.constraintList.constraints[0] );
+        assertEquals( con3,
+                      fp.constraintList.constraints[1] );
+        assertNull( ((SingleFieldConstraint) fp.constraintList.constraints[0]).getParent() );
+        assertEquals( con1,
+                      ((SingleFieldConstraint) fp.constraintList.constraints[1]).getParent() );
+    }
     
-    
+    @Test
+    public void testRemoveConstraintWithNullParent() {
+        final FactPattern fp = new FactPattern();
+        final SingleFieldConstraint con1 = new SingleFieldConstraint( "parent" );
+        fp.addConstraint( con1 );
+        final SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setParent( con1 );
+        fp.addConstraint( con2 );
+        final SingleFieldConstraint con3 = new SingleFieldConstraint();
+        con3.setParent( con2 );
+        fp.addConstraint( con3 );
+
+        assertEquals( 3,
+                      fp.constraintList.constraints.length );
+
+        fp.removeConstraint( 0 );
+
+        assertEquals( 2,
+                      fp.constraintList.constraints.length );
+
+        assertEquals( con2,
+                      fp.constraintList.constraints[0] );
+        assertEquals( con3,
+                      fp.constraintList.constraints[1] );
+        assertNull( ((SingleFieldConstraint) fp.constraintList.constraints[0]).getParent() );
+        assertEquals( con2,
+                      ((SingleFieldConstraint) fp.constraintList.constraints[1]).getParent() );
+    }
+
 }

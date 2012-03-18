@@ -40,10 +40,9 @@ public class CompositeFieldConstraint
     public String              compositeJunctionType = null;
 
     /**
-     * This is the child field constraints of the composite.
-     * They may be single constraints, or composite themselves.
-     * If this composite is it at the "top level"  - then
-     * there is no need to look at the compositeType property
+     * This is the child field constraints of the composite. They may be single
+     * constraints, or composite themselves. If this composite is it at the
+     * "top level" - then there is no need to look at the compositeType property
      * (as they are all children that are "anded" together anyway in the fact
      * pattern that contains it).
      */
@@ -66,10 +65,25 @@ public class CompositeFieldConstraint
         }
     }
 
+    //Unfortunately, this is kinda duplicate code with other methods, but with 
+    //typed arrays, and GWT, its not really possible to do anything "better"
+    //at this point in time.
     public void removeConstraint(final int idx) {
-        //Unfortunately, this is kinda duplicate code with other methods,
-        //but with typed arrays, and GWT, its not really possible to do anything "better"
-        //at this point in time.
+        //If the constraint being is a parent of another correct the other constraint's parent accordingly
+        FieldConstraint constraintToRemove = this.constraints[idx];
+        if ( constraintToRemove instanceof SingleFieldConstraint ) {
+            final SingleFieldConstraint sfc = (SingleFieldConstraint) constraintToRemove;
+            FieldConstraint parent = sfc.getParent();
+            for ( FieldConstraint child : this.constraints ) {
+                if ( child instanceof SingleFieldConstraint ) {
+                    SingleFieldConstraint sfcChild = (SingleFieldConstraint) child;
+                    if ( sfcChild.getParent() == constraintToRemove ) {
+                        sfcChild.setParent( parent );
+                        break;
+                    }
+                }
+            }
+        }
         final FieldConstraint[] newList = new FieldConstraint[this.constraints.length - 1];
         int newIdx = 0;
         for ( int i = 0; i < this.constraints.length; i++ ) {
