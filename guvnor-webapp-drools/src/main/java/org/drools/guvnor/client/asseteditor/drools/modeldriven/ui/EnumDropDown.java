@@ -46,62 +46,68 @@ public class EnumDropDown extends ListBox
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
-        this(currentValue, valueChanged, dropData, false);
-            
+        this( currentValue,
+              valueChanged,
+              dropData,
+              false );
+
     }
-    
+
     public EnumDropDown(final String currentValue,
-            final DropDownValueChanged valueChanged,
-            final DropDownData dropData, 
-            boolean multipleSelect) {
-        super(multipleSelect);
+                        final DropDownValueChanged valueChanged,
+                        final DropDownData dropData,
+                        boolean multipleSelect) {
+        super( multipleSelect );
         this.valueChangedCommand = valueChanged;
 
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 valueChangedCommand.valueChanged( getSelectedItemsText(),
-                        getSelectedValue() );
+                                                  getSelectedValue() );
             }
         } );
 
         setDropDownData( currentValue,
-                dropData );
+                         dropData );
     }
-    
+
     String getSelectedItemsText() {
         StringBuffer buffer = new StringBuffer();
         boolean first = true;
-        for (int i=0; i < getItemCount(); i++) {
-            if (isItemSelected(i)) {
-                if (!first) {
-                    buffer.append(",");
+        for ( int i = 0; i < getItemCount(); i++ ) {
+            if ( isItemSelected( i ) ) {
+                if ( !first ) {
+                    buffer.append( "," );
                 }
                 first = false;
-                buffer.append(getItemText(i));
+                buffer.append( getItemText( i ) );
             }
         }
         return buffer.toString();
     }
-    
+
     String getSelectedValue() {
+        if ( getItemCount() == 0 ) {
+            return "";
+        }
         StringBuffer buffer = new StringBuffer();
-        if (isMultipleSelect()) {
+        if ( isMultipleSelect() ) {
             boolean first = true;
-            buffer.append("( ");
-            for (int i=0; i < getItemCount(); i++) {
-                if (isItemSelected(i)) {
-                    if (!first) {
-                        buffer.append(",");
+            buffer.append( "( " );
+            for ( int i = 0; i < getItemCount(); i++ ) {
+                if ( isItemSelected( i ) ) {
+                    if ( !first ) {
+                        buffer.append( "," );
                     }
                     first = false;
-                    buffer.append("\"");
-                    buffer.append(getValue(i));
-                    buffer.append("\"");
+                    buffer.append( "\"" );
+                    buffer.append( getValue( i ) );
+                    buffer.append( "\"" );
                 }
             }
-            buffer.append(" )");
+            buffer.append( " )" );
         } else {
-            buffer.append(getValue(getSelectedIndex()));
+            buffer.append( getValue( getSelectedIndex() ) );
         }
         return buffer.toString();
     }
@@ -160,17 +166,20 @@ public class EnumDropDown extends ListBox
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
         clear();
-        //        addItem( Constants.INSTANCE.Choose() );
+
         boolean selected = false;
         HashSet<String> currentValues = new HashSet<String>();
         String trimmedCurrentValue = currentValue;
-        if (isMultipleSelect() && trimmedCurrentValue != null) {
-            trimmedCurrentValue = currentValue.replace("\"", "");
-            trimmedCurrentValue = trimmedCurrentValue.replace("(", "");
-            trimmedCurrentValue = trimmedCurrentValue.replace(")", "");
+        if ( isMultipleSelect() && trimmedCurrentValue != null ) {
+            trimmedCurrentValue = currentValue.replace( "\"",
+                                                        "" );
+            trimmedCurrentValue = trimmedCurrentValue.replace( "(",
+                                                               "" );
+            trimmedCurrentValue = trimmedCurrentValue.replace( ")",
+                                                               "" );
             trimmedCurrentValue = trimmedCurrentValue.trim();
-            if ( trimmedCurrentValue.indexOf(",") > 0) {
-                currentValues.addAll(Arrays.asList( trimmedCurrentValue.split(",") ));
+            if ( trimmedCurrentValue.indexOf( "," ) > 0 ) {
+                currentValues.addAll( Arrays.asList( trimmedCurrentValue.split( "," ) ) );
             }
         } else {
             currentValues.add( currentValue );
@@ -191,17 +200,21 @@ public class EnumDropDown extends ListBox
                 addItem( v );
                 val = v;
             }
-            if ( currentValue != null && currentValues.contains( val )) {
-                setItemSelected(i, true);
-                //                setSelectedIndex( i + 1 );
+            if ( currentValue != null && currentValues.contains( val ) ) {
+                setItemSelected( i,
+                                 true );
                 selected = true;
             }
         }
 
         if ( !selected ) {
-            setSelectedIndex( 0 );
-            valueChangedCommand.valueChanged( getItemText( 0 ),
-                                              getValue( 0 ) );
+            final int itemCount = getItemCount();
+            setEnabled( itemCount > 0 );
+            if ( itemCount > 0 ) {
+                setSelectedIndex( 0 );
+                valueChangedCommand.valueChanged( getItemText( 0 ),
+                                                  getValue( 0 ) );
+            }
         }
     }
 }

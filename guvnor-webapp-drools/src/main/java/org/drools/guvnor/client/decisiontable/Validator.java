@@ -204,6 +204,14 @@ public class Validator {
         return !(operator.equals( "== null" ) || operator.equals( "!= null" ));
     }
 
+    public boolean doesOperatorAcceptValueList(ConditionCol52 c) {
+        String operator = c.getOperator();
+        if ( operator == null || operator.equals( "" ) ) {
+            return false;
+        }
+        return !(operator.equals( "in" ) || operator.equals( "== null" ) || operator.equals( "!= null" ));
+    }
+
     public boolean isConditionLimitedEntryValueValid(ConditionCol52 c) {
         if ( !(c instanceof LimitedEntryConditionCol52) ) {
             return true;

@@ -52,6 +52,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private TextBox                    fieldLabel                       = getFieldLabel();
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
+    private TextBox                    valueListWidget                  = null;
+    private TextBox                    defaultValueWidget               = null;
 
     private ActionSetFieldCol52        editingCol;
     private GuidedDecisionTable52      model;
@@ -133,35 +135,40 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
         //Optional value list
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            final TextBox valueList = new TextBox();
-            valueList.setText( editingCol.getValueList() );
-            valueList.setEnabled( !isReadOnly );
+            valueListWidget = new TextBox();
+            valueListWidget.setText( editingCol.getValueList() );
+            valueListWidget.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
-                valueList.addChangeHandler( new ChangeHandler() {
+                valueListWidget.addChangeHandler( new ChangeHandler() {
                     public void onChange(ChangeEvent event) {
-                        editingCol.setValueList( valueList.getText() );
+                        editingCol.setValueList( valueListWidget.getText() );
                     }
                 } );
             }
             HorizontalPanel vl = new HorizontalPanel();
-            vl.add( valueList );
+            vl.add( valueListWidget );
             vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
                                    Constants.INSTANCE.ValueListsExplanation() ) );
             addAttribute( Constants.INSTANCE.optionalValueList(),
                           vl );
         }
+        doValueList();
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            defaultValueWidget = DTCellValueWidgetFactory.getDefaultEditor( editingCol,
+                                                                            isReadOnly );
             addAttribute( Constants.INSTANCE.DefaultValue(),
-                          DTCellValueWidgetFactory.getDefaultEditor( editingCol,
-                                                                     isReadOnly ) );
+                          defaultValueWidget );
         }
+        doDefaultValue();
 
         //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
-                                                        limitedEntryValueWidgetContainer );
-        makeLimitedValueWidget();
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
+                                                            limitedEntryValueWidgetContainer );
+            makeLimitedValueWidget();
+        }
 
         //Update Engine with changes
         addAttribute( Constants.INSTANCE.UpdateEngineWithChanges(),
@@ -242,8 +249,6 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private void makeLimitedValueWidget() {
         if ( !(editingCol instanceof LimitedEntryActionSetFieldCol52) ) {
-            setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                    false );
             return;
         }
         if ( nil( editingCol.getFactField() ) ) {
@@ -275,6 +280,43 @@ public class ActionSetFieldPopup extends FormStylePopup {
             this.fieldLabel.setText( this.editingCol.getFactField() );
         } else {
             this.fieldLabel.setText( Constants.INSTANCE.pleaseChooseAFactPatternFirst() );
+        }
+    }
+
+    private void doValueList() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
+
+        //Don't show a Value List if either the Fact\Field is empty
+        final String factType = model.getBoundFactType( editingCol.getBoundName() );
+        final String factField = editingCol.getFactField();
+        boolean enableValueList = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
+
+        //Don't show a Value List if the Fact\Field has an enumeration
+        if ( enableValueList ) {
+            enableValueList = !sce.hasEnums( factType,
+                                             factField );
+        }
+        valueListWidget.setEnabled( enableValueList );
+        if ( !enableValueList ) {
+            valueListWidget.setText( "" );
+        }
+    }
+
+    private void doDefaultValue() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
+
+        //Don't show a Default Value if either the Fact\Field is empty
+        final String factType = model.getBoundFactType( editingCol.getBoundName() );
+        final String factField = editingCol.getFactField();
+        boolean enableDefaultValue = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
+
+        defaultValueWidget.setEnabled( enableDefaultValue );
+        if ( !enableDefaultValue ) {
+            defaultValueWidget.setText( "" );
         }
     }
 
@@ -375,6 +417,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
                 makeLimitedValueWidget();
                 doBindingLabel();
                 doFieldLabel();
+                doValueList();
+                doDefaultValue();
                 pop.hide();
             }
         } );
@@ -405,6 +449,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
                                                       editingCol.getFactField() ) );
                 makeLimitedValueWidget();
                 doFieldLabel();
+                doValueList();
+                doDefaultValue();
                 pop.hide();
             }
         } );

@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
@@ -72,8 +74,17 @@ public class ConditionPopup extends FormStylePopup {
     private Label                      operatorLabel                    = new Label();
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
+    private TextBox                    valueListWidget                  = null;
+    private TextBox                    defaultValueWidget               = null;
     private ImageButton                editField;
     private ImageButton                editOp;
+
+    private RadioButton                literal                          = new RadioButton( "constraintValueType",
+                                                                                           Constants.INSTANCE.LiteralValue() );
+    private RadioButton                formula                          = new RadioButton( "constraintValueType",
+                                                                                           Constants.INSTANCE.Formula() );
+    private RadioButton                predicate                        = new RadioButton( "constraintValueType",
+                                                                                           Constants.INSTANCE.Predicate() );
 
     private CEPWindowOperatorsDropdown cwo;
     private TextBox                    entryPointName;
@@ -136,13 +147,6 @@ public class ConditionPopup extends FormStylePopup {
         //Radio buttons for Calculation Type
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY :
-                RadioButton literal = new RadioButton( "constraintValueType",
-                                                       Constants.INSTANCE.LiteralValue() );// NON-NLS
-                RadioButton formula = new RadioButton( "constraintValueType",
-                                                       Constants.INSTANCE.Formula() ); // NON-NLS
-                RadioButton predicate = new RadioButton( "constraintValueType",
-                                                         Constants.INSTANCE.Predicate() ); // NON-NLS
-
                 HorizontalPanel valueTypes = new HorizontalPanel();
                 valueTypes.add( literal );
                 valueTypes.add( formula );
@@ -153,7 +157,7 @@ public class ConditionPopup extends FormStylePopup {
                 switch ( editingCol.getConstraintValueType() ) {
                     case BaseSingleFieldConstraint.TYPE_LITERAL :
                         literal.setValue( true );
-                        binding.setEnabled( true && !isReadOnly );
+                        binding.setEnabled( !isReadOnly );
                         break;
                     case BaseSingleFieldConstraint.TYPE_RET_VALUE :
                         formula.setValue( true );
@@ -164,7 +168,6 @@ public class ConditionPopup extends FormStylePopup {
                         binding.setEnabled( false );
                 }
 
-                literal.setEnabled( !isReadOnly );
                 if ( !isReadOnly ) {
                     literal.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
@@ -174,7 +177,6 @@ public class ConditionPopup extends FormStylePopup {
                     } );
                 }
 
-                formula.setEnabled( !isReadOnly );
                 if ( !isReadOnly ) {
                     formula.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
@@ -184,7 +186,6 @@ public class ConditionPopup extends FormStylePopup {
                     } );
                 }
 
-                predicate.setEnabled( !isReadOnly );
                 if ( !isReadOnly ) {
                     predicate.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
@@ -193,6 +194,8 @@ public class ConditionPopup extends FormStylePopup {
                         }
                     } );
                 }
+
+                doCalculationType();
                 break;
 
             case LIMITED_ENTRY :
@@ -271,35 +274,40 @@ public class ConditionPopup extends FormStylePopup {
 
         //Optional value list
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            final TextBox valueList = new TextBox();
-            valueList.setText( editingCol.getValueList() );
-            valueList.setEnabled( !isReadOnly );
+            valueListWidget = new TextBox();
+            valueListWidget.setText( editingCol.getValueList() );
+            valueListWidget.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
-                valueList.addChangeHandler( new ChangeHandler() {
+                valueListWidget.addChangeHandler( new ChangeHandler() {
                     public void onChange(ChangeEvent event) {
-                        editingCol.setValueList( valueList.getText() );
+                        editingCol.setValueList( valueListWidget.getText() );
                     }
                 } );
             }
             HorizontalPanel vl = new HorizontalPanel();
-            vl.add( valueList );
+            vl.add( valueListWidget );
             vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
                                    Constants.INSTANCE.ValueListsExplanation() ) );
             addAttribute( Constants.INSTANCE.optionalValueList(),
                           vl );
         }
+        doValueList();
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            defaultValueWidget = DTCellValueWidgetFactory.getDefaultEditor( editingCol,
+                                                                            isReadOnly );
             addAttribute( Constants.INSTANCE.DefaultValue(),
-                          DTCellValueWidgetFactory.getDefaultEditor( editingCol,
-                                                                     isReadOnly ) );
+                          defaultValueWidget );
         }
+        doDefaultValue();
 
         //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
-                                                        limitedEntryValueWidgetContainer );
-        makeLimitedValueWidget();
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
+                                                            limitedEntryValueWidgetContainer );
+            makeLimitedValueWidget();
+        }
 
         //Field Binding
         binding.setText( col.getBinding() );
@@ -415,8 +423,6 @@ public class ConditionPopup extends FormStylePopup {
 
     private void makeLimitedValueWidget() {
         if ( !(editingCol instanceof LimitedEntryConditionCol52) ) {
-            setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                    false );
             return;
         }
         LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) editingCol;
@@ -442,6 +448,8 @@ public class ConditionPopup extends FormStylePopup {
         editingCol.setConstraintValueType( newType );
         binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
         doFieldLabel();
+        doValueList();
+        doDefaultValue();
         doOperatorLabel();
         doImageButtons();
     }
@@ -522,6 +530,73 @@ public class ConditionPopup extends FormStylePopup {
                               Constants.INSTANCE.PredicatesInfo() );
     }
 
+    private void doValueList() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
+
+        //Don't show a Value List if either the Fact\Field is empty
+        final String factType = editingPattern.getFactType();
+        final String factField = editingCol.getFactField();
+        boolean enableValueList = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
+
+        //Don't show Value List if operator does not accept one
+        if ( enableValueList ) {
+            enableValueList = validator.doesOperatorAcceptValueList( editingCol );
+        }
+
+        //Don't show a Value List if the Fact\Field has an enumeration
+        if ( enableValueList ) {
+            enableValueList = !sce.hasEnums( factType,
+                                             factField );
+        }
+        valueListWidget.setEnabled( enableValueList );
+        if ( !enableValueList ) {
+            valueListWidget.setText( "" );
+        }
+    }
+
+    private void doDefaultValue() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
+
+        //Don't show a Default Value if either the Fact\Field is empty
+        final String factType = editingPattern.getFactType();
+        final String factField = editingCol.getFactField();
+        boolean enableDefaultValue = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
+
+        //Don't show Default Value if operator does not require a value
+        if ( enableDefaultValue ) {
+            enableDefaultValue = validator.doesOperatorNeedValue( editingCol );
+        }
+
+        defaultValueWidget.setEnabled( enableDefaultValue );
+        if ( !enableDefaultValue ) {
+            defaultValueWidget.setText( "" );
+        }
+    }
+
+    private void doCalculationType() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
+
+        //Disable Formula and Predicate if the Fact\Field has enums
+        final String factType = editingPattern.getFactType();
+        final String factField = editingCol.getFactField();
+        final boolean hasEnums = sce.hasEnums( factType,
+                                               factField );
+        this.literal.setEnabled( hasEnums || !isReadOnly );
+        this.formula.setEnabled( !(hasEnums || isReadOnly) );
+        this.predicate.setEnabled( !(hasEnums || isReadOnly) );
+
+        //If Fact\Field has enums the Value Type has to be a literal
+        if ( hasEnums ) {
+            this.editingCol.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        }
+    }
+
     private ListBox loadPatterns() {
         Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
@@ -549,15 +624,37 @@ public class ConditionPopup extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( Constants.INSTANCE.SetTheOperator() );
         pop.setModal( false );
-        String[] ops = this.sce.getOperatorCompletions( editingPattern.getFactType(),
-                                                        editingCol.getFactField() );
-        final CEPOperatorsDropdown box = new CEPOperatorsDropdown( ops,
-                                                                   editingCol );
 
-        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol.getConstraintValueType() ) {
-            box.addItem( HumanReadable.getOperatorDisplayName( "in" ),
-                         "in" );
+        //The "in" (a comma separated list) operator is provided by the SCE when the Field type is STRING
+        final String factType = editingPattern.getFactType();
+        final String factField = editingCol.getFactField();
+        String[] ops = this.sce.getOperatorCompletions( factType,
+                                                        factField );
+
+        //We need to add "in" manually if the Calculation Type is a Literal
+        final List<String> filteredOps = new ArrayList<String>();
+        for ( String op : ops ) {
+            filteredOps.add( op );
         }
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol.getConstraintValueType() ) {
+            if ( !filteredOps.contains( "in" ) ) {
+                filteredOps.add( "in" );
+            }
+        } else {
+            filteredOps.remove( "in" );
+        }
+
+        //But remove "in" if the Fact\Field is enumerated
+        if ( sce.hasEnums( factType,
+                           factField ) ) {
+            filteredOps.remove( "in" );
+        }
+
+        final String[] displayOps = new String[filteredOps.size()];
+        filteredOps.toArray( displayOps );
+
+        final CEPOperatorsDropdown box = new CEPOperatorsDropdown( displayOps,
+                                                                   editingCol );
 
         box.addItem( Constants.INSTANCE.noOperator(),
                      "" );
@@ -571,6 +668,8 @@ public class ConditionPopup extends FormStylePopup {
                 editingCol.setOperator( box.getValue( box.getSelectedIndex() ) );
                 makeLimitedValueWidget();
                 doOperatorLabel();
+                doValueList();
+                doDefaultValue();
                 pop.hide();
             }
         } );
@@ -631,6 +730,9 @@ public class ConditionPopup extends FormStylePopup {
                 makeLimitedValueWidget();
                 displayCEPOperators();
                 doPatternLabel();
+                doValueList();
+                doDefaultValue();
+                doCalculationType();
 
                 pop.hide();
             }
@@ -646,8 +748,30 @@ public class ConditionPopup extends FormStylePopup {
                                                         this.editingPattern.getFactType() );
 
         final ListBox box = new ListBox();
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
+
+        switch ( this.editingCol.getConstraintValueType() ) {
+            case BaseSingleFieldConstraint.TYPE_LITERAL :
+                //Literals can be on any field
+                for ( int i = 0; i < fields.length; i++ ) {
+                    box.addItem( fields[i] );
+                }
+                break;
+
+            case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                //Formulae can only consume fields that do not have enumerations
+                for ( int i = 0; i < fields.length; i++ ) {
+                    if ( !sce.hasEnums( this.editingPattern.getFactType(),
+                                        fields[i] ) ) {
+                        box.addItem( fields[i] );
+                    }
+                }
+                break;
+
+            case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                //Predicates don't need a field (this should never be reachable as the
+                //field selector is disabled when the Calculation Type is Predicate)
+                break;
+
         }
         pop.addAttribute( Constants.INSTANCE.Field(),
                           box );
@@ -665,10 +789,13 @@ public class ConditionPopup extends FormStylePopup {
 
                 //Setup UI
                 doFieldLabel();
+                doValueList();
+                doDefaultValue();
+                doCalculationType();
                 makeLimitedValueWidget();
                 doOperatorLabel();
-                pop.hide();
 
+                pop.hide();
             }
         } );
         pop.show();
@@ -742,6 +869,9 @@ public class ConditionPopup extends FormStylePopup {
                 makeLimitedValueWidget();
                 displayCEPOperators();
                 doPatternLabel();
+                doValueList();
+                doDefaultValue();
+                doCalculationType();
                 doOperatorLabel();
 
                 pop.hide();
