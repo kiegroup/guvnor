@@ -28,8 +28,8 @@
   <drools:kagent id="kagent1" kbase="kbase1" new-instance="false" use-kbase-classloader="true">
       <drools:resources>
 
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="drl" source="http://localhost/c/source"/>
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="drl" source="http://localhost/cc/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="DRL" source="http://localhost/c/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="DRL" source="http://localhost/cc/source"/>
 
       </drools:resources>
   </drools:kagent>
@@ -38,7 +38,7 @@
   <drools:kagent id="kagent5" kbase="kbase2">
       <drools:resources>
 
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="change_set" source="http://localhost/cd/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="CHANGE_SET" source="http://localhost/cd/source"/>
 
       </drools:resources>
   </drools:kagent>
@@ -48,9 +48,9 @@
   <drools:kbase id="kbase1" node="node1">
       <drools:resources>
 
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="drl" source="http://localhost/c/source"/>
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="drl" source="http://localhost/cc/source"/>
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="change_set" source="http://localhost/cd/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="DRL" source="http://localhost/c/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="DRL" source="http://localhost/cc/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="CHANGE_SET" source="http://localhost/cd/source"/>
 
     </drools:resources>
 
@@ -84,7 +84,7 @@
   <drools:kbase id="kbase2" node="node1">
       <drools:resources>
 
-            <drools:resource basic-authentication="enabled" user="admin" password="admin" type="change_set" source="http://localhost/cd/source"/>
+            <drools:resource basic-authentication="enabled" username="admin" password="admin" type="CHANGE_SET" source="http://localhost/cd/source"/>
 
     </drools:resources>
 

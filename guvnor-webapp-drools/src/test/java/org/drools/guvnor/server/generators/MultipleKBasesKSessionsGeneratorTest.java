@@ -65,7 +65,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
     private static final List<AssetReference> resources = new ArrayList<AssetReference>() {{
         add(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
         add(new AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
-        add(new AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+        add(new AssetReference("myPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
     }};
 
     private static final List<AssetReference> models = new ArrayList<AssetReference>() {{
@@ -107,7 +107,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             addKBase(kbase1);
 
             final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
-            kbase2.addResource(new AssetReference("myPkg", "ax", "change_set", "http://localhost/cd/source", "uuidx9"));
+            kbase2.addResource(new AssetReference("myPkg", "ax", "changeset", "http://localhost/cd/source", "uuidx9"));
             kbase2.setAssetsUser("admin");
             kbase2.setAssetsPassword("admin");
             kbase2.setMbeans(true);
@@ -188,7 +188,7 @@ public class MultipleKBasesKSessionsGeneratorTest {
             addKBase(kbase1);
 
             final ServiceKBaseConfig kbase2 = new ServiceKBaseConfig("kbase2");
-            kbase2.addResource(new AssetReference("myPkg", "ax", "change_set", "http://localhost/cd/source", "uuidx9"));
+            kbase2.addResource(new AssetReference("myPkg", "ax", "changeset", "http://localhost/cd/source", "uuidx9"));
             kbase2.setAssetsUser("admin");
             kbase2.setAssetsPassword("admin");
             kbase2.setMbeans(true);

@@ -31,7 +31,7 @@ public class ServiceKBaseConfigTest {
         add(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
         add(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
         add(new AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
-        add(new AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+        add(new AssetReference("myPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
     }};
 
     final Collection<AssetReference> models = new ArrayList<AssetReference>() {{
@@ -218,14 +218,14 @@ public class ServiceKBaseConfigTest {
 
         kbase1.removeResource(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
         kbase1.removeResource(new AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
-        kbase1.removeResource(new AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
-        kbase1.removeResource(new AssetReference("aaaamyPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+        kbase1.removeResource(new AssetReference("myPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
+        kbase1.removeResource(new AssetReference("aaaamyPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
         kbase1.removeResource(null);
 
         assertTrue(kbase1.equals(new ServiceKBaseConfig("kbase1")));
         assertTrue(kbase1.hashCode() == new ServiceKBaseConfig("kbase1").hashCode());
 
-        kbase1.addResource(new AssetReference("aaaamyPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+        kbase1.addResource(new AssetReference("aaaamyPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
         kbase1.addResource(null);
 
         assertEquals(1, kbase1.getResources().size());

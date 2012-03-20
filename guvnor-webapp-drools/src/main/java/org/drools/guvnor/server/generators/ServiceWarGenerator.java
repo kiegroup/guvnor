@@ -53,7 +53,7 @@ public final class ServiceWarGenerator {
         put("WEB-INF/classes/beans.xml", compileTemplate(getResourceContent("servicewar/beans.xml.template")));
         put("WEB-INF/classes/camel-server.xml", compileTemplate(getResourceContent("servicewar/camel-server.xml.template")));
         put("WEB-INF/classes/knowledge-services.xml", compileTemplate(getResourceContent("servicewar/knowledge-services.xml.template")));
-        put("WEB-INF/classes/web.xml", compileTemplate(getResourceContent("servicewar/web.xml.template")));
+        put("WEB-INF/web.xml", compileTemplate(getResourceContent("servicewar/web.xml.template")));
     }};
 
     private static final TemplateRegistry templateRegistry = new SimpleTemplateRegistry() {{

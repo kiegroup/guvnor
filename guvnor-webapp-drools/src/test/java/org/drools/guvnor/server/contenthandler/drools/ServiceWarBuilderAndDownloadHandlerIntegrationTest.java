@@ -44,7 +44,7 @@ public class ServiceWarBuilderAndDownloadHandlerIntegrationTest extends GuvnorIn
     private static final Collection<AssetReference> resources = new ArrayList<AssetReference>() {{
         add(new AssetReference("myPkg", "a", "drl", "http://localhost/c/source", "uuid1"));
         add(new AssetReference("myPkg", "aa", "drl", "http://localhost/cc/source", "uuid2"));
-        add(new AssetReference("myPkg", "ab", "change_set", "http://localhost/cd/source", "uuid3"));
+        add(new AssetReference("myPkg", "ab", "changeset", "http://localhost/cd/source", "uuid3"));
     }};
 
     private static final Collection<AssetReference> models = new ArrayList<AssetReference>() {{

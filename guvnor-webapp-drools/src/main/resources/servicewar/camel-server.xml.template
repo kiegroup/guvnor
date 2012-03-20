@@ -27,9 +27,6 @@
     ">
     
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
-@end{}@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-@end{}
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
   <!--

@@ -18,6 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.serviceconfig;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
+import static org.drools.guvnor.client.common.AssetFormats.*;
 import static org.drools.guvnor.client.util.Preconditions.*;
 
 public class AssetReference
@@ -49,8 +50,8 @@ public class AssetReference
         this.packageRef = checkNotEmpty("packageRef", packageRef);
         this.name = checkNotEmpty("name", name);
         this.format = checkNotEmpty("format", format);
-        this.url = checkNotEmpty("format", url);
-        this.uuid = checkNotEmpty("format", uuid);
+        this.url = checkNotEmpty("url", url);
+        this.uuid = checkNotEmpty("uuid", uuid);
     }
 
     public String getUuid() {
@@ -66,6 +67,14 @@ public class AssetReference
     }
 
     public String getFormat() {
+        return format;
+    }
+
+    public String getResourceFormat() {
+        final String resourceFormat = convertAssetFormatToResourceType(format);
+        if (resourceFormat != null) {
+            return resourceFormat;
+        }
         return format;
     }
 
