@@ -33,7 +33,6 @@ import org.drools.guvnor.client.decisiontable.cells.PopupNumericShortEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -94,9 +93,7 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
-        CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
-        cbc.setReadOnly( isReadOnly );
-        return new DecoratedGridCellValueAdaptor<Boolean>( cbc,
+        return new DecoratedGridCellValueAdaptor<Boolean>( new CheckboxCellImpl( isReadOnly ),
                                                            eventBus );
     }
 

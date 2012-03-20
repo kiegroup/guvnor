@@ -53,17 +53,4 @@
     <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
   </replace-with>
 
-  <!-- Deferred binding to handle different check-box behaviours -->
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImplIE">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl"/>
-    <any>
-      <when-property-is name="user.agent" value="ie6"/>
-      <when-property-is name="user.agent" value="ie8"/>
-      <when-property-is name="user.agent" value="ie9"/>
-    </any>
-  </replace-with>
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl"/>
-  </replace-with>
-
 </module>
