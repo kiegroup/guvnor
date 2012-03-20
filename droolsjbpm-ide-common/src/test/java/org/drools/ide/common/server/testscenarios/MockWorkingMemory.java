@@ -38,6 +38,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.NodeMemories;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
@@ -148,7 +150,13 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return 0;
     }
 
-    public Object getNodeMemory(NodeMemory node) {
+    @Override
+    public Memory getNodeMemory(NodeMemory node) {
+        return null;
+    }
+
+    @Override
+    public NodeMemories getNodeMemories() {
         return null;
     }
 
