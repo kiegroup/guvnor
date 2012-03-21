@@ -57,17 +57,14 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
     /**
      * Construct a new {@link CheckboxCellImpl}
      */
-    public CheckboxCellImpl() {
-        super( "change",
+    public CheckboxCellImpl(boolean isReadOnly) {
+        super( "click",
                "keydown" );
+        this.isReadOnly = isReadOnly;
     }
 
     CheckboxCellImpl(String... consumedEvents) {
         super( consumedEvents );
-    }
-
-    public void setReadOnly(boolean isReadOnly) {
-        this.isReadOnly = isReadOnly;
     }
 
     @Override
@@ -94,7 +91,7 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
         String type = event.getType();
 
         boolean enterPressed = "keydown".equals( type ) && event.getKeyCode() == KeyCodes.KEY_ENTER;
-        if ( "change".equals( type ) || enterPressed ) {
+        if ( "click".equals( type ) || enterPressed ) {
             InputElement input = parent.getFirstChild().cast();
             Boolean isChecked = input.isChecked();
 

@@ -37,27 +37,20 @@
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
   <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl">
+  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImplSafari">
     <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
+    <when-property-is name="user.agent" value="safari"/>
   </replace-with>
   <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImplIE">
     <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
     <any>
       <when-property-is name="user.agent" value="ie6"/>
       <when-property-is name="user.agent" value="ie8"/>
+      <when-property-is name="user.agent" value="ie9"/>
     </any>
   </replace-with>
-
-  <!-- Deferred binding to handle different check-box behaviours -->
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl"/>
-  </replace-with>
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImplIE">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CheckboxCellImpl"/>
-    <any>
-      <when-property-is name="user.agent" value="ie6"/>
-      <when-property-is name="user.agent" value="ie8"/>
-    </any>
+  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl">
+    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
   </replace-with>
 
 </module>
