@@ -46,34 +46,34 @@ public class DroolsHelper {
    * @throws IOException
    * @throws DroolsParserException
    */
-  public static byte[] compileRuletoPKG(PackageFile file) throws IOException, DroolsParserException {
-    PackageBuilder pb = new PackageBuilder();
-    String xtn=FileIO.getExtension(file.getFile()).toLowerCase();
-    if (xtn.equals("drl")){
-      File functionsFile=new File(file.getFile().getParentFile().getPath(), FUNCTIONS_FILE);
-      if (functionsFile.exists()){
-        pb.addPackageFromDrl(new FileReader(functionsFile));
-      }
-      pb.addPackageFromDrl(new FileReader(file.getFile()));
-    }else if (xtn.equals("xls")){
-      pb.addPackageFromDrl(new StringReader(compileDTabletoDRL(file.getFile(), InputType.XLS)));
-    }
-    
-    Package pkg = pb.getPackage();
-    if (pkg == null) { // compilation error - the rule is syntactically incorrect
-      for (int i = 0; i < pb.getErrors().getErrors().length; i++) {
-        DroolsError msg = pb.getErrors().getErrors()[i];
-        file.addCompilationError(msg.getMessage());
-      }
-    } else if (pkg != null && !pkg.isValid()) { // dependency missing
-      file.addDependencyError(pkg.getErrorSummary());
-    }
-    
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    DroolsObjectOutputStream doos = new DroolsObjectOutputStream(baos);
-    doos.writeObject(pkg);
-    return baos.toByteArray();
-  }
+//  public static byte[] compileRuletoPKG(PackageFile file) throws IOException, DroolsParserException {
+//    PackageBuilder pb = new PackageBuilder();
+//    String xtn=FileIO.getExtension(file.getFile()).toLowerCase();
+//    if (xtn.equals("drl")){
+//      File functionsFile=new File(file.getFile().getParentFile().getPath(), FUNCTIONS_FILE);
+//      if (functionsFile.exists()){
+//        pb.addPackageFromDrl(new FileReader(functionsFile));
+//      }
+//      pb.addPackageFromDrl(new FileReader(file.getFile()));
+//    }else if (xtn.equals("xls")){
+//      pb.addPackageFromDrl(new StringReader(compileDTabletoDRL(file.getFile(), InputType.XLS)));
+//    }
+//    
+//    Package pkg = pb.getPackage();
+//    if (pkg == null) { // compilation error - the rule is syntactically incorrect
+//      for (int i = 0; i < pb.getErrors().getErrors().length; i++) {
+//        DroolsError msg = pb.getErrors().getErrors()[i];
+//        file.addCompilationError(msg.getMessage());
+//      }
+//    } else if (pkg != null && !pkg.isValid()) { // dependency missing
+//      file.addDependencyError(pkg.getErrorSummary());
+//    }
+//    
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    DroolsObjectOutputStream doos = new DroolsObjectOutputStream(baos);
+//    doos.writeObject(pkg);
+//    return baos.toByteArray();
+//  }
   
   /**
    * compiles an xls or csv decision table into a rule (drl) language string

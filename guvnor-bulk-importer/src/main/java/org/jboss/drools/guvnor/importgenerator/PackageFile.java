@@ -27,9 +27,14 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +51,7 @@ import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
 /**
  * Represents a drl package file found in the file system
  */
-public class PackageFile {
+public class PackageFile implements Comparator<Integer> {
   private static final String PH_RULE_START="rule ";
   private static final String PH_PACKAGE_START="package ";
   private static final String PH_NEWLINE="\n";
@@ -55,13 +60,15 @@ public class PackageFile {
   private static final String PACKAGE_DELIMETER = ".";
   private static String FUNCTIONS_FILE=null;
   private Package pkg;
-    private File file;
-    private String imports=""; //default to no imports
+  private String imports=""; //default to no imports
   private String dependencyErrors="";
   private String compilationErrors="";
   private Map<String, Rule> rules=new HashMap<String, Rule>();
-  private List<File> ruleFiles=new ArrayList<File>();
+  private Map<String, File> ruleFiles = new HashMap<String, File>();
   private String name;
+  private String modelContent;
+  private List<Model> modelFiles = new ArrayList<Model>();
+
   
   private enum Format{
     DRL(".drl"),
@@ -72,6 +79,20 @@ public class PackageFile {
     }
   }
   
+  public List<Model> getModelFiles(){
+    return modelFiles;
+  }
+
+  public void setModelFiles(File[] files) throws UnsupportedEncodingException {
+    for(File modelFile:files){
+      if (!modelFile.exists()) {
+        throw new RuntimeException("model file does not exist [" + modelFile.getAbsolutePath() + "]");
+      }
+      modelContent=FileIO.readAllAsBase64(modelFile);
+      modelFiles.add(new Model(modelFile, modelContent));
+    }
+  }
+
       /**
      * goes through the file system calling extract to build a list of PackageFile objects
      * @param options
@@ -88,6 +109,10 @@ public class PackageFile {
 
         buildPackageForDirectory(result, location, options);
         return result;
+    }
+
+    public boolean containsAssets(){
+        return this.modelFiles.size()>0 || this.ruleFiles.size()>0;
     }
 
     /**
@@ -111,53 +136,58 @@ public class PackageFile {
           //if it's a directory with files then build a package
           if (files[i].isDirectory()){
             File[] ruleFiles=getRuleFiles(files[i], options);
-            if (ruleFiles.length>0){
-              PackageFile packageFile=parseRuleFiles(ruleFiles, options);
-              packageFile.setName(getPackageName(files[i], options));
-              packages.put(packageFile.getName(), packageFile);
-            }else{
-              if (recurse)
-                buildPackageForDirectory(packages, files[i], options);
+            File[] modelFiles = getJarFiles(files[i]);
+            PackageFile packageFile=new PackageFile();
+            packageFile.setName(getPackageName(files[i], options));
+            
+            if (modelFiles.length>0){
+              packageFile.setModelFiles(modelFiles);
             }
-          }
+            if (ruleFiles.length>0){
+              packageFile = parseRuleFiles(packageFile, ruleFiles, options);
+            }
+            if (packageFile.containsAssets())
+              packages.put(packageFile.getName(), packageFile);
+              
+            if (recurse)
+              buildPackageForDirectory(packages, files[i], options);
         }
+      }
     }
 
+    private static File[] getJarFiles(File directory){
+      return directory.listFiles(new FilenameFilter() {
+        public boolean accept(File dir, String name) {
+          return !name.startsWith(".") && name.endsWith(".jar");
+        }
+      });
+    }
 
   private static File[] getRuleFiles(File directory, CmdArgsParser options){
       if (directory.isDirectory()){
         final String extensionList = options.getOption(Parameters.OPTIONS_EXTENSIONS);
-        File[] files=directory.listFiles(
-        new FilenameFilter(){
+        File[] files = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name){
               return !name.startsWith(".") && name.matches(buildRE(extensionList));
-            }}
-        );
+          }
+        });
         List<File> result=new ArrayList<File>();
-        for (int i = 0; i < files.length; i++) {
-        File f = files[i];
-        if (f.isFile())
-          result.add(f);
+        for (File file : files) {
+          if (file.isFile())
+            result.add(file);
       }
         return result.toArray(new File[result.size()]);
       }
       return new File[]{};
     }
 
-    private static PackageFile parseRuleFiles(File[] ruleFiles, CmdArgsParser options) throws IOException, DroolsParserException {
-    PackageFile result=new PackageFile();
+  private static PackageFile parseRuleFiles(PackageFile result, File[] ruleFiles, CmdArgsParser options) throws IOException, DroolsParserException {
     for (int i = 0; i < ruleFiles.length; i++) {
       File file = ruleFiles[i];
       if (file.getName().endsWith(".drl")) {
         parseDrlFile(file, result, options);
-        result.addRuleFile(file);
       } else if (file.getName().endsWith(".xls")) {
-        if (result.getRuleFiles().size()>1){
-          //this is because the binary data needs a filename associated in the xml, and if there's multiple files when which one do you use?
-          throw new DroolsParserException("Can't parse more than one .xls decision table file in a single directory ["+ file.getParentFile().getPath() +"]");
-        }
         parseXlsFile(file, result, options);
-        result.addRuleFile(file);
       }
     }
     return result;
@@ -165,10 +195,46 @@ public class PackageFile {
 
     private static void parseXlsFile(File file, PackageFile packageFile, CmdArgsParser options) throws FileNotFoundException, UnsupportedEncodingException{
       String content=FileIO.readAllAsBase64(file);
-      packageFile.setName(getPackageName(file, options));
-      packageFile.setFile(file);
-      packageFile.getRules().put(file.getName(), new Rule(file.getName(), content));
+      packageFile.getRules().put(file.getName(), new Rule(file.getName(), content, file));
+      packageFile.getRuleFiles().put(file.getName(), file);
     }
+
+  
+  class ImportsComparator implements Comparator<String>{
+    public int compare(String o1, String o2) {
+      if (!o1.contains("package") && o2.contains("package")){
+        return 1;
+      }
+      return 0;
+    }
+  }
+  
+  private void cleanImports(){
+    List<String> list=new ArrayList<String>();
+    Set<String> set=new HashSet<String>();
+    
+    // separate out import and package lines
+    StringTokenizer st=new StringTokenizer(getImports(), "\n");
+    while (st.hasMoreTokens()){
+      list.add(st.nextToken().trim());
+    }
+    
+    // ensure each line is unique
+    set.addAll(list);
+    list.clear();
+    list.addAll(set);
+    
+    // sort so that package is at the top
+    Collections.sort(list, new ImportsComparator());
+    
+    // push back into the package imports
+    StringBuffer sb=new StringBuffer();
+    for(String line: list){
+      sb.append(line).append("\n");
+    }
+    imports=sb.toString();
+  }
+  
 
   private static void parseDrlFile(File file, PackageFile packageFile, CmdArgsParser options) throws FileNotFoundException{
     String content = FileIO.readAll(new FileInputStream(file));
@@ -179,7 +245,7 @@ public class PackageFile {
       return; // there are no rule's in this file (perhaps functions or other?)
     String imports = content.substring(packageLoc, ruleLoc);
     packageFile.addImports(imports);
-
+    packageFile.cleanImports();
     try {
       boolean moreRules = true;
       while (moreRules) {
@@ -187,8 +253,9 @@ public class PackageFile {
         String ruleContents = content.substring(ruleLoc, endLoc);
         ruleLoc = getRuleStart(content, endLoc);
         moreRules = ruleLoc >= 0;
-        Rule rule = new Rule(findRuleName(ruleContents, options), ruleContents);
+        Rule rule = new Rule(findRuleName(ruleContents, options), ruleContents, file);
         packageFile.getRules().put(rule.getRuleName(), rule);
+        packageFile.getRuleFiles().put(rule.getRuleName(), file);
       }
     } catch (StringIndexOutOfBoundsException e) {
       System.err.print("Error with file: " + file.getName() + "\n");
@@ -202,16 +269,19 @@ public class PackageFile {
    */
     public void buildPackage() throws IOException, DroolsParserException{
       PackageBuilder pb = new PackageBuilder();
-      for (File file : getRuleFiles()) {
+      for(String key:getRuleFiles().keySet()){
+        File file=getRuleFiles().get(key);
+        
         if (FUNCTIONS_FILE!=null){
         File functionsFile=new File(file.getParentFile().getPath(), FUNCTIONS_FILE);
         if (functionsFile.exists()){
           pb.addPackageFromDrl(new FileReader(functionsFile));
         }
         }
-        if (isFormat(Format.DRL)){
+
+        if (file.getName().endsWith(Format.DRL.value)) {
           pb.addPackageFromDrl(new FileReader(file));
-        }else if (isFormat(Format.DRL)){
+        } else if (file.getName().endsWith(Format.XLS.value)) {
           pb.addPackageFromDrl(new StringReader(DroolsHelper.compileDTabletoDRL(file, InputType.XLS)));
         }
       }
@@ -230,7 +300,8 @@ public class PackageFile {
      */
   public void buildPackageWithAccurateDependencyErrorDetection() throws IOException, DroolsParserException {
     PackageBuilder resBuilder = new PackageBuilder();
-    for (File file : getRuleFiles()) {
+    for (String key : getRuleFiles().keySet()) {
+      File file=getRuleFiles().get(key);
       PackageBuilder pb = new PackageBuilder();
       if (FUNCTIONS_FILE != null) {
         File functionsFile = new File(file.getParentFile().getPath(), FUNCTIONS_FILE);
@@ -270,23 +341,16 @@ public class PackageFile {
       return baos.toByteArray();
       }else{
         return new byte[]{};
-//        throw new IOException("Package not built yet");
       }
     }
 
-    public void addRuleFile(File ruleFile){
-      ruleFiles.add(ruleFile);
+    public void addRuleFile(String ruleName, File ruleFile) {
+      ruleFiles.put(ruleName, ruleFile);
     }
 
-    public List<File> getRuleFiles() {
+    public Map<String, File> getRuleFiles() {
     return ruleFiles;
   }
-
-//  public String getCompiledPackage() throws UnsupportedEncodingException, DroolsParserException, IOException{
-//      return FileIO.toBase64(DroolsHelper.compileRuletoPKG(this));
-//    }
-  
-
 
     /**
      * Given a comma separated list of file extensions, this method returns a regular expression to match them
@@ -306,48 +370,6 @@ public class PackageFile {
         return RE;
     }
 
-    /**
-     * Reads the contents of a single file into a useful internal object structure
-     * @param file
-     * @return
-     * @throws FileNotFoundException
-     */
-//    public static PackageFile extract(File file, CmdArgsParser options) throws FileNotFoundException, UnsupportedEncodingException{
-//        PackageFile result=new PackageFile();
-//        result.setFormat(FileIO.getExtension(file));
-//        result.setBinary(!result.getFormat().endsWith(DRL_FILE_EXTENSION));
-//        if (!result.isBinary()){
-//            String content=FileIO.readAll(new FileInputStream(file));
-//            int packageLoc=content.indexOf(PH_PACKAGE_START); //usually 0
-//            int ruleLoc=getRuleStart(content, 0);// variable
-//      result.setPackageName(getPackageName(file, options)); //get package name from directory structure
-//            if (ruleLoc<0) return result; // there are no rule's in this file (perhaps functions or other?)
-//            String imports=content.substring(packageLoc, ruleLoc);
-//            result.setImports(imports);
-//
-//            try {
-//                boolean moreRules = true;
-//                while (moreRules) {
-//                    int endLoc = getLoc(content, ruleLoc, RULE_END_MATCHERS)+4;
-//                    String ruleContents = content.substring(ruleLoc, endLoc);
-//                    ruleLoc = getRuleStart(content, endLoc);
-//                    moreRules = ruleLoc >= 0;
-//                    Rule rule = new Rule(findRuleName(ruleContents, options), ruleContents);
-//                    result.getRules().put(rule.getRuleName(), rule);
-//                }
-//            } catch (StringIndexOutOfBoundsException e) {
-//                System.err.print("Error with file: " + file.getName() + "\n");
-//            }
-//        }else{
-//            //binary format (ie. xls)
-//            String content=FileIO.readAllAsBase64(file);
-//            result.setPackageName(getPackageName(file, options));
-//            result.getRules().put(file.getName(), new Rule(file.getName(), content));
-//        }
-//
-//        return result;
-//    }
-
      /**
    * returns "approval.determine" where path is /home/mallen/workspace/rules/approval/determine/1.0.0.SNAPSHOT/file.xls
    * and options "start" is "rules" and end is "[0-9|.]*[SNAPSHOT]+[0-9|.]*" ie. any number, dot and word SNAPSHOT
@@ -357,7 +379,7 @@ public class PackageFile {
    */
      private static String getPackageName(File directory, CmdArgsParser options) {
     String startPath = directory.getPath();
-    Matcher m = Pattern.compile("([^/]+)").matcher(startPath);
+    Matcher m = Pattern.compile("([^/|\\\\]+)").matcher(startPath); // quad-backslash is for windows paths
     List<String> lpath = new ArrayList<String>();
     while (m.find())
       lpath.add(m.group());
@@ -388,27 +410,16 @@ public class PackageFile {
     }
 
     private static int getLoc(String contents, int startLoc, String[] markers){
-        int[] a=new int[markers.length];
-        for (int i = 0; i < markers.length; i++) {
-            String marker = markers[i];
-            a[i]=contents.indexOf(marker, startLoc);
-        }
+    List<Integer> a = new ArrayList<Integer>();
 
-        //sort
-        int i,j,tmp;
-        for (int x=0;x<a.length;x++){
-            i = x;
-            for (j=x+1;j<a.length;j++){
-                if (a[j] < a[i])
-                    i =j;
-            }
-            tmp = a[x];
-            a[x]=a[i];
-            a[i]=tmp;
-        }
-        for (int k = 0; k < a.length; k++) {
-            if (a[k]>=0)
-              return a[k]; //return the lowest non-negative number
+    for (int i = 0; i < markers.length; i++) {
+      a.add(Integer.valueOf(contents.indexOf(markers[i], startLoc)));
+    }
+
+    Collections.sort(a, new PackageFile());
+    for (int k = 0; k < a.size(); k++) {
+      if (a.get(k) >= 0)
+        return a.get(k); // return the lowest non-negative number
         }
         return -1;
     }
@@ -441,26 +452,7 @@ public class PackageFile {
     }
     return false;
     }
-    public String getFormat() {
-      if (ruleFiles!=null && ruleFiles.size()>0){
-        String name=ruleFiles.get(0).getName().toLowerCase();
-        if (name.endsWith("drl")){
-          return "drl";
-        }else if (name.endsWith("xls")){
-          return "xls";
-        }
-      }
-        return "";
-    }
-//    public void setFormat(String format) {
-//        this.format = format;
-//    }
-    public File getFile() {
-        return file;
-    }
-    public void setFile(File file) {
-        this.file = file;
-    }
+
   public String getDependencyErrors() {
     return dependencyErrors;
   }
@@ -528,6 +520,9 @@ public class PackageFile {
   }
  
   public String toString(){
-    return "PackageFile[name="+name+",format="+getFormat()+"]";
+    return "PackageFile[name="+name+"]";
+  }
+  public int compare(Integer o1, Integer o2) {
+    return o1 - o2;
   }
 }
