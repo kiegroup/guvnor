@@ -253,7 +253,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 switch ( presenter.getTableFormat() ) {
                     case EXTENDED_ENTRY :
                         txtDefaultValue.setEnabled( true );
-                        txtValueList.setEnabled( true );
+                        txtValueList.setEnabled( !presenter.hasEnums( chosenFieldsSelection ) );
                         txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
                         txtValueList.setText( chosenFieldsSelection.getValueList() );
                         break;

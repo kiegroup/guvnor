@@ -216,4 +216,17 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         return dtable.getTableFormat();
     }
 
+    @Override
+    public boolean hasEnums(ActionSetFieldCol52 selectedAction) {
+        for ( Map.Entry<Pattern52, List<ActionSetFieldCol52>> e : this.patternToActionsMap.entrySet() ) {
+            if ( e.getValue().contains( selectedAction ) ) {
+                final String factType = e.getKey().getFactType();
+                final String factField = selectedAction.getFactField();
+                return this.sce.hasEnums( factType,
+                                          factField );
+            }
+        }
+        return false;
+    }
+
 }

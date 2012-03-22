@@ -160,13 +160,69 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     public String[] getOperatorCompletions(Pattern52 selectedPattern,
                                            ConditionCol52 selectedCondition) {
-        String[] ops = sce.getOperatorCompletions( selectedPattern.getFactType(),
-                                                   selectedCondition.getFactField() );
-        return ops;
+        //The "in" (a comma separated list) operator is provided by the SCE when the Field type is STRING
+        final String factType = selectedPattern.getFactType();
+        final String factField = selectedCondition.getFactField();
+        String[] ops = this.sce.getOperatorCompletions( factType,
+                                                        factField );
+
+        //We need to add "in" manually if the Calculation Type is a Literal
+        final List<String> filteredOps = new ArrayList<String>();
+        for ( String op : ops ) {
+            filteredOps.add( op );
+        }
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL == selectedCondition.getConstraintValueType() ) {
+            if ( !filteredOps.contains( "in" ) ) {
+                filteredOps.add( "in" );
+            }
+        } else {
+            filteredOps.remove( "in" );
+        }
+
+        //But remove "in" if the Fact\Field is enumerated
+        if ( sce.hasEnums( factType,
+                           factField ) ) {
+            filteredOps.remove( "in" );
+        }
+
+        final String[] displayOps = new String[filteredOps.size()];
+        filteredOps.toArray( displayOps );
+
+        return displayOps;
     }
 
     public TableFormat getTableFormat() {
         return dtable.getTableFormat();
+    }
+
+    @Override
+    public boolean hasEnum(Pattern52 selectedPattern,
+                           ConditionCol52 selectedCondition) {
+        final String factType = selectedPattern.getFactType();
+        final String factField = selectedCondition.getFactField();
+        return sce.hasEnums( factType,
+                             factField );
+    }
+
+    @Override
+    public boolean requiresValueList(Pattern52 selectedPattern,
+                                     ConditionCol52 selectedCondition) {
+        //Don't show a Value List if either the Fact\Field is empty
+        final String factType = selectedPattern.getFactType();
+        final String factField = selectedCondition.getFactField();
+        boolean enableValueList = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
+
+        //Don't show Value List if operator does not accept one
+        if ( enableValueList ) {
+            enableValueList = validator.doesOperatorAcceptValueList( selectedCondition );
+        }
+
+        //Don't show a Value List if the Fact\Field has an enumeration
+        if ( enableValueList ) {
+            enableValueList = !sce.hasEnums( factType,
+                                             factField );
+        }
+        return enableValueList;
     }
 
 }

@@ -46,6 +46,12 @@ public interface FactPatternConstraintsPageView
 
         TableFormat getTableFormat();
 
+        boolean hasEnum(Pattern52 selectedPattern,
+                        ConditionCol52 selectedCondition);
+
+        boolean requiresValueList(Pattern52 selectedPattern,
+                                  ConditionCol52 selectedCondition);
+
     }
 
     /**

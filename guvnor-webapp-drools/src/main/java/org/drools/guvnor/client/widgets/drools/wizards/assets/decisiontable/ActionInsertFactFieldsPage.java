@@ -243,4 +243,17 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         return dtable.getTableFormat();
     }
 
+    @Override
+    public boolean hasEnums(ActionInsertFactCol52 selectedAction) {
+        for ( Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> e : this.patternToActionsMap.entrySet() ) {
+            if ( e.getValue().contains( selectedAction ) ) {
+                final String factType = e.getKey().getFactType();
+                final String factField = selectedAction.getFactField();
+                return this.sce.hasEnums( factType,
+                                          factField );
+            }
+        }
+        return false;
+    }
+
 }

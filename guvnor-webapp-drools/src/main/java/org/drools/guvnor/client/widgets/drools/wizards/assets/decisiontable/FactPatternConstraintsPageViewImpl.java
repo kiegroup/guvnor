@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
@@ -287,11 +286,15 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 }
             }
 
-            private void displayCalculationTypes(boolean isPredicate) {
+            private void displayCalculationTypes(Pattern52 selectedPattern,
+                                                 ConditionCol52 selectedCondition) {
+                boolean isPredicate = (selectedCondition.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE);
+                boolean hasEnum = presenter.hasEnum( selectedPattern,
+                                                     selectedCondition );
                 calculationType.setVisible( !isPredicate );
                 optLiteral.setEnabled( !isPredicate );
                 optLiteral.setVisible( !isPredicate );
-                optFormula.setEnabled( !isPredicate );
+                optFormula.setEnabled( !(isPredicate || hasEnum) );
                 optFormula.setVisible( !isPredicate );
                 operatorContainer.setVisible( !isPredicate );
                 optPredicate.setEnabled( isPredicate );
@@ -320,20 +323,23 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                     case EXTENDED_ENTRY :
                         txtDefaultValue.setEnabled( true );
                         txtDefaultValue.setText( chosenConditionsSelection.getDefaultValue() );
-                        txtValueList.setEnabled( true );
+                        txtValueList.setEnabled( !presenter.requiresValueList( availablePatternsSelection,
+                                                                               chosenConditionsSelection ) );
                         txtValueList.setText( chosenConditionsSelection.getValueList() );
                         if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                             txtPredicateExpression.setText( chosenConditionsSelection.getFactField() );
-                        }
-                        if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-                            ddOperator.addItem( HumanReadable.getOperatorDisplayName( "in" ),
-                                                "in" );
                         }
 
                         ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
                             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                                 chosenConditionsSelection.setOperator( event.getValue().getValue() );
+                                final boolean requiresValueList = presenter.requiresValueList( availablePatternsSelection,
+                                                                                               chosenConditionsSelection );
+                                txtValueList.setEnabled( requiresValueList );
+                                if ( !requiresValueList ) {
+                                    txtValueList.setText( "" );
+                                }
                                 presenter.stateChanged();
                                 validateConditionOperator();
                             }
@@ -343,15 +349,18 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                         switch ( chosenConditionsSelection.getConstraintValueType() ) {
                             case BaseSingleFieldConstraint.TYPE_LITERAL :
                                 optLiteral.setValue( true );
-                                displayCalculationTypes( false );
+                                displayCalculationTypes( availablePatternsSelection,
+                                                         chosenConditionsSelection );
                                 break;
                             case BaseSingleFieldConstraint.TYPE_RET_VALUE :
                                 optFormula.setValue( true );
-                                displayCalculationTypes( false );
+                                displayCalculationTypes( availablePatternsSelection,
+                                                         chosenConditionsSelection );
                                 break;
                             case BaseSingleFieldConstraint.TYPE_PREDICATE :
                                 optPredicate.setValue( true );
-                                displayCalculationTypes( true );
+                                displayCalculationTypes( availablePatternsSelection,
+                                                         chosenConditionsSelection );
                         }
                         break;
                     case LIMITED_ENTRY :

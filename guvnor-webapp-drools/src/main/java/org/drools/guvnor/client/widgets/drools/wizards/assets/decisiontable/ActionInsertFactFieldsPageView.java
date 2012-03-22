@@ -43,6 +43,8 @@ public interface ActionInsertFactFieldsPageView
 
         TableFormat getTableFormat();
 
+        boolean hasEnums(ActionInsertFactCol52 selectedAction);
+
     }
 
     /**

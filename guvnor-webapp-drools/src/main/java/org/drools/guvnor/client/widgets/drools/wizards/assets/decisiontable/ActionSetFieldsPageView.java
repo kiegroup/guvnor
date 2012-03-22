@@ -40,6 +40,8 @@ public interface ActionSetFieldsPageView
 
         TableFormat getTableFormat();
 
+        boolean hasEnums(ActionSetFieldCol52 selectedAction);
+
     }
 
     /**

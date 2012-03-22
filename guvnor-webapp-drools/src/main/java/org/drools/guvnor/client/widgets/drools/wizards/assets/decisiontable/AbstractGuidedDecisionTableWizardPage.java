@@ -42,7 +42,7 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected NewAssetWizardContext      context;
     protected SuggestionCompletionEngine sce;
 
-    private Validator                    validator;
+    protected Validator                  validator;
 
     public AbstractGuidedDecisionTableWizardPage(NewAssetWizardContext context,
                                                  GuidedDecisionTable52 dtable,
