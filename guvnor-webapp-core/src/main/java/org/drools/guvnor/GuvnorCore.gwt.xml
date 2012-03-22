@@ -36,21 +36,17 @@
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
-  <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImplSafari">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
+  <replace-with class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImplSafari">
+    <when-type-is class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImpl"/>
     <when-property-is name="user.agent" value="safari"/>
   </replace-with>
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImplIE">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
+  <replace-with class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImplIE">
+    <when-type-is class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImpl"/>
     <any>
       <when-property-is name="user.agent" value="ie6"/>
       <when-property-is name="user.agent" value="ie8"/>
       <when-property-is name="user.agent" value="ie9"/>
     </any>
-  </replace-with>
-  <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl">
-    <when-type-is class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl"/>
   </replace-with>
 
 </module>
