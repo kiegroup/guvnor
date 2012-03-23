@@ -1,6 +1,8 @@
 
 package org.drools.guvnor.client.editor;
 
+import org.drools.guvnor.client.event.RefreshAdminAreaEvent;
+import org.drools.guvnor.client.event.RefreshAdminAreaEvent.RefreshAdminAreaHandler;
 import org.drools.guvnor.client.layout.PerspectivesPanelPresenter;
 import org.drools.guvnor.client.place.NameTokens;
 
@@ -36,5 +38,13 @@ public class AdminAreaPresenter2
     @Override
     protected void onBind() {
         super.onBind();
+        addRegisteredHandler(RefreshAdminAreaEvent.getType(),
+                new RefreshAdminAreaHandler() {
+                    @Override
+                    public void onRefreshAdminArea(RefreshAdminAreaEvent event) {
+                        //refresh the view
+                    }
+                }
+        );
     }
 }

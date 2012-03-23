@@ -1,6 +1,7 @@
 
 package org.drools.guvnor.client.editor;
 
+import org.drools.guvnor.client.event.RefreshAdminAreaEvent;
 import org.drools.guvnor.client.layout.PerspectivesPanelPresenter;
 import org.drools.guvnor.client.place.NameTokens;
 
@@ -36,5 +37,9 @@ public class AdminAreaPresenter
     @Override
     protected void onBind() {
         super.onBind();
+    }
+    
+    private void fireRefreshEvent() {
+    	RefreshAdminAreaEvent.fire(this);
     }
 }
