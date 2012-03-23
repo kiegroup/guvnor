@@ -31,7 +31,7 @@ GWTP does support multiple activities.
 GWTP use @ContentSlot annotation to decouple presenters from the "presenter container" (ie. presenters that have nested presenters). 
 Check PerspectivesPanelPresenter.java and AdminAreaPresenter.java for how this is done. Basically, AdminAreaPresenter sends out a 
 RevealContentEvent.fire(this, PerspectivesPanelPresenter.TYPE_MainContent, this) event to notify it wants itselfs to be revealed in 
-a "presenter container" that supports TYPE_MainContent. PerspectivesPanelPresenter.java 
+a "presenter container" that supports TYPE_MainContent.
 
 
 4. EventBus
