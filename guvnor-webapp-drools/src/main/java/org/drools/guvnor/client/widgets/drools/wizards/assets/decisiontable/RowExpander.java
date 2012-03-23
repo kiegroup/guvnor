@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -51,7 +51,10 @@ public class RowExpander {
     private final GuidedDecisionTable52      dtable;
     private final SuggestionCompletionEngine sce;
 
-    private static final String[]            EMPTY_VALUE     = new String[0];
+    private static final List<DTCellValue52> EMPTY_VALUE     = new ArrayList<DTCellValue52>();
+    {
+        EMPTY_VALUE.add( new DTCellValue52() );
+    }
 
     /**
      * Constructor
@@ -80,7 +83,7 @@ public class RowExpander {
     private void addRowNumberColumn() {
         ColumnValues cv = new ColumnValues( columns,
                                             EMPTY_VALUE,
-                                            null );
+                                            new DTCellValue52() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getRowNumberCol(),
                                   cv );
@@ -90,7 +93,7 @@ public class RowExpander {
     private void addRowDescriptionColumn() {
         ColumnValues cv = new ColumnValues( columns,
                                             EMPTY_VALUE,
-                                            null );
+                                            new DTCellValue52() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getDescriptionCol(),
                                   cv );
@@ -144,7 +147,7 @@ public class RowExpander {
                                           sce );
             values = getSplitValues( values );
             cv = new ColumnValues( columns,
-                                   values,
+                                   convertValueList( values ),
                                    c.getDefaultValue() );
 
         } else if ( sce.hasEnums( p.getFactType(),
@@ -158,7 +161,7 @@ public class RowExpander {
 
         } else {
             cv = new ColumnValues( columns,
-                                   values,
+                                   convertValueList( values ),
                                    c.getDefaultValue() );
         }
 
@@ -170,7 +173,10 @@ public class RowExpander {
     }
 
     private void addLimitedEntryColumn(ConditionCol52 c) {
-        String[] values = new String[]{"true", "false"};
+        List<DTCellValue52> values = new ArrayList<DTCellValue52>();
+        values.add( new DTCellValue52( Boolean.TRUE ) );
+        values.add( new DTCellValue52( Boolean.FALSE ) );
+
         ColumnValues cv = new ColumnValues( columns,
                                             values,
                                             c.getDefaultValue() );
@@ -189,10 +195,18 @@ public class RowExpander {
         return splitValues;
     }
 
+    private static List<DTCellValue52> convertValueList(String[] values) {
+        List<DTCellValue52> convertedValues = new ArrayList<DTCellValue52>();
+        for ( String value : values ) {
+            convertedValues.add( new DTCellValue52( value ) );
+        }
+        return convertedValues;
+    }
+
     private void addColumn(ActionSetFieldCol52 a) {
         ColumnValues cv = new ColumnValues( columns,
                                             EMPTY_VALUE,
-                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : Boolean.FALSE.toString() );
+                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : new DTCellValue52( Boolean.FALSE ) );
         cv.setExpandColumn( false );
         this.expandedColumns.put( a,
                                   cv );
@@ -202,7 +216,7 @@ public class RowExpander {
     private void addColumn(ActionInsertFactCol52 a) {
         ColumnValues cv = new ColumnValues( columns,
                                             EMPTY_VALUE,
-                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : Boolean.FALSE.toString() );
+                                            dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ? a.getDefaultValue() : new DTCellValue52( Boolean.FALSE ) );
         cv.setExpandColumn( false );
         this.expandedColumns.put( a,
                                   cv );
@@ -243,7 +257,7 @@ public class RowExpander {
      */
     class RowIterator
         implements
-        Iterator<List<String>> {
+        Iterator<List<DTCellValue52>> {
 
         //Check if all columns have had their value lists consumed
         public boolean hasNext() {
@@ -259,16 +273,16 @@ public class RowExpander {
         //check whether all their values have been used and advance the subsequent column
         //so a ripple effect can be observed, with one column advancing the next, which
         //advances the next and so on...
-        public List<String> next() {
+        public List<DTCellValue52> next() {
 
             //We have a row that is potentially partially populated as the dependent enum data has not been set
             //So ask columns to update their value lists based on the current row definition. This will force
             //the dependent enumeration value lists to be populated.
             boolean refreshRow = false;
-            List<String> row;
+            List<DTCellValue52> row;
             do {
                 refreshRow = false;
-                row = new ArrayList<String>();
+                row = new ArrayList<DTCellValue52>();
                 for ( ColumnValues cv : columns ) {
                     row.add( cv.getCurrentValue() );
                 }
@@ -296,26 +310,26 @@ public class RowExpander {
      */
     static class ColumnValues {
 
-        List<String>       values;
-        List<String>       originalValues;
-        List<ColumnValues> columns;
-        String             value;
-        String             defaultValue;
-        Iterator<String>   iterator;
-        boolean            expandColumn    = true;
-        boolean            isAllValuesUsed = false;
+        List<DTCellValue52>     values;
+        List<DTCellValue52>     originalValues;
+        List<ColumnValues>      columns;
+        DTCellValue52           value;
+        DTCellValue52           defaultValue;
+        Iterator<DTCellValue52> iterator;
+        boolean                 expandColumn    = true;
+        boolean                 isAllValuesUsed = false;
 
         ColumnValues(List<ColumnValues> columns,
-                     String[] values,
-                     String defaultValue) {
+                     List<DTCellValue52> values,
+                     DTCellValue52 defaultValue) {
             this.columns = columns;
             this.defaultValue = defaultValue;
-            this.values = Arrays.asList( values );
+            this.values = values;
             this.originalValues = this.values;
 
             //If no values were provided add the default and record that all values have been used
             if ( this.values.size() == 0 ) {
-                this.values = new ArrayList<String>();
+                this.values = new ArrayList<DTCellValue52>();
                 this.values.add( defaultValue );
                 this.originalValues = this.values;
                 this.isAllValuesUsed = true;
@@ -332,7 +346,7 @@ public class RowExpander {
                 this.values = this.originalValues;
                 this.isAllValuesUsed = false;
             } else {
-                this.values = new ArrayList<String>();
+                this.values = new ArrayList<DTCellValue52>();
                 this.values.add( defaultValue );
                 this.isAllValuesUsed = true;
             }
@@ -346,7 +360,7 @@ public class RowExpander {
          * 
          * @return
          */
-        String getCurrentValue() {
+        DTCellValue52 getCurrentValue() {
             return this.value;
         }
 
@@ -394,7 +408,7 @@ public class RowExpander {
         ColumnDynamicValues(List<ColumnValues> columns,
                             SuggestionCompletionEngine sce,
                             Context context,
-                            String defaultValue) {
+                            DTCellValue52 defaultValue) {
             super( columns,
                    EMPTY_VALUE,
                    defaultValue );
@@ -406,7 +420,7 @@ public class RowExpander {
                                                   ((ConditionCol52) context.getBaseColumn()).getFactField(),
                                                   new HashMap<String, String>() );
             if ( dd != null ) {
-                this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
+                this.values = convertValueList( getSplitValues( dd.fixedList ) );
                 this.originalValues = this.values;
                 this.initialiseValueList = false;
                 this.isAllValuesUsed = false;
@@ -434,7 +448,7 @@ public class RowExpander {
          * @returns true if the Value List has changed and the row should be
          *          refreshed
          */
-        boolean assertValueList(List<String> row) {
+        boolean assertValueList(List<DTCellValue52> row) {
             if ( !this.expandColumn ) {
                 return false;
             }
@@ -447,9 +461,9 @@ public class RowExpander {
                         final ColumnDynamicValues cdv = (ColumnDynamicValues) cv;
                         if ( cdv.context.getBasePattern().equals( this.context.getBasePattern() ) ) {
                             final ConditionCol52 cc = (ConditionCol52) cdv.context.getBaseColumn();
-                            final String value = row.get( iCol );
+                            final DTCellValue52 value = row.get( iCol );
                             currentValueMap.put( cc.getFactField(),
-                                                 value );
+                                                 value.getStringValue() );
                         }
                     }
                 }
@@ -458,11 +472,11 @@ public class RowExpander {
                                                       ((ConditionCol52) context.getBaseColumn()).getFactField(),
                                                       currentValueMap );
                 if ( dd != null ) {
-                    this.values = Arrays.asList( getSplitValues( dd.fixedList ) );
+                    this.values = convertValueList( getSplitValues( dd.fixedList ) );
                     this.originalValues = this.values;
                     this.isAllValuesUsed = false;
                 } else {
-                    this.values = new ArrayList<String>();
+                    this.values = new ArrayList<DTCellValue52>();
                     this.values.add( defaultValue );
                     this.originalValues = this.values;
                     this.isAllValuesUsed = true;

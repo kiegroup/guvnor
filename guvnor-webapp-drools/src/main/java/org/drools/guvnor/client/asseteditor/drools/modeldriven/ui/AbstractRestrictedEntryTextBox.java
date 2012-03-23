@@ -28,7 +28,14 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public abstract class AbstractRestrictedEntryTextBox extends TextBox {
 
+    protected final boolean allowEmptyValue;
+
     public AbstractRestrictedEntryTextBox() {
+        this( false );
+    }
+
+    public AbstractRestrictedEntryTextBox(final boolean allowEmptyValue) {
+        this.allowEmptyValue = allowEmptyValue;
         setup();
     }
 

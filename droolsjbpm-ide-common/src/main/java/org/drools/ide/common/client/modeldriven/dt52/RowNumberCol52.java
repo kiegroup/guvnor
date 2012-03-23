@@ -20,11 +20,13 @@ package org.drools.ide.common.client.modeldriven.dt52;
  */
 public class RowNumberCol52 extends DTColumnConfig52 {
 
-    private static final long serialVersionUID = -2272148755430209968L;
+    private static final long          serialVersionUID   = -2272148755430209968L;
+
+    private static final DTCellValue52 DEFAULT_ROW_NUMBER = new DTCellValue52( "0" );
 
     @Override
-    public String getDefaultValue() {
-        return "0";
+    public DTCellValue52 getDefaultValue() {
+        return DEFAULT_ROW_NUMBER;
     }
 
 }

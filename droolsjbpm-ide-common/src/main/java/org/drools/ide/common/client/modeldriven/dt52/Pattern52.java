@@ -133,11 +133,11 @@ public class Pattern52
         throw new UnsupportedOperationException( "Operation only supported by child columns" );
     }
 
-    public String getDefaultValue() {
+    public DTCellValue52 getDefaultValue() {
         throw new UnsupportedOperationException( "Operation only supported by child columns" );
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public void setDefaultValue(DTCellValue52 defaultValue) {
         throw new UnsupportedOperationException( "Operation only supported by child columns" );
     }
 

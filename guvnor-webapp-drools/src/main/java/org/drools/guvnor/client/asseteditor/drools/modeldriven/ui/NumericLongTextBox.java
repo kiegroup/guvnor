@@ -25,6 +25,14 @@ public class NumericLongTextBox extends AbstractRestrictedEntryTextBox {
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
+    public NumericLongTextBox() {
+        super( false );
+    }
+
+    public NumericLongTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -38,7 +46,7 @@ public class NumericLongTextBox extends AbstractRestrictedEntryTextBox {
         try {
             Long.parseLong( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

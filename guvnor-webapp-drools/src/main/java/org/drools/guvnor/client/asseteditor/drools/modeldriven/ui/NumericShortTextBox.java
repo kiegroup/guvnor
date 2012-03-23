@@ -25,6 +25,14 @@ public class NumericShortTextBox extends AbstractRestrictedEntryTextBox {
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
+    public NumericShortTextBox() {
+        super( false );
+    }
+
+    public NumericShortTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -38,7 +46,7 @@ public class NumericShortTextBox extends AbstractRestrictedEntryTextBox {
         try {
             Short.parseShort( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

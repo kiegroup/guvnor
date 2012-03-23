@@ -790,9 +790,6 @@ public class GuidedDTDRLPersistence {
                     attribs.add( new RuleAttribute( at.getAttribute(),
                                                     cell ) );
                 }
-            } else if ( at.getDefaultValue() != null ) {
-                attribs.add( new RuleAttribute( at.getAttribute(),
-                                                at.getDefaultValue() ) );
             }
         }
         if ( attribs.size() > 0 ) {

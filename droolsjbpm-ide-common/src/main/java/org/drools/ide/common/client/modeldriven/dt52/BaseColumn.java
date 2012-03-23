@@ -32,8 +32,8 @@ public interface BaseColumn {
 
     public void setWidth(int width);
 
-    public String getDefaultValue();
+    public DTCellValue52 getDefaultValue();
 
-    public void setDefaultValue(String defaultValue);
+    public void setDefaultValue(DTCellValue52 defaultValue);
 
 }

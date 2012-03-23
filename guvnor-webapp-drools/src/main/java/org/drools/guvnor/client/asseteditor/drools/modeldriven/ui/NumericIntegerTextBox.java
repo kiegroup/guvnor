@@ -25,6 +25,14 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
     // A valid integer
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
+    public NumericIntegerTextBox() {
+        super( false );
+    }
+
+    public NumericIntegerTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -38,7 +46,7 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
         try {
             Integer.parseInt( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

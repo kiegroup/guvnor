@@ -25,7 +25,7 @@ public class DTColumnConfig52
     private static final long serialVersionUID = 510l;
 
     // For a default value ! Will still be in the array of course, just use this value if its empty
-    private String            defaultValue     = null;
+    private DTCellValue52     defaultValue     = new DTCellValue52();
 
     // To hide the column (eg if it has a mandatory default)
     private boolean           hideColumn       = false;
@@ -36,7 +36,7 @@ public class DTColumnConfig52
     // The header to be displayed.
     private String            header;
 
-    public String getDefaultValue() {
+    public DTCellValue52 getDefaultValue() {
         return defaultValue;
     }
 
@@ -48,7 +48,7 @@ public class DTColumnConfig52
         return hideColumn;
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public void setDefaultValue(DTCellValue52 defaultValue) {
         this.defaultValue = defaultValue;
     }
 

@@ -1288,11 +1288,11 @@ public class GuidedDecisionTableWidget extends Composite
 
             final TextBox defaultValue = new TextBox();
             defaultValue.setStyleName( "form-field" );
-            defaultValue.setText( at.getDefaultValue() );
+            defaultValue.setText( at.getDefaultValue().getStringValue() );
             defaultValue.setEnabled( !isReadOnly );
             defaultValue.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
-                    at.setDefaultValue( defaultValue.getText() );
+                    at.setDefaultValue( new DTCellValue52( defaultValue.getText() ) );
                 }
             } );
 

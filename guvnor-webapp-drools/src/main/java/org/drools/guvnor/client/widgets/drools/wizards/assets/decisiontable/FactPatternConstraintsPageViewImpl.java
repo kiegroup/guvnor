@@ -141,9 +141,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     TextBox                                      txtValueList;
 
     @UiField
-    TextBox                                      txtDefaultValue;
-
-    @UiField
     HorizontalPanel                              msgDuplicateBindings;
 
     @UiField
@@ -160,6 +157,12 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     @UiField
     SimplePanel                                  limitedEntryValueWidgetContainer;
+
+    @UiField
+    HorizontalPanel                              defaultValueContainer;
+
+    @UiField
+    SimplePanel                                  defaultValueWidgetContainer;
 
     @UiField(provided = true)
     PushButton                                   btnMoveUp   = new PushButton( AbstractImagePrototype.create( DroolsGuvnorImages.INSTANCE.shuffleUp() ).createImage() );
@@ -190,7 +193,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         initialiseCalculationTypes();
         initialiseColumnHeader();
         initialisePredicateExpression();
-        initialiseDefaultValue();
         initialiseValueList();
         initialiseShufflers();
     }
@@ -280,7 +282,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                     optPredicate.setEnabled( false );
                     txtColumnHeader.setEnabled( false );
                     txtValueList.setEnabled( false );
-                    txtDefaultValue.setEnabled( false );
+                    defaultValueContainer.setVisible( false );
                     btnMoveUp.setEnabled( false );
                     btnMoveDown.setEnabled( false );
                 }
@@ -321,11 +323,13 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 // Fields specific to the table format
                 switch ( presenter.getTableFormat() ) {
                     case EXTENDED_ENTRY :
-                        txtDefaultValue.setEnabled( true );
-                        txtDefaultValue.setText( chosenConditionsSelection.getDefaultValue() );
                         txtValueList.setEnabled( !presenter.requiresValueList( availablePatternsSelection,
                                                                                chosenConditionsSelection ) );
                         txtValueList.setText( chosenConditionsSelection.getValueList() );
+
+                        makeDefaultValueWidget();
+                        defaultValueContainer.setVisible( validator.doesOperatorNeedValue( chosenConditionsSelection ) );
+
                         if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                             txtPredicateExpression.setText( chosenConditionsSelection.getFactField() );
                         }
@@ -342,6 +346,9 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                                 }
                                 presenter.stateChanged();
                                 validateConditionOperator();
+                                
+                                makeDefaultValueWidget();
+                                defaultValueContainer.setVisible( validator.doesOperatorNeedValue( chosenConditionsSelection ) );
                             }
 
                         } );
@@ -402,6 +409,16 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 limitedEntryValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
                                                                                chosenConditionsSelection,
                                                                                lec.getValue() ) );
+            }
+
+            private void makeDefaultValueWidget() {
+                if ( chosenConditionsSelection.getDefaultValue() == null ) {
+                    chosenConditionsSelection.setDefaultValue( factory.makeNewValue( chosenConditionsSelection ) );
+                }
+                defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
+                                                                          chosenConditionsSelection,
+                                                                          chosenConditionsSelection.getDefaultValue(),
+                                                                          true ) );
             }
 
         } );
@@ -470,18 +487,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 // Redraw list widget that shows Predicate expressions
                 chosenConditionsWidget.redraw();
 
-            }
-
-        } );
-    }
-
-    private void initialiseDefaultValue() {
-        txtDefaultValue.addValueChangeHandler( new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String defaultValue = txtDefaultValue.getText();
-                chosenConditionsSelection.setDefaultValue( defaultValue );
-                // DefaultValue is optional, no need to advise of state change
             }
 
         } );
@@ -649,7 +654,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         txtColumnHeader.setText( "" );
         txtValueList.setText( "" );
-        txtDefaultValue.setText( "" );
+        defaultValueContainer.setVisible( false );
         conditionDefinition.setVisible( false );
         btnRemove.setEnabled( false );
     }

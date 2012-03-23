@@ -35,6 +35,7 @@ import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager;
 import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -49,8 +50,6 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -131,6 +130,30 @@ public class DTCellValueWidgetFactory {
     public Widget getWidget(Pattern52 pattern,
                             ConditionCol52 column,
                             DTCellValue52 value) {
+        return getWidget( pattern,
+                          column,
+                          value,
+                          false );
+    }
+
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List"). This overloaded method takes a
+     * Pattern52 object as well since the pattern may be different to that to
+     * which the column has been bound in the Decision Table model, i.e. when
+     * adding or editing a column
+     * 
+     * @param pattern
+     * @param column
+     * @param value
+     * @param allowEmptyValue
+     * @return
+     */
+    public Widget getWidget(Pattern52 pattern,
+                            ConditionCol52 column,
+                            DTCellValue52 value,
+                            boolean allowEmptyValue) {
 
         if ( sce.hasEnums( pattern.getFactType(),
                            column.getFactField() ) ) {
@@ -144,12 +167,14 @@ public class DTCellValueWidgetFactory {
                 return makeListBox( new String[0],
                                     pattern,
                                     column,
-                                    value );
+                                    value,
+                                    false );
             }
             return makeListBox( dd.fixedList,
                                 pattern,
                                 column,
-                                value );
+                                value,
+                                allowEmptyValue );
         }
 
         DTDataTypes52 type = dtable.getTypeSafeType( pattern,
@@ -157,27 +182,38 @@ public class DTCellValueWidgetFactory {
                                                      sce );
         switch ( type ) {
             case NUMERIC :
-                return makeNumericTextBox( value );
+                return makeNumericTextBox( value,
+                                           allowEmptyValue );
             case NUMERIC_BIGDECIMAL :
-                return makeNumericBigDecimalTextBox( value );
+                return makeNumericBigDecimalTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BIGINTEGER :
-                return makeNumericBigIntegerTextBox( value );
+                return makeNumericBigIntegerTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BYTE :
-                return makeNumericByteTextBox( value );
+                return makeNumericByteTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_DOUBLE :
-                return makeNumericDoubleTextBox( value );
+                return makeNumericDoubleTextBox( value,
+                                                 allowEmptyValue );
             case NUMERIC_FLOAT :
-                return makeNumericFloatTextBox( value );
+                return makeNumericFloatTextBox( value,
+                                                allowEmptyValue );
             case NUMERIC_INTEGER :
-                return makeNumericIntegerTextBox( value );
+                return makeNumericIntegerTextBox( value,
+                                                  allowEmptyValue );
             case NUMERIC_LONG :
-                return makeNumericLongTextBox( value );
+                return makeNumericLongTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_SHORT :
-                return makeNumericShortTextBox( value );
+                return makeNumericShortTextBox( value,
+                                                allowEmptyValue );
             case BOOLEAN :
-                return makeBooleanSelector( value );
+                return makeBooleanSelector( value,
+                                            allowEmptyValue );
             case DATE :
-                return makeDateSelector( value );
+                return makeDateSelector( value,
+                                         allowEmptyValue );
             default :
                 return makeTextBox( value );
         }
@@ -215,6 +251,29 @@ public class DTCellValueWidgetFactory {
     public Widget getWidget(Pattern52 pattern,
                             ActionSetFieldCol52 column,
                             DTCellValue52 value) {
+        return getWidget( pattern,
+                          column,
+                          value,
+                          false );
+    }
+
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List"). This overloaded method takes a
+     * Pattern52 object as well since the ActionSetFieldCol52 column may be
+     * associated with an unbound Pattern
+     * 
+     * @param pattern
+     * @param column
+     * @param value
+     * @param allowEmptyValue
+     * @return
+     */
+    public Widget getWidget(Pattern52 pattern,
+                            ActionSetFieldCol52 column,
+                            DTCellValue52 value,
+                            boolean allowEmptyValue) {
 
         if ( sce.hasEnums( pattern.getFactType(),
                            column.getFactField() ) ) {
@@ -228,12 +287,14 @@ public class DTCellValueWidgetFactory {
                 return makeListBox( new String[0],
                                     pattern,
                                     column,
-                                    value );
+                                    value,
+                                    false );
             }
             return makeListBox( dd.fixedList,
                                 pattern,
                                 column,
-                                value );
+                                value,
+                                allowEmptyValue );
         }
 
         DTDataTypes52 type = dtable.getTypeSafeType( pattern,
@@ -241,27 +302,38 @@ public class DTCellValueWidgetFactory {
                                                      sce );
         switch ( type ) {
             case NUMERIC :
-                return makeNumericTextBox( value );
+                return makeNumericTextBox( value,
+                                           allowEmptyValue );
             case NUMERIC_BIGDECIMAL :
-                return makeNumericBigDecimalTextBox( value );
+                return makeNumericBigDecimalTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BIGINTEGER :
-                return makeNumericBigIntegerTextBox( value );
+                return makeNumericBigIntegerTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BYTE :
-                return makeNumericByteTextBox( value );
+                return makeNumericByteTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_DOUBLE :
-                return makeNumericDoubleTextBox( value );
+                return makeNumericDoubleTextBox( value,
+                                                 allowEmptyValue );
             case NUMERIC_FLOAT :
-                return makeNumericFloatTextBox( value );
+                return makeNumericFloatTextBox( value,
+                                                allowEmptyValue );
             case NUMERIC_INTEGER :
-                return makeNumericIntegerTextBox( value );
+                return makeNumericIntegerTextBox( value,
+                                                  allowEmptyValue );
             case NUMERIC_LONG :
-                return makeNumericLongTextBox( value );
+                return makeNumericLongTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_SHORT :
-                return makeNumericShortTextBox( value );
+                return makeNumericShortTextBox( value,
+                                                allowEmptyValue );
             case BOOLEAN :
-                return makeBooleanSelector( value );
+                return makeBooleanSelector( value,
+                                            allowEmptyValue );
             case DATE :
-                return makeDateSelector( value );
+                return makeDateSelector( value,
+                                         allowEmptyValue );
             default :
                 return makeTextBox( value );
         }
@@ -278,7 +350,24 @@ public class DTCellValueWidgetFactory {
      */
     public Widget getWidget(ActionInsertFactCol52 column,
                             DTCellValue52 value) {
+        return getWidget( column,
+                          value,
+                          false );
+    }
 
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List").
+     * 
+     * @param column
+     * @param value
+     * @param allowEmptyValue
+     * @return
+     */
+    public Widget getWidget(ActionInsertFactCol52 column,
+                            DTCellValue52 value,
+                            boolean allowEmptyValue) {
         if ( sce.hasEnums( column.getFactType(),
                            column.getFactField() ) ) {
             final Context context = new Context( column );
@@ -289,49 +378,78 @@ public class DTCellValueWidgetFactory {
             if ( dd == null ) {
                 return makeListBox( new String[0],
                                     column,
-                                    value );
+                                    value,
+                                    false );
             }
             return makeListBox( dd.fixedList,
                                 column,
-                                value );
+                                value,
+                                allowEmptyValue );
         }
 
         DTDataTypes52 type = dtable.getTypeSafeType( column,
                                                      sce );
         switch ( type ) {
             case NUMERIC :
-                return makeNumericTextBox( value );
+                return makeNumericTextBox( value,
+                                           allowEmptyValue );
             case NUMERIC_BIGDECIMAL :
-                return makeNumericBigDecimalTextBox( value );
+                return makeNumericBigDecimalTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BIGINTEGER :
-                return makeNumericBigIntegerTextBox( value );
+                return makeNumericBigIntegerTextBox( value,
+                                                     allowEmptyValue );
             case NUMERIC_BYTE :
-                return makeNumericByteTextBox( value );
+                return makeNumericByteTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_DOUBLE :
-                return makeNumericDoubleTextBox( value );
+                return makeNumericDoubleTextBox( value,
+                                                 allowEmptyValue );
             case NUMERIC_FLOAT :
-                return makeNumericFloatTextBox( value );
+                return makeNumericFloatTextBox( value,
+                                                allowEmptyValue );
             case NUMERIC_INTEGER :
-                return makeNumericIntegerTextBox( value );
+                return makeNumericIntegerTextBox( value,
+                                                  allowEmptyValue );
             case NUMERIC_LONG :
-                return makeNumericLongTextBox( value );
+                return makeNumericLongTextBox( value,
+                                               allowEmptyValue );
             case NUMERIC_SHORT :
-                return makeNumericShortTextBox( value );
+                return makeNumericShortTextBox( value,
+                                                allowEmptyValue );
             case BOOLEAN :
-                return makeBooleanSelector( value );
+                return makeBooleanSelector( value,
+                                            allowEmptyValue );
             case DATE :
-                return makeDateSelector( value );
+                return makeDateSelector( value,
+                                         allowEmptyValue );
             default :
                 return makeTextBox( value );
         }
     }
 
-    private ListBox makeBooleanSelector(final DTCellValue52 value) {
+    private ListBox makeBooleanSelector(final DTCellValue52 value,
+                                        final boolean allowEmptyValue) {
         final ListBox lb = new ListBox();
-        Boolean currentItem = value.getBooleanValue();
+        int indexTrue = 0;
+        int indexFalse = 1;
+
+        if ( allowEmptyValue ) {
+            indexTrue = 1;
+            indexFalse = 2;
+            lb.addItem( Constants.INSTANCE.Choose(),
+                        "" );
+        }
+
         lb.addItem( "true" );
         lb.addItem( "false" );
-        lb.setSelectedIndex( currentItem ? 0 : 1 );
+        Boolean currentItem = value.getBooleanValue();
+        if ( currentItem == null ) {
+            lb.setSelectedIndex( 0 );
+        } else {
+            lb.setSelectedIndex( currentItem ? indexTrue : indexFalse );
+
+        }
 
         // Wire up update handler
         lb.setEnabled( !isReadOnly );
@@ -339,7 +457,9 @@ public class DTCellValueWidgetFactory {
             lb.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    value.setBooleanValue( lb.getValue( lb.getSelectedIndex() ).equals( "true" ) );
+                    final String txtValue = lb.getValue( lb.getSelectedIndex() );
+                    Boolean boolValue = (txtValue.equals( "" ) ? null : txtValue.equals( "true" ));
+                    value.setBooleanValue( boolValue );
                 }
 
             } );
@@ -350,9 +470,11 @@ public class DTCellValueWidgetFactory {
     private ListBox makeListBox(final String[] completions,
                                 final Pattern52 basePattern,
                                 final ConditionCol52 baseCondition,
-                                final DTCellValue52 value) {
+                                final DTCellValue52 value,
+                                final boolean allowEmptyValue) {
         final ListBox lb = makeListBox( completions,
-                                        value );
+                                        value,
+                                        allowEmptyValue );
 
         // Wire up update handler
         lb.setEnabled( !isReadOnly );
@@ -388,9 +510,11 @@ public class DTCellValueWidgetFactory {
     private ListBox makeListBox(final String[] completions,
                                 final Pattern52 basePattern,
                                 final ActionSetFieldCol52 baseAction,
-                                final DTCellValue52 value) {
+                                final DTCellValue52 value,
+                                final boolean allowEmptyValue) {
         final ListBox lb = makeListBox( completions,
-                                        value );
+                                        value,
+                                        allowEmptyValue );
 
         // Wire up update handler
         lb.setEnabled( !isReadOnly );
@@ -425,9 +549,11 @@ public class DTCellValueWidgetFactory {
 
     private ListBox makeListBox(final String[] completions,
                                 final ActionInsertFactCol52 baseAction,
-                                final DTCellValue52 value) {
+                                final DTCellValue52 value,
+                                final boolean allowEmptyValue) {
         final ListBox lb = makeListBox( completions,
-                                        value );
+                                        value,
+                                        allowEmptyValue );
 
         // Wire up update handler
         lb.setEnabled( !isReadOnly );
@@ -460,18 +586,26 @@ public class DTCellValueWidgetFactory {
     }
 
     private ListBox makeListBox(final String[] completions,
-                                final DTCellValue52 value) {
+                                final DTCellValue52 value,
+                                final boolean allowEmptyValue) {
         int selectedIndex = -1;
         final ListBox lb = new ListBox();
+
+        if ( allowEmptyValue ) {
+            lb.addItem( Constants.INSTANCE.Choose(),
+                        "" );
+        }
+
         String currentItem = value.getStringValue();
+        int selectedIndexOffset = (allowEmptyValue ? 1 : 0);
         for ( int i = 0; i < completions.length; i++ ) {
             String item = completions[i].trim();
             String[] splut = ConstraintValueEditorHelper.splitValue( item );
             lb.addItem( splut[1],
                         splut[0] );
             if ( splut[0].equals( currentItem ) ) {
-                lb.setSelectedIndex( i );
-                selectedIndex = i;
+                lb.setSelectedIndex( i + selectedIndexOffset );
+                selectedIndex = i + selectedIndexOffset;
             }
         }
 
@@ -488,8 +622,9 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericTextBox(final DTCellValue52 value,
+                                                              final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericTextBox( allowEmptyValue );
         final BigDecimal numericValue = (BigDecimal) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toPlainString() );
 
@@ -503,8 +638,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new BigDecimal( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( BigDecimal.ZERO );
-                        tb.setValue( BigDecimal.ZERO.toPlainString() );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (BigDecimal) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( BigDecimal.ZERO );
+                            tb.setValue( BigDecimal.ZERO.toPlainString() );
+                        }
                     }
                 }
 
@@ -513,8 +653,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericBigDecimalTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericBigDecimalTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericBigDecimalTextBox(final DTCellValue52 value,
+                                                                        final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericBigDecimalTextBox( allowEmptyValue );
         final BigDecimal numericValue = (BigDecimal) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toPlainString() );
 
@@ -528,8 +669,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new BigDecimal( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( BigDecimal.ZERO );
-                        tb.setValue( BigDecimal.ZERO.toPlainString() );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (BigDecimal) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( BigDecimal.ZERO );
+                            tb.setValue( BigDecimal.ZERO.toPlainString() );
+                        }
                     }
                 }
 
@@ -538,8 +684,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericBigIntegerTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericBigIntegerTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericBigIntegerTextBox(final DTCellValue52 value,
+                                                                        final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericBigIntegerTextBox( allowEmptyValue );
         final BigInteger numericValue = (BigInteger) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -553,8 +700,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new BigInteger( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( BigInteger.ZERO );
-                        tb.setValue( BigInteger.ZERO.toString() );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (BigInteger) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( BigInteger.ZERO );
+                            tb.setValue( BigInteger.ZERO.toString() );
+                        }
                     }
                 }
 
@@ -563,8 +715,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericByteTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericByteTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericByteTextBox(final DTCellValue52 value,
+                                                                  final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericByteTextBox( allowEmptyValue );
         final Byte numericValue = (Byte) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -578,8 +731,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Byte( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Byte( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Byte) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Byte( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -588,8 +746,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericDoubleTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericDoubleTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericDoubleTextBox(final DTCellValue52 value,
+                                                                    final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericDoubleTextBox( allowEmptyValue );
         final Double numericValue = (Double) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -603,8 +762,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Double( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Double( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Double) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Double( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -613,8 +777,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericFloatTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericFloatTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericFloatTextBox(final DTCellValue52 value,
+                                                                   final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericFloatTextBox( allowEmptyValue );
         final Float numericValue = (Float) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -628,8 +793,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Float( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Float( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Float) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Float( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -638,8 +808,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericIntegerTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericIntegerTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericIntegerTextBox(final DTCellValue52 value,
+                                                                     final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericIntegerTextBox( allowEmptyValue );
         final Integer numericValue = (Integer) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -653,8 +824,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Integer( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Integer( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Integer) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Integer( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -663,8 +839,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericLongTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericLongTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericLongTextBox(final DTCellValue52 value,
+                                                                  final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericLongTextBox( allowEmptyValue );
         final Long numericValue = (Long) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -678,8 +855,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Long( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Long( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Long) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Long( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -688,8 +870,9 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private AbstractRestrictedEntryTextBox makeNumericShortTextBox(final DTCellValue52 value) {
-        final AbstractRestrictedEntryTextBox tb = new NumericShortTextBox();
+    private AbstractRestrictedEntryTextBox makeNumericShortTextBox(final DTCellValue52 value,
+                                                                   final boolean allowEmptyValue) {
+        final AbstractRestrictedEntryTextBox tb = new NumericShortTextBox( allowEmptyValue );
         final Short numericValue = (Short) value.getNumericValue();
         tb.setValue( numericValue == null ? "" : numericValue.toString() );
 
@@ -703,8 +886,13 @@ public class DTCellValueWidgetFactory {
                         value.setNumericValue( new Short( event.getValue() ) );
                     }
                     catch ( NumberFormatException nfe ) {
-                        value.setNumericValue( new Short( "0" ) );
-                        tb.setValue( "0" );
+                        if ( allowEmptyValue ) {
+                            value.setNumericValue( (Short) null );
+                            tb.setValue( "" );
+                        } else {
+                            value.setNumericValue( new Short( "0" ) );
+                            tb.setValue( "0" );
+                        }
                     }
                 }
 
@@ -731,7 +919,8 @@ public class DTCellValueWidgetFactory {
         return tb;
     }
 
-    private Widget makeDateSelector(final DTCellValue52 value) {
+    private Widget makeDateSelector(final DTCellValue52 value,
+                                    final boolean allowEmptyValue) {
         //If read-only return a label
         if ( isReadOnly ) {
             Label dateLabel = new Label();
@@ -740,7 +929,9 @@ public class DTCellValueWidgetFactory {
         }
 
         PopupDatePicker dp = new PopupDatePicker();
-        dp.setValue( value.getDateValue() );
+        if ( value.getDateValue() != null ) {
+            dp.setValue( value.getDateValue() );
+        }
 
         // Wire up update handler
         dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
@@ -751,30 +942,6 @@ public class DTCellValueWidgetFactory {
 
         } );
         return dp;
-    }
-
-    /**
-     * An editor for 'Default Value'
-     * 
-     * @param col
-     * @return
-     */
-    public static TextBox getDefaultEditor(final DTColumnConfig52 col,
-                                           boolean isReadOnly) {
-        final TextBox txtDefaultValue = new TextBox();
-        txtDefaultValue.setText( col.getDefaultValue() );
-
-        // Wire up update handler
-        txtDefaultValue.setEnabled( !isReadOnly );
-        if ( !isReadOnly ) {
-            txtDefaultValue.addChangeHandler( new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    col.setDefaultValue( txtDefaultValue.getText() );
-                }
-            } );
-        }
-        return txtDefaultValue;
     }
 
     /**

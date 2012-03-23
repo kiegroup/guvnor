@@ -248,7 +248,7 @@ public class GuidedDecisionTableUpgradeHelper1
     private AttributeCol52 makeNewColumn(AttributeCol c) {
         AttributeCol52 nc = new AttributeCol52();
         nc.setAttribute( c.attr );
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setHideColumn( c.hideColumn );
         nc.setReverseOrder( c.reverseOrder );
         nc.setUseRowNumber( c.useRowNumber );
@@ -258,7 +258,7 @@ public class GuidedDecisionTableUpgradeHelper1
 
     private MetadataCol52 makeNewColumn(MetadataCol c) {
         MetadataCol52 nc = new MetadataCol52();
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setHideColumn( c.hideColumn );
         nc.setMetadata( c.attr );
         nc.setWidth( c.width );
@@ -268,7 +268,7 @@ public class GuidedDecisionTableUpgradeHelper1
     private ConditionCol52 makeNewColumn(ConditionCol c) {
         ConditionCol52 nc = new ConditionCol52();
         nc.setConstraintValueType( c.constraintValueType );
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setFactField( c.factField );
         nc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         nc.setHeader( c.header );
@@ -288,7 +288,7 @@ public class GuidedDecisionTableUpgradeHelper1
             return makeNewColumn( (ActionSetFieldCol) c );
         }
         ActionCol52 nc = new ActionCol52();
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
         nc.setWidth( c.width );
@@ -298,7 +298,7 @@ public class GuidedDecisionTableUpgradeHelper1
     private ActionInsertFactCol52 makeNewColumn(ActionInsertFactCol c) {
         ActionInsertFactCol52 nc = new ActionInsertFactCol52();
         nc.setBoundName( c.boundName );
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setFactField( c.factField );
         nc.setFactType( c.factType );
         nc.setHeader( c.header );
@@ -311,7 +311,7 @@ public class GuidedDecisionTableUpgradeHelper1
 
     private ActionRetractFactCol52 makeNewColumn(ActionRetractFactCol c) {
         ActionRetractFactCol52 nc = new ActionRetractFactCol52();
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
         nc.setWidth( c.width );
@@ -322,7 +322,7 @@ public class GuidedDecisionTableUpgradeHelper1
     private ActionSetFieldCol52 makeNewColumn(ActionSetFieldCol c) {
         ActionSetFieldCol52 nc = new ActionSetFieldCol52();
         nc.setBoundName( c.boundName );
-        nc.setDefaultValue( c.defaultValue );
+        nc.setDefaultValue( new DTCellValue52( c.defaultValue ) );
         nc.setFactField( c.factField );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );

@@ -25,6 +25,14 @@ public class NumericByteTextBox extends AbstractRestrictedEntryTextBox {
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
+    public NumericByteTextBox() {
+        super( false );
+    }
+
+    public NumericByteTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -38,7 +46,7 @@ public class NumericByteTextBox extends AbstractRestrictedEntryTextBox {
         try {
             Byte.parseByte( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

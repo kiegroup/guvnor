@@ -109,9 +109,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
     TextBox                                           txtValueList;
 
     @UiField
-    TextBox                                           txtDefaultValue;
-
-    @UiField
     CheckBox                                          chkUpdateEngine;
 
     @UiField
@@ -131,6 +128,12 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     @UiField
     SimplePanel                                       limitedEntryValueWidgetContainer;
+
+    @UiField
+    HorizontalPanel                                   defaultValueContainer;
+
+    @UiField
+    SimplePanel                                       defaultValueWidgetContainer;
 
     interface ActionSetFieldPageWidgetBinder
         extends
@@ -153,7 +156,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
         initialiseAvailableFields();
         initialiseChosenFields();
         initialiseColumnHeader();
-        initialiseDefaultValue();
         initialiseValueList();
         initialiseUpdateEngine();
     }
@@ -233,7 +235,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
                     fieldDefinition.setVisible( false );
                     txtColumnHeader.setEnabled( false );
                     txtValueList.setEnabled( false );
-                    txtDefaultValue.setEnabled( false );
+                    defaultValueContainer.setVisible( false );
                     chkUpdateEngine.setEnabled( false );
                 }
             }
@@ -252,10 +254,10 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 // Fields specific to the table format
                 switch ( presenter.getTableFormat() ) {
                     case EXTENDED_ENTRY :
-                        txtDefaultValue.setEnabled( true );
                         txtValueList.setEnabled( !presenter.hasEnums( chosenFieldsSelection ) );
-                        txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
                         txtValueList.setText( chosenFieldsSelection.getValueList() );
+                        makeDefaultValueWidget();
+                        defaultValueContainer.setVisible( true );
                         break;
                     case LIMITED_ENTRY :
                         makeLimitedValueWidget();
@@ -278,6 +280,16 @@ public class ActionSetFieldsPageViewImpl extends Composite
                                                                                lea.getValue() ) );
             }
 
+            private void makeDefaultValueWidget() {
+                if ( chosenFieldsSelection.getDefaultValue() == null ) {
+                    chosenFieldsSelection.setDefaultValue( factory.makeNewValue( chosenFieldsSelection ) );
+                }
+                defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
+                                                                          chosenFieldsSelection,
+                                                                          chosenFieldsSelection.getDefaultValue(),
+                                                                          true ) );
+            }
+
         } );
     }
 
@@ -297,18 +309,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 chosenFieldsSelection.setHeader( header );
                 presenter.stateChanged();
                 validateFieldHeader();
-            }
-
-        } );
-    }
-
-    private void initialiseDefaultValue() {
-        txtDefaultValue.addValueChangeHandler( new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String defaultValue = txtDefaultValue.getText();
-                chosenFieldsSelection.setDefaultValue( defaultValue );
-                // DefaultValue is optional, no need to advise of state change
             }
 
         } );
@@ -439,7 +439,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         txtColumnHeader.setText( "" );
         txtValueList.setText( "" );
-        txtDefaultValue.setText( "" );
+        defaultValueContainer.setVisible( false );
         fieldDefinition.setVisible( false );
         btnRemove.setEnabled( false );
     }

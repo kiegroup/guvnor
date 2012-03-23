@@ -87,7 +87,7 @@ public class GuidedDTDRLPersistenceTest {
 
         AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
-        attr.setDefaultValue( "66" );
+        attr.setDefaultValue( new DTCellValue52( "66" ) );
         dt.getAttributeCols().add( attr );
 
         Pattern52 p1 = new Pattern52();
@@ -148,7 +148,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
-        set2.setDefaultValue( "whee" );
+        set2.setDefaultValue( new DTCellValue52( "whee" ) );
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
@@ -258,7 +258,7 @@ public class GuidedDTDRLPersistenceTest {
 
         AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
-        attr.setDefaultValue( "66" );
+        attr.setDefaultValue( new DTCellValue52( "66" ) );
         dt.getAttributeCols().add( attr );
 
         Pattern52 p1 = new Pattern52();
@@ -313,7 +313,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
-        set2.setDefaultValue( "whee" );
+        set2.setDefaultValue( new DTCellValue52( "whee" ) );
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
@@ -336,7 +336,7 @@ public class GuidedDTDRLPersistenceTest {
 
         AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
-        attr.setDefaultValue( "66" );
+        attr.setDefaultValue( new DTCellValue52( "66" ) );
         dt.getAttributeCols().add( attr );
 
         Pattern52 p1 = new Pattern52();
@@ -397,7 +397,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
-        set2.setDefaultValue( "whee" );
+        set2.setDefaultValue( new DTCellValue52( "whee" ) );
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
@@ -1605,7 +1605,7 @@ public class GuidedDTDRLPersistenceTest {
         ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c.setFactField( "favouriteCheese" );
-        c.setDefaultValue( "cheddar" );
+        c.setDefaultValue( new DTCellValue52( "cheddar" ) );
         c.setOperator( "==" );
         p1.getChildColumns().add( c );
         dt.getConditions().add( p1 );
@@ -3875,7 +3875,7 @@ public class GuidedDTDRLPersistenceTest {
         brl1DefinitionAction1FieldValue1.setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         brl1DefinitionAction1.addFieldValue( brl1DefinitionAction1FieldValue1 );
         brl1Definition.add( brl1DefinitionAction1 );
-        
+
         brl1.setDefinition( brl1Definition );
 
         //Setup BRL column bindings

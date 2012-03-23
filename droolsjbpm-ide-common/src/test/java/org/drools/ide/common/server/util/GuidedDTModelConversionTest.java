@@ -142,14 +142,14 @@ public class GuidedDTModelConversionTest {
         assertEquals( "legacy",
                       tsdt.getMetadataCols().get( 0 ).getMetadata() );
         assertEquals( "yes",
-                      tsdt.getMetadataCols().get( 0 ).getDefaultValue() );
+                      tsdt.getMetadataCols().get( 0 ).getDefaultValue().getStringValue() );
 
         assertEquals( 1,
                       tsdt.getAttributeCols().size() );
         assertEquals( "salience",
                       tsdt.getAttributeCols().get( 0 ).getAttribute() );
         assertEquals( "66",
-                      tsdt.getAttributeCols().get( 0 ).getDefaultValue() );
+                      tsdt.getAttributeCols().get( 0 ).getDefaultValue().getStringValue() );
 
         assertEquals( 2,
                       tsdt.getConditions().size() );
@@ -242,7 +242,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "goo2",
                       a4.getFactField() );
         assertEquals( "whee",
-                      a4.getDefaultValue() );
+                      a4.getDefaultValue().getStringValue() );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       a4.getType() );
 
@@ -350,14 +350,14 @@ public class GuidedDTModelConversionTest {
         assertEquals( "legacy",
                       tsdt.getMetadataCols().get( 0 ).getMetadata() );
         assertEquals( "yes",
-                      tsdt.getMetadataCols().get( 0 ).getDefaultValue() );
+                      tsdt.getMetadataCols().get( 0 ).getDefaultValue().getStringValue() );
 
         assertEquals( 1,
                       tsdt.getAttributeCols().size() );
         assertEquals( "salience",
                       tsdt.getAttributeCols().get( 0 ).getAttribute() );
         assertEquals( "66",
-                      tsdt.getAttributeCols().get( 0 ).getDefaultValue() );
+                      tsdt.getAttributeCols().get( 0 ).getDefaultValue().getStringValue() );
 
         assertEquals( 2,
                       tsdt.getConditions().size() );
@@ -452,7 +452,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "goo2",
                       a4.getFactField() );
         assertEquals( "whee",
-                      a4.getDefaultValue() );
+                      a4.getDefaultValue().getStringValue() );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       a4.getType() );
 

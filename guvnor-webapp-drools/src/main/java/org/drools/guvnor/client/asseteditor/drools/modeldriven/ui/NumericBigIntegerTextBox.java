@@ -27,6 +27,14 @@ public class NumericBigIntegerTextBox extends AbstractRestrictedEntryTextBox {
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
+    public NumericBigIntegerTextBox() {
+        super( false );
+    }
+
+    public NumericBigIntegerTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -41,7 +49,7 @@ public class NumericBigIntegerTextBox extends AbstractRestrictedEntryTextBox {
             @SuppressWarnings("unused")
             BigInteger check = new BigInteger( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

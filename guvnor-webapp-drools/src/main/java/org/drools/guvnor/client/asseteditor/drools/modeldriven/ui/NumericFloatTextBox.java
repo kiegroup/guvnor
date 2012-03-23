@@ -25,6 +25,14 @@ public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
     // A valid Float
     private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*$)" );
 
+    public NumericFloatTextBox() {
+        super( false );
+    }
+
+    public NumericFloatTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -38,7 +46,7 @@ public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
         try {
             Float.parseFloat( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }

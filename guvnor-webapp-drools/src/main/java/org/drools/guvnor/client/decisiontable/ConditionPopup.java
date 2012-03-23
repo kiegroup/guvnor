@@ -75,7 +75,8 @@ public class ConditionPopup extends FormStylePopup {
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
     private TextBox                    valueListWidget                  = null;
-    private TextBox                    defaultValueWidget               = null;
+    private SimplePanel                defaultValueWidgetContainer      = new SimplePanel();
+    private int                        defaultValueWidgetContainerIndex = 0;
     private ImageButton                editField;
     private ImageButton                editOp;
 
@@ -295,12 +296,10 @@ public class ConditionPopup extends FormStylePopup {
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidget = DTCellValueWidgetFactory.getDefaultEditor( editingCol,
-                                                                            isReadOnly );
-            addAttribute( Constants.INSTANCE.DefaultValue(),
-                          defaultValueWidget );
+            defaultValueWidgetContainerIndex = addAttribute( Constants.INSTANCE.DefaultValue(),
+                                                             defaultValueWidgetContainer );
+            makeDefaultValueWidget();
         }
-        doDefaultValue();
 
         //Limited entry value widget
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
@@ -444,14 +443,39 @@ public class ConditionPopup extends FormStylePopup {
                                                                        lec.getValue() ) );
     }
 
+    private void makeDefaultValueWidget() {
+        if ( nil( editingCol.getFactField() ) ) {
+            setAttributeVisibility( defaultValueWidgetContainerIndex,
+                                    false );
+            return;
+        }
+
+        //Don't show Default Value if operator does not require a value
+        if ( !validator.doesOperatorNeedValue( editingCol ) ) {
+            setAttributeVisibility( defaultValueWidgetContainerIndex,
+                                    false );
+            return;
+        }
+
+        setAttributeVisibility( defaultValueWidgetContainerIndex,
+                                true );
+        if ( editingCol.getDefaultValue() == null ) {
+            editingCol.setDefaultValue( factory.makeNewValue( editingCol ) );
+        }
+        defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,
+                                                                  editingCol,
+                                                                  editingCol.getDefaultValue(),
+                                                                  true ) );
+    }
+
     private void applyConsTypeChange(int newType) {
         editingCol.setConstraintValueType( newType );
         binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
         doFieldLabel();
         doValueList();
-        doDefaultValue();
         doOperatorLabel();
         doImageButtons();
+        makeDefaultValueWidget();
     }
 
     private void doImageButtons() {
@@ -556,27 +580,6 @@ public class ConditionPopup extends FormStylePopup {
         }
     }
 
-    private void doDefaultValue() {
-        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            return;
-        }
-
-        //Don't show a Default Value if either the Fact\Field is empty
-        final String factType = editingPattern.getFactType();
-        final String factField = editingCol.getFactField();
-        boolean enableDefaultValue = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
-
-        //Don't show Default Value if operator does not require a value
-        if ( enableDefaultValue ) {
-            enableDefaultValue = validator.doesOperatorNeedValue( editingCol );
-        }
-
-        defaultValueWidget.setEnabled( enableDefaultValue );
-        if ( !enableDefaultValue ) {
-            defaultValueWidget.setText( "" );
-        }
-    }
-
     private void doCalculationType() {
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
             return;
@@ -667,9 +670,9 @@ public class ConditionPopup extends FormStylePopup {
             public void onClick(ClickEvent w) {
                 editingCol.setOperator( box.getValue( box.getSelectedIndex() ) );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 doOperatorLabel();
                 doValueList();
-                doDefaultValue();
                 pop.hide();
             }
         } );
@@ -728,10 +731,10 @@ public class ConditionPopup extends FormStylePopup {
                 entryPointName.setText( editingPattern.getEntryPointName() );
                 cwo.selectItem( editingPattern.getWindow().getOperator() );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 displayCEPOperators();
                 doPatternLabel();
                 doValueList();
-                doDefaultValue();
                 doCalculationType();
 
                 pop.hide();
@@ -790,9 +793,9 @@ public class ConditionPopup extends FormStylePopup {
                 //Setup UI
                 doFieldLabel();
                 doValueList();
-                doDefaultValue();
                 doCalculationType();
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 doOperatorLabel();
 
                 pop.hide();
@@ -867,10 +870,10 @@ public class ConditionPopup extends FormStylePopup {
                 entryPointName.setText( editingPattern.getEntryPointName() );
                 cwo.selectItem( editingPattern.getWindow().getOperator() );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 displayCEPOperators();
                 doPatternLabel();
                 doValueList();
-                doDefaultValue();
                 doCalculationType();
                 doOperatorLabel();
 

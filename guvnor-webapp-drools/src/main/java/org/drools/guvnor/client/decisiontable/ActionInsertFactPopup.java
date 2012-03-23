@@ -60,7 +60,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
     private TextBox                    valueListWidget                  = null;
-    private TextBox                    defaultValueWidget               = null;
+    private SimplePanel                defaultValueWidgetContainer      = new SimplePanel();
+    private int                        defaultValueWidgetContainerIndex = 0;
 
     private ActionInsertFactCol52      editingCol;
     private GuidedDecisionTable52      model;
@@ -163,12 +164,10 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidget = DTCellValueWidgetFactory.getDefaultEditor( editingCol,
-                                                                            isReadOnly );
-            addAttribute( Constants.INSTANCE.DefaultValue(),
-                          defaultValueWidget );
+            defaultValueWidgetContainerIndex = addAttribute( Constants.INSTANCE.DefaultValue(),
+                                                             defaultValueWidgetContainer );
+            makeDefaultValueWidget();
         }
-        doDefaultValue();
 
         //Limited entry value widget
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
@@ -274,6 +273,22 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                                        lea.getValue() ) );
     }
 
+    private void makeDefaultValueWidget() {
+        if ( nil( editingCol.getFactField() ) ) {
+            setAttributeVisibility( defaultValueWidgetContainerIndex,
+                                    false );
+            return;
+        }
+        setAttributeVisibility( defaultValueWidgetContainerIndex,
+                                true );
+        if ( editingCol.getDefaultValue() == null ) {
+            editingCol.setDefaultValue( factory.makeNewValue( editingCol ) );
+        }
+        defaultValueWidgetContainer.setWidget( factory.getWidget( editingCol,
+                                                                  editingCol.getDefaultValue(),
+                                                                  true ) );
+    }
+
     private void doFieldLabel() {
         if ( nil( this.editingCol.getFactField() ) ) {
             fieldLabel.setText( Constants.INSTANCE.pleaseChooseFactType() );
@@ -310,22 +325,6 @@ public class ActionInsertFactPopup extends FormStylePopup {
         valueListWidget.setEnabled( enableValueList );
         if ( !enableValueList ) {
             valueListWidget.setText( "" );
-        }
-    }
-
-    private void doDefaultValue() {
-        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            return;
-        }
-
-        //Don't show a Default Value if either the Fact\Field is empty
-        final String factType = editingCol.getFactType();
-        final String factField = editingCol.getFactField();
-        boolean enableDefaultValue = !((factType == null || "".equals( factType )) || (factField == null || "".equals( factField )));
-
-        defaultValueWidget.setEnabled( enableDefaultValue );
-        if ( !enableDefaultValue ) {
-            defaultValueWidget.setText( "" );
         }
     }
 
@@ -389,8 +388,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 editingCol.setType( sce.getFieldType( editingCol.getFactType(),
                                                       editingCol.getFactField() ) );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 doValueList();
-                doDefaultValue();
                 doFieldLabel();
                 pop.hide();
             }
@@ -441,10 +440,10 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 editingCol.setBoundName( val[1] );
                 editingCol.setFactField( null );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 doPatternLabel();
                 doFieldLabel();
                 doValueList();
-                doDefaultValue();
                 pop.hide();
             }
         } );
@@ -488,10 +487,10 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
                 editingCol.setFactField( null );
                 makeLimitedValueWidget();
+                makeDefaultValueWidget();
                 doPatternLabel();
                 doFieldLabel();
                 doValueList();
-                doDefaultValue();
                 pop.hide();
             }
         } );

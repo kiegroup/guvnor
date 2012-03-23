@@ -17,7 +17,6 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -277,28 +276,30 @@ public class RowExpanderTests {
                       columns.get( 7 ).values.size() );
 
         assertEquals( "c1a",
-                      columns.get( 2 ).values.get( 0 ) );
+                      columns.get( 2 ).values.get( 0 ).getStringValue() );
         assertEquals( "c1b",
-                      columns.get( 2 ).values.get( 1 ) );
+                      columns.get( 2 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "c2a",
-                      columns.get( 3 ).values.get( 0 ) );
+                      columns.get( 3 ).values.get( 0 ).getStringValue() );
         assertEquals( "c2b",
-                      columns.get( 3 ).values.get( 1 ) );
+                      columns.get( 3 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "c3a",
-                      columns.get( 4 ).values.get( 0 ) );
+                      columns.get( 4 ).values.get( 0 ).getStringValue() );
         assertEquals( "c3b",
-                      columns.get( 4 ).values.get( 1 ) );
+                      columns.get( 4 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "c4a",
-                      columns.get( 5 ).values.get( 0 ) );
+                      columns.get( 5 ).values.get( 0 ).getStringValue() );
         assertEquals( "c4b",
-                      columns.get( 5 ).values.get( 1 ) );
+                      columns.get( 5 ).values.get( 1 ).getStringValue() );
 
-        assertNull( columns.get( 6 ).values.get( 0 ) );
+        assertEquals( "",
+                      columns.get( 6 ).values.get( 0 ).getStringValue() );
 
-        assertNull( columns.get( 7 ).values.get( 0 ) );
+        assertEquals( "",
+                      columns.get( 7 ).values.get( 0 ).getStringValue() );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -408,28 +409,30 @@ public class RowExpanderTests {
                       columns.get( 7 ).values.size() );
 
         assertEquals( "f1a",
-                      columns.get( 2 ).values.get( 0 ) );
+                      columns.get( 2 ).values.get( 0 ).getStringValue() );
         assertEquals( "f1b",
-                      columns.get( 2 ).values.get( 1 ) );
+                      columns.get( 2 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "f2a",
-                      columns.get( 3 ).values.get( 0 ) );
+                      columns.get( 3 ).values.get( 0 ).getStringValue() );
         assertEquals( "f2b",
-                      columns.get( 3 ).values.get( 1 ) );
+                      columns.get( 3 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "f3a",
-                      columns.get( 4 ).values.get( 0 ) );
+                      columns.get( 4 ).values.get( 0 ).getStringValue() );
         assertEquals( "f3b",
-                      columns.get( 4 ).values.get( 1 ) );
+                      columns.get( 4 ).values.get( 1 ).getStringValue() );
 
         assertEquals( "f4a",
-                      columns.get( 5 ).values.get( 0 ) );
+                      columns.get( 5 ).values.get( 0 ).getStringValue() );
         assertEquals( "f4b",
-                      columns.get( 5 ).values.get( 1 ) );
+                      columns.get( 5 ).values.get( 1 ).getStringValue() );
 
-        assertNull( columns.get( 6 ).values.get( 0 ) );
+        assertEquals( "",
+                      columns.get( 6 ).values.get( 0 ).getStringValue() );
 
-        assertNull( columns.get( 7 ).values.get( 0 ) );
+        assertEquals( "",
+                      columns.get( 7 ).values.get( 0 ).getStringValue() );
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
@@ -529,85 +532,85 @@ public class RowExpanderTests {
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-        List<String> row0 = ri.next();
+        List<DTCellValue52> row0 = ri.next();
         assertEquals( 6,
                       row0.size() );
         assertEquals( "f1a",
-                      row0.get( 2 ) );
+                      row0.get( 2 ).getStringValue() );
         assertEquals( "f1af2a",
-                      row0.get( 3 ) );
+                      row0.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row1 = ri.next();
+        List<DTCellValue52> row1 = ri.next();
         assertEquals( 6,
                       row1.size() );
         assertEquals( "f1a",
-                      row1.get( 2 ) );
+                      row1.get( 2 ).getStringValue() );
         assertEquals( "f1af2b",
-                      row1.get( 3 ) );
+                      row1.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row2 = ri.next();
+        List<DTCellValue52> row2 = ri.next();
         assertEquals( 6,
                       row2.size() );
         assertEquals( "f1a",
-                      row2.get( 2 ) );
+                      row2.get( 2 ).getStringValue() );
         assertEquals( "f1af2c",
-                      row2.get( 3 ) );
+                      row2.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row3 = ri.next();
+        List<DTCellValue52> row3 = ri.next();
         assertEquals( 6,
                       row3.size() );
         assertEquals( "f1b",
-                      row3.get( 2 ) );
+                      row3.get( 2 ).getStringValue() );
         assertEquals( "f1bf2a",
-                      row3.get( 3 ) );
+                      row3.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row4 = ri.next();
+        List<DTCellValue52> row4 = ri.next();
         assertEquals( 6,
                       row4.size() );
         assertEquals( "f1b",
-                      row4.get( 2 ) );
+                      row4.get( 2 ).getStringValue() );
         assertEquals( "f1bf2b",
-                      row4.get( 3 ) );
+                      row4.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row5 = ri.next();
+        List<DTCellValue52> row5 = ri.next();
         assertEquals( 6,
                       row5.size() );
         assertEquals( "f1b",
-                      row5.get( 2 ) );
+                      row5.get( 2 ).getStringValue() );
         assertEquals( "f1bf2c",
-                      row5.get( 3 ) );
+                      row5.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row6 = ri.next();
+        List<DTCellValue52> row6 = ri.next();
         assertEquals( 6,
                       row6.size() );
         assertEquals( "f1c",
-                      row6.get( 2 ) );
+                      row6.get( 2 ).getStringValue() );
         assertEquals( "f1cf2a",
-                      row6.get( 3 ) );
+                      row6.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row7 = ri.next();
+        List<DTCellValue52> row7 = ri.next();
         assertEquals( 6,
                       row7.size() );
         assertEquals( "f1c",
-                      row7.get( 2 ) );
+                      row7.get( 2 ).getStringValue() );
         assertEquals( "f1cf2b",
-                      row7.get( 3 ) );
+                      row7.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row8 = ri.next();
+        List<DTCellValue52> row8 = ri.next();
         assertEquals( 6,
                       row8.size() );
         assertEquals( "f1c",
-                      row8.get( 2 ) );
+                      row8.get( 2 ).getStringValue() );
         assertEquals( "f1cf2c",
-                      row8.get( 3 ) );
+                      row8.get( 3 ).getStringValue() );
 
         assertFalse( ri.hasNext() );
     }
@@ -705,40 +708,40 @@ public class RowExpanderTests {
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-        List<String> row0 = ri.next();
+        List<DTCellValue52> row0 = ri.next();
         assertEquals( 6,
                       row0.size() );
         assertEquals( "f1a",
-                      row0.get( 2 ) );
+                      row0.get( 2 ).getStringValue() );
         assertEquals( "f1af2a",
-                      row0.get( 3 ) );
+                      row0.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row1 = ri.next();
+        List<DTCellValue52> row1 = ri.next();
         assertEquals( 6,
                       row1.size() );
         assertEquals( "f1a",
-                      row1.get( 2 ) );
+                      row1.get( 2 ).getStringValue() );
         assertEquals( "f1af2b",
-                      row1.get( 3 ) );
+                      row1.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row3 = ri.next();
+        List<DTCellValue52> row3 = ri.next();
         assertEquals( 6,
                       row3.size() );
         assertEquals( "f1b",
-                      row3.get( 2 ) );
+                      row3.get( 2 ).getStringValue() );
         assertEquals( "f1bf2a",
-                      row3.get( 3 ) );
+                      row3.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row4 = ri.next();
+        List<DTCellValue52> row4 = ri.next();
         assertEquals( 6,
                       row4.size() );
         assertEquals( "f1b",
-                      row4.get( 2 ) );
+                      row4.get( 2 ).getStringValue() );
         assertEquals( "f1bf2b",
-                      row4.get( 3 ) );
+                      row4.get( 3 ).getStringValue() );
 
         assertFalse( ri.hasNext() );
     }
@@ -834,20 +837,22 @@ public class RowExpanderTests {
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-        List<String> row0 = ri.next();
+        List<DTCellValue52> row0 = ri.next();
         assertEquals( 6,
                       row0.size() );
         assertEquals( "f1a",
-                      row0.get( 2 ) );
-        assertNull( row0.get( 3 ) );
+                      row0.get( 2 ).getStringValue() );
+        assertEquals( "",
+                      row0.get( 3 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row1 = ri.next();
+        List<DTCellValue52> row1 = ri.next();
         assertEquals( 6,
                       row1.size() );
         assertEquals( "f1b",
-                      row1.get( 2 ) );
-        assertNull( row1.get( 3 ) );
+                      row1.get( 2 ).getStringValue() );
+        assertEquals( "",
+                      row1.get( 3 ).getStringValue() );
 
         assertFalse( ri.hasNext() );
     }
@@ -942,11 +947,13 @@ public class RowExpanderTests {
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-        List<String> row0 = ri.next();
+        List<DTCellValue52> row0 = ri.next();
         assertEquals( 6,
                       row0.size() );
-        assertNull( row0.get( 2 ) );
-        assertNull( row0.get( 3 ) );
+        assertEquals( "",
+                      row0.get( 2 ).getStringValue() );
+        assertEquals( "",
+                      row0.get( 3 ).getStringValue() );
 
         assertFalse( ri.hasNext() );
     }
@@ -1054,92 +1061,92 @@ public class RowExpanderTests {
 
         RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-        List<String> row0 = ri.next();
+        List<DTCellValue52> row0 = ri.next();
         assertEquals( 7,
                       row0.size() );
         assertEquals( "f1a",
-                      row0.get( 2 ) );
+                      row0.get( 2 ).getStringValue() );
         assertEquals( "f1af2a",
-                      row0.get( 3 ) );
+                      row0.get( 3 ).getStringValue() );
         assertEquals( "f1af2af3a",
-                      row0.get( 4 ) );
+                      row0.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row1 = ri.next();
+        List<DTCellValue52> row1 = ri.next();
         assertEquals( 7,
                       row1.size() );
         assertEquals( "f1a",
-                      row1.get( 2 ) );
+                      row1.get( 2 ).getStringValue() );
         assertEquals( "f1af2a",
-                      row1.get( 3 ) );
+                      row1.get( 3 ).getStringValue() );
         assertEquals( "f1af2af3b",
-                      row1.get( 4 ) );
+                      row1.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row2 = ri.next();
+        List<DTCellValue52> row2 = ri.next();
         assertEquals( 7,
                       row2.size() );
         assertEquals( "f1a",
-                      row2.get( 2 ) );
+                      row2.get( 2 ).getStringValue() );
         assertEquals( "f1af2b",
-                      row2.get( 3 ) );
+                      row2.get( 3 ).getStringValue() );
         assertEquals( "f1af2bf3a",
-                      row2.get( 4 ) );
+                      row2.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row3 = ri.next();
+        List<DTCellValue52> row3 = ri.next();
         assertEquals( 7,
                       row3.size() );
         assertEquals( "f1a",
-                      row3.get( 2 ) );
+                      row3.get( 2 ).getStringValue() );
         assertEquals( "f1af2b",
-                      row3.get( 3 ) );
+                      row3.get( 3 ).getStringValue() );
         assertEquals( "f1af2bf3b",
-                      row3.get( 4 ) );
+                      row3.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row4 = ri.next();
+        List<DTCellValue52> row4 = ri.next();
         assertEquals( 7,
                       row4.size() );
         assertEquals( "f1b",
-                      row4.get( 2 ) );
+                      row4.get( 2 ).getStringValue() );
         assertEquals( "f1bf2a",
-                      row4.get( 3 ) );
+                      row4.get( 3 ).getStringValue() );
         assertEquals( "f1bf2af3a",
-                      row4.get( 4 ) );
+                      row4.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row5 = ri.next();
+        List<DTCellValue52> row5 = ri.next();
         assertEquals( 7,
                       row5.size() );
         assertEquals( "f1b",
-                      row5.get( 2 ) );
+                      row5.get( 2 ).getStringValue() );
         assertEquals( "f1bf2a",
-                      row5.get( 3 ) );
+                      row5.get( 3 ).getStringValue() );
         assertEquals( "f1bf2af3b",
-                      row5.get( 4 ) );
+                      row5.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row6 = ri.next();
+        List<DTCellValue52> row6 = ri.next();
         assertEquals( 7,
                       row6.size() );
         assertEquals( "f1b",
-                      row6.get( 2 ) );
+                      row6.get( 2 ).getStringValue() );
         assertEquals( "f1bf2b",
-                      row6.get( 3 ) );
+                      row6.get( 3 ).getStringValue() );
         assertEquals( "f1bf2bf3a",
-                      row6.get( 4 ) );
+                      row6.get( 4 ).getStringValue() );
 
         assertTrue( ri.hasNext() );
-        List<String> row7 = ri.next();
+        List<DTCellValue52> row7 = ri.next();
         assertEquals( 7,
                       row7.size() );
         assertEquals( "f1b",
-                      row7.get( 2 ) );
+                      row7.get( 2 ).getStringValue() );
         assertEquals( "f1bf2b",
-                      row7.get( 3 ) );
+                      row7.get( 3 ).getStringValue() );
         assertEquals( "f1bf2bf3b",
-                      row7.get( 4 ) );
+                      row7.get( 4 ).getStringValue() );
 
         assertFalse( ri.hasNext() );
     }
@@ -1181,19 +1188,21 @@ public class RowExpanderTests {
         assertEquals( 3,
                       columns.size() );
 
-        assertNull( columns.get( 0 ).getCurrentValue() );
-        assertNull( columns.get( 1 ).getCurrentValue() );
+        assertEquals( "",
+                      columns.get( 0 ).getCurrentValue().getStringValue() );
+        assertEquals( "",
+                      columns.get( 1 ).getCurrentValue().getStringValue() );
         assertEquals( "c1a",
-                      columns.get( 2 ).getCurrentValue() );
+                      columns.get( 2 ).getCurrentValue().getStringValue() );
         columns.get( 2 ).advanceColumnValue();
         assertEquals( "c1b",
-                      columns.get( 2 ).getCurrentValue() );
+                      columns.get( 2 ).getCurrentValue().getStringValue() );
         columns.get( 2 ).advanceColumnValue();
         assertEquals( "c1a",
-                      columns.get( 2 ).getCurrentValue() );
+                      columns.get( 2 ).getCurrentValue().getStringValue() );
         columns.get( 2 ).advanceColumnValue();
         assertEquals( "c1b",
-                      columns.get( 2 ).getCurrentValue() );
+                      columns.get( 2 ).getCurrentValue().getStringValue() );
 
     }
 
@@ -1234,23 +1243,27 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 2,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 1 ).get( 2 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
 
     }
 
@@ -1307,39 +1320,47 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 0 ).get( 3 ) );
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+                      rows.get( 0 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 1 ).get( 2 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 1 ).get( 3 ) );
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
+                      rows.get( 1 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 2 ).get( 2 ) );
+                      rows.get( 2 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 2 ).get( 3 ) );
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
+                      rows.get( 2 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 3 ).get( 2 ) );
+                      rows.get( 3 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 3 ).get( 3 ) );
+                      rows.get( 3 ).get( 3 ).getStringValue() );
     }
 
     @Test
@@ -1410,46 +1431,58 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 0 ).get( 3 ) );
-        assertNull( rows.get( 0 ).get( 4 ) );
+                      rows.get( 0 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 1 ).get( 2 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 1 ).get( 3 ) );
-        assertNull( rows.get( 1 ).get( 4 ) );
+                      rows.get( 1 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 2 ).get( 2 ) );
+                      rows.get( 2 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 2 ).get( 3 ) );
-        assertNull( rows.get( 2 ).get( 4 ) );
+                      rows.get( 2 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 3 ).get( 2 ) );
+                      rows.get( 3 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 3 ).get( 3 ) );
-        assertNull( rows.get( 3 ).get( 4 ) );
+                      rows.get( 3 ).get( 3 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 4 ).getStringValue() );
     }
 
     @Test
@@ -1487,7 +1520,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
-        c1.setDefaultValue( "c1default" );
+        c1.setDefaultValue( new DTCellValue52( "c1default" ) );
         p1.getChildColumns().add( c1 );
         dtable.getConditions().add( p1 );
 
@@ -1500,7 +1533,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        c2.setDefaultValue( "c2default" );
+        c2.setDefaultValue( new DTCellValue52( "c2default" ) );
         p2.getChildColumns().add( c2 );
         dtable.getConditions().add( p2 );
 
@@ -1512,7 +1545,7 @@ public class RowExpanderTests {
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        c3.setDefaultValue( "c3default" );
+        c3.setDefaultValue( new DTCellValue52( "c3default" ) );
         p3.getChildColumns().add( c3 );
         dtable.getConditions().add( p3 );
 
@@ -1523,50 +1556,58 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 0 ).get( 3 ) );
+                      rows.get( 0 ).get( 3 ).getStringValue() );
         assertEquals( "c3default",
-                      rows.get( 0 ).get( 4 ) );
+                      rows.get( 0 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 1 ).get( 2 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 1 ).get( 3 ) );
+                      rows.get( 1 ).get( 3 ).getStringValue() );
         assertEquals( "c3default",
-                      rows.get( 1 ).get( 4 ) );
+                      rows.get( 1 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 2 ).get( 2 ) );
+                      rows.get( 2 ).get( 2 ).getStringValue() );
         assertEquals( "c2a",
-                      rows.get( 2 ).get( 3 ) );
+                      rows.get( 2 ).get( 3 ).getStringValue() );
         assertEquals( "c3default",
-                      rows.get( 2 ).get( 4 ) );
+                      rows.get( 2 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 3 ).get( 2 ) );
+                      rows.get( 3 ).get( 2 ).getStringValue() );
         assertEquals( "c2b",
-                      rows.get( 3 ).get( 3 ) );
+                      rows.get( 3 ).get( 3 ).getStringValue() );
         assertEquals( "c3default",
-                      rows.get( 3 ).get( 4 ) );
+                      rows.get( 3 ).get( 4 ).getStringValue() );
     }
 
     @Test
@@ -1721,28 +1762,36 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 2,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
-        assertNull( rows.get( 0 ).get( 2 ) );
-        assertNull( rows.get( 0 ).get( 3 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 3 ).getStringValue() );
         assertEquals( "c3a",
-                      rows.get( 0 ).get( 4 ) );
+                      rows.get( 0 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
-        assertNull( rows.get( 1 ).get( 2 ) );
-        assertNull( rows.get( 1 ).get( 3 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
-                      rows.get( 1 ).get( 4 ) );
+                      rows.get( 1 ).get( 4 ).getStringValue() );
 
     }
 
@@ -1817,46 +1866,58 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
-        assertNull( rows.get( 0 ).get( 3 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 3 ).getStringValue() );
         assertEquals( "c3a",
-                      rows.get( 0 ).get( 4 ) );
+                      rows.get( 0 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 1 ).get( 2 ) );
-        assertNull( rows.get( 1 ).get( 3 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
-                      rows.get( 1 ).get( 4 ) );
+                      rows.get( 1 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 2 ).get( 2 ) );
-        assertNull( rows.get( 2 ).get( 3 ) );
+                      rows.get( 2 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 3 ).getStringValue() );
         assertEquals( "c3a",
-                      rows.get( 2 ).get( 4 ) );
+                      rows.get( 2 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 3 ).get( 2 ) );
-        assertNull( rows.get( 3 ).get( 3 ) );
+                      rows.get( 3 ).get( 2 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
-                      rows.get( 3 ).get( 4 ) );
+                      rows.get( 3 ).get( 4 ).getStringValue() );
 
     }
 
@@ -1907,7 +1968,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
-        c2.setDefaultValue( "c2default" );
+        c2.setDefaultValue( new DTCellValue52( "c2default" ) );
         p2.getChildColumns().add( c2 );
         dtable.getConditions().add( p2 );
 
@@ -1932,50 +1993,58 @@ public class RowExpanderTests {
                       re.getColumns().size() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 0 ).get( 2 ) );
+                      rows.get( 0 ).get( 2 ).getStringValue() );
         assertEquals( "c2default",
-                      rows.get( 0 ).get( 3 ) );
+                      rows.get( 0 ).get( 3 ).getStringValue() );
         assertEquals( "c3a",
-                      rows.get( 0 ).get( 4 ) );
+                      rows.get( 0 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1a",
-                      rows.get( 1 ).get( 2 ) );
+                      rows.get( 1 ).get( 2 ).getStringValue() );
         assertEquals( "c2default",
-                      rows.get( 1 ).get( 3 ) );
+                      rows.get( 1 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
-                      rows.get( 1 ).get( 4 ) );
+                      rows.get( 1 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 2 ).get( 2 ) );
+                      rows.get( 2 ).get( 2 ).getStringValue() );
         assertEquals( "c2default",
-                      rows.get( 2 ).get( 3 ) );
+                      rows.get( 2 ).get( 3 ).getStringValue() );
         assertEquals( "c3a",
-                      rows.get( 2 ).get( 4 ) );
+                      rows.get( 2 ).get( 4 ).getStringValue() );
 
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
-                      rows.get( 3 ).get( 2 ) );
+                      rows.get( 3 ).get( 2 ).getStringValue() );
         assertEquals( "c2default",
-                      rows.get( 3 ).get( 3 ) );
+                      rows.get( 3 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
-                      rows.get( 3 ).get( 4 ) );
+                      rows.get( 3 ).get( 4 ).getStringValue() );
 
     }
 
@@ -2067,75 +2136,83 @@ public class RowExpanderTests {
         assertEquals( 1,
                       columns.get( 5 ).values.size() );
 
-        assertEquals( "true",
-                      columns.get( 2 ).values.get( 0 ) );
-        assertEquals( "false",
-                      columns.get( 2 ).values.get( 1 ) );
+        assertEquals( Boolean.TRUE,
+                      columns.get( 2 ).values.get( 0 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      columns.get( 2 ).values.get( 1 ).getBooleanValue() );
 
-        assertEquals( "true",
-                      columns.get( 3 ).values.get( 0 ) );
-        assertEquals( "false",
-                      columns.get( 3 ).values.get( 1 ) );
+        assertEquals( Boolean.TRUE,
+                      columns.get( 3 ).values.get( 0 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      columns.get( 3 ).values.get( 1 ).getBooleanValue() );
 
-        assertEquals( "false",
-                      columns.get( 4 ).values.get( 0 ) );
+        assertEquals( Boolean.FALSE,
+                      columns.get( 4 ).values.get( 0 ).getBooleanValue() );
 
-        assertEquals( "false",
-                      columns.get( 5 ).values.get( 0 ) );
+        assertEquals( Boolean.FALSE,
+                      columns.get( 5 ).values.get( 0 ).getBooleanValue() );
 
         RowIterator i = re.iterator();
-        List<List<String>> rows = new ArrayList<List<String>>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while ( i.hasNext() ) {
-            List<String> row = i.next();
+            List<DTCellValue52> row = i.next();
             rows.add( row );
         }
 
         assertEquals( 4,
                       rows.size() );
 
-        assertNull( rows.get( 0 ).get( 0 ) );
-        assertNull( rows.get( 0 ).get( 1 ) );
-        assertEquals( "true",
-                      rows.get( 0 ).get( 2 ) );
-        assertEquals( "true",
-                      rows.get( 0 ).get( 3 ) );
-        assertEquals( "false",
-                      rows.get( 0 ).get( 4 ) );
-        assertEquals( "false",
-                      rows.get( 0 ).get( 5 ) );
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
+        assertEquals( Boolean.TRUE,
+                      rows.get( 0 ).get( 2 ).getBooleanValue() );
+        assertEquals( Boolean.TRUE,
+                      rows.get( 0 ).get( 3 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 0 ).get( 4 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 0 ).get( 5 ).getBooleanValue() );
 
-        assertNull( rows.get( 1 ).get( 0 ) );
-        assertNull( rows.get( 1 ).get( 1 ) );
-        assertEquals( "true",
-                      rows.get( 1 ).get( 2 ) );
-        assertEquals( "false",
-                      rows.get( 1 ).get( 3 ) );
-        assertEquals( "false",
-                      rows.get( 1 ).get( 4 ) );
-        assertEquals( "false",
-                      rows.get( 1 ).get( 5 ) );
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
+        assertEquals( Boolean.TRUE,
+                      rows.get( 1 ).get( 2 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 1 ).get( 3 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 1 ).get( 4 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 1 ).get( 5 ).getBooleanValue() );
 
-        assertNull( rows.get( 2 ).get( 0 ) );
-        assertNull( rows.get( 2 ).get( 1 ) );
-        assertEquals( "false",
-                      rows.get( 2 ).get( 2 ) );
-        assertEquals( "true",
-                      rows.get( 2 ).get( 3 ) );
-        assertEquals( "false",
-                      rows.get( 2 ).get( 4 ) );
-        assertEquals( "false",
-                      rows.get( 2 ).get( 5 ) );
+        assertEquals( "",
+                      rows.get( 2 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 2 ).get( 1 ).getStringValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 2 ).get( 2 ).getBooleanValue() );
+        assertEquals( Boolean.TRUE,
+                      rows.get( 2 ).get( 3 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 2 ).get( 4 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 2 ).get( 5 ).getBooleanValue() );
 
-        assertNull( rows.get( 3 ).get( 0 ) );
-        assertNull( rows.get( 3 ).get( 1 ) );
-        assertEquals( "false",
-                      rows.get( 3 ).get( 2 ) );
-        assertEquals( "false",
-                      rows.get( 3 ).get( 3 ) );
-        assertEquals( "false",
-                      rows.get( 3 ).get( 4 ) );
-        assertEquals( "false",
-                      rows.get( 3 ).get( 5 ) );
+        assertEquals( "",
+                      rows.get( 3 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 3 ).get( 1 ).getStringValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 3 ).get( 2 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 3 ).get( 3 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 3 ).get( 4 ).getBooleanValue() );
+        assertEquals( Boolean.FALSE,
+                      rows.get( 3 ).get( 5 ).getBooleanValue() );
 
     }
 

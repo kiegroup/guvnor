@@ -74,9 +74,9 @@
             <gwt:TextBox ui:field="txtValueList" enabled="false" styleName="{res.style.wizardDTableFields}" />
             <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
           </gwt:HorizontalPanel>
-          <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+          <gwt:HorizontalPanel ui:field="defaultValueContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
             <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />
-            <gwt:TextBox ui:field="txtDefaultValue" enabled="false" styleName="{res.style.wizardDTableFields}" />
+            <gwt:SimplePanel ui:field="defaultValueWidgetContainer" styleName="{res.style.wizardDTableFields}" />
           </gwt:HorizontalPanel>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="criteriaLimitedEntry">

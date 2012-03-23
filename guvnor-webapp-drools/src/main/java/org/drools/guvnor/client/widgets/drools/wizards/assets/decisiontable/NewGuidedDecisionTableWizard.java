@@ -176,8 +176,8 @@ public class NewGuidedDecisionTableWizard
         RowIterator ri = re.iterator();
         dtable.initAnalysisColumn();
         while ( ri.hasNext() ) {
-            List<String> row = ri.next();
-            dtable.getData().add( makeRow( row ) );
+            List<DTCellValue52> row = ri.next();
+            dtable.getData().add( row );
             dtable.getData().get( rowIndex ).get( 0 ).setNumericValue( new BigDecimal( rowIndex + 1 ) );
             dtable.getAnalysisData().add( new Analysis() );
             rowIndex++;
@@ -193,15 +193,6 @@ public class NewGuidedDecisionTableWizard
                                                                                      context.getFormat() );
         save( config,
               dtable );
-    }
-
-    private List<DTCellValue52> makeRow(List<String> row) {
-        //All enumerated lists (Guvnor enums, Java enums and Decision Table Value Lists) are handled as Strings
-        List<DTCellValue52> dtRow = new ArrayList<DTCellValue52>();
-        for ( String value : row ) {
-            dtRow.add( new DTCellValue52( value ) );
-        }
-        return dtRow;
     }
 
 }

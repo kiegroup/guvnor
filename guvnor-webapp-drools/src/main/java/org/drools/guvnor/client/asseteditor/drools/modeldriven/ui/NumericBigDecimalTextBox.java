@@ -27,6 +27,14 @@ public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
+    public NumericBigDecimalTextBox() {
+        super( false );
+    }
+
+    public NumericBigDecimalTextBox(final boolean allowEmptyValue) {
+        super( allowEmptyValue );
+    }
+
     @Override
     protected boolean isValidValue(String value,
                                    boolean isOnFocusLost) {
@@ -41,7 +49,7 @@ public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
             @SuppressWarnings("unused")
             BigDecimal check = new BigDecimal( value );
         } catch ( NumberFormatException nfe ) {
-            isValid = false;
+            isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
     }
