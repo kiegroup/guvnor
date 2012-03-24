@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
-
-import java.math.BigInteger;
+package org.drools.guvnor.client.common;
 
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle numeric BigInteger values
+ * A TextBox to handle numeric Byte values
  */
-public class NumericBigIntegerTextBox extends AbstractRestrictedEntryTextBox {
+public class NumericByteTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
-    public NumericBigIntegerTextBox() {
+    public NumericByteTextBox() {
         super( false );
     }
 
-    public NumericBigIntegerTextBox(final boolean allowEmptyValue) {
+    public NumericByteTextBox(final boolean allowEmptyValue) {
         super( allowEmptyValue );
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
@@ -46,8 +44,7 @@ public class NumericBigIntegerTextBox extends AbstractRestrictedEntryTextBox {
             return true;
         }
         try {
-            @SuppressWarnings("unused")
-            BigInteger check = new BigInteger( value );
+            Byte.parseByte( value );
         } catch ( NumberFormatException nfe ) {
             isValid = ("".equals( value ) && allowEmptyValue);
         }

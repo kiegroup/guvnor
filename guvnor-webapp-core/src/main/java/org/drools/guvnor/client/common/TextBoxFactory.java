@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 

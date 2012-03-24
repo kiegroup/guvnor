@@ -21,16 +21,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.AbstractRestrictedEntryTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigIntegerTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericByteTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericDoubleTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericFloatTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericIntegerTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericLongTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTextBox;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericTextBox;
+import org.drools.guvnor.client.common.AbstractRestrictedEntryTextBox;
+import org.drools.guvnor.client.common.NumericBigDecimalTextBox;
+import org.drools.guvnor.client.common.NumericBigIntegerTextBox;
+import org.drools.guvnor.client.common.NumericByteTextBox;
+import org.drools.guvnor.client.common.NumericDoubleTextBox;
+import org.drools.guvnor.client.common.NumericFloatTextBox;
+import org.drools.guvnor.client.common.NumericIntegerTextBox;
+import org.drools.guvnor.client.common.NumericLongTextBox;
+import org.drools.guvnor.client.common.NumericShortTextBox;
+import org.drools.guvnor.client.common.NumericTextBox;
 import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager;
@@ -928,7 +928,7 @@ public class DTCellValueWidgetFactory {
             return dateLabel;
         }
 
-        PopupDatePicker dp = new PopupDatePicker();
+        PopupDatePicker dp = new PopupDatePicker( allowEmptyValue );
         if ( value.getDateValue() != null ) {
             dp.setValue( value.getDateValue() );
         }

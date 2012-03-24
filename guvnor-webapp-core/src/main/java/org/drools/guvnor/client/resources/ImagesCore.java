@@ -23,8 +23,6 @@ public interface ImagesCore
     extends
     ClientBundle {
 
-
-
     @Source("images/package.gif")
     ImageResource packageImage();
 
@@ -348,5 +346,8 @@ public interface ImagesCore
 
     @Source("images/info-large.png")
     ImageResource infoLarge();
+    
+    @Source("images/calendar.png")
+    ImageResource calendar();
     
 }

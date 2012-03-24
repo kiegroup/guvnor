@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.common.AbstractRestrictedEntryTextBox;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;

@@ -17,7 +17,7 @@ package org.drools.guvnor.client.decisiontable.cells;
 
 import java.math.BigDecimal;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericBigDecimalTextBox;
+import org.drools.guvnor.client.common.NumericBigDecimalTextBox;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

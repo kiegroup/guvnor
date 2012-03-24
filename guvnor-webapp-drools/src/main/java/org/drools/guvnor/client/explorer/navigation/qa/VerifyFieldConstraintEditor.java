@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.TextBoxFactory;
 import org.drools.guvnor.client.common.DatePickerTextBox;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;

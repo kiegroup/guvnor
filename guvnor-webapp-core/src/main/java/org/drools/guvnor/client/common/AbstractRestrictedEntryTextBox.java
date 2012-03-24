@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -103,8 +103,8 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
      *            Focus has been lost from the TextBox
      * @return True if valid
      */
-    protected abstract boolean isValidValue(String value,
-                                            boolean isOnFocusLost);
+    public abstract boolean isValidValue(String value,
+                                         boolean isOnFocusLost);
 
     /**
      * If validation fails (e.g. as a result of a user pasting a value) when the

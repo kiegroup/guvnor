@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import org.drools.guvnor.client.common.AbstractRestrictedEntryTextBox;
+
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -26,8 +28,8 @@ public class BindingTextBox extends AbstractRestrictedEntryTextBox {
     private static final RegExp VALID = RegExp.compile( "(^\\$?\\w*$)" );
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         return VALID.test( value );
     }
 

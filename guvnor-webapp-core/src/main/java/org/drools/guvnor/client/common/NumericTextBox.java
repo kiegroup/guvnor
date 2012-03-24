@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import java.math.BigDecimal;
 
@@ -38,8 +38,8 @@ public class NumericTextBox extends AbstractRestrictedEntryTextBox {
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;

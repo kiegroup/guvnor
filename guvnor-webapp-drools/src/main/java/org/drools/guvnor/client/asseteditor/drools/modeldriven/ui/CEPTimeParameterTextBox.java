@@ -34,8 +34,8 @@ public class CEPTimeParameterTextBox extends AbstractCEPRestrictedEntryTextBox {
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         return VALID_TIME.test( value );
     }
 

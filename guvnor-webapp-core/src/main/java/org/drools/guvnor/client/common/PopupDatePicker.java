@@ -18,8 +18,11 @@ package org.drools.guvnor.client.common;
 import java.util.Date;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.resources.ImagesCore;
 
-import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -34,35 +37,42 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
 /**
  * A Date Picker that renders its value as a Label. When the Label is clicked on
- * a pop-up Date Picker is shown from which the value can be changed. Unlike GWT's
- * DateBox you cannot enter the value as text. This was preferred to prevent 
- * the user from not entering a date which is possible with DateBox.
+ * a pop-up Date Picker is shown from which the value can be changed. Unlike
+ * GWT's DateBox you cannot enter the value as text. This was preferred to
+ * prevent the user from not entering a date which is possible with DateBox.
  */
 public class PopupDatePicker extends Composite
     implements
     HasValue<Date>,
     HasValueChangeHandlers<Date> {
 
-    private final Label          lblDate;
-    private final PopupPanel     panel;
+    private final TextBox               txtDate;
+    private final PopupPanel            panel;
 
-    private static final String  DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final String         DATE_FORMAT    = ApplicationPreferences.getDroolsDateFormat();
 
-    private Date                 date;
-    private final DatePicker     datePicker;
-    private final DateTimeFormat format;
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    public PopupDatePicker() {
+    private static final ImagesCore     images         = GWT.create( ImagesCore.class );
 
-        this.lblDate = new Label();
-        this.lblDate.getElement().getStyle().setCursor( Cursor.POINTER );
+    private Date                        date;
+    private final DatePicker            datePicker;
+    private final DateTimeFormat        format;
+
+    public PopupDatePicker(final boolean allowEmptyValue) {
+
+        HorizontalPanel container = new HorizontalPanel();
+
+        this.txtDate = new DateTextBox( allowEmptyValue );
         this.format = DateTimeFormat.getFormat( DATE_FORMAT );
         this.datePicker = new DatePicker();
 
@@ -99,23 +109,37 @@ public class PopupDatePicker extends Composite
 
         panel.add( datePicker );
 
-        //Clicking on the label causes the DatePicker to be shown
-        lblDate.addClickHandler( new ClickHandler() {
+        //Add an icon to select a Date value
+        Image imgCalendar = new Image( images.calendar() );
+        imgCalendar.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 datePicker.setValue( getValue() );
                 panel.setPopupPositionAndShow( new PositionCallback() {
                     public void setPosition(int offsetWidth,
                                             int offsetHeight) {
-                        panel.setPopupPosition( lblDate.getAbsoluteLeft(),
-                                                lblDate.getAbsoluteTop() + lblDate.getOffsetHeight() );
+                        panel.setPopupPosition( txtDate.getAbsoluteLeft(),
+                                                txtDate.getAbsoluteTop() + txtDate.getOffsetHeight() );
                     }
                 } );
             }
 
         } );
 
-        initWidget( lblDate );
+        //Changes to the TextBox need to be copied to the widget state
+        txtDate.addBlurHandler( new BlurHandler() {
+
+            @Override
+            public void onBlur(BlurEvent event) {
+                setValue( DATE_FORMATTER.parseStrict( txtDate.getText() ) );
+            }
+
+        } );
+
+        container.add( txtDate );
+        container.add( imgCalendar );
+
+        initWidget( container );
     }
 
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) {
@@ -128,8 +152,13 @@ public class PopupDatePicker extends Composite
 
     public void setValue(Date value) {
         this.date = value;
-        this.datePicker.setValue( value );
-        lblDate.setText( format.format( value ) );
+        if ( value != null ) {
+            this.datePicker.setValue( value,
+                                      true );
+            this.txtDate.setText( format.format( value ) );
+        } else {
+            this.txtDate.setText( "" );
+        }
     }
 
     public void setValue(Date value,
@@ -137,7 +166,7 @@ public class PopupDatePicker extends Composite
         this.date = value;
         this.datePicker.setValue( value,
                                   fireEvents );
-        lblDate.setText( format.format( value ) );
+        txtDate.setText( format.format( value ) );
     }
 
 }

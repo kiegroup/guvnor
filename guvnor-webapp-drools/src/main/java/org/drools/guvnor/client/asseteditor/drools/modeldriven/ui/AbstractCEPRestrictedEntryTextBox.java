@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import org.drools.guvnor.client.common.AbstractRestrictedEntryTextBox;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;

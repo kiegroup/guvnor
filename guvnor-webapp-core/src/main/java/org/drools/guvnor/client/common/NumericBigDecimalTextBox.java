@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
+
+import java.math.BigDecimal;
 
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle numeric Short values
+ * A TextBox to handle numeric BigDecimal values
  */
-public class NumericShortTextBox extends AbstractRestrictedEntryTextBox {
+public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
+    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
-    public NumericShortTextBox() {
+    public NumericBigDecimalTextBox() {
         super( false );
     }
 
-    public NumericShortTextBox(final boolean allowEmptyValue) {
+    public NumericBigDecimalTextBox(final boolean allowEmptyValue) {
         super( allowEmptyValue );
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
@@ -44,7 +46,8 @@ public class NumericShortTextBox extends AbstractRestrictedEntryTextBox {
             return true;
         }
         try {
-            Short.parseShort( value );
+            @SuppressWarnings("unused")
+            BigDecimal check = new BigDecimal( value );
         } catch ( NumberFormatException nfe ) {
             isValid = ("".equals( value ) && allowEmptyValue);
         }
@@ -53,7 +56,7 @@ public class NumericShortTextBox extends AbstractRestrictedEntryTextBox {
 
     @Override
     protected String makeValidValue(String value) {
-        return "0";
+        return "0.0";
     }
 
 }

@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle float values
+ * A TextBox to handle integer values
  */
-public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
+public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid Float
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*$)" );
+    // A valid integer
+    private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
-    public NumericFloatTextBox() {
+    public NumericIntegerTextBox() {
         super( false );
     }
 
-    public NumericFloatTextBox(final boolean allowEmptyValue) {
+    public NumericIntegerTextBox(final boolean allowEmptyValue) {
         super( allowEmptyValue );
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
@@ -44,7 +44,7 @@ public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
             return true;
         }
         try {
-            Float.parseFloat( value );
+            Integer.parseInt( value );
         } catch ( NumberFormatException nfe ) {
             isValid = ("".equals( value ) && allowEmptyValue);
         }
@@ -53,7 +53,7 @@ public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
 
     @Override
     protected String makeValidValue(String value) {
-        return "0.0";
+        return "0";
     }
 
 }

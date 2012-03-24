@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericShortTextBox;
+import org.drools.guvnor.client.common.NumericShortTextBox;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

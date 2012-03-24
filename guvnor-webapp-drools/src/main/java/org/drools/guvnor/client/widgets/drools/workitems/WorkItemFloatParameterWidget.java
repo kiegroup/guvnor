@@ -17,8 +17,8 @@ package org.drools.guvnor.client.widgets.drools.workitems;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericFloatTextBox;
 import org.drools.guvnor.client.common.IBindingProvider;
+import org.drools.guvnor.client.common.NumericFloatTextBox;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 

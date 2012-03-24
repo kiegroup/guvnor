@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;

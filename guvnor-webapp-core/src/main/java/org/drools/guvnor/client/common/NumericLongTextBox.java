@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle integer values
+ * A TextBox to handle numeric Long values
  */
-public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
+public class NumericLongTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid integer
+    // A valid number
     private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
 
-    public NumericIntegerTextBox() {
+    public NumericLongTextBox() {
         super( false );
     }
 
-    public NumericIntegerTextBox(final boolean allowEmptyValue) {
+    public NumericLongTextBox(final boolean allowEmptyValue) {
         super( allowEmptyValue );
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         boolean isValid = VALID.test( value );
         if ( !isValid ) {
             return isValid;
@@ -44,7 +44,7 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
             return true;
         }
         try {
-            Integer.parseInt( value );
+            Long.parseLong( value );
         } catch ( NumberFormatException nfe ) {
             isValid = ("".equals( value ) && allowEmptyValue);
         }

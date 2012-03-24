@@ -13,42 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * A TextBox to handle numeric BigDecimal values
  */
-public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
+public class DateTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
+    private static final String         DATE_FORMAT    = ApplicationPreferences.getDroolsDateFormat();
 
-    public NumericBigDecimalTextBox() {
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
+
+    public DateTextBox() {
         super( false );
     }
 
-    public NumericBigDecimalTextBox(final boolean allowEmptyValue) {
+    public DateTextBox(final boolean allowEmptyValue) {
         super( allowEmptyValue );
     }
 
     @Override
-    protected boolean isValidValue(String value,
-                                   boolean isOnFocusLost) {
-        boolean isValid = VALID.test( value );
-        if ( !isValid ) {
-            return isValid;
-        }
-        if ( !isOnFocusLost && "-".equals( value ) ) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
+        //Allow anything to be typed in, but validate on loss of Focus
+        if ( !isOnFocusLost ) {
             return true;
         }
+        boolean isValid = true;
         try {
-            @SuppressWarnings("unused")
-            BigDecimal check = new BigDecimal( value );
-        } catch ( NumberFormatException nfe ) {
+            DATE_FORMATTER.parseStrict( value );
+        } catch ( IllegalArgumentException iae ) {
             isValid = ("".equals( value ) && allowEmptyValue);
         }
         return isValid;
@@ -56,7 +56,7 @@ public class NumericBigDecimalTextBox extends AbstractRestrictedEntryTextBox {
 
     @Override
     protected String makeValidValue(String value) {
-        return "0.0";
+        return DATE_FORMATTER.format( new Date() );
     }
 
 }
