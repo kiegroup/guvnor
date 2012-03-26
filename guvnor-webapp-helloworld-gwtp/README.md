@@ -104,6 +104,11 @@ An annotation is used on Proxy to mark that this presenter can only be displayed
 
 
 7. Tabs
-There are some limitations with GWTP's tab implementation. For example, the tab can not be dynamically added. Also presenter is singleton, 
-we need to use PresenterWidget or write our own proxy implementation to allow having multiple instances of presenters. 
-http://code.google.com/p/gwt-platform/wiki/FrequentlyAskedQuestions#When_should_I_use_a_Presenter,_PresenterWidget_or_a_regular_plai
+There are some limitations with GWTP's tab implementation: 
+* The default tab implementation in GWTP tab example is not dynamic, ie., the tab can not be dynamically added. 
+* GWT presenter is singleton, we need to use PresenterWidget or write our own proxy implementation to allow having multiple instances of presenters. 
+I've followed this thread [1] to implement a tab that allows multiple instances of same presenter. However I was not be able to get it working after 
+half days, so I decided not to spend too much time on it until we really need it. 
+
+[1]. http://groups.google.com/group/gwt-platform/msg/4812eba4f82e03ff
+[2]. http://code.google.com/p/gwt-platform/wiki/FrequentlyAskedQuestions#When_should_I_use_a_Presenter,_PresenterWidget_or_a_regular_plai
