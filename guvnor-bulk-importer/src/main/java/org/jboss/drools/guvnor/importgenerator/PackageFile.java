@@ -47,11 +47,14 @@ import org.drools.rule.Package;
 import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
 import org.jboss.drools.guvnor.importgenerator.utils.DroolsHelper;
 import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a drl package file found in the file system
  */
 public class PackageFile implements Comparator<Integer> {
+
     private static final String PH_RULE_START = "rule ";
     private static final String PH_PACKAGE_START = "package ";
     private static final String PH_NEWLINE = "\n";
@@ -59,6 +62,7 @@ public class PackageFile implements Comparator<Integer> {
     private static final String[] RULE_END_MATCHERS = new String[]{"end\n", "\nend"};
     private static final String PACKAGE_DELIMETER = ".";
     private static String FUNCTIONS_FILE = null;
+
     private Package pkg;
     private String imports = ""; //default to no imports
     private String dependencyErrors = "";
@@ -101,14 +105,14 @@ public class PackageFile implements Comparator<Integer> {
      * @return
      * @throws Exception
      */
-    public static Map<String, PackageFile> buildPackages(CmdArgsParser options) throws Exception {
+    public static Map<String, PackageFile> buildPackages(CmdArgsParser options) throws IOException {
         String path = options.getOption(Parameters.OPTIONS_PATH);
         FUNCTIONS_FILE = options.getOption(Parameters.OPTIONS_FUNCTIONS_FILE);
         Map<String, PackageFile> result = new HashMap<String, PackageFile>();
         File location = new File(path);
-        if (!location.isDirectory())
-            throw new Exception("path must be a directory");
-
+        if (!location.isDirectory()) {
+            throw new IllegalStateException("path (" + path + ") must be a directory");
+        }
         buildPackageForDirectory(result, location, options);
         return result;
     }
@@ -126,7 +130,8 @@ public class PackageFile implements Comparator<Integer> {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    private static void buildPackageForDirectory(Map<String, PackageFile> packages, File directory, CmdArgsParser options) throws FileNotFoundException, UnsupportedEncodingException, DroolsParserException, IOException {
+    private static void buildPackageForDirectory(Map<String, PackageFile> packages, File directory, CmdArgsParser options)
+            throws IOException {
         boolean recurse = "true".equals(options.getOption(Parameters.OPTIONS_RECURSIVE));
 
         File[] files = directory.listFiles(
@@ -185,7 +190,7 @@ public class PackageFile implements Comparator<Integer> {
         return new File[]{};
     }
 
-    private static PackageFile parseRuleFiles(PackageFile result, File[] ruleFiles, CmdArgsParser options) throws IOException, DroolsParserException {
+    private static PackageFile parseRuleFiles(PackageFile result, File[] ruleFiles, CmdArgsParser options) throws IOException {
         for (int i = 0; i < ruleFiles.length; i++) {
             File file = ruleFiles[i];
             if (file.getName().endsWith(".drl")) {
@@ -270,24 +275,27 @@ public class PackageFile implements Comparator<Integer> {
      * compiles the rule files into a package and generates any error details
      *
      * @throws IOException
-     * @throws DroolsParserException
      */
-    public void buildPackage() throws IOException, DroolsParserException {
+    public void buildPackage() throws IOException {
         PackageBuilder pb = new PackageBuilder();
         for (String key : getRuleFiles().keySet()) {
             File file = getRuleFiles().get(key);
 
-            if (FUNCTIONS_FILE != null) {
-                File functionsFile = new File(file.getParentFile().getPath(), FUNCTIONS_FILE);
-                if (functionsFile.exists()) {
-                    pb.addPackageFromDrl(new FileReader(functionsFile));
+            try {
+                if (FUNCTIONS_FILE != null) {
+                    File functionsFile = new File(file.getParentFile().getPath(), FUNCTIONS_FILE);
+                    if (functionsFile.exists()) {
+                        pb.addPackageFromDrl(new FileReader(functionsFile));
+                    }
                 }
-            }
 
-            if (file.getName().endsWith(Format.DRL.value)) {
-                pb.addPackageFromDrl(new FileReader(file));
-            } else if (file.getName().endsWith(Format.XLS.value)) {
-                pb.addPackageFromDrl(new StringReader(DroolsHelper.compileDTabletoDRL(file, InputType.XLS)));
+                if (file.getName().endsWith(Format.DRL.value)) {
+                    pb.addPackageFromDrl(new FileReader(file));
+                } else if (file.getName().endsWith(Format.XLS.value)) {
+                    pb.addPackageFromDrl(new StringReader(DroolsHelper.compileDTabletoDRL(file, InputType.XLS)));
+                }
+            } catch (DroolsParserException e) {
+                throw new IllegalArgumentException("File (" + file + ") throw a DroolsParserException.", e);
             }
         }
         this.pkg = pb.getPackage();
@@ -382,7 +390,7 @@ public class PackageFile implements Comparator<Integer> {
      * returns "approval.determine" where path is /home/mallen/workspace/rules/approval/determine/1.0.0.SNAPSHOT/file.xls
      * and options "start" is "rules" and end is "[0-9|.]*[SNAPSHOT]+[0-9|.]*" ie. any number, dot and word SNAPSHOT
      *
-     * @param file
+     * @param directory
      * @param options
      * @return
      */
@@ -444,8 +452,8 @@ public class PackageFile implements Comparator<Integer> {
         //TODO: this is incorrect - what if a rule starts 'rule"rule1"'??? use the getRuleStart method to find the beginning
         String name = ruleContents.substring(ruleContents.indexOf(PH_RULE_START) + PH_RULE_START.length(), ruleContents.indexOf(PH_NEWLINE)).replaceAll("\"", "").trim();
         if (!name.matches("[^'^/^<^>.]+")) { //Guvnor seems to not like some characters
-            if ("true".equals(options.getOption(Parameters.OPTIONS_VERBOSE)))
-                System.out.println("WARNING: fixing invalid rule name [old name=" + name + "]");
+            Logger logger = LoggerFactory.getLogger(PackageFile.class);
+            logger.debug("WARNING: fixing invalid rule name [old name=" + name + "]");
             name = name.replaceAll("'", ""); //remove all ' chars since they are not valid in rule names
             name = name.replaceAll("/", "-"); //remove all / chars since they are not valid in rule names
             name = name.replaceAll("<", "&lt;"); //remove all < chars since they are not valid in rule names

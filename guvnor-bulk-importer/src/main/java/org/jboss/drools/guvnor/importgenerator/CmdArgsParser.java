@@ -86,41 +86,37 @@ public class CmdArgsParser {
 //              "-b", "/home/mallen/workspace/guvnor-importer",
 //              "-w", "kagentChangeSet.xml",
 //              "-V"};
-            System.out.println("Invalid number of parameters - 0");
-            return options;
-        } else if (args.length == 2) {
-            String arg = args[0];
-            String val = args[1];
-            if (arg.equals("-prop")) {
-                try {
-                    Properties props = new Properties();
-                    props.load(new FileInputStream(val));
-                    for (Object prop : props.keySet()) {
-                        String key = (String) prop;
-                        String value = props.getProperty(key);
-                        options.put(map.get(key), value);
-                    }
-                } catch (IOException e) {
-                    System.out.println("Invalid file specified: " + val);
+            throw new IllegalArgumentException("Invalid number of parameters (0).");
+        } else if (args.length == 2 && args[0].equals("-prop")) {
+            String propFilePath = args[1];
+            try {
+                Properties props = new Properties();
+                props.load(new FileInputStream(propFilePath));
+                for (Object prop : props.keySet()) {
+                    String key = (String) prop;
+                    String value = props.getProperty(key);
+                    options.put(map.get(key), value);
                 }
-                options.put(Parameters.OPTIONS_VERBOSE, "true");
-            } else {
-                System.out.println("To use a properties file use the \"-prop\" parameter");
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Invalid propFilePath (" + propFilePath + ").", e);
             }
+            options.put(Parameters.OPTIONS_VERBOSE, "true");
             return options;
         } else {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
-                if (arg.equalsIgnoreCase("-classpath"))
-                    continue;
-                if (arg.equalsIgnoreCase("-v")) {
-                    if (arg.equals("-V")) //if its uppercase then set the very verbose flag
+                if (arg.equalsIgnoreCase("-classpath")) {
+                    // do nothing
+                } else if (arg.equalsIgnoreCase("-v")) {
+                    if (arg.equals("-V")) {
+                        //if its uppercase then set the very verbose flag
                         options.put(Parameters.OPTIONS_VERY_VERBOSE, "true");
+                    }
                     options.put(Parameters.OPTIONS_VERBOSE, "true");
-                    continue;
-                }
-                if (arg.startsWith("-") && map.get(arg) != null) { //it is a - param and is mapped
+                } else if (arg.startsWith("-") && map.get(arg) != null) { //it is a - param and is mapped
                     options.put(map.get(arg), args[++i]);
+                } else {
+                    throw new IllegalArgumentException("Unknown argument (" + arg + ").");
                 }
             }
             //display them so the user knows what the options values are

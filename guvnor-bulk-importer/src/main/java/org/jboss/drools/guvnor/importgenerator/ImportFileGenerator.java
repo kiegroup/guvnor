@@ -18,10 +18,8 @@ package org.jboss.drools.guvnor.importgenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
@@ -32,21 +30,40 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.DroolsParserException;
 import org.drools.repository.utils.IOUtils;
 import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
 import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
-import org.jboss.drools.guvnor.importgenerator.utils.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.joda.time.Seconds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * a BRMS import file generator for drl and xml decision table files
  */
 public class ImportFileGenerator implements Constants {
 
-    private Logger logger = null;
+    public static void main(String[] args) {
+        CmdArgsParser options = new CmdArgsParser();
+        options.parse(args);
+        configureLogger(options);
+        ImportFileGenerator importFileGenerator = new ImportFileGenerator();
+        importFileGenerator.run(options);
+    }
+
+    private static void configureLogger(CmdArgsParser options) {
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger("org.jboss.drools.guvnor.importgenerator");
+        if ("true".equals(options.getOption(Parameters.OPTIONS_VERY_VERBOSE))) {
+            root.setLevel(ch.qos.logback.classic.Level.TRACE);
+        } else if ("true".equals(options.getOption(Parameters.OPTIONS_VERBOSE))) {
+            root.setLevel(ch.qos.logback.classic.Level.DEBUG);
+        }
+    }
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
     private CmdArgsParser options = null;
     private String BASE_DIR = System.getProperty("user.dir");
 
@@ -59,9 +76,9 @@ public class ImportFileGenerator implements Constants {
      *
      * @param packages
      * @return
-     * @throws Exception
+     * @throws IOException
      */
-    public String generateImportFile(Map<String, PackageFile> packages) throws Exception {
+    public String generateImportFile(Map<String, PackageFile> packages) throws IOException {
         // go through each replacer definition creating drl template replacements
         //TODO: what is the org.drools.io.RuleSetReader ??? is this what Guvnor uses this to read the .drl file parts?
         String draftStateReferenceUUID = GeneratedData.generateUUID();
@@ -132,21 +149,17 @@ public class ImportFileGenerator implements Constants {
                 terror++;
                 if (packageFile.hasCompilationErrors()) {
                     cerror++;
-                    logger.debugln(" - [COMPILATION/DEPENDENCY ERRORS]");
-                    if ("true".equals(options.getOption(Parameters.OPTIONS_VERY_VERBOSE))) {
-                        logger.debugln(packageFile.getCompilationErrors().trim());
-                        logger.debugln(packageFile.getDependencyErrors().trim());
-                    }
+                    logger.debug(" - [COMPILATION/DEPENDENCY ERRORS]");
+                    logger.trace(packageFile.getCompilationErrors().trim());
+                    logger.trace(packageFile.getDependencyErrors().trim());
                 } else if (packageFile.hasDependencyErrors()) {
                     derror++;
-                    logger.debugln(" - [DEPENDENCY ERRORS]");
-                    if ("true".equals(options.getOption(Parameters.OPTIONS_VERY_VERBOSE))) {
-                        logger.debugln(packageFile.getDependencyErrors().trim());
-                    }
+                    logger.debug(" - [DEPENDENCY ERRORS]");
+                    logger.trace(packageFile.getDependencyErrors().trim());
                 }
             } else {
                 cok++; //increment the "total rules compiled successfully"
-                logger.debugln(" - [OK]");
+                logger.debug(" - [OK]");
             }
         }
 
@@ -160,17 +173,17 @@ public class ImportFileGenerator implements Constants {
         });
 
         //write a summary report
-        logger.debugln("==========================");
-        logger.debugln("===  PACKAGE SUMMARY   ===");
-        logger.debugln("==========================");
-        logger.debugln(" Rules compiled OK:   " + NumberFormat.getInstance().format(cok));
-        logger.debugln(" Errors:              " + NumberFormat.getInstance().format(terror));
+        logger.debug("==========================");
+        logger.debug("===  PACKAGE SUMMARY   ===");
+        logger.debug("==========================");
+        logger.debug(" Rules compiled OK:   " + NumberFormat.getInstance().format(cok));
+        logger.debug(" Errors:              " + NumberFormat.getInstance().format(terror));
         //comp or dep errors can no longer be detected accurately since many drl file can be in a single package
-//        logger.logln(" Compilation errors:  "+ NumberFormat.getInstance().format(cerror));
-//        logger.logln(" Dependency errors:   "+ NumberFormat.getInstance().format(derror));
-        logger.debugln("                      ____");
-        logger.debugln(" Total:               " + NumberFormat.getInstance().format(total));
-        logger.debugln("==========================");
+//        logger.debug(" Compilation errors:  "+ NumberFormat.getInstance().format(cerror));
+//        logger.debug(" Dependency errors:   "+ NumberFormat.getInstance().format(derror));
+        logger.debug("                      ____");
+        logger.debug(" Total:               " + NumberFormat.getInstance().format(total));
+        logger.debug("==========================");
 
         return parentContents;
     }
@@ -180,9 +193,8 @@ public class ImportFileGenerator implements Constants {
      *
      * @param packages
      * @return
-     * @throws Exception
      */
-    public String generateKnowledgeAgentInitFile(Map<String, PackageFile> packages) throws Exception {
+    public String generateKnowledgeAgentInitFile(Map<String, PackageFile> packages) {
         StringBuffer kagentInitContents = new StringBuffer();
         String kagentChildTemplate = readTemplate(TEMPLATES_KAGENT_CHILD_INIT);
         StringBuffer kagentChildContents = new StringBuffer();
@@ -206,20 +218,21 @@ public class ImportFileGenerator implements Constants {
         return new StringBuffer("");
     }
 
-    private String readTemplate(String templateConst) throws FileNotFoundException {
+    private String readTemplate(String templateConst) {
+        String path = TEMPLATES_FOLDER + "/" + templateConst;
         try {
-            String path = TEMPLATES_FOLDER + "/" + templateConst;
             InputStream in = getClass().getClassLoader().getResourceAsStream(path);
             if (null != in) {
                 return IOUtils.toString(in);
-            } else
+            } else {
                 return FileIO.readAll(new FileInputStream(new File(new File(BASE_DIR, TEMPLATES_FOLDER), templateConst)));
+            }
         } catch (IOException e) {
-            throw new FileNotFoundException(e.getMessage());
+            throw new IllegalArgumentException("Problem reading path (" + path + ").", e);
         }
     }
 
-    private Object[] getPackageObjects(Map<String, Object> context, StringBuffer contents, PackageObjectType type) throws UnsupportedEncodingException, DroolsParserException, IOException {
+    private Object[] getPackageObjects(Map<String, Object> context, StringBuffer contents, PackageObjectType type) throws IOException {
         List<String> objects = new LinkedList<String>();
         PackageFile packageFile = (PackageFile) context.get("packageFile");
         switch (type) {
@@ -303,53 +316,46 @@ public class ImportFileGenerator implements Constants {
         return DEFAULT_CREATOR;
     }
 
-    public void run(CmdArgsParser options) throws Exception {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date startd = new Date();
-        DateTime start = new DateTime(startd);
-        this.options = options;
-        BASE_DIR = options.getOption(Parameters.OPTIONS_BASE_DIR);
-        logger = Logger.getLogger(ImportFileGenerator.class, options);
-        logger.debugln("Running BRMS Import Generator (started " + fmt.format(startd) + "):");
+    public void run(CmdArgsParser options) {
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date startd = new Date();
+            DateTime start = new DateTime(startd);
+            this.options = options;
+            BASE_DIR = options.getOption(Parameters.OPTIONS_BASE_DIR);
+            logger.debug("Running BRMS Import Generator (started " + fmt.format(startd) + "):");
 
-        logger.debugln("Scanning directories...");
-        Map<String, PackageFile> details = PackageFile.buildPackages(options);
+            logger.debug("Scanning directories...");
+            Map<String, PackageFile> details = PackageFile.buildPackages(options);
 
-        logger.debugln("Generating 'Guvnor import data'...");
-        String guvnorImport = generateImportFile(details);
-        File guvnorImportFile = getFile(options.getOption(Parameters.OPTIONS_OUTPUT_FILE));
-        logger.debugln("Writing 'Guvnor import data to disk' (" + guvnorImportFile.getAbsolutePath() + ")");
-        FileIO.write(guvnorImport, guvnorImportFile);
+            logger.debug("Generating 'Guvnor import data'...");
+            String guvnorImport = generateImportFile(details);
+            File guvnorImportFile = getFile(options.getOption(Parameters.OPTIONS_OUTPUT_FILE));
+            logger.debug("Writing 'Guvnor import data to disk' (" + guvnorImportFile.getAbsolutePath() + ")");
+            FileIO.write(guvnorImport, guvnorImportFile);
 
-        if (options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE) != null) {
-            logger.debugln("Generating 'Knowledge agent changeset' data...");
-            String kagentChangeSet = generateKnowledgeAgentInitFile(details);
-            File kagentChangeSetFile = getFile(options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE));
-            logger.debugln("Writing 'Knowledge agent changeset' to disk (" + kagentChangeSetFile.getAbsolutePath() + ")");
-            FileIO.write(kagentChangeSet, kagentChangeSetFile);
+            if (options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE) != null) {
+                logger.debug("Generating 'Knowledge agent changeset' data...");
+                String kagentChangeSet = generateKnowledgeAgentInitFile(details);
+                File kagentChangeSetFile = getFile(options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE));
+                logger.debug("Writing 'Knowledge agent changeset' to disk (" + kagentChangeSetFile.getAbsolutePath() + ")");
+                FileIO.write(kagentChangeSet, kagentChangeSetFile);
+            }
+
+            DateTime end = new DateTime(System.currentTimeMillis());
+            int m = Minutes.minutesBetween(start, end).getMinutes();
+            int s = Seconds.secondsBetween(start, end).getSeconds() - (m * 60);
+            logger.debug("Finished in (" + m + "m" + s + "s)");
+        } catch (IOException e) {
+            logger.error("", e);
         }
-
-        DateTime end = new DateTime(System.currentTimeMillis());
-        int m = Minutes.minutesBetween(start, end).getMinutes();
-        int s = Seconds.secondsBetween(start, end).getSeconds() - (m * 60);
-        logger.debugln("Finished in (" + m + "m" + s + "s)");
     }
 
     private File getFile(String fileLoc) {
         if (fileLoc.startsWith("/") || fileLoc.startsWith("~")) {
             return new File(fileLoc);
-        } else
+        } else {
             return new File(BASE_DIR, fileLoc);
-    }
-
-    public static void main(String[] args) {
-        ImportFileGenerator i = new ImportFileGenerator();
-        try {
-            CmdArgsParser cmd = new CmdArgsParser();
-            cmd.parse(args);
-            i.run(cmd);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
