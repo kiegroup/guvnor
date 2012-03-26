@@ -28,7 +28,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class ImportFileGenerator implements Constants {
      * @throws Exception
      */
     public String generateImportFile(Map<String, PackageFile> packages) throws Exception {
-        // go thru each replacer definition creating drl template replacements
+        // go through each replacer definition creating drl template replacements
         //TODO: what is the org.drools.io.RuleSetReader ??? is this what Guvnor uses this to read the .drl file parts?
         String draftStateReferenceUUID = GeneratedData.generateUUID();
         String categoryReferenceUUID = GeneratedData.generateUUID();
@@ -73,13 +72,12 @@ public class ImportFileGenerator implements Constants {
 
         StringBuffer packageContents = new StringBuffer();
         StringBuffer snapshotContents = new StringBuffer();
-        double i = 0, pct = 0;
-        for (Iterator<String> it = packages.keySet().iterator(); it.hasNext(); ) {
-            double newPct = (int) (++i / (double) packages.size() * 100);
-            pct = newPct;
-            String packageName = (String) it.next();
+        double i = 0;
+        for (Map.Entry<String, PackageFile> packagesEntry : packages.entrySet()) {
+            String packageName = packagesEntry.getKey();
+            double pct = (int) (++i / (double) packages.size() * 100);
             logger.debug(new DecimalFormat("##0").format(pct) + "% - " + packageName);
-            PackageFile packageFile = packages.get(packageName);
+            PackageFile packageFile = packagesEntry.getValue();
 
             Map<String, Object> context = new HashMap<String, Object>();
             context.put("draftStateReferenceUUID", draftStateReferenceUUID);
@@ -92,8 +90,9 @@ public class ImportFileGenerator implements Constants {
             Map<String, Rule> rules = packageFile.getRules();
             packageFile.buildPackage();
 
-            for (String ruleName : rules.keySet()) {
-                Rule rule = (Rule) rules.get(ruleName);
+            for (Map.Entry<String, Rule> rulesEntry : rules.entrySet()) {
+                String ruleName = rulesEntry.getKey();
+                Rule rule = (Rule) rulesEntry.getValue();
                 context.put("file", rule.getFile());
                 context.put("rule", rule);
                 String format = FileIO.getExtension(rule.getFile());
@@ -167,8 +166,8 @@ public class ImportFileGenerator implements Constants {
         logger.debugln(" Rules compiled OK:   " + NumberFormat.getInstance().format(cok));
         logger.debugln(" Errors:              " + NumberFormat.getInstance().format(terror));
         //comp or dep errors can no longer be detected accurately since many drl file can be in a single package
-//    logger.logln(" Compilation errors:  "+ NumberFormat.getInstance().format(cerror));
-//    logger.logln(" Dependency errors:   "+ NumberFormat.getInstance().format(derror));
+//        logger.logln(" Compilation errors:  "+ NumberFormat.getInstance().format(cerror));
+//        logger.logln(" Dependency errors:   "+ NumberFormat.getInstance().format(derror));
         logger.debugln("                      ____");
         logger.debugln(" Total:               " + NumberFormat.getInstance().format(total));
         logger.debugln("==========================");
@@ -187,10 +186,12 @@ public class ImportFileGenerator implements Constants {
         StringBuffer kagentInitContents = new StringBuffer();
         String kagentChildTemplate = readTemplate(TEMPLATES_KAGENT_CHILD_INIT);
         StringBuffer kagentChildContents = new StringBuffer();
-        for (Iterator<String> it = packages.keySet().iterator(); it.hasNext(); ) {
-            String packageName = (String) it.next();
-            PackageFile packageFile = packages.get(packageName);
-            kagentChildContents.append(MessageFormat.format(kagentChildTemplate, new Object[]{options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_SERVER), packageFile.getName() + "/" + options.getOption(Parameters.OPTIONS_SNAPSHOT_NAME), "PKG"}));
+        for (Map.Entry<String, PackageFile> packagesEntry : packages.entrySet()) {
+            String packageName = packagesEntry.getKey();
+            PackageFile packageFile = packagesEntry.getValue();
+            kagentChildContents.append(MessageFormat.format(kagentChildTemplate,
+                    new Object[]{options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_SERVER),
+                            packageFile.getName() + "/" + options.getOption(Parameters.OPTIONS_SNAPSHOT_NAME), "PKG"}));
         }
         String kagentParentTemplate = readTemplate(TEMPLATES_KAGENT_PARENT_INIT);
         kagentInitContents.append(MessageFormat.format(kagentParentTemplate, new Object[]{kagentChildContents.toString()}));
@@ -296,8 +297,9 @@ public class ImportFileGenerator implements Constants {
      * @return
      */
     private String getCreator() {
-        if (options.getOption(Parameters.OPTIONS_CREATOR) != null)
+        if (options.getOption(Parameters.OPTIONS_CREATOR) != null) {
             return options.getOption(Parameters.OPTIONS_CREATOR);
+        }
         return DEFAULT_CREATOR;
     }
 

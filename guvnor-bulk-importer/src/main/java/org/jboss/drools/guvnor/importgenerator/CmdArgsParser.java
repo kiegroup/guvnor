@@ -71,21 +71,21 @@ public class CmdArgsParser {
 
     public Map<Parameters, String> parse(String[] args) {
         if (args.length == 0) {
-//      args=new String[]{ //default arguments
-//          "-classpath",
-//          "-p", "/home/mallen/workspace/guvnor-importer/my_rules",
-//          "-s", "rules",
-//          "-e", "[0-9|.]*[.|-]+[SNAPSHOT]+[.|-]*[09|.]*",
-//          "-r", "true",
-//          "-u","admin",
-//          "-f","drl,xls",
-//          "-o","generated.xml",
-//          "-n","1.0.0-SNAPSHOT",
-//          "-c","functions.drl",
-//          "-k", "http://localhost:8080/brms/org.drools.guvnor.Guvnor/package/",
-//          "-b", "/home/mallen/workspace/guvnor-importer",
-//          "-w", "kagentChangeSet.xml",
-//          "-V"};
+//          args=new String[]{ //default arguments
+//              "-classpath",
+//              "-p", "/home/mallen/workspace/guvnor-importer/my_rules",
+//              "-s", "rules",
+//              "-e", "[0-9|.]*[.|-]+[SNAPSHOT]+[.|-]*[09|.]*",
+//              "-r", "true",
+//              "-u","admin",
+//              "-f","drl,xls",
+//              "-o","generated.xml",
+//              "-n","1.0.0-SNAPSHOT",
+//              "-c","functions.drl",
+//              "-k", "http://localhost:8080/brms/org.drools.guvnor.Guvnor/package/",
+//              "-b", "/home/mallen/workspace/guvnor-importer",
+//              "-w", "kagentChangeSet.xml",
+//              "-V"};
             System.out.println("Invalid number of parameters - 0");
             return options;
         } else if (args.length == 2) {
