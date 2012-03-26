@@ -21,10 +21,10 @@ import java.io.File;
 /**
  * Represents an individual rule within a drl package file found in the file system
  */
-public class Rule{
+public class Rule {
     private String ruleName;
     private String content;
-	private File file;
+    private File file;
 
     /**
      * Std constructor used within the PackageFile parser
@@ -32,13 +32,13 @@ public class Rule{
      * @param ruleName
      * @param content
      */
-	public Rule(String ruleName, String content, File file){
+    public Rule(String ruleName, String content, File file){
         this.ruleName=ruleName;
         this.content=content;
-		this.file=file;
-	}
-	public File getFile(){
-	  return file;
+        this.file=file;
+    }
+    public File getFile(){
+      return file;
     }
     public String getRuleName() {
         return ruleName;

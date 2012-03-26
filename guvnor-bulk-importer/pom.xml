@@ -79,30 +79,30 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <build>
-      	<plugins>
-           <!--plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>obtain-domain-model-jar</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.jboss.drools.guvnor.tools.example</groupId>
-									<artifactId>example-domain</artifactId>
-									<version>1.0.0-SNAPSHOT</version>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin-->
+        <plugins>
+          <!--plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>obtain-domain-model-jar</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.jboss.drools.guvnor.tools.example</groupId>
+                      <artifactId>example-domain</artifactId>
+                      <version>1.0.0-SNAPSHOT</version>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin-->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -158,9 +158,9 @@
                 <argument>-w</argument>
                 <argument>kagent-changeset.xml</argument> <!--  kagent changeset file output -->
 
-				<!-- optional argument that will add this model to every package -->
-				<!--argument>-m</argument>
-				<argument>${project.build.directory}/example-domain-1.0.0-SNAPSHOT.jar</argument-->
+                <!-- optional argument that will add this model to every package -->
+                <!--argument>-m</argument>
+                <argument>${project.build.directory}/example-domain-1.0.0-SNAPSHOT.jar</argument-->
 
                 <argument>-V</argument> <!--  verbose output (v=verbose, V=very verbose -->
               </arguments>
@@ -210,12 +210,10 @@
       <artifactId>joda-time</artifactId>
       <version>1.6</version>
     </dependency>
-<!--
-		<dependency>
-			<groupId>org.jboss.drools.guvnor.tools.example</groupId>
-			<artifactId>example-domain</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
--->
+    <!--dependency>
+      <groupId>org.jboss.drools.guvnor.tools.example</groupId>
+      <artifactId>example-domain</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency-->
   </dependencies>
 </project>

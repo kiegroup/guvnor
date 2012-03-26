@@ -45,13 +45,14 @@ import org.joda.time.Seconds;
 /**
  * a BRMS import file generator for drl and xml decision table files
  */
-public class ImportFileGenerator implements Constants{
-  private Logger logger=null;
+public class ImportFileGenerator implements Constants {
+
+    private Logger logger=null;
     private CmdArgsParser options=null;
     private String BASE_DIR=System.getProperty("user.dir");
     public enum PackageObjectType{ PACKAGE, PACKAGE_SNAPSHOT, MODEL }
-  public enum RuleObjectType{ RULE, SNAPSHOT_RULE }
-  
+    public enum RuleObjectType{ RULE, SNAPSHOT_RULE }
+
     /**
      * The main action method
      * @param packages
@@ -88,7 +89,7 @@ public class ImportFileGenerator implements Constants{
           Map<String, Rule> rules=packageFile.getRules();
           packageFile.buildPackage();
 
-		  for(String ruleName:rules.keySet()){
+          for(String ruleName:rules.keySet()){
                 Rule rule=(Rule)rules.get(ruleName);
                 context.put("file", rule.getFile());
                 context.put("rule", rule);
@@ -100,7 +101,7 @@ public class ImportFileGenerator implements Constants{
                 //inject the snapshot rule values in the the snapshot rule template
                 snapshotRuleContents.append(MessageFormat.format(readTemplate(MessageFormat.format(TEMPLATES_SNAPSHOT_RULE, format)), getRuleObjects(context/*, RuleObjectType.SNAPSHOT_RULE*/)));
           }
-			
+
           String modelTemplate = readTemplate(TEMPLATES_MODEL);
           for(Model model:packageFile.getModelFiles()){
               context.put("model", model);
@@ -201,16 +202,16 @@ public class ImportFileGenerator implements Constants{
     }
 
     private String readTemplate(String templateConst) throws FileNotFoundException{
-	  try{
-	    String path=TEMPLATES_FOLDER + "/" + templateConst;
-	    InputStream in=getClass().getClassLoader().getResourceAsStream(path);
-	    if (null!=in){
-	      return IOUtils.toString(in);
-	    }else
+      try{
+        String path=TEMPLATES_FOLDER + "/" + templateConst;
+        InputStream in=getClass().getClassLoader().getResourceAsStream(path);
+        if (null!=in){
+          return IOUtils.toString(in);
+        }else
         return FileIO.readAll(new FileInputStream(new File(new File(BASE_DIR, TEMPLATES_FOLDER), templateConst)));
-	  }catch (IOException e){
-	    throw new FileNotFoundException(e.getMessage());
-	  }
+      }catch (IOException e){
+        throw new FileNotFoundException(e.getMessage());
+      }
     }
 
     private Object[] getPackageObjects(Map<String, Object> context, StringBuffer contents, PackageObjectType type) throws UnsupportedEncodingException, DroolsParserException, IOException{
@@ -218,17 +219,17 @@ public class ImportFileGenerator implements Constants{
         PackageFile packageFile=(PackageFile)context.get("packageFile");
         switch (type){
         case MODEL:
-		  Model model=(Model)context.get("model");
-		  objects.add(model.getFile().getName().substring(0, model.getFile().getName().lastIndexOf(".")));//wrapper title
-		  objects.add(getCreator());//creator
-		  objects.add(contents.toString());// packageFile.getModelAsBase64());//content
-		  objects.add(GeneratedData.generateUUID());//uuid
-		  objects.add(model.getFile().getName());//filename
-		  objects.add((String)context.get("draftStateReferenceUUID"));//state
-		  objects.add(GeneratedData.getTimestamp());//timestamp
-		  objects.add(packageFile.getName()); //package name
-		  break;
-		
+          Model model=(Model)context.get("model");
+          objects.add(model.getFile().getName().substring(0, model.getFile().getName().lastIndexOf(".")));//wrapper title
+          objects.add(getCreator());//creator
+          objects.add(contents.toString());// packageFile.getModelAsBase64());//content
+          objects.add(GeneratedData.generateUUID());//uuid
+          objects.add(model.getFile().getName());//filename
+          objects.add((String)context.get("draftStateReferenceUUID"));//state
+          objects.add(GeneratedData.getTimestamp());//timestamp
+          objects.add(packageFile.getName()); //package name
+          break;
+
         case PACKAGE:
           objects.add(packageFile.getName());
           objects.add(getCreator());
@@ -303,7 +304,7 @@ public class ImportFileGenerator implements Constants{
     BASE_DIR=options.getOption(Parameters.OPTIONS_BASE_DIR);
     logger=Logger.getLogger(ImportFileGenerator.class, options);
     logger.debugln("Running BRMS Import Generator (started "+ fmt.format(startd) +"):");
-    
+
         logger.debugln("Scanning directories...");
         Map<String, PackageFile> details=PackageFile.buildPackages(options);
 
