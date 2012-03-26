@@ -1334,12 +1334,12 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                 }
             }
 
-        } else if ( data.isMerged() || selections.size() > 1 || value == null ) {
+        } else if ( data.isMerged() || selections.size() > 1 ) {
 
             //If the data is merged changes to the cells' value can cause the need for a greater range of 
             //rows to be redrawn as a cell's new value could cause the merged span to increase. This is also 
             //the only mechanism available to update multiple individual cells' values when multiple 
-            //cells are selected or when the value is null.
+            //cells are selected.
             data.assertModelMerging();
 
             // Partial redraw
@@ -1355,6 +1355,12 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             }
             redrawRows( minRedrawRow,
                         maxRedrawRow );
+        } else {
+            
+            //Redraw a single row
+            int baseRowIndex = selections.first().getCoordinate().getRow();
+            redrawRows( baseRowIndex,
+                        baseRowIndex );
         }
 
         //Re-select applicable cells, following change to merge

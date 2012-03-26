@@ -53,7 +53,7 @@ public class RuleTemplateEditor extends DirtyableComposite
     private TemplateDataTableWidget    table;
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
-    private EventBus                   eventBus  = new SimpleEventBus();
+    private EventBus                   eventBus = new SimpleEventBus();
 
     //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
     @SuppressWarnings("unused")
@@ -99,7 +99,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         popUp.addAttribute( "",
                                                             table );
 
-                                        Button btnSaveAndClose = new Button( ConstantsCore.INSTANCE.SaveAndClose(),
+                                        Button btnOK = new Button( ConstantsCore.INSTANCE.OK(),
                                                                              new ClickHandler() {
                                                                                  public void onClick(ClickEvent event) {
                                                                                      popUp.hide();
@@ -117,7 +117,7 @@ public class RuleTemplateEditor extends DirtyableComposite
 
                                         HorizontalPanel pnlClose = new HorizontalPanel();
                                         pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
-                                        pnlClose.add( btnSaveAndClose );
+                                        pnlClose.add( btnOK );
                                         pnlClose.add( btnAddRow );
                                         popUp.addAttribute( "",
                                                             pnlClose );
