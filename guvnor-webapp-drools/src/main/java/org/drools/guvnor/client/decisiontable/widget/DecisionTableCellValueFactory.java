@@ -43,9 +43,9 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 public class DecisionTableCellValueFactory extends AbstractCellValueFactory<BaseColumn, DTCellValue52> {
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable52 model;
+    private final GuidedDecisionTable52 model;
 
-    private DTCellValueUtilities  utilities;
+    private final DTCellValueUtilities  utilities;
 
     /**
      * Construct a Cell Value Factory for a specific Decision Table

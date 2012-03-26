@@ -307,8 +307,10 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         }
     }
 
-    //Convert an interpolation variable to a column
-    private TemplateDataColumn makeModelColumn(InterpolationVariable var) {
+    /**
+     * Convert an interpolation variable to a column
+     */
+    public TemplateDataColumn makeModelColumn(InterpolationVariable var) {
         return new TemplateDataColumn( var.getVarName(),
                                        var.getDataType(),
                                        var.getFactType(),

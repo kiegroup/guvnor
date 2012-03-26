@@ -40,6 +40,7 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLConditionColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BRLConditionVariableColumn;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -54,9 +55,11 @@ public class DecisionTableDropDownManager
     implements
     CellTableDropDownDataValueMapProvider {
 
-    private final SuggestionCompletionEngine sce;
-    private final GuidedDecisionTable52      model;
-    private DynamicData                      data;
+    private final SuggestionCompletionEngine    sce;
+    private final GuidedDecisionTable52         model;
+    private final DecisionTableCellValueFactory cellValueFactory;
+    private final DTCellValueUtilities          utilities;
+    private DynamicData                         data;
 
     public DecisionTableDropDownManager(final GuidedDecisionTable52 model,
                                         final SuggestionCompletionEngine sce) {
@@ -66,6 +69,10 @@ public class DecisionTableDropDownManager
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.cellValueFactory = new DecisionTableCellValueFactory( model,
+                                                                   sce );
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
         this.model = model;
         this.sce = sce;
     }
@@ -82,6 +89,10 @@ public class DecisionTableDropDownManager
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.cellValueFactory = new DecisionTableCellValueFactory( model,
+                                                                   sce );
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
         this.model = model;
         this.data = data;
         this.sce = sce;
@@ -136,12 +147,10 @@ public class DecisionTableDropDownManager
                         final BRLConditionVariableColumn vc = getConditionVariableColumnIndex( brl.getChildColumns(),
                                                                                                valueHolder.getValue() );
                         final int iCol = model.getExpandedColumns().indexOf( vc );
+                        final CellValue< ? > cv = this.data.get( iBaseRowIndex ).get( iCol );
                         final String field = vc.getFactField();
-
-                        //The generic class CellValue can have different data-types however enumerations
-                        //in a Decision Table are always String-based hence we can safely cast to a String
-                        //to retrieve the correct String representation of the CellValue's value.
-                        final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
+                        final String value = getValue( vc,
+                                                       cv );
                         currentValueMap.put( field,
                                              value );
                         break;
@@ -170,12 +179,10 @@ public class DecisionTableDropDownManager
                         final BRLActionVariableColumn vc = getActionVariableColumnIndex( brl.getChildColumns(),
                                                                                          valueHolder.getValue() );
                         final int iCol = model.getExpandedColumns().indexOf( vc );
+                        final CellValue< ? > cv = this.data.get( iBaseRowIndex ).get( iCol );
                         final String field = vc.getFactField();
-
-                        //The generic class CellValue can have different data-types however enumerations
-                        //in a Decision Table are always String-based hence we can safely cast to a String
-                        //to retrieve the correct String representation of the CellValue's value.
-                        final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
+                        final String value = getValue( vc,
+                                                       cv );
                         currentValueMap.put( field,
                                              value );
                         break;
@@ -191,7 +198,8 @@ public class DecisionTableDropDownManager
             for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
                 final int iCol = allColumns.indexOf( cc );
                 currentValueMap.put( cc.getFactField(),
-                                     getValue( rowData.get( iCol ) ) );
+                                     getValue( cc,
+                                               rowData.get( iCol ) ) );
             }
 
         } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
@@ -203,7 +211,8 @@ public class DecisionTableDropDownManager
                     if ( asf.getBoundName().equals( binding ) ) {
                         final int iCol = allColumns.indexOf( asf );
                         currentValueMap.put( asf.getFactField(),
-                                             getValue( rowData.get( iCol ) ) );
+                                             getValue( asf,
+                                                       rowData.get( iCol ) ) );
                     }
                 }
             }
@@ -217,7 +226,8 @@ public class DecisionTableDropDownManager
                     if ( aif.getBoundName().equals( binding ) ) {
                         final int iCol = allColumns.indexOf( aif );
                         currentValueMap.put( aif.getFactField(),
-                                             getValue( rowData.get( iCol ) ) );
+                                             getValue( aif,
+                                                       rowData.get( iCol ) ) );
                     }
                 }
             }
@@ -226,14 +236,18 @@ public class DecisionTableDropDownManager
         return currentValueMap;
     }
 
-    private String getValue(CellValue< ? extends Comparable< ? >> dcv) {
-        if ( dcv == null || dcv.getValue() == null ) {
+    //The generic class CellValue can have different data-types so 
+    //we need to convert the cell's value to a String used by the 
+    //dependent enumerations services
+    private String getValue(final BaseColumn column,
+                            final CellValue< ? extends Comparable< ? >> cv) {
+        if ( cv == null || cv.getValue() == null ) {
             return "";
         }
-        //The generic class CellValue can have different data-types however enumerations
-        //in a Decision Table are always String-based hence we can safely call toString()
-        //to retrieve the correct String representation of the CellValue's value.
-        return dcv.getValue().toString();
+        final DTCellValue52 dcv = cellValueFactory.convertToModelCell( column,
+                                                                       cv );
+        final String value = utilities.asString( dcv );
+        return value;
     }
 
     private BRLConditionVariableColumn getConditionVariableColumnIndex(final List<BRLConditionVariableColumn> definition,

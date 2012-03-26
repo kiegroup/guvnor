@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellTableDropDownDataValueMapProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.templates.InterpolationVariable;
@@ -40,9 +41,10 @@ public class TemplateDropDownManager
     implements
     CellTableDropDownDataValueMapProvider {
 
-    private final SuggestionCompletionEngine sce;
-    private final TemplateModel              model;
-    private DynamicData                      data;
+    private final SuggestionCompletionEngine   sce;
+    private final TemplateModel                model;
+    private final TemplateDataCellValueFactory cellValueFactory;
+    private DynamicData                        data;
 
     public TemplateDropDownManager(final TemplateModel model,
                                    final SuggestionCompletionEngine sce) {
@@ -52,6 +54,8 @@ public class TemplateDropDownManager
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.cellValueFactory = new TemplateDataCellValueFactory( model,
+                                                                  sce );
         this.model = model;
         this.sce = sce;
     }
@@ -68,6 +72,8 @@ public class TemplateDropDownManager
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.cellValueFactory = new TemplateDataCellValueFactory( model,
+                                                                  sce );
         this.model = model;
         this.data = data;
         this.sce = sce;
@@ -115,10 +121,13 @@ public class TemplateDropDownManager
                     final InterpolationVariable variable = allVariables[iCol];
                     final String field = variable.getFactField();
 
-                    //The generic class CellValue can have different data-types however enumerations
-                    //in a Decision Table are always String-based hence we can safely cast to a String
-                    //to retrieve the correct String representation of the CellValue's value.
-                    final String value = (String) this.data.get( iBaseRowIndex ).get( iCol ).getValue();
+                    //The generic class CellValue can have different data-types so 
+                    //we need to convert the cell's value to a String used by the 
+                    //dependent enumerations services
+                    final CellValue< ? > cv = this.data.get( iBaseRowIndex ).get( iCol );
+                    final TemplateDataColumn column = cellValueFactory.makeModelColumn( variable );
+                    final String value = cellValueFactory.convertToModelCell( column,
+                                                                              cv );
                     currentValueMap.put( field,
                                          value );
                     break;
