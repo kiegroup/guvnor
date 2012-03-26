@@ -28,12 +28,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * File IO helper class for reading/writing files and converting to/from base64
  */
-
-public class FileIO {
+public class FileIOHelper {
     public static final String FORMAT = "utf-8";
 
     public static void write(String data, File destination) throws IOException {
@@ -47,13 +48,13 @@ public class FileIO {
         out.close();
     }
 
-    public static String getExtension(File file) {
-        int dotpos = file.getName().lastIndexOf(".") + 1;
-        return file.getName().substring(dotpos);
-    }
-
-    public static String readAllAsBase64(File f) throws UnsupportedEncodingException {
-        byte[] bytes = FileIO.readAll(f);
+    public static String readAllAsBase64(File file) throws UnsupportedEncodingException {
+        byte[] bytes = new byte[0];
+        try {
+            bytes = FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error reading file (" + file +")", e);
+        }
         byte[] base64bytes = Base64.encodeBase64(bytes);
         String base64String = new String(base64bytes, "utf-8");
         return base64String;
@@ -69,44 +70,4 @@ public class FileIO {
         return new String(b, "utf-8");
     }
 
-    public static byte[] readAll(File f) {
-        FileInputStream in = null;
-        byte[] buf = null;
-        try {
-            in = new FileInputStream(f);
-            buf = new byte[new Long(f.length()).intValue() + 1]; //and hope the file is not too large!
-            in.read(buf);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return buf;
-    }
-
-    public static String readAll(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
-    }
 }

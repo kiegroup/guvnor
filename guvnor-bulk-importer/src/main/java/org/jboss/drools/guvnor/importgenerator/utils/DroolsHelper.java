@@ -48,7 +48,7 @@ public class DroolsHelper {
      */
 //  public static byte[] compileRuletoPKG(PackageFile file) throws IOException, DroolsParserException {
 //    PackageBuilder pb = new PackageBuilder();
-//    String xtn=FileIO.getExtension(file.getFile()).toLowerCase();
+//    String xtn=FilenameUtils.getExtension(file.getFile()).toLowerCase();
 //    if (xtn.equals("drl")){
 //      File functionsFile=new File(file.getFile().getParentFile().getPath(), FUNCTIONS_FILE);
 //      if (functionsFile.exists()){

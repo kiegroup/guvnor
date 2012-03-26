@@ -17,7 +17,6 @@
 package org.jboss.drools.guvnor.importgenerator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -30,9 +29,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.drools.repository.utils.IOUtils;
 import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
-import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
+import org.jboss.drools.guvnor.importgenerator.utils.FileIOHelper;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.joda.time.Seconds;
@@ -112,7 +113,7 @@ public class ImportFileGenerator implements Constants {
                 Rule rule = (Rule) rulesEntry.getValue();
                 context.put("file", rule.getFile());
                 context.put("rule", rule);
-                String format = FileIO.getExtension(rule.getFile());
+                String format = FilenameUtils.getExtension(rule.getFile().getName());
                 context.put("format", format);
                 //inject the rule values into the rule template
                 ruleContents.append(MessageFormat.format(readTemplate(MessageFormat.format(TEMPLATES_RULE, format)), getRuleObjects(context/*, RuleObjectType.RULE*/)));
@@ -129,13 +130,13 @@ public class ImportFileGenerator implements Constants {
             // If no models in directory but parameter specified then upload the parameterized model
             if (packageFile.getModelFiles().size() <= 0 && options.getOption(Parameters.OPTIONS_MODEL) != null) {
                 File modelFile = new File(options.getOption(Parameters.OPTIONS_MODEL));
-                String modelFileContent = FileIO.readAllAsBase64(modelFile);
+                String modelFileContent = FileIOHelper.readAllAsBase64(modelFile);
                 context.put("model", new Model(modelFile, modelFileContent));
                 ruleContents.append(MessageFormat.format(modelTemplate, getPackageObjects(context, new StringBuffer(modelFileContent), PackageObjectType.MODEL)));
             }
 
             //inject the rule(s) into the package into the package contents
-            String packageTemplate = readTemplate(TEMPLATES_PACKAGE);// FileIO.readAll(new FileInputStream(new File(TEMPLATES_FOLDER, TEMPLATES_PACKAGE)));
+            String packageTemplate = readTemplate(TEMPLATES_PACKAGE);// FileUtils.readAll(new FileInputStream(new File(TEMPLATES_FOLDER, TEMPLATES_PACKAGE)));
             packageContents.append(MessageFormat.format(packageTemplate, getPackageObjects(context, ruleContents, PackageObjectType.PACKAGE)));
 
             //inject the snapshot values into the snapshot contents
@@ -225,7 +226,12 @@ public class ImportFileGenerator implements Constants {
             if (null != in) {
                 return IOUtils.toString(in);
             } else {
-                return FileIO.readAll(new FileInputStream(new File(new File(BASE_DIR, TEMPLATES_FOLDER), templateConst)));
+                File file = new File(new File(BASE_DIR, TEMPLATES_FOLDER), templateConst);
+                try {
+                    return FileUtils.readFileToString(file);
+                } catch (IOException e) {
+                    throw new IllegalArgumentException("Error reading file (" + file +")", e);
+                }
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Problem reading path (" + path + ").", e);
@@ -268,8 +274,8 @@ public class ImportFileGenerator implements Constants {
                 objects.add(contents.toString()); //5
                 objects.add((String) context.get("draftStateReferenceUUID"));
                 objects.add(GeneratedData.getTimestamp()); //7
-                //objects.add(FileIO.toBase64(DroolsHelper.compileRuletoPKG(packageFile))); //8
-                objects.add(FileIO.toBase64(packageFile.toByteArray()));
+                //objects.add(FileIOHelper.toBase64(DroolsHelper.compileRuletoPKG(packageFile))); //8
+                objects.add(FileIOHelper.toBase64(packageFile.toByteArray()));
                 objects.add(GeneratedData.generateUUID()); //snapshot uuid
                 objects.add(GeneratedData.generateUUID()); //snapshot base+predecessor uuid
                 objects.add(GeneratedData.generateUUID()); //assets uuid
@@ -332,14 +338,14 @@ public class ImportFileGenerator implements Constants {
             String guvnorImport = generateImportFile(details);
             File guvnorImportFile = getFile(options.getOption(Parameters.OPTIONS_OUTPUT_FILE));
             logger.debug("Writing 'Guvnor import data to disk' (" + guvnorImportFile.getAbsolutePath() + ")");
-            FileIO.write(guvnorImport, guvnorImportFile);
+            FileIOHelper.write(guvnorImport, guvnorImportFile);
 
             if (options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE) != null) {
                 logger.debug("Generating 'Knowledge agent changeset' data...");
                 String kagentChangeSet = generateKnowledgeAgentInitFile(details);
                 File kagentChangeSetFile = getFile(options.getOption(Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE));
                 logger.debug("Writing 'Knowledge agent changeset' to disk (" + kagentChangeSetFile.getAbsolutePath() + ")");
-                FileIO.write(kagentChangeSet, kagentChangeSetFile);
+                FileIOHelper.write(kagentChangeSet, kagentChangeSetFile);
             }
 
             DateTime end = new DateTime(System.currentTimeMillis());

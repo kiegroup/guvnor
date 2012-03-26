@@ -18,7 +18,6 @@ package org.jboss.drools.guvnor.importgenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
@@ -38,6 +37,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -46,7 +46,7 @@ import org.drools.decisiontable.InputType;
 import org.drools.rule.Package;
 import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
 import org.jboss.drools.guvnor.importgenerator.utils.DroolsHelper;
-import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
+import org.jboss.drools.guvnor.importgenerator.utils.FileIOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +93,7 @@ public class PackageFile implements Comparator<Integer> {
             if (!modelFile.exists()) {
                 throw new RuntimeException("model file does not exist [" + modelFile.getAbsolutePath() + "]");
             }
-            modelContent = FileIO.readAllAsBase64(modelFile);
+            modelContent = FileIOHelper.readAllAsBase64(modelFile);
             modelFiles.add(new Model(modelFile, modelContent));
         }
     }
@@ -203,7 +203,7 @@ public class PackageFile implements Comparator<Integer> {
     }
 
     private static void parseXlsFile(File file, PackageFile packageFile, CmdArgsParser options) throws FileNotFoundException, UnsupportedEncodingException {
-        String content = FileIO.readAllAsBase64(file);
+        String content = FileIOHelper.readAllAsBase64(file);
         packageFile.getRules().put(file.getName(), new Rule(file.getName(), content, file));
         packageFile.getRuleFiles().put(file.getName(), file);
     }
@@ -246,7 +246,12 @@ public class PackageFile implements Comparator<Integer> {
 
 
     private static void parseDrlFile(File file, PackageFile packageFile, CmdArgsParser options) throws FileNotFoundException {
-        String content = FileIO.readAll(new FileInputStream(file));
+        String content;
+        try {
+            content = FileUtils.readFileToString(file);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error reading file (" + file +")", e);
+        }
         int packageLoc = content.indexOf(PH_PACKAGE_START); // usually 0
         int ruleLoc = getRuleStart(content, 0);// variable
         //packageFile.setPackageName(getPackageName(file, options));
