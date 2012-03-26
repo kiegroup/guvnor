@@ -554,9 +554,24 @@ public class ServiceImplementation
         }
     }
 
-    /**
-     * @deprecated in favour of {@link #listUserPermissions(PageRequest)}
-     */
+    @Restrict("#{identity.loggedIn}")
+    public boolean isDoNotInstallSample() {
+        try {
+            return getRulesRepository().isDoNotInstallSample();
+        } catch (RepositoryException e) {
+            return true;
+        }
+    }
+    
+    @Restrict("#{identity.loggedIn}")
+    public void setDoNotInstallSample() {
+        try {
+            getRulesRepository().setDoNotInstallSample();
+        } catch (RepositoryException e) {
+            //Ignored
+        }
+    }
+    
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();

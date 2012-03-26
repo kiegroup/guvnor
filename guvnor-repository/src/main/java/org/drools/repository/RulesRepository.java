@@ -117,7 +117,12 @@ public class RulesRepository {
      * The name of the workspace area within the JCR repository
      */
     public final static String WORKSPACE_AREA = "drools:workspace_area";
-
+    
+    /**
+     * The name of the node to store user's preference if want to install the sample repository
+     */
+    public final static String DO_NOT_INSTALL_SAMPLE_NODE = "drools:do_not_install_sample";
+    
     /**
      * The name of the rules repository within the JCR repository
      */
@@ -1865,7 +1870,29 @@ public class RulesRepository {
             throw new RulesRepositoryException(e);
         }
     }
-
+    
+    public boolean isDoNotInstallSample()  throws RepositoryException {
+        return containsDoNotInstallSampleNode();
+    }
+    
+    public void setDoNotInstallSample()  throws RepositoryException {
+        Node rootNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME);
+        if (!rootNode.hasNode(DO_NOT_INSTALL_SAMPLE_NODE)) {      
+            rootNode.addNode(DO_NOT_INSTALL_SAMPLE_NODE, "nt:folder");
+            
+            save();
+        } 
+   }
+       
+    private boolean containsDoNotInstallSampleNode() throws RepositoryException {
+        Node rootNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME);
+        try {
+            return rootNode.hasNode(DO_NOT_INSTALL_SAMPLE_NODE);
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
     @Override
     protected void finalize() throws Throwable {
         //shouldn't rely on this... but

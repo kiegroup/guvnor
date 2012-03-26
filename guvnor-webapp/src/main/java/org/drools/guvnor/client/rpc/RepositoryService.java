@@ -20,8 +20,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.RepositoryException;
+
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.jboss.seam.annotations.security.Restrict;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -294,6 +297,10 @@ public interface RepositoryService
      */
     public List<String> listAvailablePermissionRoleTypes();
 
+    public boolean isDoNotInstallSample();
+
+    public void setDoNotInstallSample();
+    
     /**
      * Removes user security data.
      */

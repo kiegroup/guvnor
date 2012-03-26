@@ -739,6 +739,15 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().listAvailablePermissionRoleTypes();
     }
 
+    public boolean isDoNotInstallSample() {
+        PackageConfigData[] packages = getPackageService().listPackages();
+        return packages.length != 1 || getService().isDoNotInstallSample();
+    }
+
+    public void setDoNotInstallSample() {
+        getService().setDoNotInstallSample();
+    }
+    
     public void deleteUser(java.lang.String p0) {
         getService().deleteUser( p0 );
     }
