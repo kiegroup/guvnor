@@ -32,23 +32,28 @@ public class Rule {
      * @param ruleName
      * @param content
      */
-    public Rule(String ruleName, String content, File file){
-        this.ruleName=ruleName;
-        this.content=content;
-        this.file=file;
+    public Rule(String ruleName, String content, File file) {
+        this.ruleName = ruleName;
+        this.content = content;
+        this.file = file;
     }
-    public File getFile(){
-      return file;
+
+    public File getFile() {
+        return file;
     }
+
     public String getRuleName() {
         return ruleName;
     }
+
     public void setRuleName(String ruleName) {
         this.ruleName = ruleName;
     }
+
     public String getContent() {
         return content;
     }
+
     public void setContent(String content) {
         this.content = content;
     }

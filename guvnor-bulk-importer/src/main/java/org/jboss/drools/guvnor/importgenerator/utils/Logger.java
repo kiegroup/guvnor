@@ -23,22 +23,24 @@ import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
  * Simple std io logger
  */
 public class Logger {
-  public boolean debugEnabled=true;
-  
-  public static Logger getLogger(Class c, CmdArgsParser options){
-    Logger l=new Logger();
-    l.debugEnabled="true".equals(options.getOption(Parameters.OPTIONS_VERBOSE));
-    return l;
-  }
-  public void debugln(String msg){
-    if (debugEnabled){
-      System.out.println(msg);
+    public boolean debugEnabled = true;
+
+    public static Logger getLogger(Class c, CmdArgsParser options) {
+        Logger l = new Logger();
+        l.debugEnabled = "true".equals(options.getOption(Parameters.OPTIONS_VERBOSE));
+        return l;
     }
-  }
-  public void debug(String msg){
-    if (debugEnabled){
-      System.out.print(msg);
+
+    public void debugln(String msg) {
+        if (debugEnabled) {
+            System.out.println(msg);
+        }
     }
-  }
+
+    public void debug(String msg) {
+        if (debugEnabled) {
+            System.out.print(msg);
+        }
+    }
 
 }

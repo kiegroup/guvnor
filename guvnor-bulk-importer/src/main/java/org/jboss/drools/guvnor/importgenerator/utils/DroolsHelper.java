@@ -34,18 +34,18 @@ import org.drools.rule.Package;
 import org.jboss.drools.guvnor.importgenerator.PackageFile;
 
 /**
- * drools helper class that provides functions to build drl and decision table to objects 
+ * drools helper class that provides functions to build drl and decision table to objects
  */
 public class DroolsHelper {
-  private static final String FUNCTIONS_FILE="functions.drl";
-  
-  /**
-   * returns an object byte array of a drl package file
-   * @param drlFile
-   * @return
-   * @throws IOException
-   * @throws DroolsParserException
-   */
+    private static final String FUNCTIONS_FILE = "functions.drl";
+
+    /**
+     * returns an object byte array of a drl package file
+     * @param drlFile
+     * @return
+     * @throws IOException
+     * @throws DroolsParserException
+     */
 //  public static byte[] compileRuletoPKG(PackageFile file) throws IOException, DroolsParserException {
 //    PackageBuilder pb = new PackageBuilder();
 //    String xtn=FileIO.getExtension(file.getFile()).toLowerCase();
@@ -74,15 +74,16 @@ public class DroolsHelper {
 //    doos.writeObject(pkg);
 //    return baos.toByteArray();
 //  }
-  
-  /**
-   * compiles an xls or csv decision table into a rule (drl) language string
-   * @param file
-   * @return
-   * @throws FileNotFoundException
-   */
-  public static String compileDTabletoDRL(File file, InputType type) throws FileNotFoundException{
-    SpreadsheetCompiler compiler=new SpreadsheetCompiler();
-    return compiler.compile(new FileInputStream(file), type);
-  }
+
+    /**
+     * compiles an xls or csv decision table into a rule (drl) language string
+     *
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static String compileDTabletoDRL(File file, InputType type) throws FileNotFoundException {
+        SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+        return compiler.compile(new FileInputStream(file), type);
+    }
 }

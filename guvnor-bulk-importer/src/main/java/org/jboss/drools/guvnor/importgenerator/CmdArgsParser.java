@@ -25,51 +25,52 @@ import java.util.Properties;
 /**
  * Command line argument parser
  */
-public class CmdArgsParser{
-  private static Map<Parameters, String> options=new HashMap<Parameters, String>();
-  private static Map<String, Parameters> map=new HashMap<String, Parameters>();
-  public enum Parameters{
-    OPTIONS_PATH,
-    OPTIONS_PACKAGE_START,
-    OPTIONS_PACKAGE_EXCLUDE,
-    OPTIONS_RECURSIVE,
-    OPTIONS_CREATOR,
-    OPTIONS_EXTENSIONS,
-    OPTIONS_OUTPUT_FILE,
-    OPTIONS_SNAPSHOT_NAME,
-    OPTIONS_FUNCTIONS_FILE,
-    OPTIONS_KAGENT_CHANGE_SET_SERVER,
-    OPTIONS_KAGENT_CHANGE_SET_FILE,
-    OPTIONS_BASE_DIR,
-    OPTIONS_MODEL,
-    OPTIONS_VERBOSE,
-    OPTIONS_VERY_VERBOSE
-  }
-  
-  public CmdArgsParser(){
-    map.put("-p", Parameters.OPTIONS_PATH);
-    map.put("-e", Parameters.OPTIONS_PACKAGE_EXCLUDE);
-    map.put("-s", Parameters.OPTIONS_PACKAGE_START);
-    map.put("-r", Parameters.OPTIONS_RECURSIVE);
-    map.put("-u", Parameters.OPTIONS_CREATOR);
-    map.put("-f", Parameters.OPTIONS_EXTENSIONS);
-    map.put("-o", Parameters.OPTIONS_OUTPUT_FILE);
-    map.put("-n", Parameters.OPTIONS_SNAPSHOT_NAME);
-    map.put("-c", Parameters.OPTIONS_FUNCTIONS_FILE);
-    map.put("-k", Parameters.OPTIONS_KAGENT_CHANGE_SET_SERVER);
-    map.put("-w", Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE);
-    map.put("-b", Parameters.OPTIONS_BASE_DIR);
-    map.put("-m", Parameters.OPTIONS_MODEL);
-    map.put("-v", Parameters.OPTIONS_VERBOSE);
-    map.put("-vv", Parameters.OPTIONS_VERY_VERBOSE);
-  }
-  
-  public String getOption(Parameters parameterName){
-    return options.get(parameterName);
-  }
-  
-  public Map<Parameters, String> parse(String[] args){
-    if (args.length==0){
+public class CmdArgsParser {
+    private static Map<Parameters, String> options = new HashMap<Parameters, String>();
+    private static Map<String, Parameters> map = new HashMap<String, Parameters>();
+
+    public enum Parameters {
+        OPTIONS_PATH,
+        OPTIONS_PACKAGE_START,
+        OPTIONS_PACKAGE_EXCLUDE,
+        OPTIONS_RECURSIVE,
+        OPTIONS_CREATOR,
+        OPTIONS_EXTENSIONS,
+        OPTIONS_OUTPUT_FILE,
+        OPTIONS_SNAPSHOT_NAME,
+        OPTIONS_FUNCTIONS_FILE,
+        OPTIONS_KAGENT_CHANGE_SET_SERVER,
+        OPTIONS_KAGENT_CHANGE_SET_FILE,
+        OPTIONS_BASE_DIR,
+        OPTIONS_MODEL,
+        OPTIONS_VERBOSE,
+        OPTIONS_VERY_VERBOSE
+    }
+
+    public CmdArgsParser() {
+        map.put("-p", Parameters.OPTIONS_PATH);
+        map.put("-e", Parameters.OPTIONS_PACKAGE_EXCLUDE);
+        map.put("-s", Parameters.OPTIONS_PACKAGE_START);
+        map.put("-r", Parameters.OPTIONS_RECURSIVE);
+        map.put("-u", Parameters.OPTIONS_CREATOR);
+        map.put("-f", Parameters.OPTIONS_EXTENSIONS);
+        map.put("-o", Parameters.OPTIONS_OUTPUT_FILE);
+        map.put("-n", Parameters.OPTIONS_SNAPSHOT_NAME);
+        map.put("-c", Parameters.OPTIONS_FUNCTIONS_FILE);
+        map.put("-k", Parameters.OPTIONS_KAGENT_CHANGE_SET_SERVER);
+        map.put("-w", Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE);
+        map.put("-b", Parameters.OPTIONS_BASE_DIR);
+        map.put("-m", Parameters.OPTIONS_MODEL);
+        map.put("-v", Parameters.OPTIONS_VERBOSE);
+        map.put("-vv", Parameters.OPTIONS_VERY_VERBOSE);
+    }
+
+    public String getOption(Parameters parameterName) {
+        return options.get(parameterName);
+    }
+
+    public Map<Parameters, String> parse(String[] args) {
+        if (args.length == 0) {
 //      args=new String[]{ //default arguments
 //          "-classpath",
 //          "-p", "/home/mallen/workspace/guvnor-importer/my_rules",
@@ -85,48 +86,48 @@ public class CmdArgsParser{
 //          "-b", "/home/mallen/workspace/guvnor-importer",
 //          "-w", "kagentChangeSet.xml",
 //          "-V"};
-        System.out.println("Invalid number of parameters - 0");
-        return options;
-    } else if (args.length == 2) {
-        String arg = args[0];
-        String val = args[1];
-        if(arg.equals("-prop")) {
-            try {
-                Properties props = new Properties();
-                props.load(new FileInputStream(val));
-                for(Object prop : props.keySet()) {
-                    String key = (String) prop;
-                    String value = props.getProperty(key);
-                    options.put(map.get(key), value);
+            System.out.println("Invalid number of parameters - 0");
+            return options;
+        } else if (args.length == 2) {
+            String arg = args[0];
+            String val = args[1];
+            if (arg.equals("-prop")) {
+                try {
+                    Properties props = new Properties();
+                    props.load(new FileInputStream(val));
+                    for (Object prop : props.keySet()) {
+                        String key = (String) prop;
+                        String value = props.getProperty(key);
+                        options.put(map.get(key), value);
+                    }
+                } catch (IOException e) {
+                    System.out.println("Invalid file specified: " + val);
                 }
-            } catch (IOException e) {
-                System.out.println("Invalid file specified: " + val);
+                options.put(Parameters.OPTIONS_VERBOSE, "true");
+            } else {
+                System.out.println("To use a properties file use the \"-prop\" parameter");
             }
-            options.put(Parameters.OPTIONS_VERBOSE, "true");
+            return options;
         } else {
-            System.out.println("To use a properties file use the \"-prop\" parameter");
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
+                if (arg.equalsIgnoreCase("-classpath"))
+                    continue;
+                if (arg.equalsIgnoreCase("-v")) {
+                    if (arg.equals("-V")) //if its uppercase then set the very verbose flag
+                        options.put(Parameters.OPTIONS_VERY_VERBOSE, "true");
+                    options.put(Parameters.OPTIONS_VERBOSE, "true");
+                    continue;
+                }
+                if (arg.startsWith("-") && map.get(arg) != null) { //it is a - param and is mapped
+                    options.put(map.get(arg), args[++i]);
+                }
+            }
+            //display them so the user knows what the options values are
+            for (Parameters key : options.keySet()) {
+                System.out.println("   " + key.name() + "=" + options.get(key));
+            }
+            return options;
         }
-        return options;
-    } else {
-    for (int i=0;i<args.length;i++) {
-      String arg = args[i];
-      if (arg.equalsIgnoreCase("-classpath"))
-        continue;
-      if (arg.equalsIgnoreCase("-v")){
-        if (arg.equals("-V")) //if its uppercase then set the very verbose flag
-          options.put(Parameters.OPTIONS_VERY_VERBOSE, "true");
-        options.put(Parameters.OPTIONS_VERBOSE, "true");
-        continue;
-      }
-      if (arg.startsWith("-") && map.get(arg)!=null){ //it is a - param and is mapped
-        options.put(map.get(arg), args[++i]);
-      }
     }
-    //display them so the user knows what the options values are
-    for (Parameters key : options.keySet()) {
-      System.out.println("   "+key.name()+"="+options.get(key));
-    }
-    return options;
-  }
-  }
 }
