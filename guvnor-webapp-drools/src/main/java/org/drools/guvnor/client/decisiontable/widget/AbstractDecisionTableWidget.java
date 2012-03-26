@@ -28,7 +28,7 @@ import java.util.Set;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
 import org.drools.guvnor.client.decisiontable.widget.events.InsertDecisionTableColumnEvent;
-import org.drools.guvnor.client.decisiontable.widget.events.SetGuidedDecisionTableModelEvent;
+import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
@@ -104,16 +104,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
     UpdateModelEvent.Handler {
 
     // Decision Table data
-    protected GuidedDecisionTable52                       model;
+    protected final GuidedDecisionTable52                 model;
     protected AbstractDecoratedDecisionTableGridWidget    widget;
-    protected SuggestionCompletionEngine                  sce;
-    protected DecisionTableCellFactory                    cellFactory;
-    protected DecisionTableCellValueFactory               cellValueFactory;
-    protected DecisionTableDropDownManager                dropDownManager;
-    protected DecisionTableControlsWidget                 dtableCtrls;
+    protected final SuggestionCompletionEngine            sce;
+    protected final DecisionTableCellFactory              cellFactory;
+    protected final DecisionTableCellValueFactory         cellValueFactory;
+    protected final DecisionTableDropDownManager          dropDownManager;
+    protected final DecisionTableControlsWidget           dtableCtrls;
     protected final EventBus                              eventBus;
     protected final boolean                               isReadOnly;
-    private BRLRuleModel                                  rm;
+    private final BRLRuleModel                            rm;
 
     //Rows that have been copied in a copy-paste operation
     private List<List<DTCellValue52>>                     copiedRows = new ArrayList<List<DTCellValue52>>();
@@ -125,25 +125,60 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * 
      * @param sce
      */
-    public AbstractDecisionTableWidget(DecisionTableControlsWidget dtableCtrls,
+    public AbstractDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
+                                       DecisionTableControlsWidget dtableCtrls,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
 
-        if ( dtableCtrls == null ) {
-            throw new IllegalArgumentException( "dtableControls cannot be null" );
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
         }
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        if ( dtableCtrls == null ) {
+            throw new IllegalArgumentException( "dtableControls cannot be null" );
+        }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
+        this.model = model;
         this.sce = sce;
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
+        this.rm = new BRLRuleModel( model );
         this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
+
+        //Ensure field data-type is set (field did not exist before 5.2)
+        for ( CompositeColumn< ? > cc : model.getConditions() ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                for ( ConditionCol52 col : p.getChildColumns() ) {
+                    ConditionCol52 c = (ConditionCol52) col;
+                    c.setFieldType( sce.getFieldType( p.getFactType(),
+                                                      c.getFactField() ) );
+                }
+            }
+        }
+
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //for dependent enumerations. This needs to be called before the columns are created.
+        this.dropDownManager = new DecisionTableDropDownManager( model,
+                                                                 sce );
+
+        //Factories for new cell elements
+        this.cellFactory = new DecisionTableCellFactory( model,
+                                                         sce,
+                                                         dropDownManager,
+                                                         isReadOnly,
+                                                         eventBus );
+        this.cellValueFactory = new DecisionTableCellValueFactory( model,
+                                                                   sce );
+
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        DTCellValueUtilities.injectDateConvertor( GWTDateConverter.getInstance() );
 
         //Wire-up the events
         eventBus.addHandler( InsertRowEvent.TYPE,
@@ -509,39 +544,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         SetColumnVisibilityEvent scve = new SetColumnVisibilityEvent( index,
                                                                       isVisible );
         eventBus.fireEvent( scve );
-    }
-
-    /**
-     * Set the Decision Table's data. This removes all existing columns from the
-     * Decision Table and re-creates them based upon the provided data.
-     * 
-     * @param model
-     */
-    public void setModel(GuidedDecisionTable52 model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-        this.model = model;
-        this.cellFactory.setModel( model );
-        this.cellValueFactory.setModel( model );
-        this.dropDownManager.setModel( model );
-        this.rm = new BRLRuleModel( model );
-
-        //Ensure field data-type is set (field did not exist before 5.2)
-        for ( CompositeColumn< ? > cc : model.getConditions() ) {
-            if ( cc instanceof Pattern52 ) {
-                Pattern52 p = (Pattern52) cc;
-                for ( ConditionCol52 col : p.getChildColumns() ) {
-                    ConditionCol52 c = (ConditionCol52) col;
-                    c.setFieldType( sce.getFieldType( p.getFactType(),
-                                                      c.getFactField() ) );
-                }
-            }
-        }
-
-        //Fire event for UI components to set themselves up
-        SetGuidedDecisionTableModelEvent sme = new SetGuidedDecisionTableModelEvent( model );
-        eventBus.fireEvent( sme );
     }
 
     /**
@@ -1191,6 +1193,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( !isEqualOrNull( origPattern.getBoundName(),
                              editPattern.getBoundName() ) ) {
 
+            editPattern.getChildColumns().add( editColumn );
             List<DTCellValue52> columnData = cellValueFactory.makeColumnData( editColumn );
             int origColumnIndex = model.getExpandedColumns().indexOf( origColumn );
 
@@ -1209,7 +1212,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 }
             }
 
-            editPattern.getChildColumns().add( editColumn );
             addColumn( editColumn,
                        columnData,
                        true );

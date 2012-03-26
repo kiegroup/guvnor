@@ -15,8 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.util.GWTDateConverter;
+import org.drools.guvnor.client.decisiontable.widget.events.SetGuidedDecisionTableModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -26,30 +27,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
-    public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
+    public VerticalDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
+                                       DecisionTableControlsWidget ctrls,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
-        super( ctrls,
+        super( model,
                sce,
+               ctrls,
                isReadOnly,
                eventBus );
 
         VerticalPanel vp = new VerticalPanel();
-
-        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
-        //for dependent enumerations. This needs to be called before the columns are created.
-        this.dropDownManager = new DecisionTableDropDownManager( sce );
-
-        //Factories for new cell elements
-        this.cellFactory = new DecisionTableCellFactory( sce,
-                                                         dropDownManager,
-                                                         isReadOnly,
-                                                         eventBus );
-        this.cellValueFactory = new DecisionTableCellValueFactory( sce );
-
-        //Date converter is injected so a GWT compatible one can be used here and another in testing
-        DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
@@ -62,6 +51,10 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         vp.add( widget );
         vp.add( ctrls );
         initWidget( vp );
+
+        //Fire event for UI components to set themselves up
+        SetGuidedDecisionTableModelEvent sme = new SetGuidedDecisionTableModelEvent( model );
+        eventBus.fireEvent( sme );
     }
 
 }

@@ -27,14 +27,10 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -49,26 +45,20 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
 
+    private DTCellValueUtilities  utilities;
+
     /**
      * Construct a Cell Value Factory for a specific Decision Table
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      */
-    public DecisionTableCellValueFactory(SuggestionCompletionEngine sce) {
+    public DecisionTableCellValueFactory(GuidedDecisionTable52 model,
+                                         SuggestionCompletionEngine sce) {
         super( sce );
-    }
-
-    /**
-     * Set the model for which CellValues will be created
-     * 
-     * @param model
-     */
-    public void setModel(GuidedDecisionTable52 model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
         this.model = model;
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
     }
 
     /**
@@ -99,9 +89,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         List<BaseColumn> columns = model.getExpandedColumns();
         for ( BaseColumn column : columns ) {
             DTCellValue52 dcv = makeModelCellValue( column );
-            DTDataTypes52 dataType = getDataType( column );
-            assertDTCellValue( dataType,
-                               dcv );
+            DTDataTypes52 dataType = utilities.getDataType( column );
+            utilities.assertDTCellValue( dataType,
+                                         dcv );
             CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
                                                                                 dcv );
             data.add( cell );
@@ -151,7 +141,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      */
     @Override
     public DTCellValue52 makeModelCellValue(BaseColumn column) {
-        DTDataTypes52 dataType = getDataType( column );
+        DTDataTypes52 dataType = utilities.getDataType( column );
         DTCellValue52 dcv = null;
         if ( column instanceof LimitedEntryCol ) {
             dcv = new DTCellValue52( Boolean.FALSE );
@@ -166,8 +156,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         } else {
             dcv = new DTCellValue52( column.getDefaultValue() );
         }
-        assertDTCellValue( dataType,
-                           dcv );
+        utilities.assertDTCellValue( dataType,
+                                     dcv );
         return dcv;
     }
 
@@ -187,9 +177,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         }
 
         //Other cells do use data-type
-        DTDataTypes52 dataType = getDataType( column );
-        assertDTCellValue( dataType,
-                           dcv );
+        DTDataTypes52 dataType = utilities.getDataType( column );
+        utilities.assertDTCellValue( dataType,
+                                     dcv );
 
         CellValue< ? extends Comparable< ? >> cell = null;
         switch ( dataType ) {
@@ -255,213 +245,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         return cell;
     }
 
-    // Get the Data Type corresponding to a given column
-    protected DTDataTypes52 getDataType(BaseColumn column) {
-
-        //Limited Entry are simply boolean
-        if ( column instanceof LimitedEntryCol ) {
-            return DTDataTypes52.BOOLEAN;
-        }
-
-        //Action Work Items are always boolean
-        if ( column instanceof ActionWorkItemCol52 ) {
-            return DTDataTypes52.BOOLEAN;
-        }
-
-        //Actions setting Field Values from Work Item Result Parameters are always boolean
-        if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
-            return DTDataTypes52.BOOLEAN;
-        }
-
-        //Operators "is null" and "is not null" require a boolean cell
-        if ( column instanceof ConditionCol52 ) {
-            ConditionCol52 cc = (ConditionCol52) column;
-            if ( cc.getOperator() != null && (cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" )) ) {
-                return DTDataTypes52.BOOLEAN;
-            }
-        }
-
-        //Extended Entry...
-        return model.getTypeSafeType( column,
-                                      sce );
-    }
-
-    //The column-data type is looked up from the SuggestionCompletionEngine and represents 
-    //the *true* data-type that the column represents. The data-type associated with the Cell 
-    //Value can be incorrect for legacy models. For pre-5.2 they will always be String and 
-    //for pre-5.4 numerical fields are always Numeric
-    private void assertDTCellValue(DTDataTypes52 dataType,
-                                   DTCellValue52 dcv) {
-        //If already converted exit
-        if ( dataType.equals( dcv.getDataType() ) ) {
-            return;
-        }
-
-        switch ( dcv.getDataType() ) {
-            case NUMERIC :
-                convertDTCellValueFromNumeric( dataType,
-                                               dcv );
-                break;
-            default :
-                convertDTCellValueFromString( dataType,
-                                              dcv );
-        }
-    }
-
-    //If the Decision Table model has been converted from the legacy text based
-    //class then all values are held in the DTCellValue's StringValue. This
-    //function attempts to set the correct DTCellValue property based on
-    //the DTCellValue's data type.
-    private void convertDTCellValueFromString(DTDataTypes52 dataType,
-                                              DTCellValue52 dcv) {
-        String text = dcv.getStringValue();
-        switch ( dataType ) {
-            case BOOLEAN :
-                dcv.setBooleanValue( (text == null ? false : Boolean.valueOf( text )) );
-                break;
-            case DATE :
-                Date d = null;
-                try {
-                    if ( text != null ) {
-                        if ( DATE_CONVERTOR == null ) {
-                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
-                        }
-                        d = DATE_CONVERTOR.parse( text );
-                    }
-                } catch ( IllegalArgumentException e ) {
-                }
-                dcv.setDateValue( d );
-                break;
-            case NUMERIC :
-                BigDecimal numericValue = null;
-                try {
-                    if ( text != null ) {
-                        numericValue = new BigDecimal( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( numericValue );
-                break;
-            case NUMERIC_BIGDECIMAL :
-                BigDecimal bigDecimalValue = null;
-                try {
-                    if ( text != null ) {
-                        bigDecimalValue = new BigDecimal( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( bigDecimalValue );
-                break;
-            case NUMERIC_BIGINTEGER :
-                BigInteger bigIntegerValue = null;
-                try {
-                    if ( text != null ) {
-                        bigIntegerValue = new BigInteger( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( bigIntegerValue );
-                break;
-            case NUMERIC_BYTE :
-                Byte byteValue = null;
-                try {
-                    if ( text != null ) {
-                        byteValue = new Byte( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( byteValue );
-                break;
-            case NUMERIC_DOUBLE :
-                Double doubleValue = null;
-                try {
-                    if ( text != null ) {
-                        doubleValue = new Double( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( doubleValue );
-                break;
-            case NUMERIC_FLOAT :
-                Float floatValue = null;
-                try {
-                    if ( text != null ) {
-                        floatValue = new Float( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( floatValue );
-                break;
-            case NUMERIC_INTEGER :
-                Integer integerValue = null;
-                try {
-                    if ( text != null ) {
-                        integerValue = new Integer( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( integerValue );
-                break;
-            case NUMERIC_LONG :
-                Long longValue = null;
-                try {
-                    if ( text != null ) {
-                        longValue = new Long( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( longValue );
-                break;
-            case NUMERIC_SHORT :
-                Short shortValue = null;
-                try {
-                    if ( text != null ) {
-                        shortValue = new Short( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( shortValue );
-                break;
-        }
-
-    }
-
-    //If the Decision Table model was pre-5.4 Numeric data-types were always stored as 
-    //BigDecimals. This function attempts to set the correct DTCellValue property based 
-    //on the *true* data type.
-    private void convertDTCellValueFromNumeric(DTDataTypes52 dataType,
-                                               DTCellValue52 dcv) {
-        //Generic type NUMERIC was always stored as a BigDecimal
-        final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        switch ( dataType ) {
-            case NUMERIC_BIGDECIMAL :
-                dcv.setNumericValue( value == null ? null : value );
-                break;
-            case NUMERIC_BIGINTEGER :
-                dcv.setNumericValue( value == null ? null : value.toBigInteger() );
-                break;
-            case NUMERIC_BYTE :
-                dcv.setNumericValue( value == null ? null : value.byteValue() );
-                break;
-            case NUMERIC_DOUBLE :
-                dcv.setNumericValue( value == null ? null : value.doubleValue() );
-                break;
-            case NUMERIC_FLOAT :
-                dcv.setNumericValue( value == null ? null : value.floatValue() );
-                break;
-            case NUMERIC_INTEGER :
-                dcv.setNumericValue( value == null ? null : value.intValue() );
-                break;
-            case NUMERIC_LONG :
-                dcv.setNumericValue( value == null ? null : value.longValue() );
-                break;
-            case NUMERIC_SHORT :
-                dcv.setNumericValue( value == null ? null : value.shortValue() );
-                break;
-        }
-
-    }
-
     public CellValue<Long> makeNewRowNumberCellValue(Long initialValue) {
         // Rows are 0-based internally but 1-based in the UI
         CellValue<Long> cv = makeNewLongCellValue( initialValue );
@@ -487,7 +270,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      */
     public DTCellValue52 convertToModelCell(BaseColumn column,
                                             CellValue< ? > cell) {
-        DTDataTypes52 dt = getDataType( column );
+        DTDataTypes52 dt = utilities.getDataType( column );
         DTCellValue52 dtCell = null;
 
         switch ( dt ) {

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -39,6 +40,7 @@ import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
@@ -68,42 +70,44 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConditionPopup extends FormStylePopup {
 
-    private SmallLabel                 patternLabel                     = new SmallLabel();
-    private TextBox                    fieldLabel                       = getFieldLabel();
-    private TextBox                    binding                          = new BindingTextBox();
-    private Label                      operatorLabel                    = new Label();
-    private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                        limitedEntryValueAttributeIndex  = 0;
-    private TextBox                    valueListWidget                  = null;
-    private SimplePanel                defaultValueWidgetContainer      = new SimplePanel();
-    private int                        defaultValueWidgetContainerIndex = 0;
-    private ImageButton                editField;
-    private ImageButton                editOp;
+    private SmallLabel                       patternLabel                     = new SmallLabel();
+    private TextBox                          fieldLabel                       = getFieldLabel();
+    private TextBox                          binding                          = new BindingTextBox();
+    private Label                            operatorLabel                    = new Label();
+    private SimplePanel                      limitedEntryValueWidgetContainer = new SimplePanel();
+    private int                              limitedEntryValueAttributeIndex  = 0;
+    private TextBox                          valueListWidget                  = null;
+    private SimplePanel                      defaultValueWidgetContainer      = new SimplePanel();
+    private int                              defaultValueWidgetContainerIndex = 0;
+    private ImageButton                      editField;
+    private ImageButton                      editOp;
 
-    private RadioButton                literal                          = new RadioButton( "constraintValueType",
-                                                                                           Constants.INSTANCE.LiteralValue() );
-    private RadioButton                formula                          = new RadioButton( "constraintValueType",
-                                                                                           Constants.INSTANCE.Formula() );
-    private RadioButton                predicate                        = new RadioButton( "constraintValueType",
-                                                                                           Constants.INSTANCE.Predicate() );
+    private RadioButton                      literal                          = new RadioButton( "constraintValueType",
+                                                                                                 Constants.INSTANCE.LiteralValue() );
+    private RadioButton                      formula                          = new RadioButton( "constraintValueType",
+                                                                                                 Constants.INSTANCE.Formula() );
+    private RadioButton                      predicate                        = new RadioButton( "constraintValueType",
+                                                                                                 Constants.INSTANCE.Predicate() );
 
-    private CEPWindowOperatorsDropdown cwo;
-    private TextBox                    entryPointName;
-    private int                        cepWindowRowIndex;
+    private CEPWindowOperatorsDropdown       cwo;
+    private TextBox                          entryPointName;
+    private int                              cepWindowRowIndex;
 
-    private GuidedDecisionTable52      model;
-    private SuggestionCompletionEngine sce;
-    private Pattern52                  editingPattern;
-    private ConditionCol52             editingCol;
-    private DTCellValueWidgetFactory   factory;
-    private Validator                  validator;
-    private BRLRuleModel               rm;
+    private final GuidedDecisionTable52      model;
+    private final SuggestionCompletionEngine sce;
+    private final DTCellValueWidgetFactory   factory;
+    private final Validator                  validator;
+    private final BRLRuleModel               rm;
+    private final DTCellValueUtilities       utilities;
 
-    private final boolean              isReadOnly;
+    private Pattern52                        editingPattern;
+    private ConditionCol52                   editingCol;
 
-    private InfoPopup                  fieldLabelInterpolationInfo      = getPredicateHint();
+    private final boolean                    isReadOnly;
 
-    public ConditionPopup(SuggestionCompletionEngine sce,
+    private InfoPopup                        fieldLabelInterpolationInfo      = getPredicateHint();
+
+    public ConditionPopup(final SuggestionCompletionEngine sce,
                           final GuidedDecisionTable52 model,
                           final ConditionColumnCommand refreshGrid,
                           final ConditionCol52 col,
@@ -115,13 +119,15 @@ public class ConditionPopup extends FormStylePopup {
         this.model = model;
         this.sce = sce;
         this.isReadOnly = isReadOnly;
+        this.validator = new Validator( model.getConditions() );
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
 
-        //Set-up factory for common widgets
-        factory = new DTCellValueWidgetFactory( model,
-                                                sce,
-                                                isReadOnly );
-
-        validator = new Validator( model.getConditions() );
+        //Set-up a factory for value editors
+        factory = DTCellValueWidgetFactory.getInstance( model,
+                                                        sce,
+                                                        isReadOnly,
+                                                        allowEmptyValues() );
 
         setTitle( Constants.INSTANCE.ConditionColumnConfiguration() );
         setModal( false );
@@ -389,6 +395,10 @@ public class ConditionPopup extends FormStylePopup {
 
     }
 
+    private boolean allowEmptyValues() {
+        return this.model.getTableFormat() == TableFormat.EXTENDED_ENTRY;
+    }
+
     private ConditionCol52 cloneConditionColumn(ConditionCol52 col) {
         ConditionCol52 clone = null;
         if ( col instanceof LimitedEntryConditionCol52 ) {
@@ -460,12 +470,21 @@ public class ConditionPopup extends FormStylePopup {
         setAttributeVisibility( defaultValueWidgetContainerIndex,
                                 true );
         if ( editingCol.getDefaultValue() == null ) {
-            editingCol.setDefaultValue( factory.makeNewValue( editingCol ) );
+            editingCol.setDefaultValue( factory.makeNewValue( editingPattern,
+                                                              editingCol ) );
         }
+
+        //Ensure the Default Value has been updated to represent the column's 
+        //data-type. Legacy Default Values are all String-based and need to be 
+        //coerced to the correct type
+        final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+        final DTDataTypes52 dataType = utilities.getDataType( editingPattern,
+                                                              editingCol );
+        utilities.assertDTCellValue( dataType,
+                                     defaultValue );
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,
                                                                   editingCol,
-                                                                  editingCol.getDefaultValue(),
-                                                                  true ) );
+                                                                  defaultValue ) );
     }
 
     private void applyConsTypeChange(int newType) {

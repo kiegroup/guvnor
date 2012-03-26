@@ -55,13 +55,18 @@ public class DecisionTableDropDownManager
     CellTableDropDownDataValueMapProvider {
 
     private final SuggestionCompletionEngine sce;
-    private GuidedDecisionTable52            model;
+    private final GuidedDecisionTable52      model;
     private DynamicData                      data;
 
-    public DecisionTableDropDownManager(final SuggestionCompletionEngine sce) {
+    public DecisionTableDropDownManager(final GuidedDecisionTable52 model,
+                                        final SuggestionCompletionEngine sce) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.model = model;
         this.sce = sce;
     }
 
@@ -80,13 +85,6 @@ public class DecisionTableDropDownManager
         this.model = model;
         this.data = data;
         this.sce = sce;
-    }
-
-    public void setModel(GuidedDecisionTable52 model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        this.model = model;
     }
 
     @Override

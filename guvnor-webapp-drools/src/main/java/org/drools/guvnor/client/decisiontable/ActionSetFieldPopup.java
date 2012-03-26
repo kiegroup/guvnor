@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -28,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
@@ -48,21 +50,23 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetFieldPopup extends FormStylePopup {
 
-    private SmallLabel                 bindingLabel                     = new SmallLabel();
-    private TextBox                    fieldLabel                       = getFieldLabel();
-    private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                        limitedEntryValueAttributeIndex  = 0;
-    private TextBox                    valueListWidget                  = null;
-    private SimplePanel                defaultValueWidgetContainer      = new SimplePanel();
-    private int                        defaultValueWidgetContainerIndex = 0;
+    private SmallLabel                       bindingLabel                     = new SmallLabel();
+    private TextBox                          fieldLabel                       = getFieldLabel();
+    private SimplePanel                      limitedEntryValueWidgetContainer = new SimplePanel();
+    private int                              limitedEntryValueAttributeIndex  = 0;
+    private TextBox                          valueListWidget                  = null;
+    private SimplePanel                      defaultValueWidgetContainer      = new SimplePanel();
+    private int                              defaultValueWidgetContainerIndex = 0;
 
-    private ActionSetFieldCol52        editingCol;
-    private GuidedDecisionTable52      model;
-    private SuggestionCompletionEngine sce;
-    private DTCellValueWidgetFactory   factory;
-    private BRLRuleModel               rm;
+    private final GuidedDecisionTable52      model;
+    private final SuggestionCompletionEngine sce;
+    private final DTCellValueWidgetFactory   factory;
+    private final BRLRuleModel               rm;
+    private final DTCellValueUtilities       utilities;
 
-    private final boolean              isReadOnly;
+    private ActionSetFieldCol52              editingCol;
+
+    private final boolean                    isReadOnly;
 
     public ActionSetFieldPopup(final SuggestionCompletionEngine sce,
                                final GuidedDecisionTable52 model,
@@ -75,11 +79,14 @@ public class ActionSetFieldPopup extends FormStylePopup {
         this.model = model;
         this.sce = sce;
         this.isReadOnly = isReadOnly;
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
 
-        //Set-up factory for common widgets
-        factory = new DTCellValueWidgetFactory( model,
-                                                sce,
-                                                isReadOnly );
+        //Set-up a factory for value editors
+        factory = DTCellValueWidgetFactory.getInstance( model,
+                                                        sce,
+                                                        isReadOnly,
+                                                        allowEmptyValues() );
 
         setTitle( Constants.INSTANCE.ColumnConfigurationSetAFieldOnAFact() );
         setModal( false );
@@ -218,6 +225,10 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     }
 
+    private boolean allowEmptyValues() {
+        return this.model.getTableFormat() == TableFormat.EXTENDED_ENTRY;
+    }
+
     private ActionSetFieldCol52 cloneActionSetColumn(ActionSetFieldCol52 col) {
         ActionSetFieldCol52 clone = null;
         if ( col instanceof LimitedEntryActionSetFieldCol52 ) {
@@ -277,10 +288,17 @@ public class ActionSetFieldPopup extends FormStylePopup {
         if ( editingCol.getDefaultValue() == null ) {
             editingCol.setDefaultValue( factory.makeNewValue( editingCol ) );
         }
+
+        //Ensure the Default Value has been updated to represent the column's 
+        //data-type. Legacy Default Values are all String-based and need to be 
+        //coerced to the correct type
+        final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+        final DTDataTypes52 dataType = utilities.getDataType( editingCol );
+        utilities.assertDTCellValue( dataType,
+                                     defaultValue );
         defaultValueWidgetContainer.setWidget( factory.getWidget( model.getConditionPattern( editingCol.getBoundName() ),
-                                                                   editingCol,
-                                                                   editingCol.getDefaultValue(),
-                                                                   true ) );
+                                                                  editingCol,
+                                                                  defaultValue ) );
     }
 
     private void doBindingLabel() {

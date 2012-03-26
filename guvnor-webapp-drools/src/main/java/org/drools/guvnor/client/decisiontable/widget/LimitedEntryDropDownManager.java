@@ -15,17 +15,12 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.decisiontable.widget.LimitedEntryDropDownManager.Context;
-import org.drools.guvnor.client.util.DateConverter;
-import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DropDownDataValueMapProvider;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -46,11 +41,9 @@ public class LimitedEntryDropDownManager
     implements
     DropDownDataValueMapProvider<Context> {
 
-    private final SuggestionCompletionEngine sce;
-    private final GuidedDecisionTable52      model;
-
-    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
-    protected static DateConverter           DATE_CONVERTOR = GWTDateConverter.getInstance();
+    protected final SuggestionCompletionEngine sce;
+    protected final GuidedDecisionTable52      model;
+    protected final DTCellValueUtilities       utilities;
 
     public LimitedEntryDropDownManager(final GuidedDecisionTable52 model,
                                        final SuggestionCompletionEngine sce) {
@@ -60,6 +53,8 @@ public class LimitedEntryDropDownManager
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
         this.model = model;
         this.sce = sce;
     }
@@ -159,107 +154,7 @@ public class LimitedEntryDropDownManager
             return "";
         }
         final DTCellValue52 lev = lec.getValue();
-        switch ( lev.getDataType() ) {
-            case BOOLEAN :
-                return convertBooleanValueToString( lev );
-            case DATE :
-                return convertDateValueToString( lev );
-            case NUMERIC :
-                return convertNumericValueToString( lev );
-            case NUMERIC_BIGDECIMAL :
-                return convertBigDecimalValueToString( lev );
-            case NUMERIC_BIGINTEGER :
-                return convertBigIntegerValueToString( lev );
-            case NUMERIC_BYTE :
-                return convertByteValueToString( lev );
-            case NUMERIC_DOUBLE :
-                return convertDoubleValueToString( lev );
-            case NUMERIC_FLOAT :
-                return convertFloatValueToString( lev );
-            case NUMERIC_INTEGER :
-                return convertIntegerValueToString( lev );
-            case NUMERIC_LONG :
-                return convertLongValueToString( lev );
-            case NUMERIC_SHORT :
-                return convertShortValueToString( lev );
-        }
-        return convertStringValueToString( lev );
-    }
-
-    //Convert a Boolean value to a String
-    private String convertBooleanValueToString(DTCellValue52 dcv) {
-        final Boolean value = dcv.getBooleanValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Date value to a String
-    private String convertDateValueToString(DTCellValue52 dcv) {
-        final Date value = dcv.getDateValue();
-        String result = "";
-        if ( value != null ) {
-            result = DATE_CONVERTOR.format( (Date) value );
-        }
-        return result;
-    }
-
-    //Convert a Generic Numeric (BigDecimal) value to a String
-    private String convertNumericValueToString(DTCellValue52 dcv) {
-        final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        return (value == null ? "" : value.toPlainString());
-    }
-
-    //Convert a BigDecimal value to a String
-    private String convertBigDecimalValueToString(DTCellValue52 dcv) {
-        final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        return (value == null ? "" : value.toPlainString());
-    }
-
-    //Convert a BigInteger value to a String
-    private String convertBigIntegerValueToString(DTCellValue52 dcv) {
-        final BigInteger value = (BigInteger) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Byte value to a String
-    private String convertByteValueToString(DTCellValue52 dcv) {
-        final Byte value = (Byte) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Double value to a String
-    private String convertDoubleValueToString(DTCellValue52 dcv) {
-        final Double value = (Double) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Float value to a String
-    private String convertFloatValueToString(DTCellValue52 dcv) {
-        final Float value = (Float) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Integer value to a String
-    private String convertIntegerValueToString(DTCellValue52 dcv) {
-        final Integer value = (Integer) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Long value to a String
-    private String convertLongValueToString(DTCellValue52 dcv) {
-        final Long value = (Long) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a Short value to a String
-    private String convertShortValueToString(DTCellValue52 dcv) {
-        final Short value = (Short) dcv.getNumericValue();
-        return (value == null ? "" : value.toString());
-    }
-
-    //Convert a String value to a String
-    private String convertStringValueToString(DTCellValue52 dcv) {
-        final String value = dcv.getStringValue();
-        return (value == null ? "" : value);
+        return utilities.asString( lev );
     }
 
     @Override

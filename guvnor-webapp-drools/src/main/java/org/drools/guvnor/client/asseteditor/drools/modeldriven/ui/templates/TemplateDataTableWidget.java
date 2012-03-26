@@ -74,28 +74,35 @@ public class TemplateDataTableWidget extends Composite
     /**
      * Constructor
      */
-    public TemplateDataTableWidget(SuggestionCompletionEngine sce,
+    public TemplateDataTableWidget(TemplateModel model,
+                                   SuggestionCompletionEngine sce,
                                    boolean isReadOnly,
                                    EventBus globalEventBus) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
         if ( globalEventBus == null ) {
             throw new IllegalArgumentException( "globalEventBus cannot be null" );
         }
+        this.model = model;
         this.sce = sce;
         this.globalEventBus = globalEventBus;
 
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
         //for dependent enumerations. This needs to be called before the columns are created.
-        this.dropDownManager = new TemplateDropDownManager( sce );
+        this.dropDownManager = new TemplateDropDownManager( model,
+                                                            sce );
 
         //Factories for new cell elements
         this.cellFactory = new TemplateDataCellFactory( sce,
                                                         dropDownManager,
                                                         isReadOnly,
                                                         eventBus );
-        this.cellValueFactory = new TemplateDataCellValueFactory( sce );
+        this.cellValueFactory = new TemplateDataCellValueFactory( model,
+                                                                  sce );
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedTemplateDataGridWidget( resources,
@@ -123,30 +130,15 @@ public class TemplateDataTableWidget extends Composite
                              this );
 
         initWidget( widget );
+
+        //Fire event for UI components to set themselves up
+        SetTemplateDataEvent sme = new SetTemplateDataEvent( model );
+        eventBus.fireEvent( sme );
     }
 
     public void appendRow() {
         AppendRowEvent are = new AppendRowEvent();
         eventBus.fireEvent( are );
-    }
-
-    /**
-     * Set the Template Data editor's data. This removes all existing columns
-     * from the Template Data editor and re-creates them with the provided data.
-     * 
-     * @param model
-     */
-    public void setModel(TemplateModel model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-        this.model = model;
-        this.cellValueFactory.setModel( model );
-        this.dropDownManager.setModel( model );
-
-        //Fire event for UI components to set themselves up
-        SetTemplateDataEvent sme = new SetTemplateDataEvent( model );
-        eventBus.fireEvent( sme );
     }
 
     /**

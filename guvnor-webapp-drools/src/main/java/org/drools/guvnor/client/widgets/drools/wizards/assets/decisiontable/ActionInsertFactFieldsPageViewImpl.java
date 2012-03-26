@@ -362,8 +362,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                     chosenFieldsSelection.setDefaultValue( factory.makeNewValue( chosenFieldsSelection ) );
                 }
                 defaultValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
-                                                                          chosenFieldsSelection.getDefaultValue(),
-                                                                          true ) );
+                                                                          chosenFieldsSelection.getDefaultValue() ) );
             }
 
         } );

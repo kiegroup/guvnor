@@ -22,22 +22,25 @@ public class DTColumnConfig52
     BaseColumn,
     PortableObject {
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID  = 510l;
+
+    // Legacy Default Values were String however since 5.4 they are stored in a DTCellValue52 object
+    public String             defaultValue;
 
     // For a default value ! Will still be in the array of course, just use this value if its empty
-    private DTCellValue52     defaultValue     = new DTCellValue52();
+    private DTCellValue52     typedDefaultValue = null;
 
     // To hide the column (eg if it has a mandatory default)
-    private boolean           hideColumn       = false;
+    private boolean           hideColumn        = false;
 
     //Column width
-    private int               width            = -1;
+    private int               width             = -1;
 
     // The header to be displayed.
     private String            header;
 
     public DTCellValue52 getDefaultValue() {
-        return defaultValue;
+        return typedDefaultValue;
     }
 
     public int getWidth() {
@@ -49,7 +52,7 @@ public class DTColumnConfig52
     }
 
     public void setDefaultValue(DTCellValue52 defaultValue) {
-        this.defaultValue = defaultValue;
+        this.typedDefaultValue = defaultValue;
     }
 
     public void setHideColumn(boolean hideColumn) {

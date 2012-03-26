@@ -131,7 +131,16 @@ public class PopupDatePicker extends Composite
 
             @Override
             public void onBlur(BlurEvent event) {
-                setValue( DATE_FORMATTER.parseStrict( txtDate.getText() ) );
+                final String value = txtDate.getText();
+                try {
+                    setValue( DATE_FORMATTER.parseStrict( txtDate.getText() ) );
+                } catch ( IllegalArgumentException iae ) {
+                    if ( ("".equals( value ) && allowEmptyValue) ) {
+                        setValue( null );
+                    } else {
+                        setValue( new Date() );
+                    }
+                }
             }
 
         } );
@@ -151,6 +160,12 @@ public class PopupDatePicker extends Composite
     }
 
     public void setValue(Date value) {
+        setValue( value,
+                  true );
+    }
+
+    public void setValue(Date value,
+                         boolean fireEvents) {
         this.date = value;
         if ( value != null ) {
             this.datePicker.setValue( value,
@@ -159,14 +174,6 @@ public class PopupDatePicker extends Composite
         } else {
             this.txtDate.setText( "" );
         }
-    }
-
-    public void setValue(Date value,
-                         boolean fireEvents) {
-        this.date = value;
-        this.datePicker.setValue( value,
-                                  fireEvents );
-        txtDate.setText( format.format( value ) );
     }
 
 }

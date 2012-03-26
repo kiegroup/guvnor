@@ -21,6 +21,7 @@ import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -86,6 +87,15 @@ public abstract class AbstractGuidedDecisionTableWizardPage
      */
     public void makeResult(GuidedDecisionTable52 dtable) {
         //Default implementation does nothing
+    }
+
+    /**
+     * Check whether empty values are permitted
+     * 
+     * @return True if empty values are permitted
+     */
+    protected boolean allowEmptyValues() {
+        return this.dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY;
     }
 
 }

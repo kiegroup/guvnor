@@ -346,7 +346,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                                 }
                                 presenter.stateChanged();
                                 validateConditionOperator();
-                                
+
                                 makeDefaultValueWidget();
                                 defaultValueContainer.setVisible( validator.doesOperatorNeedValue( chosenConditionsSelection ) );
                             }
@@ -417,8 +417,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 }
                 defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
                                                                           chosenConditionsSelection,
-                                                                          chosenConditionsSelection.getDefaultValue(),
-                                                                          true ) );
+                                                                          chosenConditionsSelection.getDefaultValue() ) );
             }
 
         } );

@@ -20,18 +20,13 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
  */
 public abstract class AbstractCellValueFactory<C, V> {
-
-    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
-    protected static DateConverter       DATE_CONVERTOR = null;
 
     // SuggestionCompletionEngine to aid data-type resolution etc
     protected SuggestionCompletionEngine sce;
@@ -41,16 +36,6 @@ public abstract class AbstractCellValueFactory<C, V> {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
         this.sce = sce;
-    }
-
-    /**
-     * Override the default, GWT-centric, Date conversion utility class. Only
-     * use to hook-in a JVM Compatible implementation for tests
-     * 
-     * @param dc
-     */
-    public static void injectDateConvertor(DateConverter dc) {
-        DATE_CONVERTOR = dc;
     }
 
     /**
@@ -113,14 +98,6 @@ public abstract class AbstractCellValueFactory<C, V> {
      */
     protected abstract V convertToModelCell(C column,
                                             CellValue< ? > cell);
-
-    /**
-     * Get the data-type for a column
-     * 
-     * @param column
-     * @return
-     */
-    protected abstract DTDataTypes52 getDataType(C column);
 
     protected CellValue<Boolean> makeNewBooleanCellValue() {
         CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE );

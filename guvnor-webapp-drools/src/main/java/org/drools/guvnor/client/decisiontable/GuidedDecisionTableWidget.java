@@ -1414,13 +1414,13 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupDecisionTable() {
-        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget( isReadOnly ),
+        dtable = new VerticalDecisionTableWidget( guidedDecisionTable,
                                                   getSCE(),
+                                                  new DecisionTableControlsWidget( isReadOnly ),
                                                   isReadOnly,
                                                   eventBus );
         dtable.setPixelSize( 1000,
                              400 );
-        dtable.setModel( guidedDecisionTable );
     }
 
     //Check if any of the bound Fact Patterns in the BRL Fragment are used elsewhere

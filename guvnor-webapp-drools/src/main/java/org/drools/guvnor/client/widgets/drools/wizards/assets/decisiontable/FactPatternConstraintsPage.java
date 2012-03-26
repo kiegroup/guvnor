@@ -73,9 +73,12 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
             return;
         }
         view.setPresenter( this );
-        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
-                                                                        sce,
-                                                                        false ) );
+
+        //Set-up a factory for value editors
+        view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( dtable,
+                                                                                sce,
+                                                                                false,
+                                                                                allowEmptyValues() ) );
         content.setWidget( view );
     }
 

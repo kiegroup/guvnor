@@ -22,7 +22,7 @@ public class RowNumberCol52 extends DTColumnConfig52 {
 
     private static final long          serialVersionUID   = -2272148755430209968L;
 
-    private static final DTCellValue52 DEFAULT_ROW_NUMBER = new DTCellValue52( "0" );
+    private static final DTCellValue52 DEFAULT_ROW_NUMBER = new DTCellValue52( new Integer( 0 ) );
 
     @Override
     public DTCellValue52 getDefaultValue() {

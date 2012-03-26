@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -31,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BRLRuleModel;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
@@ -55,21 +57,23 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionInsertFactPopup extends FormStylePopup {
 
-    private SmallLabel                 patternLabel                     = new SmallLabel();
-    private TextBox                    fieldLabel                       = getFieldLabel();
-    private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                        limitedEntryValueAttributeIndex  = 0;
-    private TextBox                    valueListWidget                  = null;
-    private SimplePanel                defaultValueWidgetContainer      = new SimplePanel();
-    private int                        defaultValueWidgetContainerIndex = 0;
+    private SmallLabel                       patternLabel                     = new SmallLabel();
+    private TextBox                          fieldLabel                       = getFieldLabel();
+    private SimplePanel                      limitedEntryValueWidgetContainer = new SimplePanel();
+    private int                              limitedEntryValueAttributeIndex  = 0;
+    private TextBox                          valueListWidget                  = null;
+    private SimplePanel                      defaultValueWidgetContainer      = new SimplePanel();
+    private int                              defaultValueWidgetContainerIndex = 0;
 
-    private ActionInsertFactCol52      editingCol;
-    private GuidedDecisionTable52      model;
-    private SuggestionCompletionEngine sce;
-    private DTCellValueWidgetFactory   factory;
-    private BRLRuleModel               validator;
+    private final GuidedDecisionTable52      model;
+    private final SuggestionCompletionEngine sce;
+    private final DTCellValueWidgetFactory   factory;
+    private final BRLRuleModel               validator;
+    private final DTCellValueUtilities       utilities;
 
-    private final boolean              isReadOnly;
+    private ActionInsertFactCol52            editingCol;
+
+    private final boolean                    isReadOnly;
 
     public ActionInsertFactPopup(final SuggestionCompletionEngine sce,
                                  final GuidedDecisionTable52 model,
@@ -82,11 +86,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
         this.model = model;
         this.sce = sce;
         this.isReadOnly = isReadOnly;
+        this.utilities = new DTCellValueUtilities( model,
+                                                   sce );
 
-        //Set-up factory for common widgets
-        factory = new DTCellValueWidgetFactory( model,
-                                                sce,
-                                                isReadOnly );
+        //Set-up a factory for value editors
+        factory = DTCellValueWidgetFactory.getInstance( model,
+                                                        sce,
+                                                        isReadOnly,
+                                                        allowEmptyValues() );
 
         setTitle( Constants.INSTANCE.ActionColumnConfigurationInsertingANewFact() );
         setModal( false );
@@ -225,6 +232,10 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     }
 
+    private boolean allowEmptyValues() {
+        return this.model.getTableFormat() == TableFormat.EXTENDED_ENTRY;
+    }
+
     private ActionInsertFactCol52 cloneActionInsertColumn(ActionInsertFactCol52 col) {
         ActionInsertFactCol52 clone = null;
         if ( col instanceof LimitedEntryActionInsertFactCol52 ) {
@@ -284,9 +295,16 @@ public class ActionInsertFactPopup extends FormStylePopup {
         if ( editingCol.getDefaultValue() == null ) {
             editingCol.setDefaultValue( factory.makeNewValue( editingCol ) );
         }
+
+        //Ensure the Default Value has been updated to represent the column's 
+        //data-type. Legacy Default Values are all String-based and need to be 
+        //coerced to the correct type
+        final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+        final DTDataTypes52 dataType = utilities.getDataType( editingCol );
+        utilities.assertDTCellValue( dataType,
+                                     defaultValue );
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingCol,
-                                                                  editingCol.getDefaultValue(),
-                                                                  true ) );
+                                                                  defaultValue ) );
     }
 
     private void doFieldLabel() {

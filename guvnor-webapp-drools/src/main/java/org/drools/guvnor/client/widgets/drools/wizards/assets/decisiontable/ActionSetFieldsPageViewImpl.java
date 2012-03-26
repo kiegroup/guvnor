@@ -286,8 +286,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 }
                 defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
                                                                           chosenFieldsSelection,
-                                                                          chosenFieldsSelection.getDefaultValue(),
-                                                                          true ) );
+                                                                          chosenFieldsSelection.getDefaultValue() ) );
             }
 
         } );

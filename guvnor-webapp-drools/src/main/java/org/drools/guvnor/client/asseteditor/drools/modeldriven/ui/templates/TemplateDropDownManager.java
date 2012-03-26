@@ -41,13 +41,18 @@ public class TemplateDropDownManager
     CellTableDropDownDataValueMapProvider {
 
     private final SuggestionCompletionEngine sce;
-    private TemplateModel                    model;
+    private final TemplateModel              model;
     private DynamicData                      data;
 
-    public TemplateDropDownManager(final SuggestionCompletionEngine sce) {
+    public TemplateDropDownManager(final TemplateModel model,
+                                   final SuggestionCompletionEngine sce) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
+        }
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        this.model = model;
         this.sce = sce;
     }
 
@@ -66,13 +71,6 @@ public class TemplateDropDownManager
         this.model = model;
         this.data = data;
         this.sce = sce;
-    }
-
-    public void setModel(TemplateModel model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        this.model = model;
     }
 
     @Override

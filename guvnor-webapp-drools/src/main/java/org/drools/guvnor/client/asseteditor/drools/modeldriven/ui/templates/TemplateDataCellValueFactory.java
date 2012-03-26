@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
@@ -35,24 +36,32 @@ import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 public class TemplateDataCellValueFactory extends AbstractCellValueFactory<TemplateDataColumn, String> {
 
     //Template model
-    private TemplateModel model;
+    private TemplateModel          model;
+
+    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
+    protected static DateConverter DATE_CONVERTOR = null;
+
+    /**
+     * Override the default, GWT-centric, Date conversion utility class. Only
+     * use to hook-in a JVM Compatible implementation for tests
+     * 
+     * @param dc
+     */
+    public static void injectDateConvertor(DateConverter dc) {
+        DATE_CONVERTOR = dc;
+    }
 
     /**
      * Construct a Cell Value Factory for a specific Template data editor
      * 
+     * @param TemplateModel
+     *            model for which cells will be created
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      */
-    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce) {
+    public TemplateDataCellValueFactory(final TemplateModel model,
+                                        final SuggestionCompletionEngine sce) {
         super( sce );
-    }
-
-    /**
-     * Set the model for which CellValues will be created
-     * 
-     * @param model
-     */
-    public void setModel(TemplateModel model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -253,7 +262,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
     }
 
     // Get the Data Type corresponding to a given column
-    protected DTDataTypes52 getDataType(TemplateDataColumn column) {
+    private DTDataTypes52 getDataType(TemplateDataColumn column) {
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = null;

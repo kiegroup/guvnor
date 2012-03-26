@@ -66,22 +66,15 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
      * @param eventBus
      *            An EventBus on which cells can subscribe to events
      */
-    public DecisionTableCellFactory(SuggestionCompletionEngine sce,
-                                    DecisionTableDropDownManager dropDownManager,
-                                    boolean isReadOnly,
-                                    EventBus eventBus) {
+    public DecisionTableCellFactory(final GuidedDecisionTable52 model,
+                                    final SuggestionCompletionEngine sce,
+                                    final DecisionTableDropDownManager dropDownManager,
+                                    final boolean isReadOnly,
+                                    final EventBus eventBus) {
         super( sce,
                dropDownManager,
                isReadOnly,
                eventBus );
-    }
-
-    /**
-     * Set the model for which cells will be created
-     * 
-     * @param model
-     */
-    public void setModel(GuidedDecisionTable52 model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

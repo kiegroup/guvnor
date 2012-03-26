@@ -90,12 +90,12 @@ public class RuleTemplateEditor extends DirtyableComposite
                                                                                          width );
 
                                         //Initialise table to edit data
-                                        table = new TemplateDataTableWidget( sce,
+                                        table = new TemplateDataTableWidget( model,
+                                                                             sce,
                                                                              asset.readonly,
                                                                              eventBus );
                                         table.setPixelSize( width,
                                                             height );
-                                        table.setModel( model );
                                         popUp.addAttribute( "",
                                                             table );
 

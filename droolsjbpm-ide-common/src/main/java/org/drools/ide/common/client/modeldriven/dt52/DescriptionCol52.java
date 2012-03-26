@@ -20,6 +20,13 @@ package org.drools.ide.common.client.modeldriven.dt52;
  */
 public class DescriptionCol52 extends DTColumnConfig52 {
 
-    private static final long serialVersionUID = -306736594255777798L;
+    private static final long          serialVersionUID    = -306736594255777798L;
+
+    private static final DTCellValue52 DEFAULT_DESCRIPTION = new DTCellValue52( "" );
+
+    @Override
+    public DTCellValue52 getDefaultValue() {
+        return DEFAULT_DESCRIPTION;
+    }
 
 }

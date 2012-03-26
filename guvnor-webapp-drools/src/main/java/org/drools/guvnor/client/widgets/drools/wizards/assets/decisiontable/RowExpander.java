@@ -462,8 +462,10 @@ public class RowExpander {
                         if ( cdv.context.getBasePattern().equals( this.context.getBasePattern() ) ) {
                             final ConditionCol52 cc = (ConditionCol52) cdv.context.getBaseColumn();
                             final DTCellValue52 value = row.get( iCol );
-                            currentValueMap.put( cc.getFactField(),
-                                                 value.getStringValue() );
+                            if ( value != null ) {
+                                currentValueMap.put( cc.getFactField(),
+                                                     value.getStringValue() );
+                            }
                         }
                     }
                 }
