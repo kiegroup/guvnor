@@ -42,7 +42,7 @@ import org.drools.rule.Package;
 public class TestRuleDeployment {
     public enum RuleAgentType {HTTP, FILE_DRL, FILE_PKG}
 
-    private static final String ruleServer = "http://localhost:8080/brms";
+    private static final String ruleServer = "http://localhost:8080/brms"; // GWT hosted mode uses "http://127.0.0.1:8888/"
     private static final String packageName = "ping";
     private static final String snapshotName = "1.0.0-SNAPSHOT";
 
@@ -87,7 +87,9 @@ public class TestRuleDeployment {
             System.err.println("ERROR " + e.getClass().getName() + " - " + e.getMessage());
         }
 
-        if (!executeRules) return; //exit if we've not found the package in the brms to execute
+        if (!executeRules) {
+            return; //exit if we've not found the package in the brms to execute
+        }
 
         RuleAgentFactory factory = new RuleAgentFactory(props);
         RuleAgent agent = factory.get(RuleAgentType.HTTP);
@@ -98,8 +100,7 @@ public class TestRuleDeployment {
         facts.add(new String("ping"));
         System.out.print("ping...");
         StatelessSessionResult result = s.executeWithResults(facts);
-        Iterator it = result.iterateObjects();
-        while (it.hasNext()) {
+        for (Iterator it = result.iterateObjects(); it.hasNext();) {
             Object o = it.next();
             if (o instanceof String) {
                 System.out.println(((String) o));
@@ -122,7 +123,7 @@ public class TestRuleDeployment {
         new TestRuleDeployment().run();
     }
 
-    class RuleAgentFactory {
+    private class RuleAgentFactory {
         Properties props;
 
         public RuleAgentFactory(Properties props) {
@@ -147,5 +148,6 @@ public class TestRuleDeployment {
             return RuleAgent.newRuleAgent(p);
         }
     }
+
 }
 
