@@ -16,6 +16,7 @@
 
 package org.jboss.drools.guvnor.importgenerator;
 
+import java.io.File;
 
 /**
  * Represents an individual rule within a drl package file found in the file system
@@ -23,6 +24,7 @@ package org.jboss.drools.guvnor.importgenerator;
 public class Rule{
     private String ruleName;
     private String content;
+	private File file;
 
     /**
      * Std constructor used within the PackageFile parser
@@ -30,9 +32,13 @@ public class Rule{
      * @param ruleName
      * @param content
      */
-    public Rule(String ruleName, String content){
+	public Rule(String ruleName, String content, File file){
         this.ruleName=ruleName;
         this.content=content;
+		this.file=file;
+	}
+	public File getFile(){
+	  return file;
     }
     public String getRuleName() {
         return ruleName;

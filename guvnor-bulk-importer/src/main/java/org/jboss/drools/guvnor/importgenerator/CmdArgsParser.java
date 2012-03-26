@@ -16,7 +16,6 @@
 
 package org.jboss.drools.guvnor.importgenerator;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,6 +41,7 @@ public class CmdArgsParser{
     OPTIONS_KAGENT_CHANGE_SET_SERVER,
     OPTIONS_KAGENT_CHANGE_SET_FILE,
     OPTIONS_BASE_DIR,
+    OPTIONS_MODEL,
     OPTIONS_VERBOSE,
     OPTIONS_VERY_VERBOSE
   }
@@ -59,6 +59,7 @@ public class CmdArgsParser{
     map.put("-k", Parameters.OPTIONS_KAGENT_CHANGE_SET_SERVER);
     map.put("-w", Parameters.OPTIONS_KAGENT_CHANGE_SET_FILE);
     map.put("-b", Parameters.OPTIONS_BASE_DIR);
+    map.put("-m", Parameters.OPTIONS_MODEL);
     map.put("-v", Parameters.OPTIONS_VERBOSE);
     map.put("-vv", Parameters.OPTIONS_VERY_VERBOSE);
   }
