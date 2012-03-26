@@ -22,7 +22,7 @@ import org.jboss.drools.guvnor.importgenerator.example.domain.UserVO;
 
 rule "does the user have permission to access zone 2"
 when
-    !RuleResult()
+    not RuleResultVO()
     $user: UserVO($permissions : permissions)
     eval($permissions.contains(new PermissionVO("ZONE_2")))
 then
