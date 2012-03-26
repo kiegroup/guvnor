@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jboss.drools.guvnor.importgenerator.test;
+package org.jboss.drools.guvnor.importgenerator;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
