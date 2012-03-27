@@ -23,7 +23,8 @@
 
   <!-- Specify the paths for translatable code -->
   <source path='client' />
-
+  <source path="shared" />
+  
   <define-configuration-property name='gin.ginjector' is-multi-valued='false' />
   <set-configuration-property name='gin.ginjector' value='org.drools.guvnor.client.gin.ClientGinjector' />
 

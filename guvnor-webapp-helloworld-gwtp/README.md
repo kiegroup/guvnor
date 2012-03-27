@@ -112,3 +112,9 @@ half days, so I decided not to spend too much time on it until we really need it
 
 [1]. http://groups.google.com/group/gwt-platform/msg/4812eba4f82e03ff
 [2]. http://code.google.com/p/gwt-platform/wiki/FrequentlyAskedQuestions#When_should_I_use_a_Presenter,_PresenterWidget_or_a_regular_plai
+
+8. GWTP Dispatch command pattern. 
+Check AdminAreaPresenter.java, CreateModuleAction.java and CreateModuleResult.java for how the Dispatch pattern works in GWTP. This pattern is 
+very close to the pattern described by Geoffrey: https://docs.google.com/document/d/1UugWdpsRixiwri4BHu2dyXCnC8js4DSRGLIJ_RrmlxM/edit
+
+I have not looked into Errai yet, but I believe Errai provides similar things as well?

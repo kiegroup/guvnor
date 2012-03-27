@@ -45,4 +45,8 @@ public class AdminAreaView extends ViewImpl implements AdminAreaPresenter.MyView
   public Widget asWidget() {
     return widget;
   }
+  
+  public void setModuleUUID(String uuid) {
+      
+  }
 }
