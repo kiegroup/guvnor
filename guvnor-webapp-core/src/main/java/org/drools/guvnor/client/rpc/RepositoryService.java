@@ -303,7 +303,11 @@ public interface RepositoryService
      * @return
      */
     public List<String> listAvailablePermissionRoleTypes();
+    
+    public boolean isDoNotInstallSample();
 
+    public void setDoNotInstallSample();
+    
     /**
      * Removes user security data.
      */

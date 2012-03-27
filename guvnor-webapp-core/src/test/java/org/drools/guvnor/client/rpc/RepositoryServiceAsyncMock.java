@@ -177,6 +177,13 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
 
     public void listAvailablePermissionRoleTypes(AsyncCallback<List<String>> callback) {
     }
+    
+    public void isDoNotInstallSample(AsyncCallback<Boolean> callback) {
+        
+    }
+    public void setDoNotInstallSample(AsyncCallback cb) {
+        
+    }
 
     public void deleteUser(String p0, AsyncCallback cb) {
         

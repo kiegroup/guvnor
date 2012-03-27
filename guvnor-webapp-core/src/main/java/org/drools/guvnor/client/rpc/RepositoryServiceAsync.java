@@ -69,6 +69,8 @@ public interface RepositoryServiceAsync {
     public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
     public void listAvailablePermissionTypes(AsyncCallback<java.lang.String[]> cb);
     public void listAvailablePermissionRoleTypes(AsyncCallback<List<String>> callback);
+    public void isDoNotInstallSample(AsyncCallback<Boolean> callback);
+    public void setDoNotInstallSample(AsyncCallback cb);
     public void deleteUser(java.lang.String p0, AsyncCallback cb);
     public void createUser(java.lang.String p0, AsyncCallback cb);
     public void subscribe(AsyncCallback cb);

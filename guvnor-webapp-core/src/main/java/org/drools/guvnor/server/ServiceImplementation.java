@@ -713,6 +713,24 @@ public class ServiceImplementation
     }
 
     @LoggedIn
+    public boolean isDoNotInstallSample() {
+        try {
+            return rulesRepository.isDoNotInstallSample();
+        } catch (RepositoryException e) {
+            return true;
+        }
+    }
+    
+    @LoggedIn
+    public void setDoNotInstallSample() {
+        try {
+            rulesRepository.setDoNotInstallSample();
+        } catch (RepositoryException e) {
+            //Ignored
+        }
+    }
+    
+    @LoggedIn
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( rulesRepository );

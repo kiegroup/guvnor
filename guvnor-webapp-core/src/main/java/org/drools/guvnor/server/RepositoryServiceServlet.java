@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.CategoryService;
 import org.drools.guvnor.client.rpc.ConversionResult;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -694,6 +695,16 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.listAvailablePermissionRoleTypes();
     }
 
+    public boolean isDoNotInstallSample() {
+        Module[] modules = moduleService.listModules();
+
+        return modules.length != 1 || serviceImplementation.isDoNotInstallSample();
+    }
+
+    public void setDoNotInstallSample() {
+        serviceImplementation.setDoNotInstallSample();
+    }
+    
     public void deleteUser(java.lang.String p0) {
         serviceImplementation.deleteUser( p0 );
     }

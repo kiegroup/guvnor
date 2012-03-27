@@ -17,24 +17,26 @@
 package org.drools.guvnor.client.examples;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 public class SampleRepositoryInstaller {
 
+    //Only ask for installation for the first time. 
     public static void askToInstall() {
-        RepositoryServiceFactory.getPackageService().listModules(createGenericCallbackForListPackages());
-    }
+        RepositoryServiceFactory.getService().isDoNotInstallSample(
+                new GenericCallback<Boolean>() {
+                    public void onSuccess(Boolean isDoNotInstallSample) {
+                        if(!isDoNotInstallSample) {
+                            RepositoryServiceFactory.getService().setDoNotInstallSample(
+                                    new GenericCallback<Void>() {
+                                        public void onSuccess(Void v) {                                        
+                                        }
+                                    } );
+                            new NewRepositoryDialog().show();
+                        }
 
-    private static GenericCallback<Module[]> createGenericCallbackForListPackages() {
-        return new GenericCallback<Module[]>() {
-            public void onSuccess(Module[] result) {
-                if (result.length == 1) {
-                    new NewRepositoryDialog().show();
-                }
-            }
-        };
+                    }
+                } );
     }
-
 
 }
