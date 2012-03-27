@@ -345,8 +345,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> makeValueListCell(DTColumnConfig52 col) {
 
         // Columns with "Value Lists" are always Text (for now)
-        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col,
-                                                                                                      sce ),
+        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( model.getValueList( col ),
                                                                                   isReadOnly );
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                     eventBus );

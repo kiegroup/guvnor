@@ -155,8 +155,7 @@ public class GuidedDecisionTableTest {
         assertFalse( sce.hasEnums( p1_.getFactType(),
                                    c1__.getFactField() ) );
         assertTrue( dt.hasValueList( c1__ ) );
-        r = dt.getValueList( c1__,
-                             sce );
+        r = dt.getValueList( c1__ );
         assertEquals( 2,
                       r.length );
         assertEquals( "Male",
@@ -167,8 +166,7 @@ public class GuidedDecisionTableTest {
         assertTrue( sce.hasEnums( p1__.getFactType(),
                                   c1___.getFactField() ) );
         assertTrue( dt.hasValueList( c1___ ) );
-        r = dt.getValueList( c1___,
-                             sce );
+        r = dt.getValueList( c1___ );
         assertEquals( 3,
                       r.length );
         assertEquals( "one",
@@ -179,8 +177,7 @@ public class GuidedDecisionTableTest {
                       r[2] );
 
         assertEquals( 0,
-                      dt.getValueList( c2,
-                                       sce ).length );
+                      dt.getValueList( c2 ).length );
 
         assertTrue( sce.hasEnums( p1.getFactType(),
                                   asf.getFactField() ) );
@@ -211,8 +208,7 @@ public class GuidedDecisionTableTest {
         assertTrue( sce.hasEnums( ins_.getFactType(),
                                   ins_.getFactField() ) );
         assertTrue( dt.hasValueList( ins_ ) );
-        r = dt.getValueList( ins_,
-                             sce );
+        r = dt.getValueList( ins_ );
         assertEquals( 3,
                       r.length );
         assertEquals( "one",
@@ -223,14 +219,12 @@ public class GuidedDecisionTableTest {
                       r[2] );
 
         assertEquals( 0,
-                      dt.getValueList( asf_,
-                                       sce ).length );
+                      dt.getValueList( asf_ ).length );
 
         assertFalse( sce.hasEnums( p1.getFactType(),
                                    asf__.getFactField() ) );
         assertTrue( dt.hasValueList( asf__ ) );
-        r = dt.getValueList( asf__,
-                             sce );
+        r = dt.getValueList( asf__ );
         assertEquals( 3,
                       r.length );
         assertEquals( "one",
@@ -244,8 +238,7 @@ public class GuidedDecisionTableTest {
         at.setAttribute( "no-loop" );
         dt.getAttributeCols().add( at );
 
-        r = dt.getValueList( at,
-                             sce );
+        r = dt.getValueList( at );
         assertEquals( 2,
                       r.length );
         assertEquals( "true",
@@ -255,13 +248,11 @@ public class GuidedDecisionTableTest {
 
         at.setAttribute( "enabled" );
         assertEquals( 2,
-                      dt.getValueList( at,
-                                       sce ).length );
+                      dt.getValueList( at ).length );
 
         at.setAttribute( "salience" );
         assertEquals( 0,
-                      dt.getValueList( at,
-                                       sce ).length );
+                      dt.getValueList( at ).length );
 
     }
 
@@ -536,11 +527,9 @@ public class GuidedDecisionTableTest {
                              new String[]{"bob", "michael"} );
 
         assertEquals( 0,
-                      dt.getValueList( c1,
-                                       sce ).length );
+                      dt.getValueList( c1 ).length );
         assertEquals( 3,
-                      dt.getValueList( c2,
-                                       sce ).length );
+                      dt.getValueList( c2 ).length );
 
     }
 
@@ -638,31 +627,19 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        assertTrue( dt.isConstraintValid( rnc,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( dc,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( mdc,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( ac,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( asfc,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( aifc,
-                                          sce ) );
+        assertTrue( dt.isConstraintValid( rnc ) );
+        assertTrue( dt.isConstraintValid( dc ) );
+        assertTrue( dt.isConstraintValid( mdc ) );
+        assertTrue( dt.isConstraintValid( ac ) );
+        assertTrue( dt.isConstraintValid( asfc ) );
+        assertTrue( dt.isConstraintValid( aifc ) );
 
-        assertFalse( dt.isConstraintValid( c1,
-                                           sce ) );
-        assertFalse( dt.isConstraintValid( c2,
-                                           sce ) );
-        assertFalse( dt.isConstraintValid( c3,
-                                           sce ) );
-        assertTrue( dt.isConstraintValid( c4,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( c5,
-                                          sce ) );
-        assertTrue( dt.isConstraintValid( c6,
-                                          sce ) );
+        assertFalse( dt.isConstraintValid( c1 ) );
+        assertFalse( dt.isConstraintValid( c2 ) );
+        assertFalse( dt.isConstraintValid( c3 ) );
+        assertTrue( dt.isConstraintValid( c4 ) );
+        assertTrue( dt.isConstraintValid( c5 ) );
+        assertTrue( dt.isConstraintValid( c6 ) );
 
     }
 
@@ -699,19 +676,14 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        assertTrue( dt.getValueList( c1,
-                                     sce ).length > 0 );
-        assertTrue( dt.getValueList( c1,
-                                     sce ).length == 3 );
+        assertTrue( dt.getValueList( c1 ).length > 0 );
+        assertTrue( dt.getValueList( c1 ).length == 3 );
         assertEquals( "age>10",
-                      dt.getValueList( c1,
-                                       sce )[0] );
+                      dt.getValueList( c1 )[0] );
         assertEquals( "age>20",
-                      dt.getValueList( c1,
-                                       sce )[1] );
+                      dt.getValueList( c1 )[1] );
         assertEquals( "age>30",
-                      dt.getValueList( c1,
-                                       sce )[2] );
+                      dt.getValueList( c1 )[2] );
 
     }
 
@@ -748,19 +720,14 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        assertTrue( dt.getValueList( c1,
-                                     sce ).length > 0 );
-        assertTrue( dt.getValueList( c1,
-                                     sce ).length == 3 );
+        assertTrue( dt.getValueList( c1 ).length > 0 );
+        assertTrue( dt.getValueList( c1 ).length == 3 );
         assertEquals( "getAge()>10",
-                      dt.getValueList( c1,
-                                       sce )[0] );
+                      dt.getValueList( c1 )[0] );
         assertEquals( "getAge()>20",
-                      dt.getValueList( c1,
-                                       sce )[1] );
+                      dt.getValueList( c1 )[1] );
         assertEquals( "getAge()>30",
-                      dt.getValueList( c1,
-                                       sce )[2] );
+                      dt.getValueList( c1 )[2] );
 
     }
 

@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,6 +231,15 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
         return false;
+    }
+
+    @Override
+    public void assertDefaultValue(final ActionSetFieldCol52 chosenFieldsSelection) {
+        final List<String> valueList = Arrays.asList( dtable.getValueList( chosenFieldsSelection ) );
+        final String defaultValue = utilities.asString( chosenFieldsSelection.getDefaultValue() );
+        if ( !valueList.contains( defaultValue ) ) {
+            chosenFieldsSelection.getDefaultValue().clearValues();
+        }
     }
 
 }

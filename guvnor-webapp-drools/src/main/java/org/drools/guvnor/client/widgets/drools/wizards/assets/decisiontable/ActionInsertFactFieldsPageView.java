@@ -45,6 +45,8 @@ public interface ActionInsertFactFieldsPageView
 
         boolean hasEnums(ActionInsertFactCol52 selectedAction);
 
+        void assertDefaultValue(ActionInsertFactCol52 chosenFieldsSelection);
+
     }
 
     /**

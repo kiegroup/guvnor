@@ -158,8 +158,17 @@ public class DTCellValueWidgetFactory {
     public Widget getWidget(Pattern52 pattern,
                             ConditionCol52 column,
                             DTCellValue52 value) {
-        if ( sce.hasEnums( pattern.getFactType(),
-                           column.getFactField() ) ) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        if ( dtable.hasValueList( column ) ) {
+            final String[] valueList = dtable.getValueList( column );
+            return makeListBox( valueList,
+                                pattern,
+                                column,
+                                value );
+
+        } else if ( sce.hasEnums( pattern.getFactType(),
+                                  column.getFactField() ) ) {
             final Context context = new Context( pattern,
                                                  column );
             final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
@@ -242,8 +251,17 @@ public class DTCellValueWidgetFactory {
     public Widget getWidget(Pattern52 pattern,
                             ActionSetFieldCol52 column,
                             DTCellValue52 value) {
-        if ( sce.hasEnums( pattern.getFactType(),
-                           column.getFactField() ) ) {
+
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        if ( dtable.hasValueList( column ) ) {
+            final String[] valueList = dtable.getValueList( column );
+            return makeListBox( valueList,
+                                pattern,
+                                column,
+                                value );
+
+        } else if ( sce.hasEnums( pattern.getFactType(),
+                                  column.getFactField() ) ) {
             final Context context = new Context( pattern,
                                                  column );
             final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
@@ -304,8 +322,15 @@ public class DTCellValueWidgetFactory {
      */
     public Widget getWidget(ActionInsertFactCol52 column,
                             DTCellValue52 value) {
-        if ( sce.hasEnums( column.getFactType(),
-                           column.getFactField() ) ) {
+        //Check if the column has a "Value List" or an enumeration. Value List takes precedence
+        if ( dtable.hasValueList( column ) ) {
+            final String[] valueList = dtable.getValueList( column );
+            return makeListBox( valueList,
+                                column,
+                                value );
+
+        } else if ( sce.hasEnums( column.getFactType(),
+                                  column.getFactField() ) ) {
             final Context context = new Context( column );
             final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
             final DropDownData dd = sce.getEnums( column.getFactType(),

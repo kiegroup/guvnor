@@ -143,8 +143,7 @@ public class RowExpander {
         ColumnValues cv = null;
         String[] values = new String[]{};
         if ( dtable.hasValueList( c ) ) {
-            values = dtable.getValueList( c,
-                                          sce );
+            values = dtable.getValueList( c );
             values = getSplitValues( values );
             cv = new ColumnValues( columns,
                                    convertValueList( values ),

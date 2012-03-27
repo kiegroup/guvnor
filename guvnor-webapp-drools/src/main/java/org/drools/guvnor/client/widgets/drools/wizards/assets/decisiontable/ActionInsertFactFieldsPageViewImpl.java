@@ -36,6 +36,8 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFac
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -357,15 +359,15 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                                                                                lea.getValue() ) );
             }
 
-            private void makeDefaultValueWidget() {
-                if ( chosenFieldsSelection.getDefaultValue() == null ) {
-                    chosenFieldsSelection.setDefaultValue( factory.makeNewValue( chosenFieldsSelection ) );
-                }
-                defaultValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
-                                                                          chosenFieldsSelection.getDefaultValue() ) );
-            }
-
         } );
+    }
+
+    private void makeDefaultValueWidget() {
+        if ( chosenFieldsSelection.getDefaultValue() == null ) {
+            chosenFieldsSelection.setDefaultValue( factory.makeNewValue( chosenFieldsSelection ) );
+        }
+        defaultValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
+                                                                  chosenFieldsSelection.getDefaultValue() ) );
     }
 
     private void initialiseBinding() {
@@ -414,12 +416,24 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     }
 
     private void initialiseValueList() {
+
+        //Copy value back to model
         txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
                 String valueList = txtValueList.getText();
                 chosenFieldsSelection.setValueList( valueList );
                 //ValueList is optional, no need to advise of state change
+            }
+
+        } );
+
+        //Update Default Value widget if necessary
+        txtValueList.addBlurHandler( new BlurHandler() {
+            
+            public void onBlur(BlurEvent event) {
+                presenter.assertDefaultValue( chosenFieldsSelection );
+                makeDefaultValueWidget();
             }
 
         } );

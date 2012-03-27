@@ -259,4 +259,13 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         return false;
     }
 
+    @Override
+    public void assertDefaultValue(final ActionInsertFactCol52 chosenFieldsSelection) {
+        final List<String> valueList = Arrays.asList( dtable.getValueList( chosenFieldsSelection ) );
+        final String defaultValue = utilities.asString( chosenFieldsSelection.getDefaultValue() );
+        if ( !valueList.contains( defaultValue ) ) {
+            chosenFieldsSelection.getDefaultValue().clearValues();
+        }
+    }
+
 }

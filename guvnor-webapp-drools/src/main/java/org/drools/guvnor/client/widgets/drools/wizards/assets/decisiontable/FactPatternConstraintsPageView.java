@@ -52,6 +52,8 @@ public interface FactPatternConstraintsPageView
         boolean requiresValueList(Pattern52 selectedPattern,
                                   ConditionCol52 selectedCondition);
 
+        void assertDefaultValue(ConditionCol52 selectedCondition);
+
     }
 
     /**

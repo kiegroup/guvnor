@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,9 @@ import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -47,6 +50,7 @@ public class DecisionTableDropDownManagerTests {
     private DecisionTableDropDownManager manager;
     private SuggestionCompletionEngine   sce;
 
+    @SuppressWarnings("serial")
     @Before
     public void setup() {
 
@@ -187,6 +191,50 @@ public class DecisionTableDropDownManagerTests {
                                           new ArrayList<JarInputStream>(),
                                           new ArrayList<DSLTokenizedMappingFile>(),
                                           enums );
+        
+        sce.setFactTypes( new String[]{"F0", "Fact"} );
+
+        sce.setFieldsForTypes( new HashMap<String, ModelField[]>() {
+            {
+                put( "F0",
+                     new ModelField[]{
+                             new ModelField( "c0p0",
+                                             Integer.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "c1p0",
+                                             Integer.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "asf0",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "asf1",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING )
+                } );
+
+                put( "Fact",
+                     new ModelField[]{
+                             new ModelField( "field1",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "field2",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "field3",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING )
+
+                } );
+            }
+        } );
+
 
         //---Setup manager---
         manager = new DecisionTableDropDownManager( model,

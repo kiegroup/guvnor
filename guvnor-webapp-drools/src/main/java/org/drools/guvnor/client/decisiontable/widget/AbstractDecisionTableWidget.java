@@ -1680,15 +1680,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Ensure the values in a column are within the Value List
     private boolean updateCellsForOptionValueList(final DTColumnConfig52 editColumn,
                                                   final DTColumnConfig52 origColumn) {
-        boolean bUpdateColumnData = false;
-        List<String> vals = Arrays.asList( model.getValueList( editColumn,
-                                                               sce ) );
 
+        //If the new column definition has no Value List the existing values remain valid
+        List<String> vals = Arrays.asList( model.getValueList( editColumn ) );
+        final boolean clearExistingValues = vals.size() > 0;
+
+        boolean bUpdateColumnData = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
         for ( List<DTCellValue52> row : this.model.getData() ) {
             if ( !vals.contains( row.get( iCol ).getStringValue() ) ) {
-                row.get( iCol ).setStringValue( null );
                 bUpdateColumnData = true;
+            }
+            if ( clearExistingValues ) {
+                row.get( iCol ).clearValues();
             }
         }
         return bUpdateColumnData;

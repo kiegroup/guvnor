@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.decisiontable.Validator;
+import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
@@ -44,6 +45,7 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected SuggestionCompletionEngine sce;
 
     protected Validator                  validator;
+    protected DTCellValueUtilities       utilities;
 
     public AbstractGuidedDecisionTableWizardPage(NewAssetWizardContext context,
                                                  GuidedDecisionTable52 dtable,
@@ -61,6 +63,8 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
         this.sce = sce;
+        this.utilities = new DTCellValueUtilities( this.dtable,
+                                                   this.sce );
     }
 
     public Validator getValidator() {

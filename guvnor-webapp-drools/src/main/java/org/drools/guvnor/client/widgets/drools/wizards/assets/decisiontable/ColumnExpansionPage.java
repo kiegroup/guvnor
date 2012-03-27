@@ -86,8 +86,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
                     switch ( dtable.getTableFormat() ) {
                         case EXTENDED_ENTRY :
                             if ( dtable.hasValueList( c ) ) {
-                                String[] values = dtable.getValueList( c,
-                                                                       sce );
+                                String[] values = dtable.getValueList( c );
                                 if ( values != null && values.length > 1 ) {
                                     availableColumns.add( c );
                                 }

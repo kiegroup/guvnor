@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,8 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -285,11 +288,31 @@ public class ConditionPopup extends FormStylePopup {
             valueListWidget.setText( editingCol.getValueList() );
             valueListWidget.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
+
+                //Copy value back to model
                 valueListWidget.addChangeHandler( new ChangeHandler() {
                     public void onChange(ChangeEvent event) {
                         editingCol.setValueList( valueListWidget.getText() );
                     }
                 } );
+
+                //Update Default Value widget if necessary
+                valueListWidget.addBlurHandler( new BlurHandler() {
+                    public void onBlur(BlurEvent event) {
+                        assertDefaultValue();
+                        makeDefaultValueWidget();
+                    }
+
+                    private void assertDefaultValue() {
+                        final List<String> valueList = Arrays.asList( model.getValueList( editingCol ) );
+                        final String defaultValue = utilities.asString( editingCol.getDefaultValue() );
+                        if ( !valueList.contains( defaultValue ) ) {
+                            editingCol.getDefaultValue().clearValues();
+                        }
+                    }
+
+                } );
+
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueListWidget );
@@ -414,7 +437,7 @@ public class ConditionPopup extends FormStylePopup {
         clone.setHeader( col.getHeader() );
         clone.setOperator( col.getOperator() );
         clone.setValueList( col.getValueList() );
-        clone.setDefaultValue( col.getDefaultValue() );
+        clone.setDefaultValue( new DTCellValue52( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         clone.setParameters( col.getParameters() );
         clone.setWidth( col.getWidth() );

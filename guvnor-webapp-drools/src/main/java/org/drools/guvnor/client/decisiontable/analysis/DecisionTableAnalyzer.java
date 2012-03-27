@@ -135,8 +135,7 @@ public class DecisionTableAnalyzer {
         String type = model.getType( conditionCol,
                                      sce );
         // Retrieve "Guvnor" enums
-        String[] allValueList = model.getValueList( conditionCol,
-                                                    sce );
+        String[] allValueList = model.getValueList( conditionCol );
         ConditionDetector newDetector;
         if ( allValueList.length != 0 ) {
             // Guvnor enum

@@ -39,6 +39,8 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -411,16 +413,16 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                                                                                lec.getValue() ) );
             }
 
-            private void makeDefaultValueWidget() {
-                if ( chosenConditionsSelection.getDefaultValue() == null ) {
-                    chosenConditionsSelection.setDefaultValue( factory.makeNewValue( chosenConditionsSelection ) );
-                }
-                defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
-                                                                          chosenConditionsSelection,
-                                                                          chosenConditionsSelection.getDefaultValue() ) );
-            }
-
         } );
+    }
+
+    private void makeDefaultValueWidget() {
+        if ( chosenConditionsSelection.getDefaultValue() == null ) {
+            chosenConditionsSelection.setDefaultValue( factory.makeNewValue( chosenConditionsSelection ) );
+        }
+        defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
+                                                                  chosenConditionsSelection,
+                                                                  chosenConditionsSelection.getDefaultValue() ) );
     }
 
     private void validateConditionHeader() {
@@ -492,6 +494,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     private void initialiseValueList() {
+
+        //Copy value back to model
         txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -500,6 +504,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 // ValueList is optional, no need to advise of state change
             }
 
+        } );
+
+        //Update Default Value widget if necessary
+        txtValueList.addBlurHandler( new BlurHandler() {
+            public void onBlur(BlurEvent event) {
+                presenter.assertDefaultValue( chosenConditionsSelection );
+                makeDefaultValueWidget();
+            }
         } );
 
     }

@@ -589,50 +589,41 @@ public class GuidedDecisionTable52
         return DTDataTypes52.STRING;
     }
 
-    public String[] getValueList(BaseColumn col,
-                                 SuggestionCompletionEngine sce) {
+    public String[] getValueList(BaseColumn col) {
         if ( col instanceof AttributeCol52 ) {
-            return getValueList( (AttributeCol52) col,
-                                 sce );
+            return getValueList( (AttributeCol52) col );
         } else if ( col instanceof ConditionCol52 ) {
-            return getValueList( (ConditionCol52) col,
-                                 sce );
+            return getValueList( (ConditionCol52) col);
         } else if ( col instanceof ActionSetFieldCol52 ) {
-            return getValueList( (ActionSetFieldCol52) col,
-                                 sce );
+            return getValueList( (ActionSetFieldCol52) col);
         } else if ( col instanceof ActionInsertFactCol52 ) {
-            return getValueList( (ActionInsertFactCol52) col,
-                                 sce );
+            return getValueList( (ActionInsertFactCol52) col);
         }
         return new String[0];
     }
 
-    private String[] getValueList(AttributeCol52 col,
-                                  SuggestionCompletionEngine sce) {
+    private String[] getValueList(AttributeCol52 col) {
         if ( "no-loop".equals( col.getAttribute() ) || "enabled".equals( col.getAttribute() ) ) {
             return new String[]{"true", "false"};
         }
         return new String[0];
     }
 
-    private String[] getValueList(ConditionCol52 col,
-                                  SuggestionCompletionEngine sce) {
+    private String[] getValueList(ConditionCol52 col) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         }
         return new String[0];
     }
 
-    private String[] getValueList(ActionSetFieldCol52 col,
-                                  SuggestionCompletionEngine sce) {
+    private String[] getValueList(ActionSetFieldCol52 col) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         }
         return new String[0];
     }
 
-    private String[] getValueList(ActionInsertFactCol52 col,
-                                  SuggestionCompletionEngine sce) {
+    private String[] getValueList(ActionInsertFactCol52 col) {
         if ( col.getValueList() != null && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         }
@@ -667,8 +658,7 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    public boolean isConstraintValid(DTColumnConfig52 col,
-                                     SuggestionCompletionEngine sce) {
+    public boolean isConstraintValid(DTColumnConfig52 col) {
         if ( col instanceof RowNumberCol52 ) {
             return true;
         }
@@ -737,69 +727,6 @@ public class GuidedDecisionTable52
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
-
-    //    private boolean assertDataType(Pattern52 pattern,
-    //                                   ConditionCol52 col,
-    //                                   SuggestionCompletionEngine sce,
-    //                                   String dataType) {
-    //
-    //        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-    //            if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
-    //                return false;
-    //            }
-    //            String ft = sce.getFieldType( pattern.getFactType(),
-    //                                          col.getFactField() );
-    //            if ( ft != null && ft.equals( dataType ) ) {
-    //                return true;
-    //            }
-    //        }
-    //        return false;
-    //    }
-    //
-    //    private boolean assertDataType(BRLConditionVariableColumn col,
-    //                                   SuggestionCompletionEngine sce,
-    //                                   String dataType) {
-    //        String ft = sce.getFieldType( col.getFactType(),
-    //                                      col.getFactField() );
-    //        if ( ft != null && ft.equals( dataType ) ) {
-    //            return true;
-    //        }
-    //        return false;
-    //    }
-    //
-    //    private boolean assertDataType(Pattern52 pattern,
-    //                                   ActionSetFieldCol52 col,
-    //                                   SuggestionCompletionEngine sce,
-    //                                   String dataType) {
-    //        String ft = sce.getFieldType( pattern.getFactType(),
-    //                                      col.getFactField() );
-    //        if ( ft != null && ft.equals( dataType ) ) {
-    //            return true;
-    //        }
-    //        return false;
-    //    }
-    //
-    //    private boolean assertDataType(ActionInsertFactCol52 col,
-    //                                   SuggestionCompletionEngine sce,
-    //                                   String dataType) {
-    //        String ft = sce.getFieldType( col.getFactType(),
-    //                                      col.getFactField() );
-    //        if ( ft != null && ft.equals( dataType ) ) {
-    //            return true;
-    //        }
-    //        return false;
-    //    }
-    //
-    //    private boolean assertDataType(BRLActionVariableColumn col,
-    //                                   SuggestionCompletionEngine sce,
-    //                                   String dataType) {
-    //        String ft = sce.getFieldType( col.getFactType(),
-    //                                      col.getFactField() );
-    //        if ( ft != null && ft.equals( dataType ) ) {
-    //            return true;
-    //        }
-    //        return false;
-    //    }
 
     public TableFormat getTableFormat() {
         //GUVNOR-1820: Not possible to give default value to action columns

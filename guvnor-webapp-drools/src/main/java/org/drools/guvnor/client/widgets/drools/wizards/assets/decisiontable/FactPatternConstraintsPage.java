@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.factmodel.ModelNameHelper;
@@ -226,6 +227,15 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
                                              factField );
         }
         return enableValueList;
+    }
+
+    @Override
+    public void assertDefaultValue(final ConditionCol52 selectedPattern) {
+        final List<String> valueList = Arrays.asList( dtable.getValueList( selectedPattern ) );
+        final String defaultValue = utilities.asString( selectedPattern.getDefaultValue() );
+        if ( !valueList.contains( defaultValue ) ) {
+            selectedPattern.getDefaultValue().clearValues();
+        }
     }
 
 }
