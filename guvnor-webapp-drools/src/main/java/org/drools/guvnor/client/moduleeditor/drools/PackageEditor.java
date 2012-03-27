@@ -256,7 +256,7 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        ImageButton remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
