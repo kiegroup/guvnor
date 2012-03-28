@@ -1,6 +1,10 @@
 package org.drools.guvnor.server.verification;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -8,13 +12,10 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
+import org.drools.verifier.EmptyVerifierConfiguration;
 import org.drools.verifier.VerifierConfiguration;
-import org.drools.verifier.VerifierConfigurationImpl;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class VerifierConfigurationFactory {
 
@@ -27,13 +28,13 @@ public class VerifierConfigurationFactory {
     public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(Asset[] workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
-                new VerifierConfigurationImpl());
+                new EmptyVerifierConfiguration());
     }
     
     public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(Set<WorkingSetConfigData> workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
-                new VerifierConfigurationImpl());
+                new EmptyVerifierConfiguration());
     }
 
 
