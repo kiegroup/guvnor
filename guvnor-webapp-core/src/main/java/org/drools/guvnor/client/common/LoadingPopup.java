@@ -43,6 +43,12 @@ public class LoadingPopup extends PopupPanel {
         instance.show();
     }
 
+    /** Convenience method to popup the message. */
+    public static void showMessage(final String message, boolean isModal) {
+        instance.messageLabel.setText( message );
+        instance.setModal(isModal);
+        instance.show();
+    }
     public static void close() {
         instance.hide();
     }
