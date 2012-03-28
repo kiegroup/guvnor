@@ -238,10 +238,10 @@ public class NewPackageWizard extends FormStylePopup {
                     Window.alert(constants.YouCanOnlyImportDrlFiles());
                     event.cancel();
                 } else if (packageName.getText() != null && !packageName.getText().equals("")) {
-                    LoadingPopup.showMessage(constants.ImportingDRLPleaseWait());
+                    LoadingPopup.showMessage(constants.ImportingDRLPleaseWait(), true);
                     uploadFormPanel.setAction(uploadFormPanel.getAction() + "?packageName=" + packageName.getText());
                 } else {
-                    LoadingPopup.showMessage(constants.CreatingPackagePleaseWait());
+                    LoadingPopup.showMessage(constants.CreatingPackagePleaseWait(), true);
                 }
             }
         });
