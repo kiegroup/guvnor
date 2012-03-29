@@ -7,12 +7,12 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * corresponding to a {@link com.gwtplatform.dispatch.server.Dispatch}
  * (server-side).
  */
-public class CreateModuleAction extends
-    UnsecuredActionImpl<CreateModuleResult> {
+public class LoadModuleAction extends
+    UnsecuredActionImpl<LoadModuleResult> {
 
   private String moduleName;
 
-  public CreateModuleAction(final String moduleName) {
+  public LoadModuleAction(final String moduleName) {
     this.moduleName = moduleName;
   }
 
@@ -20,7 +20,7 @@ public class CreateModuleAction extends
    * For serialization only.
    */
   @SuppressWarnings("unused")
-  private CreateModuleAction() {
+  private LoadModuleAction() {
   }
 
   public String getModuleName() {

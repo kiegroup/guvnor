@@ -16,19 +16,20 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 
 
-public class AdminTree extends AbstractTree {
+public class BrowseTree extends AbstractTree {
     @Inject
     private static PlaceManager placeManager;
     
 	private static Constants constants = GWT.create(Constants.class);
 	private static Images images = (Images) GWT.create(Images.class);
+    public static final String FIND_ID = "Find";
 	public static final String ADMIN_ID = "Admin";
 	public static final String ADMIN2_ID = "Admin2";
 
 	
-    public AdminTree() {
-        this.name = constants.admin();
-        this.image = images.config();
+    public BrowseTree() {
+        this.name = constants.Browse();
+        this.image = images.ruleAsset();
 
         mainTree.setAnimationEnabled(true);
         setupTree(mainTree, itemWidgets);
@@ -47,9 +48,9 @@ public class AdminTree extends AbstractTree {
     }
 
 	public static void setupTree(Tree tree, Map<TreeItem, String> itemWidgets) {
-		TreeItem admin = tree.addItem(Util.getHeader(images.analyze(),
-				constants.admin()));
-		itemWidgets.put(admin, ADMIN_ID);
+		TreeItem find = tree.addItem(Util.getHeader(images.find(),
+				constants.Find()));
+		itemWidgets.put(find, FIND_ID);
 		
 		TreeItem admin2 = tree.addItem(Util.getHeader(images.information(),
 				"admin2"));
@@ -61,9 +62,9 @@ public class AdminTree extends AbstractTree {
         String widgetID = itemWidgets.get(item);
 
         if (widgetID != null) {
-            if (widgetID.equals(ADMIN_ID)) {
-                PlaceRequest placeRequest = new PlaceRequest(NameTokens.helloWorld);
-                placeRequest = placeRequest.with("tabName", constants.helloWorld());
+            if (widgetID.equals(FIND_ID)) {
+                PlaceRequest placeRequest = new PlaceRequest(NameTokens.find);
+                placeRequest = placeRequest.with("tabName", constants.Find());
                 placeManager.revealPlace(placeRequest);
             } if (widgetID.equals(ADMIN2_ID)) {
                 PlaceRequest placeRequest = new PlaceRequest(NameTokens.helloWorld2);

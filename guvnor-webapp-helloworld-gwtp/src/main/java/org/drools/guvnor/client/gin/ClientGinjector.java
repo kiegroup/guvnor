@@ -2,6 +2,8 @@ package org.drools.guvnor.client.gin;
 
 import org.drools.guvnor.client.editor.AdminAreaPresenter;
 import org.drools.guvnor.client.editor.AdminAreaPresenter2;
+import org.drools.guvnor.client.editor.PackagePresenter;
+import org.drools.guvnor.client.editor.QueryPresenter;
 import org.drools.guvnor.client.gin.ClientModule;
 import org.drools.guvnor.client.layout.PerspectivesPanelPresenter;
 
@@ -22,6 +24,6 @@ public interface ClientGinjector extends Ginjector {
 	Provider<PerspectivesPanelPresenter> getPerspectivesPanelPresenter();
 	Provider<AdminAreaPresenter> getAdminAreaPresenter();
 	Provider<AdminAreaPresenter2> getAdminAreaPresenter2();
-
-
+    Provider<QueryPresenter> getQueryPresenter();
+    Provider<PackagePresenter> getPackagePresenter();
 }

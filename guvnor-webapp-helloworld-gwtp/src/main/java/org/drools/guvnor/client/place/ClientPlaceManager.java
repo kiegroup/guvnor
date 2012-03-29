@@ -25,8 +25,8 @@ public class ClientPlaceManager extends PlaceManagerImpl {
 
 	@Override
 	public void revealDefaultPlace() {
-        PlaceRequest placeRequest = new PlaceRequest(NameTokens.helloWorld);
-        placeRequest = placeRequest.with("tabName", constants.helloWorld());
+        PlaceRequest placeRequest = new PlaceRequest(NameTokens.find);
+        placeRequest = placeRequest.with("tabName", constants.Find());
         revealPlace(placeRequest, false);
 
 		//revealPlace(defaultPlaceRequest, false);

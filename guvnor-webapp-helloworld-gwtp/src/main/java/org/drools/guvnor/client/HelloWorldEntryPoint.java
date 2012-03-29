@@ -5,6 +5,7 @@ import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 
 
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -25,6 +26,7 @@ public class HelloWorldEntryPoint implements EntryPoint {
 
     private void loadStyles() {
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();        
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
     }
     

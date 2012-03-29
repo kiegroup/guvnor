@@ -10,14 +10,14 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.drools.guvnor.shared.CreateModuleAction;
-import org.drools.guvnor.shared.CreateModuleResult;
+import org.drools.guvnor.shared.LoadModuleAction;
+import org.drools.guvnor.shared.LoadModuleResult;
 
 /**
  * @author Philippe Beaudoin
  */
 public class CreateModuleHandler implements
-    ActionHandler<CreateModuleAction, CreateModuleResult> {
+    ActionHandler<LoadModuleAction, LoadModuleResult> {
 
   private Provider<HttpServletRequest> requestProvider;
   private ServletContext servletContext;
@@ -30,19 +30,19 @@ public class CreateModuleHandler implements
   }
 
   @Override
-  public CreateModuleResult execute(CreateModuleAction action,
+  public LoadModuleResult execute(LoadModuleAction action,
       ExecutionContext context) throws ActionException {
 
-    return new CreateModuleResult("testUUID");
+    return new LoadModuleResult("testUUID");
   }
 
   @Override
-  public Class<CreateModuleAction> getActionType() {
-    return CreateModuleAction.class;
+  public Class<LoadModuleAction> getActionType() {
+    return LoadModuleAction.class;
   }
 
   @Override
-  public void undo(CreateModuleAction action, CreateModuleResult result,
+  public void undo(LoadModuleAction action, LoadModuleResult result,
       ExecutionContext context) throws ActionException {
     // Not undoable
   }
