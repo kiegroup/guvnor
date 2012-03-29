@@ -26,11 +26,13 @@ public class FactPopulatorFactory {
     private Map<String, Object> populatedData;
     private Map<String, Object> globalData;
     private final TypeResolver typeResolver;
+    private ClassLoader classLoader;
 
-    public FactPopulatorFactory(Map<String, Object> populatedData, Map<String, Object> globalData, TypeResolver typeResolver) {
+    public FactPopulatorFactory(Map<String, Object> populatedData, Map<String, Object> globalData, TypeResolver typeResolver, ClassLoader classLoader) {
         this.populatedData = populatedData;
         this.globalData = globalData;
         this.typeResolver = typeResolver;
+        this.classLoader = classLoader;
     }
 
     public Populator createFactPopulator(FactData fact) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
@@ -38,11 +40,13 @@ public class FactPopulatorFactory {
             return new ExistingFactPopulator(
                     populatedData,
                     typeResolver,
+                    classLoader,
                     fact);
         } else {
             return new NewFactPopulator(
                     populatedData,
                     typeResolver,
+                    classLoader,
                     fact);
         }
     }
@@ -51,6 +55,7 @@ public class FactPopulatorFactory {
         return new GlobalFactPopulator(
                 populatedData,
                 typeResolver,
+                classLoader,
                 fact,
                 globalData);
     }

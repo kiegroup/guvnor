@@ -25,10 +25,12 @@ class FieldPopulatorFactory {
 
     private final Object factObject;
     private final TypeResolver typeResolver;
+    private final ClassLoader classLoader;
 
-    public FieldPopulatorFactory(Object factObject, TypeResolver typeResolver) {
+    public FieldPopulatorFactory(Object factObject, TypeResolver typeResolver, ClassLoader classLoader) {
         this.factObject = factObject;
         this.typeResolver = typeResolver;
+        this.classLoader = classLoader;
     }
 
     public FieldPopulator getFieldPopulator(Field field) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -43,7 +45,8 @@ class FieldPopulatorFactory {
             return new FactAssignmentFieldPopulator(
                     factObject,
                     (FactAssignmentField) field,
-                    typeResolver);
+                    typeResolver, 
+                    classLoader);
         }
 
         throw new IllegalArgumentException("Unknown field type " + field.getClass());
@@ -61,7 +64,8 @@ class FieldPopulatorFactory {
                     factObject,
                     fieldData.getName(),
                     fieldData.getValue(),
-                    typeResolver);
+                    typeResolver, 
+                    classLoader);
         } else {
             return new SimpleFieldPopulator(
                     factObject,

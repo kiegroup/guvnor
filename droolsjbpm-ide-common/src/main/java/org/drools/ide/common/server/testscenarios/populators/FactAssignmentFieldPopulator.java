@@ -29,18 +29,21 @@ public class FactAssignmentFieldPopulator
 
     private final Object fact;
     private final Collection<FieldPopulator> subFieldPopulators = new ArrayList<FieldPopulator>();
+    private final ClassLoader classLoader;
 
     public FactAssignmentFieldPopulator(Object factObject,
                                         FactAssignmentField field,
-                                        TypeResolver resolver) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+                                        TypeResolver resolver,
+                                        ClassLoader classLoader) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         super(factObject, field.getName());
-        fact = resolver.resolveType(resolver.getFullTypeName(field.getFact().getType())).newInstance();
+        this.fact = resolver.resolveType(resolver.getFullTypeName(field.getFact().getType())).newInstance();
+        this.classLoader = classLoader;
 
         initSubFieldPopulators(field, resolver);
     }
 
     private void initSubFieldPopulators(FactAssignmentField field, TypeResolver resolver) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(fact, resolver);
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(fact, resolver, classLoader);
         for (Field subField : field.getFact().getFieldData()) {
             try {
                 subFieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(subField));

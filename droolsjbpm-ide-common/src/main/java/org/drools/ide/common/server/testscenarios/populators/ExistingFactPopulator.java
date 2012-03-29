@@ -29,9 +29,11 @@ class ExistingFactPopulator extends FactPopulatorBase {
     public ExistingFactPopulator(
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
+            ClassLoader classLoader,
             FactData fact) throws ClassNotFoundException {
         super(populatedData,
                 typeResolver,
+                classLoader,
                 fact);
     }
 

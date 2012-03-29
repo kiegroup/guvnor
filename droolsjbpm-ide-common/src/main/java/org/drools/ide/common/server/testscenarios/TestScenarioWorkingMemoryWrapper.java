@@ -38,14 +38,18 @@ public class TestScenarioWorkingMemoryWrapper {
     private final MethodExecutor methodExecutor;
     private final Map<String, Object> populatedData;
 
+    private final ClassLoader classLoader;
+    
     public TestScenarioWorkingMemoryWrapper(
             InternalWorkingMemory workingMemory,
             final TypeResolver resolver,
+            final ClassLoader classLoader,
             Map<String, Object> populatedData,
             Map<String, Object> globalData) {
         this.workingMemory = workingMemory;
         this.populatedData = populatedData;
         this.methodExecutor = new MethodExecutor(populatedData);
+        this.classLoader = classLoader;
 
         factVerifier = initFactVerifier(resolver, globalData);
     }
@@ -54,6 +58,7 @@ public class TestScenarioWorkingMemoryWrapper {
         return new FactVerifier(
                 populatedData,
                 resolver,
+                classLoader,
                 workingMemory,
                 globalData);
     }

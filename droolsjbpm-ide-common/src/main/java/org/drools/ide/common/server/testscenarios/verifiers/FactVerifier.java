@@ -30,14 +30,17 @@ public class FactVerifier {
     private final TypeResolver resolver;
     private final InternalWorkingMemory workingMemory;
     private final Map<String, Object> globalData;
+    private final ClassLoader classLoader;
 
     public FactVerifier(
             Map<String, Object> populatedData,
             TypeResolver resolver,
+            ClassLoader classLoader,
             InternalWorkingMemory workingMemory,
             Map<String, Object> globalData) {
         this.populatedData = populatedData;
         this.resolver = resolver;
+        this.classLoader = classLoader;
         this.workingMemory = workingMemory;
         this.globalData = globalData;
     }
@@ -52,7 +55,8 @@ public class FactVerifier {
                             verifyFact.getName(),
                             populatedData,
                             globalData),
-                    resolver);
+                    resolver,
+                    classLoader);
             fieldVerifier.checkFields(verifyFact.getFieldValues());
         } else {
             Iterator objects = workingMemory.iterateObjects();
@@ -70,12 +74,13 @@ public class FactVerifier {
         }
     }
 
-    private static boolean verifyFact(Object factObject, VerifyFact verifyFact, Map<String, Object> populatedData, TypeResolver resolver) {
+    private boolean verifyFact(Object factObject, VerifyFact verifyFact, Map<String, Object> populatedData, TypeResolver resolver) {
         if (factObject.getClass().getSimpleName().equals(verifyFact.getName())) {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier(populatedData,
                     verifyFact.getName(),
                     factObject,
-                    resolver);
+                    resolver,
+                    classLoader);
             fieldVerifier.checkFields(verifyFact.getFieldValues());
             if (verifyFact.wasSuccessful()) {
                 return true;
@@ -84,7 +89,7 @@ public class FactVerifier {
         return false;
     }
 
-    private static Object getFactObject(
+    private Object getFactObject(
             String factName,
             Map<String, Object> populatedData,
             Map<String, Object> globalData) {

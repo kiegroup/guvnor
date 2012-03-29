@@ -18,6 +18,7 @@ package org.drools.ide.common.server.testscenarios.verifiers;
 
 import static org.mvel2.MVEL.eval;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Map;
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -39,14 +41,23 @@ public class FactFieldValueVerifier {
     private VerifyField               currentField;
     final TypeResolver resolver;
     
+    private final ParserConfiguration pconf;
+    private final ParserContext pctx;
+    
     public FactFieldValueVerifier(Map<String, Object> populatedData,
                              String factName,
                              Object factObject,
-                             final TypeResolver resolver) {
+                             final TypeResolver resolver,
+                             final ClassLoader classLoader) {
         this.populatedData = populatedData;
         this.factName = factName;
         this.factObject = factObject;
         this.resolver = resolver;
+        
+        this.pconf = new ParserConfiguration();
+        pconf.setClassLoader(classLoader);
+        this.pctx = new ParserContext(pconf);
+        pctx.setStrongTyping(true);
     }
 
     public void checkFields(List<VerifyField> fieldValues) {
@@ -88,8 +99,13 @@ public class FactFieldValueVerifier {
                 String valueOfEnum = currentField.getExpected().substring(currentField.getExpected()
                         .indexOf(".") + 1);
                 String fullName = resolver.getFullTypeName(classNameOfEnum);
+                if (fullName != null && !"".equals(fullName)) {
+                    valueOfEnum = fullName + "." + valueOfEnum;
+                }
 
-                expectedResult = eval(fullName + "." + valueOfEnum);
+                Serializable compiled = MVEL.compileExpression(valueOfEnum, pctx);
+                expectedResult = MVEL.executeExpression(compiled);
+
             } catch (ClassNotFoundException e) {
                 //Do nothing.
             }

@@ -52,6 +52,7 @@ public class GlobalFactPopulatorTest {
         Map<String, Object> globalData = new HashMap<String, Object>();
         GlobalFactPopulator globalFactPopulator = new GlobalFactPopulator(populatedData,
                 resolver,
+                Thread.currentThread().getContextClassLoader(),
                 global,
                 globalData);
 

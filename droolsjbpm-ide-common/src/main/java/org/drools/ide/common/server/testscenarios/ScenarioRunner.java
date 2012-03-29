@@ -60,14 +60,15 @@ public class ScenarioRunner {
      */
     public ScenarioRunner(
             final TypeResolver typeResolver,
+            final ClassLoader classLoader,
             final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
 
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
 
-        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(workingMemory, typeResolver, populatedData, globalData);
-        this.factPopulatorFactory = new FactPopulatorFactory(populatedData, globalData, typeResolver);
-        factPopulator = new FactPopulator(workingMemory, populatedData);
+        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(workingMemory, typeResolver, classLoader, populatedData, globalData);
+        this.factPopulatorFactory = new FactPopulatorFactory(populatedData, globalData, typeResolver, classLoader);
+        this.factPopulator = new FactPopulator(workingMemory, populatedData);
     }
 
     public void run(Scenario scenario) throws ClassNotFoundException, IllegalAccessException, InstantiationException {

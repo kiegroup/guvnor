@@ -16,21 +16,31 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-
-import static org.mvel2.MVEL.*;
+import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 
 public class EnumFieldPopulator extends FieldPopulator {
 
     private final String fieldValue;
     private final TypeResolver typeResolver;
 
-    public EnumFieldPopulator(Object factObject, String fieldName, String fieldValue, TypeResolver typeResolver) {
+    private final ParserConfiguration pconf;
+    private final ParserContext pctx;
+    
+    public EnumFieldPopulator(Object factObject, String fieldName, String fieldValue, TypeResolver typeResolver, ClassLoader classLoader) {
         super(factObject, fieldName);
         this.typeResolver = typeResolver;
         this.fieldValue = fieldValue;
+
+        this.pconf = new ParserConfiguration();
+        pconf.setClassLoader(classLoader);
+        this.pctx = new ParserContext(pconf);
+        pctx.setStrongTyping(true);
     }
 
     @Override
@@ -48,7 +58,10 @@ public class EnumFieldPopulator extends FieldPopulator {
                 if (fullName != null && !"".equals(fullName)) {
                     valueOfEnum = fullName + "." + valueOfEnum;
                 }
-                value = eval(valueOfEnum);
+                
+                Serializable compiled = MVEL.compileExpression(valueOfEnum, pctx);
+                value = MVEL.executeExpression(compiled);
+                
             } catch (ClassNotFoundException e) {
                 // This is a Guvnor enum type
                 String fullName = classNameOfEnum;

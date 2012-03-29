@@ -28,14 +28,17 @@ abstract class FactPopulatorBase implements Populator {
 
     protected final Map<String, Object> populatedData;
     protected final TypeResolver typeResolver;
+    protected final ClassLoader classLoader;
     protected final FactData fact;
 
     public FactPopulatorBase(
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
+            ClassLoader classLoader,
             FactData fact) throws ClassNotFoundException {
         this.populatedData = populatedData;
         this.typeResolver = typeResolver;
+        this.classLoader = classLoader;
         this.fact = fact;
     }
 
@@ -45,7 +48,7 @@ abstract class FactPopulatorBase implements Populator {
 
     protected List<FieldPopulator> getFieldPopulators(Object factObject) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 
-        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver);
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver, classLoader);
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
         for (Field field : fact.getFieldData()) {

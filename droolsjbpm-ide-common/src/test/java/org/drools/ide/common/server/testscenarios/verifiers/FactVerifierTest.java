@@ -41,7 +41,8 @@ public class FactVerifierTest {
     @Test
     public void testVerifyAnonymousFacts() throws Exception {
         TypeResolver typeResolver = mock(TypeResolver.class);
-        FactVerifier factVerifier = new FactVerifier(new HashMap<String, Object>(), typeResolver, workingMemory, new HashMap<String, Object>());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        FactVerifier factVerifier = new FactVerifier(new HashMap<String, Object>(), typeResolver, classLoader, workingMemory, new HashMap<String, Object>());
 
         Cheese c = new Cheese();
         c.setPrice(42);
@@ -104,6 +105,7 @@ public class FactVerifierTest {
     @Test
     public void testVerifyFactsWithOperator() throws Exception {
         TypeResolver typeResolver = mock(TypeResolver.class);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         Cheese f1 = new Cheese("cheddar",
                 42);
@@ -111,7 +113,7 @@ public class FactVerifierTest {
         populatedData.put("f1", f1);
         workingMemory.facts.add(f1);
 
-        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, classLoader, workingMemory, new HashMap<String, Object>());
 
         // test all true
         VerifyFact vf = new VerifyFact();
@@ -142,6 +144,8 @@ public class FactVerifierTest {
     @Test
     public void testVerifyFactsWithExpression() throws Exception {
         TypeResolver typeResolver = mock(TypeResolver.class);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        
         Cheese f1 = new Cheese("cheddar",
                 42);
         f1.setPrice(42);
@@ -150,7 +154,7 @@ public class FactVerifierTest {
         populatedData.put("f1", f1);
         workingMemory.facts.add(f1);
 
-        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, classLoader, workingMemory, new HashMap<String, Object>());
 
         // test all true
         VerifyFact vf = new VerifyFact();
@@ -169,11 +173,13 @@ public class FactVerifierTest {
         f1.setType(null);
 
         TypeResolver typeResolver = mock(TypeResolver.class);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put("f1", f1);
         workingMemory.facts.add(f1);
 
-        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, classLoader, workingMemory, new HashMap<String, Object>());
 
         VerifyFact vf = new VerifyFact();
         vf.setName("f1");
@@ -194,11 +200,13 @@ public class FactVerifierTest {
         f1.setType(null);
 
         TypeResolver typeResolver = mock(TypeResolver.class);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put("f1", f1);
         workingMemory.facts.add(f1);
 
-        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, workingMemory, new HashMap<String, Object>());
+        FactVerifier factVerifier = new FactVerifier(populatedData, typeResolver, classLoader, workingMemory, new HashMap<String, Object>());
 
         VerifyFact vf = new VerifyFact();
         vf.setName("f1");

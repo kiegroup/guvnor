@@ -36,15 +36,15 @@ public class FactAssignmentFieldPopulatorTest {
 
     @Test
     public void testFactAssignmentField() throws Exception {
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),
-                Thread.currentThread().getContextClassLoader());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
         typeResolver.addImport("org.drools.ide.common.server.testscenarios.Cheese");
 
         Mouse mouse = new Mouse();
 
         FactAssignmentField factAssignmentField = new FactAssignmentField("cheese", "Cheese");
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver, classLoader);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 
@@ -53,8 +53,8 @@ public class FactAssignmentFieldPopulatorTest {
 
     @Test
     public void testSimpleFields() throws Exception {
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),
-                Thread.currentThread().getContextClassLoader());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
         typeResolver.addImport("org.drools.ide.common.server.testscenarios.Cheese");
 
         Mouse mouse = new Mouse();
@@ -62,7 +62,7 @@ public class FactAssignmentFieldPopulatorTest {
         FactAssignmentField factAssignmentField = new FactAssignmentField("cheese", "Cheese");
         factAssignmentField.getFact().getFieldData().add(new FieldData("name", "Best cheddar EVER! (tm)"));
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver, classLoader);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 
@@ -71,8 +71,8 @@ public class FactAssignmentFieldPopulatorTest {
 
     @Test
     public void testMatryoshkaDollSituation() throws Exception {
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),
-                Thread.currentThread().getContextClassLoader());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
         typeResolver.addImport("org.drools.ide.common.server.testscenarios.MatryoshkaDoll");
 
         MatryoshkaDoll matryoshkaDoll = new MatryoshkaDoll();
@@ -80,7 +80,7 @@ public class FactAssignmentFieldPopulatorTest {
         FactAssignmentField factAssignmentField = createFactAssignmentField();
         addFactAssignmentFieldIntoFactAssignmentField(factAssignmentField, 5);
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(matryoshkaDoll, factAssignmentField, typeResolver);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(matryoshkaDoll, factAssignmentField, typeResolver, classLoader);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 

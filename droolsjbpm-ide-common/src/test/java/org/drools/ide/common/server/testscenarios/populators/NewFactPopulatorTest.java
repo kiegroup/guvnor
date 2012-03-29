@@ -55,6 +55,7 @@ public class NewFactPopulatorTest {
         NewFactPopulator newFactPopulator = new NewFactPopulator(
                 populatedData,
                 typeResolver,
+                Thread.currentThread().getContextClassLoader(),
                 fact);
 
         MockWorkingMemory workingMemory = new MockWorkingMemory();

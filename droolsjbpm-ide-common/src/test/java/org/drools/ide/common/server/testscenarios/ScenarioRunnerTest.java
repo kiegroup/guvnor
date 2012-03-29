@@ -47,11 +47,12 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getFixtures().addAll(facts);
         sc.getGlobals().addAll(globals);
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
-                Thread.currentThread().getContextClassLoader());
+                                                      getClassLoader());
         resolver.addImport("java.util.List");
 
         ScenarioRunner runner = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 new MockWorkingMemory());
         runner.run(sc);
 
@@ -70,6 +71,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner runner = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 new MockWorkingMemory());
 
         scenario.getFixtures().add(
@@ -225,6 +227,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner runner = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 new MockWorkingMemory());
 
         VerifyFact vf = new VerifyFact();
@@ -263,6 +266,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner run = new ScenarioRunner(
                 null,
+                getClassLoader(),
                 wm);
         run.run(sc);
         assertNotNull(wm.agendaEventListener);
@@ -305,6 +309,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         MockWorkingMemory wm = new MockWorkingMemory();
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 wm);
         run.run(sc);
 
@@ -327,6 +332,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         wm.setSessionClock(clock);
         ScenarioRunner run = new ScenarioRunner(
                 null,
+                getClassLoader(),
                 wm);
         run.run(sc);
 
@@ -338,6 +344,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getFixtures().add(ext);
         run = new ScenarioRunner(
                 null,
+                getClassLoader(),
                 wm);
         run.run(sc);
 
@@ -420,6 +427,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
         run.run(sc);
 
@@ -504,6 +512,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
         run.run(sc);
 
@@ -564,6 +573,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                 new ClassTypeResolver(
                         imports,
                         cl),
+                        getClassLoader(),
                 (InternalWorkingMemory) workingMemory);
         run.run(scenario);
 
@@ -628,6 +638,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         //including whatever CL has the generated beans...
         ScenarioRunner scenarioRunner = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) workingMemory);
 
         scenarioRunner.run(scenario);
@@ -653,6 +664,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         workingMemory.getAgenda().getRuleFlowGroup("asdf").setAutoDeactivate(false);
         scenarioRunner = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) workingMemory);
 
         scenarioRunner.run(scenario);
@@ -699,6 +711,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
         run.run(sc);
 
@@ -741,6 +754,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
 
         run.run(sc);
@@ -785,6 +799,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
         run.run(sc);
 
@@ -805,6 +820,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner run = new ScenarioRunner(
                 resolver,
+                getClassLoader(),
                 (InternalWorkingMemory) wm);
 
         run.run(sc);
@@ -887,6 +903,11 @@ public class ScenarioRunnerTest extends RuleUnit {
     private <T> List<T> ls
             (T... objects) {
         return Arrays.asList(objects);
+    }
+    
+    private ClassLoader getClassLoader() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return classLoader;
     }
 
 }
