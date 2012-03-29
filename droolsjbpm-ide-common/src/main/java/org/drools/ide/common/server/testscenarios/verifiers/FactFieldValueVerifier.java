@@ -39,25 +39,25 @@ public class FactFieldValueVerifier {
     private final Object              factObject;
 
     private VerifyField               currentField;
-    final TypeResolver resolver;
-    
+    final TypeResolver                resolver;
+
     private final ParserConfiguration pconf;
-    private final ParserContext pctx;
-    
+    private final ParserContext       pctx;
+
     public FactFieldValueVerifier(Map<String, Object> populatedData,
-                             String factName,
-                             Object factObject,
-                             final TypeResolver resolver,
-                             final ClassLoader classLoader) {
+                                  String factName,
+                                  Object factObject,
+                                  final TypeResolver resolver,
+                                  final ClassLoader classLoader) {
         this.populatedData = populatedData;
         this.factName = factName;
         this.factObject = factObject;
         this.resolver = resolver;
-        
+
         this.pconf = new ParserConfiguration();
-        pconf.setClassLoader(classLoader);
-        this.pctx = new ParserContext(pconf);
-        pctx.setStrongTyping(true);
+        pconf.setClassLoader( classLoader );
+        this.pctx = new ParserContext( pconf );
+        pctx.setStrongTyping( true );
     }
 
     public void checkFields(List<VerifyField> fieldValues) {
@@ -90,23 +90,23 @@ public class FactFieldValueVerifier {
         if ( currentField.getExpected().startsWith( "=" ) ) {
             expectedResult = eval( currentField.getExpected().substring( 1 ),
                                    this.populatedData );
-        } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
+        } else if ( currentField.getNature() == VerifyField.TYPE_ENUM ) {
             try {
                 // The string representation of enum value is using a
                 // format like CheeseType.CHEDDAR
-                String classNameOfEnum = currentField.getExpected().substring(0,
-                        currentField.getExpected().indexOf("."));
-                String valueOfEnum = currentField.getExpected().substring(currentField.getExpected()
-                        .indexOf(".") + 1);
-                String fullName = resolver.getFullTypeName(classNameOfEnum);
-                if (fullName != null && !"".equals(fullName)) {
+                String classNameOfEnum = currentField.getExpected().substring( 0,
+                                                                               currentField.getExpected().indexOf( "." ) );
+                String valueOfEnum = currentField.getExpected().substring( currentField.getExpected().indexOf( "." ) + 1 );
+                String fullName = resolver.getFullTypeName( classNameOfEnum );
+                if ( fullName != null && !"".equals( fullName ) ) {
                     valueOfEnum = fullName + "." + valueOfEnum;
                 }
 
-                Serializable compiled = MVEL.compileExpression(valueOfEnum, pctx);
-                expectedResult = MVEL.executeExpression(compiled);
+                Serializable compiled = MVEL.compileExpression( valueOfEnum,
+                                                                pctx );
+                expectedResult = MVEL.executeExpression( compiled );
 
-            } catch (ClassNotFoundException e) {
+            } catch ( ClassNotFoundException e ) {
                 //Do nothing.
             }
         }
@@ -131,6 +131,7 @@ public class FactFieldValueVerifier {
         }
     }
 }
+
 class ResultVerifier {
 
     private final Map<String, Object> variables     = new HashMap<String, Object>();

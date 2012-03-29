@@ -26,24 +26,29 @@ public abstract class FieldPopulator {
     private final Object factObject;
     private final String fieldName;
 
-    public FieldPopulator(Object factObject, String fieldName) {
+    public FieldPopulator(Object factObject,
+                          String fieldName) {
         this.factObject = factObject;
         this.fieldName = fieldName;
     }
 
     public abstract void populate(Map<String, Object> populatedData);
 
-    protected void populateField(Object value, Map<String, Object> populatedData) {
+    protected void populateField(Object value,
+                                 Map<String, Object> populatedData) {
         try {
             Map<String, Object> vars = new HashMap<String, Object>();
-            vars.putAll(populatedData);
-            vars.put("__val__", value);
-            vars.put("__fact__", factObject);
+            vars.putAll( populatedData );
+            vars.put( "__val__",
+                      value );
+            vars.put( "__fact__",
+                      factObject );
 
-            eval("__fact__." + fieldName + "= __val__", vars);
+            eval( "__fact__." + fieldName + "= __val__",
+                  vars );
 
-        } catch (NumberFormatException e) {
-            if (value instanceof String && ((String) value).isEmpty()) {
+        } catch ( NumberFormatException e ) {
+            if ( value instanceof String && ((String) value).isEmpty() ) {
                 // Empty Strings can be ignored.
             } else {
                 throw e;

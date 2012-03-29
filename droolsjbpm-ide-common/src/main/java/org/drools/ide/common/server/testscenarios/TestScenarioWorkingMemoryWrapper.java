@@ -31,97 +31,94 @@ import java.util.concurrent.TimeUnit;
 public class TestScenarioWorkingMemoryWrapper {
 
     private final InternalWorkingMemory workingMemory;
-    private final FactVerifier factVerifier;
-    private final RuleFiredVerifier ruleFiredVerifier = new RuleFiredVerifier();
+    private final FactVerifier          factVerifier;
+    private final RuleFiredVerifier     ruleFiredVerifier = new RuleFiredVerifier();
 
-    private TestingEventListener eventListener = null;
-    private final MethodExecutor methodExecutor;
-    private final Map<String, Object> populatedData;
+    private TestingEventListener        eventListener     = null;
+    private final MethodExecutor        methodExecutor;
+    private final Map<String, Object>   populatedData;
 
-    private final ClassLoader classLoader;
-    
-    public TestScenarioWorkingMemoryWrapper(
-            InternalWorkingMemory workingMemory,
-            final TypeResolver resolver,
-            final ClassLoader classLoader,
-            Map<String, Object> populatedData,
-            Map<String, Object> globalData) {
+    private final ClassLoader           classLoader;
+
+    public TestScenarioWorkingMemoryWrapper(InternalWorkingMemory workingMemory,
+                                            final TypeResolver resolver,
+                                            final ClassLoader classLoader,
+                                            Map<String, Object> populatedData,
+                                            Map<String, Object> globalData) {
         this.workingMemory = workingMemory;
         this.populatedData = populatedData;
-        this.methodExecutor = new MethodExecutor(populatedData);
+        this.methodExecutor = new MethodExecutor( populatedData );
         this.classLoader = classLoader;
 
-        factVerifier = initFactVerifier(resolver, globalData);
+        factVerifier = initFactVerifier( resolver,
+                                         globalData );
     }
 
-    private FactVerifier initFactVerifier(TypeResolver resolver, Map<String, Object> globalData) {
-        return new FactVerifier(
-                populatedData,
-                resolver,
-                classLoader,
-                workingMemory,
-                globalData);
+    private FactVerifier initFactVerifier(TypeResolver resolver,
+                                          Map<String, Object> globalData) {
+        return new FactVerifier( populatedData,
+                                 resolver,
+                                 classLoader,
+                                 workingMemory,
+                                 globalData );
     }
 
     public void activateRuleFlowGroup(String activateRuleFlowGroupName) {
-        workingMemory.getAgenda().getRuleFlowGroup(activateRuleFlowGroupName).setAutoDeactivate(false);
-        workingMemory.getAgenda().activateRuleFlowGroup(activateRuleFlowGroupName);
+        workingMemory.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName ).setAutoDeactivate( false );
+        workingMemory.getAgenda().activateRuleFlowGroup( activateRuleFlowGroupName );
     }
 
     public void verifyExpectation(Expectation expectation) {
-        if (expectation instanceof VerifyFact) {
-            factVerifier.verify((VerifyFact) expectation);
-        } else if (expectation instanceof VerifyRuleFired) {
-            ruleFiredVerifier.verifyFiringCounts((VerifyRuleFired) expectation);
+        if ( expectation instanceof VerifyFact ) {
+            factVerifier.verify( (VerifyFact) expectation );
+        } else if ( expectation instanceof VerifyRuleFired ) {
+            ruleFiredVerifier.verifyFiringCounts( (VerifyRuleFired) expectation );
         }
     }
 
     public void executeMethod(CallMethod callMethod) {
-        methodExecutor.executeMethod(callMethod);
+        methodExecutor.executeMethod( callMethod );
     }
 
     private void fireAllRules(ScenarioSettings scenarioSettings) {
-        this.workingMemory.fireAllRules(
-                eventListener.getAgendaFilter(
-                        scenarioSettings.getRuleList(),
-                        scenarioSettings.isInclusive()),
-                scenarioSettings.getMaxRuleFirings());
+        this.workingMemory.fireAllRules( eventListener.getAgendaFilter( scenarioSettings.getRuleList(),
+                                                                        scenarioSettings.isInclusive() ),
+                                         scenarioSettings.getMaxRuleFirings() );
     }
 
     private void resetEventListener() {
-        if (eventListener != null) {
-            this.workingMemory.removeEventListener(eventListener); //remove the old
+        if ( eventListener != null ) {
+            this.workingMemory.removeEventListener( eventListener ); //remove the old
         }
         eventListener = new TestingEventListener();
-        this.workingMemory.addEventListener(eventListener);
-        this.ruleFiredVerifier.setFireCounter(eventListener.getFiringCounts());
+        this.workingMemory.addEventListener( eventListener );
+        this.ruleFiredVerifier.setFireCounter( eventListener.getFiringCounts() );
     }
 
-    public void executeSubScenario(ExecutionTrace executionTrace, ScenarioSettings scenarioSettings) {
+    public void executeSubScenario(ExecutionTrace executionTrace,
+                                   ScenarioSettings scenarioSettings) {
 
         resetEventListener();
 
         //set up the time machine
-        applyTimeMachine(
-                executionTrace);
+        applyTimeMachine( executionTrace );
 
         long startTime = System.currentTimeMillis();
 
-        fireAllRules(scenarioSettings);
+        fireAllRules( scenarioSettings );
 
-        executionTrace.setExecutionTimeResult(System.currentTimeMillis() - startTime);
-        executionTrace.setNumberOfRulesFired(eventListener.totalFires);
-        executionTrace.setRulesFired(eventListener.getRulesFiredSummary());
+        executionTrace.setExecutionTimeResult( System.currentTimeMillis() - startTime );
+        executionTrace.setNumberOfRulesFired( eventListener.totalFires );
+        executionTrace.setRulesFired( eventListener.getRulesFiredSummary() );
     }
 
     private void applyTimeMachine(ExecutionTrace executionTrace) {
-        ((PseudoClockScheduler) workingMemory.getSessionClock()).advanceTime(
-                getTargetTime(executionTrace) - getCurrentTime(),
-                TimeUnit.MILLISECONDS);
+        ((PseudoClockScheduler) workingMemory.getSessionClock()).advanceTime( getTargetTime( executionTrace ) - getCurrentTime(),
+                                                                              TimeUnit.MILLISECONDS );
     }
 
     private long getTargetTime(ExecutionTrace executionTrace) {
-        if (executionTrace.getScenarioSimulatedDate() != null) {
+        if ( executionTrace.getScenarioSimulatedDate() != null ) {
             return executionTrace.getScenarioSimulatedDate().getTime();
         } else {
             return new Date().getTime();

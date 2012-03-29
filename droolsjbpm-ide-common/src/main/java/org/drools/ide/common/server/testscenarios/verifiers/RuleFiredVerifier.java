@@ -30,56 +30,56 @@ public class RuleFiredVerifier {
 
     public void verifyFiringCounts(VerifyRuleFired verifyRuleFired) {
 
-        setActualResult(verifyRuleFired);
+        setActualResult( verifyRuleFired );
 
-        if (verifyRuleFired.getExpectedFire() != null) {
-            if (verifyRuleFired.getExpectedFire()) {
-                verifyFiredAtLeastOnce(verifyRuleFired);
+        if ( verifyRuleFired.getExpectedFire() != null ) {
+            if ( verifyRuleFired.getExpectedFire() ) {
+                verifyFiredAtLeastOnce( verifyRuleFired );
             } else {
-                verifyFiredZeroTimes(verifyRuleFired);
+                verifyFiredZeroTimes( verifyRuleFired );
             }
         }
 
-        if (verifyRuleFired.getExpectedCount() != null) {
-            verifyFiredXTimes(verifyRuleFired);
+        if ( verifyRuleFired.getExpectedCount() != null ) {
+            verifyFiredXTimes( verifyRuleFired );
         }
     }
 
     private void verifyFiredXTimes(VerifyRuleFired verifyRuleFired) {
-        if (verifyRuleFired.getActualResult().equals(verifyRuleFired.getExpectedCount())) {
-            verifyRuleFired.setSuccessResult(true);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] activated " + verifyRuleFired.getActualResult() + " times.");
+        if ( verifyRuleFired.getActualResult().equals( verifyRuleFired.getExpectedCount() ) ) {
+            verifyRuleFired.setSuccessResult( true );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] activated " + verifyRuleFired.getActualResult() + " times." );
         } else {
-            verifyRuleFired.setSuccessResult(false);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] activated " + verifyRuleFired.getActualResult() + " times. Expected " + verifyRuleFired.getExpectedCount() + " times.");
+            verifyRuleFired.setSuccessResult( false );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] activated " + verifyRuleFired.getActualResult() + " times. Expected " + verifyRuleFired.getExpectedCount() + " times." );
         }
     }
 
     private void verifyFiredZeroTimes(VerifyRuleFired verifyRuleFired) {
-        if (verifyRuleFired.getActualResult() == 0) {
-            verifyRuleFired.setSuccessResult(true);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] was not activated.");
+        if ( verifyRuleFired.getActualResult() == 0 ) {
+            verifyRuleFired.setSuccessResult( true );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was not activated." );
         } else {
-            verifyRuleFired.setSuccessResult(false);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] was activated " + verifyRuleFired.getActualResult() + " times, but expected none.");
+            verifyRuleFired.setSuccessResult( false );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was activated " + verifyRuleFired.getActualResult() + " times, but expected none." );
         }
     }
 
     private void verifyFiredAtLeastOnce(VerifyRuleFired verifyRuleFired) {
-        if (verifyRuleFired.getActualResult() > 0) {
-            verifyRuleFired.setSuccessResult(true);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] was actived " + verifyRuleFired.getActualResult() + " times.");
+        if ( verifyRuleFired.getActualResult() > 0 ) {
+            verifyRuleFired.setSuccessResult( true );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was actived " + verifyRuleFired.getActualResult() + " times." );
         } else {
-            verifyRuleFired.setSuccessResult(false);
-            verifyRuleFired.setExplanation("Rule [" + verifyRuleFired.getRuleName() + "] was not activated. Expected it to be activated.");
+            verifyRuleFired.setSuccessResult( false );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was not activated. Expected it to be activated." );
         }
     }
 
     private void setActualResult(VerifyRuleFired verifyRuleFired) {
-        if (firingCounts.containsKey(verifyRuleFired.getRuleName())) {
-            verifyRuleFired.setActualResult(firingCounts.get(verifyRuleFired.getRuleName()));
+        if ( firingCounts.containsKey( verifyRuleFired.getRuleName() ) ) {
+            verifyRuleFired.setActualResult( firingCounts.get( verifyRuleFired.getRuleName() ) );
         } else {
-            verifyRuleFired.setActualResult(0);
+            verifyRuleFired.setActualResult( 0 );
         }
     }
 }

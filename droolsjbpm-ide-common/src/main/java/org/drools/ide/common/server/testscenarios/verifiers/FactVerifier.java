@@ -26,18 +26,17 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 
 public class FactVerifier {
 
-    private final Map<String, Object> populatedData;
-    private final TypeResolver resolver;
+    private final Map<String, Object>   populatedData;
+    private final TypeResolver          resolver;
     private final InternalWorkingMemory workingMemory;
-    private final Map<String, Object> globalData;
-    private final ClassLoader classLoader;
+    private final Map<String, Object>   globalData;
+    private final ClassLoader           classLoader;
 
-    public FactVerifier(
-            Map<String, Object> populatedData,
-            TypeResolver resolver,
-            ClassLoader classLoader,
-            InternalWorkingMemory workingMemory,
-            Map<String, Object> globalData) {
+    public FactVerifier(Map<String, Object> populatedData,
+                        TypeResolver resolver,
+                        ClassLoader classLoader,
+                        InternalWorkingMemory workingMemory,
+                        Map<String, Object> globalData) {
         this.populatedData = populatedData;
         this.resolver = resolver;
         this.classLoader = classLoader;
@@ -47,57 +46,61 @@ public class FactVerifier {
 
     public void verify(VerifyFact verifyFact) {
 
-        if (!verifyFact.anonymous) {
-            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier(
-                    populatedData,
-                    verifyFact.getName(),
-                    getFactObject(
-                            verifyFact.getName(),
-                            populatedData,
-                            globalData),
-                    resolver,
-                    classLoader);
-            fieldVerifier.checkFields(verifyFact.getFieldValues());
+        if ( !verifyFact.anonymous ) {
+            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
+                                                                               verifyFact.getName(),
+                                                                               getFactObject(
+                                                                                              verifyFact.getName(),
+                                                                                              populatedData,
+                                                                                              globalData ),
+                                                                               resolver,
+                                                                               classLoader );
+            fieldVerifier.checkFields( verifyFact.getFieldValues() );
         } else {
             Iterator objects = workingMemory.iterateObjects();
-            while (objects.hasNext()) {
-                if (verifyFact(objects.next(), verifyFact, populatedData, resolver)) {
+            while ( objects.hasNext() ) {
+                if ( verifyFact( objects.next(),
+                                 verifyFact,
+                                 populatedData,
+                                 resolver ) ) {
                     return;
                 }
             }
-            for (VerifyField verifyField : verifyFact.getFieldValues()) {
-                if (verifyField.getSuccessResult() == null) {
-                    verifyField.setSuccessResult(Boolean.FALSE);
-                    verifyField.setActualResult("No match");
+            for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
+                if ( verifyField.getSuccessResult() == null ) {
+                    verifyField.setSuccessResult( Boolean.FALSE );
+                    verifyField.setActualResult( "No match" );
                 }
             }
         }
     }
 
-    private boolean verifyFact(Object factObject, VerifyFact verifyFact, Map<String, Object> populatedData, TypeResolver resolver) {
-        if (factObject.getClass().getSimpleName().equals(verifyFact.getName())) {
-            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier(populatedData,
-                    verifyFact.getName(),
-                    factObject,
-                    resolver,
-                    classLoader);
-            fieldVerifier.checkFields(verifyFact.getFieldValues());
-            if (verifyFact.wasSuccessful()) {
+    private boolean verifyFact(Object factObject,
+                               VerifyFact verifyFact,
+                               Map<String, Object> populatedData,
+                               TypeResolver resolver) {
+        if ( factObject.getClass().getSimpleName().equals( verifyFact.getName() ) ) {
+            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
+                                                                               verifyFact.getName(),
+                                                                               factObject,
+                                                                               resolver,
+                                                                               classLoader );
+            fieldVerifier.checkFields( verifyFact.getFieldValues() );
+            if ( verifyFact.wasSuccessful() ) {
                 return true;
             }
         }
         return false;
     }
 
-    private Object getFactObject(
-            String factName,
-            Map<String, Object> populatedData,
-            Map<String, Object> globalData) {
+    private Object getFactObject(String factName,
+                                 Map<String, Object> populatedData,
+                                 Map<String, Object> globalData) {
 
-        if (populatedData.containsKey(factName)) {
-            return populatedData.get(factName);
+        if ( populatedData.containsKey( factName ) ) {
+            return populatedData.get( factName );
         } else {
-            return globalData.get(factName);
+            return globalData.get( factName );
         }
     }
 }

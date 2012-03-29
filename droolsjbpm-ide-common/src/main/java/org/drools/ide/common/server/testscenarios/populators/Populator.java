@@ -26,11 +26,11 @@ public interface Populator {
 
     public String getName();
 
+    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
+                                                    IllegalAccessException,
+                                                    InstantiationException;
 
-    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException, IllegalAccessException, InstantiationException;
-
-    public void populate(
-            InternalWorkingMemory workingMemory,
-            Map<String, FactHandle> factHandles);
+    public void populate(InternalWorkingMemory workingMemory,
+                         Map<String, FactHandle> factHandles);
 
 }

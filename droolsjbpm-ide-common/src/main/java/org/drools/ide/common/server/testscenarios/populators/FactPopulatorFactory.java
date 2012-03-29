@@ -25,38 +25,45 @@ public class FactPopulatorFactory {
 
     private Map<String, Object> populatedData;
     private Map<String, Object> globalData;
-    private final TypeResolver typeResolver;
-    private ClassLoader classLoader;
+    private final TypeResolver  typeResolver;
+    private ClassLoader         classLoader;
 
-    public FactPopulatorFactory(Map<String, Object> populatedData, Map<String, Object> globalData, TypeResolver typeResolver, ClassLoader classLoader) {
+    public FactPopulatorFactory(Map<String, Object> populatedData,
+                                Map<String, Object> globalData,
+                                TypeResolver typeResolver,
+                                ClassLoader classLoader) {
         this.populatedData = populatedData;
         this.globalData = globalData;
         this.typeResolver = typeResolver;
         this.classLoader = classLoader;
     }
 
-    public Populator createFactPopulator(FactData fact) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        if (fact.isModify()) {
+    public Populator createFactPopulator(FactData fact) throws ClassNotFoundException,
+                                                       IllegalAccessException,
+                                                       InstantiationException {
+        if ( fact.isModify() ) {
             return new ExistingFactPopulator(
-                    populatedData,
-                    typeResolver,
-                    classLoader,
-                    fact);
+                                              populatedData,
+                                              typeResolver,
+                                              classLoader,
+                                              fact );
         } else {
             return new NewFactPopulator(
-                    populatedData,
-                    typeResolver,
-                    classLoader,
-                    fact);
+                                         populatedData,
+                                         typeResolver,
+                                         classLoader,
+                                         fact );
         }
     }
 
-    public Populator createGlobalFactPopulator(FactData fact) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public Populator createGlobalFactPopulator(FactData fact) throws ClassNotFoundException,
+                                                             IllegalAccessException,
+                                                             InstantiationException {
         return new GlobalFactPopulator(
-                populatedData,
-                typeResolver,
-                classLoader,
-                fact,
-                globalData);
+                                        populatedData,
+                                        typeResolver,
+                                        classLoader,
+                                        fact,
+                                        globalData );
     }
 }

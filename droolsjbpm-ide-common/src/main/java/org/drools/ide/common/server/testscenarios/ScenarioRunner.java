@@ -42,86 +42,106 @@ import org.mvel2.MVEL;
 public class ScenarioRunner {
 
     private final TestScenarioWorkingMemoryWrapper workingMemoryWrapper;
-    private final FactPopulatorFactory factPopulatorFactory;
-    private final FactPopulator factPopulator;
+    private final FactPopulatorFactory             factPopulatorFactory;
+    private final FactPopulator                    factPopulator;
 
     /**
      * This constructor is normally used by Guvnor for running tests on a users
      * request.
-     * @param typeResolver A populated type resolved to be used to resolve the types in
-     * the scenario.
-     * <p/>
-     * For info on how to invoke this, see
-     * ContentPackageAssemblerTest.testPackageWithRuleflow in
-     * guvnor-webapp This requires that the classloader for the
-     * thread context be set appropriately. The PackageBuilder can
-     * provide a suitable TypeResolver for a given package header,
-     * and the Package config can provide a classloader.
+     * 
+     * @param typeResolver
+     *            A populated type resolved to be used to resolve the types in
+     *            the scenario.
+     *            <p/>
+     *            For info on how to invoke this, see
+     *            ContentPackageAssemblerTest.testPackageWithRuleflow in
+     *            guvnor-webapp This requires that the classloader for the
+     *            thread context be set appropriately. The PackageBuilder can
+     *            provide a suitable TypeResolver for a given package header,
+     *            and the Package config can provide a classloader.
+     * @param classLoader
+     *            This is used by MVEL to instantiate classes in expressions, in
+     *            particular enum field values. See EnumFieldPopulator and
+     *            FactFieldValueVerifier
      */
-    public ScenarioRunner(
-            final TypeResolver typeResolver,
-            final ClassLoader classLoader,
-            final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
+    public ScenarioRunner(final TypeResolver typeResolver,
+                          final ClassLoader classLoader,
+                          final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
 
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
 
-        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(workingMemory, typeResolver, classLoader, populatedData, globalData);
-        this.factPopulatorFactory = new FactPopulatorFactory(populatedData, globalData, typeResolver, classLoader);
-        this.factPopulator = new FactPopulator(workingMemory, populatedData);
+        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper( workingMemory,
+                                                                          typeResolver,
+                                                                          classLoader,
+                                                                          populatedData,
+                                                                          globalData );
+        this.factPopulatorFactory = new FactPopulatorFactory( populatedData,
+                                                              globalData,
+                                                              typeResolver,
+                                                              classLoader );
+        this.factPopulator = new FactPopulator( workingMemory,
+                                                populatedData );
     }
 
-    public void run(Scenario scenario) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public void run(Scenario scenario) throws ClassNotFoundException,
+                                      IllegalAccessException,
+                                      InstantiationException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-        scenario.setLastRunResult(new Date());
+        scenario.setLastRunResult( new Date() );
 
-        populateGlobals(scenario.getGlobals());
+        populateGlobals( scenario.getGlobals() );
 
-        applyFixtures(scenario.getFixtures(), createScenarioSettings(scenario));
+        applyFixtures( scenario.getFixtures(),
+                       createScenarioSettings( scenario ) );
     }
 
     private ScenarioSettings createScenarioSettings(Scenario scenario) {
         ScenarioSettings scenarioSettings = new ScenarioSettings();
-        scenarioSettings.setRuleList(scenario.getRules());
-        scenarioSettings.setInclusive(scenario.isInclusive());
-        scenarioSettings.setMaxRuleFirings(scenario.getMaxRuleFirings());
+        scenarioSettings.setRuleList( scenario.getRules() );
+        scenarioSettings.setInclusive( scenario.isInclusive() );
+        scenarioSettings.setMaxRuleFirings( scenario.getMaxRuleFirings() );
         return scenarioSettings;
     }
 
-    private void applyFixtures(List<Fixture> fixtures, ScenarioSettings scenarioSettings) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void applyFixtures(List<Fixture> fixtures,
+                               ScenarioSettings scenarioSettings) throws ClassNotFoundException,
+                                                                 InstantiationException,
+                                                                 IllegalAccessException {
 
-        for (Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
+        for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
 
-            if (fixture instanceof FactData) {
+            if ( fixture instanceof FactData ) {
 
-                factPopulator.add(factPopulatorFactory.createFactPopulator((FactData) fixture));
+                factPopulator.add( factPopulatorFactory.createFactPopulator( (FactData) fixture ) );
 
-            } else if (fixture instanceof RetractFact) {
+            } else if ( fixture instanceof RetractFact ) {
 
-                factPopulator.retractFact(((RetractFact) fixture).getName());
+                factPopulator.retractFact( ((RetractFact) fixture).getName() );
 
-            } else if (fixture instanceof CallMethod) {
+            } else if ( fixture instanceof CallMethod ) {
 
-                workingMemoryWrapper.executeMethod((CallMethod) fixture);
+                workingMemoryWrapper.executeMethod( (CallMethod) fixture );
 
-            } else if (fixture instanceof ActivateRuleFlowGroup) {
+            } else if ( fixture instanceof ActivateRuleFlowGroup ) {
 
-                workingMemoryWrapper.activateRuleFlowGroup(((ActivateRuleFlowGroup) fixture).getName());
+                workingMemoryWrapper.activateRuleFlowGroup( ((ActivateRuleFlowGroup) fixture).getName() );
 
-            } else if (fixture instanceof ExecutionTrace) {
-
-                factPopulator.populate();
-
-                workingMemoryWrapper.executeSubScenario((ExecutionTrace) fixture, scenarioSettings);
-
-            } else if (fixture instanceof Expectation) {
+            } else if ( fixture instanceof ExecutionTrace ) {
 
                 factPopulator.populate();
 
-                workingMemoryWrapper.verifyExpectation((Expectation) fixture);
+                workingMemoryWrapper.executeSubScenario( (ExecutionTrace) fixture,
+                                                         scenarioSettings );
+
+            } else if ( fixture instanceof Expectation ) {
+
+                factPopulator.populate();
+
+                workingMemoryWrapper.verifyExpectation( (Expectation) fixture );
             } else {
-                throw new IllegalArgumentException("Not sure what to do with " + fixture);
+                throw new IllegalArgumentException( "Not sure what to do with " + fixture );
             }
 
         }
@@ -129,11 +149,13 @@ public class ScenarioRunner {
         factPopulator.populate();
     }
 
-    private void populateGlobals(List<FactData> globals) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void populateGlobals(List<FactData> globals) throws ClassNotFoundException,
+                                                        InstantiationException,
+                                                        IllegalAccessException {
 
-        for (final FactData fact : globals) {
+        for ( final FactData fact : globals ) {
             factPopulator.add(
-                    factPopulatorFactory.createGlobalFactPopulator(fact));
+                    factPopulatorFactory.createGlobalFactPopulator( fact ) );
         }
 
         factPopulator.populate();

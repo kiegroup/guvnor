@@ -24,13 +24,18 @@ public class ExpressionFieldPopulator extends FieldPopulator {
 
     private final String expression;
 
-    public ExpressionFieldPopulator(Object factObject, String fieldName, String expression) {
-        super(factObject, fieldName);
+    public ExpressionFieldPopulator(Object factObject,
+                                    String fieldName,
+                                    String expression) {
+        super( factObject,
+               fieldName );
         this.expression = expression;
     }
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField(eval(expression, populatedData), populatedData);
+        populateField( eval( expression,
+                             populatedData ),
+                       populatedData );
     }
 }

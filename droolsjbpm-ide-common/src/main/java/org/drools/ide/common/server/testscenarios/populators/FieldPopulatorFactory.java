@@ -23,54 +23,56 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 class FieldPopulatorFactory {
 
-    private final Object factObject;
+    private final Object       factObject;
     private final TypeResolver typeResolver;
-    private final ClassLoader classLoader;
+    private final ClassLoader  classLoader;
 
-    public FieldPopulatorFactory(Object factObject, TypeResolver typeResolver, ClassLoader classLoader) {
+    public FieldPopulatorFactory(Object factObject,
+                                 TypeResolver typeResolver,
+                                 ClassLoader classLoader) {
         this.factObject = factObject;
         this.typeResolver = typeResolver;
         this.classLoader = classLoader;
     }
 
-    public FieldPopulator getFieldPopulator(Field field) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        if (field instanceof FieldData) {
+    public FieldPopulator getFieldPopulator(Field field) throws ClassNotFoundException,
+                                                        InstantiationException,
+                                                        IllegalAccessException {
+        if ( field instanceof FieldData ) {
             FieldData fieldData = (FieldData) field;
-            if (fieldData.getValue() == null) {
-                throw new IllegalArgumentException("Field value can not be null");
+            if ( fieldData.getValue() == null ) {
+                throw new IllegalArgumentException( "Field value can not be null" );
             } else {
-                return getFieldDataPopulator(factObject, fieldData);
+                return getFieldDataPopulator( factObject,
+                                              fieldData );
             }
-        } else if (field instanceof FactAssignmentField) {
-            return new FactAssignmentFieldPopulator(
-                    factObject,
-                    (FactAssignmentField) field,
-                    typeResolver, 
-                    classLoader);
+        } else if ( field instanceof FactAssignmentField ) {
+            return new FactAssignmentFieldPopulator( factObject,
+                                                     (FactAssignmentField) field,
+                                                     typeResolver,
+                                                     classLoader );
         }
 
-        throw new IllegalArgumentException("Unknown field type " + field.getClass());
+        throw new IllegalArgumentException( "Unknown field type " + field.getClass() );
     }
 
-    private FieldPopulator getFieldDataPopulator(Object factObject, FieldData fieldData) {
-        if (fieldData.getValue().startsWith("=")) {
-            return new ExpressionFieldPopulator(
-                    factObject,
-                    fieldData.getName(),
-                    fieldData.getValue().substring(1));
+    private FieldPopulator getFieldDataPopulator(Object factObject,
+                                                 FieldData fieldData) {
+        if ( fieldData.getValue().startsWith( "=" ) ) {
+            return new ExpressionFieldPopulator( factObject,
+                                                 fieldData.getName(),
+                                                 fieldData.getValue().substring( 1 ) );
 
-        } else if (fieldData.getNature() == FieldData.TYPE_ENUM) {
-            return new EnumFieldPopulator(
-                    factObject,
-                    fieldData.getName(),
-                    fieldData.getValue(),
-                    typeResolver, 
-                    classLoader);
+        } else if ( fieldData.getNature() == FieldData.TYPE_ENUM ) {
+            return new EnumFieldPopulator( factObject,
+                                           fieldData.getName(),
+                                           fieldData.getValue(),
+                                           typeResolver,
+                                           classLoader );
         } else {
-            return new SimpleFieldPopulator(
-                    factObject,
-                    fieldData.getName(),
-                    fieldData.getValue());
+            return new SimpleFieldPopulator( factObject,
+                                             fieldData.getName(),
+                                             fieldData.getValue() );
         }
     }
 

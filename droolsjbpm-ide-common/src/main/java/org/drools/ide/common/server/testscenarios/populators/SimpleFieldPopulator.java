@@ -22,13 +22,17 @@ public class SimpleFieldPopulator extends FieldPopulator {
 
     private final Object value;
 
-    public SimpleFieldPopulator(Object factObject, String fieldName, Object value) {
-        super(factObject, fieldName);
+    public SimpleFieldPopulator(Object factObject,
+                                String fieldName,
+                                Object value) {
+        super( factObject,
+               fieldName );
         this.value = value;
     }
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField(value, populatedData);
+        populateField( value,
+                       populatedData );
     }
 }

@@ -26,46 +26,52 @@ import org.mvel2.ParserContext;
 
 public class EnumFieldPopulator extends FieldPopulator {
 
-    private final String fieldValue;
-    private final TypeResolver typeResolver;
+    private final String              fieldValue;
+    private final TypeResolver        typeResolver;
 
     private final ParserConfiguration pconf;
-    private final ParserContext pctx;
-    
-    public EnumFieldPopulator(Object factObject, String fieldName, String fieldValue, TypeResolver typeResolver, ClassLoader classLoader) {
-        super(factObject, fieldName);
+    private final ParserContext       pctx;
+
+    public EnumFieldPopulator(Object factObject,
+                              String fieldName,
+                              String fieldValue,
+                              TypeResolver typeResolver,
+                              ClassLoader classLoader) {
+        super( factObject,
+               fieldName );
         this.typeResolver = typeResolver;
         this.fieldValue = fieldValue;
 
         this.pconf = new ParserConfiguration();
-        pconf.setClassLoader(classLoader);
-        this.pctx = new ParserContext(pconf);
-        pctx.setStrongTyping(true);
+        pconf.setClassLoader( classLoader );
+        this.pctx = new ParserContext( pconf );
+        pctx.setStrongTyping( true );
     }
 
     @Override
     public void populate(Map<String, Object> populatedData) {
         Object value;
         String valueOfEnum = "";
-        if (fieldValue.indexOf(".") != -1) {
-            String classNameOfEnum = fieldValue.substring(0,
-                    fieldValue.lastIndexOf("."));
-            valueOfEnum = fieldValue.substring(fieldValue.lastIndexOf(".") + 1);
+        if ( fieldValue.indexOf( "." ) != -1 ) {
+            String classNameOfEnum = fieldValue.substring( 0,
+                                                           fieldValue.lastIndexOf( "." ) );
+            valueOfEnum = fieldValue.substring( fieldValue.lastIndexOf( "." ) + 1 );
             try {
                 //This is a Java enum type if the type can be resolved by ClassTypeResolver
                 //Revisit: Better way to determine java enum type or Guvnor enum type.
-                String fullName = typeResolver.getFullTypeName(classNameOfEnum);
-                if (fullName != null && !"".equals(fullName)) {
+                String fullName = typeResolver.getFullTypeName( classNameOfEnum );
+                if ( fullName != null && !"".equals( fullName ) ) {
                     valueOfEnum = fullName + "." + valueOfEnum;
                 }
-                
-                Serializable compiled = MVEL.compileExpression(valueOfEnum, pctx);
-                value = MVEL.executeExpression(compiled);
-                
-            } catch (ClassNotFoundException e) {
+
+                Serializable compiled = MVEL.compileExpression( valueOfEnum,
+                                                                pctx );
+                value = MVEL.executeExpression( compiled );
+
+            } catch ( ClassNotFoundException e ) {
                 // This is a Guvnor enum type
                 String fullName = classNameOfEnum;
-                if (fullName != null && !"".equals(fullName)) {
+                if ( fullName != null && !"".equals( fullName ) ) {
                     valueOfEnum = fullName + "." + valueOfEnum;
                 }
                 value = valueOfEnum;
@@ -74,6 +80,7 @@ public class EnumFieldPopulator extends FieldPopulator {
             value = this.fieldValue;
         }
 
-        populateField(value, populatedData);
+        populateField( value,
+                       populatedData );
     }
 }

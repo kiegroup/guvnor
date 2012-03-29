@@ -24,18 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-abstract class FactPopulatorBase implements Populator {
+abstract class FactPopulatorBase
+    implements
+    Populator {
 
     protected final Map<String, Object> populatedData;
-    protected final TypeResolver typeResolver;
-    protected final ClassLoader classLoader;
-    protected final FactData fact;
+    protected final TypeResolver        typeResolver;
+    protected final ClassLoader         classLoader;
+    protected final FactData            fact;
 
-    public FactPopulatorBase(
-            Map<String, Object> populatedData,
-            TypeResolver typeResolver,
-            ClassLoader classLoader,
-            FactData fact) throws ClassNotFoundException {
+    public FactPopulatorBase(Map<String, Object> populatedData,
+                             TypeResolver typeResolver,
+                             ClassLoader classLoader,
+                             FactData fact) throws ClassNotFoundException {
         this.populatedData = populatedData;
         this.typeResolver = typeResolver;
         this.classLoader = classLoader;
@@ -46,15 +47,19 @@ abstract class FactPopulatorBase implements Populator {
         return fact.getName();
     }
 
-    protected List<FieldPopulator> getFieldPopulators(Object factObject) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    protected List<FieldPopulator> getFieldPopulators(Object factObject) throws ClassNotFoundException,
+                                                                        IllegalAccessException,
+                                                                        InstantiationException {
 
-        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver, classLoader);
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory( factObject,
+                                                                                 typeResolver,
+                                                                                 classLoader );
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
-        for (Field field : fact.getFieldData()) {
+        for ( Field field : fact.getFieldData() ) {
             try {
-                fieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(field));
-            } catch (IllegalArgumentException e) {
+                fieldPopulators.add( fieldPopulatorFactory.getFieldPopulator( field ) );
+            } catch ( IllegalArgumentException e ) {
                 // This should never happen, but I don't trust myself or the legacy test scenarios we have.
                 // If the field value is null then it is safe to ignore it.
             }
@@ -63,13 +68,11 @@ abstract class FactPopulatorBase implements Populator {
         return fieldPopulators;
     }
 
+    protected String getTypeName(TypeResolver resolver,
+                                 FactData fact) throws ClassNotFoundException {
 
-    protected String getTypeName(
-            TypeResolver resolver,
-            FactData fact) throws ClassNotFoundException {
-
-        String fullName = resolver.getFullTypeName(fact.getType());
-        if (fullName.equals("java.util.List") || fullName.equals("java.util.Collection")) {
+        String fullName = resolver.getFullTypeName( fact.getType() );
+        if ( fullName.equals( "java.util.List" ) || fullName.equals( "java.util.Collection" ) ) {
             return "java.util.ArrayList";
         } else {
             return fullName;
