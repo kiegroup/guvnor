@@ -29,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
@@ -212,8 +213,19 @@ public class EnumDropDown extends ListBox
             setEnabled( itemCount > 0 );
             if ( itemCount > 0 ) {
                 setSelectedIndex( 0 );
-                valueChangedCommand.valueChanged( getItemText( 0 ),
-                                                  getValue( 0 ) );
+                
+                //Schedule notification after GWT has finished tying everything together as not all 
+                //Event Handlers have been set-up by consumers of this class at Construction time
+                Scheduler.get().scheduleFinally( new ScheduledCommand() {
+
+                    @Override
+                    public void execute() {
+                        valueChangedCommand.valueChanged( getItemText( 0 ),
+                                                          getValue( 0 ) );
+                    }
+                    
+                });
+                
             }
         }
     }
