@@ -640,12 +640,12 @@ public class RepositoryModuleService
         //Run Test Scenario
         try {
             AuditLogReporter logger = new AuditLogReporter(workingMemory);
+            ClassLoader classLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
             new ScenarioRunner(
-                    new ClassTypeResolver(
-                            getAllImports(aPackage),
-                            ((InternalRuleBase) ruleBase).getRootClassLoader()),
-                    workingMemory
-            ).run(scenario);
+                    new ClassTypeResolver(getAllImports(aPackage),
+                                          classLoader ),
+                                          classLoader, 
+                                          workingMemory).run(scenario);
 
             return new SingleScenarioResult(
                     new ScenarioRunResult(scenario),
