@@ -164,22 +164,18 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     public String[] getOperatorCompletions(Pattern52 selectedPattern,
                                            ConditionCol52 selectedCondition) {
-        //The "in" (a comma separated list) operator is provided by the SCE when the Field type is STRING
+
         final String factType = selectedPattern.getFactType();
         final String factField = selectedCondition.getFactField();
         String[] ops = this.sce.getOperatorCompletions( factType,
                                                         factField );
 
-        //We need to add "in" manually if the Calculation Type is a Literal
+        //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
         final List<String> filteredOps = new ArrayList<String>();
         for ( String op : ops ) {
             filteredOps.add( op );
         }
-        if ( BaseSingleFieldConstraint.TYPE_LITERAL == selectedCondition.getConstraintValueType() ) {
-            if ( !filteredOps.contains( "in" ) ) {
-                filteredOps.add( "in" );
-            }
-        } else {
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL != selectedCondition.getConstraintValueType() ) {
             filteredOps.remove( "in" );
         }
 

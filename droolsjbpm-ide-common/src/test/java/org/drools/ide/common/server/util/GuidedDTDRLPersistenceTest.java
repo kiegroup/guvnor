@@ -325,7 +325,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
 
-        assertTrue( drl.indexOf( "name in (\"michael\"," ) > 0 );
+        assertTrue( drl.indexOf( "name in ( \"michael\"," ) > 0 );
 
     }
 

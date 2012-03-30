@@ -20,7 +20,6 @@ import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
-import com.google.gwt.safehtml.shared.SafeHtml;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -2004,6 +2003,8 @@ public interface Constants
                                     String lastModifiedComment);
 
     String isContainedInTheFollowingList();
+    
+    String isNotContainedInTheFollowingList();
 
     String RecentlyOpened();
 

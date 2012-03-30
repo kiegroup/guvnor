@@ -797,8 +797,10 @@ public class BRDRLPersistence
                                               String value,
                                               StringBuilder buf) {
             if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
-                buf.append( " " );
-                buf.append( value );
+                populateValueList( buf,
+                                   type,
+                                   fieldType,
+                                   value );
             } else {
                 if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                     buf.append( " " );
@@ -809,6 +811,40 @@ public class BRDRLPersistence
                 }
             }
             buf.append( " " );
+        }
+        
+        private void populateValueList(final StringBuilder buf,
+                                       final int type,
+                                       final String fieldType,
+                                       final String value) {
+            String workingValue = value.trim();
+            if ( workingValue.startsWith( "(" ) ) {
+                workingValue = workingValue.substring( 1 );
+            }
+            if ( workingValue.endsWith( ")" ) ) {
+                workingValue = workingValue.substring( 0,
+                                                       workingValue.length() - 1 );
+            }
+            final String[] values = workingValue.split( "," );
+            buf.append( " ( " );
+            for ( String v : values ) {
+                v = v.trim();
+                if ( v.startsWith( "\"" ) ) {
+                    v = v.substring( 1 );
+                }
+                if ( v.endsWith( "\"" ) ) {
+                    v = v.substring( 0,
+                                     v.length() - 1 );
+                }
+                constraintValueBuilder.buildLHSFieldValue( buf,
+                                                           type,
+                                                           fieldType,
+                                                           v );
+                buf.append( ", " );
+            }
+            buf.delete( buf.length() - 2,
+                        buf.length() );
+            buf.append( " )" );
         }
 
         protected void buildExpressionFieldValue(ExpressionFormLine expression,
@@ -839,8 +875,10 @@ public class BRDRLPersistence
                                          StringBuilder buf) {
 
             if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
-                buf.append( " " );
-                buf.append( value );
+                populateValueList( buf,
+                                   type,
+                                   fieldType,
+                                   value );
             } else {
                 if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                     buf.append( " " );
