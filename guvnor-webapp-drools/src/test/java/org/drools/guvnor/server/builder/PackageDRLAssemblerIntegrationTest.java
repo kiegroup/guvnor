@@ -259,8 +259,10 @@ public class PackageDRLAssemblerIntegrationTest extends GuvnorIntegrationTest {
 
         assertNotNull(drl);
 
-        assertContains("import com.billasurf.Board\n global com.billasurf.Person customer",
-                drl);
+        assertContains("import com.billasurf.Board",
+                       drl);
+        assertContains("global com.billasurf.Person customer",
+                       drl);
         assertContains("package testShowSource",
                 drl);
         assertContains("function void foo() { System.out.println(42); }",
@@ -345,8 +347,10 @@ public class PackageDRLAssemblerIntegrationTest extends GuvnorIntegrationTest {
 
         assertNotNull(drl);
 
-        assertContains("import com.billasurf.Board\n global com.billasurf.Person customer",
-                drl);
+        assertContains("import com.billasurf.Board",
+                       drl);
+        assertContains("global com.billasurf.Person customer",
+                       drl);
         assertContains("package testShowSource",
                 drl);
         assertContains("function void foo() { System.out.println(version 1); }",
@@ -429,8 +433,10 @@ public class PackageDRLAssemblerIntegrationTest extends GuvnorIntegrationTest {
         assertNotNull(drl);
         System.out.println(drl);
 
-        assertContains("import com.billasurf.Board\n global com.billasurf.Person customer",
-                drl);
+        assertContains("import com.billasurf.Board",
+                       drl);
+        assertContains("global com.billasurf.Person customer",
+                       drl);
         assertContains("package testShowSource",
                 drl);
         assertContains("function void foo() { System.out.println(version 2); }",
