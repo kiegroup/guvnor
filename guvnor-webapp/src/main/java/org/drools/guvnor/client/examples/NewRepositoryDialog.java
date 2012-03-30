@@ -39,7 +39,6 @@ public class NewRepositoryDialog extends FormStylePopup {
 
     public NewRepositoryDialog() {
         setTitle( ((Constants) GWT.create( Constants.class )).WelcomeToGuvnor() );
-        setWidth( 300 + "px" );
 
         constants = ((Constants) GWT.create( Constants.class ));
         addAttribute( "",
