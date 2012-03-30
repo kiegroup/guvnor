@@ -197,8 +197,13 @@ public class BRDRLPersistenceTest {
     @Test
     public void testEnumTypeStringInOperator() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
-        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type in ( \"CHEDDAR\",\"STILTON\" ) )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        String expected = "rule \"my rule\"\n"
+                          + "\tdialect \"mvel\"\n"
+                          + "\twhen\n"
+                          + "\t\tCheese( type in ( \"CHEDDAR\", \"STILTON\" ) )\n"
+                          + "\tthen\n"
+                          + "\t\tinsert( new Report() );\n"
+                          + "end\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 

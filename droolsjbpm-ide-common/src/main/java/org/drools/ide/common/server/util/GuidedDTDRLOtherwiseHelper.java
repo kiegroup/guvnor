@@ -37,10 +37,7 @@ public class GuidedDTDRLOtherwiseHelper {
      */
     public static class EqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
-        private DRLConstraintValueBuilder constraintValueBuilder;
-
-        private EqualsOtherwiseBuilder(DRLConstraintValueBuilder constraintValueBuilder) {
-            this.constraintValueBuilder = constraintValueBuilder;
+        private EqualsOtherwiseBuilder() {
         }
 
         @Override
@@ -48,7 +45,7 @@ public class GuidedDTDRLOtherwiseHelper {
                                                        List<DTCellValue52> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
-
+            sfc.setFieldType( c.getFieldType() );
             sfc.setOperator( "not in" );
 
             List<String> consumedValues = new ArrayList<String>();
@@ -60,11 +57,7 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        constraintValueBuilder.buildLHSFieldValue( value,
-                                                                   c.getConstraintValueType(),
-                                                                   c.getFieldType(),
-                                                                   scv );
-                        value.append( ", " );
+                        value.append( scv ).append( ", " );
                     }
                     consumedValues.add( scv );
                 }
@@ -86,10 +79,7 @@ public class GuidedDTDRLOtherwiseHelper {
      */
     public static class NotEqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
-        private DRLConstraintValueBuilder constraintValueBuilder;
-
-        private NotEqualsOtherwiseBuilder(DRLConstraintValueBuilder constraintValueBuilder) {
-            this.constraintValueBuilder = constraintValueBuilder;
+        private NotEqualsOtherwiseBuilder() {
         }
 
         @Override
@@ -97,7 +87,7 @@ public class GuidedDTDRLOtherwiseHelper {
                                                              List<DTCellValue52> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
-
+            sfc.setFieldType( c.getFieldType() );
             sfc.setOperator( "in" );
 
             List<String> consumedValues = new ArrayList<String>();
@@ -109,11 +99,7 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        constraintValueBuilder.buildLHSFieldValue( value,
-                                                                   c.getConstraintValueType(),
-                                                                   c.getFieldType(),
-                                                                   scv );
-                        value.append( ", " );
+                        value.append( scv ).append( ", " );
                     }
                     consumedValues.add( scv );
                 }
@@ -187,13 +173,12 @@ public class GuidedDTDRLOtherwiseHelper {
      * @param c
      * @return
      */
-    public static OtherwiseBuilder getBuilder(ConditionCol52 c,
-                                              DRLConstraintValueBuilder constraintValueBuilder) {
+    public static OtherwiseBuilder getBuilder(ConditionCol52 c) {
 
         if ( c.getOperator().equals( "==" ) ) {
-            return new EqualsOtherwiseBuilder( constraintValueBuilder );
+            return new EqualsOtherwiseBuilder();
         } else if ( c.getOperator().equals( "!=" ) ) {
-            return new NotEqualsOtherwiseBuilder( constraintValueBuilder );
+            return new NotEqualsOtherwiseBuilder();
         }
         throw new IllegalArgumentException( "ConditionCol operator does not support Otherwise values" );
     }

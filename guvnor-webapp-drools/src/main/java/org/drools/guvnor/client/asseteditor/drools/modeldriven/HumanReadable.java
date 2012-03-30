@@ -64,6 +64,7 @@ public class HumanReadable {
         operatorDisplayMap.put("&& excludes", Constants.INSTANCE.andExcludes());
         operatorDisplayMap.put("soundslike", Constants.INSTANCE.soundsLike());
         operatorDisplayMap.put("in", Constants.INSTANCE.isContainedInTheFollowingList());
+        operatorDisplayMap.put("not in", Constants.INSTANCE.isNotContainedInTheFollowingList());
         operatorDisplayMap.put("== null", Constants.INSTANCE.isEqualToNull());
         operatorDisplayMap.put("!= null", Constants.INSTANCE.isNotEqualToNull());
 

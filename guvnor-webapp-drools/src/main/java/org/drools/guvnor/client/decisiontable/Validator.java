@@ -209,7 +209,7 @@ public class Validator {
         if ( operator == null || operator.equals( "" ) ) {
             return false;
         }
-        return !(operator.equals( "in" ) || operator.equals( "== null" ) || operator.equals( "!= null" ));
+        return !(operator.equals( "in" ) || operator.equals( "not in" ) || operator.equals( "== null" ) || operator.equals( "!= null" ));
     }
 
     public boolean isConditionLimitedEntryValueValid(ConditionCol52 c) {

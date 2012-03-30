@@ -670,29 +670,26 @@ public class ConditionPopup extends FormStylePopup {
         pop.setTitle( Constants.INSTANCE.SetTheOperator() );
         pop.setModal( false );
 
-        //The "in" (a comma separated list) operator is provided by the SCE when the Field type is STRING
         final String factType = editingPattern.getFactType();
         final String factField = editingCol.getFactField();
         String[] ops = this.sce.getOperatorCompletions( factType,
                                                         factField );
 
-        //We need to add "in" manually if the Calculation Type is a Literal
+        //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
         final List<String> filteredOps = new ArrayList<String>();
         for ( String op : ops ) {
             filteredOps.add( op );
         }
-        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol.getConstraintValueType() ) {
-            if ( !filteredOps.contains( "in" ) ) {
-                filteredOps.add( "in" );
-            }
-        } else {
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL != this.editingCol.getConstraintValueType() ) {
             filteredOps.remove( "in" );
+            filteredOps.remove( "not in" );
         }
 
         //But remove "in" if the Fact\Field is enumerated
         if ( sce.hasEnums( factType,
                            factField ) ) {
             filteredOps.remove( "in" );
+            filteredOps.remove( "not in" );
         }
 
         final String[] displayOps = new String[filteredOps.size()];

@@ -44,7 +44,6 @@ public class SuggestionCompletionEngineBuilder {
     private Map<String, FIELD_CLASS_TYPE>                 factTypes             = new HashMap<String, FIELD_CLASS_TYPE>();
     private Map<String, Map<String, Map<String, String>>> annotationsForType    = new HashMap<String, Map<String, Map<String, String>>>();
     private Map<String, String[]>                         fieldsForType         = new HashMap<String, String[]>();
-    //    private Map<String, String[]>                         modifiersForType      = new HashMap<String, String[]>();
     private Map<String, String>                           fieldTypes            = new HashMap<String, String>();
     private Map<String, Class< ? >>                       fieldClasses          = new HashMap<String, Class< ? >>();
     private Map<String, FieldInfo>                        fieldTypesField       = new HashMap<String, FieldInfo>();
