@@ -15,6 +15,10 @@
  */
 package org.drools.guvnor.server.util;
 
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 
@@ -22,6 +26,15 @@ import org.drools.repository.ModuleItem;
  * Helper class for getting Drools Header
  */
 public class DroolsHeader {
+
+    private static final String  NL           = System.getProperty( "line.separator" );
+
+    private static final Pattern globalFinder = Pattern.compile( "(^\\s*global.*?$)",
+                                                                 Pattern.DOTALL | Pattern.MULTILINE );
+
+    private static final Pattern importFinder = Pattern.compile( "(^\\s*import.*?$)",
+                                                                 Pattern.DOTALL | Pattern.MULTILINE );
+
     public static String getDroolsHeader(ModuleItem pkg) {
         if ( pkg.containsAsset( "drools" ) ) {
             return pkg.loadAsset( "drools" ).getContent();
@@ -46,6 +59,64 @@ public class DroolsHeader {
 
             conf.checkin( "" );
         }
-
     }
+
+    public static String getPackageHeaderImports(String packageHeader) {
+        final StringBuilder drl = new StringBuilder();
+        Scanner scanner = new Scanner( packageHeader );
+        try {
+            while ( scanner.hasNextLine() ) {
+                final String line = scanner.nextLine();
+                if ( isImport( line ) ) {
+                    drl.append( line ).append( NL );
+                }
+            }
+        } finally {
+            scanner.close();
+        }
+        return drl.toString();
+    }
+
+    public static String getPackageHeaderGlobals(String packageHeader) {
+        final StringBuilder drl = new StringBuilder();
+        Scanner scanner = new Scanner( packageHeader );
+        try {
+            while ( scanner.hasNextLine() ) {
+                final String line = scanner.nextLine();
+                if ( isGlobal( line ) ) {
+                    drl.append( line ).append( NL );
+                }
+            }
+        } finally {
+            scanner.close();
+        }
+        return drl.toString();
+    }
+
+    public static String getPackageHeaderMiscellaneous(String packageHeader) {
+        final StringBuilder drl = new StringBuilder();
+        Scanner scanner = new Scanner( packageHeader );
+        try {
+            while ( scanner.hasNextLine() ) {
+                final String line = scanner.nextLine();
+                if ( !isImport( line ) && !isGlobal( line ) ) {
+                    drl.append( line ).append( NL );
+                }
+            }
+        } finally {
+            scanner.close();
+        }
+        return drl.toString();
+    }
+
+    private static boolean isImport(final String line) {
+        Matcher gm = importFinder.matcher( line );
+        return gm.find();
+    }
+
+    private static boolean isGlobal(final String line) {
+        Matcher gm = globalFinder.matcher( line );
+        return gm.find();
+    }
+
 }

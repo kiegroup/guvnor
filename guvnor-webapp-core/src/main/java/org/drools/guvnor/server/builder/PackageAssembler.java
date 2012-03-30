@@ -210,7 +210,6 @@ public class PackageAssembler extends PackageAssemblerBase {
 
         loadHeaderToSource();
         loadDSLFiles();
-        loadDeclaredTypesToSource();
         loadFunctionsToSource();
         loadRuleAssets();
 

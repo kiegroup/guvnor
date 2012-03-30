@@ -96,18 +96,24 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     /**
      * This prepares the package builder, loads the jars/classpath.
-     *
+     * 
      * @return true if everything is good to go, false if its all gone horribly
      *         wrong, and we can't even get the package header up.
      */
     protected boolean setUpPackage() {
 
-        // firstly we loadup the classpath
+        //First set the package name
         builder.addPackage( new PackageDescr( moduleItem.getName() ) );
 
         //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
-        loadHeaderToBuilder();
+        final String packageHeader = DroolsHeader.getDroolsHeader( moduleItem );
+        loadPackageHeaderToBuilder( DroolsHeader.getPackageHeaderImports( packageHeader ) );
+
         loadDeclaredTypesToBuilder();
+
+        //Globals may be a Declared type (see https://bugzilla.redhat.com/show_bug.cgi?id=756421)
+        loadPackageHeaderToBuilder( DroolsHeader.getPackageHeaderGlobals( packageHeader ) );
+        loadPackageHeaderToBuilder( DroolsHeader.getPackageHeaderMiscellaneous( packageHeader ) );
 
         if ( doesPackageBuilderHaveAnyErrors() ) {
             return false;
@@ -203,10 +209,10 @@ abstract class PackageAssemblerBase extends AssemblerBase {
             }
         }
     }
-
-    protected void loadHeaderToBuilder() {
+    
+    protected void loadPackageHeaderToBuilder(String drl) {
         try {
-            addDrl( DroolsHeader.getDroolsHeader( moduleItem ) );
+            addDrl( drl );
         } catch ( IOException e ) {
             errorLogger.addError( moduleItem,
                                   "IOException: " + e.getMessage() );
@@ -217,8 +223,17 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
     
     protected void loadHeaderToSource() {
-        src.append("package ").append(this.moduleItem.getName()).append("\n");
-        src.append(DroolsHeader.getDroolsHeader(this.moduleItem)).append("\n\n");
+        src.append( "package " ).append( this.moduleItem.getName() ).append( "\n\n" );
+
+        //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
+        final String packageHeader = DroolsHeader.getDroolsHeader( moduleItem );
+        src.append( DroolsHeader.getPackageHeaderImports( packageHeader ) ).append( "\n" );
+
+        loadDeclaredTypesToSource();
+
+        //Globals may be a Declared type (see https://bugzilla.redhat.com/show_bug.cgi?id=756421)
+        src.append( DroolsHeader.getPackageHeaderGlobals( packageHeader ) ).append( "\n" );
+        src.append( DroolsHeader.getPackageHeaderMiscellaneous( packageHeader ) ).append( "\n" );
     }
     
     protected void loadDeclaredTypesToSource() {

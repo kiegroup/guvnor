@@ -542,26 +542,30 @@ public class RepositoryModuleService
                 null);
     }
 
-    private SingleScenarioResult runScenario(
-            String packageName,
-            Scenario scenario,
-            RuleCoverageListener coverage) throws SerializationException {
+    private SingleScenarioResult runScenario(String packageName,
+                                             Scenario scenario,
+                                             RuleCoverageListener coverage) throws SerializationException {
         try {
-            return runScenario(
-                    scenario,
-                    this.rulesRepository.loadModule(packageName),
-                    coverage);
-        } catch (Exception e) {
-            if (e instanceof DetailedSerializationException) {
+            return runScenario( scenario,
+                                this.rulesRepository.loadModule( packageName ),
+                                coverage );
+        } catch ( Exception e ) {
+            if ( e instanceof DetailedSerializationException ) {
                 DetailedSerializationException exception = (DetailedSerializationException) e;
-                if (exception.getErrs() != null) {
-                    return new SingleScenarioResult(new ScenarioRunResult(exception.getErrs()));
+                if ( exception.getErrs() != null ) {
+                    //err.getErrs() returns a Collections$UnmodifiablerRandomAccessList that cannot be serialised 
+                    //by GWT. Hence we need to convert the errors into a List that can be serialised by GWT
+                    List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                    for ( BuilderResultLine line : exception.getErrs() ) {
+                        errors.add( line );
+                    }
+                    return new SingleScenarioResult( new ScenarioRunResult( errors ) );
                 } else {
                     throw exception;
                 }
             } else {
-                throw new DetailedSerializationException("Unable to run the scenario.",
-                        e.getMessage());
+                throw new DetailedSerializationException( "Unable to run the scenario.",
+                                                          e.getMessage() );
             }
         }
     }
