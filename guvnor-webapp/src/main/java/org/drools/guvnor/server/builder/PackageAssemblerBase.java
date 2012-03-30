@@ -79,18 +79,24 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     /**
      * This prepares the package builder, loads the jars/classpath.
-     *
+     * 
      * @return true if everything is good to go, false if its all gone horribly
      *         wrong, and we can't even get the package header up.
      */
     protected boolean setUpPackage() {
 
-        // firstly we loadup the classpath
+        //First set the package name
         builder.addPackage( new PackageDescr( packageItem.getName() ) );
 
         //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
-        loadPackageHeader();
+        final String packageHeader = DroolsHeader.getDroolsHeader( packageItem );
+        loadPackageHeaderDrl( DroolsHeader.getPackageHeaderImports( packageHeader ) );
+
         loadDeclaredTypes();
+
+        //Globals may be a Declared type (see https://bugzilla.redhat.com/show_bug.cgi?id=756421)
+        loadPackageHeaderDrl( DroolsHeader.getPackageHeaderGlobals( packageHeader ) );
+        loadPackageHeaderDrl( DroolsHeader.getPackageHeaderMiscellaneous( packageHeader ) );
 
         if ( doesPackageBuilderHaveAnyErrors() ) {
             return false;
@@ -134,8 +140,9 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
 
     /**
-     * Get the function DRLs as one string because they might be calling each others.
-     *
+     * Get the function DRLs as one string because they might be calling each
+     * others.
+     * 
      * @return
      */
     private StringBuilder getAllFunctionsAsOneString() {
@@ -176,9 +183,9 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         }
     }
 
-    private void loadPackageHeader() {
+    private void loadPackageHeaderDrl(String drl) {
         try {
-            addDrl( DroolsHeader.getDroolsHeader( packageItem ) );
+            addDrl( drl.toString() );
         } catch ( IOException e ) {
             errorLogger.addError( packageItem,
                                   "IOException: " + e.getMessage() );
@@ -214,7 +221,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     /**
      * This will return true if there is an error in the package configuration
      * or functions.
-     *
+     * 
      * @return
      */
     public boolean isPackageConfigurationInError() {
@@ -230,7 +237,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         if ( isEmpty( drl ) ) {
             return;
         }
-        
+
         builder.addPackageFromDrl( new StringReader( drl ) );
     }
 

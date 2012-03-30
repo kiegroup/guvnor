@@ -548,8 +548,7 @@ public class RepositoryPackageService
                                              RuleCoverageListener coverage) throws SerializationException {
         PackageItem item = this.getRulesRepository().loadPackage( packageName );
         SingleScenarioResult result = null;
-        // nasty classloader needed to make sure we use the same tree the whole
-        // time.
+        // nasty classloader needed to make sure we use the same tree the whole time.
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {
             final RuleBase rb = loadCacheRuleBase( item );
@@ -566,8 +565,14 @@ public class RepositoryPackageService
                 DetailedSerializationException err = (DetailedSerializationException) e;
                 result = new SingleScenarioResult();
                 if ( err.getErrs() != null ) {
-                    result.result = new ScenarioRunResult( err.getErrs(),
-                            null );
+                    //err.getErrs() returns a Collections$UnmodifiablerRandomAccessList that cannot be serialised 
+                    //by GWT. Hence we need to convert the errors into a List that can be serialised by GWT
+                    List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                    for(BuilderResultLine line : err.getErrs()) {
+                        errors.add( line );
+                    }
+                    result.result = new ScenarioRunResult( errors,
+                                                           null );
                 } else {
                     throw err;
                 }

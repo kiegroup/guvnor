@@ -31,7 +31,7 @@ public class PackageDRLAssembler extends AssemblerBase {
     private StringBuilder src;
 
     public PackageDRLAssembler(PackageItem packageItem) {
-        super(packageItem);
+        super( packageItem );
     }
 
     public String getDRL() {
@@ -39,7 +39,6 @@ public class PackageDRLAssembler extends AssemblerBase {
 
         loadHeader();
         loadDSLFiles();
-        loadDeclaredTypes();
         loadFunctions();
         loadRuleAssets();
 
@@ -47,47 +46,56 @@ public class PackageDRLAssembler extends AssemblerBase {
     }
 
     private void loadHeader() {
-        src.append("package ").append(this.packageItem.getName()).append("\n");
-        src.append(DroolsHeader.getDroolsHeader(this.packageItem)).append("\n\n");
+        src.append( "package " ).append( this.packageItem.getName() ).append( "\n" );
+
+        //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
+        final String packageHeader = DroolsHeader.getDroolsHeader( packageItem );
+        src.append( DroolsHeader.getPackageHeaderImports( packageHeader ) );
+
+        loadDeclaredTypes();
+
+        //Globals may be a Declared type (see https://bugzilla.redhat.com/show_bug.cgi?id=756421)
+        src.append( DroolsHeader.getPackageHeaderGlobals( packageHeader ) );
+        src.append( DroolsHeader.getPackageHeaderMiscellaneous( packageHeader ) );
     }
 
     private void loadDeclaredTypes() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
-        while (assetItemIterator.hasNext()) {
-            addAsset(assetItemIterator.next());
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
+        while ( assetItemIterator.hasNext() ) {
+            addAsset( assetItemIterator.next() );
         }
     }
 
     private void loadFunctions() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.FUNCTION);
-        while (assetItemIterator.hasNext()) {
-            addAsset(assetItemIterator.next());
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.FUNCTION );
+        while ( assetItemIterator.hasNext() ) {
+            addAsset( assetItemIterator.next() );
         }
     }
 
     private void loadRuleAssets() {
         Iterator<AssetItem> assetItemIterator = getAllAssets();
-        while (assetItemIterator.hasNext()) {
-            addRuleAsset(assetItemIterator.next());
+        while ( assetItemIterator.hasNext() ) {
+            addRuleAsset( assetItemIterator.next() );
         }
     }
 
     private void addRuleAsset(AssetItem asset) {
-        if (!asset.isArchived() && !asset.getDisabled()) {
-            ContentHandler handler = ContentManager.getHandler(asset.getFormat());
-            if (handler.isRuleAsset()) {
+        if ( !asset.isArchived() && !asset.getDisabled() ) {
+            ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
+            if ( handler.isRuleAsset() ) {
                 IRuleAsset ruleAsset = (IRuleAsset) handler;
-                ruleAsset.assembleDRL(builder,
-                        asset,
-                        src);
+                ruleAsset.assembleDRL( builder,
+                                       asset,
+                                       src );
             }
-            src.append("\n\n");
+            src.append( "\n\n" );
         }
     }
 
     private void addAsset(AssetItem assetItem) {
-        if (!assetItem.isArchived() && !assetItem.getDisabled()) {
-            src.append(assetItem.getContent()).append("\n\n");
+        if ( !assetItem.isArchived() && !assetItem.getDisabled() ) {
+            src.append( assetItem.getContent() ).append( "\n\n" );
         }
     }
 
