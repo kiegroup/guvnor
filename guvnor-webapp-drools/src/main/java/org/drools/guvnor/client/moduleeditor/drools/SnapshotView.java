@@ -62,24 +62,24 @@ import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTab
  */
 public class SnapshotView extends Composite {
 
-    public static final String LATEST_SNAPSHOT = "LATEST";
+    public static final String           LATEST_SNAPSHOT = "LATEST";
 
-    private Module parentConf;
-    private SnapshotInfo snapInfo;
+    private Module                       parentConf;
+    private SnapshotInfo                 snapInfo;
 
-    private ListBox box = new ListBox();
+    private ListBox                      box             = new ListBox();
 
-    private VerticalPanel vert;
+    private VerticalPanel                vert;
     private SnapshotComparisonPagedTable table;
 
-    private final ClientFactory clientFactory;
-    private final EventBus eventBus;
+    private final ClientFactory          clientFactory;
+    private final EventBus               eventBus;
 
     public SnapshotView(
-            ClientFactory clientFactory,
-            EventBus eventBus,
-            SnapshotInfo snapInfo,
-            Module parentPackage) {
+                        ClientFactory clientFactory,
+                        EventBus eventBus,
+                        SnapshotInfo snapInfo,
+                        Module parentPackage) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         vert = new VerticalPanel();
@@ -87,279 +87,283 @@ public class SnapshotView extends Composite {
         this.parentConf = parentPackage;
         PrettyFormLayout head = new PrettyFormLayout();
 
-        head.addHeader(DroolsGuvnorImages.INSTANCE.snapshot(),
-                header());
+        head.addHeader( DroolsGuvnorImages.INSTANCE.snapshot(),
+                        header() );
 
-        vert.add(head);
-        
-        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(parentConf.uuid,
-                clientFactory);
-        assetViewerActivity.start(new AcceptItem() {
-                    public void add(String tabTitle, IsWidget widget) {
-                        ScrollPanel pnl = new ScrollPanel();
-                        pnl.setWidth("100%");
-                        pnl.add(widget);
-                        vert.add(pnl);
-                    }
-                }, null);
-        
-        vert.setWidth("100%");
-        initWidget(vert);
+        vert.add( head );
+
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity( parentConf.uuid,
+                                                                           clientFactory );
+        assetViewerActivity.start( new AcceptItem() {
+                                       public void add(String tabTitle,
+                                                       IsWidget widget) {
+                                           ScrollPanel pnl = new ScrollPanel();
+                                           pnl.setWidth( "100%" );
+                                           pnl.add( widget );
+                                           vert.add( pnl );
+                                       }
+                                   },
+                                   null );
+
+        vert.setWidth( "100%" );
+        initWidget( vert );
 
     }
 
     private Widget header() {
         FlexTable ft = new FlexTable();
 
-        ft.setWidget(0,
-                0,
-                new Label(Constants.INSTANCE.ViewingSnapshot()));
-        ft.setWidget(0,
-                1,
-                new HTML("<b>"
-                        + this.snapInfo.getName()
-                        + "</b>"));
-        ft.getFlexCellFormatter().setHorizontalAlignment(0,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        ft.setWidget( 0,
+                      0,
+                      new Label( Constants.INSTANCE.ViewingSnapshot() ) );
+        ft.setWidget( 0,
+                      1,
+                      new HTML( "<b>"
+                                + this.snapInfo.getName()
+                                + "</b>" ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 0,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
-        ft.setWidget(1,
-                0,
-                new Label(Constants.INSTANCE.ForPackage()));
-        ft.setWidget(1,
-                1,
-                new Label(this.parentConf.getName()));
-        ft.getFlexCellFormatter().setHorizontalAlignment(1,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        ft.setWidget( 1,
+                      0,
+                      new Label( Constants.INSTANCE.ForPackage() ) );
+        ft.setWidget( 1,
+                      1,
+                      new Label( this.parentConf.getName() ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 1,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
-        HTML dLink = new HTML("<a href='"
-                + PackageBuilderWidget.getDownloadLink(this.parentConf)
-                + "' target='_blank'>"
-                + Constants.INSTANCE.clickHereToDownloadBinaryOrCopyURLForDeploymentAgent()
-                + "</a>");
-        ft.setWidget(2,
-                0,
-                new Label(Constants.INSTANCE.DeploymentURL()));
-        ft.setWidget(2,
-                1,
-                dLink);
-        ft.getFlexCellFormatter().setHorizontalAlignment(2,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        HTML dLink = new HTML( "<a href='"
+                               + PackageBuilderWidget.getDownloadLink( this.parentConf )
+                               + "' target='_blank'>"
+                               + Constants.INSTANCE.clickHereToDownloadBinaryOrCopyURLForDeploymentAgent()
+                               + "</a>" );
+        ft.setWidget( 2,
+                      0,
+                      new Label( Constants.INSTANCE.DeploymentURL() ) );
+        ft.setWidget( 2,
+                      1,
+                      dLink );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 2,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
-        ft.setWidget(3,
-                0,
-                new Label(Constants.INSTANCE.SnapshotCreatedOn()));
-        ft.getFlexCellFormatter().setHorizontalAlignment(3,
-                                                         0,
-                                                         HasHorizontalAlignment.ALIGN_RIGHT);
-        ft.setWidget(3,
-                1,
-                new Label(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.getLastModified())));
-        ft.getFlexCellFormatter().setHorizontalAlignment(4,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        ft.setWidget( 3,
+                      0,
+                      new Label( Constants.INSTANCE.SnapshotCreatedOn() ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 3,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
+        ft.setWidget( 3,
+                      1,
+                      new Label( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( parentConf.getLastModified() ) ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 4,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
-        ft.setWidget(4,
-                0,
-                new Label(Constants.INSTANCE.CommentColon()));
-        ft.setWidget(4,
-                1,
-                new Label(parentConf.getCheckinComment()));
-        ft.getFlexCellFormatter().setHorizontalAlignment(4,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        ft.setWidget( 4,
+                      0,
+                      new Label( Constants.INSTANCE.CommentColon() ) );
+        ft.setWidget( 4,
+                      1,
+                      new Label( parentConf.getCheckinComment() ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 4,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
         HorizontalPanel actions = new HorizontalPanel();
 
-        actions.add(getDeleteButton(this.snapInfo.getName(),
-                this.parentConf.getName()));
-        actions.add(getCopyButton(this.snapInfo.getName(),
-                this.parentConf.getName()));
+        actions.add( getDeleteButton( this.snapInfo.getName(),
+                                      this.parentConf.getName() ) );
+        actions.add( getCopyButton( this.snapInfo.getName(),
+                                    this.parentConf.getName() ) );
 
-        ft.setWidget(5,
-                0,
-                actions);
+        ft.setWidget( 5,
+                      0,
+                      actions );
 
-        ft.setWidget(6,
-                0,
-                getCompareWidget(this.parentConf.getName(),
-                        this.snapInfo.getName()));
-        ft.getFlexCellFormatter().setHorizontalAlignment(4,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        ft.setWidget( 6,
+                      0,
+                      getCompareWidget( this.parentConf.getName(),
+                                        this.snapInfo.getName() ) );
+        ft.getFlexCellFormatter().setHorizontalAlignment( 4,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
 
-        ft.getFlexCellFormatter().setColSpan(5,
-                0,
-                2);
+        ft.getFlexCellFormatter().setColSpan( 5,
+                                              0,
+                                              2 );
 
         return ft;
     }
 
     private Widget getCompareWidget(final String packageName,
-            final String snapshotName) {
+                                    final String snapshotName) {
         HorizontalPanel hPanel = new HorizontalPanel();
-        hPanel.add(new Label("Compare to:"));
+        hPanel.add( new Label( "Compare to:" ) );
 
-        RepositoryServiceFactory.getPackageService().listSnapshots(this.parentConf.getName(),
-                new GenericCallback<SnapshotInfo[]>() {
-                    public void onSuccess(SnapshotInfo[] info) {
-                        for (int i = 0; i < info.length; i++) {
-                            if (!snapshotName.equals(info[i].getName())) {
-                                box.addItem(info[i].getName());
-                            }
-                        }
-                    }
-                });
-        hPanel.add(box);
+        RepositoryServiceFactory.getPackageService().listSnapshots( this.parentConf.getName(),
+                                                                    new GenericCallback<SnapshotInfo[]>() {
+                                                                        public void onSuccess(SnapshotInfo[] info) {
+                                                                            for ( int i = 0; i < info.length; i++ ) {
+                                                                                if ( !snapshotName.equals( info[i].getName() ) ) {
+                                                                                    box.addItem( info[i].getName() );
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    } );
+        hPanel.add( box );
 
-        Button button = new Button("Compare");
-        button.addClickHandler(new ClickHandler() {
+        Button button = new Button( "Compare" );
+        button.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if (table != null) {
-                    vert.remove(table);
+                if ( table != null ) {
+                    vert.remove( table );
                 }
-                table = new SnapshotComparisonPagedTable(packageName,
-                        snapshotName,
-                        box.getItemText(box.getSelectedIndex()),
-                        clientFactory);
-                vert.add(table);
+                table = new SnapshotComparisonPagedTable( packageName,
+                                                          snapshotName,
+                                                          box.getItemText( box.getSelectedIndex() ),
+                                                          clientFactory );
+                vert.add( table );
             }
-        });
+        } );
 
-        hPanel.add(button);
+        hPanel.add( button );
 
         return hPanel;
     }
 
     private Button getDeleteButton(final String snapshotName,
-            final String moduleName) {
-        Button btn = new Button(Constants.INSTANCE.Delete());
-        btn.addClickHandler(new ClickHandler() {
+                                   final String moduleName) {
+        Button btn = new Button( Constants.INSTANCE.Delete() );
+        btn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if (Window.confirm(Constants.INSTANCE.SnapshotDeleteConfirm(snapshotName, moduleName))) {
-                    RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot(moduleName,
-                            snapshotName,
-                            true,
-                            null,
-                            new GenericCallback<java.lang.Void>() {
-                                public void onSuccess(Void v) {
-                                    Window.alert(Constants.INSTANCE.SnapshotWasDeleted());
+                if ( Window.confirm( Constants.INSTANCE.SnapshotDeleteConfirm( snapshotName,
+                                                                               moduleName ) ) ) {
+                    RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot( moduleName,
+                                                                                       snapshotName,
+                                                                                       true,
+                                                                                       null,
+                                                                                       new GenericCallback<java.lang.Void>() {
+                                                                                           public void onSuccess(Void v) {
+                                                                                               Window.alert( Constants.INSTANCE.SnapshotWasDeleted() );
 
-                                    eventBus.fireEvent(getCloseEvent(moduleName));
-                                }
-                            });
+                                                                                               eventBus.fireEvent( getCloseEvent( moduleName ) );
+                                                                                           }
+                                                                                       } );
                 }
             }
 
-        });
+        } );
         return btn;
     }
 
     private ClosePlaceEvent getCloseEvent(String moduleName) {
-        return new ClosePlaceEvent(new SnapshotPlace(moduleName, snapInfo.getName()));
+        return new ClosePlaceEvent( new SnapshotPlace( moduleName,
+                                                       snapInfo.getName() ) );
     }
 
     private Button getCopyButton(final String snapshotName,
-            final String packageName) {
+                                 final String packageName) {
         final ModuleServiceAsync serv = RepositoryServiceFactory.getPackageService();
-        Button btn = new Button(Constants.INSTANCE.Copy());
-        btn.addClickHandler(new ClickHandler() {
+        Button btn = new Button( Constants.INSTANCE.Copy() );
+        btn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                serv.listSnapshots(packageName,
-                        createGenericCallback(snapshotName,
-                                packageName,
-                                serv));
+                serv.listSnapshots( packageName,
+                                    createGenericCallback( snapshotName,
+                                                           packageName,
+                                                           serv ) );
             }
-        });
+        } );
         return btn;
     }
 
     private GenericCallback<SnapshotInfo[]> createGenericCallback(final String snapshotName,
-            final String packageName,
-            final ModuleServiceAsync serv) {
+                                                                  final String packageName,
+                                                                  final ModuleServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
-                final FormStylePopup copy = new FormStylePopup(DroolsGuvnorImages.INSTANCE.snapshot(),
-                        Constants.INSTANCE.CopySnapshotText(snapshotName));
+                final FormStylePopup copy = new FormStylePopup( DroolsGuvnorImages.INSTANCE.snapshot(),
+                                                                Constants.INSTANCE.CopySnapshotText( snapshotName ) );
                 final List<RadioButton> options = new ArrayList<RadioButton>();
                 VerticalPanel vert = new VerticalPanel();
-                for (int i = 0; i < snaps.length; i++) {
+                for ( int i = 0; i < snaps.length; i++ ) {
                     // cant copy onto to itself...
-                    if (!snaps[i].getName().equals(snapshotName)) {
-                        RadioButton existing = new RadioButton("snapshotNameGroup",
-                                snaps[i].getName()); // NON-NLS
-                        options.add(existing);
-                        vert.add(existing);
+                    if ( !snaps[i].getName().equals( snapshotName ) ) {
+                        RadioButton existing = new RadioButton( "snapshotNameGroup",
+                                                                snaps[i].getName() ); // NON-NLS
+                        options.add( existing );
+                        vert.add( existing );
                     }
                 }
 
                 HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
                 final TextBox newNameTextBox = new TextBox();
                 final String newNameText = Constants.INSTANCE.NEW()
-                        + ": ";
+                                           + ": ";
 
-                final RadioButton newNameRadioButton = new RadioButton("snapshotNameGroup",
-                        newNameText);
-                newNameHorizontalPanel.add(newNameRadioButton);
-                newNameTextBox.setEnabled(false);
-                newNameRadioButton.addClickHandler(new ClickHandler() {
+                final RadioButton newNameRadioButton = new RadioButton( "snapshotNameGroup",
+                                                                        newNameText );
+                newNameHorizontalPanel.add( newNameRadioButton );
+                newNameTextBox.setEnabled( false );
+                newNameRadioButton.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        newNameTextBox.setEnabled(true);
+                        newNameTextBox.setEnabled( true );
                     }
-                });
+                } );
 
-                newNameHorizontalPanel.add(newNameTextBox);
-                options.add(newNameRadioButton);
-                vert.add(newNameHorizontalPanel);
+                newNameHorizontalPanel.add( newNameTextBox );
+                options.add( newNameRadioButton );
+                vert.add( newNameHorizontalPanel );
 
-                copy.addAttribute(Constants.INSTANCE.ExistingSnapshots(),
-                        vert);
+                copy.addAttribute( Constants.INSTANCE.ExistingSnapshots(),
+                                   vert );
 
-                Button ok = new Button(Constants.INSTANCE.OK());
-                copy.addAttribute("",
-                        ok);
-                ok.addClickHandler(new ClickHandler() {
+                Button ok = new Button( Constants.INSTANCE.OK() );
+                copy.addAttribute( "",
+                                   ok );
+                ok.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        if (!isOneButtonSelected(options)) {
-                            Window.alert(Constants.INSTANCE.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
+                        if ( !isOneButtonSelected( options ) ) {
+                            Window.alert( Constants.INSTANCE.YouHaveToEnterOrChoseALabelNameForTheSnapshot() );
                             return;
                         }
 
-                        if (newNameRadioButton.getValue()) {
-                            if (checkUnique(snaps,
-                                    newNameTextBox.getText())) {
-                                serv.copyOrRemoveSnapshot(packageName,
-                                        snapshotName,
-                                        false,
-                                        newNameTextBox.getText(),
-                                        new GenericCallback<java.lang.Void>() {
-                                            public void onSuccess(Void v) {
-                                                copy.hide();
-                                                Window.alert(Constants.INSTANCE.CreatedSnapshot0ForPackage1(
-                                                        newNameTextBox.getText(),
-                                                        packageName));
-                                            }
-                                        });
+                        if ( newNameRadioButton.getValue() ) {
+                            if ( checkUnique( snaps,
+                                              newNameTextBox.getText() ) ) {
+                                serv.copyOrRemoveSnapshot( packageName,
+                                                           snapshotName,
+                                                           false,
+                                                           newNameTextBox.getText(),
+                                                           new GenericCallback<java.lang.Void>() {
+                                                               public void onSuccess(Void v) {
+                                                                   copy.hide();
+                                                                   Window.alert( Constants.INSTANCE.CreatedSnapshot0ForPackage1(
+                                                                                                                                 newNameTextBox.getText(),
+                                                                                                                                 packageName ) );
+                                                               }
+                                                           } );
                             }
                         } else {
-                            for (RadioButton rb : options) {
-                                if (rb.getValue()) {
+                            for ( RadioButton rb : options ) {
+                                if ( rb.getValue() ) {
                                     final String newName = rb.getText();
-                                    serv.copyOrRemoveSnapshot(packageName,
-                                            snapshotName,
-                                            false,
-                                            newName,
-                                            new GenericCallback<java.lang.Void>() {
-                                                public void onSuccess(Void v) {
-                                                    copy.hide();
-                                                    Window.alert(Constants.INSTANCE.Snapshot0ForPackage1WasCopiedFrom2(
-                                                            newName,
-                                                            packageName,
-                                                            snapshotName));
-                                                }
-                                            });
+                                    serv.copyOrRemoveSnapshot( packageName,
+                                                               snapshotName,
+                                                               false,
+                                                               newName,
+                                                               new GenericCallback<java.lang.Void>() {
+                                                                   public void onSuccess(Void v) {
+                                                                       copy.hide();
+                                                                       Window.alert( Constants.INSTANCE.Snapshot0ForPackage1WasCopiedFrom2(
+                                                                                                                                            newName,
+                                                                                                                                            packageName,
+                                                                                                                                            snapshotName ) );
+                                                                   }
+                                                               } );
                                 }
                             }
                         }
@@ -367,8 +371,8 @@ public class SnapshotView extends Composite {
 
                     private boolean isOneButtonSelected(final List<RadioButton> options) {
                         boolean oneButtonIsSelected = false;
-                        for (RadioButton rb : options) {
-                            if (rb.getValue()) {
+                        for ( RadioButton rb : options ) {
+                            if ( rb.getValue() ) {
                                 oneButtonIsSelected = true;
                                 break;
                             }
@@ -377,53 +381,53 @@ public class SnapshotView extends Composite {
                     }
 
                     private boolean checkUnique(SnapshotInfo[] snaps,
-                            String name) {
-                        for (SnapshotInfo sn : snaps) {
-                            if (sn.getName().equals(name)) {
-                                Window.alert(Constants.INSTANCE.PleaseEnterANonExistingSnapshotName());
+                                                String name) {
+                        for ( SnapshotInfo sn : snaps ) {
+                            if ( sn.getName().equals( name ) ) {
+                                Window.alert( Constants.INSTANCE.PleaseEnterANonExistingSnapshotName() );
                                 return false;
                             }
                         }
                         return true;
                     }
-                });
+                } );
                 copy.show();
             }
         };
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {
-        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.snapshot(),
-                Constants.INSTANCE.NewSnapshot());
+        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.snapshot(),
+                                                       Constants.INSTANCE.NewSnapshot() );
         final RulePackageSelector sel = new RulePackageSelector();
 
-        pop.addAttribute(Constants.INSTANCE.ForPackage(),
-                sel);
-        Button ok = new Button(Constants.INSTANCE.OK());
-        pop.addAttribute("",
-                ok);
+        pop.addAttribute( Constants.INSTANCE.ForPackage(),
+                          sel );
+        Button ok = new Button( Constants.INSTANCE.OK() );
+        pop.addAttribute( "",
+                          ok );
         pop.show();
 
-        ok.addClickHandler(new ClickHandler() {
+        ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 pop.hide();
                 String pkg = sel.getSelectedPackage();
-                PackageBuilderWidget.showSnapshotDialog(pkg,
-                        refreshCmd);
+                PackageBuilderWidget.showSnapshotDialog( pkg,
+                                                         refreshCmd );
             }
-        });
+        } );
 
     }
 
     public static void rebuildBinaries() {
-        if (Window.confirm(Constants.INSTANCE.SnapshotRebuildWarning())) {
-            LoadingPopup.showMessage(Constants.INSTANCE.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime());
-            RepositoryServiceFactory.getPackageService().rebuildSnapshots(new GenericCallback<java.lang.Void>() {
+        if ( Window.confirm( Constants.INSTANCE.SnapshotRebuildWarning() ) ) {
+            LoadingPopup.showMessage( Constants.INSTANCE.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime() );
+            RepositoryServiceFactory.getPackageService().rebuildSnapshots( new GenericCallback<java.lang.Void>() {
                 public void onSuccess(Void v) {
                     LoadingPopup.close();
-                    Window.alert(Constants.INSTANCE.SnapshotsWereRebuiltSuccessfully());
+                    Window.alert( Constants.INSTANCE.SnapshotsWereRebuiltSuccessfully() );
                 }
-            });
+            } );
         }
     }
 
