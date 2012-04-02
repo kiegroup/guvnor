@@ -151,6 +151,9 @@ public class SnapshotView extends Composite {
         ft.setWidget(3,
                 0,
                 new Label(Constants.INSTANCE.SnapshotCreatedOn()));
+        ft.getFlexCellFormatter().setHorizontalAlignment(3,
+                                                         0,
+                                                         HasHorizontalAlignment.ALIGN_RIGHT);
         ft.setWidget(3,
                 1,
                 new Label(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.getLastModified())));
