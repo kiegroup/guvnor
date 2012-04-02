@@ -16,13 +16,11 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
@@ -30,7 +28,6 @@ import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.*;
-import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 

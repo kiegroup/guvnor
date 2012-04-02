@@ -70,7 +70,7 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
-    <module>guvnor-webapp-drools</module>
+    <!--<module>guvnor-webapp-drools</module>-->
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
     <module>guvnor-webapp-bpm-runtime</module>
@@ -115,7 +115,29 @@
       <modules>
         <module>guvnorsoa-distribution-wars</module>
       </modules>
-    </profile>   
+    </profile>
+    <profile>
+      <id>ngbpmProfile</id>
+      <activation>
+        <property>
+          <name>bpm</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-webapp-bpm-runtime</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ngbpmfullProfile</id>
+      <activation>
+        <property>
+          <name>bpmFull</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-bpm-distribution-wars</module>
+      </modules>
+    </profile>
   </profiles>
 
 </project>

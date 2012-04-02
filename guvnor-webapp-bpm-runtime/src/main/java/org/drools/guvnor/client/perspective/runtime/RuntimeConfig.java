@@ -17,9 +17,10 @@
 package org.drools.guvnor.client.perspective.runtime;
 
 import com.google.gwt.core.client.GWT;
+import org.jboss.bpm.console.client.Config;
 
-public class RuntimeConfig {
-//        implements Config {
+public class RuntimeConfig
+        implements Config {
 
     private final String consoleServerUrl;
 

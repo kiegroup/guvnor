@@ -18,7 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
@@ -259,7 +259,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // Free form DRL
     private void addFreeFormDrl() {
-        if ( User.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( Constants.INSTANCE.FreeFormDrl(),
                              "FF" );

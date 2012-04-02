@@ -20,24 +20,26 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.runtime.BpmConsoleActivityMapper;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
-public class ClientFactoryImpl extends AbstractClientFactoryImpl {
+public class ClientFactoryImpl
+        extends AbstractClientFactoryImpl {
 
-    public ClientFactoryImpl(EventBus eventBus) {
+    public ClientFactoryImpl( EventBus eventBus) {
         super(eventBus);
     }
 
     @Override
     public ActivityMapper getActivityMapper() {
-        return new BpmConsoleActivityMapper();
+        return new BpmConsoleActivityMapper(this);
     }
 
     @Override
     public PlaceHistoryMapper getPlaceHistoryMapper() {
-        if ( guvnorPlaceHistoryMapper == null ) {
+        if (guvnorPlaceHistoryMapper == null) {
             guvnorPlaceHistoryMapper = GWT.create(BpmRuntimePlaceHistoryMapper.class);
         }
         return guvnorPlaceHistoryMapper;

@@ -34,7 +34,7 @@ import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.resources.WizardResources;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 
 /**
@@ -68,7 +68,7 @@ public class BpmRuntimeEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
+       SecurityServiceAsync.INSTANCE.getCurrentUser(new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
                 if (userName != null) {

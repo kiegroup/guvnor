@@ -21,7 +21,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.FindPlace;
@@ -66,7 +66,7 @@ public class BrowseTree implements Presenter {
     }
 
     private boolean canShowStates() {
-        return User.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
+        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
     }
 
     private void addRootCategory() {

@@ -17,21 +17,24 @@
 package org.drools.guvnor.client.explorer.navigation.processes;
 
 import com.google.gwt.event.shared.EventBus;
+import com.mvc4g.client.Controller;
 import org.drools.guvnor.client.explorer.AcceptItem;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
+import org.jboss.bpm.console.client.ExecutionHistoryView;
 
 public class ExecutionHistoryActivity extends Activity {
 
-//    private Controller controller;
-//
-//    public ExecutionHistoryActivity(Controller controller) {
-//        this.controller = controller;
-//    }
+    private Controller controller;
+
+    public ExecutionHistoryActivity(Controller controller) {
+        this.controller = controller;
+    }
 
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-//        ExecutionHistoryView executionHistoryView = new ExecutionHistoryView();
-//        executionHistoryView.setController(controller);
-//        tabbedPanel.add(Constants.INSTANCE.ExecutionHistory(), executionHistoryView);
+        ExecutionHistoryView executionHistoryView = new ExecutionHistoryView();
+        executionHistoryView.setController(controller);
+        tabbedPanel.add(ConstantsCore.INSTANCE.ExecutionHistory(), executionHistoryView);
     }
 }

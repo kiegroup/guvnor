@@ -18,20 +18,23 @@ package org.drools.guvnor.client.explorer.navigation.tasks;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
+import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.task.OpenTasksView;
 
 public class GroupTasksActivity extends Activity {
 
-    //    private final ClientFactory clientFactory;
-//
-//    public GroupTasksActivity(ClientFactory clientFactory) {
-//        this.clientFactory = clientFactory;
-//    }
-//
-//    @Override
+        private final ClientFactory clientFactory;
+
+    public GroupTasksActivity(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
+
+    @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-//        OpenTasksView openTasksView = new OpenTasksView(clientFactory);
-//        openTasksView.setController(clientFactory.getController());
-//        tabbedPanel.add(Constants.INSTANCE.GroupTasks(), openTasksView);
+        OpenTasksView openTasksView = new OpenTasksView(clientFactory);
+        openTasksView.setController(clientFactory.getController());
+        tabbedPanel.add(ConstantsCore.INSTANCE.GroupTasks(), openTasksView);
     }
 }

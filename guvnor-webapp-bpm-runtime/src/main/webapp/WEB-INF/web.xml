@@ -76,10 +76,6 @@
     <servlet-class>org.drools.guvnor.server.files.AssetFileServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>PackageDeploymentServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.PackageDeploymentServlet</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>RepositoryBackupServlet</servlet-name>
     <servlet-class>org.drools.guvnor.server.files.RepositoryBackupServlet</servlet-class>
   </servlet>
@@ -112,10 +108,6 @@
     <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>verificationService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>configurationService</servlet-name>
     <servlet-class>org.drools.guvnor.server.ConfigurationServiceImplementation</servlet-class>
   </servlet>
@@ -127,10 +119,18 @@
     <servlet-name>StandaloneEditorServlet</servlet-name>
     <servlet-class>org.drools.guvnor.server.StandaloneEditorServlet</servlet-class>
   </servlet>
+
   <servlet>
-    <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
-    <servlet-class>org.drools.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
@@ -144,10 +144,6 @@
     <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorServlet/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorService</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>guvnorService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
   </servlet-mapping>
@@ -158,10 +154,6 @@
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/asset</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>PackageDeploymentServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/package/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RepositoryBackupServlet</servlet-name>
@@ -194,10 +186,6 @@
   <servlet-mapping>
     <servlet-name>guvnorAPI</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>verificationService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>configurationService</servlet-name>

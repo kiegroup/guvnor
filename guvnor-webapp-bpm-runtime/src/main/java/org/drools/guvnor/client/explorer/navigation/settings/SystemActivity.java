@@ -18,20 +18,23 @@ package org.drools.guvnor.client.explorer.navigation.settings;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
+import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.ServerStatusView;
 
 public class SystemActivity extends Activity {
-//
-//    private final ClientFactory clientFactory;
-//
-//    public SystemActivity(ClientFactory clientFactory) {
-//        this.clientFactory = clientFactory;
-//    }
+
+    private final ClientFactory clientFactory;
+
+    public SystemActivity(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-//        ServerStatusView serverStatusView = new ServerStatusView(clientFactory);
-//        serverStatusView.setController(clientFactory.getController());
-//        tabbedPanel.add(Constants.INSTANCE.System(), serverStatusView);
+        ServerStatusView serverStatusView = new ServerStatusView(clientFactory);
+        serverStatusView.setController(clientFactory.getController());
+        tabbedPanel.add(ConstantsCore.INSTANCE.System(), serverStatusView);
     }
 }

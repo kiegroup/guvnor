@@ -24,21 +24,19 @@ import java.util.List;
  * (however the Capabilities do not enforce actions on the server - these are more for GUI convenience so elements are not displayed
  * that are not relevant to a given users role).
  */
-public class User {
+public class UserCapabilities {
 
-    public static User INSTANCE;
-    private final String userName;
+    public static UserCapabilities INSTANCE;
 
     private final List<Capability> capabilities;
 
-    private User(String userName, List<Capability> capabilities) {
-        this.userName = userName;
+    private UserCapabilities(List<Capability> capabilities) {
         this.capabilities = capabilities;
 
     }
 
-    static void setUp(String userName, List<Capability> capabilities) {
-        INSTANCE = new User(userName, capabilities);
+    static void setUp(List<Capability> capabilities) {
+        INSTANCE = new UserCapabilities(capabilities);
     }
 
     public boolean hasCapability(Capability... capabilities) {
@@ -49,9 +47,5 @@ public class User {
         }
 
         return false;
-    }
-
-    public String getUserName() {
-        return userName;
     }
 }

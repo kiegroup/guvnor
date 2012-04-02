@@ -16,13 +16,14 @@
 
 package org.drools.guvnor.client.perspective.runtime;
 
-import org.drools.guvnor.client.configurations.User;
+import org.jboss.bpm.console.client.Authentication;
 
-public class RuntimeAuthentication {
-//        implements Authentication {
+public class RuntimeAuthentication
+        implements Authentication {
 
     public String getUsername() {
-        return User.INSTANCE.getUserName();
+        //TODO: Generated code -Rikkola-
+        return "UserCapabilities.INSTANCE.getUserName()";
     }
 
     public void handleSessionTimeout() {

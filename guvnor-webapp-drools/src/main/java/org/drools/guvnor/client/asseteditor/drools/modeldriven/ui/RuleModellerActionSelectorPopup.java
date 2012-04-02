@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
@@ -380,7 +380,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         List<String> vars2 = model.getRHSBoundFacts();
         String[] globals = completions.getGlobalVariables();
 
-        if ( User.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( Constants.INSTANCE.AddFreeFormDrl(),
                              "FF" );

@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.perspective.runtime;
 
 import com.google.gwt.place.shared.Place;
+import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
 import org.drools.guvnor.client.explorer.navigation.processes.ExecutionHistoryActivity;
 import org.drools.guvnor.client.explorer.navigation.processes.ExecutionHistoryPlace;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
@@ -33,30 +34,40 @@ import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
+import org.jboss.bpm.console.client.ClientFactory;
 
 public class BpmConsoleActivityMapper
-        implements
-        ActivityMapper {
+        implements ActivityMapper {
 
-//    private final ClientFactory clientFactory = new RuntimeClientFactory();
+    private final ClientFactory clientFactory = new RuntimeClientFactory();
+    private final GuvnorActivityMapper guvnorActivityMapper;
+
+
+    public BpmConsoleActivityMapper(org.drools.guvnor.client.explorer.ClientFactory clientFactory) {
+        guvnorActivityMapper = new GuvnorActivityMapper(clientFactory);
+    }
 
     public Activity getActivity(Place place) {
-//        if (place instanceof PersonalTasksPlace) {
-//            return new PersonalTasksActivity(clientFactory);
-//        } else if (place instanceof GroupTasksPlace) {
-//            return new GroupTasksActivity(clientFactory);
-//        } else if (place instanceof ReportTemplatesPlace) {
-//            return new ReportTemplatesActivity(clientFactory);
-//        } else if (place instanceof PreferencesPlace) {
-//            return new PreferencesActivity(clientFactory.getController());
-//        } else if (place instanceof ProcessOverviewPlace) {
-//            return new ProcessOverviewActivity(clientFactory);
-//        } else if (place instanceof ExecutionHistoryPlace) {
-//            return new ExecutionHistoryActivity(clientFactory.getController());
-//        } else if (place instanceof SystemPlace) {
-//            return new SystemActivity(clientFactory);
-//        } else {
-            return null;
-//        }
+        if (place instanceof PersonalTasksPlace) {
+            return new PersonalTasksActivity(clientFactory);
+        } else if (place instanceof GroupTasksPlace) {
+            return new GroupTasksActivity(clientFactory);
+        } else if (place instanceof ReportTemplatesPlace) {
+            return new ReportTemplatesActivity(clientFactory);
+        } else if (place instanceof PreferencesPlace) {
+            return new PreferencesActivity(clientFactory.getController());
+        } else if (place instanceof ProcessOverviewPlace) {
+            return new ProcessOverviewActivity(clientFactory);
+        } else if (place instanceof ExecutionHistoryPlace) {
+            return new ExecutionHistoryActivity(clientFactory.getController());
+        } else if (place instanceof SystemPlace) {
+            return new SystemActivity(clientFactory);
+        } else {
+            return tryGuvnorCore(place);
+        }
+    }
+
+    private Activity tryGuvnorCore(Place place) {
+        return guvnorActivityMapper.getActivity(place);
     }
 }

@@ -26,7 +26,7 @@ public class ConfigurationsLoaderMock {
     }
 
     public static void loadUserCapabilities(List<Capability> capabilities) {
-        User.setUp("Mr. Trout", capabilities);
+        UserCapabilities.setUp(capabilities);
     }
 
 }

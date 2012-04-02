@@ -25,11 +25,10 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Util;
 
@@ -151,7 +150,7 @@ public class DiscussionWidget extends Composite {
         createNewComment.setEnabled(!this.readOnly);
         hp.add(createNewComment);
 
-        if (User.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
+        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
             Button adminClearAll = new Button(constants.EraseAllComments());
             adminClearAll.setEnabled(!readOnly);
             hp.add(adminClearAll);

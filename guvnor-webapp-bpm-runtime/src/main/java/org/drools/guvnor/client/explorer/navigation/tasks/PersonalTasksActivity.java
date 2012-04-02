@@ -19,22 +19,22 @@ package org.drools.guvnor.client.explorer.navigation.tasks;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.util.Activity;
-//import org.jboss.bpm.console.client.ClientFactory;
-//import org.jboss.bpm.console.client.messages.Constants;
-//import org.jboss.bpm.console.client.task.AssignedTasksView;
+import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.messages.Constants;
+import org.jboss.bpm.console.client.task.AssignedTasksView;
 
 public class PersonalTasksActivity extends Activity {
 
-//    private final ClientFactory clientFactory;
-//
-//    public PersonalTasksActivity(ClientFactory clientFactory) {
-//        this.clientFactory = clientFactory;
-//    }
+    private final ClientFactory clientFactory;
+
+    public PersonalTasksActivity(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-//        AssignedTasksView widget = new AssignedTasksView(clientFactory);
-//        widget.setController(clientFactory.getController());
-//        tabbedPanel.add(Constants.INSTANCE.PersonalTasks(), widget);
+        AssignedTasksView widget = new AssignedTasksView(clientFactory);
+        widget.setController(clientFactory.getController());
+        tabbedPanel.add(Constants.INSTANCE.PersonalTasks(), widget);
     }
 }

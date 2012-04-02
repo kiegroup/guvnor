@@ -16,30 +16,30 @@
 
 package org.drools.guvnor.client.perspective.runtime;
 
-//import com.mvc4g.client.Controller;
-//import org.jboss.bpm.console.client.ApplicationContext;
-//import org.jboss.bpm.console.client.ClientFactory;
-//import org.jboss.bpm.console.client.URLBuilder;
+import com.mvc4g.client.Controller;
+import org.jboss.bpm.console.client.ApplicationContext;
+import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.URLBuilder;
 
-public class RuntimeClientFactory{
-//        implements ClientFactory {
+public class RuntimeClientFactory
+        implements ClientFactory {
 
-//    private Controller controller;
-//    private RuntimeApplicationContext runtimeApplicationContext = new RuntimeApplicationContext();
-//
-//    public RuntimeClientFactory() {
-//        URLBuilder.configureInstance(runtimeApplicationContext.getConfig());
-//    }
-//
-//    public ApplicationContext getApplicationContext() {
-//        return runtimeApplicationContext;
-//    }
-//
-//    public Controller getController() {
-//        if (controller == null) {
-//            controller = new Controller();
-//        }
-//
-//        return controller;
-//    }
+    private Controller controller;
+    private RuntimeApplicationContext runtimeApplicationContext = new RuntimeApplicationContext();
+
+    public RuntimeClientFactory() {
+        URLBuilder.configureInstance(runtimeApplicationContext.getConfig());
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return runtimeApplicationContext;
+    }
+
+    public Controller getController() {
+        if (controller == null) {
+            controller = new Controller();
+        }
+
+        return controller;
+    }
 }

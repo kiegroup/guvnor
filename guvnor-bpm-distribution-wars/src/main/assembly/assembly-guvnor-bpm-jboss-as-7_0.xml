@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <!-- Note: This works on jboss-as-web-7.0 and jboss-as-7.0 -->
+  <id>jboss-as-7.0</id>
+  <formats>
+    <format>war</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.drools:guvnor-webapp-bpm-runtime:war</include>
+      </includes>
+      <outputDirectory>.</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <!-- TODO in JBoss 7.1 it will be allowed to include weld too -->
+          <exclude>WEB-INF/lib/weld-*.jar</exclude>
+
+          <!--&lt;!&ndash; Weld transitive dependency excludes, it's bundled in the AS &ndash;&gt;-->
+          <!--<exclude>WEB-INF/lib/cdi-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/persistence-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/javax.inject-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/guava-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/cal10n-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jboss-interceptor-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jboss-interceptors-api_1.1_spec-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/ejb-api-*.jar</exclude>-->
+
+          <!--&lt;!&ndash; Start workaround for GUVNOR-1160: MalformedParameterizedTypeException when deploying &ndash;&gt;-->
+          <!--<exclude>WEB-INF/lib/javassist-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jta-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jsf-api-*.jar</exclude>-->
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

@@ -21,7 +21,6 @@ import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 
 import java.util.List;
@@ -43,14 +42,8 @@ public class ConfigurationsLoader {
         SecurityServiceAsync.INSTANCE.getUserCapabilities(
                 new GenericCallback<List<Capability>>() {
                     public void onSuccess(final List<Capability> capabilities) {
-                        SecurityServiceAsync.INSTANCE.getCurrentUser(
-                                new GenericCallback<UserSecurityContext>() {
-                                    public void onSuccess(UserSecurityContext userSecurityContext) {
-                                        User.setUp(userSecurityContext.getUserName(), capabilities);
-                                        executeCommand(command);
-                                    }
-                                }
-                        );
+                        UserCapabilities.setUp(capabilities);
+                        executeCommand(command);
                     }
                 }
         );

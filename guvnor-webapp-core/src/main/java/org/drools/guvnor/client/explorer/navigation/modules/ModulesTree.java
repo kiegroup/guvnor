@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 
 public class ModulesTree
@@ -44,7 +44,7 @@ public class ModulesTree
 
         view.setModulesTreeItem(new ModulesTreeItem(clientFactory, eventBus, perspectiveTypes));
 
-        if (User.INSTANCE.hasCapability(Capability.SHOW_CREATE_NEW_ASSET)) {
+        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_CREATE_NEW_ASSET)) {
             view.setNewAssetMenu(clientFactory.getNavigationViewFactory().getModulesNewAssetMenu(perspectiveTypes));
         }
     }

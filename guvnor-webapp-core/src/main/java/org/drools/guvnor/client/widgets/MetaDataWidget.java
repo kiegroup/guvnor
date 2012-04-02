@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.User;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
@@ -250,7 +250,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget packageEditor(final String packageName) {
-        if (this.readOnly || !User.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW)) {
+        if (this.readOnly || !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW)) {
             return readOnlyText(packageName);
         } else {
             HorizontalPanel horiz = new HorizontalPanel();

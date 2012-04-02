@@ -2,6 +2,7 @@
 <module>
 
   <inherits name="org.drools.guvnor.GuvnorCore"/>
+  <inherits name="org.jboss.bpm.console.Screens"/>
 
   <!-- Here we put different locales (translations) There are of the form 
 values="xx_YY" - which match to Constants_xx_YY.properties which contain
