@@ -130,7 +130,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
 
     private AssetItem getAssetItem(Asset asset) throws SerializationException {
-        AssetItem assetItem = rulesRepository.loadAssetByUUID(asset.uuid);
+        AssetItem assetItem = rulesRepository.loadAssetByUUID(asset.getUuid());
         ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
         contentHandler.storeAssetContent(asset, assetItem);
         return assetItem;

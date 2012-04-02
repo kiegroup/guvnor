@@ -102,7 +102,7 @@ public class VerificationServiceImplementationTest {
     public Asset getAsset(String content) {
         Asset ruleAsset = new Asset();
 
-        ruleAsset.uuid = "mockUUID";
+        ruleAsset.setUuid( "mockUUID" );
         ruleAsset.metaData = getMetaData();
         ruleAsset.setFormat( AssetFormats.DRL);
         ruleAsset.content = getRuleContentText(content);

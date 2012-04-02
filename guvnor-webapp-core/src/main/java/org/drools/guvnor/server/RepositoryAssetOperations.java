@@ -132,7 +132,7 @@ public class RepositoryAssetOperations {
         try {
             ContentHandler handler = ContentManager
                     .getHandler(asset.getFormat());
-            AssetItem item = rulesRepository.loadAssetByUUID(asset.uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(asset.getUuid());
 
             handler.storeAssetContent(asset,
                     item);
@@ -152,10 +152,10 @@ public class RepositoryAssetOperations {
 
     private BuilderResultLine createBuilderResultLine(Asset asset) {
         BuilderResultLine builderResultLine = new BuilderResultLine();
-        builderResultLine.setAssetName(asset.name);
+        builderResultLine.setAssetName(asset.getName());
         builderResultLine.setAssetFormat(asset.getFormat());
         builderResultLine.setMessage("Unable to validate this asset. (Check log for detailed messages).");
-        builderResultLine.setUuid(asset.uuid);
+        builderResultLine.setUuid(asset.getUuid());
         return builderResultLine;
     }
 

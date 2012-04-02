@@ -86,10 +86,10 @@ public class QATree extends NavigationItemBuilderOld
 
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
 
-                clientFactory.getPlaceController().goTo( new TestScenarioListPlace( pc.uuid ) );
+                clientFactory.getPlaceController().goTo( new TestScenarioListPlace( pc.getUuid() ) );
 
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                clientFactory.getPlaceController().goTo( new VerifierPlace( pc.uuid ) );
+                clientFactory.getPlaceController().goTo( new VerifierPlace( pc.getUuid() ) );
             }
         }
     }
@@ -105,7 +105,7 @@ public class QATree extends NavigationItemBuilderOld
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
-                                c.name ) );
+                                c.getName() ) );
 
                         node.addItem( pkg );
                         pkg.setUserObject( c );
@@ -122,7 +122,7 @@ public class QATree extends NavigationItemBuilderOld
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
-                                c.name ) );
+                                c.getName() ) );
 
                         node.addItem( pkg );
                         pkg.setUserObject( c );

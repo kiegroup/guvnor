@@ -114,7 +114,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.isNew = isNew;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
-        this.isReadOnly = asset.readonly;
+        this.isReadOnly = asset.isReadonly();
 
         this.originalCol = column;
         this.editingCol = cloneBRLColumn( column );

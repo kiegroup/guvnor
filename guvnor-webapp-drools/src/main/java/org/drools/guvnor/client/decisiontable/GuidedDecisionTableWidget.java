@@ -167,7 +167,7 @@ public class GuidedDecisionTableWidget extends Composite
         this.globalEventBus = globalEventBus;
         this.clientFactory = clientFactory;
         this.rm = new BRLRuleModel( guidedDecisionTable );
-        this.isReadOnly = asset.readonly;
+        this.isReadOnly = asset.isReadonly();
 
         layout = new VerticalPanel();
 

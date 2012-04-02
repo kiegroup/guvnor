@@ -101,13 +101,13 @@ public class DeploymentTree extends NavigationItemBuilderOld
             final Module packageConfigData = (Module) node.getUserObject();
 
             RepositoryServiceFactory.getPackageService().listSnapshots(
-                    packageConfigData.name,
+                    packageConfigData.getName(),
                     new GenericCallback<SnapshotInfo[]>() {
                         public void onSuccess(SnapshotInfo[] snaps) {
                             node.removeItems();
                             for (final SnapshotInfo snapInfo : snaps) {
                                 TreeItem snap = new TreeItem( snapInfo.getName() );
-                                snap.setUserObject( new SnapshotPlace( packageConfigData.name, snapInfo.getName() ) );
+                                snap.setUserObject( new SnapshotPlace( packageConfigData.getName(), snapInfo.getName() ) );
                                 node.addItem( snap );
                             }
                         }
