@@ -685,7 +685,7 @@ public class ConditionPopup extends FormStylePopup {
             filteredOps.remove( "not in" );
         }
 
-        //But remove "in" if the Fact\Field is enumerated
+        //Remove "in" and "not in" if the Fact\Field is enumerated
         if ( sce.hasEnums( factType,
                            factField ) ) {
             filteredOps.remove( "in" );

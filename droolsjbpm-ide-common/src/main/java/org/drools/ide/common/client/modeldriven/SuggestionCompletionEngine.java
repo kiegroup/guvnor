@@ -64,24 +64,33 @@ public class SuggestionCompletionEngine
     /**
      * The operators that are used at different times (based on type).
      */
-    private static final String[]                   STANDARD_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !="};
-    private static final String[]                   STRING_CONNECTIVES       = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >=", "&& matches", "|| matches"};
-    private static final String[]                   COMPARABLE_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
-    private static final String[]                   COLLECTION_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
     private static final String[]                   STANDARD_OPERATORS       = new String[]{"==", "!=", "== null", "!= null"};
-    private static final String[]                   COMPARABLE_OPERATORS     = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null", "in", "not in"};
 
-    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null", "in", "not in"};
+    private static final String[]                   COMPARABLE_OPERATORS     = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
+
+    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"};
+
+    private static final String[]                   EXPLICIT_LIST_OPERATORS  = new String[]{"in", "not in"};
 
     private static final String[]                   COLLECTION_OPERATORS     = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
     private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincides"};
+
     private static final String[]                   COMPLEX_CEP_OPERATORS    = new String[]{"during", "finishes", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby"};
 
     private static final String[]                   WINDOW_CEP_OPERATORS     = new String[]{"over window:time", "over window:length"};
 
+    private static final String[]                   STANDARD_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !="};
+
+    private static final String[]                   STRING_CONNECTIVES       = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >=", "&& matches", "|| matches"};
+
+    private static final String[]                   COMPARABLE_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
+
+    private static final String[]                   COLLECTION_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
+
     private static final String[]                   SIMPLE_CEP_CONNECTIVES   = new String[]{"|| after", "|| before", "|| coincides", "&& after", "&& before", "&& coincides"};
+
     private static final String[]                   COMPLEX_CEP_CONNECTIVES  = new String[]{"|| during", "|| finishes", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
                                                                                            "&& during", "&& finishes", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
 
@@ -146,20 +155,6 @@ public class SuggestionCompletionEngine
      * This will show the names of globals that are a collection type.
      */
     private String[]                                globalCollections;
-
-/** Operators (from the grammar):
-         *      op=(    '=='
-         |   '>'
-         |   '>='
-         |   '<'
-         |   '<='
-         |   '!='
-         |   'contains'
-         |   'matches'
-         |       'excludes'
-         )
-         * Connectives add "&" and "|" to this.
-         */
 
     /**
      * DSL language extensions, if needed, if provided by the package.
@@ -250,11 +245,13 @@ public class SuggestionCompletionEngine
             }
         } else if ( fieldType.equals( TYPE_STRING ) ) {
             return STRING_CONNECTIVES;
-        } else if ( fieldType.equals( TYPE_COMPARABLE ) || isNumeric( fieldType ) ) {
+        } else if ( isNumeric( fieldType ) ) {
             return COMPARABLE_CONNECTIVES;
         } else if ( fieldType.equals( TYPE_DATE ) ) {
             return joinArrays( COMPARABLE_CONNECTIVES,
                                SIMPLE_CEP_CONNECTIVES );
+        } else if ( fieldType.equals( TYPE_COMPARABLE ) ) {
+            return COMPARABLE_CONNECTIVES;
         } else if ( fieldType.equals( TYPE_COLLECTION ) ) {
             return COLLECTION_CONNECTIVES;
         } else {
@@ -290,12 +287,17 @@ public class SuggestionCompletionEngine
                 return STANDARD_OPERATORS;
             }
         } else if ( fieldType.equals( TYPE_STRING ) ) {
-            return STRING_OPERATORS;
-        } else if ( fieldType.equals( TYPE_COMPARABLE ) || SuggestionCompletionEngine.isNumeric( fieldType ) ) {
-            return COMPARABLE_OPERATORS;
+            return joinArrays( STRING_OPERATORS,
+                               EXPLICIT_LIST_OPERATORS );
+        } else if ( SuggestionCompletionEngine.isNumeric( fieldType ) ) {
+            return joinArrays( COMPARABLE_OPERATORS,
+                               EXPLICIT_LIST_OPERATORS );
         } else if ( fieldType.equals( TYPE_DATE ) ) {
             return joinArrays( COMPARABLE_OPERATORS,
+                               EXPLICIT_LIST_OPERATORS,
                                SIMPLE_CEP_OPERATORS );
+        } else if ( fieldType.equals( TYPE_COMPARABLE ) ) {
+            return COMPARABLE_OPERATORS;
         } else if ( fieldType.equals( TYPE_COLLECTION ) ) {
             return COLLECTION_OPERATORS;
         } else {
@@ -1098,8 +1100,8 @@ public class SuggestionCompletionEngine
             return false;
         }
 
-        for ( int i = 0; i < WINDOW_CEP_OPERATORS.length; i++ ) {
-            if ( operator.equals( WINDOW_CEP_OPERATORS[i] ) ) {
+        for ( String cepWindowOperator : WINDOW_CEP_OPERATORS ) {
+            if ( operator.equals( cepWindowOperator ) ) {
                 return true;
             }
         }
@@ -1156,6 +1158,26 @@ public class SuggestionCompletionEngine
             offset = offset + other.length;
         }
         return result;
+    }
+
+    /**
+     * Check whether an operator requires a list of values (i.e. the operator is
+     * either "in" or "not in"). Operators requiring a list of values can only
+     * be compared to literal values.
+     * 
+     * @param operator
+     * @return True if the operator requires a list values
+     */
+    public static boolean operatorRequiresList(String operator) {
+        if ( operator == null || operator.equals( "" ) ) {
+            return false;
+        }
+        for ( String explicitListOperator : EXPLICIT_LIST_OPERATORS ) {
+            if ( operator.equals( explicitListOperator ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

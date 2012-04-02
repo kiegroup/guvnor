@@ -717,9 +717,11 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                 public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                     setModified( true );
-                    OperatorSelection selection = event.getValue();
-                    String selected = selection.getValue();
-                    String selectedText = selection.getDisplayText();
+                    final OperatorSelection selection = event.getValue();
+                    final String selected = selection.getValue();
+                    final String selectedText = selection.getDisplayText();
+                    final boolean newOperatorRequiresExplicitList = SuggestionCompletionEngine.operatorRequiresList( selected );
+                    final boolean oldOperatorRequiresExplicitList = SuggestionCompletionEngine.operatorRequiresList( c.getOperator() );
                     c.setOperator( selected );
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
@@ -734,6 +736,22 @@ public class FactPatternWidget extends RuleModellerWidget {
                             inner.getWidget( row,
                                              col ).setVisible( true );
                         }
+                    }
+
+                    //If new operator requires a comma separated list and old did not, or vice-versa
+                    //we need to redraw the ConstraintValueEditor for the constraint
+                    if ( newOperatorRequiresExplicitList != oldOperatorRequiresExplicitList ) {
+                        if ( newOperatorRequiresExplicitList == false ) {
+                            final String[] oldValueList = c.getValue().split( "," );
+                            if ( oldValueList.length > 0 ) {
+                                c.setValue( oldValueList[0] );
+                            }
+                        }
+
+                        //Redraw ConstraintValueEditor
+                        inner.setWidget( row,
+                                         col,
+                                         valueEditor( c ) );
                     }
 
                     getModeller().makeDirty();
