@@ -244,7 +244,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
-        //Enumeration
+        //Enumeration (these support multi-select for "in" and "not in", so check before comma separated lists) 
         if ( this.dropDownData != null ) {
             EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.factType,
                                                                     this.constraintList,
@@ -260,6 +260,30 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 } );
             }
             return enumDropDown;
+        }
+        
+        //Comma separated value list (this will become a dedicated Widget but for now a TextBox suffices)
+        String operator = null;
+        if ( this.constraint instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint sfc = (SingleFieldConstraint) this.constraint;
+            operator = sfc.getOperator();
+        }
+        if ( SuggestionCompletionEngine.operatorRequiresList( operator ) ) {
+            if ( !this.readOnly ) {
+                DefaultLiteralEditor dle = new DefaultLiteralEditor( this.constraint,
+                                                                     SuggestionCompletionEngine.TYPE_STRING );
+                dle.setOnValueChangeCommand( new Command() {
+
+                    public void execute() {
+                        executeOnValueChangeCommand();
+                    }
+                } );
+
+                return dle;
+
+            } else {
+                return new SmallLabel( this.constraint.getValue() );
+            }
         }
 
         //Date picker
@@ -438,28 +462,36 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         } );
 
-        boolean showLiteralOrFormula = true;
+        boolean showLiteralSelector = true;
+        boolean showFormulaSelector = !SuggestionCompletionEngine.operatorRequiresList( con.getOperator() );
+        boolean showVariableSelector = !SuggestionCompletionEngine.operatorRequiresList( con.getOperator() );
+        boolean showExpressionSelector = !SuggestionCompletionEngine.operatorRequiresList( con.getOperator() );
+
         if ( con instanceof SingleFieldConstraint ) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
             String fieldName = sfc.getFieldName();
             if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() );
+                showLiteralSelector = SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() );
+                showFormulaSelector = showFormulaSelector && showLiteralSelector;
             }
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             String fieldName = cc.getFieldName();
             if ( fieldName.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( cc.getOperator() );
+                showLiteralSelector = SuggestionCompletionEngine.isCEPOperator( cc.getOperator() );
+                showFormulaSelector = showFormulaSelector && showLiteralSelector;
             }
         }
 
-        if ( showLiteralOrFormula ) {
+        //Literal value selector
+        if ( showLiteralSelector ) {
             form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
                                widgets( lit,
                                         new InfoPopup( Constants.INSTANCE.LiteralValue(),
                                                        Constants.INSTANCE.LiteralValTip() ) ) );
         }
 
+        //Template key selector
         if ( modeller.isTemplate() ) {
             String templateKeyLabel = Constants.INSTANCE.TemplateKey();
             Button templateKeyButton = new Button( templateKeyLabel );
@@ -477,35 +509,39 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                        Constants.INSTANCE.LiteralValTip() ) ) );
         }
 
-        if ( showLiteralOrFormula ) {
+        //Divider, if we have any advanced options
+        if ( showVariableSelector || showFormulaSelector || showExpressionSelector ) {
             form.addRow( new HTML( "<hr/>" ) );
             form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
         }
 
-        //only want to show variables if we have some !
-        List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
-        if ( bindingsInScope.size() > 0
-                || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
+        //Show variables selector, if there are any variables in scope
+        if ( showVariableSelector ) {
+            List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
+            if ( bindingsInScope.size() > 0
+                 || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
-            List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
-            if ( applicableBindingsInScope.size() > 0 ) {
+                List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
+                if ( applicableBindingsInScope.size() > 0 ) {
 
-                Button variable = new Button( Constants.INSTANCE.BoundVariable() );
-                variable.addClickHandler( new ClickHandler() {
+                    Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+                    variable.addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
-                        con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
-                        doTypeChosen( form );
-                    }
-                } );
-                form.addAttribute( Constants.INSTANCE.AVariable(),
+                        public void onClick(ClickEvent event) {
+                            con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                            doTypeChosen( form );
+                        }
+                    } );
+                    form.addAttribute( Constants.INSTANCE.AVariable(),
                                        widgets( variable,
                                                 new InfoPopup( Constants.INSTANCE.ABoundVariable(),
                                                                Constants.INSTANCE.BoundVariableTip() ) ) );
+                }
             }
         }
 
-        if ( showLiteralOrFormula ) {
+        //Formula selector
+        if ( showFormulaSelector ) {
             Button formula = new Button( Constants.INSTANCE.NewFormula() );
             formula.addClickHandler( new ClickHandler() {
 
@@ -521,19 +557,22 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                        Constants.INSTANCE.FormulaExpressionTip() ) ) );
         }
 
-        Button expression = new Button( Constants.INSTANCE.ExpressionEditor() );
-        expression.addClickHandler( new ClickHandler() {
+        //Expression selector
+        if ( showExpressionSelector ) {
+            Button expression = new Button( Constants.INSTANCE.ExpressionEditor() );
+            expression.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                con.setConstraintValueType( SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE );
-                doTypeChosen( form );
-            }
-        } );
+                public void onClick(ClickEvent event) {
+                    con.setConstraintValueType( SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE );
+                    doTypeChosen( form );
+                }
+            } );
 
-        form.addAttribute( Constants.INSTANCE.ExpressionEditor() + ":",
-                           widgets( expression,
-                                    new InfoPopup( Constants.INSTANCE.ExpressionEditor(),
-                                                   Constants.INSTANCE.ExpressionEditor() ) ) );
+            form.addAttribute( Constants.INSTANCE.ExpressionEditor() + ":",
+                               widgets( expression,
+                                        new InfoPopup( Constants.INSTANCE.ExpressionEditor(),
+                                                       Constants.INSTANCE.ExpressionEditor() ) ) );
+        }
 
         form.show();
     }

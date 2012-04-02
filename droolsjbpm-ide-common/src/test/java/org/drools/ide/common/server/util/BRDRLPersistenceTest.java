@@ -1089,7 +1089,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( con );
 
         m.addLhsItem( p );
-        
+
         ActionInsertFact ai = new ActionInsertFact( "Person" );
         ai.addFieldValue( new ActionFieldValue( "field1",
                                                 "55",
@@ -1098,14 +1098,14 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
-                                      + "\tdialect \"mvel\"\n when \n"
-                                      + "     Person(field1 == 44B) \n"
-                                      + " then \n" 
-                                      + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( 55B ); \n"
-                                      + "insert( fact0 ); \n"
-                                      + "end",
+        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n"
+                                              + "\tdialect \"mvel\"\n when \n"
+                                              + "     Person(field1 == 44B) \n"
+                                              + " then \n"
+                                              + "Person fact0 = new Person(); \n"
+                                              + "fact0.setField1( 55B ); \n"
+                                              + "insert( fact0 ); \n"
+                                              + "end",
                                       result );
     }
 
@@ -1128,7 +1128,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( con );
 
         m.addLhsItem( p );
-        
+
         ActionInsertFact ai = new ActionInsertFact( "Person" );
         ai.addFieldValue( new ActionFieldValue( "field1",
                                                 "55",
@@ -1137,14 +1137,14 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n" 
-                                      + "\tdialect \"mvel\"\n when \n"
-                                      + "     Person(field1 == 44I ) \n"
-                                      + " then \n" 
-                                      + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( 55I ); \n"
-                                      + "insert( fact0 ); \n"
-                                      + "end",
+        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n"
+                                              + "\tdialect \"mvel\"\n when \n"
+                                              + "     Person(field1 == 44I ) \n"
+                                              + " then \n"
+                                              + "Person fact0 = new Person(); \n"
+                                              + "fact0.setField1( 55I ); \n"
+                                              + "insert( fact0 ); \n"
+                                              + "end",
                                       result );
     }
 
@@ -1167,7 +1167,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( con );
 
         m.addLhsItem( p );
-        
+
         ActionInsertFact ai = new ActionInsertFact( "Person" );
         ai.addFieldValue( new ActionFieldValue( "field1",
                                                 "55",
@@ -1176,14 +1176,14 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n" 
-                                      + "\tdialect \"java\"\n when \n"
-                                      + "     Person(field1 == 44B) \n"
-                                      + " then \n" 
-                                      + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( new java.math.BigDecimal( \"55\" ) ); \n"
-                                      + "insert( fact0 ); \n"
-                                      + "end",
+        assertEqualsIgnoreWhitespace( "rule \"test literal bigdecimal\" \n"
+                                              + "\tdialect \"java\"\n when \n"
+                                              + "     Person(field1 == 44B) \n"
+                                              + " then \n"
+                                              + "Person fact0 = new Person(); \n"
+                                              + "fact0.setField1( new java.math.BigDecimal( \"55\" ) ); \n"
+                                              + "insert( fact0 ); \n"
+                                              + "end",
                                       result );
     }
 
@@ -1206,7 +1206,7 @@ public class BRDRLPersistenceTest {
         p.addConstraint( con );
 
         m.addLhsItem( p );
-        
+
         ActionInsertFact ai = new ActionInsertFact( "Person" );
         ai.addFieldValue( new ActionFieldValue( "field1",
                                                 "55",
@@ -1215,17 +1215,17 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n" 
-                                      + "\tdialect \"java\"\n when \n"
-                                      + "     Person(field1 == 44I ) \n"
-                                      + " then \n" 
-                                      + "Person fact0 = new Person(); \n"
-                                      + "fact0.setField1( new java.math.BigInteger( \"55\" ) ); \n"
-                                      + "insert( fact0 ); \n"
-                                      + "end",
+        assertEqualsIgnoreWhitespace( "rule \"test literal biginteger\" \n"
+                                              + "\tdialect \"java\"\n when \n"
+                                              + "     Person(field1 == 44I ) \n"
+                                              + " then \n"
+                                              + "Person fact0 = new Person(); \n"
+                                              + "fact0.setField1( new java.math.BigInteger( \"55\" ) ); \n"
+                                              + "insert( fact0 ); \n"
+                                              + "end",
                                       result );
     }
-    
+
     @Test
     public void testLiteralBooleans() {
 
@@ -1325,6 +1325,118 @@ public class BRDRLPersistenceTest {
                                               + " then " + "end",
                                       result );
 
+    }
+
+    @Test
+    public void testInOperatorString() {
+
+        RuleModel m = new RuleModel();
+        m.name = "in";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "in" );
+        con.setValue( "value1, value2" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"in\" \n"
+                                              + "dialect \"mvel\" \n"
+                                              + "when \n"
+                                              + "     Person(field1 in ( \"value1\", \"value2\" ) ) \n"
+                                              + " then \n"
+                                              + "end",
+                                      result );
+    }
+
+    @Test
+    public void testInOperatorNumber() {
+
+        RuleModel m = new RuleModel();
+        m.name = "in";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        con.setFieldName( "field1" );
+        con.setOperator( "in" );
+        con.setValue( "55, 66" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"in\" \n"
+                                              + "dialect \"mvel\" \n"
+                                              + "when \n"
+                                              + "     Person(field1 in ( 55, 66 ) ) \n"
+                                              + " then \n"
+                                              + "end",
+                                      result );
+    }
+
+    @Test
+    public void testNotInOperatorString() {
+
+        RuleModel m = new RuleModel();
+        m.name = "not in";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "not in" );
+        con.setValue( "value1, value2" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"not in\" \n"
+                                              + "dialect \"mvel\" \n"
+                                              + "when \n"
+                                              + "     Person(field1 not in ( \"value1\", \"value2\" ) ) \n"
+                                              + " then \n"
+                                              + "end",
+                                      result );
+    }
+
+    @Test
+    public void testNotInOperatorNumber() {
+
+        RuleModel m = new RuleModel();
+        m.name = "not in";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        con.setFieldName( "field1" );
+        con.setOperator( "not in" );
+        con.setValue( "55, 66" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"not in\" \n"
+                                              + "dialect \"mvel\" \n"
+                                              + "when \n"
+                                              + "     Person(field1 not in ( 55, 66 ) ) \n"
+                                              + " then \n"
+                                              + "end",
+                                      result );
     }
 
     @Test

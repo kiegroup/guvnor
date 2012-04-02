@@ -796,7 +796,7 @@ public class BRDRLPersistence
                                               String fieldType,
                                               String value,
                                               StringBuilder buf) {
-            if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
+            if ( SuggestionCompletionEngine.operatorRequiresList( operator ) ) {
                 populateValueList( buf,
                                    type,
                                    fieldType,
@@ -812,7 +812,7 @@ public class BRDRLPersistence
             }
             buf.append( " " );
         }
-        
+
         private void populateValueList(final StringBuilder buf,
                                        final int type,
                                        final String fieldType,
@@ -874,7 +874,7 @@ public class BRDRLPersistence
                                          String value,
                                          StringBuilder buf) {
 
-            if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
+            if ( SuggestionCompletionEngine.operatorRequiresList( operator ) ) {
                 populateValueList( buf,
                                    type,
                                    fieldType,

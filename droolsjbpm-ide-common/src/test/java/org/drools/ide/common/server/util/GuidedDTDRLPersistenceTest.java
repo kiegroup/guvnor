@@ -2017,7 +2017,7 @@ public class GuidedDTDRLPersistenceTest {
                              index + 1 );
         assertFalse( index > -1 );
     }
-
+    
     @Test
     public void testLimitedEntryLHSIsNullOperator() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
@@ -2109,6 +2109,178 @@ public class GuidedDTDRLPersistenceTest {
 
         int index = -1;
         index = drl.indexOf( "Smurf( name != null , age != null , dateOfBirth != null )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLHSInOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.EXTENDED_ENTRY );
+        dt.setTableName( "extended-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditions().add( p1 );
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "in" );
+        p1.getChildColumns().add( cc1 );
+
+        ConditionCol52 cc2 = new ConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "in" );
+        p1.getChildColumns().add( cc2 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", "Pupa, Brains", "55, 66"},
+                                                           new Object[]{2l, "desc", "", ""}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name in ( \"Pupa\", \"Brains\" ) , age in ( 55, 66 ) )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLHSNotInOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.EXTENDED_ENTRY );
+        dt.setTableName( "extended-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditions().add( p1 );
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "not in" );
+        p1.getChildColumns().add( cc1 );
+
+        ConditionCol52 cc2 = new ConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "not in" );
+        p1.getChildColumns().add( cc2 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", "Pupa, Brains", "55, 66"},
+                                                           new Object[]{2l, "desc", "", ""}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name not in ( \"Pupa\", \"Brains\" ) , age not in ( 55, 66 ) )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLimitedEntryLHSInOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditions().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "in" );
+        cc1.setValue( new DTCellValue52( "Pupa, Brains" ) );
+        p1.getChildColumns().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "in" );
+        cc2.setValue( new DTCellValue52( "55, 66" ) );
+        p1.getChildColumns().add( cc2 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true},
+                                                           new Object[]{2l, "desc", false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name in ( \"Pupa\", \"Brains\" ) , age in ( 55, 66 ) )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLimitedEntryLHSNotInOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditions().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "not in" );
+        cc1.setValue( new DTCellValue52( "Pupa, Brains" ) );
+        p1.getChildColumns().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "not in" );
+        cc2.setValue( new DTCellValue52( "55, 66" ) );
+        p1.getChildColumns().add( cc2 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true},
+                                                           new Object[]{2l, "desc", false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name not in ( \"Pupa\", \"Brains\" ) , age not in ( 55, 66 ) )" );
         assertTrue( index > -1 );
 
         index = drl.indexOf( "Smurf( )",

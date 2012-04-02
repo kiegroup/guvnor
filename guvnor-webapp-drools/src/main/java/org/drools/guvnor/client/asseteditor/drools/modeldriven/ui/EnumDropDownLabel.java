@@ -81,13 +81,14 @@ public class EnumDropDownLabel extends Composite {
     private void showPopup() {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
-        //Change from mul
-        if ( constraint.getOperator().equals( "in" ) && !enumDropDown.isMultipleSelect() ) {
+        //Change from multi-select
+        final String operator = constraint.getOperator();
+        if ( SuggestionCompletionEngine.operatorRequiresList( operator ) && !enumDropDown.isMultipleSelect() ) {
             //Reset the current value since we are changing type of the list from multi to non-multi or vice versa
             enumDropDown.setMultipleSelect( true );
             constraint.setValue( "" );
 
-        } else if ( !constraint.getOperator().equals( "in" ) && enumDropDown.isMultipleSelect() ) {
+        } else if ( !SuggestionCompletionEngine.operatorRequiresList( operator ) && enumDropDown.isMultipleSelect() ) {
             enumDropDown.setMultipleSelect( false );
             constraint.setValue( "" );
         }
@@ -110,14 +111,14 @@ public class EnumDropDownLabel extends Composite {
             ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
             fieldName = cc.getFieldName();
             valueType = cc.getFieldType();
-            
-        } else if(constraint instanceof SingleFieldConstraint) {
+
+        } else if ( constraint instanceof SingleFieldConstraint ) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) this.constraint;
             fieldName = sfc.getFieldName();
             valueType = sce.getFieldType( factType,
                                           fieldName );
         } else {
-            throw new IllegalArgumentException("Unrecognised constraint type.");
+            throw new IllegalArgumentException( "Unrecognised constraint type." );
         }
 
         final DropDownData dropDownData;

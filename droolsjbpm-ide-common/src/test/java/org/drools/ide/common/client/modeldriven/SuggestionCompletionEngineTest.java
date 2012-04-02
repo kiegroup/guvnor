@@ -298,7 +298,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "name" );
-        assertEquals( 11,
+        assertEquals( 12,
                       c.length );
         assertEquals( "==",
                       c[0] );
@@ -322,10 +322,12 @@ public class SuggestionCompletionEngineTest {
                       c[9] );
         assertEquals( "in",
                       c[10] );
+        assertEquals( "not in",
+                      c[11] );
 
         c = com.getOperatorCompletions( "Person",
                                         "age" );
-        assertEquals( 8,
+        assertEquals( 10,
                       c.length );
         assertEquals( c[0],
                       "==" );
@@ -343,6 +345,10 @@ public class SuggestionCompletionEngineTest {
                       "== null" );
         assertEquals( c[7],
                       "!= null" );
+        assertEquals( c[8],
+                      "in" );
+        assertEquals( c[9],
+                      "not in" );
 
         c = com.getOperatorCompletions( "Person",
                                         "rank" );
@@ -492,7 +498,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "NotAnEvent",
                                         "dateField" );
-        assertEquals( 11,
+        assertEquals( 13,
                       c.length );
         assertEquals( c[0],
                       "==" );
@@ -511,10 +517,14 @@ public class SuggestionCompletionEngineTest {
         assertEquals( c[7],
                       "!= null" );
         assertEquals( c[8],
-                      "after" );
+                      "in" );
         assertEquals( c[9],
-                      "before" );
+                      "not in" );
         assertEquals( c[10],
+                      "after" );
+        assertEquals( c[11],
+                      "before" );
+        assertEquals( c[12],
                       "coincides" );
 
         c = com.getOperatorCompletions( "AnEvent",

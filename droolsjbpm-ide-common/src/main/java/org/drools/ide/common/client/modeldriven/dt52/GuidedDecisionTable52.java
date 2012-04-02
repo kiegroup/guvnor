@@ -387,25 +387,10 @@ public class GuidedDecisionTable52
 
     private String getType(ConditionCol52 col,
                            SuggestionCompletionEngine sce) {
-
-        // Columns with "Value Lists" etc are always Text (for now)
-        if ( hasValueList( col ) ) {
-            return SuggestionCompletionEngine.TYPE_STRING;
-        }
-
-        //Literals without operators are always Text (as the user can specify the operator "in cell")
-        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
-                return SuggestionCompletionEngine.TYPE_STRING;
-            }
-        }
-
-        //Otherwise lookup from SuggestionCompletionEngine
-        final String factType = getPattern( col ).getFactType();
-        final String fieldName = col.getFactField();
-        return getTypeFromSCE( factType,
-                               fieldName,
-                               sce );
+        final Pattern52 pattern = getPattern( col );
+        return getType( pattern,
+                        col,
+                        sce );
     }
 
     private String getType(Pattern52 pattern,
@@ -414,6 +399,11 @@ public class GuidedDecisionTable52
 
         // Columns with "Value Lists" etc are always Text (for now)
         if ( hasValueList( col ) ) {
+            return SuggestionCompletionEngine.TYPE_STRING;
+        }
+
+        // Operator "in" and "not in" requires a List as the value. These are always Text (for now)
+        if ( SuggestionCompletionEngine.operatorRequiresList( col.getOperator() ) ) {
             return SuggestionCompletionEngine.TYPE_STRING;
         }
 
@@ -593,11 +583,11 @@ public class GuidedDecisionTable52
         if ( col instanceof AttributeCol52 ) {
             return getValueList( (AttributeCol52) col );
         } else if ( col instanceof ConditionCol52 ) {
-            return getValueList( (ConditionCol52) col);
+            return getValueList( (ConditionCol52) col );
         } else if ( col instanceof ActionSetFieldCol52 ) {
-            return getValueList( (ActionSetFieldCol52) col);
+            return getValueList( (ActionSetFieldCol52) col );
         } else if ( col instanceof ActionInsertFactCol52 ) {
-            return getValueList( (ActionInsertFactCol52) col);
+            return getValueList( (ActionInsertFactCol52) col );
         }
         return new String[0];
     }

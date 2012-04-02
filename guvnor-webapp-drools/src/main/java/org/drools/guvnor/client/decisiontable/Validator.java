@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.ActionInsertFactFieldsPattern;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -209,7 +210,7 @@ public class Validator {
         if ( operator == null || operator.equals( "" ) ) {
             return false;
         }
-        return !(operator.equals( "in" ) || operator.equals( "not in" ) || operator.equals( "== null" ) || operator.equals( "!= null" ));
+        return !(SuggestionCompletionEngine.operatorRequiresList( operator ) || operator.equals( "== null" ) || operator.equals( "!= null" ));
     }
 
     public boolean isConditionLimitedEntryValueValid(ConditionCol52 c) {

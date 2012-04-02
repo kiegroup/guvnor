@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -842,15 +843,20 @@ public class GuidedDTDRLPersistence {
 
             String[] a = cell.split( "\\s" );
             if ( a.length > 1 ) {
-                sfc.setOperator( a[0] );
-                sfc.setValue( a[1] );
+                //Operator might be 1 part (e.g. "==") or two parts (e.g. "not in")
+                StringBuilder operator = new StringBuilder( a[0] );
+                for ( int i = 1; i < a.length - 1; i++ ) {
+                    operator.append( a[i] );
+                }
+                sfc.setOperator( operator.toString() );
+                sfc.setValue( a[a.length - 1] );
             } else {
                 sfc.setValue( cell );
             }
         } else {
 
             sfc.setOperator( c.getOperator() );
-            if ( c.getOperator().equals( "in" ) ) {
+            if ( SuggestionCompletionEngine.operatorRequiresList( c.getOperator() ) ) {
                 sfc.setValue( makeInList( cell ) );
             } else {
                 if ( !c.getOperator().equals( "== null" ) && !c.getOperator().equals( "!= null" ) ) {
