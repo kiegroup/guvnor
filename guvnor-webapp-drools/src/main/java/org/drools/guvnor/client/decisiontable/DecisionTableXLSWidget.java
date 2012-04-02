@@ -61,7 +61,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     //Button to convert XLS- to Guided Decision Table
     private Widget makeConvertToGuidedDecisionTableWidget(Asset asset) {
         Button convertButton = new Button( Constants.INSTANCE.ConvertTo0( Constants.INSTANCE.DecisionTableWebGuidedEditor() ) );
-        convertButton.setEnabled( asset.versionNumber > 0 );
+        convertButton.setEnabled( asset.getVersionNumber() > 0 );
         convertButton.addClickHandler( getConvertButtonClickHandler() );
         return convertButton;
     }

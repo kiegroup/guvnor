@@ -490,7 +490,7 @@ public class AssetEditorActionToolbar extends Composite {
      * closes itself
      */
     private void close() {
-        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.getUuid() ) ) );
     }
 
     void doDelete() {

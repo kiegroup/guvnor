@@ -91,7 +91,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                                                              form );
 
         Button dl = new Button( ConstantsCore.INSTANCE.Download() );
-        dl.setEnabled( this.asset.versionNumber > 0 );
+        dl.setEnabled( this.asset.getVersionNumber() > 0 );
         dl.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 Window.open( GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,

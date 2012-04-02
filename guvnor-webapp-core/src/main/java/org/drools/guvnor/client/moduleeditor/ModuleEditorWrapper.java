@@ -83,7 +83,7 @@ public class ModuleEditorWrapper extends Composite {
         Widget actionToolBar = clientFactory.getPerspectiveFactory().getModuleEditorActionToolbar(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
         layout.add(actionToolBar);
 
-        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.getUuid(),
                 clientFactory);
         assetViewerActivity.start(new AcceptItem() {
                     public void add(String tabTitle, IsWidget widget) {

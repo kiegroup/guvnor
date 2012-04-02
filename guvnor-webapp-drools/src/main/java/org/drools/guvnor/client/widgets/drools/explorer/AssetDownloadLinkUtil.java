@@ -26,7 +26,7 @@ public class AssetDownloadLinkUtil {
         url += "packages/";
         url += packageRef;
         url += "/assets/";
-        url += asset.name;
+        url += asset.getName();
         url += "/source";
 
         return url;

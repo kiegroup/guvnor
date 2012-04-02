@@ -92,7 +92,7 @@ public class SnapshotView extends Composite {
 
         vert.add( head );
 
-        AssetViewerActivity assetViewerActivity = new AssetViewerActivity( parentConf.uuid,
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity( parentConf.getUuid(),
                                                                            clientFactory );
         assetViewerActivity.start( new AcceptItem() {
                                        public void add(String tabTitle,

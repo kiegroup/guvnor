@@ -93,7 +93,7 @@ public class RuleViewerWrapper extends GuvnorEditor
                                                 eventBus,
                                                 ruleViewerSettings );
 
-        boolean readOnly = isHistoricalReadOnly || asset.isReadonly() || (this.ruleViewerSettings != null && this.ruleViewerSettings.isStandalone());
+        boolean readOnly = isHistoricalReadOnly || asset.isReadonly() || asset.isArchived() || (this.ruleViewerSettings != null && this.ruleViewerSettings.isStandalone());
         Widget actionToolBar = clientFactory.getPerspectiveFactory().getAssetEditorActionToolbar( "author",
                                                                                                   asset,
                                                                                                   ruleViewer.getAssetEditor(),

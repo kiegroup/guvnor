@@ -92,7 +92,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         //Initialise table to edit data
                                         table = new TemplateDataTableWidget( model,
                                                                              sce,
-                                                                             asset.readonly,
+                                                                             asset.isReadonly(),
                                                                              eventBus );
                                         table.setPixelSize( width,
                                                             height );
