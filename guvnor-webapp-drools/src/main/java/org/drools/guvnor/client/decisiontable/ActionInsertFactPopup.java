@@ -175,9 +175,17 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
                     private void assertDefaultValue() {
                         final List<String> valueList = Arrays.asList( model.getValueList( editingCol ) );
-                        final String defaultValue = utilities.asString( editingCol.getDefaultValue() );
-                        if ( !valueList.contains( defaultValue ) ) {
-                            editingCol.getDefaultValue().clearValues();
+                        if ( valueList.size() > 0 ) {
+                            final String defaultValue = utilities.asString( editingCol.getDefaultValue() );
+                            if ( !valueList.contains( defaultValue ) ) {
+                                editingCol.getDefaultValue().clearValues();
+                            }
+                        } else {
+                            //Ensure the Default Value has been updated to represent the column's data-type.
+                            final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+                            final DTDataTypes52 dataType = utilities.getDataType( editingCol );
+                            utilities.assertDTCellValue( dataType,
+                                                         defaultValue );
                         }
                     }
 

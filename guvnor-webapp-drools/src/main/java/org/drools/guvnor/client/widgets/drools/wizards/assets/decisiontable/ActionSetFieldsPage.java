@@ -32,6 +32,8 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.even
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -234,11 +236,21 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public void assertDefaultValue(final ActionSetFieldCol52 chosenFieldsSelection) {
-        final List<String> valueList = Arrays.asList( dtable.getValueList( chosenFieldsSelection ) );
-        final String defaultValue = utilities.asString( chosenFieldsSelection.getDefaultValue() );
-        if ( !valueList.contains( defaultValue ) ) {
-            chosenFieldsSelection.getDefaultValue().clearValues();
+    public void assertDefaultValue(final Pattern52 selectedPattern,
+                                   final ActionSetFieldCol52 selectedAction) {
+        final List<String> valueList = Arrays.asList( dtable.getValueList( selectedAction ) );
+        if ( valueList.size() > 0 ) {
+            final String defaultValue = utilities.asString( selectedAction.getDefaultValue() );
+            if ( !valueList.contains( defaultValue ) ) {
+                selectedAction.getDefaultValue().clearValues();
+            }
+        } else {
+            //Ensure the Default Value has been updated to represent the column's data-type.
+            final DTCellValue52 defaultValue = selectedAction.getDefaultValue();
+            final DTDataTypes52 dataType = utilities.getDataType( selectedPattern,
+                                                                  selectedAction );
+            utilities.assertDTCellValue( dataType,
+                                         defaultValue );
         }
     }
 

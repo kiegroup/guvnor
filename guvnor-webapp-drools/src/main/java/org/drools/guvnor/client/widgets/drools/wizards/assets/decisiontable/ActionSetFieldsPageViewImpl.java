@@ -331,12 +331,13 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         //Update Default Value widget if necessary
         txtValueList.addBlurHandler( new BlurHandler() {
-            
+
             public void onBlur(BlurEvent event) {
-                presenter.assertDefaultValue( chosenFieldsSelection );
+                presenter.assertDefaultValue( availablePatternsSelection,
+                                              chosenFieldsSelection );
                 makeDefaultValueWidget();
             }
-            
+
         } );
 
     }

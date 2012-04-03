@@ -447,6 +447,9 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onClick(ClickEvent w) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
                 chosenConditionsWidget.redraw();
+                presenter.assertDefaultValue( availablePatternsSelection,
+                                              chosenConditionsSelection );
+                makeDefaultValueWidget();
             }
         } );
 
@@ -454,12 +457,18 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onClick(ClickEvent w) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
                 chosenConditionsWidget.redraw();
+                presenter.assertDefaultValue( availablePatternsSelection,
+                                              chosenConditionsSelection );
+                makeDefaultValueWidget();
             }
         } );
         optPredicate.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
                 chosenConditionsWidget.redraw();
+                presenter.assertDefaultValue( availablePatternsSelection,
+                                              chosenConditionsSelection );
+                makeDefaultValueWidget();
             }
         } );
 
@@ -509,7 +518,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         //Update Default Value widget if necessary
         txtValueList.addBlurHandler( new BlurHandler() {
             public void onBlur(BlurEvent event) {
-                presenter.assertDefaultValue( chosenConditionsSelection );
+                presenter.assertDefaultValue( availablePatternsSelection,
+                                              chosenConditionsSelection );
                 makeDefaultValueWidget();
             }
         } );
