@@ -818,11 +818,13 @@ public class ServiceImplementation
                                             .withContent( iterator )
                                             .build();
         boolean bHasMoreRows = iterator.hasNext();
+
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                       .withStartRowIndex( request.getStartRowIndex() )
                                                       .withPageRowList( rowList )
                                                       .withLastPage( !bHasMoreRows )
-                                                      .buildWithTotalRowCount( iterator.getSize() );
+                                                      .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Full Text) for (" + request.getSearchText() + ") in " + methodDuration + " ms." );
@@ -855,11 +857,13 @@ public class ServiceImplementation
                                             .withContent( iterator )
                                             .build();
         boolean bHasMoreRows = iterator.hasNext();
+
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )
                                                 .withPageRowList( rowList )
                                                 .withLastPage( !bHasMoreRows )
-                                                .buildWithTotalRowCount( iterator.getSize() );
+                                                .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
@@ -921,6 +925,7 @@ public class ServiceImplementation
                                             .withContent( result.assets.iterator() )
                                             .build();
 
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )

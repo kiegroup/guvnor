@@ -128,7 +128,7 @@ public class RepositoryCategoryService
                     .withStartRowIndex(request.getStartRowIndex())
                     .withPageRowList(rowList)
                     .withLastPage(true)
-                    .buildWithTotalRowCount(0);
+                    .buildWithTotalRowCount(-1);
             return pageResponse;
         }
 

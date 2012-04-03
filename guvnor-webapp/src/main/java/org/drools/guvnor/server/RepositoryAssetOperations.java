@@ -282,18 +282,17 @@ public class RepositoryAssetOperations {
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
-        long totalRowsCount = iterator.getSize();
-
         List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder()
                 .withPageRequest(request)
                 .withContent(iterator)
                 .build();
 
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<AdminArchivedPageRow> response = new PageResponseBuilder<AdminArchivedPageRow>()
                 .withStartRowIndex(request.getStartRowIndex())
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
-                .buildWithTotalRowCount(totalRowsCount);
+                .buildWithTotalRowCount(-1);
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Searched for Archived Assests in " + methodDuration + " ms.");
@@ -496,12 +495,12 @@ public class RepositoryAssetOperations {
                 .withContent(iterator)
                 .build();
 
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                 .withStartRowIndex(request.getStartRowIndex())
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
-                .buildWithTotalRowCount(-1);//its impossible to know the exact count selected until we'v reached
-                                            //the end of iterator
+                .buildWithTotalRowCount(-1);
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");

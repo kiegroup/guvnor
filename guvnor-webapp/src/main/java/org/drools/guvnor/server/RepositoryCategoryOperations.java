@@ -136,6 +136,7 @@ public class RepositoryCategoryOperations {
                 .withContent(result.assets.iterator())
                 .build();
 
+        //We can't use iterator.size() for the totalRowCount as some rows may have been filtered out based on permissions
         PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
                 .withStartRowIndex(request.getStartRowIndex())
                 .withPageRowList(rowList)
