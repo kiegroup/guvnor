@@ -414,6 +414,16 @@ public class GuidedDecisionTable52
             }
         }
 
+        //Formula are always Text (as the user can specify anything "in cell")
+        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+            return SuggestionCompletionEngine.TYPE_STRING;
+        }
+
+        //Predicates are always Text (as the user can specify anything "in cell")
+        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
+            return SuggestionCompletionEngine.TYPE_STRING;
+        }
+
         //Otherwise lookup from SuggestionCompletionEngine
         final String factType = pattern.getFactType();
         final String fieldName = col.getFactField();

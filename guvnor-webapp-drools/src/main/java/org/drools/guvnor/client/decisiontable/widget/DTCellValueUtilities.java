@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.util.DateConverter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
@@ -126,6 +127,27 @@ public class DTCellValueUtilities {
     }
 
     /**
+     * Get the Data Type corresponding to a given column
+     * 
+     * @param Pattern52
+     * @param ActionSetFieldCol52
+     * @return
+     */
+    public DTDataTypes52 getDataType(Pattern52 pattern,
+                                     ActionSetFieldCol52 action) {
+
+        //Limited Entry are simply boolean
+        if ( action instanceof LimitedEntryCol ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
+        //Extended Entry...
+        return model.getTypeSafeType( pattern,
+                                      action,
+                                      sce );
+    }
+
+    /**
      * The column-data type is looked up from the SuggestionCompletionEngine and
      * represents the *true* data-type that the column represents. The data-type
      * associated with the Cell Value can be incorrect for legacy models. For
@@ -137,6 +159,10 @@ public class DTCellValueUtilities {
      */
     public void assertDTCellValue(DTDataTypes52 dataType,
                                   DTCellValue52 dcv) {
+        if ( dcv == null ) {
+            return;
+        }
+
         //If already converted exit
         if ( dataType.equals( dcv.getDataType() ) ) {
             return;

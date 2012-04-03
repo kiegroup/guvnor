@@ -42,7 +42,8 @@ public interface ActionSetFieldsPageView
 
         boolean hasEnums(ActionSetFieldCol52 selectedAction);
 
-        void assertDefaultValue(ActionSetFieldCol52 chosenFieldsSelection);
+        void assertDefaultValue(Pattern52 selectedPattern,
+                                ActionSetFieldCol52 selectedAction);
 
     }
 

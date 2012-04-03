@@ -28,6 +28,8 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.even
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -226,12 +228,23 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public void assertDefaultValue(final ConditionCol52 selectedPattern) {
-        final List<String> valueList = Arrays.asList( dtable.getValueList( selectedPattern ) );
-        final String defaultValue = utilities.asString( selectedPattern.getDefaultValue() );
-        if ( !valueList.contains( defaultValue ) ) {
-            selectedPattern.getDefaultValue().clearValues();
+    public void assertDefaultValue(final Pattern52 selectedPattern,
+                                   final ConditionCol52 selectedCondition) {
+        final List<String> valueList = Arrays.asList( dtable.getValueList( selectedCondition ) );
+        if ( valueList.size() > 0 ) {
+            final String defaultValue = utilities.asString( selectedCondition.getDefaultValue() );
+            if ( !valueList.contains( defaultValue ) ) {
+                selectedCondition.getDefaultValue().clearValues();
+            }
+        } else {
+            //Ensure the Default Value has been updated to represent the column's data-type.
+            final DTCellValue52 defaultValue = selectedCondition.getDefaultValue();
+            final DTDataTypes52 dataType = utilities.getDataType( selectedPattern,
+                                                                  selectedCondition );
+            utilities.assertDTCellValue( dataType,
+                                         defaultValue );
         }
+
     }
 
 }
