@@ -45,6 +45,12 @@ public class FactVerifier {
     }
 
     public void verify(VerifyFact verifyFact) {
+        
+        //Clear existing results
+        for ( VerifyField vf : verifyFact.getFieldValues() ) {
+            vf.setSuccessResult( null );
+            vf.setExplanation( "Fact of type [" + verifyFact.getName() + "] was not found in the results." );
+        }
 
         if ( !verifyFact.anonymous ) {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
