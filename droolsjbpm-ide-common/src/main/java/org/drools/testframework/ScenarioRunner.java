@@ -311,6 +311,12 @@ public class ScenarioRunner {
 
     void verify(VerifyFact value) {
 
+        //Clear existing results
+        for ( VerifyField vf : value.getFieldValues() ) {
+            vf.setSuccessResult( null );
+            vf.setExplanation( "Fact of type [" + value.getName() + "] was not found in the results." );
+        }
+        
         if ( !value.anonymous ) {
             Object factObject = this.populatedData.get( value.getName() );
             if ( factObject == null ) factObject = this.globalData.get( value.getName() );
