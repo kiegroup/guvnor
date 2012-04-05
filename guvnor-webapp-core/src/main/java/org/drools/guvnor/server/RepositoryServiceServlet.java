@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.NotLoggedInException;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -88,15 +89,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             }
         } else if ( e.getCause() instanceof RulesRepositoryException ) {
             log.error( e.getMessage(),
-                    e.getCause() );
+                       e.getCause() );
             sendErrorMessage( e.getCause().getMessage() );
+        } else if ( e.getCause() instanceof NotLoggedInException ) {
+            log.error( e.getMessage(),
+                       e.getCause() );
+            sendErrorMessage( "You are not logged in. Please refresh your browser and try again." );
         } else {
             if ( e.getCause() != null ) {
                 log.error( e.getMessage(),
-                        e.getCause() );
+                           e.getCause() );
             } else {
                 log.error( e.getMessage(),
-                        e );
+                           e );
             }
             sendErrorMessage( "Sorry, a technical error occurred. Please contact a system administrator." );
         }
