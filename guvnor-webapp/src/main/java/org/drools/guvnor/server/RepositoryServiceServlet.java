@@ -16,8 +16,18 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import org.drools.guvnor.client.rpc.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.CategoryService;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -27,11 +37,9 @@ import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.NotLoggedInException;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
@@ -140,15 +148,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             }
         } else if ( e.getCause() instanceof RulesRepositoryException ) {
             log.error( e.getMessage(),
-                    e.getCause() );
+                       e.getCause() );
             sendErrorMessage( e.getCause().getMessage() );
+        } else if ( e.getCause() instanceof NotLoggedInException ) {
+            log.error( e.getMessage(),
+                       e.getCause() );
+            sendErrorMessage( "You are not logged in. Please refresh your browser and try again." );
         } else {
             if ( e.getCause() != null ) {
                 log.error( e.getMessage(),
-                        e.getCause() );
+                           e.getCause() );
             } else {
                 log.error( e.getMessage(),
-                        e );
+                           e );
             }
             sendErrorMessage( "Sorry, a technical error occurred. Please contact a system administrator." );
         }
