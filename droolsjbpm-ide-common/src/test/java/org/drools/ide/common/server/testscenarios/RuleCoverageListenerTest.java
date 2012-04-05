@@ -1,12 +1,11 @@
 package org.drools.ide.common.server.testscenarios;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
@@ -22,7 +21,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
+import org.junit.Test;
 
 public class RuleCoverageListenerTest {
 
@@ -204,6 +203,17 @@ class MockActivation
     public LinkedList getBlockers() {
         // TODO Auto-generated method stub
         return null;
-    }        
+    }
 
+    @Override
+    public boolean isMatched() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setMatched(boolean matched) {
+        // TODO Auto-generated method stub
+    }     
+    
 }
