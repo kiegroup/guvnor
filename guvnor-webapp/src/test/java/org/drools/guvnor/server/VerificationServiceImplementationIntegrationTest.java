@@ -20,10 +20,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.VerificationService;
+import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
 import org.drools.guvnor.server.util.IO;
+import org.drools.guvnor.server.util.RuleAssetPopulator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.junit.Before;
@@ -103,5 +111,30 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
                       report.factUsages[2].fields.length );
 
     }
+    
+    @Test
+    public void testVerifyAssetWithoutVerifiersRules() throws Exception {
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifyAssetWithoutVerifiersRules",
+                                                                          "" );
+        AssetItem asset = pkg.addAsset( "SomeDRL",
+                                        "" );
+        asset.updateFormat( AssetFormats.DRL );
 
+        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "/AnalysisSample.drl" ) ) );
+        asset.checkin( "" );
+        
+        RuleAssetPopulator p = new RuleAssetPopulator();
+        RuleAsset ruleAsset= p.populateFrom(asset);
+        MetaData m = new MetaData();
+        m.setPackageName("testVerifyAssetWithoutVerifiersRules");
+        ruleAsset.setMetaData(m);
+        RuleContentText text = new RuleContentText();
+        text.content = asset.getContent();
+        ruleAsset.setContent(text);
+        
+        Set<String> activeWorkingIds = new HashSet<String>();
+                
+        AnalysisReport report = verificationService.verifyAssetWithoutVerifiersRules(ruleAsset, activeWorkingIds);
+        assertNotNull( report );
+    }
 }

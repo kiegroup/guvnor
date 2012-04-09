@@ -26,7 +26,7 @@ public class VerifierConfigurationFactory {
     public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(RuleAsset[] workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
-                new VerifierConfigurationImpl());
+                new DefaultVerifierConfiguration());
     }
 
 
