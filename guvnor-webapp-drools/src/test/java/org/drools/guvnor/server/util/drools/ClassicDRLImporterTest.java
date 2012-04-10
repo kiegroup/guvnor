@@ -123,6 +123,35 @@ public class ClassicDRLImporterTest {
     }
 
     @Test
+    public void testWithDeclarations() throws Exception {
+
+        final String EXPECTED = "declare Type1 end"
+                                + "declare Type2 extends Type1 field1 : String end"
+                                + "declare Type3 end"
+                                + "declare Type4 extends Type3 field1 : String end";
+
+        ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_declarations.drl" ) );
+        assertFalse( imp.isDSLEnabled() );
+
+        assertEquals( 2,
+                      imp.getAssets().size() );
+        assertEquals( AssetFormats.DRL,
+                      imp.getAssets().get( 0 ).format );
+        assertEquals( AssetFormats.DRL_MODEL,
+                      imp.getAssets().get( 1 ).format );
+
+        assertEquals( "Rule",
+                      imp.getAssets().get( 0 ).name );
+        assertEqualsIgnoreWhitespace( "when Type1() then System.out.println(\"Type1\");",
+                                      imp.getAssets().get( 0 ).content );
+
+        assertEquals( "model",
+                      imp.getAssets().get( 1 ).name );
+        assertEqualsIgnoreWhitespace( EXPECTED,
+                                      imp.getAssets().get( 1 ).content );
+    }
+    
+    @Test
     public void testWithDSL() throws Exception {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_with_dsl.drl" ) );
