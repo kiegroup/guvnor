@@ -16,9 +16,15 @@
 
 package org.drools.guvnor.server.contenthandler.drools;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.definition.process.Process;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
@@ -28,20 +34,22 @@ import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ICompilable;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
+import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RuleFlowHandler extends ContentHandler
     implements
     ICompilable,
     ICanHasAttachment {
+
+    private static final LoggingHelper log = LoggingHelper.getLogger( RuleFlowHandler.class );
 
     public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
@@ -68,24 +76,50 @@ public class RuleFlowHandler extends ContentHandler
 
     protected RuleFlowProcess readProcess(InputStream is) {
 
+        List<Process> processes = null;
         RuleFlowProcess process = null;
+        InputStreamReader reader = null;
 
         try {
-            InputStreamReader reader = new InputStreamReader( is );
+            reader = new InputStreamReader( is );
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            configuration.initSemanticModules();
+            configuration.addSemanticModule( new ProcessSemanticModule() );
             XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(),
                                                                getClassLoader() );
 
-            try {
-                process = (RuleFlowProcess) xmlReader.read( reader );
-
-            } catch ( Exception e ) {
-                reader.close();
-                throw new Exception( "Unable to read rule flow XML." );
+            //An asset can only contain one process (and a RuleFlowProcess at that)
+            processes = xmlReader.read( reader );
+            if ( processes.size() == 0 ) {
+                final String message = "RuleFlowProcess not found.";
+                log.error( message );
+                throw new RuntimeException( message );
             }
-            reader.close();
-        } catch ( Exception e ) {
-            return null;
+            if ( processes.size() > 1 ) {
+                final String message = "An asset can only contain one RuleFlowProcess. Multiple were detected.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+            if ( processes.get( 0 ) instanceof RuleFlowProcess ) {
+                process = (RuleFlowProcess) processes.get( 0 );
+            } else {
+                final String message = "The asset does not contain a RuleFlowProcess. Unable to process.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+
+        } catch ( SAXException se ) {
+            log.error( se.getMessage() );
+        } catch ( IOException ioe ) {
+            log.error( ioe.getMessage() );
+        } finally {
+            if ( reader != null ) {
+                try {
+                    reader.close();
+                } catch ( IOException ioe ) {
+                    log.error( ioe.getMessage() );
+                }
+            }
         }
 
         return process;
@@ -161,7 +195,7 @@ public class RuleFlowHandler extends ContentHandler
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
                         AssemblyErrorLogger logger) throws DroolsParserException,
-                                           IOException {
+                                                   IOException {
         InputStream ins = asset.getBinaryContentAttachment();
         if ( ins != null ) {
             builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
@@ -175,4 +209,5 @@ public class RuleFlowHandler extends ContentHandler
         }
         return cl;
     }
+
 }
