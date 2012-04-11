@@ -147,7 +147,7 @@ public class CategoryResource extends Resource {
         int lastDotIndex = categoryPath.lastIndexOf("/");
         if (lastDotIndex >= 0) {
             parentPath = categoryPath.substring(0, lastDotIndex);
-            name = categoryPath.substring(lastDotIndex);
+            name = categoryPath.substring(lastDotIndex + 1);
         } else {
             parentPath = "";
             name = categoryPath;
