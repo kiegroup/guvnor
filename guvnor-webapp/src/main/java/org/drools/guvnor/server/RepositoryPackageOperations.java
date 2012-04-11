@@ -15,33 +15,66 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
+import org.drools.guvnor.client.rpc.SnapshotDiff;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.builder.PackageAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.util.*;
-import org.drools.repository.*;
+import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BuilderResultHelper;
+import org.drools.guvnor.server.util.DroolsHeader;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.PackageConfigDataFactory;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.*;
-
-import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for packages
@@ -184,15 +217,43 @@ public class RepositoryPackageOperations {
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
 
-            return getRulesRepository().copyPackage( sourcePackageName,
-                    destPackageName );
-        } catch (RulesRepositoryException e) {
+            final String newPackageUUID = getRulesRepository().copyPackage( sourcePackageName,
+                                                                            destPackageName );
+
+            fixRuleFlowProcessPackageNames( newPackageUUID );
+
+            return newPackageUUID;
+            
+        } catch ( RulesRepositoryException e ) {
             log.error( "Unable to copy package.",
-                    e );
+                       e );
             throw e;
         }
     }
 
+    //Ensure all RuleFlowProcesses have their package name updated to that of the containing Guvnor package
+    private void fixRuleFlowProcessPackageNames(final String packageUUID) {
+        final PackageItem newPackage = getRulesRepository().loadPackageByUUID( packageUUID );
+        final AssetItemIterator ruleFlowAssetIterator = newPackage.listAssetsByFormat( new String[]{AssetFormats.RULE_FLOW_RF} );
+        final ContentHandler contentHandler = ContentManager.getHandler( AssetFormats.RULE_FLOW_RF );
+        ICanHasAttachment attachmentHandler = null;
+        if ( contentHandler instanceof ICanHasAttachment ) {
+            attachmentHandler = (ICanHasAttachment) contentHandler;
+        }
+
+        while ( ruleFlowAssetIterator.hasNext() ) {
+            final AssetItem asset = ruleFlowAssetIterator.next();
+            if ( attachmentHandler != null ) {
+                try {
+                    attachmentHandler.onAttachmentAdded( asset );
+                } catch ( IOException ioe ) {
+                    log.error( "Unable to rename RuleFlowProcess package for asset [" + asset.getName() + "]",
+                               ioe );
+                }
+            }
+        }
+    }
+    
     protected void removePackage(String uuid) {
 
         try {
@@ -211,8 +272,12 @@ public class RepositoryPackageOperations {
                                    String newName) {
         log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
 
-        return getRulesRepository().renamePackage( uuid,
-                newName );
+        getRulesRepository().renamePackage( uuid,
+                                            newName );
+
+        fixRuleFlowProcessPackageNames( uuid );
+
+        return uuid;
     }
 
     protected byte[] exportPackages(String packageName) {

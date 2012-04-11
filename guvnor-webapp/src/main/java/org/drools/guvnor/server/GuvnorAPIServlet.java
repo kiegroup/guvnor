@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -36,6 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
@@ -53,7 +56,6 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 /**
  * A servlet opening an API into the Guvnor services.
@@ -212,55 +214,101 @@ public class GuvnorAPIServlet extends HttpServlet {
 
     public static Map<String, String[]> extract(String json) throws Exception {
         Map<String, String[]> result = null;
-        String xml = BPMN2ProcessHandler.serialize( getDesignerURL()+"/bpmn2_0serialization",
+        String xml = BPMN2ProcessHandler.serialize( getDesignerURL() + "/bpmn2_0serialization",
                                                     json );
-        Reader isr = new StringReader( xml );
-        SemanticModules semanticModules = new SemanticModules();
-        semanticModules.addSemanticModule( new BPMNSemanticModule() );
-        semanticModules.addSemanticModule( new BPMNDISemanticModule() );
-        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
-                                                           getClassLoader() );
-        RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
-        if ( process == null ) {
-            throw new IllegalArgumentException( "Could not read process" );
-        }
-        log.debug( "Processing " + process.getId() );
-        result = new HashMap<String, String[]>();
-        StartNode start = process.getStart();
-        Node target = start.getTo().getTo();
-        if ( target instanceof Split ) {
-            Split split = (Split) target;
-            for ( Connection connection : split.getDefaultOutgoingConnections() ) {
-                Constraint constraint = split.getConstraint( connection );
-                if ( constraint != null ) {
-                    System.out.println( "Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint() );
-                    result.put( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ),
-                                new String[]{connection.getTo().getName(), constraint.getConstraint()} );
+
+        Reader isr = null;
+        try {
+            isr = new StringReader( xml );
+            SemanticModules semanticModules = new SemanticModules();
+            semanticModules.addSemanticModule( new BPMNSemanticModule() );
+            semanticModules.addSemanticModule( new BPMNDISemanticModule() );
+            XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
+                                                               getClassLoader() );
+
+            //An asset can only contain one process (and a RuleFlowProcess at that)
+            List<Process> processes = xmlReader.read( isr );
+            RuleFlowProcess process = null;
+            if ( processes.size() == 0 ) {
+                final String message = "RuleFlowProcess not found.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+            if ( processes.size() > 1 ) {
+                final String message = "An asset can only contain one RuleFlowProcess. Multiple were detected.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+            if ( processes.get( 0 ) instanceof RuleFlowProcess ) {
+                process = (RuleFlowProcess) processes.get( 0 );
+            } else {
+                final String message = "The asset does not contain a RuleFlowProcess. Unable to process.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+
+            //Process XML
+            log.debug( "Processing " + process.getId() );
+            result = new HashMap<String, String[]>();
+            StartNode start = process.getStart();
+            Node target = start.getTo().getTo();
+            if ( target instanceof Split ) {
+                Split split = (Split) target;
+                for ( Connection connection : split.getDefaultOutgoingConnections() ) {
+                    Constraint constraint = split.getConstraint( connection );
+                    if ( constraint != null ) {
+                        System.out.println( "Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint() );
+                        result.put( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ),
+                                    new String[]{connection.getTo().getName(), constraint.getConstraint()} );
+                    }
                 }
             }
-        }
+            return result;
 
-        if ( isr != null ) {
-            isr.close();
+        } finally {
+            if ( isr != null ) {
+                isr.close();
+            }
         }
-        return result;
     }
+
 
     public static String inject(String json,
                                 Map<String, String> constraints) throws Exception {
-        String xml = BPMN2ProcessHandler.serialize( getDesignerURL()+"/bpmn2_0serialization",
+        String xml = BPMN2ProcessHandler.serialize( getDesignerURL() + "/bpmn2_0serialization",
                                                     json );
-        Reader isr = new StringReader( xml );
-        SemanticModules semanticModules = new SemanticModules();
-        semanticModules.addSemanticModule( new BPMNSemanticModule() );
-        semanticModules.addSemanticModule( new BPMNDISemanticModule() );
-        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
-                                                           getClassLoader() );
-        RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
-        isr.close();
-        if ( process == null ) {
-            throw new IllegalArgumentException( "Could not read process" );
-        } else {
+
+        Reader isr = null;
+        try {
+            isr = new StringReader( xml );
+            SemanticModules semanticModules = new SemanticModules();
+            semanticModules.addSemanticModule( new BPMNSemanticModule() );
+            semanticModules.addSemanticModule( new BPMNDISemanticModule() );
+            XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
+                                                               getClassLoader() );
+
+            //An asset can only contain one process (and a RuleFlowProcess at that)
+            List<Process> processes = xmlReader.read( isr );
+            RuleFlowProcess process = null;
+            if ( processes.size() == 0 ) {
+                final String message = "RuleFlowProcess not found.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+            if ( processes.size() > 1 ) {
+                final String message = "An asset can only contain one RuleFlowProcess. Multiple were detected.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+            if ( processes.get( 0 ) instanceof RuleFlowProcess ) {
+                process = (RuleFlowProcess) processes.get( 0 );
+            } else {
+                final String message = "The asset does not contain a RuleFlowProcess. Unable to process.";
+                log.error( message );
+                throw new RuntimeException( message );
+            }
+
+            //Process XML
             log.debug( "Processing " + process.getId() );
             StartNode start = process.getStart();
             Node target = start.getTo().getTo();
@@ -282,8 +330,13 @@ public class GuvnorAPIServlet extends HttpServlet {
             }
             String newXml = XmlBPMNProcessDumper.INSTANCE.dump( process );
             System.out.println( newXml );
-            return deserialize( getDesignerURL()+"/bpmn2_0deserialization",
+            return deserialize( getDesignerURL() + "/bpmn2_0deserialization",
                                 newXml );
+
+        } finally {
+            if ( isr != null ) {
+                isr.close();
+            }
         }
     }
 
