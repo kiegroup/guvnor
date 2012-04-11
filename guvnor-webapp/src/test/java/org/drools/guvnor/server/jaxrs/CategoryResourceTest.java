@@ -63,6 +63,8 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         repositoryCategoryService.createCategory(null, "Category 1", "Category 1");
         repositoryCategoryService.createCategory(null, "Category 2", "Category 2");
         
+        repositoryCategoryService.createCategory(null, "testCreateSubCategory", "desc");
+       
         
         //create a new package
         ServiceImplementation impl = restTestingBase.getServiceImplementation();
@@ -120,6 +122,19 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(ResponseType.SUCCESS, resp.getType());
     }
 
+    @Test
+    public void testCreateSubCategory() throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+
+        ClientResponse resp = client.put(generateBaseUrl() +  "/categories/testCreateSubCategory/subCat1",
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+        
+        resp = client.put(generateBaseUrl() +  "/categories/testCreateSubCategory/subCat1/subCat2",
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+    }
+    
     @Test
     public void deleteCategory() throws Exception {
         AbderaClient client = new AbderaClient(abdera);
