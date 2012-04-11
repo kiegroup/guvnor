@@ -68,7 +68,7 @@ public class MavenDependencyTreeParserTest {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
         final MavenDependencyTreeParser.Pair<Collection<MavenArtifact>, Collection<MavenArtifact>> result;
-        result = parser.buildDependencyTreeAndList("org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n");
+        result = parser.buildDependencyTreeAndList("org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n");
 
         assertNotNull(result);
         assertNotNull(result.getV1());
@@ -81,8 +81,8 @@ public class MavenDependencyTreeParserTest {
     public void testTreeOneChild() {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
-        final String input = "org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n" +
-                "+- org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile";
+        final String input = "org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n" +
+                "+- org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile";
 
         final MavenDependencyTreeParser.Pair<Collection<MavenArtifact>, Collection<MavenArtifact>> result;
         result = parser.buildDependencyTreeAndList(input);
@@ -93,17 +93,17 @@ public class MavenDependencyTreeParserTest {
         assertEquals(1, result.getV1().size());
         assertEquals(1, result.getV2().size());
 
-        result.getV1().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-        result.getV2().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        result.getV1().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
+        result.getV2().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
     }
 
     @Test
     public void testTreeTwoChild() {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
-        final String input = "org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n" +
-                "+- org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile\n" +
-                "+- org.drools:drools-core:jar:5.4.0-SNAPSHOT:compile\n";
+        final String input = "org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n" +
+                "+- org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile\n" +
+                "+- org.drools:drools-core:jar:5.5.0-SNAPSHOT:compile\n";
 
         final MavenDependencyTreeParser.Pair<Collection<MavenArtifact>, Collection<MavenArtifact>> result;
         result = parser.buildDependencyTreeAndList(input);
@@ -119,9 +119,9 @@ public class MavenDependencyTreeParserTest {
     public void testTreeTwoChildButSecondIsJustForTest() {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
-        final String input = "org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n" +
-                "+- org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile\n" +
-                "+- org.drools:drools-core:jar:5.4.0-SNAPSHOT:test\n";
+        final String input = "org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n" +
+                "+- org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile\n" +
+                "+- org.drools:drools-core:jar:5.5.0-SNAPSHOT:test\n";
 
         final MavenDependencyTreeParser.Pair<Collection<MavenArtifact>, Collection<MavenArtifact>> result;
         result = parser.buildDependencyTreeAndList(input);
@@ -137,9 +137,9 @@ public class MavenDependencyTreeParserTest {
     public void testTreeTwoChildSecondHasComments() {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
-        final String input = "org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n" +
-                "+- org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile (version managed from 3.1)\n" +
-                "+- org.drools:drools-core:jar:5.4.0-SNAPSHOT:compile\n";
+        final String input = "org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n" +
+                "+- org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile (version managed from 3.1)\n" +
+                "+- org.drools:drools-core:jar:5.5.0-SNAPSHOT:compile\n";
 
         final MavenDependencyTreeParser.Pair<Collection<MavenArtifact>, Collection<MavenArtifact>> result;
         result = parser.buildDependencyTreeAndList(input);
@@ -150,15 +150,15 @@ public class MavenDependencyTreeParserTest {
         assertEquals(2, result.getV1().size());
         assertEquals(2, result.getV2().size());
 
-        result.getV1().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        result.getV1().iterator().next().equals(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
     }
 
     @Test
     public void testTreeComplex() {
         final MavenDependencyTreeParser parser = new MavenDependencyTreeParser();
 
-        final String input = "org.drools:drools-camel-server:war:5.4.0-SNAPSHOT\n" +
-                "+- org.drools:drools-camel:jar:5.4.0-SNAPSHOT:compile\n" +
+        final String input = "org.drools:drools-camel-server-example:war:5.5.0-SNAPSHOT\n" +
+                "+- org.drools:drools-camel:jar:5.5.0-SNAPSHOT:compile\n" +
                 "|  +- org.springframework:spring-aop:jar:2.5.6:compile\n" +
                 "|  \\- org.apache.cxf:cxf-rt-frontend-jaxws:jar:2.4.4:compile\n" +
                 "|     +- xml-resolver:xml-resolver:jar:1.2:compile\n" +
@@ -177,7 +177,7 @@ public class MavenDependencyTreeParserTest {
         assertEquals(2, result.getV1().size());
 
         for (final MavenArtifact artifact : result.getV1()) {
-            if (artifact.equals(new MavenArtifact("org.drools:drools-camel:jar:5.4.0-SNAPSHOT:compile"))) {
+            if (artifact.equals(new MavenArtifact("org.drools:drools-camel:jar:5.5.0-SNAPSHOT:compile"))) {
                 validateDroolsCamel(artifact);
             } else if (artifact.equals(new MavenArtifact("org.apache.camel:camel-core:jar:2.4.0:compile"))) {
                 assertFalse(artifact.hasChild());
