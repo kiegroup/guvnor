@@ -95,6 +95,8 @@ public class CategoryResourceIntegrationTest extends GuvnorIntegrationTest {
                                                   "Category 1.1.1",
                                                   "Category 1.1.1 description" );
 
+        repositoryCategoryService.createCategory( null, "testCreateSubCategory", "desc");
+        
         //create a new package
         ModuleItem pkg = rulesRepository.createModule( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
@@ -373,7 +375,21 @@ public class CategoryResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals( ResponseType.SUCCESS,
                       resp.getType() );
     }
+    
+    @Test
+    @RunAsClient
+    public void testCreateSubCategory(@ArquillianResource URL baseURL) throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
 
+        ClientResponse resp = client.put(new URL( baseURL,  "rest/categories/testCreateSubCategory/subCat1" ).toExternalForm(),
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+        
+        resp = client.put(new URL( baseURL,  "rest/categories/testCreateSubCategory/subCat1/subCat2").toExternalForm(),
+                new ByteArrayInputStream(new byte[]{}));
+        assertEquals(ResponseType.SUCCESS, resp.getType());
+    }
+    
     @Test
     @RunAsClient
     public void deleteCategory(@ArquillianResource URL baseURL) throws Exception {
