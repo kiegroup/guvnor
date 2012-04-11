@@ -35,6 +35,9 @@ public class ApplicationPreferences {
     public static final String FORMBUILDER_URL = "formbuilder.url";
     public static final String FORMBUILDER_CONTEXT = "formbuilder.context";
     public static final String FORMBUILDER_PROFILE = "formbuilder.profile";
+    
+    public static final String GUVNOR_URL = "guvnor.url";
+    
 
     public static ApplicationPreferences instance;
     private Map<String, String> preferences;
@@ -101,5 +104,9 @@ public class ApplicationPreferences {
 
     public static String getFormBuilderProfile() {
         return getStringPref(FORMBUILDER_PROFILE);
+    }
+    
+    public static String getGuvnorURL() {
+    	return getStringPref(GUVNOR_URL);
     }
 }
