@@ -31,6 +31,8 @@ public class ApplicationPreferences {
     public static final String DESIGNER_URL = "designer.url";
     public static final String DESIGNER_CONTEXT = "designer.context";
     public static final String DESIGNER_PROFILE = "designer.profile";
+    
+    public static final String GUVNOR_URL = "guvnor.url";
 
     public static ApplicationPreferences instance;
     private Map<String, String> preferences;
@@ -77,6 +79,10 @@ public class ApplicationPreferences {
     
     public static String getDesignerProfile() {
         return getStringPref(DESIGNER_PROFILE);
+    }
+    
+    public static String getGuvnorURL() {
+    	return getStringPref(GUVNOR_URL);
     }
     
 }

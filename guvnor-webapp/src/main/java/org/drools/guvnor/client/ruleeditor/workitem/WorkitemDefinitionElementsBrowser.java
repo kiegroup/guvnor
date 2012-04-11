@@ -18,6 +18,7 @@ package org.drools.guvnor.client.ruleeditor.workitem;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -156,7 +157,7 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
                                     public void onSuccess(String[] images) {
                                         for (int i = 0; i < images.length; i++) {
                                             imagesList.addItem(presults.getName() + " : " + images[i], 
-                                                    "http://localhost:8080/drools-guvnor/rest/packages/" + 
+                                            		ApplicationPreferences.getGuvnorURL() + "/rest/packages/" + 
                                                     presults.getName() + "/assets/" + images[i] + "/binary");
                                         }
                                     }
@@ -186,7 +187,7 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
                                         public void onSuccess(String[] images) {
                                             for (int i = 0; i < images.length; i++) {
                                                 imagesList.addItem(packageConfigData.getName() + " : " + images[i], 
-                                                        "http://localhost:8080/drools-guvnor/rest/packages/" + 
+                                                		ApplicationPreferences.getGuvnorURL() + "/rest/packages/" + 
                                                         packageConfigData.getName() + "/assets/" + images[i] + "/binary");
                                             }
                                         }
