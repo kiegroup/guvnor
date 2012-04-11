@@ -30,6 +30,7 @@ import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
@@ -104,6 +105,15 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testCopyPackage() throws SerializationException {
         initSession();
+        
+        ModuleItem mockModule = Mockito.mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( "newUUID" )).thenReturn( mockModule );
+
+        AssetItemIterator assetIterator = mock( AssetItemIterator.class );
+        when( mockModule.listAssetsByFormat( Mockito.anyString() )).thenReturn( assetIterator );
+
+        when(rulesRepository.copyModule( "from", "to" )).thenReturn( "newUUID" );
+        
         repositoryPackageOperations.copyModules( "from",
                                                  "to" );
         verify( rulesRepository ).copyModule( "from",
@@ -123,6 +133,13 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testRenamePackage() throws SerializationException {
         initSession();
+        
+        ModuleItem mockModule = Mockito.mock( ModuleItem.class );
+        when( rulesRepository.loadModuleByUUID( "old" )).thenReturn( mockModule );
+
+        AssetItemIterator assetIterator = mock( AssetItemIterator.class );
+        when( mockModule.listAssetsByFormat( Mockito.anyString() )).thenReturn( assetIterator );
+        
         this.repositoryPackageOperations.renameModule( "old",
                                                         "new" );
         verify( this.rulesRepository ).renameModule( "old",
