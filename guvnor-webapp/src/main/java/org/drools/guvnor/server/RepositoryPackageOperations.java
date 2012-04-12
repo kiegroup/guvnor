@@ -220,7 +220,7 @@ public class RepositoryPackageOperations {
             final String newPackageUUID = getRulesRepository().copyPackage( sourcePackageName,
                                                                             destPackageName );
 
-            fixRuleFlowProcessPackageNames( newPackageUUID );
+            fixProcessPackageNames( newPackageUUID );
 
             return newPackageUUID;
             
@@ -231,23 +231,21 @@ public class RepositoryPackageOperations {
         }
     }
 
-    //Ensure all RuleFlowProcesses have their package name updated to that of the containing Guvnor package
-    private void fixRuleFlowProcessPackageNames(final String packageUUID) {
-        final PackageItem newPackage = getRulesRepository().loadPackageByUUID( packageUUID );
-        final AssetItemIterator ruleFlowAssetIterator = newPackage.listAssetsByFormat( new String[]{AssetFormats.RULE_FLOW_RF} );
-        final ContentHandler contentHandler = ContentManager.getHandler( AssetFormats.RULE_FLOW_RF );
-        ICanHasAttachment attachmentHandler = null;
-        if ( contentHandler instanceof ICanHasAttachment ) {
-            attachmentHandler = (ICanHasAttachment) contentHandler;
-        }
+    //Ensure all Processes (RuleFlow, BPMN, BPMN2) have their package name updated to that of the containing Guvnor package
+    private void fixProcessPackageNames(final String moduleUUID) {
+        final PackageItem newPackage = getRulesRepository().loadPackageByUUID( moduleUUID );
+        final AssetItemIterator assetIterator = newPackage.listAssetsByFormat( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
 
-        while ( ruleFlowAssetIterator.hasNext() ) {
-            final AssetItem asset = ruleFlowAssetIterator.next();
-            if ( attachmentHandler != null ) {
+        while ( assetIterator.hasNext() ) {
+            final AssetItem asset = assetIterator.next();
+            final String assetFormat = asset.getFormat();
+            final ContentHandler contentHandler = ContentManager.getHandler( assetFormat );
+            if ( contentHandler instanceof ICanHasAttachment ) {
+                ICanHasAttachment attachmentHandler = (ICanHasAttachment) contentHandler;
                 try {
                     attachmentHandler.onAttachmentAdded( asset );
                 } catch ( IOException ioe ) {
-                    log.error( "Unable to rename RuleFlowProcess package for asset [" + asset.getName() + "]",
+                    log.error( "Unable to rename Process [type=" + assetFormat + "] package for asset [" + asset.getName() + "]",
                                ioe );
                 }
             }
@@ -275,7 +273,7 @@ public class RepositoryPackageOperations {
         getRulesRepository().renamePackage( uuid,
                                             newName );
 
-        fixRuleFlowProcessPackageNames( uuid );
+        fixProcessPackageNames( uuid );
 
         return uuid;
     }
