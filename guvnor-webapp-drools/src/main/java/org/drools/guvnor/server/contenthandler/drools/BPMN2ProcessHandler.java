@@ -39,6 +39,7 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -57,7 +58,8 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class BPMN2ProcessHandler extends ContentHandler
     implements
     ICompilable,
-    ICanRenderSource {
+    ICanRenderSource,
+    ICanHasAttachment {
 
     private static final LoggingHelper log = LoggingHelper.getLogger( BPMN2ProcessHandler.class );
 
@@ -223,12 +225,13 @@ public class BPMN2ProcessHandler extends ContentHandler
     }
 
     /**
-     * The rule flow can not be built if the package name is not the same as the
-     * package that it exists in. This changes the package name.
+     * The BPMN2 Process can not be built if the package name is not the same as
+     * the package that it exists in. This changes the package name.
      * 
      * @param item
      */
-    public void ruleFlowAttached(AssetItem item) {
+    @Override
+    public void onAttachmentAdded(AssetItem item) throws IOException {
         String content = item.getContent();
 
         if ( content != null && !content.equals( "" ) ) {
@@ -245,6 +248,11 @@ public class BPMN2ProcessHandler extends ContentHandler
                 }
             }
         }
+    }
+
+    @Override
+    public void onAttachmentRemoved(AssetItem item) throws IOException {
+        // Nothing to do when this asset type is removed.
     }
 
     public void compile(BRMSPackageBuilder builder,
