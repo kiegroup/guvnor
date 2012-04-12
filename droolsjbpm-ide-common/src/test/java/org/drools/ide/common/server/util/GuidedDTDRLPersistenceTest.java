@@ -3337,7 +3337,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3347,7 +3347,7 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( pattern2StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3357,7 +3357,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( pattern2StartIndex == -1 );
 
         //Row 2
-        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        ruleStartIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3449,7 +3449,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3459,7 +3459,7 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( pattern2StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3469,7 +3469,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( pattern2StartIndex == -1 );
 
         //Row 2
-        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        ruleStartIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3532,14 +3532,14 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
         assertFalse( pattern1StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
@@ -3794,7 +3794,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
@@ -3820,7 +3820,7 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( action2StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
@@ -3846,7 +3846,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( action2StartIndex == -1 );
 
         //Row 2
-        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        ruleStartIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
@@ -3942,7 +3942,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
@@ -3968,7 +3968,7 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( action2StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
@@ -3994,7 +3994,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( action2StartIndex == -1 );
 
         //Row 2
-        ruleStartIndex = drl.indexOf( "#from row number: 3" );
+        ruleStartIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
@@ -4065,7 +4065,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal( dtable );
 
         //Row 0
-        ruleStartIndex = drl.indexOf( "#from row number: 1" );
+        ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
@@ -4078,7 +4078,7 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( action1StartIndex == -1 );
 
         //Row 1
-        ruleStartIndex = drl.indexOf( "#from row number: 2" );
+        ruleStartIndex = drl.indexOf( "//from row number: 2" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
