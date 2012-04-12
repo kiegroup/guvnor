@@ -130,7 +130,7 @@ public class GuvnorArtifactCacheSupport {
     }
 
     public static String getURLtoLocalUserMavenRepo() {
-        return new StringBuilder()
+        return new StringBuilder("file://")
                 .append(getUserHomeDir())
                 .append(SYSTEM_FILE_SEPARATOR)
                 .append(".m2")

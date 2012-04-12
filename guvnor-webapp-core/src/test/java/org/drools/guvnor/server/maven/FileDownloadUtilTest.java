@@ -36,12 +36,15 @@ import org.junit.Test;
 
 public class FileDownloadUtilTest {
 
+    private static final String SYSTEM_FILE_SEPARATOR = System.getProperty( "file.separator" );
+
     @Test
     public void testDownloadRemoteRepository() throws IOException {
         final String jbossReleaseRepo = "http://repository.jboss.org/nexus/content/repositories/releases/";
         final MavenArtifact artifact = new MavenArtifact( "org.drools:knowledge-api:jar:5.3.1.Final:compile" );
 
-        final HttpURLConnection connection = (HttpURLConnection) new URL( artifact.toURL( jbossReleaseRepo ) ).openConnection();
+        final HttpURLConnection connection = (HttpURLConnection) new URL( artifact.toURL( jbossReleaseRepo,
+                                                                                          SYSTEM_FILE_SEPARATOR ) ).openConnection();
         connection.setRequestMethod( "HEAD" );
         try {
             final int responseCode = connection.getResponseCode();
@@ -55,7 +58,8 @@ public class FileDownloadUtilTest {
         }
 
         final String finalFileName = System.getProperty( "java.io.tmpdir" ) + "/" + artifact.toFileName();
-        final File result = downloadFile( artifact.toURL( jbossReleaseRepo ),
+        final File result = downloadFile( artifact.toURL( jbossReleaseRepo,
+                                                          SYSTEM_FILE_SEPARATOR ),
                                           finalFileName );
 
         assertNotNull( result );
@@ -70,7 +74,8 @@ public class FileDownloadUtilTest {
 
         final String finalFileName = System.getProperty( "java.io.tmpdir" ) + "/" + artifact.toFileName();
 
-        final File result = downloadFile( artifact.toURL( localMavenRepo ),
+        final File result = downloadFile( artifact.toURL( localMavenRepo,
+                                                          SYSTEM_FILE_SEPARATOR ),
                                           finalFileName );
 
         assertNotNull( result );
@@ -85,7 +90,8 @@ public class FileDownloadUtilTest {
 
         final String finalFileName = System.getProperty( "java.io.tmpdir" ) + "/" + artifact.toFileName();
 
-        final File result = downloadFile( artifact.toURL( localMavenRepo ),
+        final File result = downloadFile( artifact.toURL( localMavenRepo,
+                                                          SYSTEM_FILE_SEPARATOR ),
                                           finalFileName );
 
         assertNull( result );
