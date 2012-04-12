@@ -23,7 +23,7 @@
       <gwt:VerticalPanel width="100%">
         <gwt:HTMLPanel ui:field="titlePanel" styleName='{guvnorResources.headerCss.mainClass}'>
           <div class='{guvnorResources.headerCss.logoClass}'>
-            <gwt:Image resource='{images.headerLogo}'/>
+            <img src='images/header_logo.gif'/>
           </div>
           <div class='{guvnorResources.headerCss.controlsClass}'>
             <div class='{guvnorResources.headerCss.userInfoClass}'>
