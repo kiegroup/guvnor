@@ -105,12 +105,12 @@ public class MavenArtifact implements Serializable, IsSerializable {
         return group + ":" + toFileName();
     }
 
-    public String toURL(final String repository, String SYSTEM_FILE_SEPARATOR) {
+    public String toURL(final String repository) {
         checkNotNull("repository", repository);
         final StringBuilder sb = new StringBuilder(repository);
 
-        if (!repository.endsWith(SYSTEM_FILE_SEPARATOR)) {
-            sb.append(SYSTEM_FILE_SEPARATOR);
+        if (!repository.endsWith("/")) {
+            sb.append("/");
         }
 
         return sb.append(group.replace(".", "/"))
