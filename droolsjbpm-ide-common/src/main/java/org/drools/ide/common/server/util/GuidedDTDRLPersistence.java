@@ -98,9 +98,9 @@ public class GuidedDTDRLPersistence {
                 rm.parentName = dt.getParentName();
             }
 
-            sb.append( "#from row number: " + (i + 1) + "\n" );
+            sb.append( "//from row number: " + (i + 1) + "\n" );
             if ( desc != null && desc.length() > 0 ) {
-                sb.append( "#" + desc + "\n" );
+                sb.append( "//" + desc + "\n" );
             }
             String rule = BRDRLPersistence.getInstance().marshal( rm );
             sb.append( rule );

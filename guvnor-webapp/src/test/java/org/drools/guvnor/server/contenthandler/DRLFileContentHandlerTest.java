@@ -44,7 +44,7 @@ public class DRLFileContentHandlerTest {
 
         String emptyRule = "";
 
-        String complex = "#some comments about the rule \n#here\n when \n #goo \n foo.bar \n then \n #goo \n end.bar";
+        String complex = "//some comments about the rule \n//here\n when \n //goo \n foo.bar \n then \n //goo \n end.bar";
 
         assertTrue( DRLFileContentHandler.isStandAloneRule( newRule ) );
         assertFalse( DRLFileContentHandler.isStandAloneRule( moreRuleClassic ) );
