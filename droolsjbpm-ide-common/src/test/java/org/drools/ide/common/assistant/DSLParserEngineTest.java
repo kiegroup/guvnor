@@ -31,7 +31,7 @@ public class DSLParserEngineTest {
 
     @Before
     public void setUp() throws Exception {
-        rule = "#This is a starter DSL to show off some of the features. Make sure you change it to be what you need !.\n" +
+        rule = "//This is a starter DSL to show off some of the features. Make sure you change it to be what you need !.\n" +
         "[when]There is an Instance with field of \"{value}\"=i: Instance(field==\"{value}\")\n" +
         "[when]Instance is at least {number} and field is \"{value}\"=i: Instance(number > {number}, location==\"{value}\")\n" +
         "[then]Log : \"{message}\"=System.out.println(\"{message}\");\n" +
