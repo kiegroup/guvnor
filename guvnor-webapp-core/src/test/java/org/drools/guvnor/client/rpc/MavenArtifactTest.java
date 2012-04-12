@@ -22,8 +22,6 @@ import static org.junit.Assert.*;
 
 public class MavenArtifactTest {
 
-    private static final String SYSTEM_FILE_SEPARATOR = System.getProperty( "file.separator" );
-
     @Test
     public void testConstructFromStringWithoutComplement() {
         final String mavenArtifactValue = "org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile";
@@ -40,11 +38,9 @@ public class MavenArtifactTest {
         assertEquals( "knowledge-api-5.4.0-SNAPSHOT.jar",
                       artifact.toFileName() );
         assertEquals( "http://my/site/org/drools/knowledge-api/5.4.0-SNAPSHOT/knowledge-api-5.4.0-SNAPSHOT.jar",
-                      artifact.toURL( "http://my/site/",
-                                      SYSTEM_FILE_SEPARATOR ) );
+                      artifact.toURL( "http://my/site/" ) );
         assertEquals( "http://my/site/org/drools/knowledge-api/5.4.0-SNAPSHOT/knowledge-api-5.4.0-SNAPSHOT.jar",
-                      artifact.toURL( "http://my/site",
-                                      SYSTEM_FILE_SEPARATOR ) );
+                      artifact.toURL( "http://my/site" ) );
         assertEquals( "org.drools:knowledge-api-5.4.0-SNAPSHOT.jar",
                       artifact.toLabel() );
         assertEquals( mavenArtifactValue,
@@ -67,11 +63,9 @@ public class MavenArtifactTest {
         assertEquals( "camel-core-2.4.0-tests.jar",
                       artifact.toFileName() );
         assertEquals( "http://my/site/org/apache/camel/camel-core/2.4.0/camel-core-2.4.0-tests.jar",
-                      artifact.toURL( "http://my/site/",
-                                      SYSTEM_FILE_SEPARATOR ) );
+                      artifact.toURL( "http://my/site/" ) );
         assertEquals( "http://my/site/org/apache/camel/camel-core/2.4.0/camel-core-2.4.0-tests.jar",
-                      artifact.toURL( "http://my/site",
-                                      SYSTEM_FILE_SEPARATOR ) );
+                      artifact.toURL( "http://my/site" ) );
         assertEquals( "org.apache.camel:camel-core-2.4.0-tests.jar",
                       artifact.toLabel() );
         assertEquals( mavenArtifactValue,
