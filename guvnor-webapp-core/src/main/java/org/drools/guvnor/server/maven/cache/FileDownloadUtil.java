@@ -45,7 +45,8 @@ public final class FileDownloadUtil {
             final URL url;
             final byte[] buf;
             int byteRead = 0;
-            url = new URL(downloadURL);
+            //url = new URL(downloadURL);
+            url = new URL("file", null, -1, downloadURL);
             uCon = url.openConnection();
             is = uCon.getInputStream();
 

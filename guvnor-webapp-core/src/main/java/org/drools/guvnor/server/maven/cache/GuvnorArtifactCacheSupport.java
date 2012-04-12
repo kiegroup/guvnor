@@ -83,7 +83,7 @@ public class GuvnorArtifactCacheSupport {
         for (final String activeRepository : repositories) {
             final List<MavenArtifact> missingDependencies = new ArrayList<MavenArtifact>();
             for (final MavenArtifact mavenArtifact : dependenciesToBeResolved) {
-                final File file = resolveFile(mavenArtifact.toURL(activeRepository), mavenArtifact.toFileName());
+                final File file = resolveFile(mavenArtifact.toURL(activeRepository, SYSTEM_FILE_SEPARATOR), mavenArtifact.toFileName());
                 if (file == null) {
                     missingDependencies.add(mavenArtifact);
                 }
@@ -130,7 +130,7 @@ public class GuvnorArtifactCacheSupport {
     }
 
     public static String getURLtoLocalUserMavenRepo() {
-        return new StringBuilder("file://")
+        return new StringBuilder()
                 .append(getUserHomeDir())
                 .append(SYSTEM_FILE_SEPARATOR)
                 .append(".m2")
@@ -140,11 +140,7 @@ public class GuvnorArtifactCacheSupport {
     }
 
     public static String getUserHomeDir() {
-        String userHome = System.getProperty("user.home");
-        if (!(userHome.endsWith("/") || userHome.endsWith("\\"))) {
-            userHome = userHome + SYSTEM_FILE_SEPARATOR;
-        }
-        return userHome;
+        return System.getProperty("user.home");
     }
 
     public static void cleanTempDir() {
