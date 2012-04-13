@@ -106,11 +106,13 @@ public class RepositoryPackageOperationsTest {
         when( rulesRepository.loadPackageByUUID( "newUUID" ) ).thenReturn( mockPackage );
 
         AssetItemIterator assetIterator = mock( AssetItemIterator.class );
-        when( mockPackage.listAssetsByFormat( Mockito.anyString() ) ).thenReturn( assetIterator );
+        when( mockPackage.listAssetsByFormat( Mockito.anyString(),
+                                              Mockito.anyString(),
+                                              Mockito.anyString() ) ).thenReturn( assetIterator );
 
         when( rulesRepository.copyPackage( "from",
                                            "to" ) ).thenReturn( "newUUID" );
-        
+
         repositoryPackageOperations.copyPackage( "from",
                                                  "to" );
         verify( rulesRepository ).copyPackage( "from",
@@ -135,7 +137,9 @@ public class RepositoryPackageOperationsTest {
         when( rulesRepository.loadPackageByUUID( "old" ) ).thenReturn( mockPackage );
 
         AssetItemIterator assetIterator = mock( AssetItemIterator.class );
-        when( mockPackage.listAssetsByFormat( Mockito.anyString() ) ).thenReturn( assetIterator );
+        when( mockPackage.listAssetsByFormat( Mockito.anyString(),
+                                              Mockito.anyString(),
+                                              Mockito.anyString() ) ).thenReturn( assetIterator );
 
         this.repositoryPackageOperations.renamePackage( "old",
                                                         "new" );
