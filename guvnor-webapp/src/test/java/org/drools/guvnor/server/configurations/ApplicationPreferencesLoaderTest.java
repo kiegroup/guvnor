@@ -29,7 +29,7 @@ public class ApplicationPreferencesLoaderTest {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
 
         assertNotNull( preferences );
-        assertEquals( 10,
+        assertEquals( 11,
                       preferences.size() );
         assertTrue( preferences.containsKey( "visual-ruleflow" ) );
         assertTrue( preferences.containsKey( "verifier" ) );
