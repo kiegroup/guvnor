@@ -130,7 +130,14 @@ public class GuvnorArtifactCacheSupport {
     }
 
     public static String getURLtoLocalUserMavenRepo() {
-        return new StringBuilder("file://")
+        /*
+         * A file URL takes the form of file://host/path. When omitting host
+         * you do not omit the slash ("file:///foo.txt" is okay, while
+         * "file://foo.txt" is not, although some interpreters manage to handle
+         * the latter). 
+         * NOTE: the URL wont work on Windows if the 3rd slash is missing
+         */   
+        return new StringBuilder("file:///")
                 .append(getUserHomeDir())
                 .append(SYSTEM_FILE_SEPARATOR)
                 .append(".m2")

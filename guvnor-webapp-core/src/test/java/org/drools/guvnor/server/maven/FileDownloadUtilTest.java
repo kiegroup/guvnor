@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.MavenArtifact;
 import org.junit.Test;
 
 public class FileDownloadUtilTest {
+
     @Test
     public void testDownloadRemoteRepository() throws IOException {
         final String jbossReleaseRepo = "http://repository.jboss.org/nexus/content/repositories/releases/";
