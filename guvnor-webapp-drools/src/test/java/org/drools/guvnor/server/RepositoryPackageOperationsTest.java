@@ -105,15 +105,18 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testCopyPackage() throws SerializationException {
         initSession();
-        
+
         ModuleItem mockModule = Mockito.mock( ModuleItem.class );
-        when( rulesRepository.loadModuleByUUID( "newUUID" )).thenReturn( mockModule );
+        when( rulesRepository.loadModuleByUUID( "newUUID" ) ).thenReturn( mockModule );
 
         AssetItemIterator assetIterator = mock( AssetItemIterator.class );
-        when( mockModule.listAssetsByFormat( Mockito.anyString() )).thenReturn( assetIterator );
+        when( mockModule.listAssetsByFormat( Mockito.anyString(),
+                                             Mockito.anyString(),
+                                             Mockito.anyString() ) ).thenReturn( assetIterator );
 
-        when(rulesRepository.copyModule( "from", "to" )).thenReturn( "newUUID" );
-        
+        when( rulesRepository.copyModule( "from",
+                                          "to" ) ).thenReturn( "newUUID" );
+
         repositoryPackageOperations.copyModules( "from",
                                                  "to" );
         verify( rulesRepository ).copyModule( "from",
@@ -138,7 +141,9 @@ public class RepositoryPackageOperationsTest {
         when( rulesRepository.loadModuleByUUID( "old" )).thenReturn( mockModule );
 
         AssetItemIterator assetIterator = mock( AssetItemIterator.class );
-        when( mockModule.listAssetsByFormat( Mockito.anyString() )).thenReturn( assetIterator );
+        when( mockModule.listAssetsByFormat( Mockito.anyString(),
+                                             Mockito.anyString(),
+                                             Mockito.anyString() ) ).thenReturn( assetIterator );
         
         this.repositoryPackageOperations.renameModule( "old",
                                                         "new" );
