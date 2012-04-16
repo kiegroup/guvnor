@@ -207,7 +207,7 @@ public class BPMN2ProcessHandler extends ContentHandler
             bytes = bos.toByteArray();
             content.close();
             bos.close();
-            return new String( bytes );
+            return new String( bytes, "UTF-8" );
         } finally {
             try {
                 if ( out != null ) {
