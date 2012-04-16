@@ -28,8 +28,8 @@ import static org.junit.Assert.*;
 public class ServiceConfigTest {
 
     final Collection<MavenArtifact> excludedArtifacts = new ArrayList<MavenArtifact>() {{
-        add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-        add(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        add(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
+        add(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
         add(new MavenArtifact("org.apache.camel:camel-core:test-jar:tests:2.4.0:test"));
     }};
 
@@ -81,7 +81,7 @@ public class ServiceConfigTest {
         assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
 
         serviceConfig = new ServiceConfig("70", excludedArtifacts, kbases);
-        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
         assertFalse(serviceConfig.equals(new ServiceConfig("70", excludedArtifacts, kbases)));
         assertFalse(serviceConfig.hashCode() == new ServiceConfig("70", excludedArtifacts, kbases).hashCode());
 
@@ -105,27 +105,27 @@ public class ServiceConfigTest {
     public void testAddRemoveExcludedArtifacts() {
         final ServiceConfig serviceConfig = new ServiceConfig(null, null, null);
 
-        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
         serviceConfig.addExcludedArtifact(null);
         assertEquals(1, serviceConfig.getExcludedArtifacts().size());
 
-        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
         assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
         serviceConfig.setExcludedArtifacts(excludedArtifacts);
         serviceConfig.setExcludedArtifacts(null);
         assertEquals(2, serviceConfig.getExcludedArtifacts().size());
 
-        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile"));
-        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile"));
+        serviceConfig.removeExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.5.0-SNAPSHOT:compile"));
         serviceConfig.removeExcludedArtifact(null);
         assertEquals(1, serviceConfig.getExcludedArtifacts().size());
 
         serviceConfig.setExcludedArtifacts(new ArrayList<MavenArtifact>());
         assertEquals(0, serviceConfig.getExcludedArtifacts().size());
 
-        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.4.0-SNAPSHOT:compile"));
+        serviceConfig.addExcludedArtifact(new MavenArtifact("org.drools:knowledge-aaaapi:jar:5.5.0-SNAPSHOT:compile"));
         serviceConfig.addExcludedArtifacts(excludedArtifacts);
         serviceConfig.addExcludedArtifacts(new ArrayList<MavenArtifact>());
         serviceConfig.addExcludedArtifacts(null);

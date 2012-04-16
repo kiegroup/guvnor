@@ -1,18 +1,18 @@
-org.drools:drools-camel-server:war:5.4.0-SNAPSHOT
-+- org.drools:knowledge-api:jar:5.4.0-SNAPSHOT:compile
-+- org.drools:drools-core:jar:5.4.0-SNAPSHOT:compile
+org.drools:drools-camel-server:war:5.5.0-SNAPSHOT
++- org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile
++- org.drools:drools-core:jar:5.5.0-SNAPSHOT:compile
 |  +- org.mvel:mvel2:jar:2.1.0.drools10:compile
-|  \- org.drools:knowledge-internal-api:jar:5.4.0-SNAPSHOT:compile
-+- org.drools:drools-compiler:jar:5.4.0-SNAPSHOT:compile
+|  \- org.drools:knowledge-internal-api:jar:5.5.0-SNAPSHOT:compile
++- org.drools:drools-compiler:jar:5.5.0-SNAPSHOT:compile
 |  +- org.antlr:antlr-runtime:jar:3.3:compile
 |  +- org.antlr:antlr:jar:3.3:compile
 |  +- org.antlr:stringtemplate:jar:3.2.1:compile
 |  +- antlr:antlr:jar:2.7.7:compile
 |  \- org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile
-+- org.drools:drools-decisiontables:jar:5.4.0-SNAPSHOT:compile
++- org.drools:drools-decisiontables:jar:5.5.0-SNAPSHOT:compile
 |  \- net.sourceforge.jexcelapi:jxl:jar:2.6.10:compile
 |     \- log4j:log4j:jar:1.2.16:compile
-+- org.drools:drools-persistence-jpa:jar:5.4.0-SNAPSHOT:compile
++- org.drools:drools-persistence-jpa:jar:5.5.0-SNAPSHOT:compile
 |  +- javax.persistence:persistence-api:jar:1.0:compile
 |  +- com.google.protobuf:protobuf-java:jar:2.4.1:compile
 |  +- dom4j:dom4j:jar:1.6.1:compile
@@ -38,11 +38,11 @@ org.drools:drools-camel-server:war:5.4.0-SNAPSHOT
 |  \- jdom:jdom:jar:1.0:compile
 +- org.jbpm:jbpm-bpmn2:jar:5.2.0.Final:compile
 |  \- org.jbpm:jbpm-flow-builder:jar:5.2.0.Final:compile
-+- org.drools:drools-templates:jar:5.4.0-SNAPSHOT:compile
-+- org.drools:drools-spring:jar:5.4.0-SNAPSHOT:compile
++- org.drools:drools-templates:jar:5.5.0-SNAPSHOT:compile
++- org.drools:drools-spring:jar:5.5.0-SNAPSHOT:compile
 |  +- org.springframework:spring-beans:jar:2.5.6:compile
 |  \- org.springframework:spring-context:jar:2.5.6:compile
-+- org.drools:drools-camel:jar:5.4.0-SNAPSHOT:compile
++- org.drools:drools-camel:jar:5.5.0-SNAPSHOT:compile
 |  \- org.apache.cxf:cxf-rt-frontend-jaxws:jar:2.4.4:compile
 |     +- xml-resolver:xml-resolver:jar:1.2:compile
 |     +- asm:asm:jar:3.3:compile

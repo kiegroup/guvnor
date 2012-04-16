@@ -72,7 +72,7 @@ public abstract class GuvnorIntegrationTest {
 //    @Deployment
 //    public static WebArchive createDeploymentWithoutMavenImporter() {
 //        // TODO FIXME do not hardcode the version number
-//        File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT");
+//        File explodedWarFile = new File("target/guvnor-webapp-5.5.0-SNAPSHOT");
 //        if (!explodedWarFile.exists()) {
 //            throw new IllegalStateException("The exploded war file (" + explodedWarFile
 //                    + ") should exist, run \"mvn package\" first.");
