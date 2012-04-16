@@ -120,40 +120,6 @@ public class SuggestionCompletionEngineTest {
     }
 
     @Test
-    public void testDataEnums3() {
-        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
-
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-
-        List<String> enums = new ArrayList<String>();
-
-        enums.add( "'Fact.f1' : ['a1', 'a2'] \n 'Fact.f2' : ['def1', 'def2', 'def3'] \n 'Fact.f2[f1=a2]' : ['c1', 'c2']" );
-
-        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
-                                                                        new ArrayList<JarInputStream>(),
-                                                                        new ArrayList<DSLTokenizedMappingFile>(),
-                                                                        enums );
-        assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
-                                           "name" ) );
-
-        FactPattern pat = new FactPattern( "Fact" );
-        SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
-        f1.setValue( "a1" );
-        pat.addConstraint( f1 );
-        pat.addConstraint( new SingleFieldConstraint( "f2" ) );
-
-        DropDownData data = engine.getEnums( pat.getFactType(),
-                                             pat.constraintList,
-                                             "f2" );
-
-        assertNotNull( data );
-        assertEquals( 3,
-                      data.fixedList.length );
-
-    }
-
-    @Test
     public void testDataEnums2() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
@@ -216,6 +182,91 @@ public class SuggestionCompletionEngineTest {
         assertEquals( "val2",
                       items[1] );
 
+    }
+
+    @Test
+    public void testDataEnums3() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        enums.add( "'Fact.f1' : ['a1', 'a2'] \n 'Fact.f2' : ['def1', 'def2', 'def3'] \n 'Fact.f2[f1=a2]' : ['c1', 'c2']" );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        enums );
+        assertEquals( "String",
+                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                                           "name" ) );
+
+        FactPattern pat = new FactPattern( "Fact" );
+        SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
+        f1.setValue( "a1" );
+        pat.addConstraint( f1 );
+        pat.addConstraint( new SingleFieldConstraint( "f2" ) );
+
+        DropDownData data = engine.getEnums( pat.getFactType(),
+                                             pat.constraintList,
+                                             "f2" );
+
+        assertNotNull( data );
+        assertEquals( 3,
+                      data.fixedList.length );
+
+    }
+
+    @Test
+    public void testNestedEnums() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        new ArrayList<String>() );
+        assertEquals( "Comparable",
+                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedEnum",
+                                           "myEnum" ) );
+
+        String[] data = engine.getDataEnumList( "SuggestionCompletionEngineTest$NestedEnum.myEnum" );
+        
+        assertNotNull( data );
+        assertEquals( 2,
+                      data.length );
+        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1",
+                      data[0] );
+        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2",
+                      data[1] );
+    }
+    
+    @Test
+    public void testNestedEnumsFieldLookup() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        new ArrayList<String>() );
+        assertEquals( "Comparable",
+                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedEnum",
+                                           "myEnum" ) );
+
+        String[] data = engine.getEnumValues( "SuggestionCompletionEngineTest$NestedEnum",
+                                                  "myEnum" );
+
+        assertNotNull( data );
+        assertEquals( 2,
+                      data.length );
+        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1",
+                      data[0] );
+        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2",
+                      data[1] );
     }
 
     @Test
@@ -1235,6 +1286,25 @@ public class SuggestionCompletionEngineTest {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    public static class NestedEnum {
+        
+        private MyEnum myEnum;
+
+        public MyEnum getMyEnum() {
+            return myEnum;
+        }
+
+        public void setMyEnum(MyEnum myEnum) {
+            this.myEnum = myEnum;
+        }
+        
+        public enum MyEnum {
+            VALUE1,
+            VALUE2
+        }
+        
     }
 
     public static class Fact {
