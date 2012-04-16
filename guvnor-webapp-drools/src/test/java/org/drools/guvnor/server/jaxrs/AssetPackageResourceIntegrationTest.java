@@ -32,6 +32,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.*;
 
@@ -65,10 +66,9 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         autoLoginAsAdmin = false;
     }
 
-//    @BeforeClass
-    // Unreliable HACK
-    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
-    @Test
+    //    @BeforeClass
+    // HACK - Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    @Test @InSequence(-1)
     public void startServers() throws Exception {
         CategoryItem cat = rulesRepository.loadCategory("/");
         cat.addCategory("AssetPackageResourceTestCategory",

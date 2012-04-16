@@ -55,6 +55,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -74,9 +75,8 @@ public class CategoryResourceIntegrationTest extends GuvnorIntegrationTest {
     }
 
     //    @BeforeClass
-    // Unreliable HACK
-    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
-    @Test
+    // HACK - Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    @Test @InSequence(-1)
     public void startServers() throws Exception {
         //Create 2 categories
         repositoryCategoryService.createCategory( null,
