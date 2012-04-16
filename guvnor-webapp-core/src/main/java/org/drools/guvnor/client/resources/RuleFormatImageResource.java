@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeUri;
+//import com.google.gwt.safehtml.shared.SafeUri;
 
 public class RuleFormatImageResource
     implements
@@ -63,10 +63,10 @@ public class RuleFormatImageResource
     public boolean isAnimated() {
         return this.imageResource.isAnimated();
     }
-
+/*
     @Override
     public SafeUri getSafeUri() {
         return this.imageResource.getSafeUri();
-    }
+    }*/
 
 }
