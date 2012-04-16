@@ -17,7 +17,7 @@
 
   <properties>
     <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
-    <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
+    <appserver.jboss7.version>7.1.1.Final</appserver.jboss7.version>
     <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
     <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
@@ -329,7 +329,7 @@
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
         <type>pom</type>
-        <version>1.0.0.CR7</version>
+        <version>1.0.0.Final</version>
         <scope>import</scope>
       </dependency>
     </dependencies>
@@ -363,19 +363,19 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.CR7 to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -407,12 +407,10 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
       <artifactId>shrinkwrap-api</artifactId>
-      <version>1.0.0-cr-1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
       <artifactId>shrinkwrap-impl-base</artifactId>
-      <version>1.0.0-cr-1</version>
     </dependency>
   </dependencies>
 </project>
