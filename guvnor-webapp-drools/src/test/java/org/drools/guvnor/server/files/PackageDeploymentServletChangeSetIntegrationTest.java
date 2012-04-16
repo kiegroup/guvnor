@@ -20,6 +20,8 @@ import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
@@ -29,9 +31,11 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 
-@Ignore
 public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorIntegrationTest {
 
     public PackageDeploymentServletChangeSetIntegrationTest() {
@@ -58,18 +62,27 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         rule2.updateContent("rule 'rule2' when org.drools.Person() then end");
         rule2.checkin("version 1");
 
+        String snapshotName = "SNAP1";
         repositoryPackageService.createModuleSnapshot(pkg.getName(),
-                "SNAP1",
+                snapshotName,
                 false,
                 "");
+        repositoryPackageService.rebuildPackages();
+        repositoryPackageService.rebuildSnapshots();
     }
 
     @Test
     @RunAsClient
     public void applyChangeSetTwice(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
+        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
         Resource res = ResourceFactory.newUrlResource(url);
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("admin", "admin".toCharArray());
+            }
+        });
         KnowledgeAgent ka = KnowledgeAgentFactory.newKnowledgeAgent("test", conf);
         System.out.println("Applying changeset, round #1");
         Thread.sleep(1000);
