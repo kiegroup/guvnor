@@ -19,14 +19,14 @@ package org.drools.guvnor.server.repository;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryConfigurator;
 import org.drools.repository.RulesRepositoryException;
@@ -43,6 +43,10 @@ public abstract class RepositoryStartupService {
     @Inject
     protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
 
+    @Inject
+    @Any
+    private Event<RepositoryImportedEvent> repositoryImportedEventEvent;
+    
     private RulesRepositoryConfigurator configurator;
 
     protected Repository repository;
@@ -76,20 +80,10 @@ public abstract class RepositoryStartupService {
             }
         }
 
-        //
-        //Migrate v4 ruleflows to v5
-        //This section checks if the repository contains drools v4
-        //ruleflows that need to be migrated to drools v5
-        //
-        RulesRepository repo = new RulesRepository(sessionForSetup);
-        try {
-            if (MigrateRepository.needsRuleflowMigration(repo)) {
-                MigrateRepository.migrateRuleflows(repo);
-            }
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-            throw new RulesRepositoryException(e);
-        }
+
+
+        repositoryImportedEventEvent.fire(new RepositoryImportedEvent());
+
     }
 
     @PreDestroy

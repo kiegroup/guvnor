@@ -258,13 +258,6 @@ public class RepositoryModuleService
 
     @WebRemote
     @LoggedIn
-    public ValidatedResponse validateModule(Module data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(data.getUuid());
-        return repositoryModuleOperations.validateModule(data);
-    }
-
-    @WebRemote
-    @LoggedIn
     public void saveModule(Module data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(data.getUuid());
         repositoryModuleOperations.saveModule(data);
@@ -530,45 +523,6 @@ public class RepositoryModuleService
         return repositoryModuleOperations.compareSnapshots(request);
     }
 
-    @WebRemote
-    @LoggedIn
-    public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(packageName);
-
-        return runScenario(packageName,
-                scenario,
-                null);
-    }
-
-    private SingleScenarioResult runScenario(String packageName,
-                                             Scenario scenario,
-                                             RuleCoverageListener coverage) throws SerializationException {
-        try {
-            return runScenario( scenario,
-                                this.rulesRepository.loadModule( packageName ),
-                                coverage );
-        } catch ( Exception e ) {
-            if ( e instanceof DetailedSerializationException ) {
-                DetailedSerializationException exception = (DetailedSerializationException) e;
-                if ( exception.getErrs() != null ) {
-                    //err.getErrs() returns a Collections$UnmodifiablerRandomAccessList that cannot be serialised 
-                    //by GWT. Hence we need to convert the errors into a List that can be serialised by GWT
-                    List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-                    for ( BuilderResultLine line : exception.getErrs() ) {
-                        errors.add( line );
-                    }
-                    return new SingleScenarioResult( new ScenarioRunResult( errors ) );
-                } else {
-                    throw exception;
-                }
-            } else {
-                throw new DetailedSerializationException( "Unable to run the scenario.",
-                                                          e.getMessage() );
-            }
-        }
-    }
-
     /*
      * Set the Rule base in a cache
      */
@@ -615,68 +569,6 @@ public class RepositoryModuleService
         return rulebase;
     }
 
-    private SingleScenarioResult runScenario(Scenario scenario,
-                                             ModuleItem item,
-                                             RuleCoverageListener coverage) throws DetailedSerializationException {
-
-        RuleBase ruleBase = loadCacheRuleBase(item);
-        Package aPackage = ruleBase.getPackages()[0];
-
-        SessionConfiguration sessionConfiguration = new SessionConfiguration();
-        sessionConfiguration.setClockType(ClockType.PSEUDO_CLOCK);
-        sessionConfiguration.setKeepReference(false);
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession(
-                sessionConfiguration,
-                null);
-
-        if (coverage != null) {
-            workingMemory.addEventListener(coverage);
-        }
-
-        //Add stub Work Item Handlers
-        WorkItemHandler workItemHandlerStub = getWorkItemHandlerStub();
-        for (PortableWorkDefinition portableWorkDefinition : serviceImplementation.loadWorkItemDefinitions(item.getUUID())) {
-            workingMemory.getWorkItemManager().registerWorkItemHandler(portableWorkDefinition.getName(),
-                    workItemHandlerStub);
-        }
-
-        //Run Test Scenario
-        try {
-            AuditLogReporter logger = new AuditLogReporter(workingMemory);
-            ClassLoader classLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
-            new ScenarioRunner(
-                    new ClassTypeResolver(getAllImports(aPackage),
-                                          classLoader ),
-                                          classLoader, 
-                                          workingMemory).run(scenario);
-
-            return new SingleScenarioResult(
-                    new ScenarioRunResult(scenario),
-                    logger.buildReport());
-        } catch (ClassNotFoundException e) {
-            log.error("Unable to load a required class.",
-                    e);
-            throw new DetailedSerializationException("Unable to load a required class.",
-                    e.getMessage());
-        } catch (ConsequenceException e) {
-            String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
-            String messageLong = e.getMessage();
-            if (e.getCause() != null) {
-                messageLong += "\nCAUSED BY " + e.getCause().getMessage();
-            }
-
-            log.error(messageShort + ": " + messageLong,
-                    e);
-            throw new DetailedSerializationException(messageShort,
-                    messageLong);
-        } catch (Exception e) {
-            log.error("Unable to run the scenario.",
-                    e);
-            throw new DetailedSerializationException("Unable to run the scenario.",
-                    e.getMessage());
-        }
-    }
-
     private Set<String> getAllImports(Package aPackage) {
         Set<String> allImports = new HashSet<String>(aPackage.getImports().keySet());
 
@@ -688,73 +580,6 @@ public class RepositoryModuleService
         // need this for Generated beans to work
         allImports.add(aPackage.getName() + ".*");
         return allImports;
-    }
-
-    @WebRemote
-    @LoggedIn
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(packageUUID);
-        ModuleItem item = rulesRepository.loadModuleByUUID(packageUUID);
-        return runScenariosInPackage(item);
-    }
-
-    public BulkTestRunResult runScenariosInPackage(ModuleItem packageItem) throws SerializationException {
-
-        if (!packageItem.isBinaryUpToDate() || !RuleBaseCache.getInstance().contains(packageItem.getUUID())) {
-
-            if (packageItem.isBinaryUpToDate()) {
-                RuleBaseCache.getInstance().put(
-                        packageItem.getUUID(),
-                        loadRuleBase(packageItem));
-            } else {
-                BuilderResult result = repositoryModuleOperations.buildModule(packageItem,
-                        false);
-                if (result == null || result.getLines().size() == 0) {
-                    RuleBaseCache.getInstance().put(
-                            packageItem.getUUID(),
-                            loadRuleBase(packageItem));
-                } else {
-                    return new BulkTestRunResult(
-                            result,
-                            null,
-                            0,
-                            null);
-                }
-            }
-        }
-
-        AssetItemIterator it = packageItem.listAssetsByFormat(AssetFormats.TEST_SCENARIO);
-        List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
-        RuleBase rb = RuleBaseCache.getInstance().get(packageItem.getUUID());
-        Package bin = rb.getPackages()[0];
-
-        RuleCoverageListener coverage = new RuleCoverageListener(expectedRules(bin));
-
-        while (it.hasNext()) {
-            AssetItem as = it.next();
-            if (!as.getDisabled()) {
-                Asset asset = repositoryAssetOperations.loadAsset(as);
-                Scenario sc = (Scenario) asset.getContent();
-                runScenario(packageItem.getName(),
-                        sc,
-                        coverage);
-
-                int[] totals = sc.countFailuresTotal();
-                resultSummaries.add(new ScenarioResultSummary(totals[0],
-                        totals[1],
-                        asset.getName(),
-                        asset.getDescription(),
-                        asset.getUuid()));
-            }
-        }
-
-        ScenarioResultSummary[] summaries = resultSummaries.toArray(new ScenarioResultSummary[resultSummaries.size()]);
-
-        return new BulkTestRunResult(null,
-                resultSummaries.toArray(summaries),
-                coverage.getPercentCovered(),
-                coverage.getUnfiredRules());
-
     }
 
     private HashSet<String> expectedRules(Package bin) {

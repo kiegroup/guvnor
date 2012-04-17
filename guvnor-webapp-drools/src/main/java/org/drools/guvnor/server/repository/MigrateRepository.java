@@ -16,11 +16,11 @@
 
 package org.drools.guvnor.server.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.repository.*;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 

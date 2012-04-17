@@ -18,26 +18,28 @@ package org.drools.guvnor.client.examples;
 
 import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
 public class SampleRepositoryInstaller {
 
     //Only ask for installation for the first time. 
     public static void askToInstall() {
-        RepositoryServiceFactory.getService().isDoNotInstallSample(
+        final RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        repositoryService.isDoNotInstallSample(
                 new GenericCallback<Boolean>() {
                     public void onSuccess(Boolean isDoNotInstallSample) {
-                        if(!isDoNotInstallSample) {
-                            RepositoryServiceFactory.getService().setDoNotInstallSample(
+                        if (!isDoNotInstallSample) {
+                            repositoryService.setDoNotInstallSample(
                                     new GenericCallback<Void>() {
-                                        public void onSuccess(Void v) {                                        
+                                        public void onSuccess(Void v) {
                                         }
-                                    } );
+                                    });
                             new NewRepositoryDialog().show();
                         }
 
                     }
-                } );
+                });
     }
 
 }

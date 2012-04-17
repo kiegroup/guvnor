@@ -137,43 +137,69 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
         
         mainPanel.add(imagesList);
 
-        // Global Area Images
-        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        moduleService.loadGlobalModule(
-                                    new AsyncCallback<Module>() {
-                                        public void onFailure(Throwable caught) {
-                                            ErrorPopup
-                                                    .showMessage("Error listing Global Area information!");
-                                        }
 
-                                    public void onFailure(Throwable caught) {
-                                        ErrorPopup
-                                                .showMessage("Error listing images information!");
-                                    }
-                                    public void onSuccess(String[] images) {
-                                        for (int i = 0; i < images.length; i++) {
-                                            imagesList.addItem(presults.getName() + " : " + images[i], 
-                                                    ApplicationPreferences.getGuvnorURL() +  "/rest/packages/" + 
+
+        // Global Area Images
+        final ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        // Global Area Images
+        moduleService.loadGlobalModule(
+                new AsyncCallback<Module>() {
+                    public void onFailure(Throwable caught) {
+                        ErrorPopup
+                                .showMessage("Error listing Global Area information!");
+                    }
+                    public void onSuccess(Module result) {
+                        final Module presults = result;
+
+                        moduleService.listImagesInModule(
+                                result.getName(), new AsyncCallback<String[]>() {
+
+                            public void onFailure(Throwable caught) {
+                                ErrorPopup
+                                        .showMessage("Error listing images information!");
+                            }
+
+                            public void onSuccess(String[] images) {
+                                for (int i = 0; i < images.length; i++) {
+                                    imagesList.addItem(presults.getName() + " : " + images[i],
+                                            ApplicationPreferences.getGuvnorURL() + "/rest/packages/" +
                                                     presults.getName() + "/assets/" + images[i] + "/binary");
-                                        }
-                                    });
+                                }
+                            }
+                        });
+                    }
+                });
 
         // Images in Packages
         moduleService.listModules(
-                                    new AsyncCallback<Module[]>() {
+                new AsyncCallback<Module[]>() {
 
-                                        public void onFailure(Throwable caught) {
-                                            ErrorPopup
-                                                    .showMessage("Error listing images information!");
-                                        }
-                                        public void onSuccess(String[] images) {
-                                            for (int i = 0; i < images.length; i++) {
-                                                imagesList.addItem(packageConfigData.getName() + " : " + images[i], 
-                                                		ApplicationPreferences.getGuvnorURL() + "/rest/packages/" + 
+                    public void onFailure(Throwable caught) {
+                        ErrorPopup
+                                .showMessage("Error listing images information!");
+                    }
+                    public void onSuccess(Module[] result) {
+                        for (int i = 0; i < result.length; i++) {
+                            final Module packageConfigData = result[i];
+
+                            moduleService.listImagesInModule(
+                                    packageConfigData.getName(), new AsyncCallback<String[]>() {
+
+                                public void onFailure(Throwable caught) {
+                                    ErrorPopup
+                                            .showMessage("Error listing images information!");
+                                }
+                                public void onSuccess(String[] images) {
+                                    for (int i = 0; i < images.length; i++) {
+                                        imagesList.addItem(packageConfigData.getName() + " : " + images[i],
+                                                ApplicationPreferences.getGuvnorURL() + "/rest/packages/" +
                                                         packageConfigData.getName() + "/assets/" + images[i] + "/binary");
-                                            }
-                                        }
-                                    });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
 
         mainPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         mainPanel.setSpacing(10);

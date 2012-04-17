@@ -204,8 +204,9 @@ public class SnapshotView extends Composite {
                                     final String snapshotName) {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( new Label( "Compare to:" ) );
-
-        RepositoryServiceFactory.getPackageService().listSnapshots( this.parentConf.getName(),
+        
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        moduleService.listSnapshots( this.parentConf.getName(),
                                                                     new GenericCallback<SnapshotInfo[]>() {
                                                                         public void onSuccess(SnapshotInfo[] info) {
                                                                             for ( int i = 0; i < info.length; i++ ) {
@@ -243,7 +244,8 @@ public class SnapshotView extends Composite {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.SnapshotDeleteConfirm( snapshotName,
                                                                                moduleName ) ) ) {
-                    RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot( moduleName,
+                    ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                    moduleService.copyOrRemoveSnapshot( moduleName,
                                                                                        snapshotName,
                                                                                        true,
                                                                                        null,
@@ -268,14 +270,14 @@ public class SnapshotView extends Composite {
 
     private Button getCopyButton(final String snapshotName,
                                  final String packageName) {
-        final ModuleServiceAsync serv = RepositoryServiceFactory.getPackageService();
+        final ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
         Button btn = new Button( Constants.INSTANCE.Copy() );
         btn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                serv.listSnapshots( packageName,
+                moduleService.listSnapshots( packageName,
                                     createGenericCallback( snapshotName,
                                                            packageName,
-                                                           serv ) );
+                                                           moduleService ) );
             }
         } );
         return btn;
@@ -423,7 +425,8 @@ public class SnapshotView extends Composite {
     public static void rebuildBinaries() {
         if ( Window.confirm( Constants.INSTANCE.SnapshotRebuildWarning() ) ) {
             LoadingPopup.showMessage( Constants.INSTANCE.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime() );
-            RepositoryServiceFactory.getPackageService().rebuildSnapshots( new GenericCallback<java.lang.Void>() {
+            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+            moduleService.rebuildSnapshots( new GenericCallback<java.lang.Void>() {
                 public void onSuccess(Void v) {
                     LoadingPopup.close();
                     Window.alert( Constants.INSTANCE.SnapshotsWereRebuiltSuccessfully() );

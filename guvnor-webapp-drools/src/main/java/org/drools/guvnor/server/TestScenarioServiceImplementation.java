@@ -41,6 +41,7 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.ConsequenceException;
+import org.drools.util.CompositeClassLoader;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
 
@@ -131,17 +132,20 @@ public class TestScenarioServiceImplementation
         //Add stub Work Item Handlers
         WorkItemHandler workItemHandlerStub = getWorkItemHandlerStub();
         for (PortableWorkDefinition portableWorkDefinition : workItemService.loadWorkItemDefinitions(item.getUUID())) {
-            workingMemory.getWorkItemManager().registerWorkItemHandler(portableWorkDefinition.getName(),
+            workingMemory.getWorkItemManager().registerWorkItemHandler(
+                    portableWorkDefinition.getName(),
                     workItemHandlerStub);
         }
 
         //Run Test Scenario
         try {
             AuditLogReporter logger = new AuditLogReporter(workingMemory);
+            CompositeClassLoader classLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
             new ScenarioRunner(
                     new ClassTypeResolver(
                             getAllImports(aPackage),
-                            ((InternalRuleBase) ruleBase).getRootClassLoader()),
+                            classLoader),
+                    classLoader,
                     workingMemory
             ).run(scenario);
 

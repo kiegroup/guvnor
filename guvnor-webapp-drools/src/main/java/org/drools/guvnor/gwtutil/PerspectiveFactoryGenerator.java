@@ -225,12 +225,6 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
-        sourceWriter.println( "if(\"runtime\".equals(perspectiveType)) {");
-        sourceWriter.indent();        
-        sourceWriter.println( "return new org.drools.guvnor.client.perspective.runtime.RunTimePerspective();");
-        sourceWriter.outdent();
-        sourceWriter.println( "}");
-
         sourceWriter.println( "return null;" );
         sourceWriter.outdent();
         sourceWriter.println( "}" );
@@ -363,9 +357,6 @@ public class PerspectiveFactoryGenerator extends Generator {
     private static String getPerspectiveClassName(String perspectiveType) {
         if ("author".equals(perspectiveType)) {
             return "org.drools.guvnor.client.perspective.author.AuthorPerspective";
-        }
-        if ("runtime".equals(perspectiveType)) {
-            return "org.drools.guvnor.client.perspective.runtime.RunTimePerspective";
         }
         return null;
     }

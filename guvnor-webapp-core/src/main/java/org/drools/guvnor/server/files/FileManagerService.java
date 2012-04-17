@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,12 +41,11 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
-import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
-import org.drools.guvnor.server.repository.MigrateRepository;
+import org.drools.guvnor.server.repository.FileUploadedEvent;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
@@ -55,7 +56,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import javax.annotation.PreDestroy;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.security.annotations.LoggedIn;
@@ -73,6 +74,10 @@ public class FileManagerService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    @Any
+    private Event<FileUploadedEvent> fileUploadedEventEvent;
 
     /**
      * This attach a file to an asset.
@@ -263,42 +268,18 @@ public class FileManagerService {
                                                  RoleType.ADMIN.getName() );
         repository.importRulesRepositoryFromStream( in );
 
-        //
-        //Migrate v4 ruleflows to v5
-        //This section checks if the repository contains drools v4
-        //ruleflows that need to be migrated to drools v5
-        //
-        try {
-            if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
-                MigrateRepository.migrateRuleflows( repository );
-            }
-            RuleBaseCache.getInstance().clearCache();
-        } catch ( RepositoryException e ) {
-            e.printStackTrace();
-            throw new RulesRepositoryException( e );
-        }
+        fileUploadedEventEvent.fire(new FileUploadedEvent());
     }
 
     @LoggedIn
     public void importPackageToRepository(byte[] data,
                                           boolean importAsNew) {
-        try {
-            repository.importPackageToRepository( data,
-                                                  importAsNew );
+        repository.importPackageToRepository(data,
+                importAsNew);
 
-            //
-            //Migrate v4 ruleflows to v5
-            //This section checks if the repository contains drools v4
-            //ruleflows that need to be migrated to drools v5
-            //
+        fileUploadedEventEvent.fire(new FileUploadedEvent());
 
-            if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
-                MigrateRepository.migrateRuleflows( repository );
-            }
-        } catch ( RepositoryException e ) {
-            e.printStackTrace();
-            throw new RulesRepositoryException( e );
-        }
+
     }
 
     /**

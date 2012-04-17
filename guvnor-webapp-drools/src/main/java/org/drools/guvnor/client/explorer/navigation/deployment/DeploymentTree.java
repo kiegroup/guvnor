@@ -102,7 +102,9 @@ public class DeploymentTree extends NavigationItemBuilderOld
         if ( node.getUserObject() instanceof Module ) {
             final Module packageConfigData = (Module) node.getUserObject();
 
-            RepositoryServiceFactory.getPackageService().listSnapshots(
+
+            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+            moduleService.listSnapshots(
                     packageConfigData.getName(),
                     new GenericCallback<SnapshotInfo[]>() {
                         public void onSuccess(SnapshotInfo[] snaps) {

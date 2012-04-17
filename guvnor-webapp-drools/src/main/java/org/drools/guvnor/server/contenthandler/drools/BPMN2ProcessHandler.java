@@ -43,6 +43,7 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.repository.AssetItem;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -264,7 +265,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         }
     }
 
-    public void assembleSource(Serializable assetContent,
+    public void assembleSource(PortableObject assetContent,
                                StringBuilder stringBuilder) {
         RuleFlowContentModel content = (RuleFlowContentModel) assetContent;
         if ( content.getXml() != null && content.getXml().length() > 0 ) {

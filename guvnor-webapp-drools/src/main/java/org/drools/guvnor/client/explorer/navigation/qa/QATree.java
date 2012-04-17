@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -51,8 +50,8 @@ public class QATree extends NavigationItemBuilderOld
         this.placeController = placeController;
 
         //Add Selection listener
-        mainTree.addSelectionHandler(this);
-        mainTree.addOpenHandler(this);
+        mainTree.addSelectionHandler( this );
+        mainTree.addOpenHandler( this );
     }
 
     public MenuBar createMenu() {
@@ -60,7 +59,7 @@ public class QATree extends NavigationItemBuilderOld
     }
 
     public Tree createTree() {
-        return ExplorerNodeConfig.getQAStructure(itemWidgets);
+        return ExplorerNodeConfig.getQAStructure( itemWidgets );
     }
 
     public String getName() {
@@ -82,48 +81,45 @@ public class QATree extends NavigationItemBuilderOld
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
 
-        if (item.getUserObject() instanceof Module) {
+        if ( item.getUserObject() instanceof Module ) {
             Module pc = (Module) item.getUserObject();
-            String id = itemWidgets.get(item);
+            String id = itemWidgets.get( item );
 
 
-            placeController.goTo(getPlaceToGoTo(pc, id));
-        }
-    }
+            if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
 
-                clientFactory.getPlaceController().goTo( new TestScenarioListPlace( pc.getUuid() ) );
+                placeController.goTo( new TestScenarioListPlace( pc.getUuid() ) );
 
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                clientFactory.getPlaceController().goTo( new VerifierPlace( pc.getUuid() ) );
+                placeController.goTo( new VerifierPlace( pc.getUuid() ) );
             }
         }
-        throw new IllegalArgumentException("Unknown id :" + id);
     }
-
 
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
-        if (ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals(itemWidgets.get(node))) {
+        if ( ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-            moduleService.listModules(new GenericCallback<Module[]>() {
+            moduleService.listModules( new GenericCallback<Module[]>() {
                 public void onSuccess(Module[] conf) {
                     node.removeItems();
-                    removeTestScenarioIDs(itemWidgets);
+                    removeTestScenarioIDs( itemWidgets );
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.getName() ) );
 
-                                        node.addItem(pkg);
-                                        pkg.setUserObject(c);
-                                        itemWidgets.put(pkg,
-                                                ExplorerNodeConfig.TEST_SCENARIOS_ID);
-                                    }
-                                }
-                            });
+                        node.addItem( pkg );
+                        pkg.setUserObject( c );
+                        itemWidgets.put( pkg,
+                                ExplorerNodeConfig.TEST_SCENARIOS_ID );
+                    }
+                }
+            } );
         } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getPackageService().listModules( new GenericCallback<Module[]>() {
+            ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+            moduleService.listModules( new GenericCallback<Module[]>() {
                 public void onSuccess(Module[] conf) {
                     node.removeItems();
                     removeAnalysisIDs( itemWidgets );
@@ -132,22 +128,21 @@ public class QATree extends NavigationItemBuilderOld
                         TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
                                 c.getName() ) );
 
-                        node.addItem(pkg);
-                        pkg.setUserObject(c);
-                        itemWidgets.put(pkg,
-                                ExplorerNodeConfig.ANALYSIS_ID);
+                        node.addItem( pkg );
+                        pkg.setUserObject( c );
+                        itemWidgets.put( pkg,
+                                ExplorerNodeConfig.ANALYSIS_ID );
                     }
                 }
-            });
+            } );
         }
     }
 
     private void removeTestScenarioIDs(Map<TreeItem, String> itemWidgets) {
         for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<TreeItem, String> entry = it.next();
-            TreeItem item = entry.getKey();
             String id = entry.getValue();
-            if (ExplorerNodeConfig.TEST_SCENARIOS_ID.equals(id)) {
+            if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
                 it.remove();
             }
         }
@@ -156,9 +151,8 @@ public class QATree extends NavigationItemBuilderOld
     private void removeAnalysisIDs(Map<TreeItem, String> itemWidgets) {
         for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<TreeItem, String> entry = it.next();
-            TreeItem item = entry.getKey();
             String id = entry.getValue();
-            if (ExplorerNodeConfig.ANALYSIS_ID.equals(id)) {
+            if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
                 it.remove();
             }
         }

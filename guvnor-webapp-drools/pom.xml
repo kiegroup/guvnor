@@ -340,6 +340,14 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-repository</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
@@ -365,10 +373,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>droolsjbpm-ide-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -424,6 +428,16 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+    </dependency>
+    <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+    </dependency>
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>

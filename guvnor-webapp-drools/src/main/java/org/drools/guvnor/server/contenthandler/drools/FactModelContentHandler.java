@@ -28,13 +28,13 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.repository.AssetItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class FactModelContentHandler extends ContentHandler
 
     }
 
-    public void assembleSource(Serializable assetContent,
+    public void assembleSource(PortableObject assetContent,
                                StringBuilder stringBuilder) {
         FactModels fms = (FactModels) assetContent;
         for ( FactMetaModel fm : fms.models ) {

@@ -57,6 +57,9 @@ public class RepositoryServiceServlet
     @Inject
     private ServiceImplementation serviceImplementation;
 
+    @Inject
+    private ModuleService moduleService;
+
     @Override
     protected void doUnexpectedFailure(Throwable e) {
         if ( e.getCause() instanceof AuthorizationException ) {
