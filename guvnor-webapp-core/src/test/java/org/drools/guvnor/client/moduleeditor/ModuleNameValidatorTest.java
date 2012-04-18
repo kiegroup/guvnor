@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.moduleeditor.drools;
+package org.drools.guvnor.client.moduleeditor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,15 +22,19 @@ import static org.junit.Assert.assertTrue;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.junit.Test;
 
-public class NewPackageWizardTest {
+public class ModuleNameValidatorTest {
 
     @Test
     public void testPackageNameValidation() {
         assertTrue(ModuleNameValidator.validatePackageName("foo.bar"));
         assertTrue(ModuleNameValidator.validatePackageName("whee.waa2"));
+        assertTrue(ModuleNameValidator.validatePackageName("whee.waa2.whee.waa2.whee.waa2.whee.waa2"));
+        assertTrue(ModuleNameValidator.validatePackageName("こんにちは.世界"));
         assertFalse(ModuleNameValidator.validatePackageName(" hey DJ "));
         assertFalse(ModuleNameValidator.validatePackageName(""));
         assertFalse(ModuleNameValidator.validatePackageName(" "));
+        assertFalse(ModuleNameValidator.validatePackageName("test\ning"));
+        assertFalse(ModuleNameValidator.validatePackageName("\ttesting"));
         assertFalse(ModuleNameValidator.validatePackageName(null));
 
     }
