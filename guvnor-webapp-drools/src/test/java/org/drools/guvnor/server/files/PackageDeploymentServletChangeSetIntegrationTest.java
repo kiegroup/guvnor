@@ -15,33 +15,45 @@
  */
 package org.drools.guvnor.server.files;
 
+import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import org.apache.abdera.Abdera;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.io.Resource;
+import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorIntegrationTest {
 
     public PackageDeploymentServletChangeSetIntegrationTest() {
         autoLoginAsAdmin = false;
     }
+    
 
     //    @BeforeClass
     // HACK - Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
@@ -74,7 +86,9 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     @Test
     @RunAsClient
     public void applyChangeSetTwice(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
+        System.out.println(baseURL);
+	
+	URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
         Resource res = ResourceFactory.newUrlResource(url);
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         Authenticator.setDefault(new Authenticator() {
@@ -96,6 +110,82 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         ka.applyChangeSet(res);
         for (KnowledgePackage pkg : ka.getKnowledgeBase().getKnowledgePackages()) {
             System.out.printf("  %s (%d)%n", pkg.getName(), pkg.getRules().size());
+        }
+    }
+    
+    
+    @Test
+    @RunAsClient
+    public void scanForChangeInRepository(@ArquillianResource URL baseURL) throws MalformedURLException, InterruptedException, SerializationException, URISyntaxException {
+        
+        System.out.println("\nBUGZILLA 733008 reproducer\n");
+        
+        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
+        Resource res = ResourceFactory.newUrlResource(url);
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("admin", "admin".toCharArray());
+            }
+        });
+        
+        // system event listener
+        SystemEventListenerFactory
+                        .setSystemEventListener(new PrintStreamSystemEventListener(
+                                        System.out));
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgentConfiguration conf = KnowledgeAgentFactory
+                .newKnowledgeAgentConfiguration();
+        // needs to be newInstance=true, bugzilla 733008 works fine with newInstance=false
+        conf.setProperty("drools.agent.newInstance", "true");
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "agent", kbase, conf);
+        
+        try {
+            
+            ResourceFactory.getResourceChangeNotifierService().start();
+            ResourceFactory.getResourceChangeScannerService().start();
+
+            ResourceChangeScannerConfiguration sconf = ResourceFactory
+                        .getResourceChangeScannerService()
+                        .newResourceChangeScannerConfiguration();
+            sconf.setProperty("drools.resource.scanner.interval", "5");
+            ResourceFactory.getResourceChangeScannerService().configure(sconf);
+
+            // first time, loading package mortgages from Guvnor
+            kagent.applyChangeSet(res);
+            kbase = kagent.getKnowledgeBase();
+            Thread.sleep(1000);
+            System.out.println("BUGZILLA 733008 total rules: " + kbase.getKnowledgePackages().iterator().next().getRules().size());
+            for (Rule r : kbase.getKnowledgePackages().iterator().next().getRules()) {
+        	System.out.println(r.getName());
+            }
+
+            // change Guvnor's repo with REST api by deleting asset rule2
+            Abdera abdera = new Abdera();
+            AbderaClient client = new AbderaClient( abdera );
+            client.addCredentials( baseURL.toExternalForm(),
+                                   null,
+                                   null,
+                                   new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                                  "admin" ) );
+            String queryURL = (new URL(baseURL, "rest/packages/fileManagerServicePackage1/assets/rule2")).toExternalForm();
+            ClientResponse resp = client.delete(queryURL);
+            System.out.println(resp);
+            
+            // detect the change
+            Thread.sleep(6000);
+            System.out.println("BUGZILLA 733008 total rules: " + kbase.getKnowledgePackages().iterator().next().getRules().size());
+            kbase = kagent.getKnowledgeBase();
+            for (Rule r : kbase.getKnowledgePackages().iterator().next().getRules()) {
+        	System.out.println(r.getName());
+            }
+        
+        } finally {
+                kagent.dispose();
+                ResourceFactory.getResourceChangeNotifierService().stop();
+                ResourceFactory.getResourceChangeScannerService().stop();
         }
     }
 
