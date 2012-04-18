@@ -26,6 +26,15 @@
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
+    <dependencySet><!-- Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
+      <includes>
+        <include>org.apache.cxf:cxf-rt-transports-jms:jar</include>
+        <include>org.apache.cxf:cxf-rt-management:jar</include>
+        <include>org.apache.cxf:cxf-rt-bindings-corba:jar</include>
+      </includes>
+      <outputDirectory>WEB-INF/lib/</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
   </dependencySets>
 
 </assembly>
