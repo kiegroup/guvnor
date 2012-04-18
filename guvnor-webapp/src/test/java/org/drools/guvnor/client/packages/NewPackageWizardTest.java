@@ -16,10 +16,10 @@
 
 package org.drools.guvnor.client.packages;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 public class NewPackageWizardTest {
 
@@ -27,9 +27,13 @@ public class NewPackageWizardTest {
     public void testPackageNameValidation() {
         assertTrue(PackageNameValidator.validatePackageName("foo.bar"));
         assertTrue(PackageNameValidator.validatePackageName("whee.waa2"));
+        assertTrue(PackageNameValidator.validatePackageName("whee.waa2.whee.waa2.whee.waa2.whee.waa2"));
+        assertTrue(PackageNameValidator.validatePackageName("こんにちは.世界"));
         assertFalse(PackageNameValidator.validatePackageName(" hey DJ "));
         assertFalse(PackageNameValidator.validatePackageName(""));
         assertFalse(PackageNameValidator.validatePackageName(" "));
+        assertFalse(PackageNameValidator.validatePackageName("test\ning"));
+        assertFalse(PackageNameValidator.validatePackageName("\ttesting"));
         assertFalse(PackageNameValidator.validatePackageName(null));
 
     }
