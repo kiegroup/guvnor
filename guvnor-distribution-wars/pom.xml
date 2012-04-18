@@ -50,10 +50,15 @@
       <artifactId>guvnor-webapp-drools</artifactId>
       <type>war</type>
     </dependency>
-    <dependency><!-- Only used by jboss AS 6 -->
+    <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.3.1</version>
+      <artifactId>cxf-rt-transports-jms</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-bindings-corba</artifactId>
+      <version>${cxf.version}</version>
     </dependency>
   </dependencies>
 
