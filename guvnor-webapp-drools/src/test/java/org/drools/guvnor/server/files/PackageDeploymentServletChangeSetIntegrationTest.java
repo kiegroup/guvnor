@@ -15,15 +15,28 @@
  */
 package org.drools.guvnor.server.files;
 
+import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import org.apache.abdera.Abdera;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.io.Resource;
+import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
@@ -33,9 +46,10 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import com.google.gwt.user.client.rpc.SerializationException;
+
+import static org.junit.Assert.assertEquals;
+
 
 public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorIntegrationTest {
 
@@ -47,26 +61,26 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     // HACK - Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
     @Test @InSequence(-1)
     public void startServers() throws Exception {
-        ModuleItem pkg = rulesRepository.createModule( "fileManagerServicePackage1",
-                                                                   "this is package fileManagerServicePackage1" );
-        AssetItem rule1 = pkg.addAsset( "rule1",
-                                       "" );
-        rule1.updateFormat(AssetFormats.DRL);
-        rule1.updateContent("rule 'rule1' when org.drools.Person() then end");
-        rule1.checkin("version 1");
+        ModuleItem pkgA = rulesRepository.createModule("applyChangeSetTwice",
+                "this is package applyChangeSetTwice");
+        AssetItem ruleA1 = pkgA.addAsset("ruleA1", "", null, AssetFormats.DRL);
+        ruleA1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleA1.checkin("version 1");
+        AssetItem ruleA2 = pkgA.addAsset("ruleA2", "", null, AssetFormats.DRL);
+        ruleA2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
+        ruleA2.checkin("version 1");
+        repositoryPackageService.createModuleSnapshot(pkgA.getName(), "snapshotA1", false, "");
 
-        // Create rule2
-        AssetItem rule2 = pkg.addAsset( "rule2",
-                                       "" );
-        rule2.updateFormat(AssetFormats.DRL);
-        rule2.updateContent("rule 'rule2' when org.drools.Person() then end");
-        rule2.checkin("version 1");
+        ModuleItem pkgB = rulesRepository.createModule("scanForChangeInRepository",
+                "this is package scanForChangeInRepository");
+        AssetItem ruleB1 = pkgB.addAsset("ruleB1", "", null, AssetFormats.DRL);
+        ruleB1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleB1.checkin("version 1");
+        AssetItem ruleB2 = pkgB.addAsset("ruleB2", "", null, AssetFormats.DRL);
+        ruleB2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
+        ruleB2.checkin("version 1");
+        repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotA1", false, "");
 
-        String snapshotName = "SNAP1";
-        repositoryPackageService.createModuleSnapshot(pkg.getName(),
-                snapshotName,
-                false,
-                "");
         repositoryPackageService.rebuildPackages();
         repositoryPackageService.rebuildSnapshots();
     }
@@ -74,7 +88,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     @Test
     @RunAsClient
     public void applyChangeSetTwice(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/fileManagerServicePackage1/LATEST/ChangeSet.xml");
+        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/applyChangeSetTwice/LATEST/ChangeSet.xml");
         Resource res = ResourceFactory.newUrlResource(url);
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         Authenticator.setDefault(new Authenticator() {
@@ -96,6 +110,76 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         ka.applyChangeSet(res);
         for (KnowledgePackage pkg : ka.getKnowledgeBase().getKnowledgePackages()) {
             System.out.printf("  %s (%d)%n", pkg.getName(), pkg.getRules().size());
+        }
+    }
+
+    @Test @Ignore
+    @RunAsClient
+    public void scanForChangeInRepository(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/scanForChangeInRepository/LATEST/ChangeSet.xml");
+        Resource res = ResourceFactory.newUrlResource(url);
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("admin", "admin".toCharArray());
+            }
+        });
+
+        // system event listener
+        SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        // needs to be newInstance=true, bugzilla 733008 works fine with newInstance=false
+        conf.setProperty("drools.agent.newInstance", "true");
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "agent", kbase, conf);
+
+        try {
+            ResourceFactory.getResourceChangeNotifierService().start();
+            ResourceFactory.getResourceChangeScannerService().start();
+
+            ResourceChangeScannerConfiguration sconf = ResourceFactory
+                    .getResourceChangeScannerService()
+                    .newResourceChangeScannerConfiguration();
+            sconf.setProperty("drools.resource.scanner.interval", "5");
+            ResourceFactory.getResourceChangeScannerService().configure(sconf);
+
+            kagent.applyChangeSet(res);
+            kbase = kagent.getKnowledgeBase();
+            Thread.sleep(1000);
+            assertEquals(2, kbase.getKnowledgePackages().iterator().next().getRules().size());
+            System.out.println("BUGZILLA 733008 total rules: " + kbase.getKnowledgePackages().iterator().next().getRules().size());
+            for (Rule r : kbase.getKnowledgePackages().iterator().next().getRules()) {
+                System.out.println(r.getName());
+            }
+
+            // Change Guvnor's repo with REST api by deleting asset rule2
+            Abdera abdera = new Abdera();
+            AbderaClient client = new AbderaClient(abdera);
+            client.addCredentials(baseURL.toExternalForm(),
+                    null,
+                    null,
+                    new org.apache.commons.httpclient.UsernamePasswordCredentials("admin",
+                            "admin"));
+            ClientResponse deleteResponse = client.delete(
+                    new URL(baseURL, "rest/packages/scanForChangeInRepository/assets/ruleB2").toExternalForm());
+            assertEquals(204, deleteResponse.getStatus());
+            // TODO the package scanForChangeInRepository needs to be rebuild or this test fails
+//            ClientResponse binaryResponse = client.get(
+//                    new URL(baseURL, "rest/packages/scanForChangeInRepository/binary").toExternalForm());
+//            assertEquals(200, binaryResponse.getStatus());
+
+
+            // detect the change
+            Thread.sleep(6000);
+            kbase = kagent.getKnowledgeBase();
+            assertEquals(1, kbase.getKnowledgePackages().iterator().next().getRules().size());
+
+        } finally {
+            kagent.dispose();
+            ResourceFactory.getResourceChangeNotifierService().stop();
+            ResourceFactory.getResourceChangeScannerService().stop();
         }
     }
 
