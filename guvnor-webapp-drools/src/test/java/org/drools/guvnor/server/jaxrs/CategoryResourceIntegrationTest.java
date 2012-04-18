@@ -380,7 +380,12 @@ public class CategoryResourceIntegrationTest extends GuvnorIntegrationTest {
     @RunAsClient
     public void testCreateSubCategory(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
-
+        client.addCredentials( baseURL.toExternalForm(),
+                null,
+                null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials( "admin",
+                                                                               "admin" ) );
+        
         ClientResponse resp = client.put(new URL( baseURL,  "rest/categories/testCreateSubCategory/subCat1" ).toExternalForm(),
                 new ByteArrayInputStream(new byte[]{}));
         assertEquals(ResponseType.SUCCESS, resp.getType());
