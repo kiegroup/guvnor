@@ -84,10 +84,10 @@ public class WebDAVImpl
             if ( rulesRepository.containsModule( path[1] ) ) {
                 ModuleItem pkg = loadPackageFromRepository( path[1] );
                 pkg.archiveItem( false );
-                pkg.checkin( "<restored by webdav>" );
+                pkg.checkin( "restored by webdav" );
             } else {
                 rulesRepository.createModule( path[1],
-                                              "<from webdav>" );
+                                              "from webdav" );
             }
         } else {
             throw new UnsupportedOperationException( "Not able to create folders here..." );
@@ -116,12 +116,12 @@ public class WebDAVImpl
             if ( packageItem.containsAsset( resource[0] ) ) {
                 AssetItem lazarus = packageItem.loadAsset( resource[0] );
                 lazarus.archiveItem( false );
-                lazarus.checkin( "<restored by webdav>" );
+                lazarus.checkin( "restored by webdav" );
             } else {
                 AssetItem asset = packageItem.addAsset( resource[0],
                                                         "" );
                 asset.updateFormat( resource[1] );
-                asset.checkin( "<from webdav>" );
+                asset.checkin( "from webdav" );
             }
         } else if ( isGlobalAreas( path ) ) {
             String[] resource = AssetItem.getAssetNameFromFileName( path[1] );
@@ -136,12 +136,12 @@ public class WebDAVImpl
             if ( packageItem.containsAsset( resource[0] ) ) {
                 AssetItem lazarus = packageItem.loadAsset( resource[0] );
                 lazarus.archiveItem( false );
-                lazarus.checkin( "<restored by webdav>" );
+                lazarus.checkin( "restored by webdav" );
             } else {
                 AssetItem asset = packageItem.addAsset( resource[0],
                                                         "" );
                 asset.updateFormat( resource[1] );
-                asset.checkin( "<from webdav>" );
+                asset.checkin( "from webdav" );
             }
         } else {
             throw new UnsupportedOperationException( "Can't add assets here." );
@@ -787,7 +787,7 @@ public class WebDAVImpl
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
-            asset.checkin( "<content from webdav>" );
+            asset.checkin( "content from webdav" );
             //}
         } else if ( isGlobalAreas( path ) ) {
             if ( path[1].startsWith( "._" ) ) {
@@ -821,7 +821,7 @@ public class WebDAVImpl
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
-            asset.checkin( "<content from webdav>" );
+            asset.checkin( "content from webdav" );
             //}
         } else {
             throw new UnsupportedOperationException( "Unable to save content to this location." );
