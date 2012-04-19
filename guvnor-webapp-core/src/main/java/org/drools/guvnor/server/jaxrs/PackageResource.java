@@ -58,6 +58,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URI;
 import java.text.DateFormat;
@@ -146,7 +147,7 @@ public class PackageResource extends Resource {
         try {
             String packageName = fileManagerService.importClassicDRL(is, null);
             return toPackageEntryAbdera(rulesRepository.loadModule(packageName), uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -162,7 +163,7 @@ public class PackageResource extends Resource {
         try {
             String packageName = fileManagerService.importClassicDRL(is, null);
             return toPackage(rulesRepository.loadModule(packageName), uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -174,7 +175,7 @@ public class PackageResource extends Resource {
         try {
             ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary());
             return toPackageEntryAbdera(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -187,7 +188,7 @@ public class PackageResource extends Resource {
         try {
             ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription());
             return toPackage(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -200,7 +201,7 @@ public class PackageResource extends Resource {
         try {
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
             return toPackageEntryAbdera(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
         }
@@ -213,7 +214,7 @@ public class PackageResource extends Resource {
         try {
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
             return toPackage(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
         }
@@ -229,7 +230,7 @@ public class PackageResource extends Resource {
             String drl = moduleAssembler.getCompiledSource();
             return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + packageName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(moduleItem.getLastModified()).getTime())).build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
         }
@@ -262,7 +263,7 @@ public class PackageResource extends Resource {
             }
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(p.getLastModified()).getTime())).build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
         }
@@ -297,7 +298,7 @@ public class PackageResource extends Resource {
                     e.addLink(l);
                     f.addEntry(e);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 throw new WebApplicationException(e);
             }
         }
@@ -389,7 +390,7 @@ public class PackageResource extends Resource {
 
             existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -411,7 +412,7 @@ public class PackageResource extends Resource {
             /* TODO: add more updates to package item from JSON */
             existingModuleItem.checkin(module.getMetadata().getCheckinComment());
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -423,7 +424,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package does not exist
             ModuleItem p = rulesRepository.loadModule(packageName);
             repositoryPackageService.removeModule(p.getUUID());
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             // catch RulesRepositoryException and other exceptions.
             throw new WebApplicationException(e);
         }
@@ -455,7 +456,7 @@ public class PackageResource extends Resource {
             while (iter.hasNext())
                 feed.addEntry(toAssetEntryAbdera(iter.next(), uriInfo));
             return feed;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -485,7 +486,7 @@ public class PackageResource extends Resource {
                 ret.add(toAsset(iter.next(), uriInfo));
             }
             return ret;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -498,7 +499,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             return toAssetEntryAbdera(asset, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -511,7 +512,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             return toAsset(asset, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -533,7 +534,7 @@ public class PackageResource extends Resource {
             }
 
             return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -546,7 +547,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             return asset.getContent();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -583,10 +584,10 @@ public class PackageResource extends Resource {
             }
             
             //The categories are not saved by addAsset(). Need to force it here.
-            rulesRepository.getSession().save();
-            
+            rulesRepository.save();
+
             return toAssetEntryAbdera(ai, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -602,7 +603,11 @@ public class PackageResource extends Resource {
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             } else {
-                assetName = URLDecoder.decode(assetName, "UTF-8");
+                try {
+                    assetName = URLDecoder.decode(assetName, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new IllegalStateException("This server does not support UTF-8 encoding.", e);
+                }
             }
             String fileName = null;
             String extension = null;
@@ -629,7 +634,7 @@ public class PackageResource extends Resource {
             ai.checkin("update binary");
             rulesRepository.save();
             return toAssetEntryAbdera(ai, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -683,7 +688,7 @@ public class PackageResource extends Resource {
             }
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -703,7 +708,7 @@ public class PackageResource extends Resource {
             ai.updateDescription(asset.getDescription());
             ai.checkin(asset.getMetadata().getCheckInComment());
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -719,7 +724,7 @@ public class PackageResource extends Resource {
             asset.updateContent(content);
             asset.checkin("Updated asset source from REST interface");
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -735,7 +740,7 @@ public class PackageResource extends Resource {
             asset.updateBinaryContentAttachment(is);
             asset.checkin("Update binary");
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -747,12 +752,12 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem ai = rulesRepository.loadModule(packageName).loadAsset( assetName );
-            // assetService.archiveAsset(ai.getUUID());
             ModuleItem module = ai.getModule();
+            // assetService.archiveAsset(ai.getUUID());
             repositoryAssetService.removeAsset(ai.getUUID());
             module.updateBinaryUpToDate(false);
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -801,7 +806,7 @@ public class PackageResource extends Resource {
                     }
             }
             return f;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -816,7 +821,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName, versionNumber);
             return toAssetEntryAbdera(asset, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }   
@@ -831,7 +836,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName, versionNumber);
             return asset.getContent();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -854,7 +859,7 @@ public class PackageResource extends Resource {
                 fileName = asset.getName() + "." + asset.getFormat();
             }
             return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }

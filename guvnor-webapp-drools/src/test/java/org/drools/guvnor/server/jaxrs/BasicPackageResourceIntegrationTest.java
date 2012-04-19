@@ -472,10 +472,10 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
     }
 
     /* Package Creation */
-    @Test @RunAsClient  @Ignore
+    @Test @RunAsClient
     public void testCreatePackageFromDRLAsEntry(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
@@ -484,35 +484,15 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
 
         //Send request
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("simple_rules.drl")));
-        DataOutputStream dos = new DataOutputStream (
-              connection.getOutputStream ());
-        while (br.ready())
-            dos.writeBytes (br.readLine());
-        dos.flush();
-        dos.close();
-
-        /* Retry with a -1 from the connection */
-        if (connection.getResponseCode() == -1) {
-            url = new URL(baseURL, "rest/packages");
-            connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestProperty("Authorization",
-                    "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
-            connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-            connection.setDoOutput(true);
-
-            //Send request
-            br = new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream("simple_rules.drl")));
-            dos = new DataOutputStream (
-                  connection.getOutputStream ());
-            while (br.ready())
-                dos.writeBytes (br.readLine());
-            dos.flush();
-            dos.close();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = getClass().getResourceAsStream("simple_rules.drl");
+            out = connection.getOutputStream();
+            IOUtils.copy(in, out);
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
         }
 
         assertEquals (200, connection.getResponseCode());
@@ -520,10 +500,10 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @RunAsClient @Ignore
+    @Test @RunAsClient
     public void testCreatePackageFromDRLAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
@@ -532,24 +512,26 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
 
         //Send request
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("simple_rules2.drl")));
-        DataOutputStream dos = new DataOutputStream (
-              connection.getOutputStream ());
-        while (br.ready())
-            dos.writeBytes (br.readLine());
-        dos.flush();
-        dos.close();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = getClass().getResourceAsStream("simple_rules2.drl");
+            out = connection.getOutputStream();
+            IOUtils.copy(in, out);
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_JSON, connection.getContentType());
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @RunAsClient @Ignore
+    @Test @RunAsClient
     public void testCreatePackageFromDRLAsJaxB(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
@@ -558,16 +540,18 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
 
         //Send request
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("simple_rules3.drl")));
-        DataOutputStream dos = new DataOutputStream (
-              connection.getOutputStream ());
-        while (br.ready())
-            dos.writeBytes (br.readLine());
-        dos.flush();
-        dos.close();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = getClass().getResourceAsStream("simple_rules3.drl");
+            out = connection.getOutputStream();
+            IOUtils.copy(in, out);
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
 
-        assertEquals (200, connection.getResponseCode());
+        assertEquals(200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_XML, connection.getContentType());
         //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }

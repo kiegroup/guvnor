@@ -114,8 +114,6 @@ public class PackageDeploymentServlet extends RepositoryServlet {
             response.getWriter().write("OK");
         } catch (IllegalArgumentException e) {
             response.getWriter().write(e.getMessage());
-        } catch (DroolsParserException e) {
-            response.getWriter().write("Unable to process import: " + e.getMessage());
         } catch (RulesRepositoryException e) {
             response.getWriter().write("Unable to process import: " + e.getMessage());
         }

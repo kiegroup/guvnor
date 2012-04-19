@@ -307,14 +307,20 @@ public class FileManagerService {
      * If it does, it will be "merged" in the sense that any new rules in the drl
      * will be created as new assets in the repo, everything else will stay as it was
      * in the repo.
-     * 
+     *
+     * @param drlInputStream will be closed after it's read
      * @param packageName Name for this package. Overrides the one in the DRL.
      */
     @LoggedIn
-    public String importClassicDRL(InputStream drlStream,
-                                   String packageName) throws IOException,
-                                                      DroolsParserException {
-        ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
+    public String importClassicDRL(InputStream drlInputStream,
+                                   String packageName) {
+        ClassicDRLImporter imp;
+        try {
+            imp = new ClassicDRLImporter(drlInputStream);
+        } catch (DroolsParserException e) {
+            throw new IllegalArgumentException(
+                    "Could not parse the drlInputStream for package (" + packageName + "): " + e.getMessage(), e);
+        }
         ModuleItem pkg = null;
 
         if ( packageName == null ) {
