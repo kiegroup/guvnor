@@ -239,7 +239,6 @@ public class PackageResource extends Resource {
     @Path("{packageName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
-System.out.println("getPackageBinary ======================================");
         try {
             ModuleItem p = rulesRepository.loadModule(packageName);
             
@@ -248,10 +247,8 @@ System.out.println("getPackageBinary ======================================");
             String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
             byte[] result;
             if (p.isBinaryUpToDate()) {
-System.out.println("isBinaryUpToDate = true");
                 result = p.getCompiledBinaryBytes();
             } else {
-System.out.println("isBinaryUpToDate = false");
                 BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
                 if (builderResult != null && !builderResult.getLines().isEmpty()) {
                     StringBuilder errs = new StringBuilder();
