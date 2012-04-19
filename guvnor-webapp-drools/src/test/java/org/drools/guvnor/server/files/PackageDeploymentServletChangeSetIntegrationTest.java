@@ -24,6 +24,7 @@ import java.net.URL;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
@@ -113,7 +114,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         }
     }
 
-    @Test @Ignore
+    @Test
     @RunAsClient
     public void scanForChangeInRepository(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/scanForChangeInRepository/LATEST/ChangeSet.xml");
@@ -165,10 +166,9 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
             ClientResponse deleteResponse = client.delete(
                     new URL(baseURL, "rest/packages/scanForChangeInRepository/assets/ruleB2").toExternalForm());
             assertEquals(204, deleteResponse.getStatus());
-            // TODO the package scanForChangeInRepository needs to be rebuild or this test fails
-//            ClientResponse binaryResponse = client.get(
-//                    new URL(baseURL, "rest/packages/scanForChangeInRepository/binary").toExternalForm());
-//            assertEquals(200, binaryResponse.getStatus());
+            ClientResponse binaryResponse = client.get(
+                    new URL(baseURL, "rest/packages/scanForChangeInRepository/binary").toExternalForm());
+            assertEquals(200, binaryResponse.getStatus());
 
 
             // detect the change
