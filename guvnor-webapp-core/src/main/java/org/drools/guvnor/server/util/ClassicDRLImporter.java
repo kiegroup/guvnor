@@ -20,6 +20,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.repository.utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,15 +57,23 @@ public class ClassicDRLImporter {
 
     private boolean              usesDSL;
 
-    public ClassicDRLImporter(InputStream in) throws IOException,
-                                             DroolsParserException {
-        String line = "";
-        StringBuilder drl = new StringBuilder();
+    /**
+     * @param in will be closed after it's read
+     */
+    public ClassicDRLImporter(InputStream in) throws DroolsParserException {
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
-        while ( (line = reader.readLine()) != null ) {
-            drl.append( "\n" ).append( line );
+        try {
+            StringBuilder drl = new StringBuilder();
+            String line;
+            while ( (line = reader.readLine()) != null ) {
+                drl.append( "\n" ).append( line );
+            }
+            this.source = drl.toString();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read DRL inputStream.", e);
+        } finally {
+            IOUtils.closeQuietly(reader);
         }
-        this.source = drl.toString();
 
         parse();
     }
