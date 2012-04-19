@@ -721,8 +721,10 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem ai = repository.loadPackage(packageName).loadAsset( assetName );
+            PackageItem packageItem = ai.getPackage();
             // assetService.archiveAsset(ai.getUUID());
             assetService.removeAsset(ai.getUUID());
+            packageItem.updateBinaryUpToDate(false);
             repository.save();
         } catch (Exception e) {
             throw new WebApplicationException(e);
