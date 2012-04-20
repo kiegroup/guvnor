@@ -24,7 +24,9 @@ import org.drools.guvnor.client.rpc.Module;
 public class GlobalAreaTreeItem extends ModulesTreeItemBase {
 
     public GlobalAreaTreeItem(ClientFactory clientFactory) {
-        super(clientFactory,
+        super(
+                clientFactory,
+                clientFactory.getNavigationViewFactory().getGlobalAreaTreeItemView(),
                 null);
     }
 

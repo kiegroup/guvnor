@@ -32,6 +32,7 @@ public class ModulesTreeItem extends ModulesTreeItemBase {
     public ModulesTreeItem(ClientFactory clientFactory, EventBus eventBus, String perspectiveTypes) {
         super(
                 clientFactory,
+                clientFactory.getNavigationViewFactory().getModulesTreeItemView(),
                 perspectiveTypes);
 
 

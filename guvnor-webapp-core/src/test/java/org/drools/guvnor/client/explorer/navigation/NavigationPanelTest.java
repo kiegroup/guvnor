@@ -83,7 +83,7 @@ public class NavigationPanelTest {
         navigationItemBuilders.add(createNavigationItemBuilder(true, header, content));
         navigationItemBuilders.add(createNavigationItemBuilder(false, headerThatIsNeverShown, contentThatIsNeverShown));
         when(
-                perspective.getBuilders(clientFactory, eventBus)
+                perspective.getBuilders(eq(clientFactory), any(EventBus.class))
         ).thenReturn(
                 navigationItemBuilders
         );
@@ -101,7 +101,7 @@ public class NavigationPanelTest {
 
         ArgumentCaptor<ResettableEventBus> resettableEventBusArgumentCaptor = ArgumentCaptor.forClass(ResettableEventBus.class);
         when(
-                perspective.getBuilders(clientFactory, eventBus)
+                perspective.getBuilders(eq(clientFactory), resettableEventBusArgumentCaptor.capture())
         ).thenReturn(
                 Collections.<NavigationItemBuilder>emptyList()
         );

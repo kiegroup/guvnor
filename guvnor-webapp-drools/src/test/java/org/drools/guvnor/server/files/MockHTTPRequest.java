@@ -23,15 +23,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 public class MockHTTPRequest implements HttpServletRequest {
 
@@ -44,6 +45,54 @@ public class MockHTTPRequest implements HttpServletRequest {
 
     public StringBuffer url = new StringBuffer("http://foo.com");
 
+
+    public Part getPart(java.lang.String s) {
+        return null;
+    }
+
+    public Collection<Part> getParts() {
+        return null;
+    }
+
+    public void logout(){
+
+    }
+    public DispatcherType getDispatcherType(){
+            return null;
+    }
+
+    public AsyncContext getAsyncContext(){
+           return null;
+    }
+
+    public ServletContext getServletContext(){
+           return null;
+    }
+
+    public AsyncContext startAsync()
+            throws java.lang.IllegalStateException{
+        return null;
+    }
+
+    public AsyncContext startAsync(ServletRequest servletRequest,
+                            ServletResponse servletResponse)
+            throws java.lang.IllegalStateException{
+           return null;
+    }
+
+    public boolean isAsyncStarted(){
+        return true;
+    }
+
+    public boolean isAsyncSupported(){
+           return true;
+    }
+    public boolean authenticate(javax.servlet.http.HttpServletResponse r){
+        return true;
+    }
+
+
+    public void login(java.lang.String username, java.lang.String password){}
 
     public MockHTTPRequest(String uri, Map<String, String> headers) {
         try {
@@ -107,7 +156,7 @@ public class MockHTTPRequest implements HttpServletRequest {
         return headers.get(n);
     }
 
-    public Enumeration getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
         return null;
     }
 

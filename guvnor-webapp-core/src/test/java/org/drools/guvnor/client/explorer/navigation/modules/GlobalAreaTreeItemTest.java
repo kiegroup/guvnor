@@ -39,6 +39,7 @@ public class GlobalAreaTreeItemTest {
     public void setUp() throws Exception {
         view = mock(GlobalAreaTreeItemView.class);
         ClientFactory clientFactory = mock(ClientFactory.class);
+        ModulesTreeItemView modulesTreeItemView = mock(ModulesTreeItemView.class);
         navigationViewFactory = mock(NavigationViewFactory.class);
         when(
                 clientFactory.getNavigationViewFactory()
@@ -50,7 +51,7 @@ public class GlobalAreaTreeItemTest {
         ).thenReturn(
                 view
         );
-
+        
         moduleService = mock(ModuleServiceAsync.class);
         when(
                 clientFactory.getModuleService()

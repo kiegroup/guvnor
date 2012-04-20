@@ -31,7 +31,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class SuggestionCompletionEngineServiceImplementationTest
+public class SuggestionCompletionEngineServiceImplementationIntegrationTest
         extends GuvnorIntegrationTest {
 
     @Inject

@@ -37,10 +37,11 @@ public abstract class ModulesTreeItemBase
 
     public ModulesTreeItemBase(
             ClientFactory clientFactory,
+            ModulesTreeItemBaseView view,
             String perspectiveTypes) {
-        this.view = clientFactory.getNavigationViewFactory().getModulesTreeItemView();
-        this.clientFactory = clientFactory;
+        this.view = view;
         view.setPresenter(this);
+        this.clientFactory = clientFactory;
         this.perspectiveTypes = perspectiveTypes;
         setUpRootItem();
     }

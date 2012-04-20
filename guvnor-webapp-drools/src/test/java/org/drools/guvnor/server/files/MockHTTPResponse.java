@@ -16,22 +16,17 @@
 
 package org.drools.guvnor.server.files;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import org.apache.commons.io.IOUtils;
 
 import javax.enterprise.inject.Alternative;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
+import java.io.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Alternative
 public class MockHTTPResponse implements HttpServletResponse {
@@ -53,6 +48,23 @@ public class MockHTTPResponse implements HttpServletResponse {
 
     public String extractContent() {
         return extractContent("UTF-8");
+    }
+
+
+    public String getHeader(String s) {
+        return null;
+    }
+
+    public int getStatus() {
+        return 0;
+    }
+
+    public Collection<String> getHeaders(String s) {
+        return null;
+    }
+
+    public Collection<String> getHeaderNames() {
+        return null;
     }
 
     public String extractContent(String encoding) {
