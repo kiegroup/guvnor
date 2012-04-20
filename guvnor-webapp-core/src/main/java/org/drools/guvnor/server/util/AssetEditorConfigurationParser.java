@@ -47,9 +47,10 @@ public class AssetEditorConfigurationParser {
 
     private List<AssetEditorConfiguration> readConfig() {
         List<AssetEditorConfiguration> assetEditors = new ArrayList<AssetEditorConfiguration>();
+        InputStream in = null;
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = getClass().getResourceAsStream(ASSETEDITOR_CONFIG);
+            in = getClass().getResourceAsStream(ASSETEDITOR_CONFIG);
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
             AssetEditorConfiguration configuration = null;
 
@@ -115,6 +116,14 @@ public class AssetEditorConfigurationParser {
             log.error("Failed to parse Asset editor configuration file",
                     e);
             e.printStackTrace();
+        } finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (Exception e) {
+				// ignore
+			}
         }
         return assetEditors;
     }
