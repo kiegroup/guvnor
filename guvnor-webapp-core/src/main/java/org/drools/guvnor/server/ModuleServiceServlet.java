@@ -3,9 +3,11 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.jboss.solder.core.Veto;
 
 import javax.inject.Inject;
 
+@Veto
 public class ModuleServiceServlet
         extends RemoteServiceServlet
         implements ModuleService {
