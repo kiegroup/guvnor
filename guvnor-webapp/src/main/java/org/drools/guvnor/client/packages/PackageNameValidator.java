@@ -19,7 +19,7 @@ package org.drools.guvnor.client.packages;
 public class PackageNameValidator {
 
     public static boolean validatePackageName(String name) {
-        if (name == null || name.isEmpty() || name.contains(" ") || name.contains("\n") || name.contains("\t")) {
+        if (name == null || name.length() == 0 || name.contains(" ") || name.contains("\n") || name.contains("\t")) {
             return false;
         } else {
             return true;
