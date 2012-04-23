@@ -16,6 +16,9 @@
 
 package org.drools.ide.common.server.util;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -27,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollection;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
@@ -50,7 +54,13 @@ import org.drools.ide.common.server.util.upgrade.RuleModelUpgradeHelper2;
 import org.drools.ide.common.server.util.upgrade.RuleModelUpgradeHelper3;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
@@ -145,6 +155,12 @@ public class BRXMLPersistence
 
         this.xt.alias( "org.drools.guvnor.client.modeldriven.dt.TemplateModel",
                        TemplateModel.class );
+
+        //Legacy DSLSentences have a collection of String values whereas newer persisted models
+        //have a collection of DSLVariableValues. See https://issues.jboss.org/browse/GUVNOR-1872
+        this.xt.registerLocalConverter( DSLSentence.class,
+                                        "values",
+                                        new DSLVariableValuesConverter( this.xt.getMapper() ) );
 
     }
 
