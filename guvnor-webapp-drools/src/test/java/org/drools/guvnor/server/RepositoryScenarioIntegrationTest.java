@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
@@ -30,10 +32,10 @@ import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -45,13 +47,13 @@ import org.junit.Test;
 
 public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
-
+    @Inject
     private TestScenarioServiceImplementation testScenarioServiceImplementation;
 
-    @Before
-    public void setUp() throws Exception {
-        testScenarioServiceImplementation = new TestScenarioServiceImplementation();
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        testScenarioServiceImplementation = new TestScenarioServiceImplementation();
+//    }
 
     @Test
     public void testRunScenario() throws Exception {

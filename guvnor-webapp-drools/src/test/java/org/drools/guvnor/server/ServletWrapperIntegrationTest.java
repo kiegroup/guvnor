@@ -16,21 +16,18 @@
 
 package org.drools.guvnor.server;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ServletWrapperIntegrationTest extends GuvnorIntegrationTest {
 
-    private ModuleServiceServlet moduleServiceServlet;
+    @Inject
+    private ModuleServiceServlet   moduleServiceServlet;
 
+    @Inject
     private SecurityServiceServlet securityServiceServlet;
-
-    @Before
-    public void setUp() throws Exception {
-        moduleServiceServlet = new ModuleServiceServlet();
-        securityServiceServlet = new SecurityServiceServlet();
-    }
 
     @Test
     public void testMainService() {

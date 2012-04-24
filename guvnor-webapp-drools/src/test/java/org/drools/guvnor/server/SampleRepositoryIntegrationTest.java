@@ -16,14 +16,21 @@
 
 package org.drools.guvnor.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class SampleRepositoryIntegrationTest extends GuvnorIntegrationTest {
+
+    @Inject
+    private TestScenarioServiceImplementation testScenarioService;
 
     @Test
     public void testImportSampleRepository() throws Exception {
@@ -33,8 +40,8 @@ public class SampleRepositoryIntegrationTest extends GuvnorIntegrationTest {
                       cfgs.length );
         assertTrue( cfgs[0].getName().equals( "mortgages" ) || cfgs[1].getName().equals( "mortgages" ) );
         String puuid = (cfgs[0].getName().equals( "mortgages" )) ? cfgs[0].getUuid() : cfgs[1].getUuid();
-        BulkTestRunResult bulkTestRunResult = new TestScenarioServiceImplementation().runScenariosInPackage( puuid );
-        assertNull(bulkTestRunResult.getResult());
+        BulkTestRunResult bulkTestRunResult = testScenarioService.runScenariosInPackage( puuid );
+        assertNull( bulkTestRunResult.getResult() );
     }
 
 }
