@@ -756,7 +756,11 @@ public class SuggestionCompletionLoader
     }
 
     public String getShortNameOfClass(final String clazz) {
-        return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
+        String shortName = clazz.substring( clazz.lastIndexOf( "." ) + 1 );
+        if ( shortName.contains( "$" ) ) {
+            shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
+        }
+        return shortName;
     }
 
     /**
@@ -908,5 +912,5 @@ public class SuggestionCompletionLoader
     @SuppressWarnings("serial")
     private static class WildCardException extends Exception {
     }
-    
+
 }
