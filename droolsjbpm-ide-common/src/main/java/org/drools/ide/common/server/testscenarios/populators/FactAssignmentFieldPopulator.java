@@ -20,6 +20,7 @@ import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -27,36 +28,34 @@ import java.util.Map;
 public class FactAssignmentFieldPopulator
         extends FieldPopulator {
 
-    private final Object                     fact;
+    private final Object fact;
     private final Collection<FieldPopulator> subFieldPopulators = new ArrayList<FieldPopulator>();
-    private final ClassLoader                classLoader;
+    private final ClassLoader classLoader;
 
     public FactAssignmentFieldPopulator(Object factObject,
                                         FactAssignmentField field,
                                         TypeResolver resolver,
-                                        ClassLoader classLoader) throws ClassNotFoundException,
-                                                                IllegalAccessException,
-                                                                InstantiationException {
-        super( factObject,
-               field.getName() );
-        this.fact = resolver.resolveType( resolver.getFullTypeName( field.getFact().getType() ) ).newInstance();
+                                        ClassLoader classLoader)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+        super(factObject,
+                field.getName());
+        this.fact = resolver.resolveType(resolver.getFullTypeName(field.getFact().getType())).newInstance();
         this.classLoader = classLoader;
 
-        initSubFieldPopulators( field,
-                                resolver );
+        initSubFieldPopulators(field,
+                resolver);
     }
 
     private void initSubFieldPopulators(FactAssignmentField field,
-                                        TypeResolver resolver) throws ClassNotFoundException,
-                                                              InstantiationException,
-                                                              IllegalAccessException {
-        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory( fact,
-                                                                                 resolver,
-                                                                                 classLoader );
-        for ( Field subField : field.getFact().getFieldData() ) {
+                                        TypeResolver resolver)
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(fact,
+                resolver,
+                classLoader);
+        for (Field subField : field.getFact().getFieldData()) {
             try {
-                subFieldPopulators.add( fieldPopulatorFactory.getFieldPopulator( subField ) );
-            } catch ( IllegalArgumentException e ) {
+                subFieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(subField));
+            } catch (IllegalArgumentException e) {
                 // This should never happen, but I don't trust myself or the legacy test scenarios we have.
                 // If the field value is null then it is safe to ignore it.
             }
@@ -65,10 +64,10 @@ public class FactAssignmentFieldPopulator
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField( fact,
-                       populatedData );
-        for ( FieldPopulator fieldPopulator : subFieldPopulators ) {
-            fieldPopulator.populate( populatedData );
+        populateField(fact,
+                populatedData);
+        for (FieldPopulator fieldPopulator : subFieldPopulators) {
+            fieldPopulator.populate(populatedData);
         }
     }
 }

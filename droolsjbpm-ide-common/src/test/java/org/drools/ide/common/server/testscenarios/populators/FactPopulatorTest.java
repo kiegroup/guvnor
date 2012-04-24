@@ -308,6 +308,34 @@ public class FactPopulatorTest {
 
     }
 
+
+    @Test
+    public void testSQLDateField() throws Exception {
+
+        factPopulator.add(
+                new NewFactPopulator(
+                        populatedData,
+                        getTypeResolver(),
+                        getClassLoader(),
+                        new FactData(
+                                "SqlDateWrapper",
+                                "c1",
+                                Arrays.<Field>asList(
+                                        new FieldData(
+                                                "sqlDate",
+                                                "10-Jul-2008")),
+                                false)));
+
+        factPopulator.populate();
+
+        assertTrue(populatedData.containsKey("c1"));
+
+        SqlDateWrapper sqlDateWrapper = (SqlDateWrapper) populatedData.get("c1");
+        assertNotNull(sqlDateWrapper.getSqlDate());
+
+    }
+
+
     @Test
     public void testPopulateFactsWithExpressions() throws Exception {
 
@@ -457,6 +485,7 @@ public class FactPopulatorTest {
 
         resolver.addImport("org.drools.Cheesery");
         resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.SqlDateWrapper");
         resolver.addImport("org.drools.CheeseType");
         resolver.addImport("org.drools.Person");
         resolver.addImport("org.drools.OuterFact");

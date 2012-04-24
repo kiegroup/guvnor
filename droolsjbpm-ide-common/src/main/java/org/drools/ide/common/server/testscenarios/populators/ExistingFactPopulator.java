@@ -21,6 +21,7 @@ import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,31 +31,30 @@ class ExistingFactPopulator extends FactPopulatorBase {
                                  TypeResolver typeResolver,
                                  ClassLoader classLoader,
                                  FactData fact) throws ClassNotFoundException {
-        super( populatedData,
-               typeResolver,
-               classLoader,
-               fact );
+        super(populatedData,
+                typeResolver,
+                classLoader,
+                fact);
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException {
-        if ( !populatedData.containsKey( fact.getName() ) ) {
-            throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.getName() + "]" );
+        if (!populatedData.containsKey(fact.getName())) {
+            throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.getName() + "]");
         }
-        return populatedData.get( fact.getName() );
+        return populatedData.get(fact.getName());
     }
 
     @Override
-    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
-                                                    IllegalAccessException,
-                                                    InstantiationException {
-        return getFieldPopulators( resolveFactObject() );
+    public List<FieldPopulator> getFieldPopulators()
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+        return getFieldPopulators(resolveFactObject());
     }
 
     @Override
     public void populate(InternalWorkingMemory workingMemory,
                          Map<String, FactHandle> factHandles) {
-        workingMemory.update( factHandles.get( fact.getName() ),
-                              populatedData.get( fact.getName() ) );
+        workingMemory.update(factHandles.get(fact.getName()),
+                populatedData.get(fact.getName()));
 
     }
 }

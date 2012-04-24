@@ -16,54 +16,54 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
-import java.util.List;
-import java.util.Map;
-
 import org.drools.FactHandle;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
 
 class NewFactPopulator extends FactPopulatorBase {
 
     private final Object factObject;
 
     public NewFactPopulator(
-                            Map<String, Object> populatedData,
-                            TypeResolver typeResolver,
-                            ClassLoader classLoader,
-                            FactData fact) throws ClassNotFoundException,
-                                          InstantiationException,
-                                          IllegalAccessException {
-        super( populatedData,
-               typeResolver,
-               classLoader,
-               fact );
+            Map<String, Object> populatedData,
+            TypeResolver typeResolver,
+            ClassLoader classLoader,
+            FactData fact) throws ClassNotFoundException,
+            InstantiationException,
+            IllegalAccessException {
+        super(populatedData,
+                typeResolver,
+                classLoader,
+                fact);
         factObject = resolveFactObject();
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException,
-                                        IllegalAccessException,
-                                        InstantiationException {
-        Object factObject = typeResolver.resolveType( getTypeName( typeResolver,
-                                                                   fact ) ).newInstance();
-        populatedData.put( fact.getName(),
-                           factObject );
+            IllegalAccessException,
+            InstantiationException {
+        Object factObject = typeResolver.resolveType(getTypeName(typeResolver,
+                fact)).newInstance();
+        populatedData.put(fact.getName(),
+                factObject);
         return factObject;
     }
 
     @Override
-    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
-                                                    IllegalAccessException,
-                                                    InstantiationException {
-        return getFieldPopulators( factObject );
+    public List<FieldPopulator> getFieldPopulators()
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+        return getFieldPopulators(factObject);
     }
 
     @Override
     public void populate(InternalWorkingMemory workingMemory,
                          Map<String, FactHandle> factHandles) {
-        factHandles.put( fact.getName(),
-                         workingMemory.insert( factObject ) );
+        factHandles.put(fact.getName(),
+                workingMemory.insert(factObject));
     }
 
 }

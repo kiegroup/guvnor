@@ -19,6 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,8 @@ public interface Populator {
     public String getName();
 
     public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
-                                                    IllegalAccessException,
-                                                    InstantiationException;
+            IllegalAccessException,
+            InstantiationException, InvocationTargetException, NoSuchMethodException;
 
     public void populate(InternalWorkingMemory workingMemory,
                          Map<String, FactHandle> factHandles);
