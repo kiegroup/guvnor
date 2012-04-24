@@ -1322,7 +1322,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         }
         assertFalse( result.hasLines() );
 
-        pkg = repo.loadModule( "testBinaryPackageCompileBRL" );
+        pkg = repo.loadModule( "testLoadAndExecBinary" );
         byte[] binPackage = pkg.getCompiledBinaryBytes();
 
         File file = new File( System.getProperty( "java.io.tmpdir" ) + File.separator + "RepoBinPackage.pkg" );
