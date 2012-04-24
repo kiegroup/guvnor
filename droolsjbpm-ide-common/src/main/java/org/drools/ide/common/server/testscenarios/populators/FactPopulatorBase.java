@@ -20,18 +20,19 @@ import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 abstract class FactPopulatorBase
-    implements
-    Populator {
+        implements
+        Populator {
 
     protected final Map<String, Object> populatedData;
-    protected final TypeResolver        typeResolver;
-    protected final ClassLoader         classLoader;
-    protected final FactData            fact;
+    protected final TypeResolver typeResolver;
+    protected final ClassLoader classLoader;
+    protected final FactData fact;
 
     public FactPopulatorBase(Map<String, Object> populatedData,
                              TypeResolver typeResolver,
@@ -47,19 +48,18 @@ abstract class FactPopulatorBase
         return fact.getName();
     }
 
-    protected List<FieldPopulator> getFieldPopulators(Object factObject) throws ClassNotFoundException,
-                                                                        IllegalAccessException,
-                                                                        InstantiationException {
+    protected List<FieldPopulator> getFieldPopulators(Object factObject)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory( factObject,
-                                                                                 typeResolver,
-                                                                                 classLoader );
+        FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject,
+                typeResolver,
+                classLoader);
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
-        for ( Field field : fact.getFieldData() ) {
+        for (Field field : fact.getFieldData()) {
             try {
-                fieldPopulators.add( fieldPopulatorFactory.getFieldPopulator( field ) );
-            } catch ( IllegalArgumentException e ) {
+                fieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(field));
+            } catch (IllegalArgumentException e) {
                 // This should never happen, but I don't trust myself or the legacy test scenarios we have.
                 // If the field value is null then it is safe to ignore it.
             }
@@ -71,8 +71,8 @@ abstract class FactPopulatorBase
     protected String getTypeName(TypeResolver resolver,
                                  FactData fact) throws ClassNotFoundException {
 
-        String fullName = resolver.getFullTypeName( fact.getType() );
-        if ( fullName.equals( "java.util.List" ) || fullName.equals( "java.util.Collection" ) ) {
+        String fullName = resolver.getFullTypeName(fact.getType());
+        if (fullName.equals("java.util.List") || fullName.equals("java.util.Collection")) {
             return "java.util.ArrayList";
         } else {
             return fullName;

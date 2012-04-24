@@ -19,6 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,12 +27,12 @@ import java.util.Map;
 
 public class FactPopulator {
 
-    private Map<String, Populator>        toBePopulatedData = new HashMap<String, Populator>();
+    private Map<String, Populator> toBePopulatedData = new HashMap<String, Populator>();
 
-    private final Map<String, Object>     populatedData;
-    private final Map<String, FactHandle> factHandles       = new HashMap<String, FactHandle>();
+    private final Map<String, Object> populatedData;
+    private final Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
 
-    private final InternalWorkingMemory   workingMemory;
+    private final InternalWorkingMemory workingMemory;
 
     public FactPopulator(InternalWorkingMemory workingMemory,
                          Map<String, Object> populatedData) {
@@ -39,34 +40,33 @@ public class FactPopulator {
         this.populatedData = populatedData;
     }
 
-    public void populate() throws ClassNotFoundException,
-                          InstantiationException,
-                          IllegalAccessException {
+    public void populate()
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
 
-        for ( Populator populator : toBePopulatedData.values() ) {
-            fieldPopulators.addAll( populator.getFieldPopulators() );
+        for (Populator populator : toBePopulatedData.values()) {
+            fieldPopulators.addAll(populator.getFieldPopulators());
         }
 
-        for ( FieldPopulator fieldPopulator : fieldPopulators ) {
-            fieldPopulator.populate( populatedData );
+        for (FieldPopulator fieldPopulator : fieldPopulators) {
+            fieldPopulator.populate(populatedData);
         }
 
-        for ( Populator populator : toBePopulatedData.values() ) {
-            populator.populate( workingMemory,
-                                factHandles );
+        for (Populator populator : toBePopulatedData.values()) {
+            populator.populate(workingMemory,
+                    factHandles);
         }
 
         toBePopulatedData.clear();
     }
 
     public void retractFact(String retractFactName) {
-        this.workingMemory.retract( this.factHandles.get( retractFactName ) );
-        this.populatedData.remove( retractFactName );
+        this.workingMemory.retract(this.factHandles.get(retractFactName));
+        this.populatedData.remove(retractFactName);
     }
 
     public void add(Populator factPopulator) {
-        toBePopulatedData.put( factPopulator.getName(),
-                               factPopulator );
+        toBePopulatedData.put(factPopulator.getName(),
+                factPopulator);
     }
 }
