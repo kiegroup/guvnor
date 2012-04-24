@@ -136,7 +136,7 @@
               <entry>application/atom+xml</entry>
 
               <entry>Creates a package from an Atom Entry. Returns the newly
-              created package in Atom Entry format</entry>
+              created package in Atom Entry format. Following info are required from the input Atom Entry: package name, package description.</entry>
             </row>
 
             <row>
@@ -272,7 +272,20 @@
               <entry>Updates the metadata of package {packageName} with a
               given Atom Entry.</entry>
             </row>
+            
+            <row>
+              <entry>/packages/{packageName}</entry>
 
+              <entry>PUT</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>none</entry>
+
+              <entry>Updates the metadata of package {packageName} with a
+              given JSON or XML.</entry>
+            </row>
+            
             <row>
               <entry>/packages/{packageName}</entry>
 
@@ -392,7 +405,7 @@
 
               <entry>Creates a binary asset in package {packageName} from the
               input stream. The value of Slug header is used to indicate the
-              name of the asset. This returns HTTP 500 error is the slug
+              name of the asset. This returns HTTP 500 error if the Slug
               header is missing.</entry>
             </row>
 
