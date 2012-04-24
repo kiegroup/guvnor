@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +36,7 @@ import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.FileManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.Asset;
@@ -1202,17 +1204,6 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         pkg = repo.loadModule( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledBinaryBytes();
 
-        // Here is where we write it out is needed... set to true if needed for
-        // the binary test below "testLoadAndExecBinary"
-        boolean saveBinPackage = false;
-        if ( saveBinPackage ) {
-            //FileOutputStream out = new FileOutputStream( "RepoBinPackage.pkg" );
-            FileOutputStream out = new FileOutputStream( "src/test/resources/org/drools/guvnor/server/RepoBinPackage.pkg" );
-            out.write( binPackage );
-            out.flush();
-            out.close();
-        }
-
         assertNotNull( binPackage );
 
         Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
@@ -1284,22 +1275,82 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
     }
 
-    /**
-     * this loads up a precompile binary package. If this fails, then it means
-     * it needs to be updated. It gets the package form the BRL example above.
-     * Simply set saveBinPackage to true to save a new version of the
-     * RepoBinPackage.pkg.
-     */
     @Test
     public void testLoadAndExecBinary() throws Exception {
-        Person p = new Person( "fubar" );
-        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( this.getClass().getResourceAsStream( "RepoBinPackage.pkg" ) );
-        RuleBase rb = loader.getRuleBase();
-        StatelessSession sess = rb.newStatelessSession();
-        sess.execute( p );
-        assertEquals( 42,
-                      p.getAge() );
+
+        RulesRepository repo = rulesRepository;
+
+        //Setup a binary package for use with this test
+        ModuleItem pkg = repo.createModule( "testLoadAndExecBinary",
+                                            "" );
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+                                          pkg );
+        AssetItem rule = pkg.addAsset( "rule",
+                                        "" );
+        rule.updateFormat( AssetFormats.BUSINESS_RULE );
+
+        RuleModel model = new RuleModel();
+        model.name = "rule";
+        FactPattern pattern = new FactPattern( "Person" );
+
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        con.setValue( "name soundslike 'foobar'" );
+        pattern.addConstraint( con );
+
+        pattern.setBoundName( "p" );
+        ActionSetField action = new ActionSetField( "p" );
+        ActionFieldValue value = new ActionFieldValue( "age",
+                                                       "42",
+                                                       SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        action.addFieldValue( value );
+
+        model.addLhsItem( pattern );
+        model.addRhsItem( action );
+
+        rule.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule.checkin( "" );
+        repo.save();
+
+        BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
+                                                                      true );
+        if ( result != null ) {
+            for ( int i = 0; i < result.getLines().size(); i++ ) {
+                System.err.println( result.getLines().get( i ).getMessage() );
+            }
+        }
+        assertFalse( result.hasLines() );
+
+        pkg = repo.loadModule( "testBinaryPackageCompileBRL" );
+        byte[] binPackage = pkg.getCompiledBinaryBytes();
+
+        File file = new File( System.getProperty( "java.io.tmpdir" ) + File.separator + "RepoBinPackage.pkg" );
+        FileManager fm = new FileManager();
+        try {
+
+            //Attempt to delete existing temporary file that may be lingering around
+            fm.deleteFile( file );
+
+            // Save file for actual test
+            FileOutputStream out = new FileOutputStream( file );
+            out.write( binPackage );
+            out.flush();
+            out.close();
+
+            //Test
+            Person p = new Person( "fubar" );
+            BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+            loader.addPackage( new FileInputStream( file ) );
+            RuleBase rb = loader.getRuleBase();
+            StatelessSession sess = rb.newStatelessSession();
+            sess.execute( p );
+            assertEquals( 42,
+                          p.getAge() );
+            
+        } finally {
+            //Tidy up
+            fm.deleteFile( file );
+        }
     }
 
     @Test
