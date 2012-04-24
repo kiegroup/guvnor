@@ -66,8 +66,8 @@ public class ModelContentHandler extends ContentHandler
         Set<String> imports = getImportsFromJar( asset );
 
         for ( String importLine : imports ) {
-            Pattern pattern = Pattern.compile( "\\b" + importLine.replace( ".",
-                                                                           "\\." ) + "\\b" );
+            Pattern pattern = Pattern.compile( "\\s" + importLine.replace( ".",
+                                                                           "\\." ) + "\\s" );
             if ( !pattern.matcher( header ).find() ) {
                 header.append( importLine ).append( "\n" );
             }
@@ -143,15 +143,16 @@ public class ModelContentHandler extends ContentHandler
         //will not, assuming it follows later in the JAR structure.
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
-                if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 && !entry.getName().endsWith( "package-info.class" ) ) {
+                if ( entry.getName().endsWith( ".class" ) && !entry.getName().endsWith( "package-info.class" ) ) {
                     String fullyQualifiedName = convertPathToName( entry.getName() );
                     if ( isClassVisible( cl,
                                          fullyQualifiedName,
                                          assetPackageName ) ) {
                         String leafName = getLeafName( fullyQualifiedName );
-                        if(!nonCollidingImports.containsKey( leafName )) {
-                        nonCollidingImports.put( leafName,
-                                                 fullyQualifiedName );
+                        if ( !nonCollidingImports.containsKey( leafName ) ) {
+                            nonCollidingImports.put( leafName,
+                                                     fullyQualifiedName.replaceAll( "\\$",
+                                                                                    "." ) );
                         }
                     }
                 }

@@ -285,8 +285,9 @@ public class SuggestionCompletionEngineBuilder {
                     for ( Field f : flds ) {
                         if ( f.isEnumConstant() ) {
                             String shortName = fieldClass.getName().substring( fieldClass.getName().lastIndexOf( "." ) + 1 ) + "." + f.getName();
-                            //Enumerations are always static (see JLS 8.9) and hence nested definitions can be accessed statically
-                            shortName = shortName.replaceAll( "\\$", "." );
+                            if ( shortName.contains( "$" ) ) {
+                                shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
+                            }
                             listEnum.add( shortName + "=" + shortName );
                             i++;
                         }

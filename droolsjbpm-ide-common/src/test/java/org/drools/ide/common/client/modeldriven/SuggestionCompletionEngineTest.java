@@ -50,7 +50,7 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>() );
 
         assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                      engine.getFieldType( "NestedClass",
                                            "name" ) );
     }
 
@@ -85,7 +85,7 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>(),
                                                                         enums );
         assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                      engine.getFieldType( "NestedClass",
                                            "name" ) );
 
         assertEquals( 3,
@@ -134,10 +134,10 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>(),
                                                                         enums );
         assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$Fact",
+                      engine.getFieldType( "Fact",
                                            "field1" ) );
         assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$Fact",
+                      engine.getFieldType( "Fact",
                                            "field2" ) );
 
         assertEquals( 4,
@@ -199,7 +199,7 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>(),
                                                                         enums );
         assertEquals( "String",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                      engine.getFieldType( "NestedClass",
                                            "name" ) );
 
         FactPattern pat = new FactPattern( "Fact" );
@@ -229,17 +229,17 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>(),
                                                                         new ArrayList<String>() );
         assertEquals( "Comparable",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedEnum",
+                      engine.getFieldType( "NestedEnum",
                                            "myEnum" ) );
 
-        String[] data = engine.getDataEnumList( "SuggestionCompletionEngineTest$NestedEnum.myEnum" );
+        String[] data = engine.getDataEnumList( "NestedEnum.myEnum" );
         
         assertNotNull( data );
         assertEquals( 2,
                       data.length );
-        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1",
+        assertEquals( "MyEnum.VALUE1=MyEnum.VALUE1",
                       data[0] );
-        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2",
+        assertEquals( "MyEnum.VALUE2=MyEnum.VALUE2",
                       data[1] );
     }
     
@@ -254,18 +254,18 @@ public class SuggestionCompletionEngineTest {
                                                                         new ArrayList<DSLTokenizedMappingFile>(),
                                                                         new ArrayList<String>() );
         assertEquals( "Comparable",
-                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedEnum",
+                      engine.getFieldType( "NestedEnum",
                                            "myEnum" ) );
 
-        String[] data = engine.getEnumValues( "SuggestionCompletionEngineTest$NestedEnum",
-                                                  "myEnum" );
+        String[] data = engine.getEnumValues( "NestedEnum",
+                                              "myEnum" );
 
         assertNotNull( data );
         assertEquals( 2,
                       data.length );
-        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE1",
+        assertEquals( "MyEnum.VALUE1=MyEnum.VALUE1",
                       data[0] );
-        assertEquals( "SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2=SuggestionCompletionEngineTest.NestedEnum.MyEnum.VALUE2",
+        assertEquals( "MyEnum.VALUE2=MyEnum.VALUE2",
                       data[1] );
     }
 
