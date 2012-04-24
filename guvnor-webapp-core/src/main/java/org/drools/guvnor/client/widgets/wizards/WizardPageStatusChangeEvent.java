@@ -31,9 +31,9 @@ public class WizardPageStatusChangeEvent extends GwtEvent<WizardPageStatusChange
         void onStatusChange(WizardPageStatusChangeEvent event);
     }
 
-    public static Type<WizardPageStatusChangeEvent.Handler> TYPE = new Type<WizardPageStatusChangeEvent.Handler>();
+    public static final Type<WizardPageStatusChangeEvent.Handler> TYPE = new Type<WizardPageStatusChangeEvent.Handler>();
 
-    private final WizardPage                                page;
+    private final WizardPage                                      page;
 
     public WizardPageStatusChangeEvent(WizardPage page) {
         this.page = page;

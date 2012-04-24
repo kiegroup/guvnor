@@ -30,9 +30,9 @@ public class WizardPageSelectedEvent extends GwtEvent<WizardPageSelectedEvent.Ha
         void onPageSelected(WizardPageSelectedEvent event);
     }
 
-    public static Type<WizardPageSelectedEvent.Handler> TYPE = new Type<WizardPageSelectedEvent.Handler>();
+    public static final Type<WizardPageSelectedEvent.Handler> TYPE = new Type<WizardPageSelectedEvent.Handler>();
 
-    private final WizardPage                            selectedPage;
+    private final WizardPage                                  selectedPage;
 
     public WizardPageSelectedEvent(WizardPage selectedPage) {
         this.selectedPage = selectedPage;

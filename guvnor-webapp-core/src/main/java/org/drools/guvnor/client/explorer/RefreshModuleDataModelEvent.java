@@ -6,17 +6,20 @@ import com.google.gwt.user.client.Command;
 
 public class RefreshModuleDataModelEvent extends GwtEvent<RefreshModuleDataModelEvent.Handler> {
 
-    public interface Handler extends EventHandler {
+    public interface Handler
+        extends
+        EventHandler {
 
-        void onRefreshModuleDataModel( RefreshModuleDataModelEvent refreshModuleDataModelEvent );
+        void onRefreshModuleDataModel(RefreshModuleDataModelEvent refreshModuleDataModelEvent);
     }
 
-    public static Type<RefreshModuleDataModelEvent.Handler> TYPE = new Type<RefreshModuleDataModelEvent.Handler>();
+    public static final Type<RefreshModuleDataModelEvent.Handler> TYPE            = new Type<RefreshModuleDataModelEvent.Handler>();
 
-    private final String moduleName;
-    private Command callbackCommand = null;
+    private final String                                          moduleName;
+    private Command                                               callbackCommand = null;
 
-    public RefreshModuleDataModelEvent(String moduleName, Command callbackCommand) {
+    public RefreshModuleDataModelEvent(String moduleName,
+                                       Command callbackCommand) {
         this.moduleName = moduleName;
         this.callbackCommand = callbackCommand;
     }
@@ -24,9 +27,9 @@ public class RefreshModuleDataModelEvent extends GwtEvent<RefreshModuleDataModel
     public String getModuleName() {
         return moduleName;
     }
-    
+
     public Command getCallbackCommand() {
-    	return callbackCommand;
+        return callbackCommand;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class RefreshModuleDataModelEvent extends GwtEvent<RefreshModuleDataModel
     }
 
     @Override
-    protected void dispatch( RefreshModuleDataModelEvent.Handler handler ) {
+    protected void dispatch(RefreshModuleDataModelEvent.Handler handler) {
         handler.onRefreshModuleDataModel( this );
     }
 }

@@ -16,11 +16,11 @@ public abstract class ModulesTreeItemBaseViewImpl
     implements
     ModulesTreeItemBaseView {
 
-    protected static ConstantsCore constants = GWT.create( ConstantsCore.class );
-    protected static ImagesCore images    = GWT.create( ImagesCore.class );
+    protected static final ConstantsCore constants = GWT.create( ConstantsCore.class );
+    protected static final ImagesCore    images    = GWT.create( ImagesCore.class );
 
-    protected final Tree       tree      = new Tree();
-    protected Presenter          presenter;
+    protected final Tree                 tree      = new Tree();
+    protected Presenter                  presenter;
 
     public ModulesTreeItemBaseViewImpl() {
         tree.setStyleName( "guvnor-Tree" );

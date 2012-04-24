@@ -5,16 +5,18 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class RefreshModuleEditorEvent extends GwtEvent<RefreshModuleEditorEvent.Handler> {
 
-    public interface Handler extends EventHandler {
+    public interface Handler
+        extends
+        EventHandler {
 
-        void onRefreshModule( RefreshModuleEditorEvent refreshModuleEditorEvent );
+        void onRefreshModule(RefreshModuleEditorEvent refreshModuleEditorEvent);
     }
 
-    public static Type<RefreshModuleEditorEvent.Handler> TYPE = new Type<RefreshModuleEditorEvent.Handler>();
+    public static final Type<RefreshModuleEditorEvent.Handler> TYPE = new Type<RefreshModuleEditorEvent.Handler>();
 
-    private final String uuid;
+    private final String                                       uuid;
 
-    public RefreshModuleEditorEvent( String uuid ) {
+    public RefreshModuleEditorEvent(String uuid) {
         this.uuid = uuid;
     }
 
@@ -28,7 +30,7 @@ public class RefreshModuleEditorEvent extends GwtEvent<RefreshModuleEditorEvent.
     }
 
     @Override
-    protected void dispatch( RefreshModuleEditorEvent.Handler handler ) {
+    protected void dispatch(RefreshModuleEditorEvent.Handler handler) {
         handler.onRefreshModule( this );
     }
 }

@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class RefreshModuleListEvent extends GwtEvent<RefreshModuleListEventHandler> {
 
-    public static Type<RefreshModuleListEventHandler> TYPE = new Type<RefreshModuleListEventHandler>();
+    public static final Type<RefreshModuleListEventHandler> TYPE = new Type<RefreshModuleListEventHandler>();
 
     @Override
     public Type<RefreshModuleListEventHandler> getAssociatedType() {
@@ -28,7 +28,7 @@ public class RefreshModuleListEvent extends GwtEvent<RefreshModuleListEventHandl
     }
 
     @Override
-    protected void dispatch( RefreshModuleListEventHandler eventHandler ) {
+    protected void dispatch(RefreshModuleListEventHandler eventHandler) {
         eventHandler.onRefreshList( this );
     }
 }

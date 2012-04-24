@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ExpandAllEvent extends GwtEvent<ExpandAllEventHandler> {
 
-    public static Type<ExpandAllEventHandler> TYPE = new Type<ExpandAllEventHandler>();
+    public static final Type<ExpandAllEventHandler> TYPE = new Type<ExpandAllEventHandler>();
 
     @Override
     public Type<ExpandAllEventHandler> getAssociatedType() {
@@ -34,5 +34,5 @@ public class ExpandAllEvent extends GwtEvent<ExpandAllEventHandler> {
     protected void dispatch(ExpandAllEventHandler eventHandler) {
         eventHandler.onExpandAll( this );
     }
-    
+
 }

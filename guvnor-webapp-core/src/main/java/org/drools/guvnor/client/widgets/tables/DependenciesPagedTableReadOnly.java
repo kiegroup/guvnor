@@ -36,8 +36,6 @@ public class DependenciesPagedTableReadOnly extends DependenciesPagedTable {
         UiBinder<Widget, DependenciesPagedTableReadOnly> {
     }
 
-    protected SingleSelectionModel<DependenciesPageRow> selectionModel;
-
     public DependenciesPagedTableReadOnly(String theUuid,
                                           OpenItemCommand openSelectedCommand) {
         super( theUuid,

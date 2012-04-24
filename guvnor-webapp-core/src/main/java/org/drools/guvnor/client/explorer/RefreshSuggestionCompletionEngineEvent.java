@@ -5,15 +5,17 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class RefreshSuggestionCompletionEngineEvent extends GwtEvent<RefreshSuggestionCompletionEngineEvent.Handler> {
 
-    public interface Handler extends EventHandler {
-        void onRefreshModule( RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent );
+    public interface Handler
+        extends
+        EventHandler {
+        void onRefreshModule(RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent);
     }
 
-    public static Type<RefreshSuggestionCompletionEngineEvent.Handler> TYPE = new Type<RefreshSuggestionCompletionEngineEvent.Handler>();
+    public static final Type<RefreshSuggestionCompletionEngineEvent.Handler> TYPE = new Type<RefreshSuggestionCompletionEngineEvent.Handler>();
 
-    private final String moduleName;
+    private final String                                                     moduleName;
 
-    public RefreshSuggestionCompletionEngineEvent( String moduleName ) {
+    public RefreshSuggestionCompletionEngineEvent(String moduleName) {
         this.moduleName = moduleName;
     }
 
@@ -27,7 +29,7 @@ public class RefreshSuggestionCompletionEngineEvent extends GwtEvent<RefreshSugg
     }
 
     @Override
-    protected void dispatch( RefreshSuggestionCompletionEngineEvent.Handler handler ) {
+    protected void dispatch(RefreshSuggestionCompletionEngineEvent.Handler handler) {
         handler.onRefreshModule( this );
     }
 }
