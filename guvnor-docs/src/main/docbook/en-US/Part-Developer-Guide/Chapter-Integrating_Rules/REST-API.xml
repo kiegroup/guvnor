@@ -603,6 +603,20 @@
           </imageobject>
         </mediaobject>
       </figure>
+      
+
+      <figure>
+        <title>UML representation of the Asset Object</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
     </section>
     
     <section>
@@ -718,17 +732,6 @@
         </tgroup>
       </table>
 
-      <figure>
-        <title>UML representation of the Asset Object</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
-                       format="PNG" xml:base="../../"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
     </section>
 
     
