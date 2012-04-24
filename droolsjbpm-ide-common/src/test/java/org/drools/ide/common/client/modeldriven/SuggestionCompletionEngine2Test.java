@@ -72,12 +72,12 @@ public class SuggestionCompletionEngine2Test {
                                                                         new ArrayList<String>() );
         
         String[] accessors = engine.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-        "SuggestionCompletionEngine2Test$Person" );
+                                                         "Person" );
         assertEquals( 3,
                       accessors.length );
         
         String[] mutators = engine.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-        "SuggestionCompletionEngine2Test$Person" );
+                                                        "Person" );
         assertEquals( 2,
                       mutators.length );
         
