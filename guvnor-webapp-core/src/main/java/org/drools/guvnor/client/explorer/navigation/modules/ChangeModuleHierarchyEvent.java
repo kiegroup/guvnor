@@ -16,17 +16,17 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * An event for when the Module Hierarchy (in the "Knowledge Bases" part of "Explorer") needs to be changed
+ * An event for when the Module Hierarchy (in the "Knowledge Bases" part of
+ * "Explorer") needs to be changed
  */
 public class ChangeModuleHierarchyEvent extends GwtEvent<ChangeModuleHierarchyEventHandler> {
 
-    public static Type<ChangeModuleHierarchyEventHandler> TYPE = new Type<ChangeModuleHierarchyEventHandler>();
+    public static final Type<ChangeModuleHierarchyEventHandler> TYPE = new Type<ChangeModuleHierarchyEventHandler>();
 
-    private PackageView                                     packageHierarchy;
+    private PackageView                                         packageHierarchy;
 
     public ChangeModuleHierarchyEvent(PackageView packageHierarchy) {
         this.packageHierarchy = packageHierarchy;

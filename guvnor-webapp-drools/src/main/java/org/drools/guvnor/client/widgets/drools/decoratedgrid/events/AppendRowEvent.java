@@ -30,7 +30,7 @@ public class AppendRowEvent extends GwtEvent<AppendRowEvent.Handler> {
         void onAppendRow(AppendRowEvent event);
     }
 
-    public static Type<AppendRowEvent.Handler> TYPE = new Type<AppendRowEvent.Handler>();
+    public static final Type<AppendRowEvent.Handler> TYPE = new Type<AppendRowEvent.Handler>();
 
     @Override
     public Type<AppendRowEvent.Handler> getAssociatedType() {

@@ -30,9 +30,9 @@ public class ActionSetFieldsDefinedEvent extends GwtEvent<ActionSetFieldsDefined
         void onActionSetFieldsDefined(ActionSetFieldsDefinedEvent event);
     }
 
-    public static Type<ActionSetFieldsDefinedEvent.Handler> TYPE = new Type<ActionSetFieldsDefinedEvent.Handler>();
+    public static final Type<ActionSetFieldsDefinedEvent.Handler> TYPE = new Type<ActionSetFieldsDefinedEvent.Handler>();
 
-    private boolean                                         areActionSetFieldsDefined;
+    private boolean                                               areActionSetFieldsDefined;
 
     public ActionSetFieldsDefinedEvent(boolean areActionSetFieldsDefined) {
         this.areActionSetFieldsDefined = areActionSetFieldsDefined;

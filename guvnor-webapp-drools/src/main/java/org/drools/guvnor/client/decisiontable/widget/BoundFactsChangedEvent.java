@@ -32,9 +32,9 @@ public class BoundFactsChangedEvent extends GwtEvent<BoundFactsChangedEvent.Hand
         void onBoundFactsChanged(BoundFactsChangedEvent event);
     }
 
-    public static Type<BoundFactsChangedEvent.Handler> TYPE = new Type<BoundFactsChangedEvent.Handler>();
+    public static final Type<BoundFactsChangedEvent.Handler> TYPE = new Type<BoundFactsChangedEvent.Handler>();
 
-    private final List<String>                         factBindings;
+    private final List<String>                               factBindings;
 
     public BoundFactsChangedEvent(List<String> factBindings) {
         this.factBindings = factBindings;

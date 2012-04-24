@@ -30,9 +30,9 @@ public class ConditionsDefinedEvent extends GwtEvent<ConditionsDefinedEvent.Hand
         void onConditionsDefined(ConditionsDefinedEvent event);
     }
 
-    public static Type<ConditionsDefinedEvent.Handler> TYPE = new Type<ConditionsDefinedEvent.Handler>();
+    public static final Type<ConditionsDefinedEvent.Handler> TYPE = new Type<ConditionsDefinedEvent.Handler>();
 
-    private boolean                                    areConditionsDefined;
+    private boolean                                          areConditionsDefined;
 
     public ConditionsDefinedEvent(boolean areConditionsDefined) {
         this.areConditionsDefined = areConditionsDefined;

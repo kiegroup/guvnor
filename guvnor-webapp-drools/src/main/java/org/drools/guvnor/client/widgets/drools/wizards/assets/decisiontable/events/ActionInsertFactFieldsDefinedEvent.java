@@ -30,9 +30,9 @@ public class ActionInsertFactFieldsDefinedEvent extends GwtEvent<ActionInsertFac
         void onActionInsertFactFieldsDefined(ActionInsertFactFieldsDefinedEvent event);
     }
 
-    public static Type<ActionInsertFactFieldsDefinedEvent.Handler> TYPE = new Type<ActionInsertFactFieldsDefinedEvent.Handler>();
+    public static final Type<ActionInsertFactFieldsDefinedEvent.Handler> TYPE = new Type<ActionInsertFactFieldsDefinedEvent.Handler>();
 
-    private boolean                                                areActionInsertFactFieldsDefined;
+    private boolean                                                      areActionInsertFactFieldsDefined;
 
     public ActionInsertFactFieldsDefinedEvent(boolean areActionInsertFactFieldsDefined) {
         this.areActionInsertFactFieldsDefined = areActionInsertFactFieldsDefined;

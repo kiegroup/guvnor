@@ -20,14 +20,16 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class ChangePerspectiveEvent extends GwtEvent<ChangePerspectiveEvent.Handler> {
 
-    public interface Handler extends EventHandler {
+    public interface Handler
+        extends
+        EventHandler {
 
         void onChangePerspective(ChangePerspectiveEvent changePerspectiveEvent);
     }
 
-    public static Type<ChangePerspectiveEvent.Handler> TYPE = new Type<ChangePerspectiveEvent.Handler>();
+    public static final Type<ChangePerspectiveEvent.Handler> TYPE = new Type<ChangePerspectiveEvent.Handler>();
 
-    private final Perspective perspective;
+    private final Perspective                                perspective;
 
     public ChangePerspectiveEvent(Perspective perspective) {
         this.perspective = perspective;
@@ -44,6 +46,6 @@ public class ChangePerspectiveEvent extends GwtEvent<ChangePerspectiveEvent.Hand
 
     @Override
     protected void dispatch(ChangePerspectiveEvent.Handler handler) {
-        handler.onChangePerspective(this);
+        handler.onChangePerspective( this );
     }
 }

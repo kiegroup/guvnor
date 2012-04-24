@@ -63,10 +63,10 @@ public class CellStateChangedEvent extends GwtEvent<CellStateChangedEvent.Handle
 
     }
 
-    public static Type<CellStateChangedEvent.Handler> TYPE = new Type<CellStateChangedEvent.Handler>();
+    public static final Type<CellStateChangedEvent.Handler> TYPE = new Type<CellStateChangedEvent.Handler>();
 
     //The new state
-    private Set<CellStateOperation>                   states;
+    private Set<CellStateOperation>                         states;
 
     public CellStateChangedEvent(Set<CellStateOperation> states) {
         this.states = states;

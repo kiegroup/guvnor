@@ -30,9 +30,9 @@ public class DeleteRowEvent extends GwtEvent<DeleteRowEvent.Handler> {
         void onDeleteRow(DeleteRowEvent event);
     }
 
-    public static Type<DeleteRowEvent.Handler> TYPE = new Type<DeleteRowEvent.Handler>();
+    public static final Type<DeleteRowEvent.Handler> TYPE = new Type<DeleteRowEvent.Handler>();
 
-    private int index;
+    private int                                      index;
 
     public DeleteRowEvent(int index) {
         this.index = index;

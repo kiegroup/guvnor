@@ -22,13 +22,15 @@ import com.google.gwt.place.shared.Place;
 
 public class ClosePlaceEvent extends GwtEvent<ClosePlaceEvent.Handler> {
 
-    public interface Handler extends EventHandler {
+    public interface Handler
+        extends
+        EventHandler {
         public void onClosePlace(ClosePlaceEvent closePlaceEvent);
     }
 
-    public static Type<ClosePlaceEvent.Handler> TYPE = new Type<ClosePlaceEvent.Handler>();
+    public static final Type<ClosePlaceEvent.Handler> TYPE = new Type<ClosePlaceEvent.Handler>();
 
-    private final Place place;
+    private final Place                               place;
 
     public ClosePlaceEvent(Place place) {
         this.place = place;
@@ -45,6 +47,6 @@ public class ClosePlaceEvent extends GwtEvent<ClosePlaceEvent.Handler> {
 
     @Override
     protected void dispatch(ClosePlaceEvent.Handler eventHandler) {
-        eventHandler.onClosePlace(this);
+        eventHandler.onClosePlace( this );
     }
 }

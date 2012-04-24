@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class CollapseAllEvent extends GwtEvent<CollapseAllEventHandler> {
 
-    public static Type<CollapseAllEventHandler> TYPE = new Type<CollapseAllEventHandler>();
+    public static final Type<CollapseAllEventHandler> TYPE = new Type<CollapseAllEventHandler>();
 
     @Override
     public Type<CollapseAllEventHandler> getAssociatedType() {
@@ -34,5 +34,5 @@ public class CollapseAllEvent extends GwtEvent<CollapseAllEventHandler> {
     protected void dispatch(CollapseAllEventHandler eventHandler) {
         eventHandler.onCollapseAll( this );
     }
-    
+
 }

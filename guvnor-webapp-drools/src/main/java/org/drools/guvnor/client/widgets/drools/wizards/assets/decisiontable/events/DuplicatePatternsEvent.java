@@ -30,9 +30,9 @@ public class DuplicatePatternsEvent extends GwtEvent<DuplicatePatternsEvent.Hand
         void onDuplicatePatterns(DuplicatePatternsEvent event);
     }
 
-    public static Type<DuplicatePatternsEvent.Handler> TYPE = new Type<DuplicatePatternsEvent.Handler>();
+    public static final Type<DuplicatePatternsEvent.Handler> TYPE = new Type<DuplicatePatternsEvent.Handler>();
 
-    private boolean                                    arePatternBindingsUnique;
+    private boolean                                          arePatternBindingsUnique;
 
     public DuplicatePatternsEvent(boolean arePatternBindingsUnique) {
         this.arePatternBindingsUnique = arePatternBindingsUnique;

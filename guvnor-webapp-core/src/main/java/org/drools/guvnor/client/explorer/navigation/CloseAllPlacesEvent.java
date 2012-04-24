@@ -21,12 +21,14 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class CloseAllPlacesEvent extends GwtEvent<CloseAllPlacesEvent.Handler> {
 
-    public interface Handler extends EventHandler {
+    public interface Handler
+        extends
+        EventHandler {
 
         public void onCloseAllPlaces(CloseAllPlacesEvent event);
     }
 
-    public static Type<CloseAllPlacesEvent.Handler> TYPE = new Type<CloseAllPlacesEvent.Handler>();
+    public static final Type<CloseAllPlacesEvent.Handler> TYPE = new Type<CloseAllPlacesEvent.Handler>();
 
     @Override
     public Type<Handler> getAssociatedType() {
@@ -35,7 +37,7 @@ public class CloseAllPlacesEvent extends GwtEvent<CloseAllPlacesEvent.Handler> {
 
     @Override
     protected void dispatch(Handler handler) {
-        handler.onCloseAllPlaces(this);
+        handler.onCloseAllPlaces( this );
     }
 
 }

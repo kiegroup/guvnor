@@ -33,10 +33,10 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeEvent.Handler> {
 
     }
 
-    public static Type<ColumnResizeEvent.Handler> TYPE = new Type<ColumnResizeEvent.Handler>();
+    public static final Type<ColumnResizeEvent.Handler> TYPE = new Type<ColumnResizeEvent.Handler>();
 
-    private final DynamicColumn< ? >               column;
-    private final int                              width;
+    private final DynamicColumn< ? >                    column;
+    private final int                                   width;
 
     /**
      * Creates a value change event.

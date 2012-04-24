@@ -34,9 +34,9 @@ public class CopyRowsEvent extends GwtEvent<CopyRowsEvent.Handler> {
         void onCopyRows(CopyRowsEvent event);
     }
 
-    public static Type<CopyRowsEvent.Handler> TYPE = new Type<CopyRowsEvent.Handler>();
+    public static final Type<CopyRowsEvent.Handler> TYPE = new Type<CopyRowsEvent.Handler>();
 
-    private Set<Integer>                      rowIndexes;
+    private Set<Integer>                            rowIndexes;
 
     public CopyRowsEvent() {
         this.rowIndexes = Collections.emptySet();

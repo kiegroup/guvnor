@@ -30,11 +30,11 @@ public class DeleteColumnEvent extends GwtEvent<DeleteColumnEvent.Handler> {
         void onDeleteColumn(DeleteColumnEvent event);
     }
 
-    public static Type<DeleteColumnEvent.Handler> TYPE            = new Type<DeleteColumnEvent.Handler>();
+    public static final Type<DeleteColumnEvent.Handler> TYPE            = new Type<DeleteColumnEvent.Handler>();
 
-    private int                                   firstColumnIndex;
-    private int                                   numberOfColumns = 1;
-    private boolean                               redraw          = true;
+    private int                                         firstColumnIndex;
+    private int                                         numberOfColumns = 1;
+    private boolean                                     redraw          = true;
 
     public DeleteColumnEvent(int firstColumnIndex) {
         this.firstColumnIndex = firstColumnIndex;
