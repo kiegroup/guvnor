@@ -63,11 +63,14 @@ import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.guvnor.server.util.DateUtil;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -120,9 +123,6 @@ public class ServiceImplementation
 
     @Inject
     private RepositoryAssetOperations  repositoryAssetOperations;
-
-    @Inject
-    private RepositoryService          repositoryService;
 
     @Inject
     private RepositoryAssetService     repositoryAssetService;
@@ -228,11 +228,15 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException {
+
         String assetName = configuration.getAssetName();
         String description = configuration.getDescription();
         String initialCategory = configuration.getInitialCategory();
         String packageName = configuration.getPackageName();
         String format = configuration.getFormat();
+
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
+
         return createNewRule( assetName,
                               description,
                               initialCategory,
@@ -247,6 +251,7 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String createNewRule(NewAssetWithContentConfiguration< ? extends PortableObject> configuration) throws SerializationException {
+
         final String assetName = configuration.getAssetName();
         final String description = configuration.getDescription();
         final String initialCategory = configuration.getInitialCategory();
@@ -254,26 +259,45 @@ public class ServiceImplementation
         final String format = configuration.getFormat();
         final PortableObject content = configuration.getContent();
 
-        //Create the Asset
-        String uuid = createNewRule( assetName,
-                                     description,
-                                     initialCategory,
-                                     packageName,
-                                     format );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
 
-        //No point in updating the content if it's already been flagged as a duplicate
-        if ( uuid.startsWith( "DUPLICATE" ) ) {
-            return uuid;
+        log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + assetName + "] in package [" + packageName + "]" );
+
+        try {
+
+            //Create new Asset
+            ModuleItem pkg = rulesRepository.loadModule( packageName );
+            AssetItem assetItem = pkg.addAsset( assetName,
+                                                description,
+                                                initialCategory,
+                                                format );
+
+            //Set the Assets content - no need to use AssetTemplateCreator().applyPreBuiltTemplates() as we are provided a model
+            //Use a transient Asset object so we can use ContentHandler to convert between model and persisted format correctly.
+            Asset asset = new AssetPopulator().populateFrom( assetItem );
+            ContentHandler handler = ContentManager.getHandler( assetItem.getFormat() );
+            asset.setContent( content );
+            handler.storeAssetContent( asset,
+                                       assetItem );
+
+            rulesRepository.save();
+
+            push( "categoryChange",
+                  initialCategory );
+            push( "packageChange",
+                  pkg.getName() );
+
+            return assetItem.getUUID();
+
+        } catch ( RulesRepositoryException e ) {
+            if ( e.getCause() instanceof ItemExistsException ) {
+                return "DUPLICATE";
+            }
+            log.error( "An error occurred creating new asset [" + assetName + "] in package [" + packageName + "]: ",
+                       e );
+            throw new SerializationException( e.getMessage() );
         }
 
-        //Set the Assets content and check-in
-        //TODO Is it possible to alter the content and save without checking-in?
-        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
-        asset.setContent( content );
-        asset.setCheckinComment( "Asset Content set." );
-        repositoryAssetService.checkinVersion( asset );
-
-        return uuid;
     }
 
     /**
@@ -973,7 +997,7 @@ public class ServiceImplementation
     private void push(String messageType,
                       String message) {
         backchannel.publish( new PushResponse( messageType,
-                                                             message ) );
+                                               message ) );
     }
 
     private String getCurrentUserName() {

@@ -15,16 +15,18 @@
  */
 package org.drools.guvnor.client.widgets.drools.wizards.assets;
 
-import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
-
-import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.shared.api.PortableObject;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * A Wizard representing new assets
@@ -43,19 +45,15 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
     }
 
     /**
-     * Save the asset. This is a three-phase solution; firstly a new Asset is
-     * created in the Repository, then it is retrieved and its content updated
-     * before being checked back into the Repository. Hence a new Asset created
-     * by a Wizard will have two initial versions: one corresponding to the
-     * creation and another corresponding to the checkin of content.
+     * Save the asset.
      * 
      * @param config
      */
-    protected void save(final NewAssetWithContentConfiguration config,
+    protected void save(final NewAssetWithContentConfiguration< ? extends PortableObject> config,
                         final T content) {
-        RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+        RepositoryServiceAsync repositoryService = GWT.create( RepositoryService.class );
         repositoryService.createNewRule( config,
-                                                             createCreateAssetCallback( content ) );
+                                         createCreateAssetCallback( content ) );
     }
 
     /**
@@ -68,53 +66,13 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
     protected GenericCallback<String> createCreateAssetCallback(final T content) {
         GenericCallback<String> cb = new GenericCallback<String>() {
             public void onSuccess(String uuid) {
-                if ( uuid.startsWith( "DUPLICATE" ) ) {
-                    presenter.hideSavingIndicator();
-                    presenter.showDuplicateAssetNameError();
-                } else {
-                    AssetServiceAsync assetService = GWT.create(AssetService.class);
-                    assetService.loadRuleAsset(uuid,
-                            createSetContentCallback(content));
-                }
-            }
-        };
-        return cb;
-    }
-
-    /**
-     * Call-back following retrieval of the new Asset from the Repository. Upon
-     * successful retrieval the new Asset has its content updated and it is
-     * checked back into the Repository
-     * 
-     * @param content
-     * @return
-     */
-    protected GenericCallback<Asset> createSetContentCallback(final T content) {
-        GenericCallback<Asset> cb = new GenericCallback<Asset>() {
-            public void onSuccess(Asset asset) {
-                asset.setContent( content );
-                asset.setCheckinComment( "Created from Wizard" );
-                AssetServiceAsync assetService = GWT.create(AssetService.class);
-                assetService.checkinVersion(asset,
-                        createCheckedInCallback());
-            }
-        };
-        return cb;
-    }
-
-    /**
-     * Call-back following check-in of the updated Asset. Upon successful
-     * check-in the new Asset is loaded into its corresponding editor and the
-     * Wizard closed
-     * 
-     * @return
-     */
-    protected GenericCallback<String> createCheckedInCallback() {
-        GenericCallback<String> cb = new GenericCallback<String>() {
-            public void onSuccess(String uuid) {
                 presenter.hideSavingIndicator();
                 if ( uuid == null ) {
                     presenter.showUnspecifiedCheckinError();
+                    return;
+                }
+                if ( uuid.startsWith( "DUPLICATE" ) ) {
+                    presenter.showDuplicateAssetNameError();
                     return;
                 }
                 if ( uuid.startsWith( "ERR" ) ) {
