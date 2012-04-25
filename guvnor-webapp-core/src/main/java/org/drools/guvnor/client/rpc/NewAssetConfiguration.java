@@ -19,7 +19,8 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The configuration information required for a new Asset
+ * The configuration information required for a new Asset with no default
+ * content
  */
 public class NewAssetConfiguration
     implements
