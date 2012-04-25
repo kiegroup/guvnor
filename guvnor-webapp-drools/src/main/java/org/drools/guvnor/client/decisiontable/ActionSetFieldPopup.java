@@ -56,10 +56,10 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private SmallLabel                       bindingLabel                     = new SmallLabel();
     private TextBox                          fieldLabel                       = getFieldLabel();
     private SimplePanel                      limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                              limitedEntryValueAttributeIndex  = 0;
+    private int                              limitedEntryValueAttributeIndex  = -1;
     private TextBox                          valueListWidget                  = null;
     private SimplePanel                      defaultValueWidgetContainer      = new SimplePanel();
-    private int                              defaultValueWidgetContainerIndex = 0;
+    private int                              defaultValueWidgetContainerIndex = -1;
 
     private final GuidedDecisionTable52      model;
     private final SuggestionCompletionEngine sce;
@@ -309,6 +309,9 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private void makeDefaultValueWidget() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
         if ( nil( editingCol.getFactField() ) ) {
             setAttributeVisibility( defaultValueWidgetContainerIndex,
                                     false );

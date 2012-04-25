@@ -78,10 +78,10 @@ public class ConditionPopup extends FormStylePopup {
     private TextBox                          binding                          = new BindingTextBox();
     private Label                            operatorLabel                    = new Label();
     private SimplePanel                      limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                              limitedEntryValueAttributeIndex  = 0;
+    private int                              limitedEntryValueAttributeIndex  = -1;
     private TextBox                          valueListWidget                  = null;
     private SimplePanel                      defaultValueWidgetContainer      = new SimplePanel();
-    private int                              defaultValueWidgetContainerIndex = 0;
+    private int                              defaultValueWidgetContainerIndex = -1;
     private ImageButton                      editField;
     private ImageButton                      editOp;
 
@@ -486,6 +486,9 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private void makeDefaultValueWidget() {
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            return;
+        }
         if ( nil( editingCol.getFactField() ) ) {
             setAttributeVisibility( defaultValueWidgetContainerIndex,
                                     false );
