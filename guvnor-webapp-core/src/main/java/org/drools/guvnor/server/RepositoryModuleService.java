@@ -15,35 +15,50 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
-import org.drools.*;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.*;
-import org.drools.rule.Package;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
 public class RepositoryModuleService
@@ -549,53 +564,13 @@ public class RepositoryModuleService
     }
 
     private RuleBase deserKnowledgebase(ModuleItem item,
-                                        ClassLoader classloader) throws IOException, ClassNotFoundException {
-        RuleBase rulebase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(classloader));
-        rulebase.addPackage(
-                (Package) DroolsStreamUtils.streamIn(
-                        item.getCompiledBinaryBytes(),
-                        classloader));
+                                        ClassLoader classloader) throws IOException,
+                                                                ClassNotFoundException {
+        RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
+        BinaryRuleBaseLoader rbl = new BinaryRuleBaseLoader( rulebase,
+                                                             classloader );
+        rbl.addPackage( new ByteArrayInputStream( item.getCompiledBinaryBytes() ) );
         return rulebase;
-    }
-
-    private Set<String> getAllImports(Package aPackage) {
-        Set<String> allImports = new HashSet<String>(aPackage.getImports().keySet());
-
-        if (aPackage.getGlobals() != null) {
-            for (Object o : aPackage.getGlobals().keySet()) {
-                allImports.add(aPackage.getGlobals().get(o));
-            }
-        }
-        // need this for Generated beans to work
-        allImports.add(aPackage.getName() + ".*");
-        return allImports;
-    }
-
-    private HashSet<String> expectedRules(Package bin) {
-        HashSet<String> h = new HashSet<String>();
-        for (int i = 0; i < bin.getRules().length; i++) {
-            h.add(bin.getRules()[i].getName());
-        }
-        return h;
-    }
-
-    //Creates a stub Work Item Handler that does nothing. A problem is that if the *real* Work Item Handler
-    //sets a Result Parameter that is used in other rules the results of running the Test Scenario could (or
-    //more likely would) be different than those expected. We can't use the *real* Work Item Handler as we
-    //have no control what code it executes unless we look into using SecurityManagers...
-    private WorkItemHandler getWorkItemHandlerStub() {
-        return new WorkItemHandler() {
-
-            public void executeWorkItem(WorkItem workItem,
-                                        WorkItemManager manager) {
-                //Does absolute nothing, however could log execution if needed
-            }
-
-            public void abortWorkItem(WorkItem workItem,
-                                      WorkItemManager manager) {
-            }
-
-        };
     }
 
     private RuleBase loadRuleBase(ModuleItem item) throws DetailedSerializationException {

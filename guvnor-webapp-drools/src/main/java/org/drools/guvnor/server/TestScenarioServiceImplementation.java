@@ -16,14 +16,34 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.drools.ClockType;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.TestScenarioService;
+import org.drools.guvnor.client.rpc.WorkItemService;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -45,12 +65,7 @@ import org.drools.util.CompositeClassLoader;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class TestScenarioServiceImplementation
         implements TestScenarioService {
@@ -355,12 +370,12 @@ public class TestScenarioServiceImplementation
     }
 
     private RuleBase deserKnowledgebase(ModuleItem item,
-                                        ClassLoader classloader) throws IOException, ClassNotFoundException {
-        RuleBase rulebase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(classloader));
-        rulebase.addPackage(
-                (Package) DroolsStreamUtils.streamIn(
-                        item.getCompiledBinaryBytes(),
-                        classloader));
+                                        ClassLoader classloader) throws IOException,
+                                                                ClassNotFoundException {
+        RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
+        BinaryRuleBaseLoader rbl = new BinaryRuleBaseLoader( rulebase,
+                                                             classloader );
+        rbl.addPackage( new ByteArrayInputStream( item.getCompiledBinaryBytes() ) );
         return rulebase;
     }
 
