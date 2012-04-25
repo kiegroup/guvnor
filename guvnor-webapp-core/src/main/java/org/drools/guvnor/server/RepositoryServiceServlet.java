@@ -156,8 +156,12 @@ public class RepositoryServiceServlet
                 p3,
                 p4 );
     }
-    
+
     public String createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return serviceImplementation.createNewRule( p0 );
+    }
+    
+    public String createNewRule(org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewRule( p0 );
     }
 

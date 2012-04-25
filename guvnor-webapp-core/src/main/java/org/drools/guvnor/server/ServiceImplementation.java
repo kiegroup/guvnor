@@ -28,7 +28,6 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
@@ -43,6 +42,7 @@ import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -72,6 +72,7 @@ import org.drools.guvnor.server.util.DateUtil;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
+import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -120,6 +121,11 @@ public class ServiceImplementation
     @Inject
     private RepositoryAssetOperations  repositoryAssetOperations;
 
+    @Inject
+    private RepositoryService          repositoryService;
+
+    @Inject
+    private RepositoryAssetService     repositoryAssetService;
 
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
@@ -221,7 +227,6 @@ public class ServiceImplementation
      */
     @WebRemote
     @LoggedIn
-    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException {
         String assetName = configuration.getAssetName();
         String description = configuration.getDescription();
@@ -233,6 +238,42 @@ public class ServiceImplementation
                               initialCategory,
                               packageName,
                               format );
+    }
+
+    /**
+     * This will create a new asset. It will be saved, but not checked in. The
+     * initial state will be the draft state. Returns the UUID of the asset.
+     */
+    @WebRemote
+    @LoggedIn
+    public String createNewRule(NewAssetWithContentConfiguration< ? extends PortableObject> configuration) throws SerializationException {
+        final String assetName = configuration.getAssetName();
+        final String description = configuration.getDescription();
+        final String initialCategory = configuration.getInitialCategory();
+        final String packageName = configuration.getPackageName();
+        final String format = configuration.getFormat();
+        final PortableObject content = configuration.getContent();
+
+        //Create the Asset
+        String uuid = createNewRule( assetName,
+                                     description,
+                                     initialCategory,
+                                     packageName,
+                                     format );
+
+        //No point in updating the content if it's already been flagged as a duplicate
+        if ( uuid.startsWith( "DUPLICATE" ) ) {
+            return uuid;
+        }
+
+        //Set the Assets content and check-in
+        //TODO Is it possible to alter the content and save without checking-in?
+        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
+        asset.setContent( content );
+        asset.setCheckinComment( "Asset Content set." );
+        repositoryAssetService.checkinVersion( asset );
+
+        return uuid;
     }
 
     /**
@@ -637,20 +678,20 @@ public class ServiceImplementation
     public boolean isDoNotInstallSample() {
         try {
             return rulesRepository.isDoNotInstallSample();
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             return true;
         }
     }
-    
+
     @LoggedIn
     public void setDoNotInstallSample() {
         try {
             rulesRepository.setDoNotInstallSample();
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             //Ignored
         }
     }
-    
+
     @LoggedIn
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );

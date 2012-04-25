@@ -17,7 +17,6 @@ package org.drools.guvnor.server.converters.decisiontable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,14 +29,14 @@ import javax.inject.Inject;
 import org.drools.core.util.DateUtils;
 import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionAsset;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
+import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewRuleContentTextAssetConfiguration;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.converters.AbstractConverter;
@@ -62,9 +61,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
     @Inject
     private ServiceImplementation   serviceImplementation;
-
-    @Inject
-    private RepositoryAssetService  repositoryAssetService;
 
     @Inject
     private RepositoryModuleService repositoryModuleService;
@@ -171,15 +167,15 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             result.addMessage( "Created Function '" + assetName + "'",
                                ConversionMessageType.INFO );
 
-            final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
-                                                                            packageName,
-                                                                            packageUUID,
-                                                                            description,
-                                                                            null,
-                                                                            AssetFormats.FUNCTION );
+            final NewRuleContentTextAssetConfiguration config = new NewRuleContentTextAssetConfiguration( assetName,
+                                                                                                          packageName,
+                                                                                                          packageUUID,
+                                                                                                          description,
+                                                                                                          null,
+                                                                                                          AssetFormats.FUNCTION,
+                                                                                                          content );
             createNewAsset( item,
                             config,
-                            content,
                             result );
         }
     }
@@ -284,15 +280,15 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             result.addMessage( "Created Declarative Model '" + assetName + "'.",
                                ConversionMessageType.INFO );
 
-            final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
-                                                                            packageName,
-                                                                            packageUUID,
-                                                                            description,
-                                                                            null,
-                                                                            AssetFormats.DRL_MODEL );
+            final NewRuleContentTextAssetConfiguration config = new NewRuleContentTextAssetConfiguration( assetName,
+                                                                                                          packageName,
+                                                                                                          packageUUID,
+                                                                                                          description,
+                                                                                                          null,
+                                                                                                          AssetFormats.DRL_MODEL,
+                                                                                                          content );
             createNewAsset( item,
                             config,
-                            content,
                             result );
         }
     }
@@ -316,15 +312,15 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
             result.addMessage( "Created Guided Decision Table '" + assetName + "'.",
                                ConversionMessageType.INFO );
 
-            final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
-                                                                            packageName,
-                                                                            packageUUID,
-                                                                            description,
-                                                                            null,
-                                                                            FORMAT );
+            final NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
+                                                                                                                  packageName,
+                                                                                                                  packageUUID,
+                                                                                                                  description,
+                                                                                                                  null,
+                                                                                                                  FORMAT,
+                                                                                                                  dtable );
             createNewAsset( item,
                             config,
-                            dtable,
                             result );
         }
     }
@@ -345,8 +341,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
     }
 
     protected void createNewAsset(final AssetItem item,
-                                  final NewAssetConfiguration config,
-                                  final PortableObject content,
+                                  final NewAssetWithContentConfiguration< ? extends PortableObject> config,
                                   final ConversionResult result) throws SerializationException {
 
         //Create new asset
@@ -358,12 +353,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
                                ConversionMessageType.ERROR );
             return;
         }
-
-        //Check-in asset with content
-        Asset newAsset = repositoryAssetService.loadRuleAsset( uuid );
-        newAsset.setContent( content );
-        newAsset.setCheckinComment( "Converted from '" + item.getName() + "'." );
-        uuid = repositoryAssetService.checkinVersion( newAsset );
 
         //If there was an error checking-in new asset return
         if ( uuid.startsWith( "ERR" ) ) {

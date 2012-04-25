@@ -24,15 +24,8 @@ public interface DroolsService
         RemoteService {
 
     /**
-     * Creates a brand new Guided Decision Table rule with the initial category.
-     * Return the UUID of the item created. This will not check in the rule, but
-     * just leave it as saved in the repo.
-     */
-    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException;
-
-    /**
      * Validate module configuration
-     *
+     * 
      * @return A ValidatedReponse, with any errors to be reported. No payload is
      *         in the response. If there are any errors, the user should be
      *         given the option to review them, and correct them if needed (but

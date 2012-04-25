@@ -20,10 +20,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
+import org.drools.guvnor.shared.api.PortableObject;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
@@ -75,12 +76,20 @@ public interface RepositoryService
                                 String initialPackage,
                                 String format) throws SerializationException;
 
+
     /**
      * Creates a brand new rule with the initial category. Return the UUID of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException;
+
+    /**
+     * Creates a brand new rule with the initial category. Return the UUID of
+     * the item created. This will not check in the rule, but just leave it as
+     * saved in the repo.
+     */
+    public String createNewRule(NewAssetWithContentConfiguration<? extends PortableObject> configuration) throws SerializationException;
 
     /**
      * Check whether an asset exists in a package
@@ -91,7 +100,7 @@ public interface RepositoryService
      * @throws SerializationException
      */
     public boolean doesAssetExistInModule(String assetName,
-                                           String packageName) throws SerializationException;
+                                          String packageName) throws SerializationException;
 
     /**
      * Creates a new rule which is imported from global area. Return the UUID of

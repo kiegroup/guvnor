@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets;
 
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -36,7 +37,7 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
                configuration.getDescription(),
                configuration.getInitialCategory(),
                configuration.getFormat() );
-        this.tableFormat = configuration.getTableFormat();
+        this.tableFormat = configuration.getContent().getTableFormat();
     }
 
     public TableFormat getTableFormat() {
@@ -107,13 +108,15 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
             String category = getCategory( token );
             String format = getFormat( token );
 
+            final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+            content.setTableFormat( tableFormat );
             NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
                                                                                                             packageName,
                                                                                                             packageUUID,
-                                                                                                            tableFormat,
                                                                                                             description,
                                                                                                             category,
-                                                                                                            format );
+                                                                                                            format,
+                                                                                                            content );
 
             NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
             return new WizardPlace<NewGuidedDecisionTableAssetWizardContext>( context );

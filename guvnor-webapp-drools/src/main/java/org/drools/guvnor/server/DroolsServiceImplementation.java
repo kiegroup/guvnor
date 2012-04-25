@@ -16,36 +16,33 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.rpc.*;
+import java.util.Iterator;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.rpc.DroolsService;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Iterator;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
 public class DroolsServiceImplementation
-        implements DroolsService {
+    implements
+    DroolsService {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(DroolsService.class);
+    private static final LoggingHelper log = LoggingHelper.getLogger( DroolsService.class );
 
-    private RulesRepository rulesRepository;
+    private RulesRepository            rulesRepository;
 
-    private ServiceSecurity serviceSecurity;
-
-    @Inject
-    private RepositoryService repositoryService;
-
-    @Inject
-    private RepositoryAssetService repositoryAssetService;
+    private ServiceSecurity            serviceSecurity;
 
     public DroolsServiceImplementation() {
         // Never used, just here because the CDI spec says there has to be an empty constructor
@@ -58,51 +55,18 @@ public class DroolsServiceImplementation
         this.serviceSecurity = serviceSecurity;
     }
 
-    /**
-     * This will create a new Guided Decision Table asset. The initial state
-     * will be the draft state. Returns the UUID of the asset. The new Asset
-     * will be SAVED and CHECKED-IN.
-     */
-    @WebRemote
-    @LoggedIn
-    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
-    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException {
-        String assetName = configuration.getAssetName();
-        String description = configuration.getDescription();
-        String initialCategory = configuration.getInitialCategory();
-        String packageName = configuration.getPackageName();
-        String format = configuration.getFormat();
-
-        //Create the asset
-        String uuid = repositoryService.createNewRule(assetName,
-                description,
-                initialCategory,
-                packageName,
-                format);
-
-        //Set the Table Format and check-in
-        //TODO Is it possible to alter the content and save without checking-in?
-        Asset asset = repositoryAssetService.loadRuleAsset(uuid);
-        GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
-        content.setTableFormat(configuration.getTableFormat());
-        asset.setCheckinComment("Table Format automatically set to [" + configuration.getTableFormat().toString() + "]");
-        repositoryAssetService.checkinVersion(asset);
-
-        return uuid;
-    }
-
     @WebRemote
     @LoggedIn
     public ValidatedResponse validateModule(Module data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(data.getUuid());
-        log.info("USER:" + getCurrentUserName() + " validateModule module [" + data.getName() + "]");
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
+        log.info( "USER:" + getCurrentUserName() + " validateModule module [" + data.getName() + "]" );
 
-        RuleBaseCache.getInstance().remove(data.getUuid());
+        RuleBaseCache.getInstance().remove( data.getUuid() );
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine(rulesRepository.loadModule(data.getName()),
-                data.getHeader());
+        loader.getSuggestionEngine( rulesRepository.loadModule( data.getName() ),
+                                    data.getHeader() );
 
-        return validateBRMSSuggestionCompletionLoaderResponse(loader);
+        return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
     BRMSSuggestionCompletionLoader createBRMSSuggestionCompletionLoader() {
@@ -111,12 +75,12 @@ public class DroolsServiceImplementation
 
     private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
         ValidatedResponse res = new ValidatedResponse();
-        if (loader.hasErrors()) {
+        if ( loader.hasErrors() ) {
             res.hasErrors = true;
             String err = "";
-            for (Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
+            for ( Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
                 err += (String) iter.next();
-                if (iter.hasNext()) err += "\n";
+                if ( iter.hasNext() ) err += "\n";
             }
             res.errorHeader = "Package validation errors";
             res.errorMessage = err;

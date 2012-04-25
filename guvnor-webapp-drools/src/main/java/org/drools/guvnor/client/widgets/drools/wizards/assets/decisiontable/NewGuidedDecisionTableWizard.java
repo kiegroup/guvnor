@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.AbstractNewAssetWizard;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
@@ -184,13 +184,13 @@ public class NewGuidedDecisionTableWizard
         }
 
         //Save it!
-        NewAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( summaryPage.getAssetName(),
-                                                                                     context.getPackageName(),
-                                                                                     context.getPackageUUID(),
-                                                                                     ((NewGuidedDecisionTableAssetWizardContext) context).getTableFormat(),
-                                                                                     context.getDescription(),
-                                                                                     context.getInitialCategory(),
-                                                                                     context.getFormat() );
+        NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( summaryPage.getAssetName(),
+                                                                                                        context.getPackageName(),
+                                                                                                        context.getPackageUUID(),
+                                                                                                        context.getDescription(),
+                                                                                                        context.getInitialCategory(),
+                                                                                                        context.getFormat(),
+                                                                                                        dtable );
         save( config,
               dtable );
     }

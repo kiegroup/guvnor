@@ -16,28 +16,26 @@
 
 package org.drools.guvnor.client.rpc;
 
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The configuration information required for a new Guided Decision Table Asset
+ * The configuration information required for a new RuleContentText Asset
  */
-public class NewGuidedDecisionTableAssetConfiguration extends NewAssetWithContentConfiguration<GuidedDecisionTable52>
+public class NewRuleContentTextAssetConfiguration extends NewAssetWithContentConfiguration<RuleContentText>
     implements
     IsSerializable {
 
     // For GWT serialisation
-    public NewGuidedDecisionTableAssetConfiguration() {
+    public NewRuleContentTextAssetConfiguration() {
     }
 
-    public NewGuidedDecisionTableAssetConfiguration(String assetName,
-                                                    String packageName,
-                                                    String packageUUID,
-                                                    String description,
-                                                    String initialCategory,
-                                                    String format,
-                                                    GuidedDecisionTable52 content) {
+    public NewRuleContentTextAssetConfiguration(String assetName,
+                                                String packageName,
+                                                String packageUUID,
+                                                String description,
+                                                String initialCategory,
+                                                String format,
+                                                RuleContentText content) {
         super( assetName,
                packageName,
                packageUUID,

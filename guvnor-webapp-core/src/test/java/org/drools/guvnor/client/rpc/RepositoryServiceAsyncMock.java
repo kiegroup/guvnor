@@ -26,21 +26,27 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Nothing to see here. Just extends this for your own mock impl.
  */
 public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
+    
     public void loadRuleListForState(StatePageRequest p0, AsyncCallback<PageResponse<StatePageRow>> cb) {
     }
 
     public void loadRuleListForState(String p0, int p1, int p2, String p3, AsyncCallback<TableDataResult> cb) {
     }
 
-    public void loadTableConfig(String p0, AsyncCallback<TableConfig> cb) {
-        
+    public void loadTableConfig(String p0,
+                                AsyncCallback<TableConfig> cb) {
+
     }
 
     public void createNewRule(String p0, String p1, String p2, String p3, String p4, AsyncCallback<String> cb) {
         
     }
     
-    public void createNewRule(NewAssetConfiguration p0, AsyncCallback<String> cb) {
+    public void createNewRule(NewAssetConfiguration p0,
+                              AsyncCallback<String> cb) {
+    }
+
+    public void createNewRule(NewAssetWithContentConfiguration p0, AsyncCallback<String> cb) {
         
     }
 

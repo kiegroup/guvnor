@@ -51,7 +51,7 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * 
      * @param config
      */
-    protected void save(final NewAssetConfiguration config,
+    protected void save(final NewAssetWithContentConfiguration config,
                         final T content) {
         RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
         repositoryService.createNewRule( config,

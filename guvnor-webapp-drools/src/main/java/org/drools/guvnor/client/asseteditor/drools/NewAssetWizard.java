@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -40,8 +39,9 @@ import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -87,7 +87,7 @@ public class NewAssetWizard extends FormStylePopup {
     private final ClientFactory              clientFactory;
     private final EventBus                   eventBus;
 
-    private RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
+    private RepositoryServiceAsync           repositoryService          = GWT.create( RepositoryService.class );
 
     /**
      * This is used when creating a new rule.
@@ -194,11 +194,11 @@ public class NewAssetWizard extends FormStylePopup {
                 description.setText( Constants.INSTANCE.DSLMappingTip() );
             } else if ( AssetFormats.ENUMERATION.equals( format ) ) {
                 description.setText( Constants.INSTANCE.NewEnumDoco() );
-            } else if ( AssetFormats.SPRING_CONTEXT.equals(format)) {
+            } else if ( AssetFormats.SPRING_CONTEXT.equals( format ) ) {
                 description.setText( Constants.INSTANCE.DescSpringContext() );
-            } else if ( AssetFormats.SERVICE_CONFIG.equals(format)) {
+            } else if ( AssetFormats.SERVICE_CONFIG.equals( format ) ) {
                 description.setText( Constants.INSTANCE.DescServiceConfig() );
-            } else if ( AssetFormats.WORKITEM_DEFINITION.equals(format)) {
+            } else if ( AssetFormats.WORKITEM_DEFINITION.equals( format ) ) {
                 description.setText( Constants.INSTANCE.DeskWorkItemDefinition() );
             }
         }
@@ -206,11 +206,11 @@ public class NewAssetWizard extends FormStylePopup {
 
     private Button createOkButtonAndClickHandler() {
         Button ok = new Button( Constants.INSTANCE.OK() );
-        ok.addClickHandler(new ClickHandler() {
+        ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 ok();
             }
-        });
+        } );
         return ok;
     }
 
@@ -302,9 +302,9 @@ public class NewAssetWizard extends FormStylePopup {
             }
         } );
         ScrollPanel scroll = new ScrollPanel( w );
-        scroll.setAlwaysShowScrollBars(true);
-        scroll.setSize("300px",
-                "130px"); //NON-NLS
+        scroll.setAlwaysShowScrollBars( true );
+        scroll.setSize( "300px",
+                        "130px" ); //NON-NLS
         return scroll;
 
     }
@@ -362,7 +362,6 @@ public class NewAssetWizard extends FormStylePopup {
                 cmd = makeGuidedDecisionTableWizardSaveCommand( assetName,
                                                                 packageName,
                                                                 packageSelector.getSelectedPackageUUID(),
-                                                                guidedDecisionTableOptions.getTableFormat(),
                                                                 description.getText(),
                                                                 initialCategory,
                                                                 assetFormat );
@@ -370,7 +369,6 @@ public class NewAssetWizard extends FormStylePopup {
                 cmd = makeGuidedDecisionTableSaveCommand( assetName,
                                                           packageName,
                                                           packageSelector.getSelectedPackageUUID(),
-                                                          guidedDecisionTableOptions.getTableFormat(),
                                                           description.getText(),
                                                           initialCategory,
                                                           assetFormat );
@@ -394,7 +392,6 @@ public class NewAssetWizard extends FormStylePopup {
     private Command makeGuidedDecisionTableWizardSaveCommand(final String assetName,
                                                              final String packageName,
                                                              final String packageUUID,
-                                                             final TableFormat tableFormat,
                                                              final String description,
                                                              final String initialCategory,
                                                              final String format) {
@@ -403,14 +400,16 @@ public class NewAssetWizard extends FormStylePopup {
         final Command cmdInvokeWizard = new Command() {
 
             public void execute() {
-                NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
+                final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+                content.setTableFormat( guidedDecisionTableOptions.getTableFormat() );
+                final NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
                                                                                                                 packageName,
                                                                                                                 packageUUID,
-                                                                                                                tableFormat,
                                                                                                                 description,
                                                                                                                 initialCategory,
-                                                                                                                format );
-                NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
+                                                                                                                format,
+                                                                                                                content );
+                final NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
                 clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
             }
         };
@@ -421,8 +420,8 @@ public class NewAssetWizard extends FormStylePopup {
             public void execute() {
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 repositoryService.doesAssetExistInModule( assetName,
-                                                                               packageName,
-                                                                               createGenericCallBackForCheckingIfExists( cmdInvokeWizard ) );
+                                                          packageName,
+                                                          createGenericCallBackForCheckingIfExists( cmdInvokeWizard ) );
             }
 
         };
@@ -433,40 +432,41 @@ public class NewAssetWizard extends FormStylePopup {
     private Command makeGuidedDecisionTableSaveCommand(final String assetName,
                                                        final String packageName,
                                                        final String packageUUID,
-                                                       final TableFormat tableFormat,
                                                        final String description,
                                                        final String initialCategory,
                                                        final String format) {
 
+        final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+        content.setTableFormat( guidedDecisionTableOptions.getTableFormat() );
         final NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
                                                                                                               packageName,
                                                                                                               packageUUID,
-                                                                                                              tableFormat,
                                                                                                               description,
                                                                                                               initialCategory,
-                                                                                                              format );
+                                                                                                              format,
+                                                                                                              content );
         //Command to save the asset
         final Command cmdSave = new Command() {
 
             public void execute() {
                 repositoryService.createNewRule( config,
-                                                                     createGenericCallbackForOk() );
+                                                 createGenericCallbackForOk() );
             }
         };
-        
+
         //Command to check if the asset already exists, before delegating to save command
         final Command cmdCheckBeforeSaving = new Command() {
 
             public void execute() {
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 repositoryService.doesAssetExistInModule( config.getAssetName(),
-                                                                               config.getPackageName(),
-                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
+                                                          config.getPackageName(),
+                                                          createGenericCallBackForCheckingIfExists( cmdSave ) );
             }
 
         };
         return cmdCheckBeforeSaving;
-        
+
     }
 
     //Construct a chain of commands to handle saving assets other than a Guided Decision Table
@@ -489,7 +489,7 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 repositoryService.createNewRule( config,
-                                                                     createGenericCallbackForOk() );
+                                                 createGenericCallbackForOk() );
             }
         };
 
@@ -499,8 +499,8 @@ public class NewAssetWizard extends FormStylePopup {
             public void execute() {
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 repositoryService.doesAssetExistInModule( config.getAssetName(),
-                                                                               config.getPackageName(),
-                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
+                                                   config.getPackageName(),
+                                                   createGenericCallBackForCheckingIfExists( cmdSave ) );
             }
 
         };
@@ -514,8 +514,8 @@ public class NewAssetWizard extends FormStylePopup {
     void importOK() {
         LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
         repositoryService.createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
-                                                                     importedPackageSelector.getSelectedPackage(),
-                                                                     createGenericCallbackForImportOk() );
+                                                 importedPackageSelector.getSelectedPackage(),
+                                                 createGenericCallbackForImportOk() );
     }
 
     private GenericCallback<String> createGenericCallbackForOk() {
@@ -525,7 +525,7 @@ public class NewAssetWizard extends FormStylePopup {
                 if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
                     Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
-                    eventBus.fireEvent(new RefreshModuleEditorEvent(packageSelector.getSelectedPackageUUID()));
+                    eventBus.fireEvent( new RefreshModuleEditorEvent( packageSelector.getSelectedPackageUUID() ) );
                     openEditor( uuid );
                     hide();
                 }
@@ -543,7 +543,7 @@ public class NewAssetWizard extends FormStylePopup {
                 } else {
                     eventBus.fireEvent( new RefreshModuleEditorEvent( importedPackageSelector.getSelectedPackageUUID() ) );
                     flushSuggestionCompletionCache();
-                    openEditor(uuid);
+                    openEditor( uuid );
                     hide();
                 }
             }

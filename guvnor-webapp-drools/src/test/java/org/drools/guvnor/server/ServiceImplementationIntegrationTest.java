@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -278,13 +277,16 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
                                                   "testCreateNewGuidedDecisionTableUsingConfiguration",
                                                   "this is a cat" );
 
+        final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+        content.setTableFormat( TableFormat.LIMITED_ENTRY );
+
         NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( "testCreateNewGuidedDecisionTableUsingConfigurationName",
                                                                                                         "testCreateNewGuidedDecisionTableUsingConfiguration",
                                                                                                         null,
-                                                                                                        TableFormat.LIMITED_ENTRY,
                                                                                                         "an initial desc",
                                                                                                         "testCreateNewGuidedDecisionTableUsingConfiguration",
-                                                                                                        AssetFormats.DECISION_TABLE_GUIDED );
+                                                                                                        AssetFormats.DECISION_TABLE_GUIDED,
+                                                                                                        content );
 
         String uuid = serviceImplementation.createNewRule( config );
         assertNotNull( uuid );
@@ -295,11 +297,11 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
                       "an initial desc" );
 
         Asset asset = this.repositoryAssetService.loadRuleAsset( uuid );
-        GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
+        GuidedDecisionTable52 retrievedContent = (GuidedDecisionTable52) asset.getContent();
 
-        assertNotNull( content );
+        assertNotNull( retrievedContent );
         assertEquals( TableFormat.LIMITED_ENTRY,
-                      content.getTableFormat() );
+                      retrievedContent.getTableFormat() );
 
     }
 
