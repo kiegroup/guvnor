@@ -24,17 +24,17 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.KnowledgeBase;
 import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.StatelessSession;
-import org.drools.core.util.BinaryRuleBaseLoader;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -63,11 +63,13 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.util.BRXMLPersistence;
+import org.drools.io.impl.InputStreamResource;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -751,6 +753,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.saveModule( data );
 
         ValidatedResponse res = repositoryPackageService.validateModule( data );
+
         assertNotNull( res );
         assertTrue( res.hasErrors );
         assertNotNull( res.errorMessage );
@@ -1093,7 +1096,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                       true );
-        
+
         List<BuilderResultLine> lines = result.getLines();
         assertFalse( result.hasLines() );
 
@@ -1102,18 +1105,24 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         assertNotNull( binPackage );
 
-        Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
+        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
 
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+
+        Package binPkg = binPkgs[0];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
         Person p = new Person();
 
-        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( new ByteArrayInputStream( binPackage ) );
-        RuleBase rb = loader.getRuleBase();
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new InputStreamResource( new ByteArrayInputStream( binPackage ) ),
+                ResourceType.PKG );
+        KnowledgeBase kbase = kb.newKnowledgeBase();
 
-        StatelessSession sess = rb.newStatelessSession();
+        StatelessKnowledgeSession sess = kbase.newStatelessKnowledgeSession();
         sess.setGlobal( "ls",
                         new ArrayList<String>() );
         sess.execute( p );
@@ -1206,19 +1215,25 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         assertNotNull( binPackage );
 
-        Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
+        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
 
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+
+        Package binPkg = binPkgs[0];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
         // and this shows off the "soundex" thing...
         Person p = new Person( "fubar" );
 
-        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( new ByteArrayInputStream( binPackage ) );
-        RuleBase rb = loader.getRuleBase();
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new InputStreamResource( new ByteArrayInputStream( binPackage ) ),
+                ResourceType.PKG );
+        KnowledgeBase kbase = kb.newKnowledgeBase();
 
-        StatelessSession sess = rb.newStatelessSession();
+        StatelessKnowledgeSession sess = kbase.newStatelessKnowledgeSession();
         sess.execute( p );
         assertEquals( 42,
                       p.getAge() );
@@ -1339,14 +1354,17 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
             //Test
             Person p = new Person( "fubar" );
-            BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-            loader.addPackage( new FileInputStream( file ) );
-            RuleBase rb = loader.getRuleBase();
-            StatelessSession sess = rb.newStatelessSession();
+
+            KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kb.add( new InputStreamResource( new ByteArrayInputStream( binPackage ) ),
+                    ResourceType.PKG );
+            KnowledgeBase kbase = kb.newKnowledgeBase();
+
+            StatelessKnowledgeSession sess = kbase.newStatelessKnowledgeSession();
             sess.execute( p );
             assertEquals( 42,
                           p.getAge() );
-            
+
         } finally {
             //Tidy up
             fm.deleteFile( file );
