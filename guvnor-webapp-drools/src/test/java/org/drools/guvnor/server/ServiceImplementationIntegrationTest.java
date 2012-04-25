@@ -29,10 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.KnowledgeBase;
 import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.StatelessSession;
-import org.drools.core.util.BinaryRuleBaseLoader;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -74,6 +75,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.upgrade.GuidedDecisionTableUpgradeHelper1;
+import org.drools.io.impl.InputStreamResource;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.drools.process.core.datatype.impl.type.EnumDataType;
@@ -87,6 +89,7 @@ import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.StateItem;
 import org.drools.rule.Package;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.type.DateFormatsImpl;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.junit.Ignore;
@@ -967,7 +970,14 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
         assertNotNull( binPackage );
 
-        Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
+        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
+
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+
+        Package binPkg = binPkgs[0];
+        assertNotNull( binPkg );
 
         assertEquals( 2,
                       binPkg.getRules().length );
@@ -979,11 +989,13 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
         p.setHair( "pink" );
 
-        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( new ByteArrayInputStream( binPackage ) );
-        RuleBase rb = loader.getRuleBase();
-
-        StatelessSession sess = rb.newStatelessSession();
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new InputStreamResource( new ByteArrayInputStream( binPackage ) ),
+                ResourceType.PKG );
+        KnowledgeBase kbase = kb.newKnowledgeBase();
+        
+        StatelessKnowledgeSession sess = kbase.newStatelessKnowledgeSession();
+        
         sess.execute( p );
         assertEquals( 42,
                       p.getAge() );
