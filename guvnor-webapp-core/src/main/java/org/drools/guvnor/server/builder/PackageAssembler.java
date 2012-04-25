@@ -16,9 +16,12 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.Iterator;
+
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -32,13 +35,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -70,10 +66,11 @@ public class PackageAssembler extends PackageAssemblerBase {
         }
         
         if (!hasErrors() ) {
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
-                new RuleBaseConfiguration(getClassLoaders())
-            );
-            ruleBase.addPackage(builder.getPackage());
+            //TODO {manstis} Does this actually do anything useful?
+            //            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
+            //                new RuleBaseConfiguration(getClassLoaders())
+            //            );
+            //            ruleBase.addPackage(builder.getPackage());
 
             byte[] compiledPackageByte = getCompiledBinary();
             moduleItem.updateCompiledBinary(new ByteArrayInputStream(compiledPackageByte));
@@ -83,10 +80,11 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     }
 
-    private ClassLoader[] getClassLoaders() {
-        Collection<ClassLoader> loaders = getBuilder().getRootClassLoader().getClassLoaders();
-        return loaders.toArray( new ClassLoader[loaders.size()] );
-    }
+    //private ClassLoader[] getClassLoaders() {
+    //    Collection<ClassLoader> loaders = getBuilder().getRootClassLoader().getClassLoaders();
+    //    return loaders.toArray( new ClassLoader[loaders.size()] );
+    //}
+    
     /**
      * This will build the package - preparePackage would have been called first.
      * This will always prioritise DRL before other assets.
