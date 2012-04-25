@@ -648,6 +648,7 @@ public class GuidedDecisionTableWidget extends Composite
                             addItem( Constants.INSTANCE.AddNewActionBRLFragment(),
                                      NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
+                            removeItem( NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
                             removeItem( NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
