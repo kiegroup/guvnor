@@ -194,11 +194,11 @@ public class PackageAssembler extends PackageAssemblerBase {
     /**
      * I've got a package people !
      */
-    private Package getBinaryPackage() {
+    private Package[] getBinaryPackage() {
         if (this.hasErrors()) {
             throw new IllegalStateException("There is no package available, as there were errors.");
         }
-        return builder.getPackage();
+        return builder.getPackages();
     }
     
     public BRMSPackageBuilder getBuilder() {
