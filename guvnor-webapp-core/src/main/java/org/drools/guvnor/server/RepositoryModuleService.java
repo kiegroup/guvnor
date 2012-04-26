@@ -15,17 +15,48 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.io.IOUtils;
-import org.drools.*;
+import org.drools.ClockType;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -37,7 +68,12 @@ import org.drools.ide.common.server.testscenarios.ScenarioRunner;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
@@ -47,13 +83,7 @@ import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.PackageService")
@@ -607,12 +637,12 @@ public class RepositoryModuleService
     }
 
     private RuleBase deserKnowledgebase(ModuleItem item,
-                                        ClassLoader classloader) throws IOException, ClassNotFoundException {
-        RuleBase rulebase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(classloader));
-        rulebase.addPackage(
-                (Package) DroolsStreamUtils.streamIn(
-                        item.getCompiledBinaryBytes(),
-                        classloader));
+                                        ClassLoader classloader) throws IOException,
+                                                                ClassNotFoundException {
+        RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
+        BinaryRuleBaseLoader rbl = new BinaryRuleBaseLoader( rulebase,
+                                                             classloader );
+        rbl.addPackage( new ByteArrayInputStream( item.getCompiledBinaryBytes() ) );
         return rulebase;
     }
 
