@@ -133,4 +133,12 @@ public class FieldConstraintHelper {
                 newField);
         field = newField;
     }
+
+    public boolean isDependentEnum(FieldConstraintHelper child) {
+        if (!fact.getType().equals(child.fact.getType())) {
+            return false;
+        }
+        return sce.isDependentEnum(fact.getType(), field.getName(), child.field.getName());
+    }
+
 }

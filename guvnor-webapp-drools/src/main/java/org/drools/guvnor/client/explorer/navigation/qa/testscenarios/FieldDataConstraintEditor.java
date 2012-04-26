@@ -36,6 +36,7 @@ import org.drools.ide.common.client.modeldriven.testing.Fact;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +49,8 @@ public class FieldDataConstraintEditor
     private FieldData field;
     private final Panel panel = new SimplePanel();
     private final FieldConstraintHelper helper;
+
+    private List<FieldDataConstraintEditor> dependentEnumEditors = null;
 
     public FieldDataConstraintEditor(String factType,
                                      FieldData field,
@@ -92,11 +95,15 @@ public class FieldDataConstraintEditor
 
             if (dropDownData != null) {
                 field.setNature(FieldData.TYPE_ENUM);
+                dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
                 panel.add(new EnumDropDown(field.getValue(),
                         new DropDownValueChanged() {
                             public void valueChanged(String newText,
                                                      String newValue) {
                                 valueHasChanged(newValue);
+                                for (FieldDataConstraintEditor dependentEnumEditor : dependentEnumEditors) {
+                                    // TODO dependentEnumEditor.refreshEnumValues() + set it empty
+                                }
                             }
                         },
                         dropDownData));
@@ -314,4 +321,11 @@ public class FieldDataConstraintEditor
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> stringValueChangeHandler) {
         return addHandler(stringValueChangeHandler, ValueChangeEvent.getType());
     }
+
+    public void addIfDependentEnumEditor(FieldDataConstraintEditor candidateDependentEnumEditor) {
+        if (helper.isDependentEnum(candidateDependentEnumEditor.helper)) {
+            dependentEnumEditors.add(candidateDependentEnumEditor);
+        }
+    }
+
 }
