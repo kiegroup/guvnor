@@ -1259,8 +1259,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
            assertNotNull( binPackage );
 
-           Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
-
+           Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
+           assertNotNull( binPkgs );
+           assertEquals( 1,
+                         binPkgs.length );
+            
+           Package binPkg = binPkgs[0];
+           assertNotNull( binPkg );
            assertEquals( 2,
                          binPkg.getRules().length );
 

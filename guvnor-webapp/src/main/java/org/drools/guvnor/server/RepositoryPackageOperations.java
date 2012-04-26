@@ -15,33 +15,62 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.core.util.BinaryRuleBaseLoader;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
+import org.drools.guvnor.client.rpc.SnapshotDiff;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.builder.PackageAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.util.*;
-import org.drools.repository.*;
+import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BuilderResultHelper;
+import org.drools.guvnor.server.util.DroolsHeader;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.PackageConfigDataFactory;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.*;
-
-import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for packages
@@ -556,10 +585,11 @@ public class RepositoryPackageOperations {
 
         // adding the MapBackedClassloader that is the classloader from the
         // rulebase classloader
-        Collection<ClassLoader> loaders = asm.getBuilder().getRootClassLoader().getClassLoaders();
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(loaders.toArray(new ClassLoader[loaders.size()]));
-        RuleBase rb = RuleBaseFactory.newRuleBase(conf);
-        rb.addPackage(asm.getBinaryPackage());
+        final ClassLoader classLoader = asm.getBuilder().getRootClassLoader();
+        RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classLoader ) );
+        BinaryRuleBaseLoader rbl = new BinaryRuleBaseLoader( rulebase,
+                                                             classLoader );
+        rbl.addPackage( new ByteArrayInputStream( item.getCompiledPackageBytes() ) );
     }
 
     private String getCurrentUserName() {

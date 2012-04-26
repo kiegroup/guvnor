@@ -1139,8 +1139,12 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         assertNotNull( binPackage );
 
-        Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
-
+        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package binPkg = binPkgs[0];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
@@ -1255,8 +1259,12 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         assertNotNull( binPackage );
 
-        Package binPkg = (Package) DroolsStreamUtils.streamIn( binPackage );
-
+        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package binPkg = binPkgs[0];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
