@@ -18,6 +18,8 @@ package org.drools.testframework;
 
 import static org.mvel2.MVEL.eval;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,7 +88,7 @@ public class ScenarioRunner {
      */
     public ScenarioRunner(final Scenario scenario,
                           final TypeResolver resolver,
-                          final InternalWorkingMemory wm) throws ClassNotFoundException {
+                          final InternalWorkingMemory wm) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.scenario = scenario;
         this.workingMemory = wm;
         this.resolver = resolver;
@@ -99,7 +101,7 @@ public class ScenarioRunner {
      * @throws ClassNotFoundException
      */
     public ScenarioRunner(String xml,
-                          RuleBase ruleBase) throws ClassNotFoundException {
+                          RuleBase ruleBase) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.scenario = ScenarioXMLPersistence.getInstance().unmarshal( xml );
 
         SessionConfiguration sessionConfiguration = new SessionConfiguration();
@@ -125,10 +127,10 @@ public class ScenarioRunner {
     }
 
     interface Populate {
-        public void go();
+        public void go() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
     }
 
-    private void runScenario() throws ClassNotFoundException {
+    private void runScenario() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.setLastRunResult( new Date() );
         //stub out any rules we don't want to have the consequences firing of.
@@ -143,7 +145,7 @@ public class ScenarioRunner {
             final Object factObject = eval( "new " + getTypeName( resolver,
                                                                   fact ) + "()" );
             toPopulate.add( new Populate() {
-                public void go() {
+                public void go() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
                     populateFields( fact,
                                     factObject );
                 }
@@ -169,7 +171,7 @@ public class ScenarioRunner {
                         throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.getName() + "]" );
                     }
                     toPopulate.add( new Populate() {
-                        public void go() {
+                        public void go() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
                             populateFields( fact,
                                             factObject );
                             workingMemory.update( factHandles.get( fact.getName() ),
@@ -180,7 +182,7 @@ public class ScenarioRunner {
                     populatedData.put( fact.getName(),
                                        factObject );
                     toPopulate.add( new Populate() {
-                        public void go() {
+                        public void go() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
                             populateFields( fact,
                                             factObject );
                             factHandles.put( fact.getName(),
@@ -242,7 +244,7 @@ public class ScenarioRunner {
         doPopulate( toPopulate );
     }
 
-    private void doPopulate(List<Populate> toPopulate) {
+    private void doPopulate(List<Populate> toPopulate) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for ( Populate p : toPopulate ) {
             p.go();
         }
@@ -348,7 +350,7 @@ public class ScenarioRunner {
     }
 
     Object populateFields(FactData fact,
-                          Object factObject) {
+                          Object factObject) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         for ( int i = 0; i < fact.getFieldData().size(); i++ ) {
             FieldData field = (FieldData) fact.getFieldData().get( i );
             Object val = null;
@@ -387,7 +389,9 @@ public class ScenarioRunner {
                     } else {
                         val = valueOfEnum;
                     }
-                } else {
+                } else if (isDate(field.getName(), factObject)) {
+                    val = DateObjectFactory.getObject(getFieldType(field.getName(),factObject),field.getValue());
+                }else {
                     val = field.getValue();
                 }
 
@@ -402,6 +406,48 @@ public class ScenarioRunner {
             }
         }
         return factObject;
+    }
+
+    private Class<?> getFieldType(String fieldName,Object factObject) {
+        for (Method method : factObject.getClass().getDeclaredMethods()) {
+            if (hasMutator(fieldName, method)) {
+                return method.getParameterTypes()[0];
+            }
+        }
+        throw new IllegalArgumentException("No field named: " + fieldName);
+    }
+
+    private boolean isDate(String fieldName,Object factObject) {
+        for (Method method : factObject.getClass().getDeclaredMethods()) {
+            if (hasMutator(fieldName, method)) {
+                if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasMutator(String fieldName, Method method) {
+        if (method.getName().equals(fieldName) || method.getName().equals("set" + capitalize(fieldName))) {
+            if (method.getParameterTypes().length == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String capitalize(String fieldName) {
+        if (fieldName.length() == 0) {
+            return "";
+        } else if (fieldName.length() == 1) {
+            return fieldName.toUpperCase();
+        } else {
+            String firstLetter = fieldName.substring(0, 1);
+
+            String tail = fieldName.substring(1);
+            return firstLetter.toUpperCase() + tail;
+        }
     }
 
     Object executeMethodOnObject(CallMethod fact,

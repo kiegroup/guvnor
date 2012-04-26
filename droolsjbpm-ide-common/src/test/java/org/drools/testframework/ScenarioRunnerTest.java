@@ -270,6 +270,30 @@ public class ScenarioRunnerTest extends RuleUnit {
     }
 
     @Test
+    public void testSQLDateField() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls(new FactData("SqlDateWrapper",
+                "c1",
+                ls(
+                        new FieldData("sqlDate",
+                                "10-Jul-2008")),
+                false));
+
+        sc.getFixtures().addAll(facts);
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
+                Thread.currentThread().getContextClassLoader());
+        resolver.addImport("org.drools.SqlDateWrapper");
+        ScenarioRunner runner = new ScenarioRunner(sc,
+                resolver,
+                new MockWorkingMemory());
+
+        assertTrue(runner.getPopulatedData().containsKey("c1"));
+
+        SqlDateWrapper sqlDateWrapper = (SqlDateWrapper) runner.getPopulatedData().get("c1");
+        assertNotNull(sqlDateWrapper.getSqlDate());
+    }
+
+    @Test
     public void testPopulateFactsWithExpressions() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls(new FactData("Cheese",
