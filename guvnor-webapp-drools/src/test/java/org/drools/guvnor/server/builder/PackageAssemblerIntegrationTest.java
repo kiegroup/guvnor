@@ -36,9 +36,9 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -735,23 +735,32 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         repo.save();
 
         PackageAssembler asm = new PackageAssembler();
-        asm.init(pkg, null);
+        asm.init( pkg,
+                  null );
         asm.compile();
         assertFalse( asm.hasErrors() );
         
-        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
 
-        assertNotNull( binPkgs );
-        assertEquals( 1,
-                      binPkgs.length );
+            Thread.currentThread().setContextClassLoader( asm.getBuilder().getRootClassLoader() );
 
-        Package bin = binPkgs[0];
-        assertNotNull( bin );
+            Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
-        assertEquals( 3,
-                      bin.getRules().length );
-        assertEquals( 1,
-                      bin.getFunctions().size() );
+            assertNotNull( binPkgs );
+            assertEquals( 1,
+                          binPkgs.length );
+
+            Package bin = binPkgs[0];
+            assertNotNull( bin );
+
+            assertEquals( 3,
+                          bin.getRules().length );
+            assertEquals( 1,
+                          bin.getFunctions().size() );
+        } finally {
+            Thread.currentThread().setContextClassLoader( currentClassLoader );
+        }
 
     }
 
