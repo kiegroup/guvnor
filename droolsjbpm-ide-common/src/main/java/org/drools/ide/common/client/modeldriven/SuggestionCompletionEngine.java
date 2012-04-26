@@ -537,8 +537,14 @@ public class SuggestionCompletionEngine
 
     public boolean hasEnums(String type) {
         boolean hasEnums = false;
+        final String dependentType = type + "[";
         for ( String e : this.dataEnumLists.keySet() ) {
-            if ( e.startsWith( type ) ) {
+            //e.g. Fact.field1
+            if ( e.equals( type ) ) {
+                return true;
+            }
+            //e.g. Fact.field2[field1=val2]
+            if ( e.startsWith( dependentType ) ) {
                 return true;
             }
         }
