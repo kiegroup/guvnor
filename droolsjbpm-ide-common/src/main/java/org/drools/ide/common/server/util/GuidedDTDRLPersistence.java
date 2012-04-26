@@ -643,7 +643,7 @@ public class GuidedDTDRLPersistence {
 
             //If operator is "== null" or "!= null" add constraint if table value is true
             if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
-                isValid = dcv.getBooleanValue();
+                isValid = (dcv.getBooleanValue() == null ? false : dcv.getBooleanValue());
             }
 
             if ( isValid ) {
