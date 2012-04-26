@@ -845,5 +845,24 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
 &lt;/project&gt;        </programlisting>
       </example>
     </section>
+    
+    <section>
+        <title>Retriving package list,package metadata, package source and binary, package version info etc using Atom</title>
+        <para>In this example we are using Apache Abdera to help parsing and creating Atom Entry and Feed.</para>   
+          
+        <section>
+          <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+          <example>
+            <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned by server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageListSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+
+        </section>
+    </section>
+
   </section>
 </section>
