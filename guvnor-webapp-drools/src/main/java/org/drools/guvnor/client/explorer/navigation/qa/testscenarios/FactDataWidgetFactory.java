@@ -80,6 +80,8 @@ public class FactDataWidgetFactory {
                 new ClickableLabel(headerText,
                         createAddFieldButton(fact)));
 
+        Map<FieldData, FieldDataConstraintEditor> enumEditorMap
+                = new HashMap<FieldData, FieldDataConstraintEditor>();
         // Sets row name and delete button.
         for (final Field field : fact.getFieldData()) {
             // Avoid duplicate field rows, only one for each name.
@@ -89,12 +91,26 @@ public class FactDataWidgetFactory {
 
             // Sets row data
             int fieldRowIndex = rowIndexByFieldName.getRowIndex(field.getName());
+            IsWidget editableCell = editableCell(
+                    field,
+                    fact,
+                    fact.getType());
             widget.setWidget(fieldRowIndex,
                     col,
-                    editableCell(
-                            field,
-                            fact,
-                            fact.getType()));
+                    editableCell);
+            if (field instanceof FieldData) {
+                FieldData fieldData = (FieldData) field;
+                if (fieldData.getNature() == FieldData.TYPE_ENUM) {
+                    enumEditorMap.put(fieldData, (FieldDataConstraintEditor) editableCell);
+                }
+            }
+        }
+        for (FieldDataConstraintEditor outerEnumEditor : enumEditorMap.values()) {
+            for (FieldDataConstraintEditor innerEnumEditor : enumEditorMap.values()) {
+                if (outerEnumEditor != innerEnumEditor) {
+                    outerEnumEditor.addIfDependentEnumEditor(innerEnumEditor);
+                }
+            }
         }
 
         if (fact instanceof FactData) {
