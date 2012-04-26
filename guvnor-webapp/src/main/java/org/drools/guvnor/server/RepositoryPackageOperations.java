@@ -40,6 +40,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
+import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
@@ -578,7 +579,8 @@ public class RepositoryPackageOperations {
         return BuilderResult.emptyResult();
     }
 
-    private void updatePackageBinaries(PackageItem item, PackageAssembler packageAssembler) throws DetailedSerializationException {
+    private void updatePackageBinaries(PackageItem item,
+                                       PackageAssembler packageAssembler) throws DetailedSerializationException {
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutput out = new DroolsObjectOutputStream( bout );
@@ -590,17 +592,19 @@ public class RepositoryPackageOperations {
 
             item.updateBinaryUpToDate( true );
 
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
-                    new RuleBaseConfiguration( getClassLoaders( packageAssembler ) )
-            );
-            ruleBase.addPackage( packageAssembler.getBinaryPackage() );
+            final ClassLoader classLoader = packageAssembler.getBuilder().getRootClassLoader();
+            RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classLoader ) );
+            BinaryRuleBaseLoader rbl = new BinaryRuleBaseLoader( rulebase,
+                                                                 classLoader );
+            rbl.addPackage( new ByteArrayInputStream( item.getCompiledPackageBytes() ) );
 
             getRulesRepository().save();
-        } catch (Exception e) {
+
+        } catch ( Exception e ) {
             e.printStackTrace();
             log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
             throw new DetailedSerializationException( "An error occurred building the package.",
-                    e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 

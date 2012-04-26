@@ -16,6 +16,18 @@
 
 package org.drools.guvnor.server.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Map;
+import java.util.Properties;
+
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.RuleBase;
@@ -29,7 +41,11 @@ import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.*;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
@@ -40,14 +56,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.Map;
-import java.util.Properties;
-
-import static org.junit.Assert.*;
 
 /**
  * This will unit test package assembly into a binary.
@@ -89,7 +97,14 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         PackageAssembler assembler = new PackageAssembler(pkg);
         assembler.compile();
         assertFalse(assembler.hasErrors());
-        Package bin = assembler.getBinaryPackage();
+        
+        Package[] binPkgs = assembler.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
+        
         assertNotNull(bin);
         assertEquals("testBuilderPackageConfig",
                 bin.getName());
@@ -231,7 +246,14 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         PackageAssembler asm = new PackageAssembler(packageItem);
         asm.compile();
         assertFalse(asm.hasErrors());
-        Map<String, org.drools.definition.process.Process> flows = asm.getBinaryPackage().getRuleFlows();
+        
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
+        Map<String, org.drools.definition.process.Process> flows = bin.getRuleFlows();
         assertNotNull(flows);
 
         assertEquals(1,
@@ -315,7 +337,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                 asm.hasErrors());
 
         assertNotNull(asm.getBinaryPackage());
-        Package bin = asm.getBinaryPackage();
+        
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
         assertEquals(pkg.getName(),
                 bin.getName());
         assertTrue(bin.isValid());
@@ -352,7 +380,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertFalse(asm.hasErrors());
 
         assertNotNull(asm.getBinaryPackage());
-        Package bin = asm.getBinaryPackage();
+        
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
         assertEquals(pkg.getName(),
                 bin.getName());
         assertTrue(bin.isValid());
@@ -403,7 +437,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                 asm.hasErrors());
 
         assertNotNull(asm.getBinaryPackage());
-        Package bin = asm.getBinaryPackage();
+
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
         assertEquals(pkg.getName(),
                 bin.getName());
         assertTrue(bin.isValid());
@@ -417,7 +457,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                 asm2.hasErrors());
 
         assertNotNull(asm2.getBinaryPackage());
-        Package bin2 = asm2.getBinaryPackage();
+        
+        Package[] bin2Pkgs = asm.getBinaryPackage();
+        assertNotNull( bin2Pkgs );
+        assertEquals( 1,
+                      bin2Pkgs.length );
+         
+        Package bin2 = bin2Pkgs[0];
         assertEquals(pkg.getName(),
                 bin2.getName());
         assertTrue(bin2.isValid());
@@ -464,7 +510,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asm.compile();
         assertFalse(asm.hasErrors());
         assertNotNull(asm.getBinaryPackage());
-        Package bin = asm.getBinaryPackage();
+        
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
         assertEquals(pkg.getName(),
                 bin.getName());
         assertTrue(bin.isValid());
@@ -677,7 +729,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         PackageAssembler asm = new PackageAssembler(pkg);
         asm.compile();
         assertFalse(asm.hasErrors());
-        Package bin = asm.getBinaryPackage();
+
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
         assertNotNull(bin);
         assertEquals(3,
                 bin.getRules().length);
@@ -747,7 +805,12 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         }
         assertFalse(asm.hasErrors());
 
-        Package bin = asm.getBinaryPackage();
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
         rb.addPackage(bin);
@@ -849,10 +912,15 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         PackageAssembler asm = new PackageAssembler(pkg);
         asm.compile();
         assertFalse(asm.hasErrors());
-        Package bpkg = asm.getBinaryPackage();
-        assertEquals(2,
-                bpkg.getRules().length);
 
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package bin = binPkgs[0];
+        assertEquals(2,
+                     bin.getRules().length);
     }
 
     @Test
@@ -894,7 +962,12 @@ public class PackageAssemblerTest extends GuvnorTestBase {
                 configuration);
         asm.compile();
 
-        Package pk = asm.getBinaryPackage();
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package pk = binPkgs[0];
         assertEquals(1,
                 pk.getRules().length);
         assertEquals("rule2",
@@ -902,7 +975,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
         asm = new PackageAssembler(pkg);
         asm.compile();
-        pk = asm.getBinaryPackage();
+        
+        binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        pk = binPkgs[0];
         assertEquals(2,
                 pk.getRules().length);
 
@@ -928,7 +1007,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         asm = new PackageAssembler(pkg,
                 configuration);
         asm.compile();
-        pk = asm.getBinaryPackage();
+        
+        binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        pk = binPkgs[0];
         assertEquals(2,
                 pk.getRules().length);
     }
@@ -986,13 +1071,25 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         //without selector
         PackageAssembler asm = new PackageAssembler(pkg);
         asm.compile();
-        Package pk = asm.getBinaryPackage();
+        
+        Package[] binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        Package pk = binPkgs[0];
         assertEquals(2, pk.getRules().length);
         
         //with built-in selector
         asm = new PackageAssembler(pkg, packageAssemblerConfiguration);
         asm.compile();
-        pk = asm.getBinaryPackage();
+
+        binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        pk = binPkgs[0];
         assertEquals(1, pk.getRules().length);
         assertEquals("rule1", pk.getRules()[0].getName());
 
@@ -1006,7 +1103,13 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         //with built-in selector
         asm = new PackageAssembler(pkg, packageAssemblerConfiguration);
         asm.compile();
-        pk = asm.getBinaryPackage();
+        
+        binPkgs = asm.getBinaryPackage();
+        assertNotNull( binPkgs );
+        assertEquals( 1,
+                      binPkgs.length );
+         
+        pk = binPkgs[0];
         assertEquals(1, pk.getRules().length);
         assertEquals("rule2", pk.getRules()[0].getName());
     }
