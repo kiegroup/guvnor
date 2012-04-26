@@ -735,23 +735,32 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         repo.save();
 
         PackageAssembler asm = new PackageAssembler();
-        asm.init(pkg, null);
+        asm.init( pkg,
+                  null );
         asm.compile();
         assertFalse( asm.hasErrors() );
-        
-        Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
-        assertNotNull( binPkgs );
-        assertEquals( 1,
-                      binPkgs.length );
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
 
-        Package bin = binPkgs[0];
-        assertNotNull( bin );
+            Thread.currentThread().setContextClassLoader( asm.getBuilder().getRootClassLoader() );
 
-        assertEquals( 3,
-                      bin.getRules().length );
-        assertEquals( 1,
-                      bin.getFunctions().size() );
+            Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+
+            assertNotNull( binPkgs );
+            assertEquals( 1,
+                          binPkgs.length );
+
+            Package bin = binPkgs[0];
+            assertNotNull( bin );
+
+            assertEquals( 3,
+                          bin.getRules().length );
+            assertEquals( 1,
+                          bin.getFunctions().size() );
+        } finally {
+            Thread.currentThread().setContextClassLoader( currentClassLoader );
+        }
 
     }
 
