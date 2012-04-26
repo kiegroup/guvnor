@@ -860,8 +860,67 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
             <title>Sample message returned by server</title>          
             <programlisting language="XML" role="XML"><xi:include href="extras/packageListSampleMessage.xml" parse="text" /></programlisting>
           </example>
-
         </section>
+        
+        <section>
+          <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+          <para>The client can navigate to specific packages using the package URL retrieved from package list.</para>   
+          
+          <example>
+            <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned by server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageMetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the source code of the specified package as plain text</title>           
+          <example>
+            <title>Retrieving the source code of the specified package as plain text</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageSourceSampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the compiled binary of the specified package as binary stream</title>
+          <para>Retrieving the compiled binary of the specified package as a binary stream. If the package has not been compiled yet or its binary is not up to date, Guvnor will compile the package first.</para>   
+          
+          <example>
+            <title>Retrieving the compiled binary of the specified package as binary stream</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageBinarySampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>          
+        
+        <section>
+          <title>Retrieving package versions as an Atom Feed</title>
+          
+          <example>
+            <title>Retrieving package versions as an Atom Feed</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned by server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersionsSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+         
+        <section>
+          <title>Retrieving package metadata with specified version as an Atom Entry</title>
+          <para>Retrieving package metadata with specified version as an Atom Entry. If this version of the package did not get compiled when it was checked in, a HTTP 500 error is returned.</para>   
+          
+          <example>
+            <title>Retrieving package metadata with specified version as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersion5MetadataSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned by server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersion5MetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+                                    
     </section>
 
   </section>
