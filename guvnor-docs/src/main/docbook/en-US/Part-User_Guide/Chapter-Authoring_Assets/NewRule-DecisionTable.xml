@@ -358,7 +358,7 @@ end</programlisting>
             You can choose to negate the pattern. Once this has been completed you can define field constraints. If two
             or more columns are defined using the same fact pattern binding the field constraints become composite field
             constraints on the same pattern. If you define multiple bindings for a single model class each binding
-            becomes a seperate model class in the right-hand side of the rule.</para>
+            becomes a seperate model class in the left-hand side of the rule.</para>
 
             <para>When you edit or create a new column, you will be given a choice of the type of constraint:-</para>
 
@@ -391,8 +391,8 @@ end</programlisting>
           <section>
             <title>Set the value of a field</title>
 
-            <para>Set the value of fields on previoulsy bound facts, with the option to notify the Rule Engine of the
-            modified values which could lead to other rules being re-activated.</para>
+            <para>An Action to set the value of a field on previoulsy bound fact. You have the option to notify the Rule
+            Engine of the modified values which could lead to other rules being re-activated.</para>
 
             <figure>
               <title>Set the value of a field popup</title>
@@ -409,16 +409,38 @@ end</programlisting>
           <section>
             <title>Set the value of a field on a new fact</title>
 
-            <para>Insert new Facts into the Rule Engine Working Memory and set the values of the new Facts' fields. You
-            can choose to have the new Fact "logically inserted" meaning it will be automatically retracted should the
-            conditions leading to the action being invoked cease to be true. Please refer to the Drools Expert
-            documentation for details on Truth Maintenance and Logical insertions.</para>
+            <para>An Action to insert a new Fact into the Rule Engine Working Memory and set the a value of one of the
+            new Facts' fields. You can choose to have the new Fact "logically inserted" meaning it will be automatically
+            retracted should the conditions leading to the action being invoked cease to be true. Please refer to the
+            Drools Expert documentation for details on Truth Maintenance and Logical insertions.</para>
+
+            <figure>
+              <title>Set the value of a field on a new fact popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-insertField-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
           </section>
 
           <section>
             <title>Retract an existing fact</title>
 
-            <para>Retract a bound fact.</para>
+            <para>An Action to retract a bound Fact.</para>
+
+            <figure>
+              <title>Retract an existing fact popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-retractFact-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
           </section>
         </section>
 
@@ -428,31 +450,92 @@ end</programlisting>
           <section>
             <title>Condition BRL fragments</title>
 
-            <para>TODO</para>
+            <para>A construct that allows a BRL fragment to be used in the left-hand side of a rule. A BRL fragment is
+            authored using the Guided Rule Editor and hence all features available in that editor can be used to define
+            a decision table column; such as "from", "collect" and "accumulate" etc. When using the embedded Guided Rule
+            Editor field values defined as "Template Keys" will form columns in the decision table. Facts and Fact's
+            fields bound in the BRL fragment can be referenced by the simpler column types and vice-versa.</para>
+
+            <para>In the following example two Template Keys have been defined and hence two columns appear in the
+            decision table.</para>
+
+            <figure>
+              <title>Defining a Condition with BRL</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-condition-brl1-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>The resulting decision table</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-condition-brl2-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
           </section>
 
           <section>
             <title>Execute a Work Item</title>
 
-            <para>TODO</para>
+            <para>An Action invoking a jBPM Work Item Handler setting it's input parameters to bound Facts\Facts fields
+            values. </para>
           </section>
 
           <section>
             <title>Set the value of a field with a Work Item parameter</title>
 
-            <para>TODO</para>
+            <para>An Action setting the value of a Fact's field to that of a jBPM Work Item Handlers result
+            parameter.</para>
           </section>
 
           <section>
             <title>Set the value of a field on a new Fact with a Work Item parameter</title>
 
-            <para>TODO</para>
+            <para>An Action setting the value of a new Fact's field to that of a jBOM Work Item Handlers result
+            parameter.</para>
           </section>
 
           <section>
             <title>Action BRL fragment</title>
 
-            <para>TODO</para>
+            <para>A construct that allows a BRL fragment to be used in the right-hand side of a rule. A BRL fragment is
+            authored using the Guided Rule Editor and hence all features available in that editor can be used to define
+            a decision table column. When using the embedded Guided Rule Editor field values defined as "Template Keys"
+            will form columns in the decision table. Facts bound in the BRL fragment can be referenced by the simpler
+            column types and vice-versa.</para>
+
+            <para>In the following example two Template Keys have been defined and hence two columns appear in the
+            decision table.</para>
+
+            <figure>
+              <title>Defining an Action with BRL</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-condition-brl1-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>The resulting decision table</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-column-condition-brl2-popup.png"
+                             format="PNG" xml:base="../../"></imagedata>
+                </imageobject>
+              </mediaobject>
+            </figure>
           </section>
         </section>
       </section>
