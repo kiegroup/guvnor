@@ -622,7 +622,7 @@ public class GuidedDTDRLPersistence {
             String cell = "";
 
             if ( c instanceof LimitedEntryCol ) {
-                if ( dcv.getBooleanValue() == true ) {
+                if ( Boolean.TRUE.equals( dcv.getBooleanValue() ) ) {
                     LimitedEntryCol lec = (LimitedEntryCol) c;
                     DTCellValue52 value = lec.getValue();
                     if ( value != null ) {
@@ -643,7 +643,7 @@ public class GuidedDTDRLPersistence {
 
             //If operator is "== null" or "!= null" add constraint if table value is true
             if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
-                isValid = (dcv.getBooleanValue() == null ? false : dcv.getBooleanValue());
+                isValid = Boolean.TRUE.equals( dcv.getBooleanValue() );
             }
 
             if ( isValid ) {
