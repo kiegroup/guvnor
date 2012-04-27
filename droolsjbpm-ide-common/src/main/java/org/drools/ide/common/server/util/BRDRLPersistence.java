@@ -1202,17 +1202,19 @@ public class BRDRLPersistence
 
             buf.append( action.methodName );
 
-            buf.append( "(" );
+            buf.append( "( " );
             boolean isFirst = true;
             for ( int i = 0; i < fieldValues.length; i++ ) {
                 ActionFieldFunction valueFunction = (ActionFieldFunction) fieldValues[i];
                 if ( isFirst == true ) {
                     isFirst = false;
                 } else {
-                    buf.append( "," );
+                    buf.append( ", " );
                 }
 
-                buf.append( valueFunction.value );
+                constraintValueBuilder.buildRHSFieldValue( buf,
+                                                           valueFunction.type,
+                                                           valueFunction.value );
             }
             buf.append( " );\n" );
 
