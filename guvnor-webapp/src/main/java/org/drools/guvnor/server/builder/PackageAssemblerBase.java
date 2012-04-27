@@ -18,11 +18,14 @@ package org.drools.guvnor.server.builder;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.builder.DeclaredTypesSorter.DeclaredTypeAssetInheritanceInformation;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICompilable;
@@ -196,22 +199,32 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
 
     private void loadDeclaredTypes() {
-        Iterator<AssetItem> declaredTypesIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
+        final List<AssetItem> assets = new ArrayList<AssetItem>();
+        final DeclaredTypesSorter sorter = new DeclaredTypesSorter();
 
-        while ( declaredTypesIterator.hasNext() ) {
-            AssetItem assetItem = declaredTypesIterator.next();
+        //Get list of candidates
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
+        while ( assetItemIterator.hasNext() ) {
+            AssetItem assetItem = assetItemIterator.next();
             if ( !assetItem.getDisabled() ) {
-                try {
-                    addDrl( assetItem.getContent() );
-                } catch ( DroolsParserException e ) {
-                    errorLogger.addError( assetItem,
-                                          "Parser exception: " + e.getMessage() );
-                } catch ( IOException e ) {
-                    errorLogger.addError( assetItem,
-                                          "IOException: " + e.getMessage() );
-                }
+                assets.add( assetItem );
             }
         }
+
+        //Order candidates by inheritance and add to source
+        final List<DeclaredTypeAssetInheritanceInformation> sortedAssets = sorter.sort( assets );
+        for ( DeclaredTypeAssetInheritanceInformation dt : sortedAssets ) {
+            try {
+                addDrl( dt.getDrl() );
+            } catch ( DroolsParserException dpe ) {
+                errorLogger.addError( dt.getOwningAssetItem(),
+                                      "Parser exception: " + dpe.getMessage() );
+            } catch ( IOException dpe ) {
+                errorLogger.addError( dt.getOwningAssetItem(),
+                                      "IOException: " + dpe.getMessage() );
+            }
+        }
+        
     }
 
     private boolean isEmpty(String content) {

@@ -16,15 +16,18 @@
 
 package org.drools.guvnor.server.builder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.builder.DeclaredTypesSorter.DeclaredTypeAssetInheritanceInformation;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-
-import java.util.Iterator;
 
 public class PackageDRLAssembler extends AssemblerBase {
 
@@ -60,10 +63,24 @@ public class PackageDRLAssembler extends AssemblerBase {
     }
 
     private void loadDeclaredTypes() {
+        final List<AssetItem> assets = new ArrayList<AssetItem>();
+        final DeclaredTypesSorter sorter = new DeclaredTypesSorter();
+
+        //Get list of candidates
         Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
         while ( assetItemIterator.hasNext() ) {
-            addAsset( assetItemIterator.next() );
+            AssetItem assetItem = assetItemIterator.next();
+            if ( !assetItem.isArchived() && !assetItem.getDisabled() ) {
+                assets.add( assetItem );
+            }
         }
+
+        //Order candidates by inheritance and add to source
+        final List<DeclaredTypeAssetInheritanceInformation> sortedAssets = sorter.sort( assets );
+        for ( DeclaredTypeAssetInheritanceInformation dt : sortedAssets ) {
+            src.append( dt.getDrl() ).append( "\n\n" );
+        }
+        
     }
 
     private void loadFunctions() {
