@@ -1,5 +1,5 @@
     public void testGetPackageVersionsForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(baseURL, "rest/packages/mortgages/versions");
+        URL url = new URL("http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -18,4 +18,4 @@
             System.out.println("Version title: " +  entry.getTitle());
             System.out.println("Href: " + entry.getLinks().get(0).getHref().getPath());
         }
-    } 
+    }

@@ -847,7 +847,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
     </section>
     
     <section>
-        <title>Retriving package list,package metadata, package source and binary, package version info etc using Atom</title>
+        <title>Retriving package list, package metadata, package source and binary, package version info etc using Atom</title>
         <para>In this example we are using Apache Abdera to help parsing and creating Atom Entry and Feed.</para>   
           
         <section>
@@ -857,7 +857,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
             <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
           </example>
           <example>
-            <title>Sample message returned by server</title>          
+            <title>Sample message returned from server</title>          
             <programlisting language="XML" role="XML"><xi:include href="extras/packageListSampleMessage.xml" parse="text" /></programlisting>
           </example>
         </section>
@@ -868,10 +868,10 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
           
           <example>
             <title>Retrieving the metadata of the specified package as an Atom Entry</title>
-            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageMetadataSampleCode.java" parse="text" /></programlisting>
           </example>
           <example>
-            <title>Sample message returned by server</title>          
+            <title>Sample message returned from server</title>          
             <programlisting language="XML" role="XML"><xi:include href="extras/packageMetadataSampleMessage.xml" parse="text" /></programlisting>
           </example>
         </section>
@@ -902,7 +902,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
             <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
           </example>
           <example>
-            <title>Sample message returned by server</title>          
+            <title>Sample message returned from server</title>          
             <programlisting language="XML" role="XML"><xi:include href="extras/packageVersionsSampleMessage.xml" parse="text" /></programlisting>
           </example>
         </section>
@@ -916,7 +916,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
             <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersion5MetadataSampleCode.java" parse="text" /></programlisting>
           </example>
           <example>
-            <title>Sample message returned by server</title>          
+            <title>Sample message returned from server</title>          
             <programlisting language="XML" role="XML"><xi:include href="extras/packageVersion5MetadataSampleMessage.xml" parse="text" /></programlisting>
           </example>
         </section>
