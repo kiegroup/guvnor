@@ -1326,6 +1326,7 @@ public class SuggestionCompletionEngineTest {
     public static class Fact {
         private String field1;
         private String field2;
+        private String field2Suffixed;
         private String field3;
         private String field4;
 
@@ -1343,6 +1344,14 @@ public class SuggestionCompletionEngineTest {
 
         public void setField2(String field2) {
             this.field2 = field2;
+        }
+
+        public String getField2Suffixed() {
+            return field2Suffixed;
+        }
+
+        public void setField2Suffixed(String field2Suffixed) {
+            this.field2Suffixed = field2Suffixed;
         }
 
         public String getField3() {
@@ -1459,6 +1468,37 @@ public class SuggestionCompletionEngineTest {
                                      "field2" ) );
     }
 
+    @Test
+    public void testDataHasEnumsFieldSuffixes() {
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        enums.add( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']" );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        enums );
+
+        //Fact.field1 has explicit enumerations
+        assertTrue( engine.hasEnums( "Fact.field1" ) );
+        assertTrue( engine.hasEnums( "Fact",
+                                     "field1" ) );
+
+        //Fact.field2 has explicit enumerations dependent upon Fact.field1
+        assertTrue( engine.hasEnums( "Fact.field2" ) );
+        assertTrue( engine.hasEnums( "Fact",
+                                     "field2" ) );
+
+        //Fact.field2suffixed has no enums
+        assertFalse( engine.hasEnums( "Fact.field2suffixed" ) );
+        assertFalse( engine.hasEnums( "Fact",
+                                      "field2suffixed" ) );
+}
+    
     @Test
     public void testDependentEnums() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
