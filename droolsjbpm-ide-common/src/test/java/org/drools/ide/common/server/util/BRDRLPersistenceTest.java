@@ -22,7 +22,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -2591,6 +2593,116 @@ public class BRDRLPersistenceTest {
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
+    }
+
+    @Test
+    public void testRHSSetMethodCallsMethodMVEL() {
+
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
+
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
+
+            RuleModel m = new RuleModel();
+            m.name = "RHS SetMethodCallsMethod";
+            m.addAttribute( new RuleAttribute( "dialect",
+                                               "mvel" ) );
+
+            FactPattern p = new FactPattern( "Person" );
+            p.setBoundName( "$p" );
+            m.addLhsItem( p );
+
+            ActionCallMethod acm = new ActionCallMethod();
+            acm.methodName = "method";
+            acm.variable = "$p";
+            acm.addFieldValue( new ActionFieldFunction( "f1",
+                                                        "String",
+                                                        SuggestionCompletionEngine.TYPE_STRING ) );
+            acm.addFieldValue( new ActionFieldFunction( "f2",
+                                                        "true",
+                                                        SuggestionCompletionEngine.TYPE_BOOLEAN ) );
+            acm.addFieldValue( new ActionFieldFunction( "f3",
+                                                        "31-Jan-2012",
+                                                        SuggestionCompletionEngine.TYPE_DATE ) );
+            acm.addFieldValue( new ActionFieldFunction( "f4",
+                                                        "100",
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
+            acm.addFieldValue( new ActionFieldFunction( "f5",
+                                                        "100",
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) );
+
+            m.addRhsItem( acm );
+
+            String result = BRDRLPersistence.getInstance().marshal( m );
+
+            assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+            assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, 100B );" ) != -1 );
+
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
+
+    }
+
+    @Test
+    public void testRHSSetMethodCallsMethodJava() {
+
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
+
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
+
+            RuleModel m = new RuleModel();
+            m.name = "RHS SetMethodCallsMethod";
+            m.addAttribute( new RuleAttribute( "dialect",
+                                               "java" ) );
+
+            FactPattern p = new FactPattern( "Person" );
+            p.setBoundName( "$p" );
+            m.addLhsItem( p );
+
+            ActionCallMethod acm = new ActionCallMethod();
+            acm.methodName = "method";
+            acm.variable = "$p";
+            acm.addFieldValue( new ActionFieldFunction( "f1",
+                                                        "String",
+                                                        SuggestionCompletionEngine.TYPE_STRING ) );
+            acm.addFieldValue( new ActionFieldFunction( "f2",
+                                                        "true",
+                                                        SuggestionCompletionEngine.TYPE_BOOLEAN ) );
+            acm.addFieldValue( new ActionFieldFunction( "f3",
+                                                        "31-Jan-2012",
+                                                        SuggestionCompletionEngine.TYPE_DATE ) );
+            acm.addFieldValue( new ActionFieldFunction( "f4",
+                                                        "100",
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER ) );
+            acm.addFieldValue( new ActionFieldFunction( "f5",
+                                                        "100",
+                                                        SuggestionCompletionEngine.TYPE_NUMERIC_BIGDECIMAL ) );
+
+            m.addRhsItem( acm );
+
+            String result = BRDRLPersistence.getInstance().marshal( m );
+
+            assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+            assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, new java.math.BigDecimal(\"100\") );" ) != -1 );
+
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
+
     }
 
 }
