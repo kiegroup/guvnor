@@ -73,8 +73,8 @@
 <filename>repository.xml</filename> defined in the sourcedir attribute, to the repository configured in 
 <filename>repository.xml</filename> defined in the targetconfig attribute. Note that this data migration is a full
 migration, which means it migrates the entire repository which also makes it a good tool to use for backups as well.
-The blog post http://blog.athico.com/2011/03/using-drools-ant-to-migrateback-up.html contains a video showing 
-a full example on how to use the JackrabbitMigrationAntTask for repository migration.</para>
+<link xlink:href="http://blog.athico.com/2011/03/using-drools-ant-to-migrateback-up.html">This blog post</link> contains
+a video showing a full example on how to use the JackrabbitMigrationAntTask for repository migration.</para>
  </section>
 
 
