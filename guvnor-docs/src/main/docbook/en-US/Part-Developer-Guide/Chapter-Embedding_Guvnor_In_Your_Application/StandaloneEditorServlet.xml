@@ -13,7 +13,7 @@
   <para>Guvnor defines a single entry-point to embed any of its editors in a web 
   application: StandaloneEditorServlet. This servlet is found in 
   /standaloneEditorServlet URL, and according to the parameters you pass to it 
-  (parameters names and posible values are going to be explained later), you can 
+  (parameters names and possible values are going to be explained later), you can
   open the editor in 3 different modes: BRL Edition Mode, Edition of Existing 
   Assets Mode and Create New Asset Mode.
   So, if you want to embed a Guvnor Editor in your application you will need to 

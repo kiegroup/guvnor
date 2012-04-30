@@ -14,7 +14,7 @@
   <section>
     <title>Types of decision table</title>
 
-    <para>There are boradly two different types of decision table, both of which are supported in Guvnor:-</para>
+    <para>There are broadly two different types of decision table, both of which are supported in Guvnor:-</para>
 
     <itemizedlist>
       <listitem>
@@ -29,7 +29,7 @@
     <section>
       <title>Extended Entry</title>
 
-      <para>An Extended Entry decision table is one for which the column definitons, or stubs, specify Pattern, Field
+      <para>An Extended Entry decision table is one for which the column definitions, or stubs, specify Pattern, Field
       and operator but not value. The values, or states, are themselves held in the body of the decision table. It is
       normal, but not essential, for the range of possible values to be restricted by limiting entry to values from a
       list. Guvnor supports use of Java enumerations, Guvnor enumerations or decision table "optional value lists" to
@@ -80,7 +80,7 @@
       </listitem>
 
       <listitem>
-        <para>The lower section contains the actual table itself; where individual rows define seperate rules.</para>
+        <para>The lower section contains the actual table itself; where individual rows define separate rules.</para>
       </listitem>
     </itemizedlist>
 
@@ -109,7 +109,7 @@
 
         <listitem>
           <para>Secondly the keyboard cursor keys can be used to navigate around the table. Pressing the enter key will
-          pop-up the correspondig editor. Ranges can be selected by pressing the shift key whilst extending the range
+          pop-up the corresponding editor. Ranges can be selected by pressing the shift key whilst extending the range
           with the cursor keys.</para>
         </listitem>
       </itemizedlist>
@@ -293,7 +293,7 @@ end</programlisting>
             </listitem>
           </itemizedlist>
 
-          <para>Clicking on "Include advanced options" adds the following addional "advanced" column types for more
+          <para>Clicking on "Include advanced options" adds the following additional "advanced" column types for more
           advanced use cases:-</para>
 
           <itemizedlist>
@@ -332,7 +332,7 @@ end</programlisting>
           <section>
             <title>Attributes</title>
 
-            <para>Zero or more attribue columns representing any of the DRL rule attributes (e.g. salience, timer,
+            <para>Zero or more attribute columns representing any of the DRL rule attributes (e.g. salience, timer,
             enabled etc) can be added. An additional pseudo attribute is provide in the guided decision table editor to
             "negate" a rule. Use of this attribute allows complete rules to be negated. For example the following simple
             rule can be negated as also shown.</para>
@@ -358,7 +358,7 @@ end</programlisting>
             You can choose to negate the pattern. Once this has been completed you can define field constraints. If two
             or more columns are defined using the same fact pattern binding the field constraints become composite field
             constraints on the same pattern. If you define multiple bindings for a single model class each binding
-            becomes a seperate model class in the left-hand side of the rule.</para>
+            becomes a separate model class in the left-hand side of the rule.</para>
 
             <para>When you edit or create a new column, you will be given a choice of the type of constraint:-</para>
 
@@ -391,7 +391,7 @@ end</programlisting>
           <section>
             <title>Set the value of a field</title>
 
-            <para>An Action to set the value of a field on previoulsy bound fact. You have the option to notify the Rule
+            <para>An Action to set the value of a field on previously bound fact. You have the option to notify the Rule
             Engine of the modified values which could lead to other rules being re-activated.</para>
 
             <figure>
@@ -674,7 +674,7 @@ end</programlisting>
         <para>Fact types that have been defined can be updated in the consequence, or action, part of a rule. This page
         allows such actions to be defined. Fact types added to the decision table definition are listed in the left-hand
         listbox. Selecting a Fact type by clicking on it will result in a list of available fields being shown in the
-        middel listbox. Fields that need to be updated by the rule can be added by selecting an available field and
+        middle listbox. Fields that need to be updated by the rule can be added by selecting an available field and
         pressing the "&gt;&gt;" button. Fields can be removed similarly by clicking on a chosen field and then the
         "&lt;&lt;" button. All actions require a column header. Any incomplete actions will be highlighted and a warning
         message displayed. You will be unable to finish your definition until all warnings have been resolved.</para>

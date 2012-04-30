@@ -32,7 +32,7 @@
   <para>
     The next 2 functions are for register callbacks for “Save”, “Done” and “Cancel” 
     buttons. These callback functions don’t accept any parameter.
-    The last function is ised to retrieve the UUIDs of the assets you are editing. 
+    The last function is used to retrieve the UUIDs of the assets you are editing.
     This is very useful when you are creating a new rule asset and you don’t know 
     the UUID of it.
   </para>

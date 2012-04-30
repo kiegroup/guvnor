@@ -53,7 +53,7 @@
 
     <para>The supported server side platforms are mentioned in the installation guide. For browsers - the major ones are
     supported, this includes Firefox (1.5 and up), IE7 and up, Opera, Safari, Google Chrome etc. The preferred browser
-    for most platforms is firefox, it is widely available and free, if you have any choice at all, Firefox is the
+    for most platforms is Firefox, it is widely available and free, if you have any choice at all, Firefox is the
     preferred platform, followed by safari on mac. IE6 users can experience some poor performance, and as this is a
     dangerously insecure browser IE7 or a superior browser (such as Google Chrome, Firefox, Safari) is
     recommended.</para>
@@ -159,7 +159,7 @@
       <listitem>
         <para>Click on "Create New" and select the type of rule you want to create. </para>
 
-        <para>(There are different types of rule that can be authored but for simplisity we will demonstrate a new
+        <para>(There are different types of rule that can be authored but for simplicity we will demonstrate a new
         "Guided Rule").</para>
       </listitem>
 

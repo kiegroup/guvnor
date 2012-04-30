@@ -6,7 +6,7 @@
          xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Import and Export</title>
 
-  <para>The entire Guvnor respository can be exported to a file. This is usefull as a backup. It can be imported in the
+  <para>The entire Guvnor repository can be exported to a file. This is useful as a backup. It can be imported in the
   same or another Guvnor server instance.</para>
 
   <figure>

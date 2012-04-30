@@ -128,7 +128,7 @@
       </figure>
       <itemizedlist>
         <listitem>
-          <para>Call method on an existing fact - Call a method from a fact in the beginnig of the rule execution.</para>
+          <para>Call method on an existing fact - Call a method from a fact in the beginning of the rule execution.</para>
         </listitem>
       </itemizedlist>
     </section>

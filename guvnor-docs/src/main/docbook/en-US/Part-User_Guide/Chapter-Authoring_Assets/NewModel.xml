@@ -108,7 +108,7 @@
     then the application, and allows the model to have a lifecycle separate
     from the application. It also allows Java types to be enriched with Rule
     specific annotations. Additionally it also removes the burden of keeping
-    JAR files syncronised between rules and the applications that use the
+    JAR files synchronised between rules and the applications that use the
     rules.</para>
 
     <para>Declarative models can be either:-</para>
@@ -120,7 +120,7 @@
       </listitem>
 
       <listitem>
-        <para>Supplementary Fact defintions to support a Java POJO
+        <para>Supplementary Fact definitions to support a Java POJO
         Model.</para>
       </listitem>
 
@@ -339,7 +339,7 @@
 
             <listitem>
               <para>Create a new declarative type as appropriate, extending
-              the empty declaration created in the preceeding step.</para>
+              the empty declaration created in the preceding step.</para>
             </listitem>
           </itemizedlist>
 
@@ -347,7 +347,7 @@
             <para>Only properties on Java classes that have both a "getter"
             and "setter" following standard Java Bean conventions are
             available on the declared sub-type. This is because the
-            declarative symantics imply all properties on declared types have
+            declarative semantics imply all properties on declared types have
             both accessors and mutators.</para>
           </note>
         </section>

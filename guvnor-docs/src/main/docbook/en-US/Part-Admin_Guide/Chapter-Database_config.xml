@@ -92,7 +92,7 @@
       (eg Oracle). There is a SimpleDBPersistenceManager which works with any
       database that supports JDBC - you also specify the database type, so it
       uses the specific DDL to create the table structure (all major databases
-      are supported).After you have added your configuraiton options, start the Guvnor application again. Guvnor will 
+      are supported).After you have added your configuration options, start the Guvnor application again. Guvnor will
       then create the database tables the first time it is started up if
       it is running against a fresh (empty) RDBMS - so its important to note
       that the user credentials supplied have permissions to create tables (at

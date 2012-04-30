@@ -15,11 +15,11 @@
   Some of the supported formats are: brl (guided editor), drl (plain editor), 
   dsl (dsl editor), template (guided editor) and decision table 
   (decision table editor).</para>
-  <para>One of the features introduced in Guvnor 5.2 was the abitlity to embed
+  <para>One of the features introduced in Guvnor 5.2 was the ability to embed
   Guvnor's editor in you own (Web) Applications. So, if you want to edit rules,
   processes, decision tables, etc. In you applications without switch to Guvnor,
   you can.</para>
-  <para>This section covers all the steps you need to follow to embedd Guvnor's
+  <para>This section covers all the steps you need to follow to embed Guvnor's
   editors in your Web Application</para>
 
   <xi:include href="Getting-Started.xml" xpointer="element(/1)" />
