@@ -29,7 +29,7 @@
     any coherent and meaningful concept that may be addressed. A
     representation of a resource is typically a document that captures the
     current or intended state of a resource. The REST protocol is often
-    considered as a light protocol versus SOAP</para>
+    considered as a light protocol versus SOAP.</para>
   </section>
 
   <section>
@@ -39,7 +39,7 @@
     around accessing rule assets by their names and packages and the second 
     accessing rule assets by categories.</para>
 
-    <para>A rule asset represents all elements that can be stored and handled
+    <para>A rule asset represents any element that can be stored and handled
     in Guvnor : a guided rule, a web decision table, a test scenario,
     etc.</para>
 
@@ -909,7 +909,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
          
         <section>
           <title>Retrieving package metadata with specified version as an Atom Entry</title>
-          <para>Retrieving package metadata with specified version as an Atom Entry. If this version of the package did not get compiled when it was checked in, a HTTP 500 error is returned.</para>   
+          <para>Retrieving package metadata with specified version as an Atom Entry.</para>   
           
           <example>
             <title>Retrieving package metadata with specified version as an Atom Entry</title>
