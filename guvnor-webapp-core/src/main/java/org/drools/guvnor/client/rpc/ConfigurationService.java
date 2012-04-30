@@ -16,14 +16,10 @@
 
 package org.drools.guvnor.client.rpc;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.common.GenericCallback;
-
-import java.util.Collection;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("configurationService")
 public interface ConfigurationService extends RemoteService {

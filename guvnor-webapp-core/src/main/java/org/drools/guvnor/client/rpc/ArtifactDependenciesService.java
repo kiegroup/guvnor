@@ -16,14 +16,15 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("mavenArtifactsService")
-public interface ArtifactDependenciesService extends RemoteService {
+public interface ArtifactDependenciesService
+    extends
+    RemoteService {
 
     public Collection<MavenArtifact> getDependencies();
 

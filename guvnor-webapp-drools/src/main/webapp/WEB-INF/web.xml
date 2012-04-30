@@ -72,7 +72,6 @@
     <servlet-name>mavenArtifactsService</servlet-name>
     <servlet-class>org.drools.guvnor.server.maven.ArtifactDependenciesServiceImpl</servlet-class>
   </servlet>
-
   <servlet>
     <servlet-name>guvnorService</servlet-name>
     <servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
@@ -161,6 +160,15 @@
     <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
     <servlet-class>org.drools.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>workItemService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.WorkItemServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>droolsService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.DroolsServiceServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
@@ -261,6 +269,15 @@
     <servlet-name>configurationService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/configurationService</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>workItemService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/workItemService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>droolsService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/droolsService</url-pattern>
+  </servlet-mapping>
+  
   <session-config>
     <session-timeout>180</session-timeout>
   </session-config>

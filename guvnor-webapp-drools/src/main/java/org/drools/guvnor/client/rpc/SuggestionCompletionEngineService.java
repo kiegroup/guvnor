@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-
 @RemoteServiceRelativePath("suggestionCompletionEngineService")
 public interface SuggestionCompletionEngineService
         extends

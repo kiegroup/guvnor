@@ -16,12 +16,15 @@
 
 package org.drools.guvnor.client.rpc;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
-
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+@RemoteServiceRelativePath("workItemService")
 public interface WorkItemService
         extends
         RemoteService {
@@ -29,7 +32,7 @@ public interface WorkItemService
     /**
      * Returns the Workitem Definition elements specified by
      * WorkitemDefinitionElementsManager
-     *
+     * 
      * @return a Map containing the key,value pairs of data.
      * @throws DetailedSerializationException
      */
@@ -39,8 +42,9 @@ public interface WorkItemService
      * Load and return a List of all parsed Work Definitions. The source of such
      * Work Definitions is Assets defined in Guvnor and those defined in
      * /workitemDefinitionElements.properties.
-     *
-     * @param packageUUID The Package UUID for which Work Definitions should be loaded
+     * 
+     * @param packageUUID
+     *            The Package UUID for which Work Definitions should be loaded
      * @return
      * @throws DetailedSerializationException
      */

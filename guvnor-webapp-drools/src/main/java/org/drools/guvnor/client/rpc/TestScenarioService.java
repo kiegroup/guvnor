@@ -16,11 +16,11 @@
 
 package org.drools.guvnor.client.rpc;
 
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.repository.ModuleItem;
 
 @RemoteServiceRelativePath("testScenarioService")
 public interface TestScenarioService
@@ -28,8 +28,10 @@ public interface TestScenarioService
         RemoteService {
 
     /**
-     * @param packageName The package name the scenario is to be run in.
-     * @param scenario    The scenario to run.
+     * @param packageName
+     *            The package name the scenario is to be run in.
+     * @param scenario
+     *            The scenario to run.
      * @return The scenario, with the results fields populated.
      * @throws com.google.gwt.user.client.rpc.SerializationException
      */

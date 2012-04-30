@@ -73,8 +73,7 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
 
         // load Workitem Definition Element data from server
         WorkItemServiceAsync workItemService = GWT.create(WorkItemService.class);
-        workItemService
-                .loadWorkitemDefinitionElementData(
+        workItemService.loadWorkitemDefinitionElementData(
                         new AsyncCallback<Map<String, String>>() {
                             public void onFailure(Throwable caught) {
                             }
