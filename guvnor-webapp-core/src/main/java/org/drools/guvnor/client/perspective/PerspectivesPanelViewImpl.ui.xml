@@ -33,9 +33,9 @@
                 <gwt:Anchor ui:field="logoutAnchor" href="javascript:;">[<ui:text from='{i18n.SignOut}'/>]</gwt:Anchor>
               </small>
             </div>
-            <div class='{guvnorResources.headerCss.perspectivesClass}'>
-              <gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1"/>
-            </div>
+            <!--<div class='{guvnorResources.headerCss.perspectivesClass}'>-->
+              <!--<gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1"/>-->
+            <!--</div>-->
           </div>
           <div style="clear:both;"></div>
         </gwt:HTMLPanel>

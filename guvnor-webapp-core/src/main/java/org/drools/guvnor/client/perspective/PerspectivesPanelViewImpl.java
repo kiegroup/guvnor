@@ -52,8 +52,8 @@ public class PerspectivesPanelViewImpl extends Composite
 
     private Presenter presenter;
 
-    @UiField
-    ListBox perspectives;
+//    @UiField
+//    ListBox perspectives;
 
     @UiField
     SpanElement userName;
@@ -105,7 +105,7 @@ public class PerspectivesPanelViewImpl extends Composite
     }
 
     public void addPerspective(String item, String value) {
-        perspectives.addItem(item, value);
+//        perspectives.addItem(item, value);
     }
     public TabbedPanel getTabbedPanel() {
         return explorerCenterPanel;
@@ -115,9 +115,9 @@ public class PerspectivesPanelViewImpl extends Composite
         this.presenter = presenter;
     }
 
-    @UiHandler("perspectives")
+//    @UiHandler("perspectives")
     public void handleChange(ChangeEvent event) {
-        presenter.onChangePerspective(perspectives.getValue(perspectives.getSelectedIndex()));
+//        presenter.onChangePerspective(perspectives.getValue(perspectives.getSelectedIndex()));
     }
 
     @UiHandler("logoutAnchor") void logout(ClickEvent clickEvent) {
