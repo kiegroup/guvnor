@@ -214,10 +214,10 @@
       addition to the already mentioned Conditional Elements like "exists", "doesn't exist", "from", "collect",
       "accumulate", "from entry-point" and "free form DRL". Once you have selected one of this elements, you can add a
       new Pattern by clicking on the "Ok" button. The new pattern will be added at the bottom of the rule's left hand
-      side. If you wan't to choose a different position, you can use the combobox placed at the top of the popup.</para>
+      side. If you want to choose a different position, you can use the combobox placed at the top of the popup.</para>
 
       <para>You can also open this popup by clicking in the [+] button from a Pattern's action toolbar. If that is the
-      case, the pop-up that appears wouldn't containt the position combobox, because the new Pattern will be added just
+      case, the pop-up that appears wouldn't constraint the position combobox, because the new Pattern will be added just
       after the Pattern where you clicked.</para>
 
       <figure>
@@ -497,7 +497,7 @@
   <section>
     <title>Optional attributes</title>
 
-    <para>The attributes section of a rule provides the means to define metadata and attrbiutes (such as "salience",
+    <para>The attributes section of a rule provides the means to define metadata and attributes (such as "salience",
     "no-loop" etc).</para>
 
     <para>Click on the "+" icon to add a new metadata or attribute definition. Each defined will appear listed in this
@@ -583,8 +583,8 @@
 
     <orderedlist spacing="compact">
       <listitem>
-        <para>A Fact Pattern on Person. This Pattern contains two field constraints: one for birthdate field and the
-        other one is a formula. Note that the value of the birthdate restriction is selected from a calendar. Another
+        <para>A Fact Pattern on Person. This Pattern contains two field constraints: one for birthDate field and the
+        other one is a formula. Note that the value of the birthDate restriction is selected from a calendar. Another
         thing to note is that you can make calculations and use nested fields in the formula restriction (i.e.
         car.brand). Finally, we are setting a variable name ($p) to the Person Fact Type. You can then use this variable
         in other Patterns.</para>

@@ -6,7 +6,7 @@
          xmlns:ns3="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Event Log</title>
 
-  <para>The event log shows the server events that have occured.</para>
+  <para>The event log shows the server events that have occurred.</para>
 
   <figure>
     <title>Event log</title>

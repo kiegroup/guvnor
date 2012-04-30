@@ -122,7 +122,7 @@
     substituting the values from the fields specified. This means you can use
     the field values from the GUI to drive a database query, and drill down
     into data etc. When the drop down is loaded, or the rule loaded, it will
-    refresh the list based on the fields. 'depenentField1' and
+    refresh the list based on the fields. 'dependentField1' and
     'dependentField2' are names of fields on the 'Fact' type - these are used
     to calculate the list of values which will be shown in a drop down if
     values for the "field".</para>

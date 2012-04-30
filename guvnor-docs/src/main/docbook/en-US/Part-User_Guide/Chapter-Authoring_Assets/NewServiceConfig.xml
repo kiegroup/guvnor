@@ -21,14 +21,14 @@
 
   <para>
     This version of the execution server supports as many Knowledge Bases
-    as you need, supporting also multiple stateless and statefull sessions
+    as you need, supporting also multiple stateless and stateful sessions
     in a native way.
   </para>
 
   <para>
     To create a new Service you have to go to "Create New" -> "New Service Config"
-    option in Knowledge Base section of Guvnor.  In the following sections you have
-    detailed information on howto configure your Service Config.
+    option in Knowledge Base section of Guvnor. In the following sections you have
+    detailed information on how to configure your Service Config.
   </para>
 
   <figure>
@@ -67,7 +67,7 @@
         </listitem>
         <listitem>
           <para>Removing: in order to remove an existing tab/knowledge base, you have to
-            click the higligtehd "X" and then confirm the action. Important to note that
+            click the highlighted "X" and then confirm the action. Important to note that
             should exists at least one knowledge base.
           </para>
         </listitem>
@@ -255,7 +255,7 @@
       <title>Configuring Knowledge Sessions</title>
       <figure>
         <title>Knowledge Sessions Grid - basic information to define a ksession
-          are avialble to be edited in place.
+          are available to be edited in place.
         </title>
         <mediaobject>
           <imageobject>
@@ -275,7 +275,7 @@
           </listitem>
           <listitem>
             <para>Knowledge Session Name: Defines the ksession name. Users can edit this particular
-              field in place as highlited on box "A".
+              field in place as highlighted on box "A".
             </para>
           </listitem>
           <listitem>
@@ -312,7 +312,7 @@
               </para>
             </listitem>
             <listitem>
-              <para>Protocol: Defines the protocol that ksession should be accesed by,
+              <para>Protocol: Defines the protocol that ksession should be accessed by,
                 default options is REST.
               </para>
             </listitem>
@@ -381,14 +381,14 @@
         to execute the configured Service, it works seamlessly on most standard containers.
       </para>
 
-      <para>But the reality is a bit different, rarelly you'll have a "standard container",
+      <para>But the reality is a bit different, rarely you'll have a "standard container",
         usually what you have is an already configured and running container. Probably this
         container even have already configured a set of shared libs between your deployed
         application. And, of course, you don't want those shared libs on your wars.
       </para>
 
-      <para>Based on real world scenarios, we made availabe a simple dependency management
-        tool, that enables you explore and configure all the dependencies containted in
+      <para>Based on real world scenarios, we made available a simple dependency management
+        tool, that enables you explore and configure all the dependencies contained in
         the generated war file. This tool can be accessed just by clicking the "Manage Dependencies"
         button, and the following dialog will be displayed.
       </para>

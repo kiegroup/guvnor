@@ -104,8 +104,8 @@
     Every time you want to edit a rule, you must provide its brl code.</para>
     
     <warning><para>BRL syntax is an internal format used by Guvnor. It is not
-    suposed to be used in external applications, so drastic changes in its 
-    syntax can occurr without any advise.</para></warning>
+    supposed to be used in external applications, so drastic changes in its
+    syntax can occur without any advise.</para></warning>
     
     <figure>
         <title>Embedded Editor with 2 BRL Rules</title>

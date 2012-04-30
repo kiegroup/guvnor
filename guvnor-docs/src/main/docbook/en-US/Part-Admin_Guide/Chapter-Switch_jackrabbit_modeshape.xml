@@ -8,7 +8,7 @@
     <title>Switch from JackRabbit to ModeShape</title>
     
     <para>
-    Guvnor supports running on either JackRabbit and ModeShape as the underlaying JCR-2.0 implementation. By
+    Guvnor supports running on either JackRabbit and ModeShape as the underlying JCR-2.0 implementation. By
    default Guvnor ships using JackRabbit. However if you want to switch to using ModeShape then you need to
    install ModeShape as a service in JBossAS-5.x. Check the ModeShape project and download and install ModeShape 'kit'
    version 2.5.0 or later. After installing the kit, you should have a
