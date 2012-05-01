@@ -17,16 +17,18 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
-import org.drools.guvnor.client.common.DatePickerLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
@@ -48,6 +50,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -143,21 +149,18 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //without first deleting and re-creating.
         if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
+            this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+            if ( this.factType == null ) {
+                this.factType = sfexp.getExpressionLeftSide().getClassType();
+            }
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
         }
 
-        //Set applicable flags and reference data depending upon type
-        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( this.fieldType ) ) {
-            this.isDropDownDataEnum = false;
-            this.dropDownData = DropDownData.create( new String[]{"true", "false"} );
-        } else {
-            this.isDropDownDataEnum = true;
-            this.dropDownData = sce.getEnums( this.factType,
-                                              this.constraintList,
-                                              fieldName );
-        }
+        //Initialise drop-down data
+        getDropDownData();
 
+        //Show an editor for the constraint value type
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
             Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
@@ -168,6 +171,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 }
             } );
             constraintWidget = clickme;
+
         } else {
             switch ( constraint.getConstraintValueType() ) {
                 case SingleFieldConstraint.TYPE_LITERAL :
@@ -184,8 +188,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     constraintWidget = wrap( variableEditor() );
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    constraintWidget = wrap( new DefaultLiteralEditor( this.constraint,
-                                                                       SuggestionCompletionEngine.TYPE_STRING ) );
+                    constraintWidget = wrap( templateKeyEditor() );
                     break;
                 default :
                     break;
@@ -222,6 +225,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
         return wrapper;
     }
 
+    private String assertValue() {
+        if ( constraint.getValue() == null ) {
+            return "";
+        }
+        return constraint.getValue();
+    }
+
     private Widget literalEditor() {
 
         //Custom screen
@@ -244,24 +254,34 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
+        //Label if read-only
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
+
         //Enumeration (these support multi-select for "in" and "not in", so check before comma separated lists) 
         if ( this.dropDownData != null ) {
-            EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.factType,
-                                                                    this.constraintList,
-                                                                    this.sce,
-                                                                    this.constraint,
-                                                                    !this.readOnly );
-            if ( !this.readOnly ) {
-                enumDropDown.setOnValueChangeCommand( new Command() {
+            final String operator = constraint.getOperator();
+            final boolean multipleSelect = SuggestionCompletionEngine.operatorRequiresList( operator );
+            EnumDropDown enumDropDown = new EnumDropDown( constraint.getValue(),
+                                                          new DropDownValueChanged() {
 
-                    public void execute() {
-                        executeOnValueChangeCommand();
-                    }
-                } );
-            }
+                                                              public void valueChanged(String newText,
+                                                                                       String newValue) {
+                                                                  
+                                                                  //Prevent recursion once value change has been applied
+                                                                  if ( !newValue.equals( constraint.getValue() ) ) {
+                                                                      constraint.setValue( newValue );
+                                                                      executeOnValueChangeCommand();
+                                                                      makeDirty();
+                                                                  }
+                                                              }
+                                                          },
+                                                          dropDownData,
+                                                          multipleSelect );
             return enumDropDown;
         }
-        
+
         //Comma separated value list (this will become a dedicated Widget but for now a TextBox suffices)
         String operator = null;
         if ( this.constraint instanceof SingleFieldConstraint ) {
@@ -269,21 +289,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
             operator = sfc.getOperator();
         }
         if ( SuggestionCompletionEngine.operatorRequiresList( operator ) ) {
-            if ( !this.readOnly ) {
-                DefaultLiteralEditor dle = new DefaultLiteralEditor( this.constraint,
-                                                                     SuggestionCompletionEngine.TYPE_STRING );
-                dle.setOnValueChangeCommand( new Command() {
+            final TextBox box = TextBoxFactory.getTextBox( SuggestionCompletionEngine.TYPE_STRING );
+            box.setStyleName( "constraint-value-Editor" );
+            box.addChangeHandler( new ChangeHandler() {
 
-                    public void execute() {
-                        executeOnValueChangeCommand();
-                    }
-                } );
+                public void onChange(ChangeEvent event) {
+                    constraint.setValue( box.getText() );
+                    executeOnValueChangeCommand();
+                    makeDirty();
+                }
+            } );
 
-                return dle;
-
-            } else {
-                return new SmallLabel( this.constraint.getValue() );
-            }
+            box.setText( assertValue() );
+            attachDisplayLengthHandler( box );
+            return box;
         }
 
         //Date picker
@@ -293,42 +312,41 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldName ) && isCEPOperator) ) {
 
-            DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
-            this.constraint.setValue( datePicker.getDateString() );
-
-            if ( !this.readOnly ) {
-                datePicker.addValueChanged( new ValueChanged() {
-
-                    public void valueChanged(String newValue) {
-                        executeOnValueChangeCommand();
-                        constraint.setValue( newValue );
-                    }
-                } );
-
-                return datePicker;
-
-            } else {
-                return new SmallLabel( this.constraint.getValue() );
+            if ( this.readOnly ) {
+                return new SmallLabel( constraint.getValue() );
             }
-        }
 
-        //Default editor
-        if ( !this.readOnly ) {
-            DefaultLiteralEditor dle = new DefaultLiteralEditor( this.constraint,
-                                                                 this.fieldType );
-            dle.setOnValueChangeCommand( new Command() {
+            PopupDatePicker dp = new PopupDatePicker( false );
 
-                public void execute() {
+            // Wire up update handler
+            dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
+
+                public void onValueChange(ValueChangeEvent<Date> event) {
+                    constraint.setValue( PopupDatePicker.convertToString( event ) );
                     executeOnValueChangeCommand();
                 }
+
             } );
 
-            return dle;
-
-        } else {
-            return new SmallLabel( this.constraint.getValue() );
+            dp.setValue( assertValue() );
+            return dp;
         }
 
+        //Default editor for all other literals
+        final TextBox box = TextBoxFactory.getTextBox( factType );
+        box.setStyleName( "constraint-value-Editor" );
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                constraint.setValue( box.getText() );
+                executeOnValueChangeCommand();
+                makeDirty();
+            }
+        } );
+
+        box.setText( assertValue() );
+        attachDisplayLengthHandler( box );
+        return box;
     }
 
     private Widget variableEditor() {
@@ -413,6 +431,45 @@ public class ConstraintValueEditor extends DirtyableComposite {
         Widget ed = widgets( new HTML( "&nbsp;" ),
                              builder );
         return ed;
+    }
+
+    /**
+     * An editor for Template Keys
+     */
+    private Widget templateKeyEditor() {
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
+
+        TemplateKeyTextBox box = new TemplateKeyTextBox();
+        box.setStyleName( "constraint-value-Editor" );
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                constraint.setValue( event.getValue() );
+                executeOnValueChangeCommand();
+            }
+
+        } );
+        //FireEvents as the box could assume a default value
+        box.setValue( assertValue(),
+                      true );
+        attachDisplayLengthHandler( box );
+        return box;
+    }
+
+    //Only display the number of characters that have been entered
+    private void attachDisplayLengthHandler(final TextBox box) {
+        int length = box.getText().length();
+        box.setVisibleLength( length > 0 ? length : 1 );
+        box.addKeyUpHandler( new KeyUpHandler() {
+
+            public void onKeyUp(KeyUpEvent event) {
+                int length = box.getText().length();
+                box.setVisibleLength( length > 0 ? length : 1 );
+            }
+        } );
     }
 
     /**
@@ -775,6 +832,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
         return false;
     }
 
+    private DropDownData getDropDownData() {
+        //Set applicable flags and reference data depending upon type
+        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( this.fieldType ) ) {
+            this.isDropDownDataEnum = false;
+            this.dropDownData = DropDownData.create( new String[]{"true", "false"} );
+        } else {
+            this.isDropDownDataEnum = true;
+            this.dropDownData = sce.getEnums( this.factType,
+                                              this.constraintList,
+                                              fieldName );
+        }
+        return dropDownData;
+    }
+
     /**
      * Refresh the displayed drop-down
      */
@@ -786,9 +857,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
             HorizontalPanel hp = (HorizontalPanel) this.constraintWidget;
             for ( int iChildIndex = 0; iChildIndex < hp.getWidgetCount(); iChildIndex++ ) {
                 Widget w = hp.getWidget( iChildIndex );
-                if ( w instanceof EnumDropDownLabel ) {
-                    EnumDropDownLabel eddl = (EnumDropDownLabel) w;
-                    eddl.refreshDropDownData();
+                if ( w instanceof EnumDropDown ) {
+                    EnumDropDown edd = (EnumDropDown) w;
+                    edd.setDropDownData( constraint.getValue(),
+                                         getDropDownData() );
                 }
             }
         }

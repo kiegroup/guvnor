@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
@@ -25,6 +26,7 @@ import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -45,6 +47,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -72,40 +76,6 @@ public class ActionValueEditor extends DirtyableComposite {
     private String           variableType = null;
     private boolean          readOnly;
     private Command          onChangeCommand;
-
-    public ActionValueEditor(final ActionFieldValue val,
-                             final DropDownData enums,
-                             final EventBus eventBus,
-                             boolean readOnly) {
-        this( val,
-              enums,
-              null,
-              eventBus,
-              null,
-              readOnly );
-    }
-
-    public ActionValueEditor(final ActionFieldValue val,
-                             final DropDownData enums,
-                             final EventBus eventBus) {
-        this( val,
-              enums,
-              eventBus,
-              false );
-    }
-
-    public ActionValueEditor(final ActionFieldValue val,
-                             final DropDownData enums,
-                             RuleModeller modeller,
-                             EventBus eventBus,
-                             String variableType) {
-        this( val,
-              enums,
-              modeller,
-              eventBus,
-              variableType,
-              false );
-    }
 
     public ActionValueEditor(final ActionFieldValue val,
                              final DropDownData enums,
@@ -152,27 +122,27 @@ public class ActionValueEditor extends DirtyableComposite {
 
         //Template TextBoxes are always Strings as they hold the template key for the actual value
         if ( value.nature == FieldNature.TYPE_TEMPLATE ) {
-            Widget box = wrap( boundTextBox( this.value ) );
+            Widget box = wrap( templateKeyEditor() );
             root.add( box );
             return;
         }
 
         //Variable fields (including bound enumeration fields)
         if ( value.nature == FieldNature.TYPE_VARIABLE ) {
-            Widget list = wrap( boundVariable( value ) );
+            Widget list = wrap( boundVariable() );
             root.add( list );
             return;
         }
 
         //Enumerations - since this does not use FieldNature it should follow those that do
         if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
-            Widget list = wrap( boundEnum( value ) );
+            Widget list = wrap( enumEditor() );
             root.add( list );
             return;
         }
 
         //Fall through for all remaining FieldNatures
-        Widget box = wrap( boundTextBox( this.value ) );
+        Widget box = wrap( literalEditor() );
         root.add( box );
 
     }
@@ -214,7 +184,7 @@ public class ActionValueEditor extends DirtyableComposite {
         form.hide();
     }
 
-    private Widget boundVariable(final FieldNature c) {
+    private Widget boundVariable() {
         // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
         listVariable.addItem( Constants.INSTANCE.Choose() );
@@ -255,8 +225,19 @@ public class ActionValueEditor extends DirtyableComposite {
         return listVariable;
     }
 
-    private Widget boundEnum(final FieldNature c) {
-        EnumDropDown enumDropDown = new EnumDropDown( value.value,
+    private String assertValue() {
+        if ( value.getValue() == null ) {
+            return "";
+        }
+        return value.getValue();
+    }
+
+    private Widget enumEditor() {
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
+
+        EnumDropDown enumDropDown = new EnumDropDown( value.getValue(),
                                                       new DropDownValueChanged() {
 
                                                           public void valueChanged(String newText,
@@ -267,44 +248,76 @@ public class ActionValueEditor extends DirtyableComposite {
                                                           }
                                                       },
                                                       enums );
-
-        if ( this.readOnly ) {
-            return new SmallLabel( enumDropDown.getItemText( enumDropDown.getSelectedIndex() ) );
-        } else {
-            return enumDropDown;
-        }
+        return enumDropDown;
     }
 
-    private Widget boundTextBox(final ActionFieldValue c) {
+    private Widget literalEditor() {
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
 
-        //Template TextBoxes are always Strings as they hold the template key for the actual value
-        final String dataType = value.nature == FieldNature.TYPE_TEMPLATE ? SuggestionCompletionEngine.TYPE_STRING : c.getType();
-        final TextBox box = TextBoxFactory.getTextBox( dataType );
+        //Date picker
+        if ( SuggestionCompletionEngine.TYPE_DATE.equals( value.getType() ) ) {
+            PopupDatePicker dp = new PopupDatePicker( false );
+
+            // Wire up update handler
+            dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
+
+                public void onValueChange(ValueChangeEvent<Date> event) {
+                    value.setValue( PopupDatePicker.convertToString( event ) );
+                }
+
+            } );
+
+            dp.setValue( assertValue() );
+            return dp;
+        }
+
+        //Default editor for all other literals
+        final TextBox box = TextBoxFactory.getTextBox( value.getType() );
         box.setStyleName( "constraint-value-Editor" );
-        if ( c.value == null ) {
-            box.setText( "" );
-        } else {
-            if ( c.value.trim().equals( "" ) ) {
-                c.value = "";
-            }
-            box.setText( c.value );
-        }
-
-        if ( c.value == null || c.value.length() < 5 ) {
-            box.setVisibleLength( 6 );
-        } else {
-            box.setVisibleLength( c.value.length() - 1 );
-        }
-
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                c.value = box.getText();
+                value.setValue( box.getText() );
                 executeOnChangeCommand();
                 makeDirty();
             }
         } );
+        box.setText( assertValue() );
+        attachDisplayLengthHandler( box );
+        return box;
+    }
 
+    /**
+     * An editor for Template Keys
+     */
+    private Widget templateKeyEditor() {
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
+
+        TemplateKeyTextBox box = new TemplateKeyTextBox();
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                value.setValue( event.getValue() );
+                executeOnChangeCommand();
+            }
+
+        } );
+        //FireEvents as the box could assume a default value
+        box.setValue( assertValue(),
+                      true );
+        attachDisplayLengthHandler( box );
+        return box;
+    }
+
+    //Only display the number of characters that have been entered
+    private void attachDisplayLengthHandler(final TextBox box) {
+        int length = box.getText().length();
+        box.setVisibleLength( length > 0 ? length : 1 );
         box.addKeyUpHandler( new KeyUpHandler() {
 
             public void onKeyUp(KeyUpEvent event) {
@@ -312,12 +325,6 @@ public class ActionValueEditor extends DirtyableComposite {
                 box.setVisibleLength( length > 0 ? length : 1 );
             }
         } );
-
-        if ( this.readOnly ) {
-            return new SmallLabel( box.getText() );
-        }
-
-        return box;
     }
 
     private Widget choice() {
@@ -551,7 +558,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     //Signal (potential) change in Template variables
-    public void executeOnTemplateVariablesChange() {
+    private void executeOnTemplateVariablesChange() {
         TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
         eventBus.fireEventFromSource( tvce,
                                       model );

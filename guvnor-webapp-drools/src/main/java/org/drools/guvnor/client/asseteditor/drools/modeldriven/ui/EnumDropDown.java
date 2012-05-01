@@ -65,8 +65,8 @@ public class EnumDropDown extends ListBox
 
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                valueChangedCommand.valueChanged( getSelectedItemsText(),
-                                                  getSelectedValue() );
+                valueChangedCommand.valueChanged( encodeSelectedItems(),
+                                                  encodeSelectedItems() );
             }
         } );
 
@@ -74,22 +74,10 @@ public class EnumDropDown extends ListBox
                          dropData );
     }
 
-    String getSelectedItemsText() {
-        StringBuffer buffer = new StringBuffer();
-        boolean first = true;
-        for ( int i = 0; i < getItemCount(); i++ ) {
-            if ( isItemSelected( i ) ) {
-                if ( !first ) {
-                    buffer.append( "," );
-                }
-                first = false;
-                buffer.append( getItemText( i ) );
-            }
-        }
-        return buffer.toString();
-    }
-
-    String getSelectedValue() {
+    //Build a comma separated list of values form a multi-select drop-down.
+    //org.drools.ide.common.server.util.BRDRLPersistence is blissfully unaware that 
+    //the "in" and "not in" operators require a list of values hence it is constructed here.
+    String encodeSelectedItems() {
         if ( getItemCount() == 0 ) {
             return "";
         }
@@ -123,28 +111,28 @@ public class EnumDropDown extends ListBox
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
                     LoadingPopup.showMessage( Constants.INSTANCE.RefreshingList() );
-                    RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
-                    repositoryService.loadDropDownExpression(dropData.valuePairs,
-                            dropData.queryExpression,
-                            new GenericCallback<String[]>() {
-                                public void onSuccess(String[] data) {
-                                    LoadingPopup.close();
+                    RepositoryServiceAsync repositoryService = GWT.create( RepositoryService.class );
+                    repositoryService.loadDropDownExpression( dropData.valuePairs,
+                                                              dropData.queryExpression,
+                                                              new GenericCallback<String[]>() {
+                                                                  public void onSuccess(String[] data) {
+                                                                      LoadingPopup.close();
 
-                                    if (data.length == 0) {
-                                        data = new String[]{Constants.INSTANCE.UnableToLoadList()};
-                                    }
+                                                                      if ( data.length == 0 ) {
+                                                                          data = new String[]{Constants.INSTANCE.UnableToLoadList()};
+                                                                      }
 
-                                    fillDropDown(currentValue,
-                                            data);
-                                }
+                                                                      fillDropDown( currentValue,
+                                                                                    data );
+                                                                  }
 
-                                public void onFailure(Throwable t) {
-                                    LoadingPopup.close();
-                                    //just do an empty drop down...
-                                    fillDropDown(currentValue,
-                                            new String[]{Constants.INSTANCE.UnableToLoadList()});
-                                }
-                            });
+                                                                  public void onFailure(Throwable t) {
+                                                                      LoadingPopup.close();
+                                                                      //just do an empty drop down...
+                                                                      fillDropDown( currentValue,
+                                                                                    new String[]{Constants.INSTANCE.UnableToLoadList()} );
+                                                                  }
+                                                              } );
                 }
             } );
 
@@ -216,7 +204,7 @@ public class EnumDropDown extends ListBox
             setEnabled( itemCount > 0 );
             if ( itemCount > 0 ) {
                 setSelectedIndex( 0 );
-                
+
                 //Schedule notification after GWT has finished tying everything together as not all 
                 //Event Handlers have been set-up by consumers of this class at Construction time
                 Scheduler.get().scheduleFinally( new ScheduledCommand() {
@@ -226,9 +214,9 @@ public class EnumDropDown extends ListBox
                         valueChangedCommand.valueChanged( getItemText( 0 ),
                                                           getValue( 0 ) );
                     }
-                    
-                });
-                
+
+                } );
+
             }
         }
     }

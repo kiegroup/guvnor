@@ -17,7 +17,9 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern.Connectives;
@@ -64,15 +66,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FactPatternWidget extends RuleModellerWidget {
 
-    private FactPattern                       pattern;
-    private DirtyableFlexTable                layout                 = new DirtyableFlexTable();
-    private Connectives                       connectives;
-    private PopupCreator                      popupCreator;
-    private boolean                           bindable;
-    private boolean                           isAll0WithLabel;
-    private boolean                           readOnly;
+    private FactPattern                                             pattern;
+    private DirtyableFlexTable                                      layout                 = new DirtyableFlexTable();
+    private Connectives                                             connectives;
+    private PopupCreator                                            popupCreator;
+    private boolean                                                 bindable;
+    private boolean                                                 isAll0WithLabel;
+    private boolean                                                 readOnly;
 
-    private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
+    private final Map<SingleFieldConstraint, ConstraintValueEditor> constraintValueEditors = new HashMap<SingleFieldConstraint, ConstraintValueEditor>();
 
     public FactPatternWidget(RuleModeller mod,
                              EventBus eventBus,
@@ -667,6 +669,8 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor(final SingleFieldConstraint c) {
+
+        //Create a new ConstraintValueEditor
         ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( c,
                                                                                  pattern.constraintList,
                                                                                  this.getModeller(),
@@ -675,12 +679,13 @@ public class FactPatternWidget extends RuleModellerWidget {
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
                 setModified( true );
-                refreshConstraintValueEditorsDropDownData();
+                refreshConstraintValueEditorsDropDownData( c );
             }
         } );
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
-        constraintValueEditors.add( constraintValueEditor );
+        constraintValueEditors.put( c,
+                                    constraintValueEditor );
 
         return constraintValueEditor;
     }
@@ -720,6 +725,12 @@ public class FactPatternWidget extends RuleModellerWidget {
                     final OperatorSelection selection = event.getValue();
                     final String selected = selection.getValue();
                     final String selectedText = selection.getDisplayText();
+
+                    //Prevent recursion once operator change has been applied
+                    if ( selectedText.equals( c.getOperator() ) ) {
+                        return;
+                    }
+
                     final boolean newOperatorRequiresExplicitList = SuggestionCompletionEngine.operatorRequiresList( selected );
                     final boolean oldOperatorRequiresExplicitList = SuggestionCompletionEngine.operatorRequiresList( c.getOperator() );
                     c.setOperator( selected );
@@ -852,9 +863,11 @@ public class FactPatternWidget extends RuleModellerWidget {
         return this.readOnly;
     }
 
-    private void refreshConstraintValueEditorsDropDownData() {
-        for ( ConstraintValueEditor cve : constraintValueEditors ) {
-            cve.refreshDropDownData();
+    private void refreshConstraintValueEditorsDropDownData(final SingleFieldConstraint modifiedConstraint) {
+        for ( Map.Entry<SingleFieldConstraint, ConstraintValueEditor> e : constraintValueEditors.entrySet() ) {
+            if ( e.getKey() != modifiedConstraint ) {
+                e.getValue().refreshDropDownData();
+            }
         }
     }
 

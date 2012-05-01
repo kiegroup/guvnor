@@ -67,11 +67,13 @@ public class PopupDatePicker extends Composite
     private Date                        date;
     private final DatePicker            datePicker;
     private final DateTimeFormat        format;
+    private final boolean               allowEmptyValue;
 
     public PopupDatePicker(final boolean allowEmptyValue) {
 
         HorizontalPanel container = new HorizontalPanel();
 
+        this.allowEmptyValue = allowEmptyValue;
         this.txtDate = new DateTextBox( allowEmptyValue );
         this.format = DateTimeFormat.getFormat( DATE_FORMAT );
         this.datePicker = new DatePicker();
@@ -136,7 +138,7 @@ public class PopupDatePicker extends Composite
                     setValue( DATE_FORMATTER.parseStrict( txtDate.getText() ) );
                 } catch ( IllegalArgumentException iae ) {
                     if ( ("".equals( value ) && allowEmptyValue) ) {
-                        setValue( null );
+                        setValue( (Date) null );
                     } else {
                         setValue( new Date() );
                     }
@@ -174,6 +176,31 @@ public class PopupDatePicker extends Composite
         } else {
             this.txtDate.setText( "" );
         }
+    }
+
+    public void setValue(String value) {
+        setValue( value,
+                  true );
+    }
+
+    public void setValue(String value,
+                         boolean fireEvents) {
+        try {
+            setValue( DATE_FORMATTER.parseStrict( value ) );
+        } catch ( IllegalArgumentException iae ) {
+            if ( ("".equals( value ) && allowEmptyValue) ) {
+                setValue( (Date) null );
+            } else {
+                setValue( new Date() );
+            }
+        }
+    }
+
+    public static String convertToString(final ValueChangeEvent<Date> event) {
+        if ( event == null || event.getValue() == null ) {
+            return "";
+        }
+        return DATE_FORMATTER.format( event.getValue() );
     }
 
 }
