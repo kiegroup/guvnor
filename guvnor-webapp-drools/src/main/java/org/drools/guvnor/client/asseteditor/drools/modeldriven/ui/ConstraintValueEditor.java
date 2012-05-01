@@ -333,7 +333,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //Default editor for all other literals
-        final TextBox box = TextBoxFactory.getTextBox( factType );
+        final TextBox box = TextBoxFactory.getTextBox( fieldType );
         box.setStyleName( "constraint-value-Editor" );
         box.addChangeHandler( new ChangeHandler() {
 
