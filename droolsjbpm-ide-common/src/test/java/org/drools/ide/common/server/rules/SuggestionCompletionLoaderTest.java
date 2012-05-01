@@ -846,5 +846,39 @@ public class SuggestionCompletionLoaderTest {
                       eng.getFieldType( "DelegationClass",
                                         "status" ) );
     }
+    
+    @Test
+    public void testLoadNonJavaBeanFields() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import java.util.List",
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertNotNull( eng );
+
+        final String[] fields = eng.getFieldCompletions( "List" );
+        assertEquals( 6,
+                      fields.length );
+        //this, empty, iterator, listIterator, size, toArray
+
+        assertEquals( "List",
+                      eng.getFieldType( "List",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      eng.getFieldType( "List",
+                                        "empty" ) );
+        assertEquals( "Iterator",
+                      eng.getFieldType( "List",
+                                        "iterator" ) );
+        assertEquals( "ListIterator",
+                      eng.getFieldType( "List",
+                                        "listIterator" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER,
+                      eng.getFieldType( "List",
+                                        "size" ) );
+        assertEquals( "Object[]",
+                      eng.getFieldType( "List",
+                                        "toArray" ) );
+    }
+
 
 }

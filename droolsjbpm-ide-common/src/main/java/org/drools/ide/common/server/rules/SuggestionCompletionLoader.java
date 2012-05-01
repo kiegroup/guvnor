@@ -480,53 +480,49 @@ public class SuggestionCompletionLoader
 
         //Determine accessors for methods
         for ( Method method : methods ) {
-            boolean addMethod = false;
             String name = method.getName();
             if ( method.getParameterTypes().length > 0 ) {
 
                 //Strip bare mutator name
                 if ( name.startsWith( "set" ) ) {
-                    addMethod = true;
                     name = Introspector.decapitalize( name.substring( 3 ) );
+                } else {
+                    name = Introspector.decapitalize( name );
                 }
 
-                if ( addMethod ) {
-                    String factField = className + "." + name;
-                    if ( !methodSignatures.containsKey( factField ) ) {
-                        methodSignatures.put( factField,
-                                              new MethodSignature( FieldAccessorsAndMutators.MUTATOR,
-                                                                   void.class.getGenericSuperclass(),
-                                                                   void.class ) );
-                    } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
-                        MethodSignature signature = methodSignatures.get( factField );
-                        signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
-                    }
+                String factField = className + "." + name;
+                if ( !methodSignatures.containsKey( factField ) ) {
+                    methodSignatures.put( factField,
+                                          new MethodSignature( FieldAccessorsAndMutators.MUTATOR,
+                                                               void.class.getGenericSuperclass(),
+                                                               void.class ) );
+                } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
+                    MethodSignature signature = methodSignatures.get( factField );
+                    signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
                 }
 
             } else if ( !method.getReturnType().getName().equals( "void" ) ) {
 
                 //Strip bare accessor name
                 if ( name.startsWith( "get" ) ) {
-                    addMethod = true;
                     name = Introspector.decapitalize( name.substring( 3 ) );
                 } else if ( name.startsWith( "is" ) ) {
-                    addMethod = true;
                     name = Introspector.decapitalize( name.substring( 2 ) );
+                } else {
+                    name = Introspector.decapitalize( name );
                 }
 
-                if ( addMethod ) {
-                    String factField = className + "." + name;
-                    if ( !methodSignatures.containsKey( factField ) ) {
-                        methodSignatures.put( factField,
-                                              new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
-                                                                   method.getGenericReturnType(),
-                                                                   method.getReturnType() ) );
-                    } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
-                        MethodSignature signature = methodSignatures.get( factField );
-                        signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
-                        signature.genericType = method.getGenericReturnType();
-                        signature.returnType = method.getReturnType();
-                    }
+                String factField = className + "." + name;
+                if ( !methodSignatures.containsKey( factField ) ) {
+                    methodSignatures.put( factField,
+                                          new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                               method.getGenericReturnType(),
+                                                               method.getReturnType() ) );
+                } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
+                    MethodSignature signature = methodSignatures.get( factField );
+                    signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
+                    signature.genericType = method.getGenericReturnType();
+                    signature.returnType = method.getReturnType();
                 }
             }
         }
