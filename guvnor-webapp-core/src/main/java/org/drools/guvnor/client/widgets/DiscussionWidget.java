@@ -68,13 +68,14 @@ public class DiscussionWidget extends Composite {
         commentList.setWidth("100%");
         VerticalPanel discussionLayout = new VerticalPanel();
         discussionLayout.setWidth("90%");
-        discussionLayout.add(commentList);
 
         newCommentLayout.setWidth("100%");
         refreshDiscussion();
-        discussionLayout.add(newCommentLayout);
         showNewCommentButton();
 
+        discussionLayout.add(newCommentLayout);
+        discussionLayout.add(commentList);
+        
         discussionPanel.setContent(discussionLayout);
 
         pushNotify = new ServerPushNotification() {
@@ -104,12 +105,13 @@ public class DiscussionWidget extends Composite {
     }
 
     private void updateCommentList(List<DiscussionRecord> ls) {
-        if (ls.size() == lastCount) return; //don't want to over do it boys...
+        if ( ls.size() == lastCount ) return; //don't want to over do it boys...
         commentList.clear();
-        for (DiscussionRecord dr : ls) {
-            appendComment(dr);
-        }
         lastCount = ls.size();
+        for ( int rcdCounter = lastCount - 1; rcdCounter >= 0; rcdCounter-- ) {
+            DiscussionRecord dr = ls.get( rcdCounter );
+            appendComment( dr );
+        }
     }
 
     private Widget appendComment(DiscussionRecord r) {
