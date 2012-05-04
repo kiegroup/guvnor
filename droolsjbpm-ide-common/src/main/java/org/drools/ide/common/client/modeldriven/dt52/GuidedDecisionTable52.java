@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -80,8 +81,9 @@ public class GuidedDecisionTable52
 
     private List<ActionCol52>                            actionCols            = new ArrayList<ActionCol52>();
 
-    // TODO verify that it's not stored in the repository, else add @XStreamOmitField
     private transient AnalysisCol52                      analysisCol;
+
+    private AuditLog                                     auditLog;
 
     public enum TableFormat {
         EXTENDED_ENTRY,
@@ -97,7 +99,6 @@ public class GuidedDecisionTable52
      */
     private List<List<DTCellValue52>> data        = new ArrayList<List<DTCellValue52>>();
 
-    // TODO verify that it's not stored in the repository, else add @XStreamOmitField
     private transient List<Analysis>  analysisData;
 
     public GuidedDecisionTable52() {
@@ -764,6 +765,18 @@ public class GuidedDecisionTable52
             }
         }
         return false;
+    }
+
+    /**
+     * Retrieve, or lazily instantiate a new, AuditLog.
+     * 
+     * @return
+     */
+    public AuditLog getAuditLog() {
+        if ( this.auditLog == null ) {
+            this.auditLog = new AuditLog( new DecisionTableAuditLogFilter() );
+        }
+        return this.auditLog;
     }
 
 }

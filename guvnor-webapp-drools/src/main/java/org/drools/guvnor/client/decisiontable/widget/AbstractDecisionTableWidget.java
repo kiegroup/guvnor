@@ -51,6 +51,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -71,6 +72,7 @@ import org.drools.ide.common.client.modeldriven.dt52.CompositeColumn;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.DecisionTableAuditLogFilter.AuditEvents;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryBRLActionColumn;
@@ -110,7 +112,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected final DecisionTableCellFactory              cellFactory;
     protected final DecisionTableCellValueFactory         cellValueFactory;
     protected final DecisionTableDropDownManager          dropDownManager;
-    protected final DecisionTableControlsWidget           dtableCtrls;
     protected final EventBus                              eventBus;
     protected final boolean                               isReadOnly;
     private final BRLRuleModel                            rm;
@@ -127,7 +128,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public AbstractDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
-                                       DecisionTableControlsWidget dtableCtrls,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
 
@@ -137,16 +137,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
-        if ( dtableCtrls == null ) {
-            throw new IllegalArgumentException( "dtableControls cannot be null" );
-        }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.model = model;
         this.sce = sce;
-        this.dtableCtrls = dtableCtrls;
-        this.dtableCtrls.setDecisionTableWidget( this );
         this.rm = new BRLRuleModel( model );
         this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
@@ -1982,6 +1977,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
         } );
+        
+        //TODO {manstis} Need to i18n comment and get User Name
+        model.getAuditLog().add( new AuditLogEntry( AuditEvents.DELETE_ROW.toString(),
+                                                    "Row deleted",
+                                                    "manstis" ) );
+
     }
 
     public void onInsertRow(InsertRowEvent event) {
@@ -1997,6 +1998,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
         } );
+        
+        //TODO {manstis} Need to i18n comment and get User Name
+        model.getAuditLog().add( new AuditLogEntry( AuditEvents.INSERT_ROW.toString(),
+                                                    "Row inserted",
+                                                    "manstis" ) );
     }
 
     public void onCopyRows(CopyRowsEvent event) {
@@ -2061,6 +2067,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                  rowData );
             model.getAnalysisData().add( iRow,
                                          new Analysis() );
+            
+            //TODO {manstis} Need to i18n comment and get User Name
+            model.getAuditLog().add( new AuditLogEntry( AuditEvents.INSERT_ROW.toString(),
+                                                        "Row inserted",
+                                                        "manstis" ) );
+
             iRow++;
         }
         Scheduler.get().scheduleFinally( new Command() {
@@ -2084,6 +2096,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
         } );
+        
+        //TODO {manstis} Need to i18n comment and get User Name
+        model.getAuditLog().add( new AuditLogEntry( AuditEvents.INSERT_ROW.toString(),
+                                                    "Row inserted",
+                                                    "manstis" ) );
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
@@ -2093,6 +2110,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 row.remove( firstColumnIndex );
             }
         }
+        
+        //TODO {manstis} Need to i18n comment and get User Name
+        model.getAuditLog().add( new AuditLogEntry( AuditEvents.DELETE_COLUMN.toString(),
+                                                    "Column deleted",
+                                                    "manstis" ) );
     }
 
     public void onInsertColumn(InsertColumnEvent<BaseColumn, DTCellValue52> event) {
@@ -2108,17 +2130,24 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
             index++;
         }
+        
+        //TODO {manstis} Need to i18n comment and get User Name
+        model.getAuditLog().add( new AuditLogEntry( AuditEvents.INSERT_COLUMN.toString(),
+                                                    "Column inserted",
+                                                    "manstis" ) );
     }
 
     public void onSelectedCellChange(SelectedCellChangeEvent event) {
         if ( event.getCellSelectionDetail() == null ) {
-            dtableCtrls.setEnableOtherwiseButton( false );
+            setEnableOtherwiseButton( false );
         } else {
             Coordinate c = event.getCellSelectionDetail().getCoordinate();
             BaseColumn column = model.getExpandedColumns().get( c.getCol() );
-            dtableCtrls.setEnableOtherwiseButton( canAcceptOtherwiseValues( column ) && !this.isReadOnly );
+            setEnableOtherwiseButton( canAcceptOtherwiseValues( column ) && !this.isReadOnly );
         }
     }
+
+    protected abstract void setEnableOtherwiseButton(final boolean isEnabled);
 
     public void onMoveColumns(MoveColumnsEvent event) {
         int sourceColumnIndex = event.getSourceColumnIndex();

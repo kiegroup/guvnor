@@ -29,7 +29,6 @@ import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -1418,7 +1417,6 @@ public class GuidedDecisionTableWidget extends Composite
     private void setupDecisionTable() {
         dtable = new VerticalDecisionTableWidget( guidedDecisionTable,
                                                   getSCE(),
-                                                  new DecisionTableControlsWidget( isReadOnly ),
                                                   isReadOnly,
                                                   eventBus );
         dtable.setPixelSize( 1000,

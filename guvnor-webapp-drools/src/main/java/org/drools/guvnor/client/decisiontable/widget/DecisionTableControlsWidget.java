@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.decisiontable.widget.auditlog.AuditLog;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,24 +25,21 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import org.drools.guvnor.client.messages.Constants;
 
 /**
  * Simple container for controls to manipulate a Decision Table
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private AbstractDecisionTableWidget dtable;
+    private Button addRowButton;
+    private Button otherwiseButton;
+    private Button analyzeButton;
+    private Button auditLogButton;
 
-    private Button                      addRowButton;
-    private Button                      otherwiseButton;
-    private Button                      analyzeButton;
+    public DecisionTableControlsWidget(final AbstractDecisionTableWidget dtable,
+                                       final GuidedDecisionTable52 model,
+                                       final boolean isReadOnly) {
 
-    public DecisionTableControlsWidget() {
-        this( false );
-    }
-
-    public DecisionTableControlsWidget(final boolean isReadOnly) {
         Panel panel = new HorizontalPanel();
 
         // Add row button
@@ -54,6 +54,7 @@ public class DecisionTableControlsWidget extends Composite {
         addRowButton.setEnabled( !isReadOnly );
         panel.add( addRowButton );
 
+        //Otherwise button
         otherwiseButton = new Button( Constants.INSTANCE.Otherwise(),
                                       new ClickHandler() {
                                           public void onClick(ClickEvent event) {
@@ -65,7 +66,7 @@ public class DecisionTableControlsWidget extends Composite {
         otherwiseButton.setEnabled( false );
         panel.add( otherwiseButton );
 
-        // Add row button
+        // Analyse button
         analyzeButton = new Button( Constants.INSTANCE.Analyze(),
                                     new ClickHandler() {
                                         public void onClick(ClickEvent event) {
@@ -77,6 +78,19 @@ public class DecisionTableControlsWidget extends Composite {
         analyzeButton.setEnabled( !isReadOnly );
         panel.add( analyzeButton );
 
+        // Audit Log button
+        auditLogButton = new Button( Constants.INSTANCE.DecisionTableAuditLog(),
+                                     new ClickHandler() {
+                                         public void onClick(ClickEvent event) {
+                                             if ( dtable != null ) {
+                                                 AuditLog log = new AuditLog( dtable.model );
+                                                 log.show();
+                                             }
+                                         }
+                                     } );
+        auditLogButton.setEnabled( !isReadOnly );
+        panel.add( auditLogButton );
+
         initWidget( panel );
     }
 
@@ -85,15 +99,6 @@ public class DecisionTableControlsWidget extends Composite {
      */
     void setEnableOtherwiseButton(boolean isEnabled) {
         otherwiseButton.setEnabled( isEnabled );
-    }
-
-    /**
-     * Inject DecisionTable to which these controls relate
-     * 
-     * @param dtable
-     */
-    void setDecisionTableWidget(AbstractDecisionTableWidget dtable) {
-        this.dtable = dtable;
     }
 
 }

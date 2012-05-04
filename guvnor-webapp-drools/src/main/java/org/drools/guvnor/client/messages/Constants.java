@@ -2703,4 +2703,19 @@ public interface Constants
     String EnableAuthentication();
 
     String DownloadWar();
+    
+    String DecisionTableAuditLog();
+    
+    String DecisionTableAuditLogEvents();
+    
+    String DecisionTableAuditLogEventDeleteColumn();
+    
+    String DecisionTableAuditLogEventDeleteRow();
+    
+    String DecisionTableAuditLogEventInsertColumn();
+    
+    String DecisionTableAuditLogEventInsertRow();
+    
+    String AuditLogEntryBy0On1(String author, String date);
+    
 }

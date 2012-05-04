@@ -27,14 +27,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
+    private DecisionTableControlsWidget ctrls;
+
     public VerticalDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
-                                       DecisionTableControlsWidget ctrls,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
         super( model,
                sce,
-               ctrls,
                isReadOnly,
                eventBus );
 
@@ -47,14 +47,23 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                                                dropDownManager,
                                                                isReadOnly,
                                                                eventBus );
-
         vp.add( widget );
+
+        ctrls = new DecisionTableControlsWidget( this,
+                                                 model,
+                                                 isReadOnly );
         vp.add( ctrls );
+
         initWidget( vp );
 
         //Fire event for UI components to set themselves up
         SetGuidedDecisionTableModelEvent sme = new SetGuidedDecisionTableModelEvent( model );
         eventBus.fireEvent( sme );
+    }
+
+    @Override
+    protected void setEnableOtherwiseButton(boolean isEnabled) {
+        ctrls.setEnableOtherwiseButton( isEnabled );
     }
 
 }

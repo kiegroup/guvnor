@@ -40,13 +40,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 public abstract class Popup extends PopupPanel {
 
-    private boolean dragged       = false;
-    private int     dragStartX;
-    private int     dragStartY;
+    private boolean       dragged       = false;
+    private int           dragStartX;
+    private int           dragStartY;
 
-    private Command afterShowEvent;
-    private Command afterCloseEvent;
-    private boolean fixedLocation = false;
+    private Command       afterShowEvent;
+    private Command       afterCloseEvent;
+    private boolean       fixedLocation = false;
+
+    private PopupTitleBar titleBar;
 
     public Popup() {
         setGlassEnabled( true );
@@ -55,11 +57,11 @@ public abstract class Popup extends PopupPanel {
     public void setAfterShow(Command afterShowEvent) {
         this.afterShowEvent = afterShowEvent;
     }
-    
+
     public void setAfterCloseEvent(Command afterCloseEvent) {
         this.afterCloseEvent = afterCloseEvent;
     }
-    
+
     @Override
     public void show() {
 
@@ -70,17 +72,17 @@ public abstract class Popup extends PopupPanel {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
 
-        final PopupTitleBar titleBar = new PopupTitleBar( getTitle() );
+        this.titleBar = new PopupTitleBar( getTitle() );
 
-        titleBar.closeButton.addClickHandler( new ClickHandler() {
+        this.titleBar.closeButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 hide();
                 if ( afterCloseEvent != null ) {
                     afterCloseEvent.execute();
-                }                
+                }
             }
         } );
-        titleBar.addMouseDownHandler( new MouseDownHandler() {
+        this.titleBar.addMouseDownHandler( new MouseDownHandler() {
 
             public void onMouseDown(MouseDownEvent event) {
                 dragged = true;
@@ -89,7 +91,7 @@ public abstract class Popup extends PopupPanel {
                 DOM.setCapture( titleBar.getElement() );
             }
         } );
-        titleBar.addMouseMoveHandler( new MouseMoveHandler() {
+        this.titleBar.addMouseMoveHandler( new MouseMoveHandler() {
 
             public void onMouseMove(MouseMoveEvent event) {
                 if ( dragged ) {
@@ -98,7 +100,7 @@ public abstract class Popup extends PopupPanel {
                 }
             }
         } );
-        titleBar.addMouseUpHandler( new MouseUpHandler() {
+        this.titleBar.addMouseUpHandler( new MouseUpHandler() {
 
             public void onMouseUp(MouseUpEvent event) {
                 dragged = false;
@@ -114,11 +116,11 @@ public abstract class Popup extends PopupPanel {
         verticalPanel.add( content );
         add( verticalPanel );
 
-        add(createKeyListeningFocusPanel(verticalPanel));
+        add( createKeyListeningFocusPanel( verticalPanel ) );
 
         super.show();
 
-        focusFirstWidget(content);
+        focusFirstWidget( content );
 
         if ( !fixedLocation ) {
             center();
@@ -126,19 +128,19 @@ public abstract class Popup extends PopupPanel {
     }
 
     private FocusPanel createKeyListeningFocusPanel(VerticalPanel verticalPanel) {
-        FocusPanel focusPanel = new FocusPanel(verticalPanel);
+        FocusPanel focusPanel = new FocusPanel( verticalPanel );
 
-        focusPanel.addKeyDownHandler(new KeyDownHandler() {
+        focusPanel.addKeyDownHandler( new KeyDownHandler() {
             public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE ) {
                     hide();
                 }
             }
-        });
+        } );
 
-        focusPanel.setStyleName("");
-        focusPanel.setFocus(true);
-        focusPanel.setWidth("100%");
+        focusPanel.setStyleName( "" );
+        focusPanel.setFocus( true );
+        focusPanel.setWidth( "100%" );
         return focusPanel;
     }
 
@@ -181,6 +183,15 @@ public abstract class Popup extends PopupPanel {
         if ( left != 0 && top != 0 ) {
             fixedLocation = true;
         }
+    }
+
+    /**
+     * This returns the height of the usable client space, excluding title bar.
+     * 
+     * @return
+     */
+    public int getClientHeight() {
+        return this.getWidget().getOffsetHeight() - this.titleBar.getOffsetHeight();
     }
 
     abstract public Widget getContent();
