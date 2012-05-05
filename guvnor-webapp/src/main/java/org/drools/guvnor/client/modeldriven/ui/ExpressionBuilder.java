@@ -146,11 +146,11 @@ public class ExpressionBuilder extends RuleModellerWidget
                                 GLOBAL_VARIABLE_VALUE_PREFIX + "." + gv );
         }
 
-        for ( String v : getRuleModel().getLHSBoundFacts() ) {
+        for ( String v : getRuleModel().getAllVariables() ) {
             startPoint.addItem( v,
                                 VARIABLE_VALUE_PREFIX + "." + v );
         }
-
+        
         startPoint.setVisibleItemCount( 1 );
         startPoint.addChangeHandler( new ChangeHandler() {
 
