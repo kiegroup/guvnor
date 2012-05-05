@@ -39,7 +39,7 @@ public class NewDataButton extends TestScenarioButton {
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super(DroolsGuvnorImages.INSTANCE.newItem(),
+        super(DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                 Constants.INSTANCE.AddANewDataInputToThisScenario(),
                 previousEx,
                 scenario,

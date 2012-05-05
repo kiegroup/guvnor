@@ -246,7 +246,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
 
                 for ( int i = 0; i < permList.size(); i++ ) {
                     final String p = permList.get( i );
-                    ImageButton del = new ImageButton( images.deleteItemSmall(),
+                    ImageButton del = new ImageButton( images.itemImages().deleteItemSmall(),
                                                        constants.RemovePermission(),
                                                        new ClickHandler() {
                                                            public void onClick(ClickEvent w) {
@@ -275,7 +275,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
         }
 
         // now to be able to add...
-        ImageButton newPermission = new ImageButton( images.newItem(),
+        ImageButton newPermission = new ImageButton( images.itemImages().newItem(),
                                                      constants.AddANewPermission(),
                                                      createClickHandlerForNewPersmissionImageButton( perms,
                                                                                                      vp ) );

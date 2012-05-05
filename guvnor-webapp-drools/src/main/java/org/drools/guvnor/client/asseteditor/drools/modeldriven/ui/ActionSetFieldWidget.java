@@ -128,7 +128,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {

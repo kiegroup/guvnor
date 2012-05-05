@@ -144,7 +144,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
     private Image getAddButton(final RuleModel model,
                                final Command refresh,
                                final TextBox box) {
-        final Image addbutton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
+        final Image addbutton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
         addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
 
         addbutton.addClickHandler( new ClickHandler() {

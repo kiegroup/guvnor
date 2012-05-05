@@ -37,7 +37,7 @@ public class ExpectationButton extends TestScenarioButton {
                              final ExecutionTrace previousEx,
                              final Scenario scenario,
                              ScenarioWidget scenarioWidget) {
-        super( DroolsGuvnorImages.INSTANCE.newItem(),
+        super( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                Constants.INSTANCE.AddANewExpectation(),
                previousEx,
                scenario,

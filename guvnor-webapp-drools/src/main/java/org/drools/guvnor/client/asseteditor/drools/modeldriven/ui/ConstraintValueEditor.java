@@ -201,7 +201,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 

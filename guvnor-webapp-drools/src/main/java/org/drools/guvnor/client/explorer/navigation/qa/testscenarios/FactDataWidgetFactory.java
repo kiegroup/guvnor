@@ -219,7 +219,7 @@ public class FactDataWidgetFactory {
     class DeleteFactColumnButton extends ImageButton {
 
         public DeleteFactColumnButton(final FactData fact) {
-            super(DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                     Constants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
 
             addClickHandler(new ClickHandler() {
@@ -240,7 +240,7 @@ public class FactDataWidgetFactory {
     class DeleteFieldRowButton extends ImageButton {
         public DeleteFieldRowButton(final Fact fact,
                                     final String fieldName) {
-            super(DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                     Constants.INSTANCE.RemoveThisRow());
 
             addClickHandler(new ClickHandler() {

@@ -86,7 +86,7 @@ public class RetractWidget extends FlexTable {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final RetractFact retractFact) {
-            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.RemoveThisRetractStatement() );
 
             addClickHandler( new ClickHandler() {

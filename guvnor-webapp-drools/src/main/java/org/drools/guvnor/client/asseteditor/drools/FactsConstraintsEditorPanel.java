@@ -71,7 +71,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image addNewConstraint = new ImageButton(DroolsGuvnorImages.INSTANCE.newItem());
+        Image addNewConstraint = new ImageButton(DroolsGuvnorImages.INSTANCE.itemImages().newItem());
         addNewConstraint.setTitle(Constants.INSTANCE.AddNewConstraint());
 
         addNewConstraint.addClickHandler(new ClickHandler() {

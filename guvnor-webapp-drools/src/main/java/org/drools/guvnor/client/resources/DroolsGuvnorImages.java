@@ -167,17 +167,13 @@ public interface DroolsGuvnorImages
     @Source("images/managment.gif")
     ImageResource management();
 
-    @Source("images/new_item.gif")
-    ImageResource newItem();
+    ItemImages itemImages();
 
     @Source("images/delete_obj.gif")
     ImageResource removeItem();
 
     @Source("images/new_item_disabled.gif")
     ImageResource newItemDisabled();
-    
-    @Source("images/delete_item_small.gif")
-    ImageResource deleteItemSmall();
 
     @Source("images/status_large.png")
     ImageResource statusLarge();

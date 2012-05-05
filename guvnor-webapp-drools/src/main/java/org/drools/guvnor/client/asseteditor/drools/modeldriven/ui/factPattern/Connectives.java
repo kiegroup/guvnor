@@ -88,7 +88,7 @@ public class Connectives {
                 hp.add( connectiveValueEditor( con ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+                    Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
                     clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                   i ) );

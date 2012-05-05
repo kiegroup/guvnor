@@ -91,7 +91,7 @@ public class PackageHeaderWidget extends Composite {
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                                          DroolsGuvnorImages.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             importActions.add( newItemButton );
@@ -101,7 +101,7 @@ public class PackageHeaderWidget extends Composite {
             trashButton.setEnabled( false );
             importActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                                          DroolsGuvnorImages.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
@@ -151,7 +151,7 @@ public class PackageHeaderWidget extends Composite {
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                                          DroolsGuvnorImages.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             globalActions.add( newItemButton );
@@ -161,7 +161,7 @@ public class PackageHeaderWidget extends Composite {
             trashButton.setEnabled( false );
             globalActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                                          DroolsGuvnorImages.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {

@@ -28,6 +28,7 @@ import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.*;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 

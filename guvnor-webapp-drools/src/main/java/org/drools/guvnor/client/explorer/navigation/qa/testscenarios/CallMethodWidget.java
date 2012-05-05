@@ -276,7 +276,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {

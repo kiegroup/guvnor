@@ -43,7 +43,7 @@ public class ConfigWidget extends Composite {
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+        final Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                            Constants.INSTANCE.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {

@@ -220,7 +220,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                                      ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
 

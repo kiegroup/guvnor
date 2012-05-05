@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources.DecisionTableStyle;
 
 import com.google.gwt.core.client.GWT;
 

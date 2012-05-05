@@ -253,7 +253,7 @@ public class FieldDataConstraintEditor
             hpanel.add( fieldDataConstraintEditor );
             final int index = i;
 
-            hpanel.add( new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            hpanel.add( new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.AElementToDelInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -318,7 +318,7 @@ public class FieldDataConstraintEditor
         }
 
         if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem(),
+            Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                                          Constants.INSTANCE.AElementToAddInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

@@ -75,7 +75,7 @@ public class ActivateRuleFlowWidget extends Composite {
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisRuleFlowActivation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

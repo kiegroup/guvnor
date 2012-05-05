@@ -31,7 +31,7 @@
     <div style="float:right;">
       <gwt:HorizontalPanel>
         <gwt:Image ui:field="editFieldIcon" resource='{images.edit}' styleName="guvnor-cursor"></gwt:Image>
-        <gwt:Image ui:field="deleteFieldIcon" resource='{images.deleteItemSmall}' styleName="guvnor-cursor" ></gwt:Image>
+        <gwt:Image ui:field="deleteFieldIcon" resource='{images.itemImages.deleteItemSmall}' styleName="guvnor-cursor" ></gwt:Image>
       </gwt:HorizontalPanel>
     </div>
     <div style="clear:both;"></div>

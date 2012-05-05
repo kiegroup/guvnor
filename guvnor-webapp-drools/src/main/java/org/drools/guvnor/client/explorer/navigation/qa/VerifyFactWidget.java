@@ -174,7 +174,7 @@ public class VerifyFactWidget extends Composite {
                             3,
                             cellEditor );
 
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisFieldExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

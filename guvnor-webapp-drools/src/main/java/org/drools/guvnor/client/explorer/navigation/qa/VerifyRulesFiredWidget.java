@@ -164,7 +164,7 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisRuleExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

@@ -70,7 +70,7 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final VerifyFact verifyFact) {
-            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.DeleteTheExpectationForThisFact() );
 
             addClickHandler( new ClickHandler() {

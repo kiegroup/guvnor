@@ -202,7 +202,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+            Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
             clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
@@ -394,7 +394,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+                Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
                 clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 

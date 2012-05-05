@@ -67,7 +67,7 @@ public abstract class FactWidget extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final FixtureList definitionList) {
-            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.RemoveThisBlockOfData() );
 
             addClickHandler( new ClickHandler() {

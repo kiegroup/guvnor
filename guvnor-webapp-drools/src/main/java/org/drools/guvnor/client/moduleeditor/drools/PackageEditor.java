@@ -256,7 +256,7 @@ public class PackageEditor
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        ImageButton remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        ImageButton remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {

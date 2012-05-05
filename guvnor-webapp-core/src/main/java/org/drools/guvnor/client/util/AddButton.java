@@ -33,7 +33,7 @@ public class AddButton extends Composite
 
     private static ImagesCore images     = GWT.create( ImagesCore.class );
 
-    private Image         plusButton = new Image( images.newItem() );
+    private Image         plusButton = new Image( images.itemImages().newItem() );
 
     private Label         textLabel  = new Label();
 

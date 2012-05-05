@@ -77,7 +77,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
 
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
-        Image add = new ImageButton( images.newItem() );
+        Image add = new ImageButton( images.itemImages().newItem() );
         add.setTitle( constants.AddANewCategory() );
 
         add.addClickHandler( new ClickHandler() {

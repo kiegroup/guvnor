@@ -238,7 +238,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        Image remove = new Image( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
@@ -251,7 +251,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        Image remove = new Image( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {

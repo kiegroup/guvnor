@@ -52,7 +52,7 @@ public class ExpectPanel extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( DroolsGuvnorImages.INSTANCE.deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.DeleteItem() );
             addClickHandler( new ClickHandler() {
 

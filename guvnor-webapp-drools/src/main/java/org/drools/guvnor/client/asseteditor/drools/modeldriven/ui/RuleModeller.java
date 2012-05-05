@@ -153,7 +153,7 @@ public class RuleModeller extends DirtyableComposite
         layout.clear();
         this.currentLayoutRow = 0;
 
-        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
+        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
         addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
@@ -189,7 +189,7 @@ public class RuleModeller extends DirtyableComposite
                               0,
                               new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
 
-            Image addAction = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
+            Image addAction = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
             addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
@@ -313,7 +313,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.newItem() );
+        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
         add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
@@ -365,7 +365,7 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
             remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
@@ -564,7 +564,7 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {

@@ -161,14 +161,7 @@ public interface ImagesCore
     @Source("images/managment.gif")
     ImageResource management();
 
-    @Source("images/new_item.gif")
-    ImageResource newItem();
-    
-    @Source("images/new_item_disabled.gif")
-    ImageResource newItemDisabled();
-    
-    @Source("images/delete_item_small.gif")
-    ImageResource deleteItemSmall();
+    ItemImages itemImages();
 
     @Source("images/status_large.png")
     ImageResource statusLarge();

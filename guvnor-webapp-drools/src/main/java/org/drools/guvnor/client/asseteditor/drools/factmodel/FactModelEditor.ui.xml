@@ -51,7 +51,7 @@
                     <gwt:Image ui:field="moveDownIcon" resource='{images.shuffleDown}' styleName="guvnor-cursor" />
                   </td>
                   <td width="17px">
-                    <gwt:Image ui:field="deleteIcon" resource='{images.deleteItemSmall}' styleName="guvnor-cursor" />
+                    <gwt:Image ui:field="deleteIcon" resource='{images.itemImages.deleteItemSmall}' styleName="guvnor-cursor" />
                   </td>
                 </tr>
               </table>

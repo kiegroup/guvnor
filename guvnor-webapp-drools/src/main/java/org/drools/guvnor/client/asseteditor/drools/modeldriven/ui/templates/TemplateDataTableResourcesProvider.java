@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates;
 
-import org.drools.guvnor.client.resources.DecisionTableResources;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 
 import com.google.gwt.core.client.GWT;
@@ -143,19 +143,19 @@ public class TemplateDataTableResourcesProvider
     }
 
     public ImageResource downArrowIcon() {
-        return resources.downArrowIcon();
+        return resources.tableImageResources().downArrow();
     }
 
     public ImageResource smallDownArrowIcon() {
-        return resources.smallDownArrowIcon();
+        return resources.tableImageResources().smallDownArrow();
     }
 
     public ImageResource upArrowIcon() {
-        return resources.upArrowIcon();
+        return resources.tableImageResources().upArrow();
     }
 
     public ImageResource smallUpArrowIcon() {
-        return resources.smallUpArrowIcon();
+        return resources.tableImageResources().smallUpArrow();
     }
 
     public ImageResource toggleUnmergeIcon() {
@@ -167,11 +167,11 @@ public class TemplateDataTableResourcesProvider
     }
 
     public ImageResource selectorAddIcon() {
-        return resources.selectorAddIcon();
+        return resources.itemImages().newItem();
     }
 
     public ImageResource selectorDeleteIcon() {
-        return resources.selectorDeleteIcon();
+        return resources.itemImages().deleteItemSmall();
     }
 
     public ImageResource collapseCellsIcon() {

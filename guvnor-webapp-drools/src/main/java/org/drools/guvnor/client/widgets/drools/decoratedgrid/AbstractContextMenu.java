@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import org.drools.guvnor.client.resources.DecisionTableResources;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

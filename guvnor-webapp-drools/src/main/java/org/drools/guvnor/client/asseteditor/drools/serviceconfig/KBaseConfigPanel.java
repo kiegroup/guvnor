@@ -194,7 +194,7 @@ public class KBaseConfigPanel extends DirtyableComposite {
         final Column<ServiceKSessionConfig, ImageResource> imageColumn = new Column<ServiceKSessionConfig, ImageResource>(addRowCell) {
             @Override
             public ImageResource getValue(final ServiceKSessionConfig object) {
-                return images.newItem();
+                return images.itemImages().newItem();
             }
         };
         cellTable.addColumn(imageColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
