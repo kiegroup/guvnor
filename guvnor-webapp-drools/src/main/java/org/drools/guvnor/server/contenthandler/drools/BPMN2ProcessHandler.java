@@ -65,17 +65,11 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     public void retrieveAssetContent(Asset asset,
                                      AssetItem item) throws SerializationException {
-        RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
-        if ( process != null ) {
-            RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
-            content.setXml( item.getContent() );
-            asset.setContent( content );
-        } else {
-            // we are very fault tolerant
-            RuleFlowContentModel content = new RuleFlowContentModel();
-            content.setXml( item.getContent() );
-            asset.setContent( content );
-        }
+    	
+    	RuleFlowContentModel content = new RuleFlowContentModel();
+        content.setXml( item.getContent() );
+        asset.setContent( content );
+    	
     }
 
     protected RuleFlowProcess readProcess(InputStream is) {
@@ -139,7 +133,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         // have not been migrated from drools 4 to 5.
         //
         if ( content != null ) {
-            if ( content.getXml() != null ) {
+            if ( content.getXml() != null && (asset.getFormat() != "bpmn2" || asset.getFormat() != "bpmn")) {
                 RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getXml().getBytes() ) );
 
                 if ( process != null ) {
@@ -157,6 +151,8 @@ public class BPMN2ProcessHandler extends ContentHandler
                     //
                     repoAsset.updateContent( content.getXml() );
                 }
+            } else {
+            	repoAsset.updateContent( content.getXml() );
             }
             if ( content.getJson() != null ) {
                 try {
