@@ -697,9 +697,9 @@ public class FactPatternWidget extends RuleModellerWidget {
             //Connectives Operators are handled in class Connectives
             if ( c instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) c;
-                factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+                factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
                 if ( factType == null ) {
-                    factType = sfexp.getExpressionLeftSide().getClassType();
+                    factType = sfexp.getExpressionLeftSide().getGenericType();
                 }
                 fieldName = sfexp.getExpressionLeftSide().getFieldName();
 

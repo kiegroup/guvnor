@@ -79,12 +79,12 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     @Override
     public void addNewConnective() {
 
+        String factType = getExpressionLeftSide().getPreviousGenericType();
+        if ( factType == null ) {
+            factType = getExpressionLeftSide().getGenericType();
+        }
         String fieldName = getExpressionLeftSide().getFieldName();
         String fieldType = getExpressionLeftSide().getGenericType();
-        String factType = getExpressionLeftSide().getPreviousClassType();
-        if ( factType == null ) {
-            factType = getExpressionLeftSide().getClassType();
-        }
 
         if ( this.connectives == null ) {
             this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( factType,
