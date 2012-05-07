@@ -44,6 +44,11 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-jcr</artifactId>
       <classifier>sources</classifier>
     </dependency>
