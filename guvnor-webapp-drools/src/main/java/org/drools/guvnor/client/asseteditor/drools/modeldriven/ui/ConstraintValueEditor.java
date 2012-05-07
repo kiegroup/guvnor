@@ -111,9 +111,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         if ( con instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) con;
-            this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+            this.factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
             if ( this.factType == null ) {
-                this.factType = sfexp.getExpressionLeftSide().getClassType();
+                this.factType = sfexp.getExpressionLeftSide().getGenericType();
             }
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
@@ -149,9 +149,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //without first deleting and re-creating.
         if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
-            this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
+            this.factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
             if ( this.factType == null ) {
-                this.factType = sfexp.getExpressionLeftSide().getClassType();
+                this.factType = sfexp.getExpressionLeftSide().getGenericType();
             }
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
@@ -268,7 +268,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
                                                               public void valueChanged(String newText,
                                                                                        String newValue) {
-                                                                  
+
                                                                   //Prevent recursion once value change has been applied
                                                                   if ( !newValue.equals( constraint.getValue() ) ) {
                                                                       constraint.setValue( newValue );
