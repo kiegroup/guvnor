@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.client.modeldriven.dt52;
+package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogFilter;
 
@@ -25,18 +25,11 @@ public class DecisionTableAuditLogFilter extends AuditLogFilter {
 
     private static final long serialVersionUID = 8506440541322969289L;
 
-    public enum AuditEvents {
-        INSERT_COLUMN,
-        DELETE_COLUMN,
-        INSERT_ROW,
-        DELETE_ROW
-    }
-
     public DecisionTableAuditLogFilter() {
-        addType( AuditEvents.INSERT_COLUMN.toString() );
-        addType( AuditEvents.DELETE_COLUMN.toString() );
-        addType( AuditEvents.INSERT_ROW.toString() );
-        addType( AuditEvents.DELETE_ROW.toString() );
+        addType( InsertColumnAuditLogEntry.class );
+        addType( InsertRowAuditLogEntry.class );
+        addType( DeleteColumnAuditLogEntry.class );
+        addType( DeleteRowAuditLogEntry.class );
     }
 
 }

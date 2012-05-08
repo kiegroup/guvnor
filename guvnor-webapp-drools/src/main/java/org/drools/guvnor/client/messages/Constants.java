@@ -2717,5 +2717,25 @@ public interface Constants
     String DecisionTableAuditLogEventInsertRow();
     
     String AuditLogEntryBy0On1(String author, String date);
+
+    String DecisionTableAuditLogInsertRowAt0(int index);
+
+    String DecisionTableAuditLogDeleteRowAt0(int index);
     
+    String DecisionTableAuditLogDeleteColumn0(String header);
+
+    String DecisionTableAuditLogInsertAttribute0(String attribute);
+
+    String DecisionTableAuditLogInsertMetadata0(String metadata);
+
+    String DecisionTableAuditLogInsertCondition0(String conditionHeader);
+
+    String DecisionTableAuditLogInsertActionInsertFact0(String actionInsertFactHeader);
+
+    String DecisionTableAuditLogInsertActionSetField0(String actionSetFieldHeader);
+    
+    String DecisionTableAuditLogInsertColumn0(String header);
+
+    String DecisionTableAuditLogNoEntries();
+
 }

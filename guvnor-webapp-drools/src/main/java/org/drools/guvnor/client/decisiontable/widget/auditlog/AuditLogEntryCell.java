@@ -28,9 +28,15 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
-    private static final String         DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
+    private static final String           DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
 
-    private static final DateTimeFormat format           = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+    private static final DateTimeFormat   format           = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+
+    private final AuditLogEntryCellHelper renderer;
+
+    public AuditLogEntryCell(final AuditLogEntryCellHelper renderer) {
+        this.renderer = renderer;
+    }
 
     @Override
     public void render(Context context,
@@ -40,18 +46,19 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
             return;
         }
 
+        //Audit Log entry type and date
         sb.appendHtmlConstant( "<table>" );
-
         sb.appendHtmlConstant( "<tr><td><b>" );
-        sb.appendEscaped( value.getSystemComment() );
+        sb.appendEscaped( renderer.getEventTypeDisplayText( value.getClass() ) );
         sb.appendHtmlConstant( "</b></td></tr>" );
-
         sb.appendHtmlConstant( "<tr><td>" );
         sb.appendEscaped( Constants.INSTANCE.AuditLogEntryBy0On1( value.getUserName(),
                                                                   format.format( value.getDateOfEntry() ) ) );
         sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<hr/>" );
+        sb.appendHtmlConstant( "</table>" );
+
+        //Audit Log entry detail
+        sb.append( renderer.getSafeHtml( value ) );
     }
 
 }

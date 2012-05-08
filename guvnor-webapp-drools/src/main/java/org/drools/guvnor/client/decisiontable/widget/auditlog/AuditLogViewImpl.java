@@ -19,10 +19,9 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.AuditLogCellListResources;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
-import org.drools.ide.common.client.modeldriven.dt52.DecisionTableAuditLogFilter;
-import org.drools.ide.common.client.modeldriven.dt52.DecisionTableAuditLogFilter.AuditEvents;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
@@ -56,18 +55,20 @@ public class AuditLogViewImpl extends Popup
     implements
     AuditLogView {
 
-    protected int                       MIN_WIDTH     = 500;
-    protected int                       MIN_HEIGHT    = 200;
+    protected int                         MIN_WIDTH     = 500;
+    protected int                         MIN_HEIGHT    = 200;
 
-    private final GuidedDecisionTable52 dtable;
+    private final GuidedDecisionTable52   dtable;
 
-    private final Widget                popupContent;
+    private final Widget                  popupContent;
+
+    private final AuditLogEntryCellHelper renderer      = new AuditLogEntryCellHelper();
 
     @UiField
-    ScrollPanel                         spEvents;
+    ScrollPanel                           spEvents;
 
-    private DisclosurePanel             dpEventTypes;
-    private final VerticalPanel         lstEventTypes = new VerticalPanel();
+    private DisclosurePanel               dpEventTypes;
+    private final VerticalPanel           lstEventTypes = new VerticalPanel();
 
     interface AuditLogViewImplBinder
         extends
@@ -114,14 +115,15 @@ public class AuditLogViewImpl extends Popup
 
     @Override
     public Widget getContent() {
-        for ( Map.Entry<String, Boolean> e : dtable.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet() ) {
+        for ( Map.Entry<Class< ? extends AuditLogEntry>, Boolean> e : dtable.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet() ) {
             lstEventTypes.add( makeEventTypeCheckBox( e.getKey(),
                                                       e.getValue() ) );
         }
 
-        CellList<AuditLogEntry> events = new CellList<AuditLogEntry>( new AuditLogEntryCell() );
-        events.setEmptyListWidget( new Label( "Nadda" ) );
-        events.setPageSize( 10 );
+        CellList<AuditLogEntry> events = new CellList<AuditLogEntry>( new AuditLogEntryCell( renderer ),
+                                                                      AuditLogCellListResources.INSTANCE );
+        events.setEmptyListWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
+        events.setPageSize( 5 );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
         GuvnorSimplePager gsp = new GuvnorSimplePager();
@@ -148,9 +150,9 @@ public class AuditLogViewImpl extends Popup
         return this.popupContent;
     }
 
-    private Widget makeEventTypeCheckBox(final String eventType,
+    private Widget makeEventTypeCheckBox(final Class< ? extends AuditLogEntry> eventType,
                                          final Boolean isEnabled) {
-        final CheckBox chkEventType = new CheckBox( getEventTypeDisplayText( eventType ) );
+        final CheckBox chkEventType = new CheckBox( renderer.getEventTypeDisplayText( eventType ) );
         chkEventType.setValue( Boolean.TRUE.equals( isEnabled ) );
         chkEventType.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
@@ -163,21 +165,6 @@ public class AuditLogViewImpl extends Popup
         } );
 
         return chkEventType;
-    }
-
-    private String getEventTypeDisplayText(final String eventType) {
-        DecisionTableAuditLogFilter.AuditEvents value = AuditEvents.valueOf( eventType );
-        switch ( value ) {
-            case DELETE_COLUMN :
-                return Constants.INSTANCE.DecisionTableAuditLogEventDeleteColumn();
-            case DELETE_ROW :
-                return Constants.INSTANCE.DecisionTableAuditLogEventDeleteRow();
-            case INSERT_COLUMN :
-                return Constants.INSTANCE.DecisionTableAuditLogEventInsertColumn();
-            case INSERT_ROW :
-                return Constants.INSTANCE.DecisionTableAuditLogEventInsertRow();
-        }
-        return eventType;
     }
 
     private void fixListEventsHeight() {

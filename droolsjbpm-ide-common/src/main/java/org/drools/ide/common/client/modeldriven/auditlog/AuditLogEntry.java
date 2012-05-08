@@ -22,15 +22,13 @@ import org.drools.guvnor.shared.api.PortableObject;
 /**
  * An entry in an Audit Log
  */
-public class AuditLogEntry
+public abstract class AuditLogEntry
     implements
     PortableObject {
 
-    private static final long serialVersionUID = 5038733484859986944L;
+    private static final long serialVersionUID = -6751253344147726552L;
 
-    private String            type;
     private Date              dateOfEntry;
-    private String            systemComment;
     private String            userName;
     private String            userComment;
     private boolean           isDeleted;
@@ -38,27 +36,15 @@ public class AuditLogEntry
     public AuditLogEntry() {
     }
 
-    public AuditLogEntry(final String type,
-                         final String systemComment,
-                         final String userName) {
-        this.type = type;
+    public AuditLogEntry(final String userName) {
         this.dateOfEntry = new Date();
-        this.systemComment = systemComment;
         this.userComment = "";
         this.userName = userName;
         this.isDeleted = false;
     }
 
-    public String getType() {
-        return this.type;
-    }
-
     public Date getDateOfEntry() {
         return new Date( dateOfEntry.getTime() );
-    }
-
-    public String getSystemComment() {
-        return systemComment;
     }
 
     public String getUserComment() {

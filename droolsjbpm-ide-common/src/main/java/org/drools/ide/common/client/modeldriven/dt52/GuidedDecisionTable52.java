@@ -27,6 +27,7 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS

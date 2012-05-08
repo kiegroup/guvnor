@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.resources;
+.cellListWidget {
+  width: 100%;	
+}
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+.cellListEvenItem {
+  width: 100%;
+  background: #ffffff;
+  cursor: pointer;
+  zoom: 1;
+}
 
-public interface DroolsGuvnorResources
-    extends
-    ClientBundle {
+.cellListOddItem {
+  width: 100%;
+  background: #f3f7fb;
+  cursor: pointer;
+  zoom: 1;
+}
 
-    DroolsGuvnorResources INSTANCE = GWT.create( DroolsGuvnorResources.class );
+.cellListKeyboardSelectedItem {
+  background: #ffc;
+}
 
-    @Source("css/TitledTextCell.css")
-    TitledTextCellCss titledTextCellCss();
-
-    @Source("css/DroolsGuvnor.css")
-    DroolsGuvnorCss droolsGuvnorCss();
-
+.cellListSelectedItem {
+  background-color: #628cd5;
+  color: white;
+  height: auto;
+  overflow: visible;
 }
