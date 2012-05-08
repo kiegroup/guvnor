@@ -2,6 +2,9 @@ package org.drools.guvnor.client.layout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasMouseDownHandlers;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -18,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ClosableLabel extends Composite
     implements
-    HasCloseHandlers<ClosableLabel> {
+    HasCloseHandlers<ClosableLabel>, HasMouseDownHandlers  {
 
     interface ClosableLabelBinder
         extends
@@ -59,5 +62,7 @@ public class ClosableLabel extends Composite
         return addHandler( handler,
                            CloseEvent.getType() );
     }
-
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+        return addDomHandler(handler, MouseDownEvent.getType());
+   }
 }

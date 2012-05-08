@@ -7,13 +7,13 @@
   <inherits name="com.google.gwt.resources.Resources" />
   <inherits name="com.google.gwt.activity.Activity" />
   <inherits name='com.google.gwt.inject.Inject' />
-
+  <inherits name="com.google.gwt.dom.DOM" />
   <!-- inherit css based theme -->
   <inherits name='com.google.gwt.user.theme.standard.Standard' />
   <!-- Other module inherits -->
   <inherits name='com.gwtplatform.mvp.Mvp' />
   <inherits name='com.gwtplatform.dispatch.Dispatch' />
-
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
   <!-- Specify the app entry point class. -->
   <entry-point class='org.drools.guvnor.client.HelloWorldEntryPoint' />
@@ -28,5 +28,31 @@
   <define-configuration-property name='gin.ginjector' is-multi-valued='false' />
   <set-configuration-property name='gin.ginjector' value='org.drools.guvnor.client.gin.ClientGinjector' />
 
+<!--   <replace-with
+    class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImplOpera">
+    <when-type-is class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImpl" />
+    <when-property-is name="user.agent" value="opera" />
+  </replace-with>
+
+  <replace-with
+    class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImplSafari">
+    <when-type-is class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImpl" />
+    <when-property-is name="user.agent" value="safari" />
+  </replace-with>
+
+  <replace-with class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImplIE6">
+    <when-type-is class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+      <when-property-is name="user.agent" value="ie9" />
+    </any>
+  </replace-with>
+
+  <replace-with
+    class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImplMozilla">
+    <when-type-is class="org.drools.guvnor.client.dnd.util.impl.DOMUtilImpl" />
+    <when-property-is name="user.agent" value="gecko1_8" />
+  </replace-with> -->
 
 </module>

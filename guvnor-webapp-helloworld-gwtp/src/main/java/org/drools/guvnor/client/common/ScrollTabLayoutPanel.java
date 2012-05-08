@@ -15,12 +15,13 @@ import com.google.gwt.layout.client.Layout.Alignment;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class ScrollTabLayoutPanel extends TabLayoutPanel {
+public class ScrollTabLayoutPanel extends TabLayoutPanel implements InsertPanel {
     private static Images       images             = GWT.create( Images.class );
 
     private Image               scrollLeft;

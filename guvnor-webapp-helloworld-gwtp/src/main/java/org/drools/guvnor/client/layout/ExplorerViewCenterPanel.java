@@ -8,13 +8,34 @@ import java.util.Map;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.ScrollTabLayoutPanel;
 
+/*import org.drools.guvnor.client.dnd.PickupDragController;
+import org.drools.guvnor.client.dnd.drop.HorizontalPanelDropController;
+import org.drools.guvnor.client.dnd.drop.VerticalPanelDropController;
+*/
+
+/*import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.allen_sauer.gwt.dnd.client.drop.HorizontalPanelDropController;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;*/
+
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.drop.HorizontalPanelDropController;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
@@ -26,21 +47,112 @@ public class ExplorerViewCenterPanel extends Composite
     /*implements
     TabbedPanel*/ {
     private static PlaceManager placeManager;
-    private final ScrollTabLayoutPanel       tabLayoutPanel;
+    private final ScrollTabLayoutPanel       mainTabLayoutPanel;
+    private final ScrollTabLayoutPanel       bottomTabLayoutPanel;
 
+    SplitLayoutPanel splitPanel = new SplitLayoutInsertPanel();
+    SplitLayoutInsertPanel splitPanelMain = new SplitLayoutInsertPanel(DockLayoutPanel.Direction.SOUTH);
+    SplitLayoutInsertPanel splitPanelBottom = new SplitLayoutInsertPanel();
+
+    HorizontalPanel mainbottom = new HorizontalPanel();
+    VerticalPanel mainhp = new VerticalPanel();
+    
     private PanelMap                         openedTabs          = new PanelMap();
-
+    PickupDragController dragController; 
     //private final EventBus                   eventBus;
 
+    AbsolutePanel containingPanel;
+    
     public ExplorerViewCenterPanel() {
-        //this.eventBus = eventBus;
-        tabLayoutPanel = new ScrollTabLayoutPanel(2,
-                Unit.EM);
+        mainTabLayoutPanel = new ScrollTabLayoutPanel(2, Unit.EM);
+        bottomTabLayoutPanel = new ScrollTabLayoutPanel(2, Unit.EM);
 
-        //addBeforeSelectionHandler();
+        //RootPanel.get().setHeight("100%");
+        
+        RootPanel.get().setPixelSize(1400, 1800);
+        dragController = new PickupDragController(RootPanel.get(), true);
+        
+        VerticalPanelDropController main = new VerticalPanelDropController(mainhp);
+        dragController.registerDropController(main);
+        HorizontalPanelDropController bottom = new HorizontalPanelDropController(mainbottom);
+        dragController.registerDropController(bottom);
+        
+        mainhp.add(createDraggable());
+        mainbottom.add(createDraggable());
+        mainbottom.add(createDraggable());
+        mainbottom.add(createDraggable());     
+/*        
+        
+        SplitLayoutPanelDropController mainDropController = new SplitLayoutPanelDropController(splitPanelMain);
+        dragController.registerDropController(mainDropController);
 
-        initWidget(tabLayoutPanel);
+        SplitLayoutPanelDropController bottomDropController = new SplitLayoutPanelDropController(splitPanelBottom);
+        dragController.registerDropController(bottomDropController);*/
+        
+        splitPanelMain.add(createDraggable());
+        splitPanel.addSouth(mainbottom, 200);
+        splitPanel.add(mainhp);
+        initWidget(splitPanel);
     }
+    
+    protected Widget createDraggable() {
+        Label l = new Label("widget1");
+        dragController.makeDraggable(l);
+        return l;
+    }
+    
+    public void addTab(final String tabname, IsWidget widget,
+            final PlaceRequest place) {
+        VerticalPanel vp = new VerticalPanel();
+        ScrollPanel localTP = new ScrollPanel();
+        localTP.add( widget );
+        vp.setWidth("100%");
+        //Widget c = newClosableLabel(tabname, place);
+        Label c = new Label(tabname);
+        vp.add(c);
+        vp.add(localTP);
+        
+        dragController.makeDraggable(vp, c);
+        
+        mainbottom.add( vp);            
+        
+/*        bottomTabLayoutPanel.selectTab( vp );
+
+        openedTabs.put( place,
+                vp );*/
+        
+/*        ScrollPanel localTP = new ScrollPanel();
+        localTP.add(widget);
+        VerticalPanel v = new VerticalPanel();        
+        Widget c = newClosableLabel(tabname, place);
+        v.add(c );
+        v.add(localTP);*/
+        //tabLayoutPanel.add(localTP, newClosableLabel(tabname, place));
+        //tabLayoutPanel.selectTab(localTP);
+        
+        //dragController.makeDraggable(v, c);
+        //mainbottom.add(v);
+             
+/*        if(openedTabs.size() == 0) {
+            splitPanel.addSouth(localTP, 200);
+            splitPanel.add(mainhp);
+            openedTabs.put(place, localTP);   
+        } else if(openedTabs.size() >= 1){*/
+            //splitPanel.clear();
+            //splitPanel.addSouth(splitPanelBottom, 200);
+            //splitPanel.add(mainhp);
+/*            
+            westhp.add(openedTabs.get(openedTabs.getKey(0)));
+            easthp.add(localTP);
+           
+            splitPanelBottom.addWest(westhp, 400);
+            splitPanelBottom.add(easthp);
+            openedTabs.put(place, localTP);   
+        }*/
+
+    } 
+   
+    
 /*
     private void addBeforeSelectionHandler() {
         tabLayoutPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
@@ -60,7 +172,7 @@ public class ExplorerViewCenterPanel extends Composite
     public void show(PlaceRequest key) {
         if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
-            tabLayoutPanel.selectTab( openedTabs.get( key ) );
+            mainTabLayoutPanel.selectTab( openedTabs.get( key ) );
         }
     }
 
@@ -75,7 +187,7 @@ public class ExplorerViewCenterPanel extends Composite
      * @param place
      *            A place which is unique.
      */
-    public void addTab(final String tabname,
+/*    public void addTab(final String tabname,
                        IsWidget widget,
                        final PlaceRequest place) {
 
@@ -90,7 +202,7 @@ public class ExplorerViewCenterPanel extends Composite
 
         openedTabs.put( place,
                         localTP );
-    }
+    }*/
 
     private Widget newClosableLabel(final String title,
                                     final PlaceRequest place) {
@@ -114,7 +226,7 @@ public class ExplorerViewCenterPanel extends Composite
 
         PlaceRequest nextPlace = getPlace( widgetIndex );
 
-        tabLayoutPanel.remove( openedTabs.get( key ) );
+        mainTabLayoutPanel.remove( openedTabs.get( key ) );
         openedTabs.remove( key );
 
         if ( nextPlace != null ) {
@@ -154,22 +266,22 @@ public class ExplorerViewCenterPanel extends Composite
     }
 
     private boolean isSelectedTabIndex(int widgetIndex) {
-        return tabLayoutPanel.getSelectedIndex() == widgetIndex;
+        return mainTabLayoutPanel.getSelectedIndex() == widgetIndex;
     }
 
     private PlaceRequest getPreviousPlace() {
-        if ( tabLayoutPanel.getSelectedIndex() > 0 ) {
-            return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 );
+        if ( mainTabLayoutPanel.getSelectedIndex() > 0 ) {
+            return openedTabs.getKey( mainTabLayoutPanel.getSelectedIndex() - 1 );
         }
         return null;
     }
 
     private PlaceRequest getNextPlace() {
-        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 );
+        return openedTabs.getKey( mainTabLayoutPanel.getSelectedIndex() + 1 );
     }
 
     private boolean isOnlyOneTabLeft() {
-        return tabLayoutPanel.getWidgetCount() == 1;
+        return mainTabLayoutPanel.getWidgetCount() == 1;
     }
 
     private class PanelMap {
@@ -203,6 +315,10 @@ public class ExplorerViewCenterPanel extends Composite
 
         public int getIndex(PlaceRequest key) {
             return keys.indexOf( key );
+        }
+        
+        public int size() {
+            return keysToPanel.size();
         }
     }
 }

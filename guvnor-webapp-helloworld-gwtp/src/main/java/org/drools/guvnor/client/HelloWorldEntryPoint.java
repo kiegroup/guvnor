@@ -22,6 +22,11 @@ public class HelloWorldEntryPoint implements EntryPoint {
         loadStyles();
         hideLoadingPopup();
         ginjector.getPlaceManager().revealDefaultPlace();
+        
+        // create a DragController to manage drag-n-drop actions
+        // note: This creates an implicit DropController for the boundary panel
+        //PickupDragController dragController = new PickupDragController(RootPanel.get(), true);
+
     }
 
     private void loadStyles() {
