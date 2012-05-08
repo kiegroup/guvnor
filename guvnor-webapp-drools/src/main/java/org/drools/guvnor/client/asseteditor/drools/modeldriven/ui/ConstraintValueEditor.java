@@ -250,7 +250,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //Enumeration (these support multi-select for "in" and "not in", so check before comma separated lists) 
         if ( this.dropDownData != null ) {
-<<<<<<< HEAD
             EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.factType,
                                                                     this.constraintList,
                                                                     this.sce,
@@ -264,26 +263,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     }
                 } );
             }
-=======
-            final String operator = constraint.getOperator();
-            final boolean multipleSelect = SuggestionCompletionEngine.operatorRequiresList( operator );
-            EnumDropDown enumDropDown = new EnumDropDown( constraint.getValue(),
-                                                          new DropDownValueChanged() {
-
-                                                              public void valueChanged(String newText,
-                                                                                       String newValue) {
-
-                                                                  //Prevent recursion once value change has been applied
-                                                                  if ( !newValue.equals( constraint.getValue() ) ) {
-                                                                      constraint.setValue( newValue );
-                                                                      executeOnValueChangeCommand();
-                                                                      makeDirty();
-                                                                  }
-                                                              }
-                                                          },
-                                                          dropDownData,
-                                                          multipleSelect );
->>>>>>> 1d67a50... GUVNOR-1890: Guided rule editor: Nested enums in Expressions for POJO
             return enumDropDown;
         }
         
