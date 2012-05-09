@@ -1335,6 +1335,20 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (500, conn5.getResponseCode());
     }
+
+    @Test
+    public void testCreatePackageSnapshot() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/snapshot/testsnapshot");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new String(Base64.encodeBase64(( "test:password".getBytes() ))));
+        connection.setRequestMethod("POST");
+        connection.setUseCaches (false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        assertEquals (204, connection.getResponseCode());
+    }
     
     @Test
     public void testUpdatePackageFromJAXB() throws Exception {
