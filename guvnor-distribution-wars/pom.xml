@@ -47,7 +47,7 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-drools</artifactId>
+      <artifactId>guvnor-webapp-drools-war</artifactId>
       <type>war</type>
     </dependency>
     <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->

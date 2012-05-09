@@ -175,11 +175,11 @@ public class TemplateDataTableResourcesProvider
     }
 
     public ImageResource collapseCellsIcon() {
-        return resources.collapseCellsIcon();
+        return resources.collapseExpand().collapse();
     }
 
     public ImageResource expandCellsIcon() {
-        return resources.expandCellsIcon();
+        return resources.collapseExpand().expand();
     }
 
 }

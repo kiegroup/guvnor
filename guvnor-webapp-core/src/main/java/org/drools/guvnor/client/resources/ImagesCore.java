@@ -187,17 +187,7 @@ public interface ImagesCore
     @Source("images/clock.png")
     ImageResource clock();
 
-    @Source("images/collapse.gif")
-    ImageResource collapse();
-
-    @Source("images/collapseall.gif")
-    ImageResource collapseAll();
-
-    @Source("images/expand.gif")
-    ImageResource expand();
-
-    @Source("images/expandall.gif")
-    ImageResource expandAll();
+    CollapseExpand collapseExpand();
     
     @Source("images/newex_wiz.gif")
     ImageResource newexWiz();

@@ -37,10 +37,10 @@
       <gwt:HorizontalPanel styleName="icon-bar">
         <gwt:HorizontalPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" />
+            <gwt:Image ui:field="imgExpandAll" resource="{images.collapseExpand.expandAll}" title="{i18n.ExpandAll}" />
           </gwt:HTMLPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" />
+            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseExpand.collapseAll}" title="{i18n.CollapseAll}" />
           </gwt:HTMLPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
             <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" />

@@ -199,18 +199,8 @@ public interface DroolsGuvnorImages
     @Source("images/clock.png")
     ImageResource clock();
 
-    @Source("images/collapse.gif")
-    ImageResource collapse();
+    CollapseExpand collapseExpand();
 
-    @Source("images/collapseall.gif")
-    ImageResource collapseAll();
-
-    @Source("images/expand.gif")
-    ImageResource expand();
-
-    @Source("images/expandall.gif")
-    ImageResource expandAll();
-    
     @Source("images/newex_wiz.gif")
     ImageResource newexWiz();
 

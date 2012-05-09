@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.guvnor.client.resources;
 
-package org.drools.guvnor.client;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
+public interface CollapseExpand
+        extends
+        ClientBundle {
 
-import com.google.gwt.core.client.EntryPoint;
+    @Source("images/collapse.gif")
+    ImageResource collapse();
 
-/**
- * This is the main launching/entry point for the Guvnor web console. It
- * essentially sets the initial layout.
- * <p/>
- * If you hadn't noticed, this is using GWT from google. Refer to GWT docs if
- * GWT is new to you (it is quite a different way of building web apps).
- */
-public class GuvnorEntryPoint
-        implements
-        EntryPoint {
+    @Source("images/collapseall.gif")
+    ImageResource collapseAll();
 
-    public void onModuleLoad() {
-        
-    }
- 
+    @Source("images/expand.gif")
+    ImageResource expand();
+
+    @Source("images/expandall.gif")
+    ImageResource expandAll();
 }

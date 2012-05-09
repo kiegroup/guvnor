@@ -112,9 +112,9 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( images.collapse() );
+            icon.setResource( images.collapseExpand().collapse() );
         } else {
-            icon.setResource( images.expand() );
+            icon.setResource( images.collapseExpand().expand() );
         }
 
     }

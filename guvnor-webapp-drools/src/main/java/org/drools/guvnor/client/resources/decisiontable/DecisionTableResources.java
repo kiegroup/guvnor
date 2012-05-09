@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import org.drools.guvnor.client.resources.CollapseExpand;
 import org.drools.guvnor.client.resources.ItemImages;
 import org.drools.guvnor.client.resources.TableImageResources;
 
@@ -101,19 +102,15 @@ public interface DecisionTableResources
 
     TableImageResources tableImageResources();
 
-    @Source("../../resources/images/icon-unmerge.png")
+    @Source("icon-unmerge.png")
     ImageResource toggleUnmergeIcon();
 
-    @Source("../../resources/images/icon-merge.png")
+    @Source("icon-merge.png")
     ImageResource toggleMergeIcon();
 
     ItemImages itemImages();
 
-    @Source("../../resources/images/collapse.gif")
-    ImageResource collapseCellsIcon();
-
-    @Source("../../resources/images/expand.gif")
-    ImageResource expandCellsIcon();
+    CollapseExpand collapseExpand();
 
     @Source({"DecisionTable.css"})
     DecisionTableStyle style();
