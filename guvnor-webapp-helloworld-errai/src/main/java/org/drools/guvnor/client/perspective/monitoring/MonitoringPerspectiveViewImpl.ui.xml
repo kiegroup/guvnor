@@ -57,6 +57,7 @@
         <gwt:HTMLPanel>
           <gwt:Image resource='{images.monitoringScreenshot}'/>
           <gwt:Button ui:field="backWorkspace">Back to Workspace</gwt:Button>
+          <gwt:Button ui:field="callService">CallService</gwt:Button>
         </gwt:HTMLPanel>
       </gwt:center>
       <gwt:south size="20">

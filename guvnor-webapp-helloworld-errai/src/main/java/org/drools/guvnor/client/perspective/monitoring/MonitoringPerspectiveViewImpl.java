@@ -31,6 +31,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
+import org.jboss.errai.bus.client.ErraiBus;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.framework.RequestDispatcher;
 
 @Dependent
 public class MonitoringPerspectiveViewImpl extends Composite implements MonitoringPerspectivePresenter.MyView {
@@ -47,6 +50,8 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
 
     @UiField Button backWorkspace;
 
+    @UiField Button callService;
+
     @PostConstruct
     public void init() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -59,6 +64,17 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
     @UiHandler("backWorkspace")
     public void backToWorkspace(ClickEvent e) {
         placeController.goTo(new WorkspacePerspectivePlace());
+    }
+
+    @UiHandler("callService")
+    public void callService(ClickEvent e) {
+        final RequestDispatcher dispatcher = ErraiBus.getDispatcher();
+
+        MessageBuilder.createMessage()
+                .toSubject("IsDirtyService")
+                .signalling()
+                .noErrorHandling()
+                .sendNowWith(dispatcher);
     }
 
 }

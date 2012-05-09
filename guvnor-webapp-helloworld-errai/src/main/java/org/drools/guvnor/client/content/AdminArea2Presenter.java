@@ -19,13 +19,12 @@ package org.drools.guvnor.client.content;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.ui.part.WorkbenchPart;
 
 @Dependent
-public class AdminArea2Presenter extends AbstractActivity {
+public class AdminArea2Presenter extends WorkbenchPart {
 
     public interface View extends IsWidget {
 
@@ -34,8 +33,18 @@ public class AdminArea2Presenter extends AbstractActivity {
 
     @Inject private View view;
 
-    public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        containerWidget.setWidget(view);
+    @Override public void createPartControl(AcceptsOneWidget container) {
+        container.setWidget(view);
+    }
+
+    @Override public String getName() {
+        return "org.drools.guvnor.client.content.AdminArea2";
+    }
+
+    @Override public void dispose() {
+    }
+
+    @Override public void setFocus() {
     }
 
 }

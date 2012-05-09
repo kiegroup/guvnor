@@ -15,24 +15,6 @@
     <param-value>true</param-value>
   </context-param>
 
-  <!-- We have to register RestEasy providers manually during integration testing because the scan doesn't see them. -->
-  <context-param>
-    <param-name>resteasy.providers</param-name>
-    <param-value>org.jboss.errai.jaxrs.ErraiProvider</param-value>
-  </context-param>
-
-  <filter>
-    <filter-name>Resteasy</filter-name>
-    <filter-class>
-      org.jboss.resteasy.plugins.server.servlet.FilterDispatcher
-    </filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>Resteasy</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <servlet>
 
     <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
@@ -42,10 +24,6 @@ profile in pom.xml to use that. -->
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
 
-    <init-param>
-      <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
@@ -65,6 +43,16 @@ profile in pom.xml to use that. -->
 
     <listener-class>org.jboss.errai.container.CDIServletStateListener</listener-class>
   </listener>
+
+  <filter>
+    <filter-name>Resteasy</filter-name>
+    <filter-class>org.jboss.resteasy.plugins.server.servlet.FilterDispatcher</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Resteasy</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>

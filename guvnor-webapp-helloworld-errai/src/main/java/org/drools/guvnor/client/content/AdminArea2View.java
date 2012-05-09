@@ -38,4 +38,5 @@ public class AdminArea2View extends Composite implements AdminArea2Presenter.Vie
     public void setName(final String name) {
         nameLabel.setText(name);
     }
+
 }

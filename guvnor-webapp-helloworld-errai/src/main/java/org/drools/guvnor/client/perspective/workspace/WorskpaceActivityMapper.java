@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.perspective.workspace;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.activity.shared.Activity;
@@ -25,8 +26,13 @@ import org.drools.guvnor.client.content.AdminArea2Presenter;
 import org.drools.guvnor.client.content.AdminAreaPresenter;
 import org.drools.guvnor.client.content.AdminPlace;
 import org.drools.guvnor.client.content.AdminPlace2;
+import org.drools.guvnor.client.content.editor.TextEditorPlace;
+import org.drools.guvnor.client.content.editor.TextEditorPresenter;
+import org.drools.guvnor.client.ui.EditorInput;
+import org.drools.guvnor.client.ui.part.Editor;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
+@Dependent
 public class WorskpaceActivityMapper implements ContentActivityMapper {
 
     @Inject private IOCBeanManager manager;
@@ -39,6 +45,22 @@ public class WorskpaceActivityMapper implements ContentActivityMapper {
         }
         if (place instanceof AdminPlace2) {
             this.actual = manager.lookupBean(AdminArea2Presenter.class).getInstance();
+        }
+        if (place instanceof TextEditorPlace) {
+            final TextEditorPresenter presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();
+//            presenter.setArtifactId(((TextEditorPlace) place).getFileName());
+            this.actual = presenter;
+        }
+        if (actual instanceof Editor) {
+            ((Editor) actual).init(new EditorInput() {
+                @Override public String getId() {
+                    return ((TextEditorPlace) place).getFileName();
+                }
+
+                @Override public String getName() {
+                    return ((TextEditorPlace) place).getFileName();
+                }
+            });
         }
         return actual;
     }

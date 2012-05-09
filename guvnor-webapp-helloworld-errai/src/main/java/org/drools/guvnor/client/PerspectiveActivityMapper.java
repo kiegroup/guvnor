@@ -16,17 +16,21 @@
 
 package org.drools.guvnor.client;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
+import org.drools.guvnor.client.content.editor.TextEditorPlace;
+import org.drools.guvnor.client.content.editor.TextEditorPresenter;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePresenter;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePresenter;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
+@Dependent
 public class PerspectiveActivityMapper implements ActivityMapper {
 
     @Inject private IOCBeanManager manager;

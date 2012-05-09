@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.content.AdminPlace;
 import org.drools.guvnor.client.content.AdminPlace2;
+import org.drools.guvnor.client.content.editor.TextEditorPlace;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace;
 import org.drools.guvnor.client.resources.Images;
@@ -42,6 +43,8 @@ public class AdminTree extends AbstractTree {
     public static final String ADMIN_ID = "Admin";
     public static final String ADMIN2_ID = "Admin2";
     public static final String CHANGE_PERSPECTIVE_ID = "OtherPerspective";
+    public static final String FILE1_ID = "MyHack1.hack";
+    public static final String FILE2_ID = "MyHack2.hack";
 
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create(Images.class);
@@ -75,6 +78,12 @@ public class AdminTree extends AbstractTree {
         final TreeItem admin2 = tree.addItem(Util.getHeader(images.information(), "admin2"));
         itemWidgets.put(admin2, ADMIN2_ID);
 
+        final TreeItem file1 = tree.addItem(Util.getHeader(images.edit(), FILE1_ID));
+        itemWidgets.put(file1, FILE1_ID);
+
+        final TreeItem file2 = tree.addItem(Util.getHeader(images.edit(), FILE2_ID));
+        itemWidgets.put(file2, FILE2_ID);
+
         final TreeItem changePerspective = tree.addItem(Util.getHeader(images.newItem(), "monitoring"));
         itemWidgets.put(changePerspective, CHANGE_PERSPECTIVE_ID);
     }
@@ -89,6 +98,10 @@ public class AdminTree extends AbstractTree {
                 place = new AdminPlace("helloWorld" + "|" + constants.helloWorld());
             } else if (widgetID.equals(ADMIN2_ID)) {
                 place = new AdminPlace2("helloWorld" + "|" + constants.helloWorld() + " 2");
+            } else if (widgetID.equals(FILE1_ID)) {
+                place = new TextEditorPlace("hackFile" + "|" + FILE1_ID);
+            } else if (widgetID.equals(FILE2_ID)) {
+                place = new TextEditorPlace("hackFile" + "|" + FILE2_ID);
             } else if (widgetID.equals(CHANGE_PERSPECTIVE_ID)) {
                 place = new MonitoringPerspectivePlace();
             } else {

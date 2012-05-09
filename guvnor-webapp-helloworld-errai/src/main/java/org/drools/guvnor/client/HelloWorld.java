@@ -21,28 +21,35 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.activity.shared.ActivityManager;
+import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
+import org.drools.guvnor.client.perspective.workspace.WorskpaceActivityMapper;
+import org.drools.guvnor.client.place.PlaceBuilderUtil;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
+import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 @EntryPoint
 public class HelloWorld {
 
-    @Inject private PerspectiveActivityMapper activityMapper;
+    @Inject private IOCBeanManager manager;
 
     private final PlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
     private final EventBus eventBus = new SimpleEventBus();
@@ -52,11 +59,23 @@ public class HelloWorld {
 
     @PostConstruct
     public void init() {
+        RestClient.setApplicationRoot("/");
+        final Place defaultPlace;
+        final ActivityMapper activityMapper;
+
+        if (Window.Location.getPath().contains("Standalone.html")) {
+            activityMapper = manager.lookupBean(WorskpaceActivityMapper.class).getInstance();
+            defaultPlace = PlaceBuilderUtil.buildPlaceFromWindow();
+        } else {
+            activityMapper = manager.lookupBean(PerspectiveActivityMapper.class).getInstance();
+            defaultPlace = new WorkspacePerspectivePlace();
+        }
+
         final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setDisplay(appWidget);
 
         historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(placeController, eventBus, new WorkspacePerspectivePlace());
+        historyHandler.register(placeController, eventBus, defaultPlace);
     }
 
     @AfterInitialization

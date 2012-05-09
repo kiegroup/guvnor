@@ -1,2 +1,0 @@
-# Module org.drools.guvnor.Guvnor
-# RPC service class, partial path of RPC policy file

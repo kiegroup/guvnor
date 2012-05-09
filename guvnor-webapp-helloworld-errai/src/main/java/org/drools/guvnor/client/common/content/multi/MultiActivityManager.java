@@ -51,7 +51,7 @@ public class MultiActivityManager implements PlaceChangeEvent.Handler {
     public void onPlaceChange(PlaceChangeEvent event) {
 
         if (tabbedPanel == null) {
-            throw new IllegalStateException(MultiContentPanel.class.getName() + " is not set for " + MultiActivityManager.class.getName());
+            return;
         }
 
         if (!(event.getNewPlace() instanceof ContentPlace)) {
