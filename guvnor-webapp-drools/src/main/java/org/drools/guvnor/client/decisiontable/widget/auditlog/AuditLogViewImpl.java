@@ -18,9 +18,7 @@ package org.drools.guvnor.client.decisiontable.widget.auditlog;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.AuditLogCellListResources;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
@@ -28,17 +26,17 @@ import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Window;
@@ -57,25 +55,19 @@ public class AuditLogViewImpl extends Popup
     implements
     AuditLogView {
 
-    private static final String           DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
+    protected int                    MIN_WIDTH     = 500;
+    protected int                    MIN_HEIGHT    = 200;
 
-    private static final DateTimeFormat   format           = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+    private final AuditLog           auditLog;
 
-    protected int                         MIN_WIDTH        = 500;
-    protected int                         MIN_HEIGHT       = 200;
-
-    private final AuditLog                auditLog;
-
-    private final Widget                  popupContent;
-
-    private final AuditLogEntryCellHelper renderer         = new AuditLogEntryCellHelper( format );
+    private final Widget             popupContent;
 
     @UiField
-    ScrollPanel                           spEvents;
+    ScrollPanel                      spEvents;
 
-    private DisclosurePanel               dpEventTypes;
-    private CellList<AuditLogEntry>       events;
-    private final VerticalPanel           lstEventTypes    = new VerticalPanel();
+    private DisclosurePanel          dpEventTypes;
+    private CellTable<AuditLogEntry> events;
+    private final VerticalPanel      lstEventTypes = new VerticalPanel();
 
     interface AuditLogViewImplBinder
         extends
@@ -122,15 +114,26 @@ public class AuditLogViewImpl extends Popup
 
     @Override
     public Widget getContent() {
-        for ( Map.Entry<Class< ? extends AuditLogEntry>, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
+        for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
             lstEventTypes.add( makeEventTypeCheckBox( e.getKey(),
                                                       e.getValue() ) );
         }
 
-        events = new CellList<AuditLogEntry>( new AuditLogEntryCell( renderer,
-                                                                     format ),
-                                                                     AuditLogCellListResources.INSTANCE );
-        events.setEmptyListWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
+        events = new CellTable<AuditLogEntry>();
+
+        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn();
+        AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
+        events.addColumn( summaryColumn );
+        events.addColumn( commentColumn );
+
+        events.setColumnWidth( summaryColumn,
+                               50.0,
+                               Unit.PCT );
+        events.setColumnWidth( commentColumn,
+                               50.0,
+                               Unit.PCT );
+
+        events.setEmptyTableWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
         events.setPageSize( 5 );
@@ -162,9 +165,9 @@ public class AuditLogViewImpl extends Popup
         return this.popupContent;
     }
 
-    private Widget makeEventTypeCheckBox(final Class< ? extends AuditLogEntry> eventType,
+    private Widget makeEventTypeCheckBox(final String eventType,
                                          final Boolean isEnabled) {
-        final CheckBox chkEventType = new CheckBox( renderer.getEventTypeDisplayText( eventType ) );
+        final CheckBox chkEventType = new CheckBox( AuditLogEntryCellHelper.getEventTypeDisplayText( eventType ) );
         chkEventType.setValue( Boolean.TRUE.equals( isEnabled ) );
         chkEventType.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 

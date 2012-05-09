@@ -26,11 +26,20 @@ public class DecisionTableAuditLogFilter extends AuditLogFilter {
     private static final long serialVersionUID = 8506440541322969289L;
 
     public DecisionTableAuditLogFilter() {
-        addType( InsertColumnAuditLogEntry.class );
-        addType( InsertRowAuditLogEntry.class );
-        addType( DeleteColumnAuditLogEntry.class );
-        addType( DeleteRowAuditLogEntry.class );
-        addType( UpdateColumnAuditLogEntry.class );
+        addType( DecisionTableAuditEvents.INSERT_ROW.name() );
+        addType( DecisionTableAuditEvents.INSERT_COLUMN.name() );
+        addType( DecisionTableAuditEvents.DELETE_ROW.name() );
+        addType( DecisionTableAuditEvents.DELETE_COLUMN.name() );
+        addType( DecisionTableAuditEvents.UPDATE_COLUMN.name() );
+    }
+
+    //DO NOT CHANGE THE NAMES OF THESE ENUMS TO PRESERVE COMPATIBILITY OF EXISTING AUDIT LOGS IN FUTURE RELEASES
+    public static enum DecisionTableAuditEvents {
+        INSERT_ROW,
+        INSERT_COLUMN,
+        DELETE_ROW,
+        DELETE_COLUMN,
+        UPDATE_COLUMN
     }
 
 }

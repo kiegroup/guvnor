@@ -16,21 +16,29 @@
 package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 
 /**
  * An Audit Event when a row is deleted
  */
 public class DeleteRowAuditLogEntry extends AuditLogEntry {
 
-    private static final long serialVersionUID = 8049692773593046770L;
+    private static final long   serialVersionUID = 8049692773593046770L;
 
-    public int                rowIndex;
+    private static final String TYPE             = DecisionTableAuditEvents.DELETE_ROW.name();
+
+    public int                  rowIndex;
 
     public DeleteRowAuditLogEntry() {
     }
 
     public DeleteRowAuditLogEntry(final int rowIndex) {
         this.rowIndex = rowIndex;
+    }
+
+    @Override
+    public String getGenericType() {
+        return TYPE;
     }
 
     public int getRowIndex() {

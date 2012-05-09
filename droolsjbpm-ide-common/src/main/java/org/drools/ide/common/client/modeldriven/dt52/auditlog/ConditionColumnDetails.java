@@ -24,8 +24,11 @@ public class ConditionColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = -4296771936396335786L;
 
-    private final String      factField;
-    private final String      operator;
+    private String            factField;
+    private String            operator;
+
+    public ConditionColumnDetails() {
+    }
 
     public ConditionColumnDetails(final ConditionCol52 column) {
         super( column );

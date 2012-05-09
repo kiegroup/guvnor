@@ -28,9 +28,9 @@ public abstract class AuditLogFilter
     implements
     PortableObject {
 
-    private static final long                             serialVersionUID = 2465421087379912355L;
+    private static final long    serialVersionUID = 2465421087379912355L;
 
-    private Map<Class< ? extends AuditLogEntry>, Boolean> acceptedTypes    = new HashMap<Class< ? extends AuditLogEntry>, Boolean>();
+    private Map<String, Boolean> acceptedTypes    = new HashMap<String, Boolean>();
 
     /**
      * Register a type this Filter understands. When a new entry is added the
@@ -38,7 +38,7 @@ public abstract class AuditLogFilter
      * 
      * @param type
      */
-    public void addType(final Class< ? extends AuditLogEntry> type) {
+    public void addType(final String type) {
         this.acceptedTypes.put( type,
                                 Boolean.TRUE );
     }
@@ -52,10 +52,13 @@ public abstract class AuditLogFilter
      * @return true if the AuditLogEntry should be added to the AuditLog
      */
     boolean accept(AuditLogEntry entry) {
-        return acceptedTypes.get( entry.getClass() );
+        if ( !acceptedTypes.containsKey( entry.getGenericType() ) ) {
+            return false;
+        }
+        return acceptedTypes.get( entry.getGenericType() );
     }
 
-    public Map<Class< ? extends AuditLogEntry>, Boolean> getAcceptedTypes() {
+    public Map<String, Boolean> getAcceptedTypes() {
         return this.acceptedTypes;
     }
 

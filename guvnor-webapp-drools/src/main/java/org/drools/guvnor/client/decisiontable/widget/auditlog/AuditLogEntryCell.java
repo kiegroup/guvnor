@@ -36,7 +36,7 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
         extends
         SafeHtmlTemplates {
 
-        @Template("<div class=\"auditLogSummary\">{0}</div>")
+        @Template("<div class=\"auditLogSummary\">{0}</div><div class=\"auditLogDetailValue\">{1}</div>")
         SafeHtml entrySummary(String eventTypeDisplayText,
                               String whoWhenDisplayText);
     }
@@ -45,11 +45,10 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
     private final DateTimeFormat          format;
 
-    private final AuditLogEntryCellHelper renderer;
+    private final AuditLogEntryCellHelper helper;
 
-    public AuditLogEntryCell(final AuditLogEntryCellHelper renderer,
-                             final DateTimeFormat format) {
-        this.renderer = renderer;
+    public AuditLogEntryCell(final DateTimeFormat format) {
+        this.helper = new AuditLogEntryCellHelper( format );
         this.format = format;
     }
 
@@ -62,13 +61,13 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
         }
 
         //Audit Log entry type and date
-        final String eventTypeDisplayText = renderer.getEventTypeDisplayText( value.getClass() );
+        final String eventTypeDisplayText = AuditLogEntryCellHelper.getEventTypeDisplayText( value.getGenericType() );
         final String whoWhenDisplayText = Constants.INSTANCE.AuditLogEntryOn0( format.format( value.getDateOfEntry() ) );
         sb.append( TEMPLATE.entrySummary( eventTypeDisplayText,
                                           whoWhenDisplayText ) );
 
         //Audit Log entry detail
-        sb.append( renderer.getSafeHtml( value ) );
+        sb.append( helper.getSafeHtml( value ) );
     }
 
 }

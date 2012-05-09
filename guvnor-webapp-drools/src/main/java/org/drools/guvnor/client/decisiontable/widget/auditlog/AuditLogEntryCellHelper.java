@@ -27,6 +27,7 @@ import org.drools.ide.common.client.modeldriven.dt52.auditlog.ActionSetFieldColu
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.AttributeColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.ColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.ConditionColumnDetails;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.DeleteColumnAuditLogEntry;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.DeleteRowAuditLogEntry;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.InsertColumnAuditLogEntry;
@@ -89,16 +90,16 @@ public class AuditLogEntryCellHelper {
      * @param eventType
      * @return
      */
-    public String getEventTypeDisplayText(final Class< ? extends AuditLogEntry> eventType) {
-        if ( eventType.equals( UpdateColumnAuditLogEntry.class ) ) {
-            return Constants.INSTANCE.DecisionTableAuditLogEventUpdateColumn();
-        } else if ( eventType.equals( InsertColumnAuditLogEntry.class ) ) {
+    public static String getEventTypeDisplayText(final String eventType) {
+        if ( eventType.equals( DecisionTableAuditEvents.INSERT_COLUMN.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertColumn();
-        } else if ( eventType.equals( InsertRowAuditLogEntry.class ) ) {
+        } else if ( eventType.equals( DecisionTableAuditEvents.INSERT_ROW.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertRow();
-        } else if ( eventType.equals( DeleteColumnAuditLogEntry.class ) ) {
+        } else if ( eventType.equals( DecisionTableAuditEvents.UPDATE_COLUMN.name() ) ) {
+            return Constants.INSTANCE.DecisionTableAuditLogEventUpdateColumn();
+        } else if ( eventType.equals( DecisionTableAuditEvents.DELETE_COLUMN.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventDeleteColumn();
-        } else if ( eventType.equals( DeleteRowAuditLogEntry.class ) ) {
+        } else if ( eventType.equals( DecisionTableAuditEvents.DELETE_ROW.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventDeleteRow();
         }
         throw new IllegalArgumentException( "Unrecognised AuditLogEntry type." );

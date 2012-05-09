@@ -27,6 +27,9 @@ public class LimitedEntryActionInsertFactColumnDetails extends ActionInsertFactC
 
     private DTCellValue52     value;
 
+    public LimitedEntryActionInsertFactColumnDetails() {
+    }
+
     public LimitedEntryActionInsertFactColumnDetails(final LimitedEntryActionInsertFactCol52 column) {
         super( column );
         this.value = column.getValue();

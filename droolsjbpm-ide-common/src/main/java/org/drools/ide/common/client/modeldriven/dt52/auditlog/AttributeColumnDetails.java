@@ -24,7 +24,10 @@ public class AttributeColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = -4815318257058328788L;
 
-    private final String      attribute;
+    private String            attribute;
+
+    public AttributeColumnDetails() {
+    }
 
     public AttributeColumnDetails(final AttributeCol52 column) {
         super( column );

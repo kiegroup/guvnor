@@ -16,21 +16,29 @@
 package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 
 /**
  * An Audit Event when a row is inserted
  */
 public class InsertRowAuditLogEntry extends AuditLogEntry {
 
-    private static final long serialVersionUID = 8049692773593046770L;
+    private static final long   serialVersionUID = 8049692773593046770L;
 
-    public int                rowIndex;
+    private static final String TYPE             = DecisionTableAuditEvents.INSERT_ROW.name();
+
+    public int                  rowIndex;
 
     public InsertRowAuditLogEntry() {
     }
 
     public InsertRowAuditLogEntry(final int rowIndex) {
         this.rowIndex = rowIndex;
+    }
+
+    @Override
+    public String getGenericType() {
+        return TYPE;
     }
 
     public int getRowIndex() {

@@ -24,7 +24,10 @@ public class MetadataColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = -4815318257058328788L;
 
-    private final String      metadata;
+    private String            metadata;
+
+    public MetadataColumnDetails() {
+    }
 
     public MetadataColumnDetails(final MetadataCol52 column) {
         super( column );

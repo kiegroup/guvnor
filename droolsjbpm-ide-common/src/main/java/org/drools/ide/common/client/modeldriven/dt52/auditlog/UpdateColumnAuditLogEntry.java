@@ -16,15 +16,18 @@
 package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 
 /**
  * An Audit Event for when a column is updated
  */
 public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
 
-    private static final long serialVersionUID = -6953659333450748813L;
+    private static final long   serialVersionUID = -6953659333450748813L;
 
-    private ColumnDetails     originalDetails;
+    private static final String TYPE             = DecisionTableAuditEvents.UPDATE_COLUMN.name();
+
+    private ColumnDetails       originalDetails;
 
     public UpdateColumnAuditLogEntry() {
     }
@@ -33,6 +36,11 @@ public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
                                      final BaseColumn newColumn) {
         super( newColumn );
         this.originalDetails = getDetails( originalColumn );
+    }
+
+    @Override
+    public String getGenericType() {
+        return TYPE;
     }
 
     public ColumnDetails getOriginalDetails() {

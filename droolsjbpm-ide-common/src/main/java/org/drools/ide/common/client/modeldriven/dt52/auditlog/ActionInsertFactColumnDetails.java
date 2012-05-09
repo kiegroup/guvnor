@@ -24,8 +24,11 @@ public class ActionInsertFactColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = 7045573579522193502L;
 
-    private final String      factType;
-    private final String      factField;
+    private String            factType;
+    private String            factField;
+
+    public ActionInsertFactColumnDetails() {
+    }
 
     public ActionInsertFactColumnDetails(final ActionInsertFactCol52 column) {
         super( column );

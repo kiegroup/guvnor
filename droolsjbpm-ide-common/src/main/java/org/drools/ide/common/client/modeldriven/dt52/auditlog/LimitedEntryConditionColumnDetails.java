@@ -27,6 +27,9 @@ public class LimitedEntryConditionColumnDetails extends ConditionColumnDetails {
 
     private DTCellValue52     value;
 
+    public LimitedEntryConditionColumnDetails() {
+    }
+
     public LimitedEntryConditionColumnDetails(final LimitedEntryConditionCol52 column) {
         super( column );
         this.value = column.getValue();

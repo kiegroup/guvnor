@@ -27,15 +27,18 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFac
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 
 /**
  * An Audit Event for when a column is inserted
  */
 public class InsertColumnAuditLogEntry extends AuditLogEntry {
 
-    private static final long serialVersionUID = -7525789306354393393L;
+    private static final long   serialVersionUID = -7525789306354393393L;
 
-    private ColumnDetails     details;
+    private static final String TYPE             = DecisionTableAuditEvents.INSERT_COLUMN.name();
+
+    private ColumnDetails       details;
 
     public InsertColumnAuditLogEntry() {
     }
@@ -68,6 +71,11 @@ public class InsertColumnAuditLogEntry extends AuditLogEntry {
         } else {
             return new ColumnDetails( column );
         }
+    }
+
+    @Override
+    public String getGenericType() {
+        return TYPE;
     }
 
     public ColumnDetails getDetails() {

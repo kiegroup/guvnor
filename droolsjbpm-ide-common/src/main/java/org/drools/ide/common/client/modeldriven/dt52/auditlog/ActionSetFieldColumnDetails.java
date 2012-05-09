@@ -24,8 +24,11 @@ public class ActionSetFieldColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = 6286258564202555988L;
 
-    private final String      boundName;
-    private final String      factField;
+    private String            boundName;
+    private String            factField;
+
+    public ActionSetFieldColumnDetails() {
+    }
 
     public ActionSetFieldColumnDetails(final ActionSetFieldCol52 column) {
         super( column );

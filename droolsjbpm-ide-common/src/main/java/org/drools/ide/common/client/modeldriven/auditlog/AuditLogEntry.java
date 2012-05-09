@@ -46,6 +46,8 @@ public abstract class AuditLogEntry
         return userComment;
     }
 
+    public abstract String getGenericType();
+
     public boolean isDeleted() {
         return isDeleted;
     }

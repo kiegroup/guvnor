@@ -27,6 +27,9 @@ public class LimitedEntryActionSetFieldColumnDetails extends ActionSetFieldColum
 
     private DTCellValue52     value;
 
+    public LimitedEntryActionSetFieldColumnDetails() {
+    }
+
     public LimitedEntryActionSetFieldColumnDetails(final LimitedEntryActionSetFieldCol52 column) {
         super( column );
         this.value = column.getValue();

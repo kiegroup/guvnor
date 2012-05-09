@@ -16,22 +16,38 @@
 package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
 
 /**
  * An Audit Event for when a column is deleted
  */
 public class DeleteColumnAuditLogEntry extends AuditLogEntry {
 
-    private static final long serialVersionUID = 2118763458557017503L;
+    private static final long   serialVersionUID = 2118763458557017503L;
 
-    private String            columnHeader;
+    private static final String TYPE             = DecisionTableAuditEvents.DELETE_COLUMN.name();
+
+    private String              columnHeader;
 
     public DeleteColumnAuditLogEntry() {
     }
 
     public DeleteColumnAuditLogEntry(final BaseColumn column) {
-        this.columnHeader = column.getHeader();
+        if ( column instanceof MetadataCol52 ) {
+            this.columnHeader = ((MetadataCol52) column).getMetadata();
+        } else if ( column instanceof AttributeCol52 ) {
+            this.columnHeader = ((AttributeCol52) column).getAttribute();
+        } else {
+            this.columnHeader = column.getHeader();
+        }
+    }
+
+    @Override
+    public String getGenericType() {
+        return TYPE;
     }
 
     public String getColumnHeader() {

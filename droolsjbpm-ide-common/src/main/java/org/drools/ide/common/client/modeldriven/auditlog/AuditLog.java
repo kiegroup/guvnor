@@ -15,9 +15,9 @@
  */
 package org.drools.ide.common.client.modeldriven.auditlog;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -34,10 +34,12 @@ public class AuditLog
     PortableObject,
     List<AuditLogEntry> {
 
-    private static final long   serialVersionUID = -8133752193392354305L;
+    private static final long         serialVersionUID = -8133752193392354305L;
 
-    private AuditLogFilter      filter;
-    private List<AuditLogEntry> entries          = new ArrayList<AuditLogEntry>();
+    private AuditLogFilter            filter;
+
+    //Use a LinkedList so we can quickly insert items at the beginning of the List
+    private LinkedList<AuditLogEntry> entries          = new LinkedList<AuditLogEntry>();
 
     public AuditLog() {
     }
@@ -74,12 +76,18 @@ public class AuditLog
         return entries.toArray( a );
     }
 
+    /**
+     * Add a new AuditLogEntry at the beginning of the list. This is different
+     * behaviour to a regular List but it prevents the need to sort entries in
+     * descending order.
+     */
     public boolean add(AuditLogEntry e) {
         if ( filter == null ) {
             throw new IllegalStateException( "AuditLogFilter has not been set. Please set before inserting entries." );
         }
         if ( filter.accept( e ) ) {
-            return entries.add( e );
+            entries.addFirst( e );
+            return true;
         }
         return false;
     }
