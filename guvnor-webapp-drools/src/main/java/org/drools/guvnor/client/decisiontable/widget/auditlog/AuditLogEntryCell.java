@@ -15,27 +15,42 @@
  */
 package org.drools.guvnor.client.decisiontable.widget.auditlog;
 
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
  * A cell to render AuditLogEntry's
  */
+@SuppressWarnings("unused")
 public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
-    private static final String           DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
+    interface Template
+        extends
+        SafeHtmlTemplates {
 
-    private static final DateTimeFormat   format           = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+        @Template("<div class=\"auditLogSummary\">{0}</div>")
+        SafeHtml entrySummary(String eventTypeDisplayText,
+                              String whoWhenDisplayText);
+    }
+
+    private static final Template         TEMPLATE = GWT.create( Template.class );
+
+    private final DateTimeFormat          format;
 
     private final AuditLogEntryCellHelper renderer;
 
-    public AuditLogEntryCell(final AuditLogEntryCellHelper renderer) {
+    public AuditLogEntryCell(final AuditLogEntryCellHelper renderer,
+                             final DateTimeFormat format) {
         this.renderer = renderer;
+        this.format = format;
     }
 
     @Override
@@ -47,15 +62,10 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
         }
 
         //Audit Log entry type and date
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td><b>" );
-        sb.appendEscaped( renderer.getEventTypeDisplayText( value.getClass() ) );
-        sb.appendHtmlConstant( "</b></td></tr>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.AuditLogEntryBy0On1( value.getUserName(),
-                                                                  format.format( value.getDateOfEntry() ) ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+        final String eventTypeDisplayText = renderer.getEventTypeDisplayText( value.getClass() );
+        final String whoWhenDisplayText = Constants.INSTANCE.AuditLogEntryOn0( format.format( value.getDateOfEntry() ) );
+        sb.append( TEMPLATE.entrySummary( eventTypeDisplayText,
+                                          whoWhenDisplayText ) );
 
         //Audit Log entry detail
         sb.append( renderer.getSafeHtml( value ) );

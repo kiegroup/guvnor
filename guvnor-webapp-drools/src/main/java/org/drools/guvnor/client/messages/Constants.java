@@ -2714,9 +2714,11 @@ public interface Constants
     
     String DecisionTableAuditLogEventInsertColumn();
     
+    String DecisionTableAuditLogEventUpdateColumn();
+    
     String DecisionTableAuditLogEventInsertRow();
     
-    String AuditLogEntryBy0On1(String author, String date);
+    String AuditLogEntryOn0(String date);
 
     String DecisionTableAuditLogInsertRowAt0(int index);
 
@@ -2738,4 +2740,22 @@ public interface Constants
 
     String DecisionTableAuditLogNoEntries();
 
+    String FactTypeColon();
+    
+    String FieldColon();
+    
+    String OperatorColon();
+    
+    String ValueColon();
+    
+    String BoundVariableColon();
+    
+    String DecisionTableAuditLog0Was1(String value, String originalValue);
+    
+    String DecisionTableAuditLogUpdateCondition0Was1(String value, String originalValue);
+    
+    String DecisionTableAuditLogUpdateAction0Was1(String value, String originalValue);
+    
+    String DecisionTableAuditLogUpdateColumn0Was1(String value, String originalValue);
+    
 }

@@ -25,7 +25,7 @@ public class AuditLog {
     private AuditLogView view;
 
     public AuditLog(final GuidedDecisionTable52 dtable) {
-        this.view = new AuditLogViewImpl( dtable );
+        this.view = new AuditLogViewImpl( dtable.getAuditLog() );
     }
 
     public void show() {

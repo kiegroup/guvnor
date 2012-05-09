@@ -15,8 +15,13 @@
  */
 package org.drools.guvnor.client.decisiontable.widget.auditlog;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.ActionInsertFactColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.ActionSetFieldColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.AttributeColumnDetails;
@@ -30,14 +35,53 @@ import org.drools.ide.common.client.modeldriven.dt52.auditlog.LimitedEntryAction
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.LimitedEntryActionSetFieldColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.LimitedEntryConditionColumnDetails;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.MetadataColumnDetails;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.UpdateColumnAuditLogEntry;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
  * Render different HTML for different AuditLogEvents
  */
+@SuppressWarnings("unused")
 public class AuditLogEntryCellHelper {
+
+    interface Template
+        extends
+        SafeHtmlTemplates {
+
+        @Template("<div>{0}</div>")
+        SafeHtml commentHeader(String header);
+
+        @Template("<div>{0}</div><table><tr><td><div class=\"auditLogDetailLabel\">{1}</div></td><td><div class=\"auditLogDetailValue\">{2}</div></td></tr><tr><td><div class=\"auditLogDetailLabel\">{3}</div></td><td><div class=\"auditLogDetailValue\">{4}</div></td></tr></table>")
+        SafeHtml commentHeader2Details(String header,
+                                       String row1Label,
+                                       String row1Value,
+                                       String row2Label,
+                                       String row2Value);
+
+        @Template("<div>{0}</div><table><tr><td><div class=\"auditLogDetailLabel\">{1}</div></td><td><div class=\"auditLogDetailValue\">{2}</div></td></tr><tr><td><div class=\"auditLogDetailLabel\">{3}</div></td><td><div class=\"auditLogDetailValue\">{4}</div></td></tr><tr><td><div class=\"auditLogDetailLabel\">{5}</div></td><td><div class=\"auditLogDetailValue\">{6}</div></td></tr></table>")
+        SafeHtml commentHeader3Details(String header,
+                                       String row1Label,
+                                       String row1Value,
+                                       String row2Label,
+                                       String row2Value,
+                                       String row3Label,
+                                       String row3Value);
+
+    }
+
+    private static final Template TEMPLATE = GWT.create( Template.class );
+
+    private final DateTimeFormat  format;
+
+    public AuditLogEntryCellHelper(final DateTimeFormat format) {
+        this.format = format;
+    }
 
     /**
      * Lookup display text for each AuditLogEntry type
@@ -46,7 +90,9 @@ public class AuditLogEntryCellHelper {
      * @return
      */
     public String getEventTypeDisplayText(final Class< ? extends AuditLogEntry> eventType) {
-        if ( eventType.equals( InsertColumnAuditLogEntry.class ) ) {
+        if ( eventType.equals( UpdateColumnAuditLogEntry.class ) ) {
+            return Constants.INSTANCE.DecisionTableAuditLogEventUpdateColumn();
+        } else if ( eventType.equals( InsertColumnAuditLogEntry.class ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertColumn();
         } else if ( eventType.equals( InsertRowAuditLogEntry.class ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertRow();
@@ -59,7 +105,9 @@ public class AuditLogEntryCellHelper {
     }
 
     public SafeHtml getSafeHtml(final AuditLogEntry event) {
-        if ( event instanceof InsertColumnAuditLogEntry ) {
+        if ( event instanceof UpdateColumnAuditLogEntry ) {
+            return getSafeHtml( (UpdateColumnAuditLogEntry) event );
+        } else if ( event instanceof InsertColumnAuditLogEntry ) {
             return getSafeHtml( (InsertColumnAuditLogEntry) event );
         } else if ( event instanceof DeleteColumnAuditLogEntry ) {
             return getSafeHtml( (DeleteColumnAuditLogEntry) event );
@@ -73,161 +121,305 @@ public class AuditLogEntryCellHelper {
 
     private SafeHtml getSafeHtml(final InsertRowAuditLogEntry event) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertRowAt0( event.getRowIndex() + 1 ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+        sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogInsertRowAt0( event.getRowIndex() + 1 ) ) );
         return sb.toSafeHtml();
     }
 
     private SafeHtml getSafeHtml(final DeleteRowAuditLogEntry event) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogDeleteRowAt0( event.getRowIndex() + 1 ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+        sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogDeleteRowAt0( event.getRowIndex() + 1 ) ) );
         return sb.toSafeHtml();
     }
 
     private SafeHtml getSafeHtml(final InsertColumnAuditLogEntry event) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        buildColumnDetails( event.getDetails(),
-                            sb );
+        buildColumnDetailsInsert( event.getDetails(),
+                                  sb );
+        return sb.toSafeHtml();
+    }
+
+    private SafeHtml getSafeHtml(final UpdateColumnAuditLogEntry event) {
+        SafeHtmlBuilder sb = new SafeHtmlBuilder();
+        buildColumnDetailsUpdate( event.getDetails(),
+                                  event.getOriginalDetails(),
+                                  sb );
         return sb.toSafeHtml();
     }
 
     private SafeHtml getSafeHtml(final DeleteColumnAuditLogEntry event) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogDeleteColumn0( event.getColumnHeader() ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+        sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogDeleteColumn0( event.getColumnHeader() ) ) );
         return sb.toSafeHtml();
     }
 
-    private void buildColumnDetails(final ColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
+    private void buildColumnDetailsInsert(final ColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
         if ( details instanceof AttributeColumnDetails ) {
-            buildColumnDetails( (AttributeColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (AttributeColumnDetails) details,
+                                      sb );
         } else if ( details instanceof MetadataColumnDetails ) {
-            buildColumnDetails( (MetadataColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (MetadataColumnDetails) details,
+                                      sb );
         } else if ( details instanceof ConditionColumnDetails ) {
-            buildColumnDetails( (ConditionColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (ConditionColumnDetails) details,
+                                      sb );
         } else if ( details instanceof LimitedEntryConditionColumnDetails ) {
-            buildColumnDetails( (LimitedEntryConditionColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (LimitedEntryConditionColumnDetails) details,
+                                      sb );
         } else if ( details instanceof ActionInsertFactColumnDetails ) {
-            buildColumnDetails( (ActionInsertFactColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (ActionInsertFactColumnDetails) details,
+                                      sb );
         } else if ( details instanceof LimitedEntryActionInsertFactColumnDetails ) {
-            buildColumnDetails( (LimitedEntryActionInsertFactColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (LimitedEntryActionInsertFactColumnDetails) details,
+                                      sb );
         } else if ( details instanceof ActionSetFieldColumnDetails ) {
-            buildColumnDetails( (ActionSetFieldColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (ActionSetFieldColumnDetails) details,
+                                      sb );
         } else if ( details instanceof LimitedEntryActionSetFieldColumnDetails ) {
-            buildColumnDetails( (LimitedEntryActionSetFieldColumnDetails) details,
-                                sb );
+            buildColumnDetailsInsert( (LimitedEntryActionSetFieldColumnDetails) details,
+                                      sb );
         } else {
-            sb.appendHtmlConstant( "<table>" );
-            sb.appendHtmlConstant( "<tr><td>" );
-            sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertColumn0( details.getColumnHeader() ) );
-            sb.appendHtmlConstant( "</td></tr>" );
-            sb.appendHtmlConstant( "</table>" );
+            sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogInsertColumn0( details.getColumnHeader() ) ) );
         }
     }
 
-    private void buildColumnDetails(final AttributeColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertAttribute0( details.getAttribute() ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final AttributeColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogInsertAttribute0( details.getAttribute() ) ) );
     }
 
-    private void buildColumnDetails(final MetadataColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertMetadata0( details.getMetadata() ) );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final MetadataColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogInsertMetadata0( details.getMetadata() ) ) );
     }
 
-    private void buildColumnDetails(final ConditionColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertCondition0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendEscaped( details.getOperator() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final ConditionColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogInsertCondition0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ),
+                                                   Constants.INSTANCE.OperatorColon(),
+                                                   nil( details.getOperator() ) ) );
     }
 
-    private void buildColumnDetails(final LimitedEntryConditionColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertCondition0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendEscaped( details.getOperator() );
-        sb.appendEscaped( details.getValue().toString() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final LimitedEntryConditionColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogInsertCondition0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ),
+                                                   Constants.INSTANCE.OperatorColon(),
+                                                   nil( details.getOperator() ),
+                                                   Constants.INSTANCE.ValueColon(),
+                                                   nilLimitedEntryValue( details.getValue() ) ) );
     }
 
-    private void buildColumnDetails(final ActionInsertFactColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertActionInsertFact0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getFactType() );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final ActionInsertFactColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogInsertActionInsertFact0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.FactTypeColon(),
+                                                   nil( details.getFactType() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ) ) );
     }
 
-    private void buildColumnDetails(final LimitedEntryActionInsertFactColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertActionInsertFact0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getFactType() );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendEscaped( details.getValue().toString() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final LimitedEntryActionInsertFactColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogInsertActionInsertFact0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.FactTypeColon(),
+                                                   nil( details.getFactType() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ),
+                                                   Constants.INSTANCE.ValueColon(),
+                                                   nilLimitedEntryValue( details.getValue() ) ) );
     }
 
-    private void buildColumnDetails(final ActionSetFieldColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertActionSetField0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getBoundName() );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final ActionSetFieldColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogInsertActionSetField0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.BoundVariableColon(),
+                                                   nil( details.getBoundName() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ) ) );
     }
 
-    private void buildColumnDetails(final LimitedEntryActionSetFieldColumnDetails details,
-                                    final SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant( "<table>" );
-        sb.appendHtmlConstant( "<tr><td>" );
-        sb.appendEscaped( Constants.INSTANCE.DecisionTableAuditLogInsertActionSetField0( details.getColumnHeader() ) );
-        sb.appendEscaped( details.getBoundName() );
-        sb.appendEscaped( details.getFactField() );
-        sb.appendEscaped( details.getValue().toString() );
-        sb.appendHtmlConstant( "</td></tr>" );
-        sb.appendHtmlConstant( "</table>" );
+    private void buildColumnDetailsInsert(final LimitedEntryActionSetFieldColumnDetails details,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogInsertActionSetField0( details.getColumnHeader() ),
+                                                   Constants.INSTANCE.BoundVariableColon(),
+                                                   nil( details.getBoundName() ),
+                                                   Constants.INSTANCE.FieldColon(),
+                                                   nil( details.getFactField() ),
+                                                   Constants.INSTANCE.ValueColon(),
+                                                   nilLimitedEntryValue( details.getValue() ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final ColumnDetails details,
+                                          final ColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        if ( (details instanceof ConditionColumnDetails) && (originalDetails instanceof ConditionColumnDetails) ) {
+            buildColumnDetailsUpdate( (ConditionColumnDetails) details,
+                                      (ConditionColumnDetails) originalDetails,
+                                      sb );
+        } else if ( (details instanceof LimitedEntryConditionColumnDetails) && (originalDetails instanceof LimitedEntryConditionColumnDetails) ) {
+            buildColumnDetailsUpdate( (LimitedEntryConditionColumnDetails) details,
+                                      (LimitedEntryConditionColumnDetails) originalDetails,
+                                      sb );
+        } else if ( (details instanceof ActionInsertFactColumnDetails) && (originalDetails instanceof ActionInsertFactColumnDetails) ) {
+            buildColumnDetailsUpdate( (ActionInsertFactColumnDetails) details,
+                                      (ActionInsertFactColumnDetails) originalDetails,
+                                      sb );
+        } else if ( (details instanceof LimitedEntryActionInsertFactColumnDetails) && (originalDetails instanceof LimitedEntryActionInsertFactColumnDetails) ) {
+            buildColumnDetailsUpdate( (LimitedEntryActionInsertFactColumnDetails) details,
+                                      (LimitedEntryActionInsertFactColumnDetails) originalDetails,
+                                      sb );
+        } else if ( (details instanceof ActionSetFieldColumnDetails) && (originalDetails instanceof ActionSetFieldColumnDetails) ) {
+            buildColumnDetailsUpdate( (ActionSetFieldColumnDetails) details,
+                                      (ActionSetFieldColumnDetails) originalDetails,
+                                      sb );
+        } else if ( (details instanceof LimitedEntryActionSetFieldColumnDetails) && (originalDetails instanceof LimitedEntryActionSetFieldColumnDetails) ) {
+            buildColumnDetailsUpdate( (LimitedEntryActionSetFieldColumnDetails) details,
+                                      (LimitedEntryActionSetFieldColumnDetails) originalDetails,
+                                      sb );
+        } else {
+            sb.append( TEMPLATE.commentHeader( Constants.INSTANCE.DecisionTableAuditLogUpdateColumn0Was1( details.getColumnHeader(),
+                                                                                                          originalDetails.getColumnHeader() ) ) );
+        }
+    }
+
+    private void buildColumnDetailsUpdate(final ConditionColumnDetails details,
+                                          final ConditionColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogUpdateCondition0Was1( details.getColumnHeader(),
+                                                                                                                 originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ),
+                                                         Constants.INSTANCE.OperatorColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getOperator() ),
+                                                                                                        nil( originalDetails.getOperator() ) ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final LimitedEntryConditionColumnDetails details,
+                                          final LimitedEntryConditionColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogUpdateCondition0Was1( details.getColumnHeader(),
+                                                                                                                 originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ),
+                                                         Constants.INSTANCE.OperatorColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getOperator() ),
+                                                                                                        nil( originalDetails.getOperator() ) ),
+                                                         Constants.INSTANCE.ValueColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
+                                                                                                        nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final ActionInsertFactColumnDetails details,
+                                          final ActionInsertFactColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
+                                                                                                              originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.FactTypeColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactType() ),
+                                                                                                        nil( originalDetails.getFactType() ) ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final LimitedEntryActionInsertFactColumnDetails details,
+                                          final LimitedEntryActionInsertFactColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
+                                                                                                              originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.FactTypeColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactType() ),
+                                                                                                        nil( originalDetails.getFactType() ) ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ),
+                                                         Constants.INSTANCE.ValueColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
+                                                                                                        nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final ActionSetFieldColumnDetails details,
+                                          final ActionSetFieldColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader2Details( Constants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
+                                                                                                              originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.BoundVariableColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getBoundName() ),
+                                                                                                        nil( originalDetails.getBoundName() ) ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ) ) );
+    }
+
+    private void buildColumnDetailsUpdate(final LimitedEntryActionSetFieldColumnDetails details,
+                                          final LimitedEntryActionSetFieldColumnDetails originalDetails,
+                                          final SafeHtmlBuilder sb) {
+        sb.append( TEMPLATE.commentHeader3Details( Constants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
+                                                                                                              originalDetails.getColumnHeader() ),
+                                                         Constants.INSTANCE.BoundVariableColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getBoundName() ),
+                                                                                                        nil( originalDetails.getBoundName() ) ),
+                                                         Constants.INSTANCE.FieldColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
+                                                                                                        nil( originalDetails.getFactField() ) ),
+                                                         Constants.INSTANCE.ValueColon(),
+                                                         Constants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
+                                                                                                        nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+    }
+
+    private String nil(final String value) {
+        return value == null ? "" : value;
+    }
+
+    private String nilLimitedEntryValue(final DTCellValue52 value) {
+        String displayText = convertDTCellValueToString( value );
+        return displayText == null ? "" : displayText;
+    }
+
+    private String convertDTCellValueToString(final DTCellValue52 dcv) {
+        switch ( dcv.getDataType() ) {
+            case BOOLEAN :
+                Boolean booleanValue = dcv.getBooleanValue();
+                return (booleanValue == null ? null : booleanValue.toString());
+            case DATE :
+                Date dateValue = dcv.getDateValue();
+                return (dateValue == null ? null : format.format( dcv.getDateValue() ));
+            case NUMERIC :
+                BigDecimal numericValue = (BigDecimal) dcv.getNumericValue();
+                return (numericValue == null ? null : numericValue.toPlainString());
+            case NUMERIC_BIGDECIMAL :
+                BigDecimal bigDecimalValue = (BigDecimal) dcv.getNumericValue();
+                return (bigDecimalValue == null ? null : bigDecimalValue.toPlainString());
+            case NUMERIC_BIGINTEGER :
+                BigInteger bigIntegerValue = (BigInteger) dcv.getNumericValue();
+                return (bigIntegerValue == null ? null : bigIntegerValue.toString());
+            case NUMERIC_BYTE :
+                Byte byteValue = (Byte) dcv.getNumericValue();
+                return (byteValue == null ? null : byteValue.toString());
+            case NUMERIC_DOUBLE :
+                Double doubleValue = (Double) dcv.getNumericValue();
+                return (doubleValue == null ? null : doubleValue.toString());
+            case NUMERIC_FLOAT :
+                Float floatValue = (Float) dcv.getNumericValue();
+                return (floatValue == null ? null : floatValue.toString());
+            case NUMERIC_INTEGER :
+                Integer integerValue = (Integer) dcv.getNumericValue();
+                return (integerValue == null ? null : integerValue.toString());
+            case NUMERIC_LONG :
+                Long longValue = (Long) dcv.getNumericValue();
+                return (longValue == null ? null : longValue.toString());
+            case NUMERIC_SHORT :
+                Short shortValue = (Short) dcv.getNumericValue();
+                return (shortValue == null ? null : shortValue.toString());
+            default :
+                return dcv.getStringValue();
+        }
     }
 
 }

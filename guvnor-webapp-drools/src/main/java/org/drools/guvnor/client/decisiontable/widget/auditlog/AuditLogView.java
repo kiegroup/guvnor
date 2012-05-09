@@ -25,7 +25,7 @@ public interface AuditLogView
     IsWidget {
 
     interface Presenter {
-
+        //Erm, well... not a lot to see here. Future expansion
     }
     
     void show();

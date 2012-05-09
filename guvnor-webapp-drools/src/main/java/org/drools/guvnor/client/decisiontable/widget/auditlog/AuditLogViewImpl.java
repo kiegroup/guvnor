@@ -18,11 +18,12 @@ package org.drools.guvnor.client.decisiontable.widget.auditlog;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.AuditLogCellListResources;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
+import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -33,6 +34,7 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -55,20 +57,25 @@ public class AuditLogViewImpl extends Popup
     implements
     AuditLogView {
 
-    protected int                         MIN_WIDTH     = 500;
-    protected int                         MIN_HEIGHT    = 200;
+    private static final String           DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
 
-    private final GuidedDecisionTable52   dtable;
+    private static final DateTimeFormat   format           = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+
+    protected int                         MIN_WIDTH        = 500;
+    protected int                         MIN_HEIGHT       = 200;
+
+    private final AuditLog                auditLog;
 
     private final Widget                  popupContent;
 
-    private final AuditLogEntryCellHelper renderer      = new AuditLogEntryCellHelper();
+    private final AuditLogEntryCellHelper renderer         = new AuditLogEntryCellHelper( format );
 
     @UiField
     ScrollPanel                           spEvents;
 
     private DisclosurePanel               dpEventTypes;
-    private final VerticalPanel           lstEventTypes = new VerticalPanel();
+    private CellList<AuditLogEntry>       events;
+    private final VerticalPanel           lstEventTypes    = new VerticalPanel();
 
     interface AuditLogViewImplBinder
         extends
@@ -77,9 +84,9 @@ public class AuditLogViewImpl extends Popup
 
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
-    public AuditLogViewImpl(GuidedDecisionTable52 dtable) {
+    public AuditLogViewImpl(final AuditLog auditLog) {
         setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
-        this.dtable = dtable;
+        this.auditLog = auditLog;
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );
@@ -88,12 +95,12 @@ public class AuditLogViewImpl extends Popup
     }
 
     /**
-     * Width of pop-up, 75% of the client width or MIN_WIDTH
+     * Width of pop-up, 50% of the client width or MIN_WIDTH
      * 
      * @return
      */
     private int getPopupWidth() {
-        int w = (int) (Window.getClientWidth() * 0.75);
+        int w = (int) (Window.getClientWidth() * 0.50);
         if ( w < MIN_WIDTH ) {
             w = MIN_WIDTH;
         }
@@ -101,12 +108,12 @@ public class AuditLogViewImpl extends Popup
     }
 
     /**
-     * Height of pop-up, 75% of the client height or MIN_HEIGHT
+     * Height of pop-up, 50% of the client height or MIN_HEIGHT
      * 
      * @return
      */
     protected int getPopupHeight() {
-        int h = (int) (Window.getClientHeight() * 0.75);
+        int h = (int) (Window.getClientHeight() * 0.50);
         if ( h < MIN_HEIGHT ) {
             h = MIN_HEIGHT;
         }
@@ -115,34 +122,39 @@ public class AuditLogViewImpl extends Popup
 
     @Override
     public Widget getContent() {
-        for ( Map.Entry<Class< ? extends AuditLogEntry>, Boolean> e : dtable.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet() ) {
+        for ( Map.Entry<Class< ? extends AuditLogEntry>, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
             lstEventTypes.add( makeEventTypeCheckBox( e.getKey(),
                                                       e.getValue() ) );
         }
 
-        CellList<AuditLogEntry> events = new CellList<AuditLogEntry>( new AuditLogEntryCell( renderer ),
-                                                                      AuditLogCellListResources.INSTANCE );
+        events = new CellList<AuditLogEntry>( new AuditLogEntryCell( renderer,
+                                                                     format ),
+                                                                     AuditLogCellListResources.INSTANCE );
         events.setEmptyListWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
-        events.setPageSize( 5 );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
+        events.setPageSize( 5 );
+
         GuvnorSimplePager gsp = new GuvnorSimplePager();
+        gsp.setPageSize( 5 );
         gsp.setDisplay( events );
 
         ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>();
         dlp.addDataDisplay( events );
-        dlp.setList( dtable.getAuditLog() );
+        dlp.setList( auditLog );
 
         VerticalPanel vp = new VerticalPanel();
         vp.add( gsp );
         vp.add( events );
+
+        spEvents.setAlwaysShowScrollBars( false );
         spEvents.add( vp );
 
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             @Override
             public void execute() {
-                fixListEventsHeight();
+                fixWidgetSizes();
             }
 
         } );
@@ -158,8 +170,8 @@ public class AuditLogViewImpl extends Popup
 
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                dtable.getAuditLog().getAuditLogFilter().getAcceptedTypes().put( eventType,
-                                                                                 event.getValue() );
+                auditLog.getAuditLogFilter().getAcceptedTypes().put( eventType,
+                                                                     event.getValue() );
             }
 
         } );
@@ -167,9 +179,9 @@ public class AuditLogViewImpl extends Popup
         return chkEventType;
     }
 
-    private void fixListEventsHeight() {
+    private void fixWidgetSizes() {
         final int lstEventsHeight = getClientHeight() - dpEventTypes.getOffsetHeight();
-        spEvents.setAlwaysShowScrollBars( false );
+        events.setWidth( spEvents.getElement().getClientWidth() + "px" );
         spEvents.setHeight( lstEventsHeight + "px" );
     }
 
@@ -183,7 +195,7 @@ public class AuditLogViewImpl extends Popup
 
             @Override
             public void onOpen(OpenEvent<DisclosurePanel> event) {
-                fixListEventsHeight();
+                fixWidgetSizes();
             }
 
         } );
@@ -192,7 +204,7 @@ public class AuditLogViewImpl extends Popup
 
             @Override
             public void onClose(CloseEvent<DisclosurePanel> event) {
-                fixListEventsHeight();
+                fixWidgetSizes();
             }
 
         } );

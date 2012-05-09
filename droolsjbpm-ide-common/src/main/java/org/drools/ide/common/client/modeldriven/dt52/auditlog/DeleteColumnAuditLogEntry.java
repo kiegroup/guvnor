@@ -30,9 +30,7 @@ public class DeleteColumnAuditLogEntry extends AuditLogEntry {
     public DeleteColumnAuditLogEntry() {
     }
 
-    public DeleteColumnAuditLogEntry(final BaseColumn column,
-                                     final String userName) {
-        super( userName );
+    public DeleteColumnAuditLogEntry(final BaseColumn column) {
         this.columnHeader = column.getHeader();
     }
 

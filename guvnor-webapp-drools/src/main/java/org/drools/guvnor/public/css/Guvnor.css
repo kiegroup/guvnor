@@ -656,3 +656,16 @@ a.serviceTab:active {
     text-decoration: none;
     color: #000000;
 }
+
+.auditLogSummary {
+	font-weight: bolder;
+}
+
+.auditLogDetailValue {
+	font-size: x-small;
+}
+
+.auditLogDetailLabel {
+	font-size: x-small;
+	font-weight: bolder;
+}

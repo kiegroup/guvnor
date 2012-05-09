@@ -40,31 +40,33 @@ public class InsertColumnAuditLogEntry extends AuditLogEntry {
     public InsertColumnAuditLogEntry() {
     }
 
-    public InsertColumnAuditLogEntry(final BaseColumn column,
-                                     final String userName) {
-        super( userName );
+    public InsertColumnAuditLogEntry(final BaseColumn column) {
+        this.details = getDetails( column );
+    }
+
+    protected ColumnDetails getDetails(final BaseColumn column) {
         if ( column instanceof MetadataCol52 ) {
-            this.details = new MetadataColumnDetails( (MetadataCol52) column );
+            return new MetadataColumnDetails( (MetadataCol52) column );
         } else if ( column instanceof AttributeCol52 ) {
-            this.details = new AttributeColumnDetails( (AttributeCol52) column );
+            return new AttributeColumnDetails( (AttributeCol52) column );
         } else if ( column instanceof BRLConditionColumn ) {
-            this.details = new ColumnDetails( column );
+            return new ColumnDetails( column );
         } else if ( column instanceof ConditionCol52 ) {
-            this.details = new ConditionColumnDetails( (ConditionCol52) column );
+            return new ConditionColumnDetails( (ConditionCol52) column );
         } else if ( column instanceof LimitedEntryConditionCol52 ) {
-            this.details = new LimitedEntryConditionColumnDetails( (LimitedEntryConditionCol52) column );
+            return new LimitedEntryConditionColumnDetails( (LimitedEntryConditionCol52) column );
         } else if ( column instanceof BRLActionColumn ) {
-            this.details = new ColumnDetails( column );
+            return new ColumnDetails( column );
         } else if ( column instanceof ActionInsertFactCol52 ) {
-            this.details = new ActionInsertFactColumnDetails( (ActionInsertFactCol52) column );
+            return new ActionInsertFactColumnDetails( (ActionInsertFactCol52) column );
         } else if ( column instanceof LimitedEntryActionInsertFactCol52 ) {
-            this.details = new LimitedEntryActionInsertFactColumnDetails( (LimitedEntryActionInsertFactCol52) column );
+            return new LimitedEntryActionInsertFactColumnDetails( (LimitedEntryActionInsertFactCol52) column );
         } else if ( column instanceof ActionSetFieldCol52 ) {
-            this.details = new ActionSetFieldColumnDetails( (ActionSetFieldCol52) column );
+            return new ActionSetFieldColumnDetails( (ActionSetFieldCol52) column );
         } else if ( column instanceof LimitedEntryActionSetFieldCol52 ) {
-            this.details = new LimitedEntryActionSetFieldColumnDetails( (LimitedEntryActionSetFieldCol52) column );
+            return new LimitedEntryActionSetFieldColumnDetails( (LimitedEntryActionSetFieldCol52) column );
         } else {
-            this.details = new ColumnDetails( column );
+            return new ColumnDetails( column );
         }
     }
 

@@ -83,6 +83,7 @@ import org.drools.ide.common.client.modeldriven.dt52.auditlog.DeleteColumnAuditL
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.DeleteRowAuditLogEntry;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.InsertColumnAuditLogEntry;
 import org.drools.ide.common.client.modeldriven.dt52.auditlog.InsertRowAuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.auditlog.UpdateColumnAuditLogEntry;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
@@ -215,9 +216,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -234,9 +234,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         addBRLActionVariableColumns( modelColumn.getChildColumns(),
                                      true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -254,9 +253,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -273,9 +271,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         addBRLConditionVariableColumns( modelColumn.getChildColumns(),
                                         true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -293,9 +290,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -313,9 +309,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -333,9 +328,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -370,9 +364,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    cellValueFactory.makeColumnData( modelColumn ),
                    true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log addition of column
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -390,9 +383,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -412,9 +404,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                        true );
         model.getActionCols().remove( modelColumn );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -432,9 +423,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -454,9 +444,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                        true );
         model.getConditions().remove( modelColumn );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -474,9 +463,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -494,9 +482,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -514,9 +501,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     /**
@@ -546,9 +532,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumn( index,
                       true );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn,
-                                                                "manstis" ) );
+        //Log deletion of column
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( modelColumn ) );
     }
 
     // Delete the column at the given index with optional redraw
@@ -695,6 +680,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -795,6 +786,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -870,6 +867,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bUpdateColumnDefinition = true;
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -924,6 +927,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -969,6 +978,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bUpdateColumnDefinition = true;
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -998,6 +1013,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         if ( editColumn == null ) {
             throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bUpdateColumnDefinition = false;
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
         }
 
         //Copy existing data for re-use if applicable
@@ -1039,6 +1067,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -1064,6 +1098,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         if ( editColumn == null ) {
             throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bUpdateColumnDefinition = false;
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
         }
 
         //Copy existing data for re-use if applicable
@@ -1103,6 +1150,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                true );
                 eventBus.fireEvent( dce );
             }
+        }
+
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
         }
 
         // Copy new values into original column definition
@@ -1150,6 +1203,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bUpdateColumnDefinition = true;
         }
 
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+        }
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
@@ -1193,6 +1252,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bUpdateColumnDefinition = true;
+        }
+
+        //Log change to column definition
+        if ( bUpdateColumnDefinition ) {
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
         }
 
         // Copy new values into original column definition
@@ -1290,6 +1355,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
             deleteColumn( origColumnIndex,
                           true );
 
+            //Log change to column definition
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                    editColumn ) );
+
         } else {
 
             // Update column's visibility
@@ -1356,6 +1425,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      lecEditing.getValue() ) ) {
                     bUpdateColumnDefinition = true;
                 }
+            }
+
+            //Log change to column definition
+            if ( bUpdateColumnDefinition ) {
+                model.getAuditLog().add( new UpdateColumnAuditLogEntry( origColumn,
+                                                                        editColumn ) );
             }
 
             // Copy new values into original column definition
@@ -2044,9 +2119,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         } );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new DeleteRowAuditLogEntry( event.getIndex(),
-                                                             "manstis" ) );
+        //Log deletion of row
+        model.getAuditLog().add( new DeleteRowAuditLogEntry( event.getIndex() ) );
     }
 
     public void onInsertRow(InsertRowEvent event) {
@@ -2063,9 +2137,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         } );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertRowAuditLogEntry( event.getIndex(),
-                                                             "manstis" ) );
+        //Log insertion of row
+        model.getAuditLog().add( new InsertRowAuditLogEntry( event.getIndex() ) );
     }
 
     public void onCopyRows(CopyRowsEvent event) {
@@ -2131,9 +2204,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getAnalysisData().add( iRow,
                                          new Analysis() );
 
-            //TODO {manstis} Need to i18n comment and get User Name
-            model.getAuditLog().add( new InsertRowAuditLogEntry( iRow,
-                                                                 "manstis" ) );
+            //Log insertion of row
+            model.getAuditLog().add( new InsertRowAuditLogEntry( iRow ) );
 
             iRow++;
         }
@@ -2159,9 +2231,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         } );
 
-        //TODO {manstis} Need to i18n comment and get User Name
-        model.getAuditLog().add( new InsertRowAuditLogEntry( model.getData().size() - 1,
-                                                             "manstis" ) );
+        //Log insertion of row
+        model.getAuditLog().add( new InsertRowAuditLogEntry( model.getData().size() - 1 ) );
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {

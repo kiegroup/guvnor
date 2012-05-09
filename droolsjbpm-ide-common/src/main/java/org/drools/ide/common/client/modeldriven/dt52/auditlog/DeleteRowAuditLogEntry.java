@@ -29,9 +29,7 @@ public class DeleteRowAuditLogEntry extends AuditLogEntry {
     public DeleteRowAuditLogEntry() {
     }
 
-    public DeleteRowAuditLogEntry(final int rowIndex,
-                                  final String userName) {
-        super( userName );
+    public DeleteRowAuditLogEntry(final int rowIndex) {
         this.rowIndex = rowIndex;
     }
 

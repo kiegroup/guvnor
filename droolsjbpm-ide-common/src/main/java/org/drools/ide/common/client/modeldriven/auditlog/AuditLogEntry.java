@@ -29,17 +29,12 @@ public abstract class AuditLogEntry
     private static final long serialVersionUID = -6751253344147726552L;
 
     private Date              dateOfEntry;
-    private String            userName;
     private String            userComment;
     private boolean           isDeleted;
 
     public AuditLogEntry() {
-    }
-
-    public AuditLogEntry(final String userName) {
         this.dateOfEntry = new Date();
         this.userComment = "";
-        this.userName = userName;
         this.isDeleted = false;
     }
 
@@ -49,10 +44,6 @@ public abstract class AuditLogEntry
 
     public String getUserComment() {
         return userComment;
-    }
-
-    public String getUserName() {
-        return userName;
     }
 
     public boolean isDeleted() {

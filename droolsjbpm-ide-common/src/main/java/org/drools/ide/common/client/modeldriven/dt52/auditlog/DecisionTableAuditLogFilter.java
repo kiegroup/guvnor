@@ -30,6 +30,7 @@ public class DecisionTableAuditLogFilter extends AuditLogFilter {
         addType( InsertRowAuditLogEntry.class );
         addType( DeleteColumnAuditLogEntry.class );
         addType( DeleteRowAuditLogEntry.class );
+        addType( UpdateColumnAuditLogEntry.class );
     }
 
 }

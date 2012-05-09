@@ -15,26 +15,28 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52.auditlog;
 
-import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
+import org.drools.ide.common.client.modeldriven.dt52.BaseColumn;
 
 /**
- * An Audit Event when a row is inserted
+ * An Audit Event for when a column is updated
  */
-public class InsertRowAuditLogEntry extends AuditLogEntry {
+public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
 
-    private static final long serialVersionUID = 8049692773593046770L;
+    private static final long serialVersionUID = -6953659333450748813L;
 
-    public int                rowIndex;
+    private ColumnDetails     originalDetails;
 
-    public InsertRowAuditLogEntry() {
+    public UpdateColumnAuditLogEntry() {
     }
 
-    public InsertRowAuditLogEntry(final int rowIndex) {
-        this.rowIndex = rowIndex;
+    public UpdateColumnAuditLogEntry(final BaseColumn originalColumn,
+                                     final BaseColumn newColumn) {
+        super( newColumn );
+        this.originalDetails = getDetails( originalColumn );
     }
 
-    public int getRowIndex() {
-        return this.rowIndex;
+    public ColumnDetails getOriginalDetails() {
+        return originalDetails;
     }
 
 }
