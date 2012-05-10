@@ -335,6 +335,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     @Test
     public void testCreatePackageFromJAXB() throws Exception {
         Package p = createTestPackage("TestCreatePackageFromJAXB");
+        p.setCheckInComment("checkincomment for testUpdatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter sw = new StringWriter();
@@ -460,7 +461,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     	Entry entry = abdera.newEntry();		
     	entry.setTitle("testCreatePackageFromAtom");
     	entry.setSummary("desc for testCreatePackageFromAtom");
-    	
+        ExtensibleElement extension = entry.addExtension(Translator.METADATA);
+        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:initial desc for testCreatePackageFromAtom"); 
+        
     	ClientResponse resp = client.post(generateBaseUrl() + "/packages", entry);
         //System.out.println(GetContent(resp.getInputStream()));
 
@@ -471,7 +475,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("/packages/testCreatePackageFromAtom", returnedEntry.getBaseUri().getPath());
 		assertEquals("testCreatePackageFromAtom", returnedEntry.getTitle());
 		assertEquals("desc for testCreatePackageFromAtom", returnedEntry.getSummary());
-		
+	    ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
+	    ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+	    assertEquals("checkin comment:initial desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+
 		//Test update package
         Entry e = abdera.newEntry();
         e.setTitle("testCreatePackageFromAtom");
@@ -481,8 +488,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
-        ExtensibleElement extension = e.addExtension(Translator.METADATA);
-        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        extension = e.addExtension(Translator.METADATA);
+        childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
         childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:updated desc for testCreatePackageFromAtom");  
         resp = client.put(generateBaseUrl() + "/packages/testCreatePackageFromAtom", e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
@@ -516,8 +523,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("testCreatePackageFromAtom", entry.getTitle());
 		assertTrue(entry.getPublished() != null);
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
-		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
-        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+		metadataExtension  = entry.getExtension(Translator.METADATA); 
+        checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
         assertEquals("checkin comment:updated desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
 		
         //Roll back changes. 

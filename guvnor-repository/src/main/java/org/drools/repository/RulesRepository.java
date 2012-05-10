@@ -803,7 +803,8 @@ public class RulesRepository {
         return createPackage(name,
                 description,
                 PackageItem.PACKAGE_FORMAT,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -821,7 +822,8 @@ public class RulesRepository {
         return createPackage(name,
                 description,
                 format,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -837,7 +839,8 @@ public class RulesRepository {
     public PackageItem createPackage(String name,
                                      String description,
                                      String format,
-                                     String[] workspace) throws RulesRepositoryException {
+                                     String[] workspace,
+                                     String checkInComment) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
 
         try {
@@ -866,7 +869,7 @@ public class RulesRepository {
 
             PackageItem item = new PackageItem(this,
                     rulePackageNode);
-            item.checkin("Initial");
+            item.checkin(checkInComment);
 
             if (StorageEventManager.hasSaveEvent()) {
                 StorageEventManager.getSaveEvent().onPackageCreate(item);

@@ -320,7 +320,8 @@ public class RepositoryPackageOperations {
         PackageItem item = getRulesRepository().createPackage( name,
                 description,
                 format,
-                workspace );
+                workspace,
+                "Initial");
 
         return item.getUUID();
     }

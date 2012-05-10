@@ -178,7 +178,15 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createPackageFromAtom(Entry entry) {
         try {
-            PackageItem packageItem = repository.createPackage(entry.getTitle(), entry.getSummary());
+            String checkinComment = "Initial";
+            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
+            if (metadataExtension != null) {
+                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+                if (checkinCommentExtension != null) {
+                    checkinComment = checkinCommentExtension.getSimpleExtension(Translator.VALUE);
+                }
+            }
+            PackageItem packageItem = repository.createPackage(entry.getTitle(), entry.getSummary(), PackageItem.PACKAGE_FORMAT, null, checkinComment);
             return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
@@ -191,7 +199,11 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Package createPackageFromJAXB(Package p) {
         try {
-            PackageItem packageItem = repository.createPackage(p.getTitle(), p.getDescription());
+            String checkinComment = "Initial";
+            if(p.getCheckInComment() != null) {
+                checkinComment = p.getCheckInComment();
+            }
+            PackageItem packageItem = repository.createPackage(p.getTitle(), p.getDescription(), PackageItem.PACKAGE_FORMAT, null, checkinComment);
             return toPackage(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.

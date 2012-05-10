@@ -172,7 +172,8 @@ public class RepositoryPackageOperationsTest {
         when( this.rulesRepository.createPackage( "name",
                                                   "description",
                                                   "package",
-                                                  new String[]{"workspace"} ) ).thenReturn( packageItem );
+                                                  new String[]{"workspace"},
+                                                  "Initial") ).thenReturn( packageItem );
         assertEquals( this.repositoryPackageOperations.createPackage( "name",
                                                                       "description",
                                                                       "package",
@@ -181,7 +182,8 @@ public class RepositoryPackageOperationsTest {
         verify( this.rulesRepository ).createPackage( "name",
                                                       "description",
                                                       "package",
-                                                      new String[]{"workspace"} );
+                                                      new String[]{"workspace"},
+                                                      "Initial");
 
     }
 
