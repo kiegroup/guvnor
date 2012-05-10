@@ -210,15 +210,10 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Response getPackageAsEntry(@PathParam("packageName") String packageName) {
+    public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
         try {
-            if (!rulesRepository.containsModule(packageName)) {
-                return Response.status(404).entity("Package [" + packageName + "] does not exist").build();
-            }
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            
-            return Response.ok(toPackageEntryAbdera(packageItem, uriInfo)).build();            
-            //return toPackageEntryAbdera(packageItem, uriInfo);
+            return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
@@ -228,15 +223,10 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getPackageAsJAXB(@PathParam("packageName") String packageName) {
+    public Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
         try {
-            if (!rulesRepository.containsModule(packageName)) {
-                return Response.status(404).entity("Package [" + packageName + "] does not exist").build();
-            }
-            
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            return Response.ok(toPackage(packageItem, uriInfo)).build();      
-            //return toPackage(packageItem, uriInfo);
+            return toPackage(packageItem, uriInfo);
         } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
@@ -517,15 +507,11 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Response getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
-        try {         
-            if (!(rulesRepository.containsModule(packageName) && rulesRepository.loadModule(packageName).containsAsset(assetName))) {
-                return Response.status(404).entity("Asset [" + assetName + "] of Package [" + packageName + "] does not exist").build();
-            }
-            
+    public Entry getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
-            return Response.ok(toAssetEntryAbdera(asset, uriInfo)).build(); 
-            //return toAssetEntryAbdera(asset, uriInfo);
+            return toAssetEntryAbdera(asset, uriInfo);
         } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
@@ -534,15 +520,11 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAssetAsJaxB(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+    public Asset getAssetAsJaxB(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         try {
-            if (!(rulesRepository.containsModule(packageName) && rulesRepository.loadModule(packageName).containsAsset(assetName))) {
-                return Response.status(404).entity("Asset [" + assetName + "] of Package [" + packageName + "] does not exist").build();
-            }
-            
+            //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
-            return Response.ok(toAsset(asset, uriInfo)).build();
-            //return toAsset(asset, uriInfo);
+            return toAsset(asset, uriInfo);
         } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
@@ -923,6 +905,28 @@ public class PackageResource extends Resource {
                 snapshotName, true, "REST API Snapshot");
     }
 
+    @GET
+    @Path("{packageName}/exists")
+    public boolean packageExists(@PathParam("packageName") final String packageName){
+        /* Determine if package exists in repository */
+        final boolean packageExists = rulesRepository.containsModule(packageName);
+        return packageExists;
+    }
+
+    @GET
+    @Path("{packageName}/assets/{assetName}/exists")
+    public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
+        /* Asset does not exist if package does not exist */
+        final boolean packageExists = rulesRepository.containsModule(packageName);
+        if (!packageExists){
+            return false;
+        }
+
+        /* Load module and determine if it contains an asset */
+        final ModuleItem packageItem = rulesRepository.loadModule(packageName);
+        return packageItem.containsAsset(assetName);
+    }
+
     @POST
     @Path("{packageName}/assets")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -961,15 +965,9 @@ public class PackageResource extends Resource {
         if (asset == null || asset.getMetadata() == null ){
             throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
         }
-        
-        boolean assetExists = false;
-        
-        if (rulesRepository.containsModule(packageName) && rulesRepository.loadModule(packageName).containsAsset(assetName)) {
-            assetExists = true;
-        }
 
         /* Asset must exist to update */
-        if (!assetExists){
+        if (!assetExists(packageName, assetName)){
             throw new WebApplicationException(Response.status(500).entity("Asset [" + assetName + "] does not exist in package [" + packageName + "]").build());
         }
 
