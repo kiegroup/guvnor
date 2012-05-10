@@ -488,8 +488,10 @@ public class RepositoryPackageOperations {
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
         if ( replaceExisting ) {
-            getRulesRepository().removePackageSnapshot( packageName,
-                    snapshotName );
+            if (getRulesRepository().containsSnapshot(packageName, snapshotName)) {
+                getRulesRepository().removePackageSnapshot( packageName,
+                        snapshotName );
+            }
         }
 
         getRulesRepository().createPackageSnapshot( packageName,
