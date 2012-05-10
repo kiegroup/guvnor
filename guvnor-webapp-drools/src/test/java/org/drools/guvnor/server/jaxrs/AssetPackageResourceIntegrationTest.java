@@ -547,11 +547,8 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
 
         ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
-        //If the asset doesn't exist, an HTTP 500 Error is expected. :S
-        if (resp.getStatus() != 404){
-            fail("I was expecting an HTTP 404 Error because 'model1-New' shouldn't exist. "
-                    + "Instead of that I got-> "+resp.getStatus()+": "+resp.getStatusText());
-        }
+        // If the asset doesn't exist, an HTTP 404 is expected.
+        assertEquals(404, resp.getStatus());
                
         //Get asset 'model1' from Guvnor
         client = new AbderaClient(abdera);
@@ -654,6 +651,18 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
     @Ignore
     public void testUpdateAssetFromJson(@ArquillianResource URL baseURL) throws Exception {
         //TODO: implement test
+    }
+
+    @Test @RunAsClient
+    public void testAssetNotExists(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/restNotExistingAsset");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals(404, connection.getResponseCode());
     }
 
 }
