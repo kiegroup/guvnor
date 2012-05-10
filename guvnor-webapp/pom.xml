@@ -169,7 +169,7 @@
                       <include name="*.properties" />
                       <replacefilter token=" Guvnor" value=" BRMS" />
                     </replace>      
-                    <replace file="${basedir}/src/main/java/org/drools/guvnor/client/resources/Images.java" >
+                    <replace file="${basedir}/src/main/java/org/drools/guvnor/client/perspectives/PerspectivesPanelViewImpl.ui.xml" >
                       <replacefilter token="header_logo.gif" value="hdrlogo_brms.gif" />
                     </replace>      
                     <replace dir="${basedir}/src/main/java/org/drools/guvnor/public" includes="Guvnor.jsp *.html">
