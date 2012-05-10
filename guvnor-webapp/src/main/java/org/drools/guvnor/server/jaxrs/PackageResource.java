@@ -273,27 +273,32 @@ public class PackageResource extends Resource {
                     .entity("Package [" + packageName + "] does not exist").build());
         }
         try {
-            PackageItem p = repository.loadPackage(packageName);
+            PackageItem p = compilePackageIfNeeded(packageName);
+            byte[] result = p.getCompiledPackageBytes();
             String fileName = packageName + ".pkg";
-            byte[] result;
-            if (p.isBinaryUpToDate()) {
-                result = p.getCompiledPackageBytes();
-            } else {
-                BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
-                if (builderResult != null && !builderResult.getLines().isEmpty()) {
-                    StringBuilder errs = new StringBuilder();
-                    errs.append("Unable to build package name [").append(packageName).append("]\n");
-                    for (BuilderResultLine resultLine : builderResult.getLines()) {
-                        errs.append(resultLine.toString()).append("\n");
-                    }
-                    return Response.status(500).entity(errs.toString()).build();
-                }
-                result = repository.loadPackage(packageName).getCompiledPackageBytes();
-            }
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
+        }
+    }
+
+    private PackageItem compilePackageIfNeeded(String packageName) throws SerializationException {
+        PackageItem p = repository.loadPackage(packageName);
+        if (p.isBinaryUpToDate()) {
+            return p;
+        } else {
+            BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
+            if (builderResult != null && !builderResult.getLines().isEmpty()) {
+                StringBuilder errs = new StringBuilder();
+                errs.append("Unable to build package name [").append(packageName).append("]\n");
+                for (BuilderResultLine resultLine : builderResult.getLines()) {
+                    errs.append(resultLine.toString()).append("\n");
+                }
+                throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(errs.toString()).build());
+            }
+            return repository.loadPackage(packageName);
         }
     }
 
@@ -484,9 +489,10 @@ public class PackageResource extends Resource {
                 //the specified formats.
                 iter = p.listAssetsByFormat(formats);
             }
-            
-            while (iter.hasNext())
+
+            while (iter.hasNext()) {
                 feed.addEntry(toAssetEntryAbdera(iter.next(), uriInfo));
+            }
             return feed;
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -897,7 +903,8 @@ public class PackageResource extends Resource {
     @Path("{packageName}/snapshot/{snapshotName}")
     public void createPackageSnapshot(
             @PathParam("packageName") final String packageName,
-            @PathParam("snapshotName") final String snapshotName) {
+            @PathParam("snapshotName") final String snapshotName) throws SerializationException {
+        compilePackageIfNeeded(packageName);
         repositoryPackageOperations.createPackageSnapshot(packageName,
                 snapshotName, true, "REST API Snapshot");
     }

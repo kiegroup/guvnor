@@ -67,7 +67,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
                                                                    "this is package restPackage1" );
 
         //Package version 2	
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer1",
                                          pkg );
 
         AssetItem func = pkg.addAsset( "func",
@@ -103,18 +103,18 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         AssetItem rule4 = pkg.addAsset( "rule4",
                                         "" );
         rule4.updateFormat( AssetFormats.DRL );
-        rule4.updateContent( "rule 'nheron' when Goo1() then end" );
+        rule4.updateContent( "rule 'nheron' when Cheese() then end" );
         rule4.checkin( "version 1" );
         pkg.checkin( "version2" );
 
         //Package version 3
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer2",
                                          pkg );
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.updateContent( "function void foo() { System.out.println(\"version 2\"); }" );
         func.checkin( "version 2" );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=Cheese()" );
         dsl.checkin( "version 2" );
-        rule.updateContent( "rule 'foo' when Goo2() then end" );
+        rule.updateContent( "rule 'foo' when Cheese() then end" );
         rule.checkin( "version 2" );
         rule2.updateContent( "when \n foo \n then \n call a func" );
         rule2.checkin( "version 2" );
@@ -560,9 +560,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
   
         assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue( result.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
-        assertTrue( result.indexOf( "function void foo() { System.out.println(version 2); }" ) >= 0 );
+        assertTrue( result.indexOf( "import org.drools.Cheese" ) >= 0 );
+        assertTrue( result.indexOf( "global org.drools.Person customer2" ) >= 0 );
+        assertTrue( result.indexOf( "function void foo() { System.out.println(\"version 2\"); }" ) >= 0 );
         assertTrue( result.indexOf( "declare Album2" ) >= 0 );
     }
 
@@ -669,8 +669,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         System.out.println(result);
        
         assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue(result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue(result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
+        assertTrue(result.indexOf( "import org.drools.Cheese" ) >= 0 );
+        assertTrue(result.indexOf( "global org.drools.Person customer1" ) >= 0 );
         assertTrue(result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
     }
@@ -701,7 +701,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection1.connect();
         assertEquals(200, connection1.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection1.getContentType());
-        String newContent = "rule 'nheron' when Goo1() then end";
+        String newContent = "rule 'nheron' when Cheese() then end";
           /*
            * update the content
            */
@@ -1354,7 +1354,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setDoInput(true);
         connection.setDoOutput(true);
 
-        assertEquals (204, connection.getResponseCode());
+        System.out.println("resp " + connection.getResponseMessage());
+        assertEquals (connection.getResponseMessage(), 204, connection.getResponseCode());
     }
 
     @Test
