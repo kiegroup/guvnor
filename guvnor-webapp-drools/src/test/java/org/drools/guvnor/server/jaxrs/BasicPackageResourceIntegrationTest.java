@@ -566,7 +566,10 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
     	Entry entry = abdera.newEntry();		
     	entry.setTitle("testCreatePackageFromAtom");
     	entry.setSummary("desc for testCreatePackageFromAtom");
-    	
+        ExtensibleElement extension = entry.addExtension(Translator.METADATA);
+        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:initial desc for testCreatePackageFromAtom");
+      	
     	ClientResponse resp = client.post(new URL(baseURL, "rest/packages").toExternalForm(), entry);
         //System.out.println(GetContent(resp.getInputStream()));
 
@@ -577,7 +580,11 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
 		assertEquals(baseURL.getPath() + "rest/packages/testCreatePackageFromAtom", returnedEntry.getBaseUri().getPath());
 		assertEquals("testCreatePackageFromAtom", returnedEntry.getTitle());
 		assertEquals("desc for testCreatePackageFromAtom", returnedEntry.getSummary());
-		
+        ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
+        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+        assertEquals("checkin comment:initial desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
+        
+
 		//Test update package
         Entry e = abdera.newEntry();
         e.setTitle("testCreatePackageFromAtom");
@@ -587,8 +594,8 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
-        ExtensibleElement extension = e.addExtension(Translator.METADATA);
-        ExtensibleElement childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
+        extension = e.addExtension(Translator.METADATA);
+        childExtension = extension.addExtension(Translator.CHECKIN_COMMENT);
         childExtension.addSimpleExtension(Translator.VALUE, "checkin comment:updated desc for testCreatePackageFromAtom");  
         resp = client.put(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm(), e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
@@ -627,8 +634,8 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
 		assertNotNull(entry.getPublished());
 	    assertNotNull(entry.getAuthor().getName());     
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
-        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
-        ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
+        metadataExtension  = entry.getExtension(Translator.METADATA); 
+        checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);  
         assertEquals("checkin comment:updated desc for testCreatePackageFromAtom", checkinCommentExtension.getSimpleExtension(Translator.VALUE));
         
 		//Roll back changes. 
@@ -930,6 +937,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         //create a package for fixtures
         Package p = createTestPackage("testUpdatePackageFromJAXB");
         p.setDescription("desc for testUpdatePackageFromJAXB");
+        p.getMetadata().setCheckinComment("checkincomment for testUpdatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter sw = new StringWriter();
@@ -965,7 +973,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertFalse(pm.isArchived());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
-        
+        assertEquals("checkincomment for testUpdatePackageFromJAXB", pm.getCheckinComment());
         
         //Test update package      
         Package p2 = createTestPackage("testUpdatePackageFromJAXB");

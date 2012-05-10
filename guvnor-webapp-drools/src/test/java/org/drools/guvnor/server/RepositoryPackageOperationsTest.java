@@ -163,7 +163,8 @@ public class RepositoryPackageOperationsTest {
         when(this.rulesRepository.createModule("name",
                 "description",
                 "package",
-                new String[]{"workspace"})).thenReturn(packageItem);
+                new String[]{"workspace"},
+                "Initial")).thenReturn(packageItem);
         assertEquals(this.repositoryPackageOperations.createModule("name",
                 "description",
                 "package",
@@ -172,7 +173,8 @@ public class RepositoryPackageOperationsTest {
         verify(this.rulesRepository).createModule("name",
                 "description",
                 "package",
-                new String[]{"workspace"});
+                new String[]{"workspace"},
+                "Initial");
 
     }
 

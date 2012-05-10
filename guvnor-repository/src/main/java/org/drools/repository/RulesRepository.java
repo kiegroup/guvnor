@@ -799,7 +799,8 @@ public class RulesRepository {
         return createModule(name,
                 description,
                 ModuleItem.MODULE_FORMAT,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -817,7 +818,8 @@ public class RulesRepository {
         return createModule(name,
                 description,
                 format,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -827,13 +829,15 @@ public class RulesRepository {
      * @param description what description to use for the node
      * @param format      module format.
      * @param workspace   the initial workspaces that this module belongs to.
+     * @param checkInComment   the initial checkin comment.
      * @return a ModuleItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
     public ModuleItem createModule(String name,
                                      String description,
                                      String format,
-                                     String[] workspace) throws RulesRepositoryException {
+                                     String[] workspace,
+                                     String checkInComment) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(MODULE_AREA);
 
         try {
