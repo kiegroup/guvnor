@@ -310,7 +310,8 @@ public class RepositoryModuleOperations {
         ModuleItem item = rulesRepository.createModule( name,
                 description,
                 format,
-                workspace );
+                workspace,
+                "Initial");
 
         return item.getUUID();
     }

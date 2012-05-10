@@ -799,7 +799,8 @@ public class RulesRepository {
         return createModule(name,
                 description,
                 ModuleItem.MODULE_FORMAT,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -817,7 +818,8 @@ public class RulesRepository {
         return createModule(name,
                 description,
                 format,
-                null);
+                null,
+                "Initial");
     }
 
     /**
@@ -833,7 +835,8 @@ public class RulesRepository {
     public ModuleItem createModule(String name,
                                      String description,
                                      String format,
-                                     String[] workspace) throws RulesRepositoryException {
+                                     String[] workspace,
+                                     String checkInComment) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(MODULE_AREA);
 
         try {
@@ -862,7 +865,7 @@ public class RulesRepository {
 
             ModuleItem item = new ModuleItem(this,
                     moduleNode);
-            item.checkin("Initial");
+            item.checkin(checkInComment);
 
             if (StorageEventManager.hasSaveEvent()) {
                 StorageEventManager.getSaveEvent().onModuleCreate(item);

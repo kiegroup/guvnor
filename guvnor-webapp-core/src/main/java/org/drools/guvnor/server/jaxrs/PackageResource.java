@@ -173,7 +173,15 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createPackageFromAtom(Entry entry) {
         try {
-            ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary());
+            String checkinComment = "Initial";
+            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
+            if (metadataExtension != null) {
+                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
+                if (checkinCommentExtension != null) {
+                    checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
+                }
+            }
+            ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
@@ -186,7 +194,12 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Package createPackageFromJAXB(Package p) {
         try {
-            ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription());
+            String checkinComment = "Initial";
+            if(p.getMetadata() != null && p.getMetadata().getCheckinComment() != null) {
+                checkinComment = p.getMetadata().getCheckinComment();
+            }
+            
+            ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackage(packageItem, uriInfo);
         } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
