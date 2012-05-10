@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -45,13 +46,14 @@ public class QueryView extends ViewImpl implements QueryPresenter.MyView {
     final TextBox textSearchTextBox = new TextBox();  
     
     public QueryView() {
-        render();
+        //render();
         // setWidth( "100%" );
     }
 
     @Override
     public Widget asWidget() {
-        return layout;
+        //return layout;
+        return new Label("sssss");
     }
 
     private void render() {

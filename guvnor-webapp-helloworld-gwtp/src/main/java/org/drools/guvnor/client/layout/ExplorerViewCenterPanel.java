@@ -50,7 +50,7 @@ public class ExplorerViewCenterPanel extends Composite
     private final ScrollTabLayoutPanel       mainTabLayoutPanel;
     private final ScrollTabLayoutPanel       bottomTabLayoutPanel;
 
-    SplitLayoutPanel splitPanel = new SplitLayoutInsertPanel();
+    SplitLayoutPanel splitPanel = new SplitLayoutPanel();
     SplitLayoutInsertPanel splitPanelMain = new SplitLayoutInsertPanel(DockLayoutPanel.Direction.SOUTH);
     SplitLayoutInsertPanel splitPanelBottom = new SplitLayoutInsertPanel();
 
@@ -71,27 +71,29 @@ public class ExplorerViewCenterPanel extends Composite
         
         RootPanel.get().setPixelSize(1400, 1800);
         dragController = new PickupDragController(RootPanel.get(), true);
-        
+/*        
         VerticalPanelDropController main = new VerticalPanelDropController(mainhp);
         dragController.registerDropController(main);
         HorizontalPanelDropController bottom = new HorizontalPanelDropController(mainbottom);
         dragController.registerDropController(bottom);
         
         mainhp.add(createDraggable());
-        mainbottom.add(createDraggable());
-        mainbottom.add(createDraggable());
-        mainbottom.add(createDraggable());     
-/*        
+        mainbottom.add(createDraggable());*/
+        //mainbottom.add(createDraggable());
+        //mainbottom.add(createDraggable());     
+        
         
         SplitLayoutPanelDropController mainDropController = new SplitLayoutPanelDropController(splitPanelMain);
         dragController.registerDropController(mainDropController);
 
         SplitLayoutPanelDropController bottomDropController = new SplitLayoutPanelDropController(splitPanelBottom);
-        dragController.registerDropController(bottomDropController);*/
+        dragController.registerDropController(bottomDropController);
         
         splitPanelMain.add(createDraggable());
-        splitPanel.addSouth(mainbottom, 200);
-        splitPanel.add(mainhp);
+        splitPanelBottom.add(createDraggable());
+        //splitPanelBottom.add(createDraggable());
+        splitPanel.addSouth(splitPanelBottom, 200);
+        splitPanel.add(splitPanelMain);
         initWidget(splitPanel);
     }
     
@@ -114,7 +116,7 @@ public class ExplorerViewCenterPanel extends Composite
         
         dragController.makeDraggable(vp, c);
         
-        mainbottom.add( vp);            
+        splitPanelBottom.add( vp);            
         
 /*        bottomTabLayoutPanel.selectTab( vp );
 
