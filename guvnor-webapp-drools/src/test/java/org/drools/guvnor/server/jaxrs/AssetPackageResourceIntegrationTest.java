@@ -548,8 +548,8 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
         //If the asset doesn't exist, an HTTP 500 Error is expected. :S
-        if (resp.getType() != ResponseType.SERVER_ERROR){
-            fail("I was expecting an HTTP 500 Error because 'model1-New' shouldn't exist. "
+        if (resp.getStatus() != 404){
+            fail("I was expecting an HTTP 404 Error because 'model1-New' shouldn't exist. "
                     + "Instead of that I got-> "+resp.getStatus()+": "+resp.getStatusText());
         }
                
