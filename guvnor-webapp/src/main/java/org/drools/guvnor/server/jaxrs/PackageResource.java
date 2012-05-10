@@ -215,6 +215,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
+        if (!repository.containsPackage(packageName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Package [" + packageName + "] does not exist").build());
+        }
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
             return toPackageEntryAbdera(packageItem, uriInfo);
@@ -228,6 +232,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
+        if (!repository.containsPackage(packageName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Package [" + packageName + "] does not exist").build());
+        }
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
             return toPackage(packageItem, uriInfo);
@@ -241,6 +249,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getPackageSource(@PathParam("packageName") String packageName) {
+        if (!repository.containsPackage(packageName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Package [" + packageName + "] does not exist").build());
+        }
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
             PackageDRLAssembler asm = new PackageDRLAssembler(packageItem);
@@ -256,6 +268,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
+        if (!repository.containsPackage(packageName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Package [" + packageName + "] does not exist").build());
+        }
         try {
             PackageItem p = repository.loadPackage(packageName);
             String fileName = packageName + ".pkg";
@@ -285,6 +301,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/versions")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackageVersionsAsFeed(@PathParam("packageName") String packageName) throws SerializationException {
+        if (!repository.containsPackage(packageName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Package [" + packageName + "] does not exist").build());
+        }
         PackageItem p = repository.loadPackage(packageName);
 
         Factory factory = Abdera.getNewFactory();
@@ -507,6 +527,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+        if (!assetExists(packageName, assetName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Asset [" + assetName + "] of package [" + packageName + "] does not exist").build());
+        }
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
@@ -520,6 +544,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset getAssetAsJaxB(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+        if (!assetExists(packageName, assetName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Asset [" + assetName + "] of package [" + packageName + "] does not exist").build());
+        }
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
@@ -533,6 +561,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets/{assetName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+        if (!assetExists(packageName, assetName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Asset [" + assetName + "] of package [" + packageName + "] does not exist").build());
+        }
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
@@ -547,6 +579,10 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets/{assetName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public String getAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+        if (!assetExists(packageName, assetName)) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity("Asset [" + assetName + "] of package [" + packageName + "] does not exist").build());
+        }
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
@@ -865,18 +901,8 @@ public class PackageResource extends Resource {
         repositoryPackageOperations.createPackageSnapshot(packageName,
                 snapshotName, true, "REST API Snapshot");
     }
-    
-    @GET
-    @Path("{packageName}/exists")
-    public boolean packageExists(@PathParam("packageName") final String packageName){
-        /* Determine if package exists in repository */
-        final boolean packageExists = repository.containsPackage(packageName);
-        return packageExists;
-    }
-    
-    @GET
-    @Path("{packageName}/assets/{assetName}/exists")
-    public boolean assetExists(@PathParam("packageName") final String packageName,@PathParam("assetName") final String assetName){
+
+    private boolean assetExists(final String packageName, final String assetName){
         /* Asset does not exist if package does not exist */
         final boolean packageExists = repository.containsPackage(packageName);
         if (!packageExists){

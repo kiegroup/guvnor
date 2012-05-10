@@ -30,6 +30,7 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.util.codec.Base64;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
 
@@ -513,12 +514,9 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
         ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1-New");
-        
-        //If the asset doesn't exist, an HTTP 500 Error is expected. :S
-        if (resp.getType() != ResponseType.SERVER_ERROR){
-            fail("I was expecting an HTTP 500 Error because 'model1-New' shouldn't exist. "
-                    + "Instead of that I got-> "+resp.getStatus()+": "+resp.getStatusText());
-        }
+
+        // If the asset doesn't exist, an HTTP 404 is expected.
+        assertEquals(404, resp.getStatus());
         
         
         //--------------------------------------------------------------
@@ -642,6 +640,18 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         }
 
         return ret.toString();
-    }    
+    }
+
+    @Test
+    public void testAssetNotExists() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/restNotExistingAsset");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new String(Base64.encodeBase64(( "test:password".getBytes() ))));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals(404, connection.getResponseCode());
+    }
 
 }
