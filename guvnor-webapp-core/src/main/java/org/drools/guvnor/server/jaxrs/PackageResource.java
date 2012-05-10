@@ -270,26 +270,10 @@ public class PackageResource extends Resource {
                     .entity("Package [" + packageName + "] does not exist").build());
         }
         try {
-            ModuleItem p = rulesRepository.loadModule(packageName);
-            
+            ModuleItem p = compileModuleIfNeeded(packageName);
+            byte[] result = p.getCompiledBinaryBytes();
             ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(p.getFormat(), p, null);
-
             String fileName = packageName + "." + moduleAssembler.getBinaryExtension();
-            byte[] result;
-            if (p.isBinaryUpToDate()) {
-                result = p.getCompiledBinaryBytes();
-            } else {
-                BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
-                if (builderResult != null && !builderResult.getLines().isEmpty()) {
-                    StringBuilder errs = new StringBuilder();
-                    errs.append("Unable to build package name [").append(packageName).append("]\n");
-                    for (BuilderResultLine resultLine : builderResult.getLines()) {
-                        errs.append(resultLine.toString()).append("\n");
-                    }
-                    return Response.status(500).entity(errs.toString()).build();
-                }
-                result = rulesRepository.loadModule(packageName).getCompiledBinaryBytes();
-            }
             return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).
                     header("Last-Modified", createDateFormat().format(this.convertToGmt(p.getLastModified()).getTime())).build();
         } catch (RuntimeException e) {
@@ -297,6 +281,26 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
+
+    private ModuleItem compileModuleIfNeeded(String packageName) throws SerializationException {
+        ModuleItem p = rulesRepository.loadModule(packageName);
+        if (p.isBinaryUpToDate()) {
+            return p;
+        } else {
+            BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
+            if (builderResult != null && !builderResult.getLines().isEmpty()) {
+                StringBuilder errs = new StringBuilder();
+                errs.append("Unable to build package name [").append(packageName).append("]\n");
+                for (BuilderResultLine resultLine : builderResult.getLines()) {
+                    errs.append(resultLine.toString()).append("\n");
+                }
+                throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(errs.toString()).build());
+            }
+            return rulesRepository.loadModule(packageName);
+        }
+    }
+
 
     @GET
     @Path("{packageName}/versions")
@@ -936,7 +940,8 @@ public class PackageResource extends Resource {
     @Path("{packageName}/snapshot/{snapshotName}")
     public void createPackageSnapshot(
             @PathParam("packageName") final String packageName,
-            @PathParam("snapshotName") final String snapshotName) {
+            @PathParam("snapshotName") final String snapshotName) throws SerializationException {
+        compileModuleIfNeeded(packageName);
         repositoryModuleOperations.createModuleSnapshot(packageName,
                 snapshotName, true, "REST API Snapshot");
     }

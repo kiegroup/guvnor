@@ -68,13 +68,13 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
                                                                    "this is package restPackage1" );
 
         //Package version 2	
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer1",
                                          pkg );
 
         AssetItem func = pkg.addAsset( "func",
                                        "" );
         func.updateFormat( AssetFormats.FUNCTION );
-        func.updateContent( "function void foo() { System.out.println(version 1); }" );
+        func.updateContent( "function void foo() { System.out.println(\"version 1\"); }" );
         func.checkin( "version 1" );
 
         AssetItem dsl = pkg.addAsset( "myDSL",
@@ -104,18 +104,18 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         AssetItem rule4 = pkg.addAsset( "rule4",
                                         "" );
         rule4.updateFormat( AssetFormats.DRL );
-        rule4.updateContent( "rule 'nheron' when Goo1() then end" );
+        rule4.updateContent( "rule 'nheron' when Cheese() then end" );
         rule4.checkin( "version 1" );
         pkg.checkin( "version2" );
 
         //Package version 3
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer2",
                                          pkg );
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.updateContent( "function void foo() { System.out.println(\"version 2\"); }" );
         func.checkin( "version 2" );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=Cheese()" );
         dsl.checkin( "version 2" );
-        rule.updateContent( "rule 'foo' when Goo2() then end" );
+        rule.updateContent( "rule 'foo' when Cheese() then end" );
         rule.checkin( "version 2" );
         rule2.updateContent( "when \n foo \n then \n call a func" );
         rule2.checkin( "version 2" );
@@ -131,7 +131,20 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         pkg2.checkin("version2");
         pkg2.checkout();
         repositoryPackageService.buildPackage(pkg2.getUUID(), true);       
-        pkg2.checkin("version3");      
+        pkg2.checkin("version3");
+
+        ModuleItem pkg3 = rulesRepository.createModule( "restPackageCompilationFailure",
+                "this is package restPackageCompilationFailure" );
+
+        DroolsHeader.updateDroolsHeader( "import org.drools.NonExistingClass",
+                pkg3 );
+
+        AssetItem brokenRule = pkg3.addAsset( "ruleCompilationFailure",
+                "" );
+        brokenRule.updateFormat(AssetFormats.DRL);
+        brokenRule.updateContent("rule 'compilationFailure' when NonExistingClass() then end");
+        brokenRule.checkin("version 1");
+        pkg3.checkin("version2");
         
         logoutAs("admin");
     }
@@ -232,7 +245,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
 		assertEquals("Packages", feed.getTitle());
 		
 		List<Entry> entries = feed.getEntries();
-		assertEquals(3, entries.size());
+		assertEquals(4, entries.size());
 		Iterator<Entry> it = entries.iterator();	
 		boolean foundPackageEntry = false;
 		while (it.hasNext()) {
@@ -910,17 +923,17 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
   
         assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue( result.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
-        assertTrue( result.indexOf( "function void foo() { System.out.println(version 2); }" ) >= 0 );
+        assertTrue( result.indexOf( "import org.drools.Cheese" ) >= 0 );
+        assertTrue( result.indexOf( "global org.drools.Person customer2" ) >= 0 );
+        assertTrue( result.indexOf( "function void foo() { System.out.println(\"version 2\"); }" ) >= 0 );
         assertTrue( result.indexOf( "declare Album2" ) >= 0 );
     }
 
     /* Tests package compilation in addition to byte retrieval */
     @Test @RunAsClient
     public void testGetPackageBinary (@ArquillianResource URL baseURL) throws Exception {
-        //Expect 500 error because restPackage1 build fails due to: ClassNotFoundException: Unable to find class 'com.billasurf.Person'
-        URL url = new URL(baseURL, "rest/packages/restPackage1/binary");
+        // restPackageCompilationFailure build fails due to: ClassNotFoundException
+        URL url = new URL(baseURL, "rest/packages/restPackageCompilationFailure/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -1145,9 +1158,9 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         System.out.println(result);
        
         assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue(result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue(result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
-        assertTrue(result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
+        assertTrue(result.indexOf( "import org.drools.Cheese" ) >= 0 );
+        assertTrue(result.indexOf( "global org.drools.Person customer1" ) >= 0 );
+        assertTrue(result.indexOf( "function void foo() { System.out.println(\"version 1\"); }" ) >= 0 );
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
     }
     
