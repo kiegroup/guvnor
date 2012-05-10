@@ -28,9 +28,6 @@ import java.net.URLDecoder;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.shared.ArtifactService;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
 
 @ApplicationScoped
 public class ArtifactServiceImpl implements ArtifactService {
@@ -38,26 +35,26 @@ public class ArtifactServiceImpl implements ArtifactService {
     @Override
     public String getArtifactContent(final String artifactId) {
         System.out.println("ArtifactServiceImpl::getArtifactContent::OK");
-        try {
-            Path path = new Path(decode(artifactId));
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-
-            InputStream stream = file.getContents(false);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-
-            br.close();
-            return sb.toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Path path = new Path(decode(artifactId));
+//            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+//
+//            InputStream stream = file.getContents(false);
+//
+//            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+//            StringBuilder sb = new StringBuilder();
+//            String line = null;
+//
+//            while ((line = br.readLine()) != null) {
+//                sb.append(line + "\n");
+//            }
+//
+//            br.close();
+//            return sb.toString();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         return "some content here!!!!";
     }
@@ -65,20 +62,20 @@ public class ArtifactServiceImpl implements ArtifactService {
     @Override
     public void save(final String artifactId, final String content) {
         System.out.println("ArtifactServiceImpl::save::OK");
-        try {
-            PipedInputStream in = new PipedInputStream();
-            OutputStream out = new PipedOutputStream(in);
-
-            out.write(content.getBytes());
-            out.close();
-
-            Path path = new Path(decode(artifactId));
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-
-            file.setContents(in, true, true, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PipedInputStream in = new PipedInputStream();
+//            OutputStream out = new PipedOutputStream(in);
+//
+//            out.write(content.getBytes());
+//            out.close();
+//
+//            Path path = new Path(decode(artifactId));
+//            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+//
+//            file.setContents(in, true, true, null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private String decode(String content) {
