@@ -651,7 +651,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn2.connect();
         //System.out.println(IOUtils.toString(connection.getInputStream()));
-        assertEquals (500, conn2.getResponseCode());
+        assertEquals (404, conn2.getResponseCode());
     }
     
     @Test @RunAsClient 
@@ -721,7 +721,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn2.connect();
         //System.out.println(IOUtils.toString(connection.getInputStream()));
-        assertEquals (500, conn2.getResponseCode());       
+        assertEquals (404, conn2.getResponseCode());
         
         
         //Roll back changes. 
@@ -738,7 +738,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         conn3.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn3.connect();
         //System.out.println(IOUtils.toString(connection.getInputStream()));
-        assertEquals (500, conn3.getResponseCode());
+        assertEquals (404, conn3.getResponseCode());
     }
     
     @Test @RunAsClient 
@@ -839,7 +839,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         conn4.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn4.connect();
         //System.out.println(IOUtils.toString(connection.getInputStream()));
-        assertEquals (500, conn4.getResponseCode());       
+        assertEquals (404, conn4.getResponseCode());
         
         
         //Roll back changes. 
@@ -860,7 +860,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         conn5.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn5.connect();
         //System.out.println(IOUtils.toString(connection.getInputStream()));
-        assertEquals (500, conn5.getResponseCode());
+        assertEquals (404, conn5.getResponseCode());
     }
     
     @Ignore @Test @RunAsClient
@@ -880,6 +880,18 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
 
         assertEquals (204, connection.getResponseCode());
+    }
+
+    @Test @RunAsClient
+    public void testPackageNotExists(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restNotExistingPackage");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals(404, connection.getResponseCode());
     }
     
     @Test @RunAsClient
@@ -1214,7 +1226,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
                 + new String(authEncBytes));
         connection.connect();
         //The asset should not exist
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
 
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
@@ -1323,7 +1335,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
     }
     
     @Test @RunAsClient
@@ -1337,7 +1349,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         //The asset should not exist
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
 
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
@@ -1392,7 +1404,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
     }
     
     @Test @RunAsClient
@@ -1617,7 +1629,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
                 + new String(authEncBytes));
         connection.connect();
         //The asset should not exist
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
 
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
@@ -1716,7 +1728,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        assertEquals(500, connection.getResponseCode());
+        assertEquals(404, connection.getResponseCode());
     }
 
     protected Package createTestPackage(String title) {

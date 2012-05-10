@@ -161,8 +161,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns the metadata of the package {packageName} as an
-              Atom Entry.</entry>
+              <entry>Returns the metadata of the package {packageName} as an Atom Entry. If the package {packageName}
+              does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -174,8 +174,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns the metadata of the package {packageName} as a
-              Package element (see UML representation below).</entry>
+              <entry>Returns the metadata of the package {packageName} as a Package element (see UML representation
+              below). If the package {packageName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -188,7 +188,7 @@
               <entry>none</entry>
 
               <entry>Returns the source code of the package {packageName} as a
-              text file.</entry>
+              text file. If the package {packageName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -203,7 +203,7 @@
               <entry>Returns the compiled binary of the package {packageName}
               as a binary stream. If the package has not been compiled yet or
               its binary is not up to date, this will compile the package
-              first.</entry>
+              first. If the package {packageName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -320,8 +320,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns the rule asset {assetName} contained in package
-              {packageName} in Atom Entry format.</entry>
+              <entry>Returns the rule asset {assetName} contained in package {packageName} in Atom Entry format.
+              If the asset {assetName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -335,7 +335,7 @@
 
               <entry>Returns the rule asset {assetName} contained in package
               {packageName} as an Asset in JSON or XML format (see the UML
-              representation below).</entry>
+              representation below). If the asset {assetName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -349,7 +349,8 @@
 
               <entry>Returns the binary content of rule asset {assetName}
               contained in package {packageName}. If this asset has no binary
-              content, returns its source content instead.</entry>
+              content, returns its source content instead.
+              If the asset {assetName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -363,7 +364,7 @@
 
               <entry>Returns the content of rule asset {assetName} contained
               in package {packageName}. If this is a binary asset, returns the 
-              binary data as a byte array.</entry>
+              binary data as a byte array. If the asset {assetName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -526,30 +527,6 @@
 
               <entry>Creates a snapshot {assetName} snapshotName for the package
               {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/exists</entry>
-
-              <entry>GET</entry>
-
-              <entry>none</entry>
-
-              <entry>none</entry>
-
-              <entry>Determines if the {packageName} exists.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/exists</entry>
-
-              <entry>GET</entry>
-
-              <entry>none</entry>
-
-              <entry>none</entry>
-
-              <entry>Determines if the asset {assetName} in the {packageName} exists.</entry>
             </row>
 
             <row>
