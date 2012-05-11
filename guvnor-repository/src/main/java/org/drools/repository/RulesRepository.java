@@ -866,7 +866,7 @@ public class RulesRepository {
 
             ModuleItem item = new ModuleItem(this,
                     moduleNode);
-            item.checkin("Initial");
+            item.checkin(checkInComment);
 
             if (StorageEventManager.hasSaveEvent()) {
                 StorageEventManager.getSaveEvent().onModuleCreate(item);
