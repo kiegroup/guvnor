@@ -62,7 +62,7 @@
 
 <!-- The GWT js file generated at run time -->
 <script type="text/javascript"
-        src='org.drools.guvnor.GuvnorNGShowcase.nocache.js'></script>
+        src='org.drools.guvnor.Guvnor.nocache.js'></script>
 
 </body>
 </html>
