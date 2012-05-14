@@ -49,11 +49,12 @@ public class Showcase {
     @Inject private IOCBeanManager manager;
 
     private final PlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
-    private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController(eventBus);
+    //private final EventBus eventBus = new SimpleEventBus();
+    //private final PlaceController placeController = new PlaceController(eventBus);
     private final SimplePanel appWidget = new SimplePanel();
     private PlaceHistoryHandler historyHandler;
-
+    @Inject private PlaceController placeController;
+    @Inject private EventBus eventBus;
     @PostConstruct
     public void init() {
         RestClient.setApplicationRoot("/");
@@ -102,15 +103,15 @@ public class Showcase {
             }
         }.run(500);
     }
-
+/*
     @Produces
     public PlaceController placeController() {
         return placeController;
-    }
+    }*/
 
-    @Produces
+/*    @Produces
     public EventBus eventBus() {
         return eventBus;
-    }
+    }*/
 
 }
