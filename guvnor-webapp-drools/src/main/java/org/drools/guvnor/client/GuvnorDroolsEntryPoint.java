@@ -151,9 +151,6 @@ public class GuvnorDroolsEntryPoint
         }
 
         askToInstallSampleRepository();
-
-        //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
-        clientFactory.getPlaceController().goTo(new FindPlace());
     }
 
     private void askToInstallSampleRepository() {

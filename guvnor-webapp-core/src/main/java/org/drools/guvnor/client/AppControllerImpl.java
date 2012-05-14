@@ -49,7 +49,7 @@ public class AppControllerImpl implements AppController {
                 eventBus,
                 new FindPlace());
 
-        //historyHandler.handleCurrentHistory();
+        historyHandler.handleCurrentHistory();
     }
 
     private PerspectivesPanel createPerspectivesPanel() {
