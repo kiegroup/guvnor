@@ -79,7 +79,7 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.PostgreSQLPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
         <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="postgresql"/>
@@ -120,7 +120,7 @@
             a 'normal' persistence manager, but this could change in future
             implementations.
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.PostgreSQLPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
         <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="postgresql"/>

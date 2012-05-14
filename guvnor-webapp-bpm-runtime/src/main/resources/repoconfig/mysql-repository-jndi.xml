@@ -38,12 +38,12 @@
             access manager:
             class: FQN of class implementing the AccessManager interface
         -->
-        <AccessManager class="org.apache.jackrabbit.core.security.SimpleAccessManager">
+        <AccessManager class="org.apache.jackrabbit.core.security.simple.SimpleAccessManager">
             <!-- <#noparse>
             <param name="config" value="${rep.home}/access.xml"/> </#noparse>-->
         </AccessManager>
 
-        <LoginModule class="org.apache.jackrabbit.core.security.SimpleLoginModule">
+        <LoginModule class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule">
            <!-- anonymous user name ('anonymous' is the default value) -->
            <!-- <param name="anonymousId" value="anonymous"/> -->
            <!--
@@ -80,7 +80,7 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.MySqlPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
            <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="mysql"/>
@@ -121,7 +121,7 @@
             a 'normal' persistence manager, but this could change in future
             implementations.
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.MySqlPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
            <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="mysql"/>
