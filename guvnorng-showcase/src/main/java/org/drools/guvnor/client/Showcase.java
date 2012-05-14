@@ -31,14 +31,11 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
-import org.drools.guvnor.client.perspective.workspace.WorskpaceActivityMapper;
-import org.drools.guvnor.client.place.PlaceBuilderUtil;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -63,13 +60,8 @@ public class Showcase {
         final Place defaultPlace;
         final ActivityMapper activityMapper;
 
-        if (Window.Location.getPath().contains("Standalone.html")) {
-            activityMapper = manager.lookupBean(WorskpaceActivityMapper.class).getInstance();
-            defaultPlace = PlaceBuilderUtil.buildPlaceFromWindow();
-        } else {
-            activityMapper = manager.lookupBean(PerspectiveActivityMapper.class).getInstance();
-            defaultPlace = new WorkspacePerspectivePlace();
-        }
+        activityMapper = manager.lookupBean(PerspectiveActivityMapper.class).getInstance();
+        defaultPlace = new WorkspacePerspectivePlace();
 
         final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setDisplay(appWidget);
