@@ -80,7 +80,7 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.MySqlPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
            <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="mysql"/>
@@ -121,7 +121,7 @@
             a 'normal' persistence manager, but this could change in future
             implementations.
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.MySqlPersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
       <param name="driver" value="javax.naming.InitialContext"/>
            <param name="url" value="${jndiDsName}"/>
       <param name="schema" value="mysql"/>
