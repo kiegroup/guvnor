@@ -92,7 +92,7 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.Oracle9PersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.Oracle9PersistenceManager">
       <param name="driver" value="${dbDriver}"/>
            <param name="url" value="${dbUrl}"/>
            <param name="user" value="${dbUser}"/>
@@ -144,7 +144,7 @@
             implementations.
         -->
 
-    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.Oracle9PersistenceManager">
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.Oracle9PersistenceManager">
       <param name="driver" value="${dbDriver}"/>
            <param name="url" value="${dbUrl}"/>
            <param name="user" value="${dbUser}"/>
