@@ -127,32 +127,26 @@ public class BPMN2ProcessHandler extends ContentHandler
     public void storeAssetContent(Asset asset,
                                   AssetItem repoAsset) throws SerializationException {
         RuleFlowContentModel content = (RuleFlowContentModel) asset.getContent();
-        // 
         // Migrate v4 ruleflows to v5
         // Added guards to check for nulls in the case where the ruleflows
         // have not been migrated from drools 4 to 5.
-        //
         if ( content != null ) {
-            if ( content.getXml() != null && (asset.getFormat() != "bpmn2" || asset.getFormat() != "bpmn")) {
-                RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getXml().getBytes() ) );
+            if ( content.getXml() != null ) {
+            	if( !asset.getFormat().equals("bpmn2") && !asset.getFormat().equals("bpmn")) {
+            		RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getXml().getBytes() ) );
 
-                if ( process != null ) {
-                    RuleFlowProcessBuilder.updateProcess( process,
-                                                          content.getNodes() );
-
-                    XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
-                    String out = dumper.dump( process );
-
-                    repoAsset.updateContent( out );
-                } else {
-                    //
-                    // Migrate v4 ruleflows to v5
-                    // Put the old contents back as there is no updating possible
-                    //
-                    repoAsset.updateContent( content.getXml() );
-                }
-            } else {
-            	repoAsset.updateContent( content.getXml() );
+                    if ( process != null ) {
+                        RuleFlowProcessBuilder.updateProcess( process,
+                                                              content.getNodes() );
+                        XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
+                        String out = dumper.dump( process );
+                        repoAsset.updateContent( out );
+                    } else {
+                        // Migrate v4 ruleflows to v5
+                        // Put the old contents back as there is no updating possible
+                        repoAsset.updateContent( content.getXml() );
+                    }
+            	}
             }
             if ( content.getJson() != null ) {
                 try {
@@ -165,8 +159,7 @@ public class BPMN2ProcessHandler extends ContentHandler
                     content.setXml( xml );
                     repoAsset.updateContent( content.getXml() );
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
+                    log.error( e.getMessage(), e );
                 }
             }
         }
