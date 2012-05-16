@@ -141,6 +141,13 @@ public class ActionValueEditor extends DirtyableComposite {
             return;
         }
 
+        //Formula require a 
+        if ( value.nature == FieldNature.TYPE_FORMULA ) {
+            Widget box = wrap( formulaEditor() );
+            root.add( box );
+            return;
+        }
+
         //Fall through for all remaining FieldNatures
         Widget box = wrap( literalEditor() );
         root.add( box );
@@ -298,6 +305,33 @@ public class ActionValueEditor extends DirtyableComposite {
         }
 
         TemplateKeyTextBox box = new TemplateKeyTextBox();
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                value.setValue( event.getValue() );
+                executeOnChangeCommand();
+            }
+
+        } );
+        //FireEvents as the box could assume a default value
+        box.setValue( assertValue(),
+                      true );
+        attachDisplayLengthHandler( box );
+        return box;
+    }
+
+    /**
+     * An editor for formula
+     * 
+     * @return
+     */
+    private Widget formulaEditor() {
+        if ( this.readOnly ) {
+            return new SmallLabel( assertValue() );
+        }
+
+        final TextBox box = new TextBox();
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             @Override
