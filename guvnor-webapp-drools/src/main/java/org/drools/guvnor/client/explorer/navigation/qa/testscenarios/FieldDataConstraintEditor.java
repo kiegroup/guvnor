@@ -237,100 +237,108 @@ public class FieldDataConstraintEditor
     private Widget listEditor() {
         Panel panel = new VerticalPanel();
         int i = 0;
-        for ( final FieldData f : this.field.collectionFieldList ) {
+        if (this.field.collectionFieldList != null) {
+            for (final FieldData f : this.field.collectionFieldList) {
 
-            DirtyableHorizontalPane hpanel = new DirtyableHorizontalPane();
+                DirtyableHorizontalPane hpanel = new DirtyableHorizontalPane();
 
-            FieldDataConstraintEditor fieldDataConstraintEditor = helper.createFieldDataConstraintEditor( f );
-            fieldDataConstraintEditor.addValueChangeHandler( new ValueChangeHandler<String>() {
-                @Override
-                public void onValueChange(ValueChangeEvent<String> stringValueChangeEvent) {
-                    f.setValue( stringValueChangeEvent.getValue() );
-                    calculateValueFromList();
-                    makeDirty();
-                }
-            } );
-            hpanel.add( fieldDataConstraintEditor );
-            final int index = i;
+                FieldDataConstraintEditor fieldDataConstraintEditor = helper.createFieldDataConstraintEditor(f);
+                fieldDataConstraintEditor.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-            hpanel.add( new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
-                                         Constants.INSTANCE.AElementToDelInCollectionList(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 field.collectionFieldList.remove( index );
-                                                 calculateValueFromList();
-                                                 renderEditor();
-                                             }
-                                         } ) );
+                    @Override
+                    public void onValueChange(ValueChangeEvent<String> stringValueChangeEvent) {
+                        f.setValue(stringValueChangeEvent.getValue());
+                        calculateValueFromList();
+                        makeDirty();
+                    }
+                });
+                hpanel.add(fieldDataConstraintEditor);
+                final int index = i;
 
-            Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItemBelow() );
-            addPattern.setTitle( Constants.INSTANCE.AddElementBelow() );
+                hpanel.add(new ImageButton(DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
+                        Constants.INSTANCE.AElementToDelInCollectionList(),
+                        new ClickHandler() {
 
-            addPattern.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent sender) {
-                    FieldData newFieldData = new FieldData();
-                    newFieldData.setName( field.getName() );
-                    newFieldData.collectionType = field.collectionType;
-                    field.collectionFieldList.add( index + 1,
-                                                   newFieldData );
-                    calculateValueFromList();
-                    renderEditor();
-                }
-            } );
-            hpanel.add( addPattern );
-            Image moveDown = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleDown() );
-            moveDown.setTitle( Constants.INSTANCE.MoveDownListMove() );
-            moveDown.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent sender) {
-                    if ( index < field.collectionFieldList.size() - 1 ) {
-                        FieldData onMyLine = field.collectionFieldList.get( index );
-                        FieldData onDown = field.collectionFieldList.get( index + 1 );
-                        field.collectionFieldList.set( index + 1,
-                                                       onMyLine );
-                        field.collectionFieldList.set( index,
-                                                       onDown );
+                            public void onClick(ClickEvent w) {
+                                field.collectionFieldList.remove(index);
+                                calculateValueFromList();
+                                renderEditor();
+                            }
+                        }));
+
+                Image addPattern = new ImageButton(DroolsGuvnorImages.INSTANCE.newItemBelow());
+                addPattern.setTitle(Constants.INSTANCE.AddElementBelow());
+
+                addPattern.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent sender) {
+                        FieldData newFieldData = new FieldData();
+                        newFieldData.setName(field.getName());
+                        newFieldData.collectionType = field.collectionType;
+                        field.collectionFieldList.add(index + 1,
+                                newFieldData);
                         calculateValueFromList();
                         renderEditor();
                     }
-                }
-            } );
-            hpanel.add( moveDown );
+                });
+                hpanel.add(addPattern);
+                Image moveDown = new ImageButton(DroolsGuvnorImages.INSTANCE.shuffleDown());
+                moveDown.setTitle(Constants.INSTANCE.MoveDownListMove());
+                moveDown.addClickHandler(new ClickHandler() {
 
-            Image moveUp = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleUp() );
-            moveUp.setTitle( Constants.INSTANCE.MoveUpList() );
-            moveUp.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent sender) {
-                    if ( index > 0 ) {
-                        FieldData oneUp = field.collectionFieldList.get( index - 1 );
-                        FieldData onMyLine = field.collectionFieldList.get( index );
-                        field.collectionFieldList.set( index,
-                                                       oneUp );
-                        field.collectionFieldList.set( index - 1,
-                                                       onMyLine );
-                        calculateValueFromList();
-                        renderEditor();
+                    public void onClick(ClickEvent sender) {
+                        if (index < field.collectionFieldList.size() - 1) {
+                            FieldData onMyLine = field.collectionFieldList.get(index);
+                            FieldData onDown = field.collectionFieldList.get(index + 1);
+                            field.collectionFieldList.set(index + 1,
+                                    onMyLine);
+                            field.collectionFieldList.set(index,
+                                    onDown);
+                            calculateValueFromList();
+                            renderEditor();
+                        }
                     }
-                }
-            } );
-            hpanel.add( moveUp );
-            panel.add( hpanel );
-            i++;
-        }
+                });
+                hpanel.add(moveDown);
 
-        if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
-                                         Constants.INSTANCE.AElementToAddInCollectionList(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 FieldData newFieldData = new FieldData();
-                                                 newFieldData.setName( field.getName() );
-                                                 newFieldData.collectionType = field.collectionType;
-                                                 field.collectionFieldList.add( newFieldData );
-                                                 calculateValueFromList();
-                                                 renderEditor();
-                                             }
-                                         } );
-            panel.add( add );
+                Image moveUp = new ImageButton(DroolsGuvnorImages.INSTANCE.shuffleUp());
+                moveUp.setTitle(Constants.INSTANCE.MoveUpList());
+                moveUp.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent sender) {
+                        if (index > 0) {
+                            FieldData oneUp = field.collectionFieldList.get(index - 1);
+                            FieldData onMyLine = field.collectionFieldList.get(index);
+                            field.collectionFieldList.set(index,
+                                    oneUp);
+                            field.collectionFieldList.set(index - 1,
+                                    onMyLine);
+                            calculateValueFromList();
+                            renderEditor();
+                        }
+                    }
+                });
+                hpanel.add(moveUp);
+                panel.add(hpanel);
+                i++;
+            }
+
+            if (this.field.collectionFieldList.size() == 0) {
+                Image add = new ImageButton(DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+                        Constants.INSTANCE.AElementToAddInCollectionList(),
+                        new ClickHandler() {
+
+                            public void onClick(ClickEvent w) {
+                                FieldData newFieldData = new FieldData();
+                                newFieldData.setName(field.getName());
+                                newFieldData.collectionType = field.collectionType;
+                                field.collectionFieldList.add(newFieldData);
+                                calculateValueFromList();
+                                renderEditor();
+                            }
+                        });
+                panel.add(add);
+            }
         }
         return panel;
     }
