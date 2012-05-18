@@ -3,6 +3,7 @@
   <url>https://translate.jboss.org/</url>
   <project>Guvnor</project>
   <project-version>5.5.0</project-version>
+  <project-type>utf8properties</project-type>
 
   <locales>
     <locale map-from="es_ES">es</locale>
