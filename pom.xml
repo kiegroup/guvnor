@@ -68,7 +68,7 @@
             <configuration>
                 <!-- Process sub-modules separately, sharing parent config -->
                 <enableModules>true</enableModules>
-                <projectConfig>${session.executionRootDirectory}/zanata.xml</projectConfig>
+                <projectConfig>${session.executionRootDirectory}/src/main/zanata/zanata.xml</projectConfig>
                 <srcDir>src/main/java</srcDir>
                 <transDir>src/main/java/</transDir>
                 <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
