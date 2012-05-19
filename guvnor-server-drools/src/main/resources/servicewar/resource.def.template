@@ -1,0 +1,1 @@
+            <drools:resource @if{kbase.assetsUser != null}basic-authentication="enabled" username="@{kbase.assetsUser}" password="@{kbase.assetsPassword}" @end{}type="@{resource.resourceFormat}" source="@{resource.url}"/>
