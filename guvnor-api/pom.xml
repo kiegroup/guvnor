@@ -26,6 +26,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>guvnor-api</artifactId>
+
+
+  <name>Guvnor API</name>
+  <description>The common API for Guvnor modules.</description>
+
   <packaging>jar</packaging>
 
       <dependencies>

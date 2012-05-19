@@ -28,7 +28,7 @@ import org.junit.Test;
 public class ApplicationPreferencesLoaderTest {
 
     @Test
-    @Ignore("This test relies upon a resource in guvnor-webapp-drools")
+    @Ignore("This test relies upon a resource in guvnor-server-drools")
     public void testLoad() throws Exception {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
 

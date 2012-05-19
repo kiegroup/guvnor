@@ -16,11 +16,11 @@
   <description>Example project for Guvnor NG.</description>
 
   <properties>
-    <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
+    <!-- Keep in sync with /guvnor-server-drools/src/test/resources/arquillian.xml -->
     <appserver.jboss7.version>7.0.2.Final</appserver.jboss7.version>
     <report.server.version>1.3.0</report.server.version>
     <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
-    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
+    <!--&lt;!&ndash; Keep in sync with /guvnor-server-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
     <!--<appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${appserver.tomcat6.version}</appserver.tomcat6.home>-->
   </properties>

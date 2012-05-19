@@ -70,13 +70,13 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
-    <module>guvnor-webapp-drools</module>
+    <module>guvnor-server-drools</module>
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
     <!--<module>guvnor-webapp-bpm-runtime</module>-->
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
-    <module>guvnor-webapp-drools-war</module>
+    <module>guvnor-webapp-drools</module>
   </modules>
 
   <profiles>

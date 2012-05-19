@@ -79,7 +79,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-drools</artifactId>
+      <artifactId>guvnor-server-drools</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
