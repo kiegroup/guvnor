@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+  <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
+
+
+  <inherits name='com.mvc4g.Mvc4gModule'/>
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+  <inherits name='com.google.gwt.json.JSON'/>
+  <inherits name="com.google.gwt.user.ImageBundle"/>
+  <inherits name="com.google.gwt.xml.XML"/>
+  <inherits name='org.jboss.bpm.report.BPMReport'/>
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF"/>
+
+  <source path='client'/>
+  <source path='shared'/>
+
+</module>

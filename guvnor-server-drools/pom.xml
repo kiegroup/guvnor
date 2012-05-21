@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -224,19 +224,22 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>1.1.0-alpha-1</version><!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -264,16 +267,18 @@
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+      <scope>provided</scope>
+      <!-- HACK to remove it from the runtime classpath -->
     </dependency>
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <version>${gwt.version}</version>
-      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+      <scope>provided</scope>
+      <!-- HACK to remove it from the runtime classpath -->
     </dependency>
-    
+
     <!-- used by service config to generate a war file -->
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>

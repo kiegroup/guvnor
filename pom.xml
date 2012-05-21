@@ -73,7 +73,8 @@
     <module>guvnor-server-drools</module>
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
-    <!--<module>guvnor-webapp-bpm-runtime</module>-->
+    <!--<module>guvnor-jbpm-console-client</module>-->
+    <!--<module>guvnor-jbpm-console-shared</module>-->
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
     <module>guvnor-webapp-drools</module>

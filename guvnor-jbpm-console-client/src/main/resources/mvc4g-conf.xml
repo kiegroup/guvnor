@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  Console MVC configuration
+  Further explanations canbe found here:
+  http://code.google.com/p/mvc4g
+  -->
+<mvc4g>
+  <controller name="mainController" class="com.mvc4g.client.Controller">
+    <views>
+      <view name="loginView" class="org.jboss.bpm.console.client.LoginView" />
+    </views>
+    <actions>
+      <action name="login" class="org.jboss.bpm.console.client.LoginAction" />
+    </actions>
+  </controller>
+
+  <start controllerName="mainController" actionName="login" />
+
+  <!--
+     ${webcontext}
+     @webcontext@     
+  -->
+</mvc4g>

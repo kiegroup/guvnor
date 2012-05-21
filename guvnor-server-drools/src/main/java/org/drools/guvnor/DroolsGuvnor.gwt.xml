@@ -24,7 +24,7 @@ the end of the URL. <extend-property name="locale" values="fr"/> -->
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
   <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
-    <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
+    <when-type-assignable class="PerspectiveFactory"/>
   </generate-with>
 
   <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
