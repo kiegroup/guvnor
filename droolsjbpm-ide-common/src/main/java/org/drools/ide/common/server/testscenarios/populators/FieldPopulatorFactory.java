@@ -61,7 +61,11 @@ class FieldPopulatorFactory {
 
     private FieldPopulator getFieldDataPopulator(Object factObject,
                                                  FieldData fieldData) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        if (fieldData.getValue().startsWith("=")) {
+        if (fieldData.getNature() == FieldData.TYPE_COLLECTION) {
+            return new CollectionFieldPopulator(factObject,
+                    fieldData.getName(),
+                    fieldData.getValue().substring(1));
+        }else if (fieldData.getValue().startsWith("=")) {
             return new ExpressionFieldPopulator(factObject,
                     fieldData.getName(),
                     fieldData.getValue().substring(1));
