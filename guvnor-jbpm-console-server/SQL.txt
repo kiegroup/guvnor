@@ -1,0 +1,21 @@
+Group membership
+----------------
+select u.NAME_ as userName, g.NAME_ as groupName, m.ROLE_ as role from JBPM_ID_USER as u, JBPM_ID_GROUP as g, JBPM_ID_MEMBERSHIP as m
+where u.ID_=m.USER_ AND m.GROUP_=g.ID_
+
+Log analysis
+-------------
+
+[Instance start and end]
+
+SELECT l.CLASS_, l.DATE_, l.TOKEN_, i.ID_ as instanceID, p.NAME_ as processName, p.ID_ as processID
+ FROM JBPM_LOG l, JBPM_TOKEN t, JBPM_PROCESSINSTANCE i, JBPM_PROCESSDEFINITION p
+WHERE l.CLASS_='I' OR l.CLASS_='X'
+AND t.ID_=l.TOKEN_
+AND t.PROCESSINSTANCE_=i.ID_
+AND i.PROCESSDEFINITION_=p.ID_
+GROUP BY l.CLASS_
+ORDER BY l.DATE_ ASC, l.TOKEN_
+
+
+
