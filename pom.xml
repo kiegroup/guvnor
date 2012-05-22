@@ -126,7 +126,7 @@
         </property>
       </activation>
       <modules>
-        <module>guvnor-webapp-bpm-runtime</module>
+        <module>guvnor-jbpm-console-client</module>
       </modules>
     </profile>
     <profile>
