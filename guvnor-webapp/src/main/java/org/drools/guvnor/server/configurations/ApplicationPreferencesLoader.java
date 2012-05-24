@@ -66,7 +66,7 @@ public class ApplicationPreferencesLoader {
 
     private static Map<String, String> getDefaultPreferences() {
         Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put(ApplicationPreferences.DATE_FORMAT, DateUtils.getDateFormatMask());
+        preferences.put(ApplicationPreferences.DATE_FORMAT, System.getProperty(ApplicationPreferences.DATE_FORMAT));
         preferences.put(ApplicationPreferences.DEFAULT_LANGUAGE, System.getProperty(ApplicationPreferences.DEFAULT_LANGUAGE));
         preferences.put(ApplicationPreferences.DEFAULT_COUNTRY, System.getProperty(ApplicationPreferences.DEFAULT_COUNTRY));
 
