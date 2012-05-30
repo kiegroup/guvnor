@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
 
-  <inherits name="org.drools.guvnor.DroolsGuvnor"/>
+  <inherits name="org.drools.ide.common.Common"/>
+  <inherits name="org.drools.guvnor.GuvnorCore"/>
 
   <!-- Here we put different locales (translations) There are of the form 
 values="xx_YY" - which match to Constants_xx_YY.properties which contain
@@ -17,6 +18,17 @@ the end of the URL. <extend-property name="locale" values="fr"/> -->
   <!-- Specify the app entry point class. -->
   <entry-point class="org.drools.guvnor.client.GuvnorDroolsEntryPoint"/>
 
+  <servlet path="/verificationService" class="org.drools.guvnor.server.VerificationServiceImplementation"/>
+  <servlet path="/oryxeditor" class="org.drools.guvnor.server.files.OryxEditorServlet"/>
+
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
+
+  <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
+    <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
+  </generate-with>
+
+  <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
+    <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
+  </generate-with>
 
 </module>

@@ -79,11 +79,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-server-drools</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
       <classifier>jboss-eap-5.1</classifier>

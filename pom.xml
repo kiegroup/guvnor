@@ -70,7 +70,6 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
-    <module>guvnor-server-drools</module>
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
     <!--<module>guvnor-jbpm-console-client</module>-->
