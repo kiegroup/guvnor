@@ -790,6 +790,162 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTests {
     }
 
     @Test
+    public void testConditionsIndexedParameters() {
+
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "Conditions-indexedParameters.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check basics
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+
+        assertNotNull( dtables );
+        assertEquals( 1,
+                      dtables.size() );
+
+        GuidedDecisionTable52 dtable = dtables.get( 0 );
+
+        assertEquals( "ConditionsTest",
+                      dtable.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable.getTableFormat() );
+
+        //Check expanded columns
+        List<BaseColumn> columns = dtable.getExpandedColumns();
+        assertNotNull( columns );
+        assertEquals( 8,
+                      columns.size() );
+        assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns.get( 2 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 3 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 4 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 5 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 6 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 7 ) instanceof AnalysisCol52 );
+
+        //Check individual condition columns
+        assertEquals( 2,
+                      dtable.getConditions().size() );
+        assertTrue( dtable.getConditions().get( 0 ) instanceof BRLConditionColumn );
+        assertTrue( dtable.getConditions().get( 1 ) instanceof BRLConditionColumn );
+
+        //Column 1
+        BRLConditionColumn conditionCol0 = ((BRLConditionColumn) dtable.getConditions().get( 0 ));
+        assertEquals( "Converted from cell [C4]",
+                      conditionCol0.getHeader() );
+        assertEquals( 3,
+                      conditionCol0.getChildColumns().size() );
+
+        List<IPattern> conditionCol0definition = conditionCol0.getDefinition();
+        assertEquals( 1,
+                      conditionCol0definition.size() );
+        assertTrue( conditionCol0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine conditionCol0ffl = (FreeFormLine) conditionCol0definition.get( 0 );
+        assertEquals( "Driver(age > \"@{param1}\", firstName == \"@{param2}\", surname == \"@{param3}\")",
+                      conditionCol0ffl.text );
+
+        //Column 1 - Variable 1
+        BRLConditionVariableColumn conditionCol0param0 = conditionCol0.getChildColumns().get( 0 );
+        assertEquals( "param1",
+                      conditionCol0param0.getVarName() );
+        assertEquals( "Converted from cell [C4]",
+                      conditionCol0param0.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol0param0.getFieldType() );
+        assertNull( conditionCol0param0.getFactType() );
+        assertNull( conditionCol0param0.getFactField() );
+
+        //Column 1 - Variable 2
+        BRLConditionVariableColumn conditionCol0param1 = conditionCol0.getChildColumns().get( 1 );
+        assertEquals( "param2",
+                      conditionCol0param1.getVarName() );
+        assertEquals( "Converted from cell [C4]",
+                      conditionCol0param1.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol0param1.getFieldType() );
+        assertNull( conditionCol0param1.getFactType() );
+        assertNull( conditionCol0param1.getFactField() );
+
+        //Column 1 - Variable 3
+        BRLConditionVariableColumn conditionCol0param2 = conditionCol0.getChildColumns().get( 2 );
+        assertEquals( "param3",
+                      conditionCol0param2.getVarName() );
+        assertEquals( "Converted from cell [C4]",
+                      conditionCol0param2.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol0param2.getFieldType() );
+        assertNull( conditionCol0param2.getFactType() );
+        assertNull( conditionCol0param2.getFactField() );
+
+        //Column 2
+        BRLConditionColumn conditionCol1 = ((BRLConditionColumn) dtable.getConditions().get( 1 ));
+        assertEquals( "something",
+                      conditionCol1.getHeader() );
+        assertEquals( 2,
+                      conditionCol1.getChildColumns().size() );
+
+        List<IPattern> conditionCol1definition = conditionCol1.getDefinition();
+        assertEquals( 1,
+                      conditionCol1definition.size() );
+        assertTrue( conditionCol1definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine conditionCol1ffl = (FreeFormLine) conditionCol1definition.get( 0 );
+        assertEquals( "Vehicle(make == \"@{param4}\", model == \"@{param5}\")",
+                      conditionCol1ffl.text );
+
+        //Column 2 - Variable 1
+        BRLConditionVariableColumn conditionCol1param0 = conditionCol1.getChildColumns().get( 0 );
+        assertEquals( "param4",
+                      conditionCol1param0.getVarName() );
+        assertEquals( "something",
+                      conditionCol1param0.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol1param0.getFieldType() );
+        assertNull( conditionCol1param0.getFactType() );
+        assertNull( conditionCol1param0.getFactField() );
+
+        //Column 2 - Variable 2
+        BRLConditionVariableColumn conditionCol1param1 = conditionCol1.getChildColumns().get( 1 );
+        assertEquals( "param5",
+                      conditionCol1param1.getVarName() );
+        assertEquals( "something",
+                      conditionCol1param1.getHeader() );
+        assertEquals( SuggestionCompletionEngine.TYPE_OBJECT,
+                      conditionCol1param1.getFieldType() );
+        assertNull( conditionCol1param1.getFactType() );
+        assertNull( conditionCol1param1.getFactField() );
+
+        //Check data
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new String[]{"1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3"},
+                                     dtable.getData().get( 0 ) ) );
+        assertTrue( isRowEquivalent( new String[]{"2", "Created from row 8", "30", "Jason", "Grey", "", ""},
+                                     dtable.getData().get( 1 ) ) );
+    }
+    
+    @Test
     public void testMultipleRuleTables() {
 
         final ConversionResult result = new ConversionResult();

@@ -49,7 +49,8 @@ public class IndexedParametersValueBuilder
         final List<String> cellVals = split( value );
         final List<DTCellValue52> rowValues = new ArrayList<DTCellValue52>();
         for ( int parameterIndex = 0; parameterIndex < getParameters().size(); parameterIndex++ ) {
-            rowValues.add( new DTCellValue52( cellVals.get( parameterIndex ) ) );
+            final String cv = cellVals.size() > parameterIndex ? cellVals.get( parameterIndex ) : "";
+            rowValues.add( new DTCellValue52( cv ) );
         }
         this.values.add( rowValues );
     }
