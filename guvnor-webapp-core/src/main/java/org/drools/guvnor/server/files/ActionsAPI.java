@@ -86,10 +86,11 @@ public class ActionsAPI {
                         }
                     }
                 }
-            } else if (pathstr[0].equals("snapshot")) if (repository.containsModule(packageName)) {
-                String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
-                repository.createModuleSnapshot(packageName,
-                        snapshotName);
+            } else if (pathstr[0].equals("snapshot")) {
+                if (repository.containsModule(packageName)) {
+                    String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
+                    repository.createModuleSnapshot(packageName, snapshotName);
+                }
             } else {
                 throw new RulesRepositoryException("Unknown action request: "
                         + request.getContextPath());
