@@ -18,10 +18,8 @@ package org.drools.testframework;
 
 import static org.mvel2.MVEL.eval;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
@@ -49,7 +47,7 @@ public class FactFieldValueVerifier {
         this.resolver = resolver;
     }
 
-    public void checkFields(List<VerifyField> fieldValues) {
+    public void checkFields(List<VerifyField> fieldValues) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Iterator<VerifyField> fields = fieldValues.iterator();
         while ( fields.hasNext() ) {
             this.currentField = fields.next();
@@ -74,7 +72,7 @@ public class FactFieldValueVerifier {
 
     }
 
-    private Object getExpectedResult() {
+    private Object getExpectedResult() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         Object expectedResult = currentField.getExpected().trim();
         if ( currentField.getExpected().startsWith( "=" ) ) {
             expectedResult = eval( currentField.getExpected().substring( 1 ),
@@ -93,8 +91,18 @@ public class FactFieldValueVerifier {
             } catch (ClassNotFoundException e) {
                 //Do nothing.
             }
+        } else if (isFieldDate()) {
+            return DateObjectFactory.getObject(FieldTypeResolver.getFieldType(currentField.getFieldName(), factObject),currentField.getExpected());
         }
         return expectedResult;
+    }
+
+    private boolean isFieldDate() {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("__fact__", factObject);
+
+        Object o = eval("__fact__." + currentField.getFieldName(), vars);
+        return o instanceof Date;
     }
 
     private String getSuccesfulExplanation() {
@@ -132,8 +140,8 @@ class ResultVerifier {
 
     private void addVariable(String name,
                              Object object) {
-        variables.put( name,
-                       object );
+        variables.put(name,
+                object);
 
         parserContext.addInput( name,
                                 object.getClass() );

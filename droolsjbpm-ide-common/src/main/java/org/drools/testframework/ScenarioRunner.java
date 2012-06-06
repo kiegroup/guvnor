@@ -311,7 +311,7 @@ public class ScenarioRunner {
         }
     }
 
-    void verify(VerifyFact value) {
+    void verify(VerifyFact value) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
 
         //Clear existing results
         for ( VerifyField vf : value.getFieldValues() ) {
@@ -389,8 +389,8 @@ public class ScenarioRunner {
                     } else {
                         val = valueOfEnum;
                     }
-                } else if (isDate(field.getName(), factObject)) {
-                    val = DateObjectFactory.getObject(getFieldType(field.getName(),factObject),field.getValue());
+                } else if (FieldTypeResolver.isDate(field.getName(), factObject)) {
+                    val = DateObjectFactory.getObject(FieldTypeResolver.getFieldType(field.getName(), factObject), field.getValue());
                 }else {
                     val = field.getValue();
                 }
@@ -406,48 +406,6 @@ public class ScenarioRunner {
             }
         }
         return factObject;
-    }
-
-    private Class<?> getFieldType(String fieldName,Object factObject) {
-        for (Method method : factObject.getClass().getDeclaredMethods()) {
-            if (hasMutator(fieldName, method)) {
-                return method.getParameterTypes()[0];
-            }
-        }
-        throw new IllegalArgumentException("No field named: " + fieldName);
-    }
-
-    private boolean isDate(String fieldName,Object factObject) {
-        for (Method method : factObject.getClass().getDeclaredMethods()) {
-            if (hasMutator(fieldName, method)) {
-                if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasMutator(String fieldName, Method method) {
-        if (method.getName().equals(fieldName) || method.getName().equals("set" + capitalize(fieldName))) {
-            if (method.getParameterTypes().length == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String capitalize(String fieldName) {
-        if (fieldName.length() == 0) {
-            return "";
-        } else if (fieldName.length() == 1) {
-            return fieldName.toUpperCase();
-        } else {
-            String firstLetter = fieldName.substring(0, 1);
-
-            String tail = fieldName.substring(1);
-            return firstLetter.toUpperCase() + tail;
-        }
     }
 
     Object executeMethodOnObject(CallMethod fact,
