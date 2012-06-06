@@ -71,7 +71,7 @@ public class ActionsAPI {
             throws IOException {
         try {
             String packageName = request.getParameter(Parameters.PackageName.toString());
-            String[] pathstr = split(request.getPathTranslated());
+            String[] pathstr = split(request.getRequestURI());
 
             if (pathstr[0].equals("compile")) {
                 if (repository.containsModule(packageName)) {
