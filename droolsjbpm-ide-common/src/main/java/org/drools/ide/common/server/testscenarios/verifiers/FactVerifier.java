@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.server.testscenarios.verifiers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class FactVerifier {
         this.globalData = globalData;
     }
 
-    public void verify(VerifyFact verifyFact) {
+    public void verify(VerifyFact verifyFact) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         
         //Clear existing results
         for ( VerifyField vf : verifyFact.getFieldValues() ) {
@@ -84,7 +85,7 @@ public class FactVerifier {
     private boolean verifyFact(Object factObject,
                                VerifyFact verifyFact,
                                Map<String, Object> populatedData,
-                               TypeResolver resolver) {
+                               TypeResolver resolver) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if ( factObject.getClass().getSimpleName().equals( verifyFact.getName() ) ) {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                verifyFact.getName(),

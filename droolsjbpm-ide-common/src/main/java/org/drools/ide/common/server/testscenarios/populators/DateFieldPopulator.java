@@ -16,6 +16,7 @@
 package org.drools.ide.common.server.testscenarios.populators;
 
 import org.drools.core.util.DateUtils;
+import org.drools.ide.common.server.testscenarios.util.DateObjectFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,22 +32,7 @@ public class DateFieldPopulator extends FieldPopulator {
                               String fieldName,
                               String value) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         super(factObject, fieldName);
-        this.value = createTimeObject(fieldClass, value);
-    }
-
-    private Date createTimeObject(Class<?> fieldClass,
-                                  String value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
-        Class parameterTypes[] = new Class[1];
-        parameterTypes[0] = Long.TYPE;
-        Constructor constructor
-                = fieldClass.getConstructor(parameterTypes);
-        Object args[] = new Object[1];
-        args[0] = getTimeAsLong(value);
-        return (Date) constructor.newInstance(args);
-    }
-
-    private long getTimeAsLong(String value) {
-        return DateUtils.parseDate(value, null).getTime();
+        this.value = DateObjectFactory.createTimeObject(fieldClass, value);
     }
 
     @Override

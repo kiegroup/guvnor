@@ -16,33 +16,36 @@
 
 package org.drools.ide.common.server.testscenarios.verifiers;
 
-import static org.mvel2.MVEL.eval;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+import org.drools.ide.common.server.testscenarios.util.DateObjectFactory;
+import org.drools.ide.common.server.testscenarios.util.FieldTypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static org.mvel2.MVEL.eval;
+
 public class FactFieldValueVerifier {
 
     private final Map<String, Object> populatedData;
-    private final String              factName;
-    private final Object              factObject;
+    private final String factName;
+    private final Object factObject;
 
-    private VerifyField               currentField;
-    final TypeResolver                resolver;
+    private VerifyField currentField;
+    final TypeResolver resolver;
 
     private final ParserConfiguration pconf;
-    private final ParserContext       pctx;
+    private final ParserContext pctx;
 
     public FactFieldValueVerifier(Map<String, Object> populatedData,
                                   String factName,
@@ -55,29 +58,29 @@ public class FactFieldValueVerifier {
         this.resolver = resolver;
 
         this.pconf = new ParserConfiguration();
-        pconf.setClassLoader( classLoader );
-        this.pctx = new ParserContext( pconf );
-        pctx.setStrongTyping( true );
+        pconf.setClassLoader(classLoader);
+        this.pctx = new ParserContext(pconf);
+        pctx.setStrongTyping(true);
     }
 
-    public void checkFields(List<VerifyField> fieldValues) {
+    public void checkFields(List<VerifyField> fieldValues) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         Iterator<VerifyField> fields = fieldValues.iterator();
-        while ( fields.hasNext() ) {
+        while (fields.hasNext()) {
             this.currentField = fields.next();
 
-            if ( currentField.getExpected() != null ) {
-                ResultVerifier resultVerifier = new ResultVerifier( factObject );
+            if (currentField.getExpected() != null) {
+                ResultVerifier resultVerifier = new ResultVerifier(factObject);
 
-                resultVerifier.setExpected( getExpectedResult() );
+                resultVerifier.setExpected(getExpectedResult());
 
-                currentField.setSuccessResult( resultVerifier.isSuccess( currentField ) );
+                currentField.setSuccessResult(resultVerifier.isSuccess(currentField));
 
-                if ( !currentField.getSuccessResult() ) {
-                    currentField.setActualResult( resultVerifier.getActual( currentField ) );
+                if (!currentField.getSuccessResult()) {
+                    currentField.setActualResult(resultVerifier.getActual(currentField));
 
-                    currentField.setExplanation( getFailingExplanation() );
+                    currentField.setExplanation(getFailingExplanation());
                 } else {
-                    currentField.setExplanation( getSuccessfulExplanation() );
+                    currentField.setExplanation(getSuccessfulExplanation());
                 }
             }
 
@@ -85,38 +88,44 @@ public class FactFieldValueVerifier {
 
     }
 
-    private Object getExpectedResult() {
+    private Object getExpectedResult() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object expectedResult = currentField.getExpected().trim();
-        if ( currentField.getExpected().startsWith( "=" ) ) {
-            expectedResult = eval( currentField.getExpected().substring( 1 ),
-                                   this.populatedData );
-        } else if ( currentField.getNature() == VerifyField.TYPE_ENUM ) {
+        if (currentField.getExpected().startsWith("=")) {
+            expectedResult = eval(currentField.getExpected().substring(1),
+                    this.populatedData);
+        } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
             try {
                 // The string representation of enum value is using a
                 // format like CheeseType.CHEDDAR
-                String classNameOfEnum = currentField.getExpected().substring( 0,
-                                                                               currentField.getExpected().indexOf( "." ) );
-                String valueOfEnum = currentField.getExpected().substring( currentField.getExpected().indexOf( "." ) + 1 );
-                String fullName = resolver.getFullTypeName( classNameOfEnum );
-                if ( fullName != null && !"".equals( fullName ) ) {
+                String classNameOfEnum = currentField.getExpected().substring(0,
+                        currentField.getExpected().indexOf("."));
+                String valueOfEnum = currentField.getExpected().substring(currentField.getExpected().indexOf(".") + 1);
+                String fullName = resolver.getFullTypeName(classNameOfEnum);
+                if (fullName != null && !"".equals(fullName)) {
                     valueOfEnum = fullName + "." + valueOfEnum;
                 }
 
-                Serializable compiled = MVEL.compileExpression( valueOfEnum,
-                                                                pctx );
-                expectedResult = MVEL.executeExpression( compiled );
+                Serializable compiled = MVEL.compileExpression(valueOfEnum,
+                        pctx);
+                expectedResult = MVEL.executeExpression(compiled);
 
-            } catch ( ClassNotFoundException e ) {
+            } catch (ClassNotFoundException e) {
                 //Do nothing.
             }
+        } else if (isFieldDate()) {
+            return DateObjectFactory.createTimeObject(FieldTypeResolver.getFieldType(currentField.getFieldName(), factObject), currentField.getExpected());
         }
         return expectedResult;
     }
 
+    private boolean isFieldDate() {
+        return FieldTypeResolver.isDate(currentField.getFieldName(), factObject);
+    }
+
     private String getSuccessfulExplanation() {
-        if ( currentField.getOperator().equals( "==" ) ) {
+        if (currentField.getOperator().equals("==")) {
             return "[" + factName + "] field [" + currentField.getFieldName() + "] was [" + currentField.getExpected() + "].";
-        } else if ( currentField.getOperator().equals( "!=" ) ) {
+        } else if (currentField.getOperator().equals("!=")) {
             return "[" + factName + "] field [" + currentField.getFieldName() + "] was not [" + currentField.getExpected() + "].";
         }
 
@@ -124,7 +133,7 @@ public class FactFieldValueVerifier {
     }
 
     private String getFailingExplanation() {
-        if ( currentField.getOperator().equals( "==" ) ) {
+        if (currentField.getOperator().equals("==")) {
             return "[" + factName + "] field [" + currentField.getFieldName() + "] was [" + currentField.getActualResult() + "] expected [" + currentField.getExpected() + "].";
         } else {
             return "[" + factName + "] field [" + currentField.getFieldName() + "] was not expected to be [" + currentField.getActualResult() + "].";
@@ -134,38 +143,39 @@ public class FactFieldValueVerifier {
 
 class ResultVerifier {
 
-    private final Map<String, Object> variables     = new HashMap<String, Object>();
-    private ParserContext             parserContext = new ParserContext();
+    private final Map<String, Object> variables = new HashMap<String, Object>();
+    private ParserContext parserContext = new ParserContext();
 
     protected ResultVerifier(Object factObject) {
-        addVariable( "__fact__",
-                     factObject );
+        addVariable("__fact__",
+                factObject);
     }
 
     protected void setExpected(Object expected) {
-        addVariable( "__expected__",
-                     expected );
+        addVariable("__expected__",
+                expected);
     }
 
     private void addVariable(String name,
                              Object object) {
-        variables.put( name,
-                       object );
+        variables.put(name,
+                object);
 
-        parserContext.addInput( name,
-                                object.getClass() );
+        parserContext.addInput(name,
+                object.getClass());
     }
 
     protected Boolean isSuccess(VerifyField currentField) {
-        CompiledExpression expression = new ExpressionCompiler( "__fact__." + currentField.getFieldName() + " " + currentField.getOperator() + " __expected__" ).compile( parserContext );
+        String s = "__fact__." + currentField.getFieldName() + " " + currentField.getOperator() + " __expected__";
+        CompiledExpression expression = new ExpressionCompiler(s).compile(parserContext);
 
-        return (Boolean) MVEL.executeExpression( expression,
-                                                 variables );
+        return (Boolean) MVEL.executeExpression(expression,
+                variables);
     }
 
     protected String getActual(VerifyField currentField) {
-        Object actualValue = MVEL.executeExpression( new ExpressionCompiler( "__fact__." + currentField.getFieldName() ).compile( parserContext ),
-                                                     variables );
+        Object actualValue = MVEL.executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName()).compile(parserContext),
+                variables);
 
         return (actualValue != null) ? actualValue.toString() : "";
 

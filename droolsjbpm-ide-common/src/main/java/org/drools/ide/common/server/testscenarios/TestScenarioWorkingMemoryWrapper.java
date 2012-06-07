@@ -24,6 +24,7 @@ import org.drools.ide.common.server.testscenarios.verifiers.FactVerifier;
 import org.drools.ide.common.server.testscenarios.verifiers.RuleFiredVerifier;
 import org.drools.time.impl.PseudoClockScheduler;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,7 @@ public class TestScenarioWorkingMemoryWrapper {
         workingMemory.getAgenda().activateRuleFlowGroup( activateRuleFlowGroupName );
     }
 
-    public void verifyExpectation(Expectation expectation) {
+    public void verifyExpectation(Expectation expectation) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if ( expectation instanceof VerifyFact ) {
             factVerifier.verify( (VerifyFact) expectation );
         } else if ( expectation instanceof VerifyRuleFired ) {
