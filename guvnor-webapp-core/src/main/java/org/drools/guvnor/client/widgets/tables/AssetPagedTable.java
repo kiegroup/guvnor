@@ -17,7 +17,9 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -26,10 +28,12 @@ import com.google.gwt.view.client.HasData;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImageResource;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import java.util.Date;
@@ -89,19 +93,33 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     protected void addAncillaryColumns(ColumnPicker<AssetPageRow> columnPicker,
                                         SortableHeaderGroup<AssetPageRow> sortableHeaderGroup) {
 
-        Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<AssetPageRow, ComparableImageResource> formatColumn = new Column<AssetPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
-            public RuleFormatImageResource getValue(AssetPageRow row) {
+            public ComparableImageResource getValue(AssetPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource( row.getFormat(),
+                return new ComparableImageResource( row.getFormat(),
                                                     factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<AssetPageRow, RuleFormatImageResource>( sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, ComparableImageResource>( sortableHeaderGroup,
                                                                                            constants.Format(),
                                                                                            formatColumn ),
                                 true );
+
+        Column<AssetPageRow, ComparableImageResource> validColumn = new Column<AssetPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
+
+            public ComparableImageResource getValue(AssetPageRow row) {
+                ImageResource image = ValidImageFactory.getImage(row.getValid());
+                return new ComparableImageResource(row.getValid().toString(), image);
+            }
+        };
+
+        columnPicker.addColumn( validColumn,
+                new SortableHeader<AssetPageRow, ComparableImageResource >( sortableHeaderGroup,
+                        constants.Valid(),
+                        validColumn ),
+                true );
 
         TitledTextColumn<AssetPageRow> titleColumn = new TitledTextColumn<AssetPageRow>() {
             public TitledText getValue(AssetPageRow row) {

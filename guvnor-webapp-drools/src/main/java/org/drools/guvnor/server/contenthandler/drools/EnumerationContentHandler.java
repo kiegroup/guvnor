@@ -52,4 +52,14 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             return result;
         }
     }
+
+    @Override
+    public boolean validate(AssetItem assetItem) {
+        return !validateAsset(assetItem).hasLines();
+    }
+
+    @Override
+    public String getFormat() {
+        return "enumeration";
+    }
 }

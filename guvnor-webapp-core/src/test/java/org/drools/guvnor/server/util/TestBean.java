@@ -18,6 +18,8 @@ package org.drools.guvnor.server.util;
 
 
 
+import org.drools.guvnor.shared.api.Valid;
+
 import java.util.Calendar;
 
 public class TestBean {
@@ -26,30 +28,44 @@ public class TestBean {
     private String publisher = "42";
     private String creator = "42";
     private Calendar created = Calendar.getInstance();
-    
+
+    private Valid valid = Valid.VALID;
+
     public String getPublisher() {
         return publisher;
     }
-    
+
     public String getCreator() {
         return creator;
     }
-    
+
     /** this should be ignored */
     public void getCoverage() {
-        
+
     }
-    
+
     public void updatePublisher(String pub) {
         this.publisher = pub;
     }
-    
+
     public void updateCreator(String c) {
         this.creator = c;
     }
-    
     public Calendar getCreatedDate() {
         return created ;
     }
+
+    public Valid getValid() {
+        return valid;
+    }
+
+    public void updateValid(Valid valid) {
+        this.valid = valid;
+    }
+
+    public void updateValid(boolean b){
+        updateValid(Valid.fromBoolean(b));
+    }
+
     
 }

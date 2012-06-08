@@ -19,6 +19,7 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.drools.guvnor.shared.api.Valid;
 
 /**
  * This is the DTO for a versionable asset's meta data.
@@ -45,6 +46,8 @@ public class MetaData
     public String   publisher            = "";
 
     private boolean binary               = false;
+
+    public Valid valid                   = Valid.UNDETERMINED;
 
     public boolean  disabled             = false;
     public boolean  hasPreceedingVersion = false;
@@ -250,5 +253,14 @@ public class MetaData
     public Date getDateExpired() {
         return dateExpired;
     }
+
+    public Valid getValid() {
+        return valid;
+    }
+
+    public void setValid(Valid valid) {
+        this.valid = valid;
+    }
+
 
 }

@@ -114,6 +114,7 @@ public class RepositoryAssetService
 
         asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
 
+
         serviceSecurity.checkIsPackageReadOnlyOrAnalystReadOnly( asset );
         ModuleItem pkgItem = handlePackageItem( item,
                                                 asset );

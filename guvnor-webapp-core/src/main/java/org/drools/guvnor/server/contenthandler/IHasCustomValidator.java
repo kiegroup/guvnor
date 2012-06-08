@@ -18,11 +18,13 @@ package org.drools.guvnor.server.contenthandler;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.repository.AssetItem;
+import org.drools.repository.utils.Validator;
 
 /**
  * This interface indicates that an asset can validate itself, and present errors if requested.
  */
-public interface IHasCustomValidator {
+public interface IHasCustomValidator extends Validator
+{
 
     BuilderResult validateAsset(AssetItem asset);
 

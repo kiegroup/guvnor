@@ -66,4 +66,14 @@ public class WorkItemContentHandler extends PlainTextContentHandler implements
 
         return widValidator.validate();
     }
+
+    @Override
+    public boolean validate(AssetItem assetItem) {
+        return !super.validateAsset(assetItem).hasLines();
+    }
+
+    @Override
+    public String getFormat() {
+        return "wid";
+    }
 }

@@ -17,6 +17,8 @@ package org.drools.guvnor.client.widgets.drools.toolbar;
 
 import java.util.Set;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.BusinessProcessEditor;
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
@@ -42,7 +44,9 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
@@ -55,17 +59,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
 import org.drools.guvnor.client.asseteditor.GuvnorEditor;
+import org.drools.guvnor.shared.api.Valid;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -77,6 +73,8 @@ public class AssetEditorActionToolbar extends Composite {
             extends
             UiBinder<Widget, AssetEditorActionToolbar> {
     }
+
+    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     private static ActionToolbarBinder uiBinder = GWT.create(ActionToolbarBinder.class);
 
@@ -120,6 +118,9 @@ public class AssetEditorActionToolbar extends Composite {
     Label status;
 
     @UiField
+    Image validIndicator;
+
+    @UiField
     MenuItem sourceMenu;
 
     private AssetServiceAsync assetService = GWT.create(AssetService.class);
@@ -147,6 +148,7 @@ public class AssetEditorActionToolbar extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         setState(asset.getState());
+        setValidIndicator(ValidImageFactory.getImage(asset.getMetaData().getValid()));
         applyToolBarConfiguration();
         this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
         
@@ -158,6 +160,11 @@ public class AssetEditorActionToolbar extends Composite {
      */
     public void setState(String newStatus) {
         status.setText(Constants.INSTANCE.statusIs(newStatus));
+    }
+
+    public void setValidIndicator(ImageResource valid) {
+
+        validIndicator.setResource(valid);
     }
 
     private void applyToolBarConfiguration() {
@@ -333,6 +340,8 @@ public class AssetEditorActionToolbar extends Composite {
 
                                 public void onSuccess(BuilderResult results) {
                                     RuleValidatorWrapper.showBuilderErrors( results );
+                                    setValidIndicator(ValidImageFactory.getImage(
+                                            Valid.fromBoolean(results == null || !results.hasLines())));
                                 }
                             } );
 
