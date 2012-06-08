@@ -17,10 +17,10 @@
   <packaging>war</packaging>
 
   <properties>
-    <!-- Keep in sync with /guvnor-server-drools/src/test/resources/arquillian.xml -->
+    <!-- Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml -->
     <appserver.jboss7.version>7.1.1.Final</appserver.jboss7.version>
     <!--<appserver.download.dir>${project.basedir}/local/appserver</appserver.download.dir>-->
-    <!--&lt;!&ndash; Keep in sync with /guvnor-server-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
+    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp-drools/src/test/resources/arquillian.xml &ndash;&gt;-->
     <!--<appserver.tomcat6.version>6.0.33</appserver.tomcat6.version>-->
     <!--<appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${appserver.tomcat6.version}</appserver.tomcat6.home>-->
   </properties>
