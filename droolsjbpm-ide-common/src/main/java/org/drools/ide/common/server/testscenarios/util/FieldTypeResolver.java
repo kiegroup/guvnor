@@ -17,8 +17,8 @@ public class FieldTypeResolver {
         for (Method method : factObject.getClass().getDeclaredMethods()) {
             if (hasMutator(fieldName, method)) {
                 if (java.util.Date.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                    return true;
                 }
-                return true;
             }
         }
         return false;
