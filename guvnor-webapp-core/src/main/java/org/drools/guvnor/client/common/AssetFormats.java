@@ -95,6 +95,11 @@ public class AssetFormats {
     public static final String TEST_SCENARIO = "scenario";
 
     /**
+     * Simulation test.
+     */
+    public static final String SIMULATION_TEST = "simulationTest";
+
+    /**
      * For fact models in drl.
      */
     public static final String DRL_MODEL = "model.drl";

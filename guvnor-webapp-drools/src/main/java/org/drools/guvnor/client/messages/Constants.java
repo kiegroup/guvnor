@@ -2761,5 +2761,7 @@ public interface Constants
     // Simulation tests
 
     String SimulationTests();
+
+    String NewSimulationTest();
     
 }

@@ -344,7 +344,7 @@ public interface DroolsGuvnorImages
 
     // Simulation tests
 
-    @Source("simulation/simulation_asset_icon.gif")
-    ImageResource simulationAssetIcon();
+    @Source("simulation/simulation_test_icon.gif")
+    ImageResource simulationTestIcon();
 
 }

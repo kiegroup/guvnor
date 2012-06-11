@@ -56,6 +56,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
        	addNewFormDefinitionMenuItem();
         addNewEnumerationMenuItem();
         addNewTestScenarioMenuItem();
+        addNewSimulationTestMenuItem();
         addNewFileMenuItem();
         rebuildAllPackagesMenuItem();
 
@@ -86,14 +87,25 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
     }
 
     private void addNewTestScenarioMenuItem() {
-        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario() ).asString(),
+        addItem(Util.getHeader(DroolsGuvnorImages.INSTANCE.testManager(), Constants.INSTANCE.NewTestScenario()).asString(),
                 true,
                 new Command() {
                     public void execute() {
                         presenter.onNewTestScenario();
                     }
                 },
-                AssetFormats.TEST_SCENARIO );
+                AssetFormats.TEST_SCENARIO);
+    }
+
+    private void addNewSimulationTestMenuItem() {
+        addItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.simulationTestIcon(), Constants.INSTANCE.NewSimulationTest() ).asString(),
+                true,
+                new Command() {
+                    public void execute() {
+                        presenter.onNewTestScenario(); // TODO simulationTest
+                    }
+                },
+                AssetFormats.SIMULATION_TEST );
     }
 
     private void addNewEnumerationMenuItem() {

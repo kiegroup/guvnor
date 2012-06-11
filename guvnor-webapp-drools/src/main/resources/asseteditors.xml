@@ -135,10 +135,10 @@
     </asseteditor>
 
     <asseteditor>
-        <!--TODO replace by <class>org.drools.guvnor.client.simulation.SimulationAssetListWidget</class>-->
+        <!--TODO simulationTest replace by <class>org.drools.guvnor.client.simulation.SimulationTestWidget</class>-->
         <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
-        <format>simulation</format>
-        <icon>images.simulationAssetIcon()</icon>
+        <format>simulationTest</format>
+        <icon>images.simulationTestIcon()</icon>
         <title>constants.SimulationTests()</title>
     </asseteditor>
     
