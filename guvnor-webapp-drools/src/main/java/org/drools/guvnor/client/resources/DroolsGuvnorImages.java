@@ -341,4 +341,10 @@ public interface DroolsGuvnorImages
 
     @Source("images/info-large.png")
     ImageResource infoLarge();
+
+    // Simulation tests
+
+    @Source("simulation/simulation_asset_icon.gif")
+    ImageResource simulationAssetIcon();
+
 }

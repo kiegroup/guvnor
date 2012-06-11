@@ -125,14 +125,22 @@
         <format>enumeration</format>
         <icon>images.enumeration()</icon>
         <title>constants.Enumerations()</title>    
-    </asseteditor>       
+    </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
         <format>scenario</format>
         <icon>images.testManager()</icon>
         <title>constants.TestScenarios()</title>    
-    </asseteditor>       
+    </asseteditor>
+
+    <asseteditor>
+        <!--TODO replace by <class>org.drools.guvnor.client.simulation.SimulationAssetListWidget</class>-->
+        <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
+        <format>simulation</format>
+        <icon>images.simulationAssetIcon()</icon>
+        <title>constants.SimulationTests()</title>
+    </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 

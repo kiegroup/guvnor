@@ -2757,5 +2757,9 @@ public interface Constants
     String DecisionTableAuditLogUpdateAction0Was1(String value, String originalValue);
     
     String DecisionTableAuditLogUpdateColumn0Was1(String value, String originalValue);
+
+    // Simulation tests
+
+    String SimulationTests();
     
 }
