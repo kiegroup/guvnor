@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -73,9 +73,9 @@ public class JobListView implements ViewInterface, IsWidget, DataDriven {
     SimplePanel panel;
 
     private boolean initialized;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public JobListView(ClientFactory clientFactory) {
+    public JobListView(BpmConsoleClientFactory clientFactory) {
         this.controller = clientFactory.getController();
         this.clientFactory = clientFactory;
     }

@@ -43,7 +43,7 @@ import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.IFrameWindowCallback;
@@ -103,9 +103,9 @@ public class InstanceListView implements IsWidget, ViewInterface, DataDriven {
     private CustomizableListBox<String> listBoxTokenSignals;
 
     private ImageResource greenIcon;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public InstanceListView(ClientFactory clientFactory) {
+    public InstanceListView(BpmConsoleClientFactory clientFactory) {
         this.appContext = clientFactory.getApplicationContext();
         this.clientFactory = clientFactory;
         this.isRiftsawInstance = clientFactory.getApplicationContext().getConfig().getProfileName().equals("BPEL Console");

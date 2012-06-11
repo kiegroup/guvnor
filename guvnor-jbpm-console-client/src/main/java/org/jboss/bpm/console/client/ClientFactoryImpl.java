@@ -20,9 +20,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
-import org.drools.guvnor.client.perspective.BpmConsoleActivityMapper;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
+import org.jboss.bpm.console.client.perspective.BpmConsoleActivityMapper;
+import org.jboss.bpm.console.client.perspective.RuntimeClientFactory;
 
 public class ClientFactoryImpl
         extends AbstractClientFactoryImpl {
@@ -33,7 +34,7 @@ public class ClientFactoryImpl
 
     @Override
     public ActivityMapper getActivityMapper() {
-        return new BpmConsoleActivityMapper(this);
+        return new BpmConsoleActivityMapper(new RuntimeClientFactory(eventBus));
     }
 
     @Override

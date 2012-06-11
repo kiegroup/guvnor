@@ -3,6 +3,7 @@ package org.jboss.bpm.console.client.moduleeditor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.rpc.Module;
 
 public class HelloWorldModuleEditor extends AbstractModuleEditor {

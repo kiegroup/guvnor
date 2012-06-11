@@ -23,12 +23,12 @@ import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
+import org.jboss.bpm.console.client.navigation.processes.ProcessOverviewPlace;
+import org.jboss.bpm.console.client.navigation.reporting.ReportTemplatesPlace;
+import org.jboss.bpm.console.client.navigation.settings.PreferencesPlace;
+import org.jboss.bpm.console.client.navigation.tasks.GroupTasksPlace;
+import org.jboss.bpm.console.client.navigation.tasks.PersonalTasksPlace;
 
 @WithTokenizers(
         {

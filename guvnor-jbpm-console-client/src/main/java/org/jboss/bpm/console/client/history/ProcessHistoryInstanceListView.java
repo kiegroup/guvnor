@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -49,9 +49,9 @@ public class ProcessHistoryInstanceListView implements ViewInterface, IsWidget, 
     private CustomizableListBox<String> processEvents;
 
     private String selectedProcessInstanceId;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public ProcessHistoryInstanceListView(ClientFactory clientFactory) {
+    public ProcessHistoryInstanceListView(BpmConsoleClientFactory clientFactory) {
         this.controller = clientFactory.getController();
         this.clientFactory = clientFactory;
     }

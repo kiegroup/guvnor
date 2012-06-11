@@ -20,14 +20,14 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.ServerStatusView;
 
 public class SystemActivity extends Activity {
 
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public SystemActivity(ClientFactory clientFactory) {
+    public SystemActivity(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

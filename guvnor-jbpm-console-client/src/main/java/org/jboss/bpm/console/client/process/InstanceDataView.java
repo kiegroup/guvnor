@@ -30,7 +30,7 @@ import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.LazyPanel;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.util.ConsoleLog;
@@ -53,7 +53,7 @@ public class InstanceDataView extends SimplePanel implements ViewInterface, Lazy
 
     boolean isRiftsawInstance = false;
 
-    public InstanceDataView(ClientFactory clientFactory) {
+    public InstanceDataView(BpmConsoleClientFactory clientFactory) {
         isRiftsawInstance = clientFactory.getApplicationContext().getConfig().getProfileName().equals("BPEL Console");
     }
 

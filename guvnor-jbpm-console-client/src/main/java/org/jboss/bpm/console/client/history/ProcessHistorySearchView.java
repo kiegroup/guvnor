@@ -18,7 +18,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 
 /**
@@ -43,7 +43,7 @@ public class ProcessHistorySearchView implements IsWidget, ViewInterface {
 
     private DateBox endTime;
 
-    public ProcessHistorySearchView(ClientFactory clientFactory) {
+    public ProcessHistorySearchView(BpmConsoleClientFactory clientFactory) {
 
         this.controller = clientFactory.getController();
 

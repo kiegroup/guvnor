@@ -23,16 +23,16 @@ package org.jboss.bpm.console.client.process;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 
 //@LoadTool(name = "Process Overview", group = "Processes", icon = "processIcon", priority = 1)
 @Deprecated
 public class ProcessModule implements IsWidget {
 
     static MergedProcessView instance = null;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public ProcessModule(ClientFactory clientFactory) {
+    public ProcessModule(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -72,7 +72,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
     private static boolean actionSetup = false;
 
-    public OpenTasksView(ClientFactory clientFactory) {
+    public OpenTasksView(BpmConsoleClientFactory clientFactory) {
         this.appContext = clientFactory.getApplicationContext();
         this.controller = clientFactory.getController();
     }

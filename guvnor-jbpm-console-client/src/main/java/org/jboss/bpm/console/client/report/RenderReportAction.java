@@ -21,13 +21,12 @@
  */
 package org.jboss.bpm.console.client.report;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Timer;
 import com.mvc4g.client.ActionInterface;
 import com.mvc4g.client.Controller;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.LoadingStatusAction;
 import org.jboss.bpm.console.client.util.ConsoleLog;
 //import org.jboss.errai.workspaces.client.framework.Registry;
@@ -47,7 +46,7 @@ public class RenderReportAction implements ActionInterface
 
   private final ApplicationContext appContext ;
 
-  public RenderReportAction(ClientFactory clientFactory)
+  public RenderReportAction(BpmConsoleClientFactory clientFactory)
   {
       this.appContext = clientFactory.getApplicationContext();
   }

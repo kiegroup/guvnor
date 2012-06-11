@@ -20,14 +20,14 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.process.MergedProcessView;
 
 public class ProcessOverviewActivity extends Activity {
 
-    private ClientFactory clientFactory;
+    private BpmConsoleClientFactory clientFactory;
 
-    public ProcessOverviewActivity(ClientFactory clientFactory) {
+    public ProcessOverviewActivity(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

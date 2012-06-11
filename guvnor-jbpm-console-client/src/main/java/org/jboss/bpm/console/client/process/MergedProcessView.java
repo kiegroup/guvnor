@@ -24,16 +24,16 @@ package org.jboss.bpm.console.client.process;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 
 /**
  * Combined view of process and instance data in a single screen
  */
 public class MergedProcessView implements IsWidget {
 
-    private ClientFactory clientFactory;
+    private BpmConsoleClientFactory clientFactory;
 
-    public MergedProcessView(ClientFactory clientFactory) {
+    public MergedProcessView(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

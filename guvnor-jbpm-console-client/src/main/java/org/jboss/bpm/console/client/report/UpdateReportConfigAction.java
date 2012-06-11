@@ -27,7 +27,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.Response;
 import com.mvc4g.client.Controller;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
 import org.jboss.bpm.console.client.common.AbstractRESTAction;
 import org.jboss.bpm.console.client.model.JSOParser;
 import org.jboss.bpm.report.model.ReportReference;

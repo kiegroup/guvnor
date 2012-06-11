@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.mvc4g.client.Event;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.ServerPlugins;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
@@ -77,7 +77,7 @@ public class AssignedTasksView extends AbstractTaskList implements IsWidget, Dat
 
     private DockPanel panel;
 
-    public AssignedTasksView(ClientFactory clientFactory) {
+    public AssignedTasksView(BpmConsoleClientFactory clientFactory) {
         this.appContext = clientFactory.getApplicationContext();
         this.controller = clientFactory.getController();
     }

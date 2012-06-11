@@ -39,7 +39,7 @@ import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.ServerPlugins;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.PropertyGrid;
@@ -84,9 +84,9 @@ public class InstanceDetailView extends HorizontalPanel implements ViewInterface
     private boolean isRiftsawInstance;
 
     private CustomizableListBox<String> processEvents;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public InstanceDetailView(ClientFactory clientFactory) {
+    public InstanceDetailView(BpmConsoleClientFactory clientFactory) {
         //TODO: -Rikkola-
 //        super("Execution details");
 

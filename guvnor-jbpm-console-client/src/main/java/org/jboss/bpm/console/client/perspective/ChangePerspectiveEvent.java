@@ -17,6 +17,7 @@ package org.jboss.bpm.console.client.perspective;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.guvnor.client.perspective.Perspective;
 
 public class ChangePerspectiveEvent extends GwtEvent<ChangePerspectiveEvent.Handler> {
 

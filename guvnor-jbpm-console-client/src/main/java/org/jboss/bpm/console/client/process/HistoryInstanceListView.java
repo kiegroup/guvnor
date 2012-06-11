@@ -40,7 +40,7 @@ import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -92,7 +92,7 @@ public class HistoryInstanceListView implements IsWidget, ViewInterface, DataDri
 
     private ActivityDiagramView diagramView;
 
-    public HistoryInstanceListView(ClientFactory clientFactory) {
+    public HistoryInstanceListView(BpmConsoleClientFactory clientFactory) {
         this.appContext = clientFactory.getApplicationContext();
         this.controller = clientFactory.getController();
     }

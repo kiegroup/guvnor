@@ -40,7 +40,7 @@ import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -81,7 +81,7 @@ public class DefinitionListView implements IsWidget, ViewInterface, DataDriven {
     private final Controller controller;
     private final ApplicationContext applicationContext;
 
-    public DefinitionListView(ClientFactory clientFactory) {
+    public DefinitionListView(BpmConsoleClientFactory clientFactory) {
         this.controller = clientFactory.getController();
         applicationContext = clientFactory.getApplicationContext();
     }

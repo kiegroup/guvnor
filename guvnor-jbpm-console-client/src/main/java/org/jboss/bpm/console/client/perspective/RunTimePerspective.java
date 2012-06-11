@@ -22,12 +22,13 @@ import java.util.Collection;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessNavigationViewFactoryImpl;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.tasks.TasksNavigationItemBuilder;
+import org.drools.guvnor.client.perspective.Perspective;
+import org.jboss.bpm.console.client.navigation.processes.ProcessNavigationViewFactory;
+import org.jboss.bpm.console.client.navigation.processes.ProcessNavigationViewFactoryImpl;
+import org.jboss.bpm.console.client.navigation.processes.ProcessesNavigationItemBuilder;
+import org.jboss.bpm.console.client.navigation.reporting.ReportingNavigationItemBuilder;
+import org.jboss.bpm.console.client.navigation.settings.SettingsNavigationItemBuilder;
+import org.jboss.bpm.console.client.navigation.tasks.TasksNavigationItemBuilder;
 
 public class RunTimePerspective extends Perspective {
 

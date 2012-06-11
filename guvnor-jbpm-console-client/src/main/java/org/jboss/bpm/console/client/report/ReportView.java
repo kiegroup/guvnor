@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.WidgetWindowPanel;
 import org.jboss.bpm.console.client.report.search.UpdateSearchDefinitionsAction;
 import org.jboss.bpm.report.model.ReportReference;
@@ -47,9 +47,9 @@ public class ReportView implements ViewInterface, IsWidget {
     private ReportLaunchPadView coverpanel;
 
     private SimplePanel panel;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public ReportView(ClientFactory clientFactory) {
+    public ReportView(BpmConsoleClientFactory clientFactory) {
         this.controller = clientFactory.getController();
         this.clientFactory = clientFactory;
     }

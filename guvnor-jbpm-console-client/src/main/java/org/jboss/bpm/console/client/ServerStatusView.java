@@ -52,7 +52,7 @@ public class ServerStatusView
     VerticalPanel layoutPanel;
     HorizontalPanel pluginPanel;
 
-    public ServerStatusView(ClientFactory clientFactory) {
+    public ServerStatusView(BpmConsoleClientFactory clientFactory) {
         this.appContext = clientFactory.getApplicationContext();
         this.controller = clientFactory.getController();
     }

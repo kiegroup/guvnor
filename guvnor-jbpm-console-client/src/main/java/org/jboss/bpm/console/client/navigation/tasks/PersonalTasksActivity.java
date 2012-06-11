@@ -19,15 +19,15 @@ package org.jboss.bpm.console.client.navigation.tasks;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.util.Activity;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.messages.Constants;
 import org.jboss.bpm.console.client.task.AssignedTasksView;
 
 public class PersonalTasksActivity extends Activity {
 
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public PersonalTasksActivity(ClientFactory clientFactory) {
+    public PersonalTasksActivity(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

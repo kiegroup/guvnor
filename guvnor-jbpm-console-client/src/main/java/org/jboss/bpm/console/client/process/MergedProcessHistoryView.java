@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 
 /**
  * @author Maciej Swiderski <swiderski.maciej@gmail.com>
@@ -13,9 +13,9 @@ public class MergedProcessHistoryView implements IsWidget {
 
     DefinitionHistoryListView definitionView;
     HistoryInstanceListView instanceView;
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public MergedProcessHistoryView(ClientFactory clientFactory) {
+    public MergedProcessHistoryView(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 

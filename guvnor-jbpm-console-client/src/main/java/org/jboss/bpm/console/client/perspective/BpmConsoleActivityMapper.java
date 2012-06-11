@@ -18,33 +18,34 @@ package org.jboss.bpm.console.client.perspective;
 
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
-import org.drools.guvnor.client.explorer.navigation.processes.ExecutionHistoryActivity;
-import org.drools.guvnor.client.explorer.navigation.processes.ExecutionHistoryPlace;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
-import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
-import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesActivity;
-import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
-import org.drools.guvnor.client.explorer.navigation.settings.SystemActivity;
-import org.drools.guvnor.client.explorer.navigation.settings.SystemPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
-import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
+import org.jboss.bpm.console.client.navigation.processes.ExecutionHistoryActivity;
+import org.jboss.bpm.console.client.navigation.processes.ExecutionHistoryPlace;
+import org.jboss.bpm.console.client.navigation.processes.ProcessOverviewActivity;
+import org.jboss.bpm.console.client.navigation.processes.ProcessOverviewPlace;
+import org.jboss.bpm.console.client.navigation.reporting.ReportTemplatesActivity;
+import org.jboss.bpm.console.client.navigation.reporting.ReportTemplatesPlace;
+import org.jboss.bpm.console.client.navigation.settings.PreferencesActivity;
+import org.jboss.bpm.console.client.navigation.settings.PreferencesPlace;
+import org.jboss.bpm.console.client.navigation.settings.SystemActivity;
+import org.jboss.bpm.console.client.navigation.settings.SystemPlace;
+import org.jboss.bpm.console.client.navigation.tasks.GroupTasksActivity;
+import org.jboss.bpm.console.client.navigation.tasks.GroupTasksPlace;
+import org.jboss.bpm.console.client.navigation.tasks.PersonalTasksActivity;
+import org.jboss.bpm.console.client.navigation.tasks.PersonalTasksPlace;
 
 public class BpmConsoleActivityMapper
         implements ActivityMapper {
 
-    private final ClientFactory clientFactory = new RuntimeClientFactory();
+    private final BpmConsoleClientFactory clientFactory;
     private final GuvnorActivityMapper guvnorActivityMapper;
 
 
-    public BpmConsoleActivityMapper(org.drools.guvnor.client.explorer.ClientFactory clientFactory) {
+    public BpmConsoleActivityMapper(RuntimeClientFactory clientFactory) {
         guvnorActivityMapper = new GuvnorActivityMapper(clientFactory);
+        this.clientFactory = clientFactory;
     }
 
     public Activity getActivity(Place place) {

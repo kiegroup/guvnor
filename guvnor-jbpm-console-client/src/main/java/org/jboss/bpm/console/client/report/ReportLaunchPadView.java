@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.URLBuilder;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -65,9 +65,9 @@ class ReportLaunchPadView extends VerticalPanel implements ViewInterface, DataDr
     private ReportFrame reportFrame;
 
     private Map<String, ReportParameterForm> forms = new HashMap<String, ReportParameterForm>();
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public ReportLaunchPadView(ClientFactory clientFactory) {
+    public ReportLaunchPadView(BpmConsoleClientFactory clientFactory) {
 
         this.clientFactory = clientFactory;
 

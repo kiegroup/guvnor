@@ -16,18 +16,21 @@
 
 package org.jboss.bpm.console.client.perspective;
 
+import com.google.gwt.event.shared.EventBus;
 import com.mvc4g.client.Controller;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
+import org.jboss.bpm.console.client.ClientFactoryImpl;
 import org.jboss.bpm.console.client.URLBuilder;
 
-public class RuntimeClientFactory
-        implements ClientFactory {
+public class RuntimeClientFactory extends ClientFactoryImpl
+        implements BpmConsoleClientFactory {
 
     private Controller controller;
     private RuntimeApplicationContext runtimeApplicationContext = new RuntimeApplicationContext();
 
-    public RuntimeClientFactory() {
+    public RuntimeClientFactory(EventBus eventBus) {
+        super(eventBus);
         URLBuilder.configureInstance(runtimeApplicationContext.getConfig());
     }
 
@@ -42,4 +45,5 @@ public class RuntimeClientFactory
 
         return controller;
     }
+
 }

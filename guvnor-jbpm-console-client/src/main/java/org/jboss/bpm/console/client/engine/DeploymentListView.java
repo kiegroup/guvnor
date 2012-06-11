@@ -41,7 +41,7 @@ import com.mvc4g.client.Controller;
 import com.mvc4g.client.Event;
 import com.mvc4g.client.ViewInterface;
 import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.common.CustomizableListBox;
 import org.jboss.bpm.console.client.common.DataDriven;
 import org.jboss.bpm.console.client.common.LoadingOverlay;
@@ -82,7 +82,7 @@ public class DeploymentListView implements ViewInterface, IsWidget, DataDriven {
     private boolean isRiftsawInstance = false;
     private final ApplicationContext applicationContext;
 
-    public DeploymentListView(ClientFactory clientFactory) {
+    public DeploymentListView(BpmConsoleClientFactory clientFactory) {
         applicationContext = clientFactory.getApplicationContext();
         this.controller = clientFactory.getController();
         this.isRiftsawInstance = clientFactory.getApplicationContext().getConfig().getProfileName().equals("BPEL Console");

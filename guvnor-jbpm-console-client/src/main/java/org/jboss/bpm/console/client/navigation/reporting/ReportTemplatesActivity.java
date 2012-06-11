@@ -21,14 +21,14 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.util.Activity;
-import org.jboss.bpm.console.client.ClientFactory;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;
 import org.jboss.bpm.console.client.report.ReportView;
 
 public class ReportTemplatesActivity extends Activity {
 
-    private final ClientFactory clientFactory;
+    private final BpmConsoleClientFactory clientFactory;
 
-    public ReportTemplatesActivity(ClientFactory clientFactory) {
+    public ReportTemplatesActivity(BpmConsoleClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
