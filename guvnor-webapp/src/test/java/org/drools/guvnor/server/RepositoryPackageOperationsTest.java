@@ -298,6 +298,8 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackageSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
+        when( this.rulesRepository.containsSnapshot( packageName,
+                                                        snapshotName ) ).thenReturn( true );
         this.repositoryPackageOperations.createPackageSnapshot( packageName,
                                                                 snapshotName,
                                                                 true,
