@@ -180,7 +180,7 @@ public class RepositoryAssetOperations {
         handler.storeAssetContent(asset,
                 repoAsset);
 
-        if (!asset.getFormat().equals(AssetFormats.TEST_SCENARIO) || asset.getFormat().equals(AssetFormats.ENUMERATION)) {
+        if (AssetFormats.affectsBinaryUpToDate(asset.getFormat())) {
             ModuleItem pkg = repoAsset.getModule();
             pkg.updateBinaryUpToDate(false);
             RuleBaseCache.getInstance().remove(pkg.getUUID());

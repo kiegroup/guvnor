@@ -160,6 +160,10 @@ public class AssetFormats {
         return false;
     }
 
+    public static boolean affectsBinaryUpToDate(String format) {
+        return !format.equals(AssetFormats.TEST_SCENARIO);
+    }
+
     public static String convertAssetFormatToResourceType(final String format) {
         if (format.equals(BUSINESS_RULE)
                 || format.equals(DRL)
