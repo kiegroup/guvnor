@@ -22,6 +22,7 @@ import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.cxf.annotations.GZIP;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
@@ -52,6 +53,7 @@ import org.jboss.resteasy.plugins.providers.atom.Link;*/
 @Path("/categories")
 @RequestScoped
 @Named
+@GZIP
 public class CategoryResource extends Resource {
 
     private final int pageSize = 10;
