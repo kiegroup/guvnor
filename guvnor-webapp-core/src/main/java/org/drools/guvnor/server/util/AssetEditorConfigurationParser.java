@@ -30,11 +30,6 @@ import java.util.List;
 public class AssetEditorConfigurationParser {
     private static final Logger log = LoggerFactory.getLogger(AssetEditorConfigurationParser.class);
     private static final String ASSETEDITOR_CONFIG = "/asseteditors.xml";
-    static final String ASSET_EDITOR = "asseteditor";
-    static final String TITLE = "title";
-    static final String CLASS = "class";
-    static final String ICON = "icon";
-    static final String FORMAT = "format";
 
     private List<AssetEditorConfiguration> assetEditors;
 
