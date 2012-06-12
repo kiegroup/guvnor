@@ -134,8 +134,7 @@
     </asseteditor>
 
     <asseteditor>
-        <!--TODO simulationTest replace by <class>org.drools.guvnor.client.simulation.SimulationTestWidget</class>-->
-        <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
+        <class>org.drools.guvnor.client.simulation.SimulationTestEditor</class>
         <format>simulationTest</format>
         <icon>images.simulationTestIcon()</icon>
         <title>constants.SimulationTests()</title>

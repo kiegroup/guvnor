@@ -2763,5 +2763,9 @@ public interface Constants
     String SimulationTests();
 
     String NewSimulationTest();
-    
+
+    String RunSimulation();
+
+    String DebugSimulation();
+
 }
