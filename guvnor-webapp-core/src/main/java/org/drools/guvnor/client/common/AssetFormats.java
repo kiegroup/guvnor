@@ -160,8 +160,12 @@ public class AssetFormats {
         return false;
     }
 
+    /**
+     * @param format never null
+     * @return true if any changes to this asset make the module's binary file stale
+     */
     public static boolean affectsBinaryUpToDate(String format) {
-        return !format.equals(AssetFormats.TEST_SCENARIO);
+        return !format.equals(AssetFormats.TEST_SCENARIO) && !format.equals(AssetFormats.SIMULATION_TEST);
     }
 
     public static String convertAssetFormatToResourceType(final String format) {
