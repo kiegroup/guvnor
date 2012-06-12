@@ -58,6 +58,8 @@ public interface PackagesNewAssetMenuView extends IsWidget {
 
         void onNewTestScenario();
 
+        void onNewSimulationTest();
+
         void onNewFile();
 
         void onRebuildAllPackages();

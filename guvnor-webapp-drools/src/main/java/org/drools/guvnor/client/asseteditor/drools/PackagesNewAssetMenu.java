@@ -108,6 +108,10 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
         view.openNewAssetWizardWithoutCategories( AssetFormats.TEST_SCENARIO, clientFactory, eventBus );
     }
 
+    public void onNewSimulationTest() {
+        view.openNewAssetWizardWithoutCategories( AssetFormats.SIMULATION_TEST, clientFactory, eventBus );
+    }
+
     public void onNewFile() {
         view.openNewAssetWizardWithoutCategories( "", clientFactory, eventBus );
     }

@@ -102,7 +102,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
                 true,
                 new Command() {
                     public void execute() {
-                        presenter.onNewTestScenario(); // TODO simulationTest
+                        presenter.onNewSimulationTest();
                     }
                 },
                 AssetFormats.SIMULATION_TEST );
