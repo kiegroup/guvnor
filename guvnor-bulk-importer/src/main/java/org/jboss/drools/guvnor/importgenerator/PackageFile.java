@@ -357,7 +357,7 @@ public class PackageFile {
    */
      private static String getPackageName(File directory, CmdArgsParser options) {
     String startPath = directory.getPath();
-    Matcher m = Pattern.compile("([^/]+)").matcher(startPath);
+    Matcher m = Pattern.compile("([^/|\\\\]+)").matcher(startPath); // quad-backslash is for windows paths
     List<String> lpath = new ArrayList<String>();
     while (m.find())
       lpath.add(m.group());
