@@ -35,6 +35,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.RulesRepositoryTest;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
+import org.drools.repository.utils.AssetValidator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -53,6 +54,7 @@ public class RestAPITest extends RepositoryTestCase {
         ass.checkin("hey");
 
         RestAPI api = new RestAPI(repo);
+       api.setAssetValidator(new AssetValidator());
         String url = "packages/testRestGetSpaces";
         Response res = api.get(url);
 
@@ -95,6 +97,7 @@ public class RestAPITest extends RepositoryTestCase {
         assertFalse(asset1.isBinary());
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
 
         //this should get us the package configuration
 
@@ -170,6 +173,7 @@ public class RestAPITest extends RepositoryTestCase {
     public void testGetMisc() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         api.get("");
         api.get("/");
         api.get("packages");
@@ -192,6 +196,7 @@ public class RestAPITest extends RepositoryTestCase {
         assertEquals(1, asset1.getVersionNumber());
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         Response res = api.get("packages/testRestGetVersionHistory/asset1.drl?version=all");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -252,6 +257,7 @@ public class RestAPITest extends RepositoryTestCase {
         assertEquals(1, asset1.getVersionNumber());
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         Text res = (Text) api.get("packages/testVersionHistoryAndArchived");
         System.err.println(res.data);
         assertTrue(res.data.indexOf("asset2.drl") > -1);
@@ -286,6 +292,7 @@ public class RestAPITest extends RepositoryTestCase {
         repo.save();
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
         api.post("/packages/testRestPost/asset1.drl", in, "a comment");
 
@@ -315,7 +322,7 @@ public class RestAPITest extends RepositoryTestCase {
     public void testPostNewPackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         RestAPI api = new RestAPI(repo);
-
+        api.setAssetValidator(new AssetValidator());
         api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), "This is a new package");
         ModuleItem pkg = repo.loadModule("testPostNewPackage");
         assertEquals("qaz", pkg.getStringProperty(ModuleItem.HEADER_PROPERTY_NAME));
@@ -345,6 +352,7 @@ public class RestAPITest extends RepositoryTestCase {
         asset2.checkin("");
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         Thread.sleep(42);
         api.put("packages/testRestPut/asset1.drl", Calendar.getInstance(), new ByteArrayInputStream("qaz".getBytes()), "a new comment");
 
@@ -394,6 +402,7 @@ public class RestAPITest extends RepositoryTestCase {
         asset1.checkin("");
 
         RestAPI api = new RestAPI(repo);
+        api.setAssetValidator(new AssetValidator());
         api.delete("packages/testRestDelete/asset1.drl");
 
         List l = RulesRepositoryTest.iteratorToList(pkg.listAssetsByFormat(new String[] {"drl"}));

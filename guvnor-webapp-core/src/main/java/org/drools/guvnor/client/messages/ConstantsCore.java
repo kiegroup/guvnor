@@ -2629,5 +2629,7 @@ public interface ConstantsCore
     String RemoveActionValueDefinitionQuestion();
 
     String ConversionResults();
+
+    String Valid();
     
 }

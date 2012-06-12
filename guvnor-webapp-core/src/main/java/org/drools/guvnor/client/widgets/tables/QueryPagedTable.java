@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
@@ -147,16 +147,16 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
     protected void addAncillaryColumns(ColumnPicker<QueryPageRow> columnPicker,
                                        SortableHeaderGroup<QueryPageRow> sortableHeaderGroup) {
 
-        Column<QueryPageRow, RuleFormatImageResource> formatColumn = new Column<QueryPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<QueryPageRow, ComparableImageResource> formatColumn = new Column<QueryPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
-            public RuleFormatImageResource getValue(QueryPageRow row) {
+            public ComparableImageResource getValue(QueryPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource( row.getFormat(),
+                return new ComparableImageResource( row.getFormat(),
                                                     factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<QueryPageRow, RuleFormatImageResource>(
+                                new SortableHeader<QueryPageRow, ComparableImageResource>(
                                                                                            sortableHeaderGroup,
                                                                                            constants.Format(),
                                                                                            formatColumn ),

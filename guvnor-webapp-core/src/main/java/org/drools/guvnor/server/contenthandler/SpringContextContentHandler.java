@@ -62,4 +62,14 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
 
         return contextValidator.validate();
     }
+
+    @Override
+    public boolean validate(AssetItem assetItem) {
+        return !super.validateAsset(assetItem).hasLines();
+    }
+
+    @Override
+    public String getFormat() {
+        return "springContext";
+    }
 }

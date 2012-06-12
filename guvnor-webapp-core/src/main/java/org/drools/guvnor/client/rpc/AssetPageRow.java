@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.rpc;
 
+import org.drools.guvnor.shared.api.Valid;
+
 import java.util.Date;
 
 /**
@@ -27,6 +29,7 @@ public class AssetPageRow extends AbstractAssetPageRow {
     private String abbreviatedDescription;
     private String packageName;
     private String stateName;
+    private Valid valid;
     private String creator;
     private Date   createdDate;
     private String lastContributor;
@@ -125,6 +128,14 @@ public class AssetPageRow extends AbstractAssetPageRow {
 
     public void setDisabled(boolean isDisabled) {
         this.isDisabled = isDisabled;
+    }
+
+    public Valid getValid() {
+        return valid;
+    }
+
+    public void setValid(Valid valid) {
+        this.valid = valid;
     }
     
 }

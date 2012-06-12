@@ -22,6 +22,7 @@ import org.drools.repository.remoteapi.RestAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,9 @@ public class RestAPIServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 510l;
     public static final Logger log = LoggerFactory.getLogger(RestAPIServlet.class);
+
+    @Inject
+    private RestAPI restAPI;
 
     @Override
     protected void doPost(final HttpServletRequest req,
@@ -137,7 +141,7 @@ public class RestAPIServlet extends RepositoryServlet {
     }
 
     RestAPI getAPI() {
-        return new RestAPI(rulesRepository);
+        return restAPI;
     }
 
 }

@@ -22,14 +22,10 @@ import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.widgets.tables.AbstractSimpleTable;
-import org.drools.guvnor.client.widgets.tables.ColumnPicker;
-import org.drools.guvnor.client.widgets.tables.RuleFormatImageResourceCell;
-import org.drools.guvnor.client.widgets.tables.SelectionColumn;
-import org.drools.guvnor.client.widgets.tables.SortableHeader;
-import org.drools.guvnor.client.widgets.tables.SortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.*;
+import org.drools.guvnor.client.widgets.tables.ComparableImageResourceCell;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -125,15 +121,15 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
                                                                                assetNameColumn ),
                                 true );
 
-        Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<BuilderResultLine, ComparableImageResource> formatColumn = new Column<BuilderResultLine, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
-            public RuleFormatImageResource getValue(BuilderResultLine row) {
+            public ComparableImageResource getValue(BuilderResultLine row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
+                return new ComparableImageResource(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<BuilderResultLine, RuleFormatImageResource>(
+                                new SortableHeader<BuilderResultLine, ComparableImageResource>(
                                                                                                 sortableHeaderGroup,
                                                                                                 Constants.INSTANCE.Format(),
                                                                                                 formatColumn ),

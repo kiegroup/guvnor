@@ -27,6 +27,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
+import org.drools.repository.utils.AssetValidator;
 import org.jboss.seam.security.Identity;
 
 import java.io.*;
@@ -57,6 +58,9 @@ public class WebDAVImpl
 
     @Inject
     protected Identity                       identity;
+
+    @Inject
+    protected AssetValidator                 assetValidator;
 
     public ITransaction begin(final Principal principal) {
         return new ITransaction() {
@@ -121,6 +125,7 @@ public class WebDAVImpl
                 AssetItem asset = packageItem.addAsset( resource[0],
                                                         "" );
                 asset.updateFormat( resource[1] );
+                asset.updateValid(assetValidator.validate(asset));
                 asset.checkin( "from webdav" );
             }
         } else if ( isGlobalAreas( path ) ) {
@@ -141,6 +146,7 @@ public class WebDAVImpl
                 AssetItem asset = packageItem.addAsset( resource[0],
                                                         "" );
                 asset.updateFormat( resource[1] );
+                asset.updateValid(assetValidator.validate(asset));
                 asset.checkin( "from webdav" );
             }
         } else {
@@ -787,6 +793,7 @@ public class WebDAVImpl
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
+            asset.updateValid(assetValidator.validate(asset));
             asset.checkin( "content from webdav" );
             //}
         } else if ( isGlobalAreas( path ) ) {
@@ -821,6 +828,7 @@ public class WebDAVImpl
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
+            asset.updateValid(assetValidator.validate(asset));
             asset.checkin( "content from webdav" );
             //}
         } else {

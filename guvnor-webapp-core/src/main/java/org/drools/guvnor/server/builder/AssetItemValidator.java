@@ -22,6 +22,7 @@ import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
+import org.drools.repository.utils.Validator;
 
 import java.util.Iterator;
 
@@ -41,34 +42,9 @@ public class AssetItemValidator {
         } else {
             BuilderValidator validator = new BuilderValidator();
             validator.init(assetItemUnderValidation.getModule(), null);
-            return validator.validate();
+            return validator.validateAsset(assetItemUnderValidation);
         }
     }
 
-    private class BuilderValidator extends PackageAssemblerBase {
-        
-        public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
-            this.moduleItem = moduleItem;
-            createBuilder();
-        }
 
-        public BuilderResult validate() {
-            if (setUpPackage()) {
-                buildAsset(assetItemUnderValidation);
-            }
-            return getResult();
-        }
-
-        public BuilderResult getResult() {
-            BuilderResult result = new BuilderResult();
-            result.addLines(new BuilderResultHelper().generateBuilderResults(getErrors()));
-            return result;
-        }
-
-        protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
-            AssetValidationIterator assetValidationIterator = new AssetValidationIterator(super.getAssetItemIterator(formats));
-            assetValidationIterator.setAssetItemUnderValidation(assetItemUnderValidation);
-            return assetValidationIterator;
-        }
-    }
 }

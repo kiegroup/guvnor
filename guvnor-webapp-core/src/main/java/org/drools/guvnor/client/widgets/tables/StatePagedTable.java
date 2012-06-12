@@ -21,7 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImageResource;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
@@ -72,15 +72,15 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
     protected void addAncillaryColumns(ColumnPicker<StatePageRow> columnPicker,
                                        SortableHeaderGroup<StatePageRow> sortableHeaderGroup) {
 
-        Column<StatePageRow, RuleFormatImageResource> formatColumn = new Column<StatePageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<StatePageRow, ComparableImageResource> formatColumn = new Column<StatePageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
-            public RuleFormatImageResource getValue(StatePageRow row) {
+            public ComparableImageResource getValue(StatePageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
+                return new ComparableImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<StatePageRow, RuleFormatImageResource>(
+                                new SortableHeader<StatePageRow, ComparableImageResource>(
                                                                                            sortableHeaderGroup,
                                                                                            constants.Format(),
                                                                                            formatColumn ),
