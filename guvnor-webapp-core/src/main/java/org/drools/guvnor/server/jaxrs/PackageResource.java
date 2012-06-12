@@ -24,6 +24,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.cxf.annotations.GZIP;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
@@ -92,6 +93,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
 @Path("/packages")
 @RequestScoped
 @Named
+@GZIP
 public class PackageResource extends Resource {
     private HttpHeaders headers;
 
