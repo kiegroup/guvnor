@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <asseteditors>
     <!-- If two or more asset editors (that are associated with different formats) have same titles,
-	they will be grouped together and displayed as one node on the package tree. -->
-	
+    they will be grouped together and displayed as one node on the package tree. -->
+
     <!--  business rules group   -->   
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller</class> 
@@ -185,10 +184,10 @@
   </asseteditor>
 
   <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.workitem.WorkitemDefinitionEditor</class> 
-        <format>wid</format>
-        <icon>images.enumeration()</icon>
-        <title>constants.WorkItemDefinition()</title>    
-    </asseteditor>           
+    <class>org.drools.guvnor.client.asseteditor.drools.workitem.WorkitemDefinitionEditor</class>
+    <format>wid</format>
+    <icon>images.enumeration()</icon>
+    <title>constants.WorkItemDefinition()</title>
+  </asseteditor>
     
 </asseteditors>
