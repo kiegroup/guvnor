@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.files;
 
+import java.io.IOException;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
@@ -28,12 +29,14 @@ import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
+import org.drools.agent.HttpClientImpl;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.io.Resource;
@@ -49,8 +52,7 @@ import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.*;
 
 public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorIntegrationTest {
 
@@ -80,7 +82,14 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         AssetItem ruleB2 = pkgB.addAsset("ruleB2", "", null, AssetFormats.DRL);
         ruleB2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
         ruleB2.checkin("version 1");
-        repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotA1", false, "");
+        repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotB1", false, "");
+
+        ModuleItem pkgC = rulesRepository.createModule("downloadPackageWithHttpClientImpl",
+                "this is package scanForChangeInRepository");
+        AssetItem ruleC1 = pkgC.addAsset("ruleC1", "", null, AssetFormats.DRL);
+        ruleC1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleC1.checkin("version 1");
+        repositoryPackageService.createModuleSnapshot(pkgC.getName(), "snapshotC1", false, "");
 
         repositoryPackageService.rebuildPackages();
         repositoryPackageService.rebuildSnapshots();
@@ -181,6 +190,15 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
             ResourceFactory.getResourceChangeNotifierService().stop();
             ResourceFactory.getResourceChangeScannerService().stop();
         }
+    }
+
+    @Test
+    @RunAsClient
+    public void downloadPackageWithHttpClientImpl(@ArquillianResource URL baseURL)
+            throws IOException, ClassNotFoundException {
+        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/downloadPackageWithHttpClientImpl/snapshotC1");
+        KnowledgePackage pkg = new KnowledgePackageImp(new HttpClientImpl().fetchPackage(url, true, "admin", "admin"));
+        assertNotNull(pkg);
     }
 
 }
