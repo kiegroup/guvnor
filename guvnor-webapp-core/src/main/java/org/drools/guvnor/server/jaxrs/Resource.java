@@ -21,6 +21,7 @@ import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.utils.AssetValidator;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
@@ -50,13 +51,16 @@ public abstract class Resource {
     protected RulesRepository rulesRepository;
     @Inject
     protected FileManagerService fileManagerService;
+    @Inject
+    protected AssetValidator assetValidator;
+
 
 
     // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
     protected void inject(ServiceImplementation serviceImplementation,
             RepositoryModuleService repositoryPackageService, RepositoryAssetService repositoryAssetService,
             RepositoryCategoryService repositoryCategoryService, RepositoryModuleOperations repositoryModuleOperations,
-            RulesRepository rulesRepository, FileManagerService fileManagerService) {
+            RulesRepository rulesRepository, FileManagerService fileManagerService, AssetValidator assetValidator) {
         this.serviceImplementation = serviceImplementation;
         this.repositoryPackageService = repositoryPackageService;
         this.repositoryAssetService = repositoryAssetService;
@@ -64,6 +68,7 @@ public abstract class Resource {
         this.repositoryModuleOperations = repositoryModuleOperations;
         this.rulesRepository = rulesRepository;
         this.fileManagerService = fileManagerService;
+        this.assetValidator = assetValidator;
     }
 
 }
