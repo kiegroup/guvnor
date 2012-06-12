@@ -35,18 +35,28 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
+import org.drools.repository.utils.AssetValidator;
 import org.drools.repository.utils.IOUtils;
+
+import javax.inject.Inject;
 
 /**
  * This provides a simple REST style remote friendly API.
  */
 public class RestAPI {
+    @Inject
+    private RulesRepository repo;
 
-    private final RulesRepository repo;
+    @Inject
+    private AssetValidator assetValidator;
+
 
     private static Properties TEXT_ASSET_TYPES = loadAssetTypes();
 
-    public RestAPI(RulesRepository repo) {
+    public RestAPI() {
+
+    }
+    public RestAPI(RulesRepository repo ) {
         this.repo = repo;
     }
 
@@ -263,7 +273,7 @@ public class RestAPI {
                         asset.updateBinaryContentAttachment(in);
                     }
                 }
-
+                asset.updateValid(assetValidator.validate(asset));
                 asset.checkin(comment);
             }
         } else {
@@ -312,6 +322,7 @@ public class RestAPI {
                 } else {
                     as.updateContent(readContent(in));
                 }
+                as.updateValid(assetValidator.validate(as));
                 as.checkin(comment);
             }
 
@@ -338,6 +349,15 @@ public class RestAPI {
         }
 
     }
+
+    public AssetValidator getAssetValidator() {
+        return assetValidator;
+    }
+
+    public void setAssetValidator(AssetValidator assetValidator) {
+        this.assetValidator = assetValidator;
+    }
+
 
 
 

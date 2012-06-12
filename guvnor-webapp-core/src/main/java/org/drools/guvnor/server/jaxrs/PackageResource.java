@@ -547,9 +547,11 @@ public class PackageResource extends Resource {
         }
     }
 
+
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
     public Asset getAssetAsJaxB(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         if (!assetExists(packageName, assetName)) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -686,6 +688,7 @@ public class PackageResource extends Resource {
             }
             ai.updateBinaryContentAttachment(is);
             ai.getModule().updateBinaryUpToDate(false);
+            ai.updateValid(assetValidator.validate(ai));
             ai.checkin("update binary");
             rulesRepository.save();
             return toAssetEntryAbdera(ai, uriInfo);
@@ -741,6 +744,7 @@ public class PackageResource extends Resource {
             if (state != null) {
                 ai.updateState(state);
             }
+            ai.updateValid(assetValidator.validate(ai));
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -761,6 +765,7 @@ public class PackageResource extends Resource {
             ai.checkout();
             ai.updateTitle(asset.getTitle());
             ai.updateDescription(asset.getDescription());
+            ai.updateValid(assetValidator.validate(ai));
             ai.checkin(asset.getMetadata().getCheckInComment());
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -777,6 +782,7 @@ public class PackageResource extends Resource {
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             asset.checkout();
             asset.updateContent(content);
+            asset.updateValid(assetValidator.validate(asset));
             asset.checkin("Updated asset source from REST interface");
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -793,6 +799,7 @@ public class PackageResource extends Resource {
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             asset.checkout();
             asset.updateBinaryContentAttachment(is);
+            asset.updateValid(assetValidator.validate(asset));
             asset.checkin("Update binary");
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -983,6 +990,7 @@ public class PackageResource extends Resource {
         ai.updateFormat(asset.getMetadata().getFormat());
         ai.updateBinaryContentAttachment(is);
         ai.getModule().updateBinaryUpToDate(false);
+        ai.updateValid(assetValidator.validate(ai));
         ai.checkin(asset.getMetadata().getCheckInComment());
         rulesRepository.save();
         return asset;
@@ -1011,6 +1019,7 @@ public class PackageResource extends Resource {
         ai.updateFormat(asset.getMetadata().getFormat());
         ai.updateBinaryContentAttachment(is);
         ai.getModule().updateBinaryUpToDate(false);
+        ai.updateValid(assetValidator.validate(ai));
         ai.checkin(asset.getMetadata().getCheckInComment());
         rulesRepository.save();
         return asset;

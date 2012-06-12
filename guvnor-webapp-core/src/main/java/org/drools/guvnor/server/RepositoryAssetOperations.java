@@ -72,6 +72,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
+import org.drools.repository.utils.AssetValidator;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
@@ -102,6 +103,9 @@ public class RepositoryAssetOperations {
 
     @Inject
     private AssetLockManager assetLockManager;
+
+    @Inject
+    private AssetValidator assetValidator;
 
     private final String[] registeredFormats;
 
@@ -165,7 +169,6 @@ public class RepositoryAssetOperations {
                 repoAsset)) {
             return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
         }
-
         MetaData meta = asset.getMetaData();
         MetaDataMapper.getInstance().copyFromMetaData(meta,
                 repoAsset);
@@ -179,6 +182,7 @@ public class RepositoryAssetOperations {
         ContentHandler handler = ContentManager.getHandler(repoAsset.getFormat());
         handler.storeAssetContent(asset,
                 repoAsset);
+        repoAsset.updateValid(assetValidator.validate(repoAsset));
 
         if (AssetFormats.affectsBinaryUpToDate(asset.getFormat())) {
             ModuleItem pkg = repoAsset.getModule();

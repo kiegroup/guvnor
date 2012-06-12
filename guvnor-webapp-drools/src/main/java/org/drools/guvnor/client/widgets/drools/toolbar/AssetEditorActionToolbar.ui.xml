@@ -119,6 +119,8 @@
               <ui:text from="{i18n.Status}" />
             </gwt:Label>
           </div>
+          <div style="float:right"><gwt:Image ui:field="validIndicator"></gwt:Image></div>
+
           <div style="clear:both;"></div>
         </td>
         <td class='{roundCornersResource.roundCornersCss.greySideRightClass}'></td>

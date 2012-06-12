@@ -15,7 +15,7 @@
 */
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImageResource;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -23,11 +23,11 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class RuleFormatImageResourceCell extends AbstractCell<RuleFormatImageResource> {
+public class ComparableImageResourceCell extends AbstractCell<ComparableImageResource> {
 
     @Override
     public void render(Context context,
-                       RuleFormatImageResource value,
+                       ComparableImageResource value,
                        SafeHtmlBuilder sb) {
         SafeHtml html = SafeHtmlUtils.fromTrustedString( AbstractImagePrototype.create( value ).getHTML() );
         sb.append( html );

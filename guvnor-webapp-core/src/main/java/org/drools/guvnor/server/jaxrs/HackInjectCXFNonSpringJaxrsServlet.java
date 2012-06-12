@@ -26,6 +26,7 @@ import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.utils.AssetValidator;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
@@ -45,6 +46,8 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
     protected RulesRepository rulesRepository;
     @Inject
     protected FileManagerService fileManagerService;
+    @Inject
+    protected AssetValidator assetValidator;
 
     @Inject
     private Identity identity;
@@ -71,7 +74,7 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
             Resource resource = (Resource) singletonInstance;
             resource.inject(serviceImplementation, repositoryPackageService, repositoryAssetService,
                     repositoryCategoryService, repositoryModuleOperations, rulesRepository,
-                    fileManagerService);
+                    fileManagerService, assetValidator);
         }
         return singletonInstance;
     }

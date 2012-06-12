@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * repository. It is used to pass information about assets stored in the
  * repository.
  */
+
 public class AssetItem extends CategorisableItem {
     private Logger             log                                  = LoggerFactory.getLogger( AssetItem.class );
     /**
@@ -467,7 +468,8 @@ public class AssetItem extends CategorisableItem {
                 returnString.append( "NO STATE SET FOR THIS NODE\n" );
             }
             returnString.append( "------\n" );
-
+            returnString.append("Valid: ").append(this.getValid());
+            returnString.append( "------\n" );
             returnString.append( "Asset tags:\n" );
             for ( Iterator it = this.getCategories().iterator(); it.hasNext(); ) {
                 CategoryItem currentTag = (CategoryItem) it.next();

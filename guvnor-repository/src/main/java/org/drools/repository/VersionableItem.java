@@ -31,7 +31,9 @@ import javax.jcr.Value;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionManager;
 
+import org.drools.guvnor.shared.api.Valid;
 import org.drools.repository.events.StorageEventManager;
+
 
 /**
  * This is the parent class for versionable assets.
@@ -71,6 +73,10 @@ public abstract class VersionableItem extends Item {
     public static final String STATE_PROPERTY_NAME            = "drools:stateReference";
 
     /**
+     * The flag whether the item is valid or not
+     */
+    public static final String VALID_PROPERTY_NAME            = "drools:valid";
+    /**
      * The name of the tag property on the rule node type
      */
     public static final String CATEGORY_PROPERTY_NAME         = "drools:categoryReference";
@@ -82,6 +88,7 @@ public abstract class VersionableItem extends Item {
 
     /** this is what is referred to when reading content from a versioned node */
     private Node               contentNode                    = null;
+
 
     /**
      * Sets this object's node attribute to the specified node
@@ -299,6 +306,14 @@ public abstract class VersionableItem extends Item {
     public void updatePublisher(String pub) {
         updateStringProperty( pub,
                               PUBLISHER_PROPERTY_NAME );
+    }
+
+    public void updateValid(Valid valid) {
+        updateStringProperty(valid.toString(), VALID_PROPERTY_NAME);
+    }
+
+    public void updateValid(Boolean valid) {
+        updateValid(Valid.fromBoolean(valid));
     }
 
 
@@ -593,13 +608,15 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-	/*
-	 * When we make a version of package (check in the package), we need to know
-	 * the exact version number of child assets that this package contains. If
-	 * the child asset does not have any version yet (it may have been saved,
-	 * but has never been checked in), we need to check in this asset so that we
-	 * have a version number that we can refer to from the versioned package.
-	 */
+
+
+    /*
+      * When we make a version of package (check in the package), we need to know
+      * the exact version number of child assets that this package contains. If
+      * the child asset does not have any version yet (it may have been saved,
+      * but has never been checked in), we need to check in this asset so that we
+      * have a version number that we can refer to from the versioned package.
+      */
     private void checkInAssetIfNecessary(boolean force) {
     	if(!(this instanceof ModuleItem)) {
     		return;
@@ -820,6 +837,10 @@ public abstract class VersionableItem extends Item {
 
     }
 
+    public Valid getValid() {
+        return Valid.fromString(getStringProperty(VALID_PROPERTY_NAME));
+    }
+
     public String getStringProperty(String property) {
         try {
             Node theNode = getVersionContentNode();
@@ -862,6 +883,20 @@ public abstract class VersionableItem extends Item {
                 return data.getValue().getLong();
             } else {
                 return 0;
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+
+    protected Boolean getBooleanProperty(String property) {
+        try {
+            Node theNode = getVersionContentNode();
+            if ( theNode.hasProperty( property ) ) {
+                Property data = theNode.getProperty( property );
+                return data.getValue().getBoolean();
+            } else {
+                return false;
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );

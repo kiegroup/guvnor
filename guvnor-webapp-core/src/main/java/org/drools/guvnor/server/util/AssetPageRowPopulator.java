@@ -35,6 +35,7 @@ public class AssetPageRowPopulator {
         row.setCategorySummary( assetItem.getCategorySummary() );
         row.setExternalSource( assetItem.getExternalSource() );
         row.setDisabled( assetItem.getDisabled() );
+        row.setValid(assetItem.getValid());
         return row;
     }
 }

@@ -18,17 +18,17 @@ package org.drools.guvnor.client.resources;
 import com.google.gwt.resources.client.ImageResource;
 //import com.google.gwt.safehtml.shared.SafeUri;
 
-public class RuleFormatImageResource
+public class ComparableImageResource
     implements
     ImageResource,
-    Comparable<RuleFormatImageResource> {
+    Comparable<ComparableImageResource> {
 
-    private final String        format;
+    private final String compareString;
     private final ImageResource imageResource;
 
-    public RuleFormatImageResource(String format,
+    public ComparableImageResource(String compareString,
                                    ImageResource imageResource) {
-        this.format = format;
+        this.compareString = compareString;
         this.imageResource = imageResource;
     }
 
@@ -36,8 +36,8 @@ public class RuleFormatImageResource
         return this.imageResource.getName();
     }
 
-    public int compareTo(RuleFormatImageResource o) {
-        return format.compareTo( o.format );
+    public int compareTo(ComparableImageResource o) {
+        return compareString.compareTo( o.compareString);
     }
 
     public int getHeight() {
