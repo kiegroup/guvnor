@@ -36,6 +36,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 
 import org.drools.guvnor.client.asseteditor.MultiViewRow;
+import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
@@ -130,6 +131,24 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             uuids[rowCount++] = row.getUuid();
         }
         return uuids;
+    }
+
+    @UiHandler("archiveSelectedButton")
+    public void archiveSelectedAssets(ClickEvent e) {
+        if (getSelectedRowUUIDs() == null) {
+            Window.alert(constants.PleaseSelectAnItemToArchive());
+            return;
+        }
+        if (!Window.confirm(constants.AreYouSureYouWantToArchiveTheseItems())) {
+            return;
+        }
+        assetService.archiveAssets(getSelectedRowUUIDs(), true,
+                new GenericCallback<Void>() {
+                    public void onSuccess(Void arg0) {
+                        Window.alert(constants.ArchivedAssets());
+                        refresh();
+                    }
+                });
     }
 
     /**
