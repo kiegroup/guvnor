@@ -62,65 +62,65 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
 public class RepositoryModuleService
-        implements ModuleService {
+        implements
+    ModuleService {
 
-    private static final long serialVersionUID = 901123;
+    private static final long          serialVersionUID = 901123;
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetService.class);
-
-    @Inject
-    private RulesRepository rulesRepository;
+    private static final LoggingHelper log              = LoggingHelper.getLogger( RepositoryAssetService.class );
 
     @Inject
-    private ServiceSecurity serviceSecurity;
+    private RulesRepository            rulesRepository;
 
     @Inject
-    private Identity identity;
+    private ServiceSecurity            serviceSecurity;
+
+    @Inject
+    private Identity                   identity;
 
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
-    private RepositoryAssetOperations repositoryAssetOperations;
+    private RepositoryAssetOperations  repositoryAssetOperations;
 
     @Inject
-    private ServiceImplementation serviceImplementation;
+    private ServiceImplementation      serviceImplementation;
 
     /**
-     * Role-based Authorization check: This method only returns modules that
-     * the user has permission to access. User has permission to access the
+     * Role-based Authorization check: This method only returns modules that the
+     * user has permission to access. User has permission to access the
      * particular module when: The user has a package.readonly role or higher
      * (i.e., package.admin, package.developer) to this module.
      */
     @WebRemote
     @LoggedIn
     public Module[] listModules() {
-        return listModules(null);
+        return listModules( null );
     }
 
     @WebRemote
     @LoggedIn
     public Module[] listModules(String workspace) {
-        RepositoryFilter pf = new ModuleFilter(identity);
-        return repositoryModuleOperations.listModules(
-                false,
-                workspace,
-                pf);
+        RepositoryFilter pf = new ModuleFilter( identity );
+        return repositoryModuleOperations.listModules( false,
+                                                       workspace,
+                                                       pf );
     }
 
     @WebRemote
     @LoggedIn
     public Module[] listArchivedModules() {
-        return listArchivedModules(null);
+        return listArchivedModules( null );
     }
 
     @WebRemote
     @LoggedIn
     public Module[] listArchivedModules(String workspace) {
         return repositoryModuleOperations.listModules(
-                true,
-                workspace,
-                new ModuleFilter(identity));
+                                                       true,
+                                                       workspace,
+                                                       new ModuleFilter( identity ) );
     }
 
     public Module loadGlobalModule() {
@@ -132,29 +132,29 @@ public class RepositoryModuleService
     public void rebuildPackages() throws SerializationException {
         Iterator<ModuleItem> pkit = rulesRepository.listModules();
         StringBuilder errs = new StringBuilder();
-        while (pkit.hasNext()) {
+        while ( pkit.hasNext() ) {
             ModuleItem pkg = pkit.next();
             try {
-                BuilderResult builderResult = this.buildPackage(pkg.getUUID(),
-                        true);
-                if (builderResult != null) {
-                    errs.append("Unable to build package name [").append(pkg.getName()).append("]\n");
-                    StringBuilder buf = createStringBuilderFrom(builderResult);
-                    log.warn(buf.toString());
+                BuilderResult builderResult = this.buildPackage( pkg.getUUID(),
+                                                                 true );
+                if ( builderResult != null ) {
+                    errs.append( "Unable to build package name [" ).append( pkg.getName() ).append( "]\n" );
+                    StringBuilder buf = createStringBuilderFrom( builderResult );
+                    log.warn( buf.toString() );
                 }
-            } catch (Exception e) {
+            } catch ( Exception e ) {
                 e.printStackTrace();
-                log.error("An error occurred building package [" + pkg.getName() + "]\n");
-                errs.append("An error occurred building package [").append(pkg.getName()).append("]\n");
+                log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
+                errs.append( "An error occurred building package [" ).append( pkg.getName() ).append( "]\n" );
             }
         }
     }
 
     private StringBuilder createStringBuilderFrom(BuilderResult res) {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < res.getLines().size(); i++) {
-            buf.append(res.getLines().get(i).toString());
-            buf.append('\n');
+        for ( int i = 0; i < res.getLines().size(); i++ ) {
+            buf.append( res.getLines().get( i ).toString() );
+            buf.append( '\n' );
         }
         return buf;
     }
@@ -162,57 +162,57 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public String buildModuleSource(String moduleUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(moduleUUID);
-        return repositoryModuleOperations.buildModuleSource(moduleUUID);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( moduleUUID );
+        return repositoryModuleOperations.buildModuleSource( moduleUUID );
     }
 
     @WebRemote
     public String copyModule(String sourceModuleName,
                              String destModuleName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryModuleOperations.copyModules(sourceModuleName,
-                destModuleName);
+        return repositoryModuleOperations.copyModules( sourceModuleName,
+                                                       destModuleName );
     }
 
     @WebRemote
     @LoggedIn
     public void removeModule(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid(uuid);
-        repositoryModuleOperations.removeModule(uuid);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
+        repositoryModuleOperations.removeModule( uuid );
     }
 
     @WebRemote
     @LoggedIn
     public String renameModule(String uuid,
                                String newName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid(uuid);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
 
-        return repositoryModuleOperations.renameModule(uuid,
-                newName);
+        return repositoryModuleOperations.renameModule( uuid,
+                                                        newName );
     }
 
     @WebRemote
     @LoggedIn
     public byte[] exportModules(String moduleName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
-        return repositoryModuleOperations.exportModules(moduleName);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        return repositoryModuleOperations.exportModules( moduleName );
     }
 
     @WebRemote
     @LoggedIn
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
-        repositoryModuleOperations.importPackages(byteArray,
-                importAsNew);
+        repositoryModuleOperations.importPackages( byteArray,
+                                                   importAsNew );
     }
 
     @WebRemote
     public String createModule(String name,
                                String description,
                                String format) throws RulesRepositoryException {
-        return repositoryModuleOperations.createModule(name,
-                description,
-                format);
+        return repositoryModuleOperations.createModule( name,
+                                                        description,
+                                                        format );
     }
 
     @WebRemote
@@ -221,10 +221,10 @@ public class RepositoryModuleService
                                String format,
                                String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryModuleOperations.createModule(name,
-                description,
-                format,
-                workspace);
+        return repositoryModuleOperations.createModule( name,
+                                                        description,
+                                                        format,
+                                                        workspace );
     }
 
     /*
@@ -244,43 +244,43 @@ public class RepositoryModuleService
                                   String description,
                                   String parentNode) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-        return repositoryModuleOperations.createSubModule(name,
-                description,
-                parentNode);
+        return repositoryModuleOperations.createSubModule( name,
+                                                           description,
+                                                           parentNode );
     }
 
     @WebRemote
     @LoggedIn
     public Module loadModule(String uuid) {
-        ModuleItem moduleItem = rulesRepository.loadModuleByUUID(uuid);
+        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
         // module uudi.
         // we have to figure out the module name.
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(moduleItem.getName());
-        return repositoryModuleOperations.loadModule(moduleItem);
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleItem.getName() );
+        return repositoryModuleOperations.loadModule( moduleItem );
     }
 
     @WebRemote
     @LoggedIn
     public void saveModule(Module data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(data.getUuid());
-        repositoryModuleOperations.saveModule(data);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
+        repositoryModuleOperations.saveModule( data );
     }
 
     @WebRemote
     @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force) throws SerializationException {
-        return buildPackage(packageUUID,
-                force,
-                null,
-                null,
-                null,
-                false,
-                null,
-                null,
-                false,
-                null);
+        return buildPackage( packageUUID,
+                             force,
+                             null,
+                             null,
+                             null,
+                             false,
+                             null,
+                             null,
+                             false,
+                             null );
     }
 
     @WebRemote
@@ -295,17 +295,17 @@ public class RepositoryModuleService
                                       String category,
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(packageUUID);
-        return repositoryModuleOperations.buildModule(packageUUID,
-                force,
-                buildMode,
-                statusOperator,
-                statusDescriptionValue,
-                enableStatusSelector,
-                categoryOperator,
-                category,
-                enableCategorySelector,
-                customSelectorName);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
+        return repositoryModuleOperations.buildModule( packageUUID,
+                                                       force,
+                                                       buildMode,
+                                                       statusOperator,
+                                                       statusDescriptionValue,
+                                                       enableStatusSelector,
+                                                       categoryOperator,
+                                                       category,
+                                                       enableCategorySelector,
+                                                       customSelectorName );
     }
 
     @WebRemote
@@ -314,11 +314,11 @@ public class RepositoryModuleService
                                      String snapshotName,
                                      boolean replaceExisting,
                                      String comment) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
-        repositoryModuleOperations.createModuleSnapshot(moduleName,
-                snapshotName,
-                replaceExisting,
-                comment);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        repositoryModuleOperations.createModuleSnapshot( moduleName,
+                                                         snapshotName,
+                                                         replaceExisting,
+                                                         comment );
 
     }
 
@@ -328,25 +328,25 @@ public class RepositoryModuleService
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
-        repositoryModuleOperations.copyOrRemoveSnapshot(moduleName,
-                snapshotName,
-                delete,
-                newSnapshotName);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
+        repositoryModuleOperations.copyOrRemoveSnapshot( moduleName,
+                                                         snapshotName,
+                                                         delete,
+                                                         newSnapshotName );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listRulesInPackage(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(packageName);
-        return repositoryModuleOperations.listRulesInPackage(packageName);
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
+        return repositoryModuleOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInModule(String moduleName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(moduleName);
-        return repositoryModuleOperations.listImagesInModule(moduleName);
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleName );
+        return repositoryModuleOperations.listImagesInModule( moduleName );
     }
 
     @WebRemote
@@ -354,18 +354,18 @@ public class RepositoryModuleService
         serviceSecurity.checkSecurityIsAdmin();
 
         Iterator<ModuleItem> pkit = rulesRepository.listModules();
-        while (pkit.hasNext()) {
+        while ( pkit.hasNext() ) {
             ModuleItem pkg = pkit.next();
-            String[] snaps = rulesRepository.listModuleSnapshots(pkg.getName());
-            for (String snapName : snaps) {
-                ModuleItem snap = rulesRepository.loadModuleSnapshot(pkg.getName(),
-                        snapName);
-                BuilderResult builderResult = this.buildPackage(snap.getUUID(),
-                        true);
-                if (builderResult.hasLines()) {
-                    StringBuilder stringBuilder = createStringBuilderFrom(builderResult);
-                    throw new DetailedSerializationException("Unable to rebuild snapshot [" + snapName,
-                            stringBuilder.toString() + "]");
+            String[] snaps = rulesRepository.listModuleSnapshots( pkg.getName() );
+            for ( String snapName : snaps ) {
+                ModuleItem snap = rulesRepository.loadModuleSnapshot( pkg.getName(),
+                                                                      snapName );
+                BuilderResult builderResult = this.buildPackage( snap.getUUID(),
+                                                                 true );
+                if ( builderResult.hasLines() ) {
+                    StringBuilder stringBuilder = createStringBuilderFrom( builderResult );
+                    throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
+                                                              stringBuilder.toString() + "]" );
                 }
             }
         }
@@ -374,15 +374,15 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public SnapshotInfo[] listSnapshots(String moduleName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(moduleName);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
 
-        String[] snaps = rulesRepository.listModuleSnapshots(moduleName);
+        String[] snaps = rulesRepository.listModuleSnapshots( moduleName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
-        for (int i = 0; i < snaps.length; i++) {
-            ModuleItem moduleItem = rulesRepository.loadModuleSnapshot(moduleName,
-                    snaps[i]);
-            snapshotInfos[i] = moduleItemToSnapshotItem(snaps[i],
-                    moduleItem);
+        for ( int i = 0; i < snaps.length; i++ ) {
+            ModuleItem moduleItem = rulesRepository.loadModuleSnapshot( moduleName,
+                                                                        snaps[i] );
+            snapshotInfos[i] = moduleItemToSnapshotItem( snaps[i],
+                                                         moduleItem );
         }
         return snapshotInfos;
     }
@@ -390,57 +390,55 @@ public class RepositoryModuleService
     @LoggedIn
     public SnapshotInfo loadSnapshotInfo(String packageName,
                                          String snapshotName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(packageName);
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
 
-        return moduleItemToSnapshotItem(
-                snapshotName,
-                rulesRepository.loadModuleSnapshot(
-                        packageName,
-                        snapshotName));
+        return moduleItemToSnapshotItem( snapshotName,
+                                         rulesRepository.loadModuleSnapshot( packageName,
+                                                                             snapshotName ) );
     }
 
     private SnapshotInfo moduleItemToSnapshotItem(String snapshotName,
                                                   ModuleItem packageItem) {
         SnapshotInfo snapshotInfo = new SnapshotInfo();
-        snapshotInfo.setComment(packageItem.getCheckinComment());
-        snapshotInfo.setName(snapshotName);
-        snapshotInfo.setUuid(packageItem.getUUID());
+        snapshotInfo.setComment( packageItem.getCheckinComment() );
+        snapshotInfo.setName( snapshotName );
+        snapshotInfo.setUuid( packageItem.getUUID() );
         return snapshotInfo;
     }
 
     @WebRemote
     @LoggedIn
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(packageUUID);
+        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid( packageUUID );
 
-        ModuleItem pkg = this.rulesRepository.loadModuleByUUID(packageUUID);
+        ModuleItem pkg = this.rulesRepository.loadModuleByUUID( packageUUID );
         List<String> res = new ArrayList<String>();
-        AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL,
-                AssetFormats.DRL_MODEL);
+        AssetItemIterator it = pkg.listAssetsByFormat( AssetFormats.MODEL,
+                                                       AssetFormats.DRL_MODEL );
 
         JarInputStream jis = null;
 
         try {
-            while (it.hasNext()) {
+            while ( it.hasNext() ) {
                 AssetItem asset = it.next();
-                if (!asset.isArchived()) {
-                    if (asset.getFormat().equals(AssetFormats.MODEL)) {
-                        jis = typesForModel(res,
-                                asset);
+                if ( !asset.isArchived() ) {
+                    if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
+                        jis = typesForModel( res,
+                                             asset );
                     } else {
-                        typesForOthers(res,
-                                asset);
+                        typesForOthers( res,
+                                        asset );
                     }
 
                 }
             }
-            return res.toArray(new String[res.size()]);
-        } catch (IOException e) {
-            log.error("Unable to read the jar files in the package: " + e.getMessage());
-            throw new DetailedSerializationException("Unable to read the jar files in the package.",
-                    e.getMessage());
+            return res.toArray( new String[res.size()] );
+        } catch ( IOException e ) {
+            log.error( "Unable to read the jar files in the package: " + e.getMessage() );
+            throw new DetailedSerializationException( "Unable to read the jar files in the package.",
+                                                      e.getMessage() );
         } finally {
-            IOUtils.closeQuietly(jis);
+            IOUtils.closeQuietly( jis );
         }
 
     }
@@ -449,32 +447,32 @@ public class RepositoryModuleService
     @LoggedIn
     public void updateDependency(String uuid,
                                  String dependencyPath) {
-        ModuleItem item = rulesRepository.loadModuleByUUID(uuid);
-        item.updateDependency(dependencyPath);
-        item.checkin("Update dependency");
+        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
+        item.updateDependency( dependencyPath );
+        item.checkin( "Update dependency" );
     }
 
     public String[] getDependencies(String uuid) {
-        ModuleItem item = rulesRepository.loadModuleByUUID(uuid);
+        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
         return item.getDependencies();
     }
 
     private JarInputStream typesForModel(List<String> res,
                                          AssetItem asset) throws IOException {
-        if (!asset.isBinary()) {
+        if ( !asset.isBinary() ) {
             return null;
         }
-        if (asset.getBinaryContentAttachment() == null) {
+        if ( asset.getBinaryContentAttachment() == null ) {
             return null;
         }
 
         JarInputStream jis;
-        jis = new JarInputStream(asset.getBinaryContentAttachment());
+        jis = new JarInputStream( asset.getBinaryContentAttachment() );
         JarEntry entry = null;
-        while ((entry = jis.getNextJarEntry()) != null) {
-            if (!entry.isDirectory()) {
-                if (entry.getName().endsWith(".class")) {
-                    res.add(ModelContentHandler.convertPathToName(entry.getName()));
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                if ( entry.getName().endsWith( ".class" ) && !entry.getName().endsWith( "package-info.class" ) ) {
+                    res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
                 }
             }
         }
@@ -486,20 +484,20 @@ public class RepositoryModuleService
         // its delcared model
         DrlParser parser = new DrlParser();
         try {
-            PackageDescr desc = parser.parse(asset.getContent());
+            PackageDescr desc = parser.parse( asset.getContent() );
             List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
-            for (TypeDeclarationDescr typeDeclarationDescr : types) {
-                res.add(typeDeclarationDescr.getTypeName());
+            for ( TypeDeclarationDescr typeDeclarationDescr : types ) {
+                res.add( typeDeclarationDescr.getTypeName() );
             }
-        } catch (DroolsParserException e) {
-            log.error("An error occurred parsing rule: " + e.getMessage());
+        } catch ( DroolsParserException e ) {
+            log.error( "An error occurred parsing rule: " + e.getMessage() );
 
         }
     }
 
     @LoggedIn
     public void installSampleRepository() throws SerializationException {
-        rulesRepository.importRepository(this.getClass().getResourceAsStream("/mortgage-sample-repository.xml"));
+        rulesRepository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();
         this.rebuildSnapshots();
     }
@@ -511,20 +509,20 @@ public class RepositoryModuleService
     public SnapshotDiffs compareSnapshots(String moduleName,
                                           String firstSnapshotName,
                                           String secondSnapshotName) {
-        return repositoryModuleOperations.compareSnapshots(moduleName,
-                firstSnapshotName,
-                secondSnapshotName);
+        return repositoryModuleOperations.compareSnapshots( moduleName,
+                                                            firstSnapshotName,
+                                                            secondSnapshotName );
     }
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
-        if (request == null) {
-            throw new IllegalArgumentException("request cannot be null");
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
         }
-        if (request.getPageSize() != null && request.getPageSize() < 0) {
-            throw new IllegalArgumentException("pageSize cannot be less than zero.");
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        return repositoryModuleOperations.compareSnapshots(request);
+        return repositoryModuleOperations.compareSnapshots( request );
     }
 
     /*
@@ -532,27 +530,27 @@ public class RepositoryModuleService
      */
     private RuleBase loadCacheRuleBase(ModuleItem packageItem) throws DetailedSerializationException {
 
-        if (packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains(packageItem.getUUID())) {
-            return RuleBaseCache.getInstance().get(packageItem.getUUID());
+        if ( packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( packageItem.getUUID() ) ) {
+            return RuleBaseCache.getInstance().get( packageItem.getUUID() );
         } else {
 
             // we have to build the package, and try again.
-            if (packageItem.isBinaryUpToDate()) {
-                RuleBase ruleBase = loadRuleBase(packageItem);
-                RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                        ruleBase);
+            if ( packageItem.isBinaryUpToDate() ) {
+                RuleBase ruleBase = loadRuleBase( packageItem );
+                RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                 ruleBase );
                 return ruleBase;
             } else {
-                BuilderResult result = repositoryModuleOperations.buildModule(packageItem,
-                        false);
-                if (result == null || result.getLines().size() == 0) {
-                    RuleBase ruleBase = loadRuleBase(packageItem);
-                    RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                            ruleBase);
+                BuilderResult result = repositoryModuleOperations.buildModule( packageItem,
+                                                                               false );
+                if ( result == null || result.getLines().size() == 0 ) {
+                    RuleBase ruleBase = loadRuleBase( packageItem );
+                    RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                     ruleBase );
                     return ruleBase;
                 } else {
-                    throw new DetailedSerializationException("Build error",
-                            result.getLines());
+                    throw new DetailedSerializationException( "Build error",
+                                                              result.getLines() );
                 }
             }
 
@@ -560,7 +558,7 @@ public class RepositoryModuleService
     }
 
     private ClassLoaderBuilder createClassLoaderBuilder(ModuleItem packageItem) {
-        return new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
+        return new ClassLoaderBuilder( packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat( AssetFormats.MODEL ) );
     }
 
     private RuleBase deserKnowledgebase(ModuleItem item,
@@ -575,40 +573,38 @@ public class RepositoryModuleService
 
     private RuleBase loadRuleBase(ModuleItem item) throws DetailedSerializationException {
         try {
-            return deserKnowledgebase(
-                    item,
-                    createClassLoaderBuilder(item).buildClassLoader());
-        } catch (ClassNotFoundException e) {
-            log.error("Unable to load rule base.",
-                    e);
-            throw new DetailedSerializationException("A required class was not found.",
-                    e.getMessage());
-        } catch (Exception e) {
-            log.error("Unable to load rule base.",
-                    e);
-            log.info("...but trying to rebuild binaries...");
+            return deserKnowledgebase( item,
+                                       createClassLoaderBuilder( item ).buildClassLoader() );
+        } catch ( ClassNotFoundException e ) {
+            log.error( "Unable to load rule base.",
+                       e );
+            throw new DetailedSerializationException( "A required class was not found.",
+                                                      e.getMessage() );
+        } catch ( Exception e ) {
+            log.error( "Unable to load rule base.",
+                       e );
+            log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult builderResult = repositoryModuleOperations.buildModule(
-                        item,
-                        true);
-                if (builderResult != null && builderResult.getLines().size() > 0) {
-                    log.error("There were errors when rebuilding the knowledgebase.");
-                    throw new DetailedSerializationException("There were errors when rebuilding the knowledgebase.",
-                            "");
+                                                                                      item,
+                                                                                      true );
+                if ( builderResult != null && builderResult.getLines().size() > 0 ) {
+                    log.error( "There were errors when rebuilding the knowledgebase." );
+                    throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
+                                                              "" );
                 }
-            } catch (Exception e1) {
-                log.error("Unable to rebuild the rulebase: " + e.getMessage());
-                throw new DetailedSerializationException("Unable to rebuild the rulebase.",
-                        e.getMessage());
+            } catch ( Exception e1 ) {
+                log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
+                throw new DetailedSerializationException( "Unable to rebuild the rulebase.",
+                                                          e.getMessage() );
             }
             try {
-                return deserKnowledgebase(
-                        item,
-                        createClassLoaderBuilder(item).buildClassLoader());
-            } catch (Exception e2) {
-                log.error("Unable to reload knowledgebase: " + e.getMessage());
-                throw new DetailedSerializationException("Unable to reload knowledgebase.",
-                        e.getMessage());
+                return deserKnowledgebase( item,
+                                           createClassLoaderBuilder( item ).buildClassLoader() );
+            } catch ( Exception e2 ) {
+                log.error( "Unable to reload knowledgebase: " + e.getMessage() );
+                throw new DetailedSerializationException( "Unable to reload knowledgebase.",
+                                                          e.getMessage() );
             }
 
         }
