@@ -16,11 +16,15 @@
 package org.drools.guvnor.server.files;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
@@ -34,6 +38,7 @@ import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -49,6 +54,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.drools.rule.Package;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -197,8 +203,40 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     public void downloadPackageWithHttpClientImpl(@ArquillianResource URL baseURL)
             throws IOException, ClassNotFoundException {
         URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/downloadPackageWithHttpClientImpl/snapshotC1");
-        KnowledgePackage pkg = new KnowledgePackageImp(new HttpClientImpl().fetchPackage(url, true, "admin", "admin"));
-        assertNotNull(pkg);
+        Resource resource = ResourceFactory.newUrlResource(url);
+        KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("admin", "admin".toCharArray());
+            }
+        });
+        InputStream in = null;
+        Collection<KnowledgePackage> kpkgs = null;
+        try {
+            in = resource.getInputStream();
+            Object object = DroolsStreamUtils.streamIn(in);
+            if ( object instanceof Collection ) {
+                kpkgs = (Collection<KnowledgePackage>) object;
+            } else if ( object instanceof KnowledgePackageImp ) {
+                kpkgs = Collections.singletonList((KnowledgePackage) object);
+            } else if( object instanceof Package ) {
+                kpkgs = Collections.singletonList( (KnowledgePackage) new KnowledgePackageImp( (Package) object ) );
+            } else if( object instanceof Package[] ) {
+                kpkgs = new ArrayList<KnowledgePackage>();
+                for( Package pkg : (Package[]) object ) {
+                    kpkgs.add( new KnowledgePackageImp( pkg ) );
+                }
+            } else {
+                throw new RuntimeException("Unknown binary format trying to load resource "+resource.toString());
+            }
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+
+        assertNotNull(kpkgs);
+        assertFalse(kpkgs.isEmpty());
+        assertNotNull(kpkgs.iterator().next());
     }
 
 }
