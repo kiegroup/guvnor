@@ -206,6 +206,12 @@ public interface ConstantsCore
 
     String ArchivedAssets();
 
+    String PleaseSelectAnItemToArchive();
+
+    String AreYouSureYouWantToArchiveTheseItems();
+
+    String ArchiveSelected();
+
     String PackageDeleted();
 
     String PackageRestored();

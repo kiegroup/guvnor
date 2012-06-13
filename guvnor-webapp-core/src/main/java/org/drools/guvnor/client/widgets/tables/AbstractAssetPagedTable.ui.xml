@@ -26,9 +26,11 @@
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
+
       <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
       <gwt:Button ui:field="openSelectedButton" text='{i18n.openSelected}'/>
       <gwt:Button ui:field="openSelectedToSingleTabButton" text='{i18n.openSelectedToSingleTab}'/>
+      <gwt:Button ui:field="archiveSelectedButton" text='{i18n.ArchiveSelected}' />
       <gwt:ToggleButton ui:field="columnPickerButton"/>
       <gwt:Image ui:field="feedImage" resource='{images.feed}'></gwt:Image>
     </gwt:HorizontalPanel>
