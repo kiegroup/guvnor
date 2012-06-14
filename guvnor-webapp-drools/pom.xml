@@ -429,6 +429,13 @@
       <artifactId>commons-httpclient</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-core</artifactId>
+      <version>1.1.1</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.abdera</groupId>
       <artifactId>abdera-client</artifactId>

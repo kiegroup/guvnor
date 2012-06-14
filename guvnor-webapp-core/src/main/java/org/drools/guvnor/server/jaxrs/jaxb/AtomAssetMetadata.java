@@ -22,22 +22,42 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @XmlRootElement(name="metadata")
-public class PackageMetadata {
-    private String uuid;
+public class AtomAssetMetadata {
+    private String Uuid;
+    private String[] categories;
+    private String note;
     private Date created;
     private String format;
-    private String state;    
-    private boolean archived;
+    private boolean disabled;    
+    private String state;
     private long versionNumber;
-    private String checkinComment;
-
+    private String checkInComment;
+    
     @XmlElement
     public String getUuid() {
-        return uuid;
+        return Uuid;
     }
 
     public void setUuid(String uuid) {
-        this.uuid = uuid;
+        Uuid = uuid;
+    }
+
+    @XmlElement
+    public String[] getCategories() {
+        return categories;
+    }
+
+    public void setCategories(String[] categories) {
+        this.categories = categories;
+    }
+
+    @XmlElement
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @XmlElement
@@ -48,7 +68,7 @@ public class PackageMetadata {
     public void setCreated(Date created) {
         this.created = created;
     }
-    
+
     @XmlElement
     public String getFormat() {
         return format;
@@ -59,22 +79,22 @@ public class PackageMetadata {
     }
 
     @XmlElement
-	public String getState() {
-		return state;
-	}
+    public boolean isDisabled() {
+        return disabled;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
-
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }    
+    
     @XmlElement
-    public boolean isArchived() {
-        return archived;
+    public String getState() {
+        return state;
     }
 
-    public void setArchived(boolean archived) {
-        this.archived = archived;
-    }
+    public void setState(String state) {
+        this.state = state;
+    }      
 
     @XmlElement
     public long getVersionNumber() {
@@ -86,25 +106,11 @@ public class PackageMetadata {
     }
 
     @XmlElement
-    public String getCheckinComment() {
-        return checkinComment;
+    public String getCheckInComment() {
+        return checkInComment;
     }
 
-    public void setCheckinComment(String checkinComment) {
-        this.checkinComment = checkinComment;
-    }
-
-
-    @Override
-    public String toString() {
-        return "PackageMetadata{" +
-                "uuid='" + uuid + '\'' +
-                ", created=" + created +
-                ", format='" + format + '\'' +
-                ", state='" + state + '\'' +
-                ", archived=" + archived +
-                ", versionNumber=" + versionNumber +
-                ", checkinComment='" + checkinComment + '\'' +
-                '}';
-    }
+    public void setCheckInComment(String checkInComment) {
+        this.checkInComment = checkInComment;
+    } 
 }
