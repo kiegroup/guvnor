@@ -21,6 +21,25 @@
     <listener-class>org.drools.guvnor.server.repository.SafeWeldListener</listener-class>
   </listener>
 
+  <context-param>
+    <param-name>javax.ws.rs.Application</param-name>
+    <param-value>org.drools.guvnor.server.jaxrs.GuvnorRestApplication</param-value>
+  </context-param>
+  <context-param>
+    <param-name>resteasy.servlet.mapping.prefix</param-name>
+    <param-value>/rest</param-value>
+  </context-param>
+  <context-param>
+    <param-name>resteasy.providers</param-name>
+    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider</param-value>
+  </context-param>
+
+ <!--
+  <context-param>
+    <param-name>resteasy.injector.factory</param-name>
+    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
+  </context-param>
+   -->
   <!-- TODO this might be needed due to the migration from seam 2 to seam 3
     TODO Or instead, all the usages of @WebRemote are dead code (GUVNOR-1520):
     - there is no SeamResourceServlet to activate them
@@ -39,29 +58,8 @@
 
   <!-- servlets - mostly to do with file management -->
   <servlet>
-    <servlet-name>CXFServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.jaxrs.HackInjectCXFNonSpringJaxrsServlet</servlet-class>
-    <init-param>
-      <param-name>jaxrs.serviceClasses</param-name>
-      <param-value>
-        org.drools.guvnor.server.jaxrs.PackageResource
-        org.drools.guvnor.server.jaxrs.CategoryResource
-      </param-value>
-    </init-param>
-    <init-param>
-      <param-name>jaxrs.providers</param-name>
-      <param-value>
-        org.apache.cxf.jaxrs.provider.AtomEntryProvider
-        org.apache.cxf.jaxrs.provider.AtomFeedProvider
-        org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
-      </param-value>
-    </init-param>
-    <!-- Use per-request life-cycle -->
-    <!-- Enabling this breaks CDI injection in HackInjectCXFNonSpringJaxrsServlet -->
-    <!--<init-param>-->
-    <!--<param-name>jaxrs.scope</param-name>-->
-    <!--<param-value>prototype</param-value>-->
-    <!--</init-param>-->
+    <servlet-name>Resteasy</servlet-name>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
   </servlet>
 
   <servlet>
@@ -170,7 +168,7 @@
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>CXFServlet</servlet-name>
+    <servlet-name>Resteasy</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>

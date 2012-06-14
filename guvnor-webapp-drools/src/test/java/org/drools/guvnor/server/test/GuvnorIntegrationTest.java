@@ -16,6 +16,7 @@
 package org.drools.guvnor.server.test;
 
 import java.io.File;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,10 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +51,7 @@ public abstract class GuvnorIntegrationTest {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput()
+                .importBuildOutput().importTestBuildOutput().importTestDependencies()
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
 
@@ -57,7 +61,7 @@ public abstract class GuvnorIntegrationTest {
                     + ") should exist, run \"mvn package\" first.");
         }
         removeExcludedFiles(webArchive, explodedWarFile);
-        // dumpArchive(webArchive);
+        dumpArchive(webArchive);
         return webArchive;
     }
 
@@ -104,7 +108,13 @@ public abstract class GuvnorIntegrationTest {
                 TestRepositoryStartupService.class,
                 // Stuff we need
                 org.apache.commons.httpclient.Credentials.class,
-                org.apache.commons.httpclient.UsernamePasswordCredentials.class);
+                org.apache.commons.httpclient.UsernamePasswordCredentials.class,
+                org.apache.abdera.model.Base.class,
+        org.apache.abdera.Abdera.class,
+        org.apache.abdera.model.Document.class,
+        org.apache.abdera.model.Entry.class,
+        org.apache.abdera.model.ExtensibleElement.class,
+        org.apache.abdera.model.Feed.class);
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
@@ -114,7 +124,7 @@ public abstract class GuvnorIntegrationTest {
         File libDir = new File(explodedWarFile, "WEB-INF/lib");
         for (File file : libDir.listFiles()) {
             String fileName = file.getName();
-            if (fileName.startsWith("weld-") && fileName.endsWith(".jar")) {
+            if (fileName.endsWith(".jar") && (fileName.startsWith("weld-") || fileName.startsWith("resteasy-cdi"))) {
                 webArchive.delete(ArchivePaths.create("WEB-INF/lib/" + fileName));
             }
         }
