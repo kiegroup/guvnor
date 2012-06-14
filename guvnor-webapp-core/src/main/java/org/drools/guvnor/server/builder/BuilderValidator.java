@@ -28,8 +28,11 @@ public class BuilderValidator extends PackageAssemblerBase implements Validator 
     }
 
     public boolean validate(AssetItem item) {
-
-        return !validateAsset(item).hasLines();
+        try {
+            return !validateAsset(item).hasLines();
+        } catch (RuntimeException re) {
+            return false;
+        }
     }
 
     public String getFormat() {
