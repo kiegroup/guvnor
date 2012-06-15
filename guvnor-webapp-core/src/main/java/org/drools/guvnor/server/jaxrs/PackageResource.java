@@ -400,32 +400,16 @@ public class PackageResource extends Resource {
             }
 
             String checkinComment = "";
-           /*
-           ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
-           if (metadataExtension != null) {
-               ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);
-               if (archivedExtension != null) {
-                   existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
-               }
 
-               ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
-               if (checkinCommentExtension != null) {
-                   checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
-               }
-
-               // TODO: Package state is not fully supported yet
-               /**
-               * ExtensibleElement stateExtension =
-               * metadataExtension.getExtension(Translator.STATE);
-               * if(stateExtension != null) {
-               * p.updateState(stateExtension.getSimpleExtension
-               * (Translator.STATE)); }
-               **
+           AtomPackageMetadata packageMetadata = entry.getAnyOtherJAXBObject(AtomPackageMetadata.class);
+           if ( packageMetadata != null ) {
+               existingModuleItem.archiveItem(packageMetadata.isArchived());
+               checkinComment = packageMetadata.getCheckinComment();
            }
-            */
+
             existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new WebApplicationException(e);
         }
     }
@@ -611,24 +595,10 @@ public class PackageResource extends Resource {
         try {
             String format = null;
             String[] categories = null;
-         /**   ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
-                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
-                
-                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                if (categoryExtension != null) {
-                    List<Element> categoryValues = categoryExtension
-                            .getExtensions(Translator.VALUE);
-                    categories = new String[categoryValues.size()];
-                    for (int i=0; i< categoryValues.size(); i++) {
-                        String catgoryValue = categoryValues.get(i).getText();
-                        categories[i] = catgoryValue;
-                    }
-                }
-            } */
+            AtomAssetMetadata assetMetadata = entry.getAnyOtherJAXBObject(AtomAssetMetadata.class);
+            categories = assetMetadata.getCategories();
 
-            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), null, format);
+            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), null, assetMetadata.getFormat());
 
             if (categories != null) {
                 ai.updateCategoryList(categories);
@@ -638,7 +608,7 @@ public class PackageResource extends Resource {
             rulesRepository.save();
 
             return toAssetEntryAbdera(ai, uriInfo);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -697,52 +667,32 @@ public class PackageResource extends Resource {
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry) {
         try {
-            String format = null;
-            String[] categories = null;
-            String state = null;
-            /*
-            ExtensibleElement metadataExtension = assetEntry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
-                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
-                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                if (categoryExtension != null) {
-                    List<Element> categoryValues = categoryExtension
-                            .getExtensions(Translator.VALUE);
-                    categories = new String[categoryValues.size()];
-                    for (int i=0; i< categoryValues.size(); i++) {
-                        String catgoryValue = categoryValues.get(i).getText();
-                        categories[i] = catgoryValue;
-                    }
-                }
-                ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);
-                state = stateExtension != null ? stateExtension.getSimpleExtension(Translator.VALUE) : null;
-            }
-             */
+            AtomAssetMetadata assetMetadata = assetEntry.getAnyOtherJAXBObject(AtomAssetMetadata.class);
+
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
             //Update asset 
             ai.checkout();
             ai.updateTitle(assetEntry.getTitle());
             ai.updateDescription(assetEntry.getSummary());
-            if (format != null) {
-                ai.updateFormat(format);
+            if (assetMetadata.getFormat() != null) {
+                ai.updateFormat(assetMetadata.getFormat());
             }
             
             //REVISIT: What if the client really wants to set content to ""?
             if (assetEntry.getContent() != null && !"".equals(assetEntry.getContent())) {
                 ai.updateContent(assetEntry.getContent().getText());
             }
-            if (categories != null) {
-                ai.updateCategoryList(categories);
+            if (assetMetadata.getCategories() != null && assetMetadata.getCategories().length > 0) {
+                ai.updateCategoryList(assetMetadata.getCategories());
             }
-            if (state != null) {
-                ai.updateState(state);
+            if (assetMetadata.getState() != null) {
+                ai.updateState(assetMetadata.getState());
             }
             ai.updateValid(assetValidator.validate(ai));
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new WebApplicationException(e);
         }
     }
@@ -770,7 +720,8 @@ public class PackageResource extends Resource {
 
     @PUT
     @Path("{packageName}/assets/{assetName}/source")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
+    @Produces({MediaType.WILDCARD})
     public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String content) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
@@ -788,6 +739,7 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}/assets/{assetName}/binary")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.WILDCARD)
     public void updateAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, InputStream is) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist

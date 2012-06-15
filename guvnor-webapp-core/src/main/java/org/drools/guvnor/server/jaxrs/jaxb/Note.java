@@ -1,21 +1,20 @@
 package org.drools.guvnor.server.jaxrs.jaxb;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "archived")
+@XmlRootElement(name = "note")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Archived {
+public class Note {
     @XmlElement
-    private boolean value;
-    public boolean getValue() {
-        return value;
+    private String value;
+    public String getValue() {
+        return value;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void setValue(boolean archived) {
-        value = archived;
+    public void setValue(String note) {
+        value = note;
     }
 }

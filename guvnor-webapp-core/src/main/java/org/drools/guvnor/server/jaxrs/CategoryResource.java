@@ -140,7 +140,7 @@ public class CategoryResource extends Resource {
 
     @PUT
     @Path("{categoryPath:.+}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.WILDCARD})
     public void createCategory(@PathParam("categoryPath") String categoryPath) {
         String parentPath;
         String name;
@@ -157,6 +157,7 @@ public class CategoryResource extends Resource {
 
     @DELETE
     @Path("{categoryPath:.+}")
+    @Consumes({MediaType.WILDCARD})
     public void deleteCategory(@PathParam("categoryPath") String categoryPath) {
         try {
             repositoryCategoryService.removeCategory(categoryPath);

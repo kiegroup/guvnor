@@ -1,9 +1,8 @@
 package org.drools.guvnor.server.jaxrs.providers.atom;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.drools.guvnor.server.jaxrs.jaxb.AtomAssetMetadata;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +83,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "feed")
 @XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlSeeAlso({AtomAssetMetadata.class})
 public class Feed extends Source
 {
 
