@@ -1203,6 +1203,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection2.setDoOutput(true);
         connection2.setRequestMethod("PUT");
         connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection2.setRequestProperty("Content-Type", MediaType.TEXT_PLAIN);
         OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
         out.write(newContent);
         out.close();
@@ -1313,6 +1314,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
@@ -1504,6 +1506,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection2.setDoOutput(true);
         connection2.setRequestMethod("PUT");
+        connection2.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
         connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
         String newContent = "rule 'nheron' when Goo1() then end";
@@ -1676,6 +1679,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();

@@ -43,7 +43,7 @@ public class AtomPackageMetadata {
 
 
     public String getUuid() {
-        return uuid != null?uuid.getValue():null;
+        return uuid != null?uuid.getValue():"";
     }
 
     public void setUuid(String uuid) {
@@ -65,7 +65,7 @@ public class AtomPackageMetadata {
     }
 
     public String getFormat() {
-        return format != null ? format.getValue() : null;
+        return format != null ? format.getValue() : "";
     }
 
     public void setFormat(String format) {
@@ -76,7 +76,7 @@ public class AtomPackageMetadata {
     }
 
   	public String getState() {
-		return state != null ? state.getValue() : null;
+		return state != null ? state.getValue() : "";
 	}
 
 	public void setState(String state) {
@@ -109,7 +109,7 @@ public class AtomPackageMetadata {
     }
 
     public String getCheckinComment() {
-        return checkinComment != null ? checkinComment.getValue() : null;
+        return checkinComment != null ? checkinComment.getValue() : "";
     }
 
     public void setCheckinComment(String checkinComment) {

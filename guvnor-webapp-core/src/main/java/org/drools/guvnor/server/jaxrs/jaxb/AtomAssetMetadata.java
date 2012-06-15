@@ -17,100 +17,141 @@
 
 package org.drools.guvnor.server.jaxrs.jaxb;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 
 @XmlRootElement(name="metadata")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({Categories.class})
 public class AtomAssetMetadata {
-    private String Uuid;
-    private String[] categories;
-    private String note;
-    private Date created;
-    private String format;
-    private boolean disabled;    
-    private String state;
-    private long versionNumber;
-    private String checkInComment;
-    
     @XmlElement
+    private Uuid uuid;
+    @XmlElement
+    private Categories categories;
+    @XmlElement
+    private Note note;
+    @XmlElement
+    private Created created;
+    @XmlElement
+    private Format format;
+    @XmlElement
+    private Disabled disabled;
+    @XmlElement
+    private State state;
+    @XmlElement
+    private VersionNumber versionNumber;
+    @XmlElement
+    private CheckinComment checkinComment;
+    @XmlElement
+    private Archived archived;
+
     public String getUuid() {
-        return Uuid;
+        return uuid != null?uuid.getValue():null;
     }
 
     public void setUuid(String uuid) {
-        Uuid = uuid;
+        if (this.uuid == null) {
+            this.uuid = new Uuid();
+        }
+        this.uuid.setValue(uuid);
     }
 
-    @XmlElement
-    public String[] getCategories() {
-        return categories;
-    }
-
-    public void setCategories(String[] categories) {
-        this.categories = categories;
-    }
-
-    @XmlElement
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    @XmlElement
     public Date getCreated() {
-        return created;
+        return created != null ?created.getValue():null;
     }
 
     public void setCreated(Date created) {
-        this.created = created;
+        if (this.created == null) {
+            this.created = new Created();
+        }
+        this.created.setValue(created);
     }
 
-    @XmlElement
     public String getFormat() {
-        return format;
+        return format != null ? format.getValue() : null;
     }
 
     public void setFormat(String format) {
-        this.format = format;
+        if (this.format == null) {
+            this.format = new Format();
+        }
+        this.format.setValue(format);
     }
 
-    @XmlElement
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }    
-    
-    @XmlElement
     public String getState() {
-        return state;
+        return state != null ? state.getValue() : null;
     }
 
     public void setState(String state) {
-        this.state = state;
-    }      
+        if (this.state == null) {
+            this.state = new State();
+        }
+        this.state.setValue(state);
+    }
 
-    @XmlElement
     public long getVersionNumber() {
-        return versionNumber;
+        return versionNumber != null ? versionNumber.getValue() : -1L;
     }
 
     public void setVersionNumber(long versionNumber) {
-        this.versionNumber = versionNumber;
+        if (this.versionNumber == null) {
+            this.versionNumber = new VersionNumber();
+        }
+        this.versionNumber.setValue(versionNumber);
     }
 
-    @XmlElement
-    public String getCheckInComment() {
-        return checkInComment;
+    public String getCheckinComment() {
+        return checkinComment != null ? checkinComment.getValue() : null;
     }
 
-    public void setCheckInComment(String checkInComment) {
-        this.checkInComment = checkInComment;
-    } 
+    public void setCheckinComment(String checkinComment) {
+        if (this.checkinComment == null ) {
+            this.checkinComment = new CheckinComment();
+        }
+        this.checkinComment.setValue(checkinComment);
+    }
+
+    public String[] getCategories() {
+        return categories != null ? categories.getValues() : null;
+    }
+
+    public void setCategories(String[] categories) {
+        if (this.categories == null ) {
+            this.categories = new Categories();
+        }
+        this.categories.setValue(categories);
+    }
+
+    public String getNote() {
+        return note != null ? note.getValue() : null;
+    }
+
+    public void setNote(String note) {
+        if (this.note == null) {
+            this.note = new Note();
+        }
+        this.note.setValue(note);
+    }
+
+    public boolean getDisabled() {
+        return disabled != null ? disabled.getValue() : false;
+    }
+
+    public void setDisabled(boolean disabled) {
+        if (this.disabled == null) {
+            this.disabled = new Disabled();
+        }
+        this.disabled.setValue(disabled);
+    }
+
+    public boolean isArchived() {
+        return archived != null ? archived.getValue() : false;
+    }
+
+    public void setArchived(boolean archived) {
+        if (this.archived == null) {
+            this.archived = new Archived();
+        }
+        this.archived.setValue(archived);
+    }
 }

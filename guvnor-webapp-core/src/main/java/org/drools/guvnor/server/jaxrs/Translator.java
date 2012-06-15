@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceException;
 import java.net.URI;
 import java.util.*;
 
@@ -170,23 +171,7 @@ public class Translator {
         metaData.setState(p.getState() == null ? "" : p.getState().getName());
         metaData.setVersionNumber(p.getVersionNumber());
         metaData.setCheckinComment(p.getCheckinComment());
- /*       ExtensibleElement extension = e.addExtension(METADATA);
-        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
-        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, p.isArchived() ? "true" : "false");
 
-        childExtension = extension.addExtension(UUID);
-        childExtension.addSimpleExtension(VALUE, p.getUUID());
-
-        childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
-
-        childExtension = extension.addExtension(VERSION_NUMBER);
-        childExtension.addSimpleExtension(VALUE, String.valueOf(p.getVersionNumber()));
-
-        childExtension = extension.addExtension(CHECKIN_COMMENT);
-        childExtension.addSimpleExtension(VALUE, p.getCheckinComment());
-        */
         e.setAnyOtherJAXBObject(metaData);
         Content content = new Content();
         content.setSrc(UriBuilder.fromUri(baseUri).path("binary").build());
@@ -258,34 +243,28 @@ public class Translator {
         e.getAuthors().add(new Person(a.getLastContributor()));
 
         e.setId(baseUri);
-         //TODO: translate this into new format from RestEasy
-     /**   //generate meta data
-        ExtensibleElement extension = e.addExtension(METADATA);
-        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
-        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, a.isArchived() ? "true" : "false");
-
-        childExtension = extension.addExtension(UUID);
-        childExtension.addSimpleExtension(VALUE, a.getUUID());
-
-        childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, a.getState() == null ? "" : a.getState().getName());
-
-        childExtension = extension.addExtension(FORMAT);
-        childExtension.addSimpleExtension(VALUE, a.getFormat());
-
-        childExtension = extension.addExtension(VERSION_NUMBER);
-        childExtension.addSimpleExtension(VALUE, String.valueOf(a.getVersionNumber()));
-
-        childExtension = extension.addExtension(CHECKIN_COMMENT);
-        childExtension.addSimpleExtension(VALUE, a.getCheckinComment());
-
-        List<CategoryItem> categories = a.getCategories();
-        childExtension = extension.addExtension(CATEGORIES);
-        for (CategoryItem c : categories) {
-            childExtension.addSimpleExtension(VALUE, c.getName());
+        try {
+            AtomAssetMetadata atomAssetMetadata  = e.getAnyOtherJAXBObject(AtomAssetMetadata.class);
+            if (atomAssetMetadata == null) {
+                atomAssetMetadata = new AtomAssetMetadata();
+            }
+            atomAssetMetadata.setArchived(a.isArchived());
+            atomAssetMetadata.setUuid(a.getUUID());
+            atomAssetMetadata.setState(a.getState() == null ? "" : a.getState().getName());
+            atomAssetMetadata.setFormat(a.getFormat());
+            atomAssetMetadata.setVersionNumber(a.getVersionNumber());
+            atomAssetMetadata.setCheckinComment(a.getCheckinComment());
+            String[] categories = new String[a.getCategories().size()];
+            int i = 0;
+            for (CategoryItem cItem : a.getCategories()) {
+                categories[i] = cItem.getName();
+                i++;
+            }
+            atomAssetMetadata.setCategories(categories);
+            e.setAnyOtherJAXBObject(atomAssetMetadata);
+        } catch (Exception ex) {
+            throw new WebServiceException(ex);
         }
-       **/
         Content content = new Content();
         content.setSrc(UriBuilder.fromUri(baseUri).path("binary").build());
         content.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
