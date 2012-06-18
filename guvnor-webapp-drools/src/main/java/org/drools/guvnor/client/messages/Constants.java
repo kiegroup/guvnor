@@ -2758,7 +2758,7 @@ public interface Constants
     
     String DecisionTableAuditLogUpdateColumn0Was1(String value, String originalValue);
 
-    // Simulation tests
+    // Start simulation test
 
     String SimulationTests();
 
@@ -2767,5 +2767,7 @@ public interface Constants
     String RunSimulation();
 
     String DebugSimulation();
+
+    // End simulation test
 
 }
