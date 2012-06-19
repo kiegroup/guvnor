@@ -27,6 +27,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
+import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -53,6 +54,7 @@ import org.jboss.resteasy.plugins.providers.atom.Link;*/
 @Path("/categories")
 @RequestScoped
 @Named
+@LoggedIn
 @GZIP
 public class CategoryResource extends Resource {
 

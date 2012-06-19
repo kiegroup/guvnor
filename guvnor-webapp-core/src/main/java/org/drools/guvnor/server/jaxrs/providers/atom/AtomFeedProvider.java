@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.jaxrs.providers.atom;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
+
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBContextFinder;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBMarshalException;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBUnmarshalException;
@@ -11,11 +12,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+import javax.ws.rs.ext.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -104,7 +101,7 @@ public class AtomFeedProvider implements MessageBodyReader<Feed>, MessageBodyWri
       {
          JAXBContext ctx = finder.findCacheContext(mediaType, annotations, set.toArray(new Class[set.size()]));
          Marshaller marshaller = ctx.createMarshaller();
-         NamespacePrefixMapper mapper = new NamespacePrefixMapper()
+        /* NamespacePrefixMapper mapper = new NamespacePrefixMapper()
          {
             public String getPreferredPrefix(String namespace, String s1, boolean b)
             {
@@ -114,7 +111,7 @@ public class AtomFeedProvider implements MessageBodyReader<Feed>, MessageBodyWri
          };
 
          marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
-
+          */
          marshaller.marshal(feed, entityStream);
       }
       catch (JAXBException e)

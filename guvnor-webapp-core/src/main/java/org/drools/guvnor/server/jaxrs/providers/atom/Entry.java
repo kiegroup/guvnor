@@ -98,7 +98,7 @@ import java.util.List;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-@XmlRootElement(name = "entry")
+@XmlRootElement(namespace = "http://www.w3.org/2005/Atom" ,name = "entry")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"title", "links", "categories", "updated", "id", "published", "authors", "contributors", "source",
         "rights", "content", "summary", "anyOther"})
@@ -140,7 +140,7 @@ public class Entry extends CommonAttributes
       this.finder = finder;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public URI getId()
    {
       return id;
@@ -151,7 +151,7 @@ public class Entry extends CommonAttributes
       this.id = id;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public String getTitle()
    {
       return title;
@@ -162,7 +162,7 @@ public class Entry extends CommonAttributes
       this.title = title;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public Date getUpdated()
    {
       return updated;
@@ -179,13 +179,13 @@ public class Entry extends CommonAttributes
       return null;
    }
 
-   @XmlElementRef
+   @XmlElementRef(namespace = "http://www.w3.org/2005/Atom")
    public List<Link> getLinks()
    {
       return links;
    }
 
-   @XmlElementRef
+   @XmlElementRef(namespace = "http://www.w3.org/2005/Atom")
    public Content getContent()
    {
       return content;
@@ -196,25 +196,25 @@ public class Entry extends CommonAttributes
       this.content = content;
    }
 
-   @XmlElement(name = "author")
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom", name = "author")
    public List<Person> getAuthors()
    {
       return authors;
    }
 
-   @XmlElementRef
+   @XmlElementRef(namespace = "http://www.w3.org/2005/Atom")
    public List<Category> getCategories()
    {
       return categories;
    }
 
-   @XmlElement(name = "contributor")
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom", name = "contributor")
    public List<Person> getContributors()
    {
       return contributors;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public Date getPublished()
    {
       return published;
@@ -225,7 +225,7 @@ public class Entry extends CommonAttributes
       this.published = published;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public String getRights()
    {
       return rights;
@@ -236,7 +236,7 @@ public class Entry extends CommonAttributes
       this.rights = rights;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public Source getSource()
    {
       return source;
@@ -247,7 +247,7 @@ public class Entry extends CommonAttributes
       this.source = source;
    }
 
-   @XmlElement
+   @XmlElement(namespace = "http://www.w3.org/2005/Atom")
    public String getSummary()
    {
       return summary;
