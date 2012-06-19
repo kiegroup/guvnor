@@ -43,6 +43,9 @@ import org.drools.ide.common.client.modeldriven.brl.ExpressionText;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
@@ -2703,6 +2706,76 @@ public class BRDRLPersistenceTest {
             }
         }
 
+    }
+    
+    @Test
+    public void testFromAccumulateWithEmbeddedFromEntryPoint() {
+        RuleModel m = new RuleModel();
+        m.name = "r1";
+
+        SingleFieldConstraint sfc = new SingleFieldConstraint( "bar" );
+        sfc.setFactType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        sfc.setFieldBinding( "$a" );
+        sfc.setOperator( "==" );
+        sfc.setValue( "777" );
+
+        FactPattern fp = new FactPattern( "Foo" );
+        fp.addConstraint( sfc );
+
+        FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
+        fep.setEntryPointName( "ep" );
+        fep.setFactPattern( fp );
+        FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
+        fac.setSourcePattern( fep );
+        fac.setFactPattern( new FactPattern( "java.util.List" ) );
+        fac.setFunction( "max($a)" );
+        m.addLhsItem( fac );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"r1\"\n"
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "java.util.List( ) from accumulate ( Foo( $a : bar == 777 ) from entry-point \"ep\", \n"
+                          + "max($a))\n"
+                          + "then\n"
+                          + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+
+    @Test
+    public void testFromCollectWithEmbeddedFromEntryPoint() {
+        RuleModel m = new RuleModel();
+        m.name = "r1";
+
+        SingleFieldConstraint sfc = new SingleFieldConstraint( "bar" );
+        sfc.setFactType( SuggestionCompletionEngine.TYPE_NUMERIC_INTEGER );
+        sfc.setFieldBinding( "$a" );
+        sfc.setOperator( "==" );
+        sfc.setValue( "777" );
+
+        FactPattern fp = new FactPattern( "Foo" );
+        fp.addConstraint( sfc );
+
+        FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
+        fep.setEntryPointName( "ep" );
+        fep.setFactPattern( fp );
+        FromCollectCompositeFactPattern fac = new FromCollectCompositeFactPattern();
+        fac.setRightPattern( fep );
+        fac.setFactPattern( new FactPattern( "java.util.List" ) );
+        m.addLhsItem( fac );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"r1\"\n"
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "java.util.List( ) from collect ( Foo( $a : bar == 777 ) from entry-point \"ep\" ) \n"
+                          + "then\n"
+                          + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
     }
 
 }

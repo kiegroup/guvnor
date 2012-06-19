@@ -424,6 +424,8 @@ public class BRDRLPersistence
                     visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getRightPattern() );
                 } else if ( pattern.getRightPattern() instanceof FromCollectCompositeFactPattern ) {
                     visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getRightPattern() );
+                } else if ( pattern.getRightPattern() instanceof FromEntryPointFactPattern ) {
+                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getRightPattern() );
                 } else if ( pattern.getRightPattern() instanceof FromCompositeFactPattern ) {
                     visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getRightPattern() );
                 } else if ( pattern.getRightPattern() instanceof FreeFormLine ) {
@@ -452,6 +454,8 @@ public class BRDRLPersistence
                     visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getSourcePattern() );
                 } else if ( pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern ) {
                     visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getSourcePattern() );
+                } else if ( pattern.getSourcePattern() instanceof FromEntryPointFactPattern ) {
+                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getSourcePattern() );
                 } else if ( pattern.getSourcePattern() instanceof FromCompositeFactPattern ) {
                     visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getSourcePattern() );
                 } else {

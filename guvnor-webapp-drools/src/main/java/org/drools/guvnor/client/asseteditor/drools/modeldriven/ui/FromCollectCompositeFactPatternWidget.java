@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -129,21 +130,31 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                        true,
                                                        true,
                                                        this.readOnly );
+
             } else if ( rPattern instanceof FromAccumulateCompositeFactPattern ) {
                 patternWidget = new FromAccumulateCompositeFactPatternWidget( this.getModeller(),
                                                                               this.getEventBus(),
                                                                               (FromAccumulateCompositeFactPattern) rPattern,
                                                                               this.readOnly );
+
             } else if ( rPattern instanceof FromCollectCompositeFactPattern ) {
                 patternWidget = new FromCollectCompositeFactPatternWidget( this.getModeller(),
                                                                            this.getEventBus(),
                                                                            (FromCollectCompositeFactPattern) rPattern,
                                                                            this.readOnly );
+
+            } else if ( rPattern instanceof FromEntryPointFactPattern ) {
+                patternWidget = new FromEntryPointFactPatternWidget( this.getModeller(),
+                                                                     this.getEventBus(),
+                                                                     (FromEntryPointFactPattern) rPattern,
+                                                                     this.readOnly );
+
             } else if ( rPattern instanceof FromCompositeFactPattern ) {
                 patternWidget = new FromCompositeFactPatternWidget( this.getModeller(),
                                                                     this.getEventBus(),
                                                                     (FromCompositeFactPattern) rPattern,
                                                                     this.readOnly );
+
             } else if ( rPattern instanceof FreeFormLine ) {
                 patternWidget = new FreeFormLineWidget( this.getModeller(),
                                                         this.getEventBus(),
@@ -165,8 +176,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                               new ClickHandler() {
 
                                                   public void onClick(ClickEvent event) {
-                                                      if ( Window.confirm( Constants.INSTANCE
-                                                              .RemoveThisBlockOfData() ) ) {
+                                                      if ( Window.confirm( Constants.INSTANCE.RemoveThisBlockOfData() ) ) {
                                                           setModified( true );
                                                           getFromCollectPattern().setRightPattern( null );
                                                           getModeller().refreshWidget();
@@ -200,8 +210,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         box.setSelectedIndex( 0 );
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                pattern.setFactPattern( new FactPattern( box.getValue( box
-                        .getSelectedIndex() ) ) );
+                pattern.setFactPattern( new FactPattern( box.getValue( box.getSelectedIndex() ) ) );
                 setModified( true );
                 getModeller().refreshWidget();
                 popup.hide();
@@ -235,10 +244,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                getFromCollectPattern()
-                        .setRightPattern(
-                                          new FactPattern( box.getItemText( box
-                                                  .getSelectedIndex() ) ) );
+                getFromCollectPattern().setRightPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
                 setModified( true );
                 getModeller().refreshWidget();
                 popup.hide();
@@ -250,6 +256,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         final Button fromBtn = new Button( Constants.INSTANCE.From() );
         final Button fromAccumulateBtn = new Button( Constants.INSTANCE.FromAccumulate() );
         final Button fromCollectBtn = new Button( Constants.INSTANCE.FromCollect() );
+        final Button fromEntryPointBtn = new Button( Constants.INSTANCE.FromEntryPoint() );
 
         ClickHandler btnsClickHandler = new ClickHandler() {
 
@@ -263,6 +270,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                     getFromCollectPattern().setRightPattern( new FromCollectCompositeFactPattern() );
                 } else if ( sender == freeFormDRLBtn ) {
                     getFromCollectPattern().setRightPattern( new FreeFormLine() );
+                } else if ( sender == fromEntryPointBtn ) {
+                    getFromCollectPattern().setRightPattern( new FromEntryPointFactPattern() );
                 } else {
                     throw new IllegalArgumentException( "Unknown sender: " + sender );
                 }
@@ -277,6 +286,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         fromBtn.addClickHandler( btnsClickHandler );
         fromAccumulateBtn.addClickHandler( btnsClickHandler );
         fromCollectBtn.addClickHandler( btnsClickHandler );
+        fromEntryPointBtn.addClickHandler( btnsClickHandler );
 
         popup.addAttribute( "",
                             freeFormDRLBtn );
@@ -286,6 +296,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                             fromAccumulateBtn );
         popup.addAttribute( "",
                             fromCollectBtn );
+        popup.addAttribute( "",
+                            fromEntryPointBtn );
 
         popup.show();
     }
