@@ -16,39 +16,24 @@
 
 package org.drools.guvnor.client.asseteditor.drools.enums;
 
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+
 import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.ImageResourceCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.drools.guvnor.client.resources.ImagesCore;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: raymondefa
- * Date: 6/18/12
- * Time: 12:54 PM
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: raymondefa Date: 6/18/12 Time: 12:54 PM To
+ * change this template use File | Settings | File Templates.
  */
 public class DeleteButtonCell extends ButtonCell {
     @Override
-    public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-        ImagesCore imagesCore = GWT.create(ImagesCore.class);
-        ImageResource imageResource = imagesCore.deleteItemSmall();
-        sb.appendHtmlConstant("<input type=\"image\" src=\"" + imageResource.getURL() + "\"  tabindex=\"-1\">");
-
-        sb.appendHtmlConstant("</input>");
+    public void render(Context context,
+                       SafeHtml data,
+                       SafeHtmlBuilder sb) {
+        ImageResource imageResource = DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall();
+        sb.appendHtmlConstant( "<input type=\"image\" src=\"" + imageResource.getURL() + "\"  tabindex=\"-1\">" );
+        sb.appendHtmlConstant( "</input>" );
     }
 }
