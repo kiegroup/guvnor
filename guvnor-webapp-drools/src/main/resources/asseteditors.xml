@@ -121,7 +121,7 @@
     <!--  end of jBPM editor group   -->
         
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.enums.EnumEditor</class>
         <format>enumeration</format>
         <icon>images.enumeration()</icon>
         <title>constants.Enumerations()</title>    
