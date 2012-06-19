@@ -1,6 +1,6 @@
 package org.drools.guvnor.server.jaxrs.providers.atom;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBContextFinder;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBMarshalException;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBUnmarshalException;
@@ -103,7 +103,7 @@ public class AtomEntryProvider implements MessageBodyReader<Entry>, MessageBodyW
       {
          JAXBContext ctx = finder.findCacheContext(mediaType, annotations, set.toArray(new Class[set.size()]));
          Marshaller marshaller = ctx.createMarshaller();
-         NamespacePrefixMapper mapper = new NamespacePrefixMapper()
+     /*    NamespacePrefixMapper mapper = new NamespacePrefixMapper()
          {
             public String getPreferredPrefix(String namespace, String s1, boolean b)
             {
@@ -113,7 +113,7 @@ public class AtomEntryProvider implements MessageBodyReader<Entry>, MessageBodyW
          };
 
          marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
-
+       */
          marshaller.marshal(entry, entityStream);
       }
       catch (JAXBException e)

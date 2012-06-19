@@ -31,15 +31,14 @@
   </context-param>
   <context-param>
     <param-name>resteasy.providers</param-name>
-    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider</param-value>
+    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider,org.drools.guvnor.server.security.BasicAuthentication</param-value>
   </context-param>
-
- <!--
+  <!--
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
   </context-param>
-   -->
+      -->
   <!-- TODO this might be needed due to the migration from seam 2 to seam 3
     TODO Or instead, all the usages of @WebRemote are dead code (GUVNOR-1520):
     - there is no SeamResourceServlet to activate them

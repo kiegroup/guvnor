@@ -81,7 +81,7 @@ import java.util.List;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-@XmlRootElement(name = "feed")
+@XmlRootElement(namespace = "http://www.w3.org/2005/Atom", name = "feed")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlSeeAlso({AtomAssetMetadata.class})
 public class Feed extends Source
@@ -89,7 +89,7 @@ public class Feed extends Source
 
    private List<Entry> entries = new ArrayList<Entry>();
 
-   @XmlElementRef
+   @XmlElementRef(namespace = "http://www.w3.org/2005/Atom")
    public List<Entry> getEntries()
    {
       return entries;

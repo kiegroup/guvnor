@@ -154,8 +154,6 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         //Test with invalid user name and pwd
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:invalidPassword"
@@ -172,8 +170,6 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         //Test with valid user name and pwd
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
