@@ -1150,13 +1150,12 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
         String result = IOUtils.toString(connection.getInputStream());
-        System.out.println(result);
-       
-        assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue(result.indexOf( "import org.drools.Cheese" ) >= 0 );
-        assertTrue(result.indexOf( "global org.drools.Person customer1" ) >= 0 );
-        assertTrue(result.indexOf( "function void foo() { System.out.println(\"version 1\"); }" ) >= 0 );
-        assertTrue(result.indexOf( "declare Album1" ) >= 0 );
+
+        assertTrue(result.contains("package restPackage1"));
+        assertTrue(result.contains("import org.drools.Cheese"));
+        assertTrue(result.contains("global org.drools.Person customer1"));
+        assertTrue(result.contains("function void foo() { System.out.println(\"version 1\"); }"));
+        assertTrue(result.contains("declare Album1"));
     }
     
     //REVISIT: https://issues.jboss.org/browse/GUVNOR-1232: Force a pacakge rebuild before every package check in operation. 
@@ -1328,12 +1327,11 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+                "Basic " + new Base64().encodeToString(("admin:admin".getBytes())));
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
@@ -1401,10 +1399,9 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
-                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+                "Basic " + new Base64().encodeToString(("admin:admin".getBytes())));
         connection.setRequestMethod("DELETE");
         connection.connect();
-        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
@@ -1605,10 +1602,9 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
         String result = IOUtils.toString(connection.getInputStream());
-        System.out.println(result);
 
-        assertTrue(result.indexOf( "declare Album1" ) >= 0 );
-        assertTrue(result.indexOf( "genre1: String" ) >= 0 );
+        assertTrue(result.contains("declare Album1"));
+        assertTrue(result.contains("genre1: String"));
         
         url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/2/source");
         connection = (HttpURLConnection) url.openConnection();
@@ -1621,10 +1617,8 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
         result = IOUtils.toString(connection.getInputStream());
-        System.out.println(result);
-
-        assertTrue(result.indexOf( "declare Album2" ) >= 0 );
-        assertTrue(result.indexOf( "genre2: String" ) >= 0 );
+        assertTrue(result.contains("declare Album2"));
+        assertTrue(result.contains("genre2: String"));
     }  
     
     @Test @RunAsClient
@@ -1728,7 +1722,6 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
