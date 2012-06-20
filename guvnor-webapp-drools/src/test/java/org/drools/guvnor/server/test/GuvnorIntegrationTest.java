@@ -15,11 +15,6 @@
  */
 package org.drools.guvnor.server.test;
 
-import java.io.File;
-import java.util.Collection;
-
-import javax.inject.Inject;
-
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.*;
@@ -33,15 +28,17 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.DependenciesFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.picketlink.idm.impl.api.PasswordCredential;
+
+import javax.inject.Inject;
+import java.io.File;
 
 @RunWith(Arquillian.class)
 public abstract class GuvnorIntegrationTest {
@@ -51,7 +48,7 @@ public abstract class GuvnorIntegrationTest {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput().importTestDependencies()
+                .importBuildOutput().importTestBuildOutput()
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
 
@@ -105,16 +102,15 @@ public abstract class GuvnorIntegrationTest {
         // For now, we just add what we need... this is not scalable
         webArchive.addClasses(
                 // Replace the production one
-                TestRepositoryStartupService.class,
+                TestRepositoryStartupService.class
+
                 // Stuff we need
-                org.apache.commons.httpclient.Credentials.class,
-                org.apache.commons.httpclient.UsernamePasswordCredentials.class,
-                org.apache.abdera.model.Base.class,
-        org.apache.abdera.Abdera.class,
-        org.apache.abdera.model.Document.class,
-        org.apache.abdera.model.Entry.class,
-        org.apache.abdera.model.ExtensibleElement.class,
-        org.apache.abdera.model.Feed.class);
+        ).addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .artifact("org.apache.abdera:abdera-core:1.1.1")
+                        .artifact("org.apache.abdera:abdera-client:1.1.1")
+                        .resolveAsFiles())
+        .addAsLibrary(new File("target/test-classes/billasurf.jar"));
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
@@ -124,7 +120,7 @@ public abstract class GuvnorIntegrationTest {
         File libDir = new File(explodedWarFile, "WEB-INF/lib");
         for (File file : libDir.listFiles()) {
             String fileName = file.getName();
-            if (fileName.endsWith(".jar") && (fileName.startsWith("weld-") || fileName.startsWith("resteasy-cdi"))) {
+            if (fileName.endsWith(".jar") && (fileName.startsWith("weld-") || fileName.startsWith("resteasy-"))) {
                 webArchive.delete(ArchivePaths.create("WEB-INF/lib/" + fileName));
             }
         }
