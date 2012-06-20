@@ -34,13 +34,13 @@ public abstract class AuditLogFilter
 
     /**
      * Register a type this Filter understands. When a new entry is added the
-     * AuditLogFilter is set to accept the type by default.
+     * AuditLogFilter is set to not accept the type by default.
      * 
      * @param type
      */
     public void addType(final String type) {
         this.acceptedTypes.put( type,
-                                Boolean.TRUE );
+                                Boolean.FALSE );
     }
 
     /**

@@ -17,8 +17,8 @@ package org.drools.guvnor.client.decisiontable.widget.auditlog;
 
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 
-import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.user.cellview.client.Column;
 
 /**
@@ -26,7 +26,7 @@ import com.google.gwt.user.cellview.client.Column;
  */
 public class AuditLogEntryCommentColumn extends Column<AuditLogEntry, String> {
 
-    private static final EditTextCell cell = new EditTextCell();
+    private static final TextInputCell cell = new TextInputCell();
 
     public AuditLogEntryCommentColumn() {
         super( cell );

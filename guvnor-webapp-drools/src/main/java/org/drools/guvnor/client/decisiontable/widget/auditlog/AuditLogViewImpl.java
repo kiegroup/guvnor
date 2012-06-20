@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable.widget.auditlog;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
@@ -23,6 +26,7 @@ import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -33,6 +37,7 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -121,16 +126,36 @@ public class AuditLogViewImpl extends Popup
 
         events = new CellTable<AuditLogEntry>();
 
+        final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
+        dlp.addDataDisplay( events );
+
         AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn();
         AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
+        AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
+        deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, ImageResource>() {
+
+            public void update(int index,
+                               AuditLogEntry row,
+                               ImageResource value) {
+                row.setDeleted( true );
+                dlp.setList( filterDeletedEntries( auditLog ) );
+                dlp.refresh();
+            }
+
+        } );
+
         events.addColumn( summaryColumn );
         events.addColumn( commentColumn );
+        events.addColumn( deleteCommentColumn );
 
         events.setColumnWidth( summaryColumn,
                                50.0,
                                Unit.PCT );
         events.setColumnWidth( commentColumn,
-                               50.0,
+                               45.0,
+                               Unit.PCT );
+        events.setColumnWidth( deleteCommentColumn,
+                               5.0,
                                Unit.PCT );
 
         events.setEmptyTableWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
@@ -141,10 +166,6 @@ public class AuditLogViewImpl extends Popup
         GuvnorSimplePager gsp = new GuvnorSimplePager();
         gsp.setPageSize( 5 );
         gsp.setDisplay( events );
-
-        ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>();
-        dlp.addDataDisplay( events );
-        dlp.setList( auditLog );
 
         VerticalPanel vp = new VerticalPanel();
         vp.add( gsp );
@@ -213,6 +234,18 @@ public class AuditLogViewImpl extends Popup
         } );
 
         return dpEventTypes;
+    }
+
+    private List<AuditLogEntry> filterDeletedEntries(final List<AuditLogEntry> entries) {
+        final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();
+        final Iterator<AuditLogEntry> i = entries.iterator();
+        while ( i.hasNext() ) {
+            final AuditLogEntry entry = i.next();
+            if ( !entry.isDeleted() ) {
+                filteredEntries.add( entry );
+            }
+        }
+        return filteredEntries;
     }
 
 }
