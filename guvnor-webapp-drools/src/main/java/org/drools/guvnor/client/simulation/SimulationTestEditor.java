@@ -17,11 +17,13 @@
 package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
@@ -42,6 +44,9 @@ public class SimulationTestEditor extends Composite
     @UiField
     protected Button debugSimulationButton;
 
+    @UiField
+    protected TimeLineWidget timeLineWidget;
+
     private final Asset asset;
 
     public SimulationTestEditor(Asset asset, RuleViewer ruleViewer, ClientFactory clientFactory, EventBus eventBus) {
@@ -50,7 +55,6 @@ public class SimulationTestEditor extends Composite
 
     public SimulationTestEditor(Asset asset) {
         this.asset = asset;
-
         this.initWidget(uiBinder.createAndBindUi(this));
     }
 
