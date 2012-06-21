@@ -683,7 +683,7 @@ public class PackageResource extends Resource {
             }
             
             //REVISIT: What if the client really wants to set content to ""?
-            if (assetEntry.getContent() != null && !"".equals(assetEntry.getContent())) {
+            if (assetEntry.getContent().getText() != null && !"".equals(assetEntry.getContent().getText())) {
                 ai.updateContent(assetEntry.getContent().getText());
             }
             if (assetMetadata.getCategories() != null && assetMetadata.getCategories().length > 0) {

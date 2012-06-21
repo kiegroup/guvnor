@@ -9,7 +9,12 @@
   </formats>
 
   <includeBaseDirectory>false</includeBaseDirectory>
-
+  <files>
+    <file>
+      <source>${project.build.directory}/../../guvnor-webapp-drools/target/filtered-xml/web.xml</source>
+      <outputDirectory>WEB-INF</outputDirectory>
+    </file>
+  </files>
   <dependencySets>
     <dependencySet>
       <includes>
@@ -26,6 +31,9 @@
           <exclude>WEB-INF/lib/jboss-seam-*.jar</exclude>
           <exclude>WEB-INF/lib/gwt-servlet-2.0.4.jar</exclude>
           <exclude>WEB-INF/jboss-web.xml</exclude>
+          <!-- Exclude RESTeasy as it's bundled with jboss as7 -->
+          <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+          <exclude>WEB-INF/web.xml</exclude>
 
           <!--&lt;!&ndash; Weld transitive dependency excludes, it's bundled in the AS &ndash;&gt;-->
           <!--<exclude>WEB-INF/lib/cdi-api-*.jar</exclude>-->
