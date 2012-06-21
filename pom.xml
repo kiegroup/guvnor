@@ -74,6 +74,11 @@
                 <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
             </configuration>
         </plugin>
+        <plugin>
+          <groupId>com.google.code.maven-config-processor-plugin</groupId>
+          <artifactId>maven-config-processor-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
