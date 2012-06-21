@@ -119,28 +119,4 @@ public class AtomPackageMetadata {
         this.checkinComment.setValue(checkinComment);
     }
 
-
-    @Override
-    public String toString() {
-        return "PackageMetadata{" +
-                "uuid='" + uuid + '\'' +
-                ", created=" + created +
-                ", format='" + format + '\'' +
-                ", state='" + state + '\'' +
-                ", archived=" + archived +
-                ", versionNumber=" + versionNumber +
-                ", checkinComment='" + checkinComment + '\'' +
-                '}';
-    }
-
-
-
-
-
-
-
-
-
-
-
 }
