@@ -486,7 +486,7 @@ end</programlisting>
             <title>Execute a Work Item</title>
 
             <para>An Action invoking a jBPM Work Item Handler setting it's input parameters to bound Facts\Facts fields
-            values. </para>
+            values.</para>
           </section>
 
           <section>
@@ -779,6 +779,51 @@ end</programlisting>
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/dtable-body.png" format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Audit Log</title>
+
+    <para>An audit log has been added to the web-guided Decision Table editor to track additions, deletions and
+    modifications.</para>
+
+    <para>By default the audit log is not configured to record any events, however, users can easily select the events
+    in which they are interested.</para>
+
+    <para>The audit log is persisted whenever the asset is checked in.</para>
+
+    <figure>
+      <title>An empty audit log</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/audit-log1.png" format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Once the capture of events has been enabled all susbsequent operations are recorded. Users are able to perform
+    the following:-</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Record an explanatory note beside each event.</para>
+      </listitem>
+
+      <listitem>
+        <para>Delete an event from the log. Event details remain in the underlying repository.</para>
+      </listitem>
+    </itemizedlist>
+
+    <figure>
+      <title>Example of audit events</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/audit-log2.png" format="PNG" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
