@@ -30,6 +30,7 @@ import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.shared.simulation.SimulationModel;
 
 public class SimulationTestEditor extends Composite
         implements EditorWidget {
@@ -55,7 +56,9 @@ public class SimulationTestEditor extends Composite
 
     public SimulationTestEditor(Asset asset) {
         this.asset = asset;
+        SimulationModel simulation = (SimulationModel) asset.getContent();
         this.initWidget(uiBinder.createAndBindUi(this));
+        timeLineWidget.setSimulation(simulation);
     }
 
 }

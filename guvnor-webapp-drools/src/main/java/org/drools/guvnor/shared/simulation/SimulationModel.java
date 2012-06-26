@@ -21,6 +21,7 @@ import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.simulation.SimulationPath;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -32,10 +33,11 @@ public class SimulationModel implements PortableObject {
     public static SimulationModel createNew() {
         SimulationModel simulation = new SimulationModel();
         simulation.addPath(SimulationPathModel.createNew());
+        simulation.addPath(SimulationPathModel.createNew()); // TODO remove me
         return simulation;
     }
 
-    private Map<String, SimulationPathModel> paths = new HashMap<String, SimulationPathModel>();
+    private Map<String, SimulationPathModel> paths = new LinkedHashMap<String, SimulationPathModel>();
 
     public Map<String, SimulationPathModel> getPaths() {
         return paths;

@@ -18,10 +18,7 @@ package org.drools.guvnor.shared.simulation;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.drools.simulation.SimulationStep;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -33,6 +30,8 @@ public class SimulationPathModel implements PortableObject {
     public static SimulationPathModel createNew() {
         SimulationPathModel path = new SimulationPathModel();
         path.addStep(SimulationStepModel.createNew());
+        path.addStep(SimulationStepModel.createNew()); // TODO remove me
+        path.addStep(SimulationStepModel.createNew()); // TODO remove me
         return path;
     }
 

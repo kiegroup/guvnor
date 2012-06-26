@@ -20,10 +20,16 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.shared.simulation.SimulationModel;
+import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 public class TimeLineWidget extends ResizeComposite {
 
-    private static final double PATH_HEIGHT = 20.0;
+    private static final int PATH_HEIGHT = 20;
+
+    private SimulationModel simulation;
 
     // TODO zoom buttons
 
@@ -33,28 +39,26 @@ public class TimeLineWidget extends ResizeComposite {
 
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
-        timeLineContent.setHeight(Double.valueOf(5.0 * PATH_HEIGHT).intValue() + "px");
+        timeLineContent.setHeight(PATH_HEIGHT + "px");
         timeLineContent.setWidth("100%");
-
-
-        Button b1 = new Button("b1");
-        timeLineContent.add(b1);
-        timeLineContent.setWidgetLeftWidth(b1, 1000 / millisecondsPerPixel, Style.Unit.PX, 30, Style.Unit.PX);
-        timeLineContent.setWidgetTopHeight(b1, 10, Style.Unit.PX, PATH_HEIGHT, Style.Unit.PX);
-
-        Button b2 = new Button("b2");
-        timeLineContent.add(b2);
-        timeLineContent.setWidgetLeftWidth(b2, 2000 / millisecondsPerPixel, Style.Unit.PX, 30, Style.Unit.PX);
-        timeLineContent.setWidgetTopHeight(b2, 10 + PATH_HEIGHT, Style.Unit.PX, PATH_HEIGHT, Style.Unit.PX);
-
-        Button b3 = new Button("b3");
-        timeLineContent.add(b3);
-        timeLineContent.setWidgetLeftWidth(b3, 3000 / millisecondsPerPixel, Style.Unit.PX, 30, Style.Unit.PX);
-        timeLineContent.setWidgetTopHeight(b3, 10 + PATH_HEIGHT, Style.Unit.PX, PATH_HEIGHT, Style.Unit.PX);
-
-
-
         initWidget(timeLineContent);
+    }
+
+    public void setSimulation(SimulationModel simulation) {
+        this.simulation = simulation;
+        setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
+        int pathTop = 0;
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            for (SimulationStepModel step : path.getSteps().values()) {
+                Button button = new Button(path.getName());
+                timeLineContent.add(button);
+                timeLineContent.setWidgetLeftWidth(button, step.getDistanceMillis() / millisecondsPerPixel,
+                        Style.Unit.PX, 50, Style.Unit.PX);
+                timeLineContent.setWidgetTopHeight(button, pathTop, Style.Unit.PX,
+                        PATH_HEIGHT, Style.Unit.PX);
+            }
+            pathTop += PATH_HEIGHT;
+        }
     }
 
     // TODO use timeLineContent.animate(500) to while zooming
