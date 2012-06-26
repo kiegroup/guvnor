@@ -20,6 +20,7 @@
              xmlns:simulation="urn:import:org.drools.guvnor.client.simulation">
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
   <ui:style>
   </ui:style>
@@ -28,6 +29,14 @@
     <gwt:HorizontalPanel spacing="10">
       <gwt:Button ui:field="runSimulationButton" text="{i18n.RunSimulation}"/>
       <gwt:Button ui:field="debugSimulationButton" text="{i18n.DebugSimulation}"/>
+    </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel spacing="10">
+      <gwt:PushButton ui:field="zoomInButton">
+        <gwt:upFace image="{simulationResources.zoomInIcon}"/>
+      </gwt:PushButton>
+      <gwt:PushButton ui:field="zoomOutButton">
+        <gwt:upFace image="{simulationResources.zoomOutIcon}"/>
+      </gwt:PushButton>
     </gwt:HorizontalPanel>
     <simulation:TimeLineWidget ui:field="timeLineWidget">
     </simulation:TimeLineWidget>

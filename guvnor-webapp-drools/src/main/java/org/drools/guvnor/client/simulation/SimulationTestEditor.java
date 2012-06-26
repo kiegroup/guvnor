@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
@@ -36,7 +37,6 @@ public class SimulationTestEditor extends Composite
         implements EditorWidget {
 
     interface SimulationTestEditorBinder extends UiBinder<Widget, SimulationTestEditor> {}
-
     private static SimulationTestEditorBinder uiBinder = GWT.create(SimulationTestEditorBinder.class);
 
     @UiField
@@ -44,6 +44,12 @@ public class SimulationTestEditor extends Composite
 
     @UiField
     protected Button debugSimulationButton;
+
+    @UiField
+    protected PushButton zoomInButton;
+
+    @UiField
+    protected PushButton zoomOutButton;
 
     @UiField
     protected TimeLineWidget timeLineWidget;
@@ -57,7 +63,7 @@ public class SimulationTestEditor extends Composite
     public SimulationTestEditor(Asset asset) {
         this.asset = asset;
         SimulationModel simulation = (SimulationModel) asset.getContent();
-        this.initWidget(uiBinder.createAndBindUi(this));
+        initWidget(uiBinder.createAndBindUi(this));
         timeLineWidget.setSimulation(simulation);
     }
 

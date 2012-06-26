@@ -16,11 +16,20 @@
 
 package org.drools.guvnor.client.simulation;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
+import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
@@ -30,8 +39,6 @@ public class TimeLineWidget extends ResizeComposite {
     private static final int PATH_HEIGHT = 20;
 
     private SimulationModel simulation;
-
-    // TODO zoom buttons
 
     private LayoutPanel timeLineContent;
 
