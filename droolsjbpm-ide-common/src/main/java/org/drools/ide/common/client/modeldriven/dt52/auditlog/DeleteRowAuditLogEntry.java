@@ -32,7 +32,13 @@ public class DeleteRowAuditLogEntry extends AuditLogEntry {
     public DeleteRowAuditLogEntry() {
     }
 
-    public DeleteRowAuditLogEntry(final int rowIndex) {
+    public DeleteRowAuditLogEntry(final String userName) {
+        super( userName );
+    }
+
+    public DeleteRowAuditLogEntry(final String userName,
+                                  final int rowIndex) {
+        super( userName );
         this.rowIndex = rowIndex;
     }
 

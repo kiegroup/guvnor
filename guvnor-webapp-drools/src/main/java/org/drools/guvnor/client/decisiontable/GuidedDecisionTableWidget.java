@@ -25,6 +25,7 @@ import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
@@ -33,9 +34,11 @@ import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -87,6 +90,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -117,6 +121,7 @@ public class GuidedDecisionTableWidget extends Composite
     private BRLRuleModel                rm;
 
     private VerticalDecisionTableWidget dtable;
+    private SimplePanel                 dtableContainer   = new SimplePanel();
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus                    eventBus          = new SimpleEventBus();
@@ -212,7 +217,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
-        layout.add( dtable );
+        layout.add( dtableContainer );
 
         initWidget( layout );
     }
@@ -1166,8 +1171,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private SuggestionCompletionEngine getSCE() {
         if ( sce == null ) {
-            this.sce = SuggestionCompletionCache.getInstance()
-                    .getEngineFromCache( this.packageName );
+            this.sce = SuggestionCompletionCache.getInstance().getEngineFromCache( this.packageName );
         }
         return sce;
     }
@@ -1415,12 +1419,22 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupDecisionTable() {
-        dtable = new VerticalDecisionTableWidget( guidedDecisionTable,
-                                                  getSCE(),
-                                                  isReadOnly,
-                                                  eventBus );
-        dtable.setPixelSize( 1000,
-                             400 );
+
+        //Get the current user's security context for audit logging. This requires a 
+        //call to the server so instantiation of the Decision Table grid is deferred.
+        SecurityServiceAsync.INSTANCE.getCurrentUser( new GenericCallback<UserSecurityContext>() {
+            public void onSuccess(final UserSecurityContext userSecurityContext) {
+                dtable = new VerticalDecisionTableWidget( guidedDecisionTable,
+                                                          getSCE(),
+                                                          userSecurityContext,
+                                                          isReadOnly,
+                                                          eventBus );
+                dtable.setPixelSize( 1000,
+                                     400 );
+                dtableContainer.setWidget( dtable );
+            }
+        } );
+
     }
 
     //Check if any of the bound Fact Patterns in the BRL Fragment are used elsewhere

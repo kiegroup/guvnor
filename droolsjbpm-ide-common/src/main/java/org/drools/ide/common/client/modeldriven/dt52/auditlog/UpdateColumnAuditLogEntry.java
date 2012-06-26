@@ -32,9 +32,15 @@ public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
     public UpdateColumnAuditLogEntry() {
     }
 
-    public UpdateColumnAuditLogEntry(final BaseColumn originalColumn,
+    public UpdateColumnAuditLogEntry(final String userName) {
+        super( userName );
+    }
+
+    public UpdateColumnAuditLogEntry(final String userName,
+                                     final BaseColumn originalColumn,
                                      final BaseColumn newColumn) {
-        super( newColumn );
+        super( userName,
+               newColumn );
         this.originalDetails = getDetails( originalColumn );
     }
 

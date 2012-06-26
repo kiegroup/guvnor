@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
@@ -60,19 +61,22 @@ public class AuditLogViewImpl extends Popup
     implements
     AuditLogView {
 
-    protected int                    MIN_WIDTH     = 500;
-    protected int                    MIN_HEIGHT    = 200;
+    protected int                     MIN_WIDTH     = 500;
+    protected int                     MIN_HEIGHT    = 200;
 
-    private final AuditLog           auditLog;
+    private final AuditLog            auditLog;
 
-    private final Widget             popupContent;
+    private final Widget              popupContent;
 
     @UiField
-    ScrollPanel                      spEvents;
+    ScrollPanel                       spEvents;
 
-    private DisclosurePanel          dpEventTypes;
-    private CellTable<AuditLogEntry> events;
-    private final VerticalPanel      lstEventTypes = new VerticalPanel();
+    private DisclosurePanel           dpEventTypes;
+    private CellTable<AuditLogEntry>  events;
+    private final VerticalPanel       lstEventTypes = new VerticalPanel();
+
+    //The current user's security context (admins can see all records)
+    private final UserSecurityContext userSecurityContext;
 
     interface AuditLogViewImplBinder
         extends
@@ -81,9 +85,11 @@ public class AuditLogViewImpl extends Popup
 
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
-    public AuditLogViewImpl(final AuditLog auditLog) {
+    public AuditLogViewImpl(final AuditLog auditLog,
+                            final UserSecurityContext userSecurityContext) {
         setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
         this.auditLog = auditLog;
+        this.userSecurityContext = userSecurityContext;
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );
@@ -131,32 +137,40 @@ public class AuditLogViewImpl extends Popup
 
         AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn();
         AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
-        AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
-        deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, ImageResource>() {
-
-            public void update(int index,
-                               AuditLogEntry row,
-                               ImageResource value) {
-                row.setDeleted( true );
-                dlp.setList( filterDeletedEntries( auditLog ) );
-                dlp.refresh();
-            }
-
-        } );
 
         events.addColumn( summaryColumn );
         events.addColumn( commentColumn );
-        events.addColumn( deleteCommentColumn );
 
         events.setColumnWidth( summaryColumn,
                                50.0,
                                Unit.PCT );
         events.setColumnWidth( commentColumn,
-                               45.0,
+                               50.0,
                                Unit.PCT );
-        events.setColumnWidth( deleteCommentColumn,
-                               5.0,
-                               Unit.PCT );
+
+        //If the current user is not an Administrator include the delete comment column
+        if ( !userSecurityContext.isAdministrator() ) {
+
+            AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
+            deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, ImageResource>() {
+
+                public void update(int index,
+                                   AuditLogEntry row,
+                                   ImageResource value) {
+                    row.setDeleted( true );
+                    dlp.setList( filterDeletedEntries( auditLog ) );
+                    dlp.refresh();
+                }
+
+            } );
+            events.addColumn( deleteCommentColumn );
+            events.setColumnWidth( commentColumn,
+                                   45.0,
+                                   Unit.PCT );
+            events.setColumnWidth( deleteCommentColumn,
+                                   5.0,
+                                   Unit.PCT );
+        }
 
         events.setEmptyTableWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
@@ -237,6 +251,9 @@ public class AuditLogViewImpl extends Popup
     }
 
     private List<AuditLogEntry> filterDeletedEntries(final List<AuditLogEntry> entries) {
+        if ( userSecurityContext.isAdministrator() ) {
+            return entries;
+        }
         final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();
         final Iterator<AuditLogEntry> i = entries.iterator();
         while ( i.hasNext() ) {

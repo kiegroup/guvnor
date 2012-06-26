@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.widget.auditlog;
 
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 /**
@@ -24,8 +25,10 @@ public class AuditLog {
 
     private AuditLogView view;
 
-    public AuditLog(final GuidedDecisionTable52 dtable) {
-        this.view = new AuditLogViewImpl( dtable.getAuditLog() );
+    public AuditLog(final GuidedDecisionTable52 dtable,
+                    final UserSecurityContext userSecurityContext) {
+        this.view = new AuditLogViewImpl( dtable.getAuditLog(),
+                                          userSecurityContext );
     }
 
     public void show() {

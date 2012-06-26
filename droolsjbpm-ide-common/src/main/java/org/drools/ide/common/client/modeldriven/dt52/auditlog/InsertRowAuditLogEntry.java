@@ -32,7 +32,13 @@ public class InsertRowAuditLogEntry extends AuditLogEntry {
     public InsertRowAuditLogEntry() {
     }
 
-    public InsertRowAuditLogEntry(final int rowIndex) {
+    public InsertRowAuditLogEntry(final String userName) {
+        super( userName );
+    }
+
+    public InsertRowAuditLogEntry(final String userName,
+                                  final int rowIndex) {
+        super( userName );
         this.rowIndex = rowIndex;
     }
 

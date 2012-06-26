@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.decisiontable.widget.events.SetGuidedDecisionTableModelEvent;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
@@ -31,10 +32,12 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
     public VerticalDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
+                                       UserSecurityContext userSecurityContext,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
         super( model,
                sce,
+               userSecurityContext,
                isReadOnly,
                eventBus );
 
@@ -51,6 +54,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         ctrls = new DecisionTableControlsWidget( this,
                                                  model,
+                                                 userSecurityContext,
                                                  isReadOnly );
         vp.add( ctrls );
 

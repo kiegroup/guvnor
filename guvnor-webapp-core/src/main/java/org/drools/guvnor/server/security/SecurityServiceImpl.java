@@ -35,30 +35,32 @@ import org.slf4j.LoggerFactory;
  * This implements security related services.
  */
 @ApplicationScoped
-public class SecurityServiceImpl implements SecurityService {
+public class SecurityServiceImpl
+    implements
+    SecurityService {
 
-    public static final String GUEST_LOGIN = "guest";
-    private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
-    private static final String[] serializationProperties = new String[]{
-            KeyStoreHelper.PROP_PVT_KS_URL,
-            KeyStoreHelper.PROP_PVT_KS_PWD,
-            KeyStoreHelper.PROP_PVT_ALIAS,
-            KeyStoreHelper.PROP_PVT_PWD,
-            KeyStoreHelper.PROP_PUB_KS_URL,
-            KeyStoreHelper.PROP_PUB_KS_PWD
-    };
+    public static final String          GUEST_LOGIN             = "guest";
+    private static final Logger         log                     = LoggerFactory.getLogger( SecurityServiceImpl.class );
+    private static final String[]       serializationProperties = new String[]{
+                                                                KeyStoreHelper.PROP_PVT_KS_URL,
+                                                                KeyStoreHelper.PROP_PVT_KS_PWD,
+                                                                KeyStoreHelper.PROP_PVT_ALIAS,
+                                                                KeyStoreHelper.PROP_PVT_PWD,
+                                                                KeyStoreHelper.PROP_PUB_KS_URL,
+                                                                KeyStoreHelper.PROP_PUB_KS_PWD
+                                                                };
 
     @Inject
-    private RoleBasedPermissionManager roleBasedPermissionManager;
+    private RoleBasedPermissionManager  roleBasedPermissionManager;
 
     @Inject
     private RoleBasedPermissionResolver roleBasedPermissionResolver;
 
     @Inject
-    private Identity identity;
+    private Identity                    identity;
 
     @Inject
-    private Credentials credentials;
+    private Credentials                 credentials;
 
     public boolean login(String userName,
                          String password) {
@@ -72,19 +74,19 @@ public class SecurityServiceImpl implements SecurityService {
         // Check for banned characters in user name
         // These will cause the session to jam if you let them go further
         char[] bannedChars = {'\'', '*', '[', ']'};
-        for (char bannedChar : bannedChars) {
-            if (userName.indexOf(bannedChar) >= 0) {
-                log.error("Not a valid name character " + bannedChar);
+        for ( char bannedChar : bannedChars ) {
+            if ( userName.indexOf( bannedChar ) >= 0 ) {
+                log.error( "Not a valid name character " + bannedChar );
                 return false;
             }
         }
 
-        credentials.setUsername(userName);
-        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
+        credentials.setUsername( userName );
+        credentials.setCredential( new org.picketlink.idm.impl.api.PasswordCredential( password ) );
 
         identity.login();
         if ( !identity.isLoggedIn() ) {
-            log.error( "Unable to login.");
+            log.error( "Unable to login." );
         }
         return identity.isLoggedIn();
     }
@@ -95,26 +97,31 @@ public class SecurityServiceImpl implements SecurityService {
 
     public UserSecurityContext getCurrentUser() {
         tryAutoLoginAsGuest();
-        return new UserSecurityContext( identity.isLoggedIn() ? credentials.getUsername() : null );
+        final String userName = identity.isLoggedIn() ? credentials.getUsername() : null;
+        final boolean isAdministrator = getUserCapabilities().contains( Capability.SHOW_ADMIN );
+        return new UserSecurityContext( userName,
+                                        isAdministrator );
     }
 
     private void tryAutoLoginAsGuest() {
         if ( !identity.isLoggedIn() ) {
             // Note: the DemoAuthenticator upgrades guest to admin
-            credentials.setUsername(GUEST_LOGIN);
+            credentials.setUsername( GUEST_LOGIN );
             identity.login();
         }
     }
 
     public List<Capability> getUserCapabilities() {
-        if ( identity.hasRole( RoleType.ADMIN.getName(), null, null ) ) {
+        if ( identity.hasRole( RoleType.ADMIN.getName(),
+                               null,
+                               null ) ) {
             return CapabilityCalculator.grantAllCapabilities();
         }
 
         if ( !roleBasedPermissionResolver.isEnableRoleBasedAuthorization() ) {
             return CapabilityCalculator.grantAllCapabilities();
         }
-        
+
         List<RoleBasedPermission> permissions = roleBasedPermissionManager.getRoleBasedPermission();
         if ( permissions.size() == 0 ) {
             identity.logout();

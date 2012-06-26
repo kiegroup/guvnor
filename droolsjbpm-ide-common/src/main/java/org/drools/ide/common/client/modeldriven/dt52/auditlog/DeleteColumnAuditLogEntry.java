@@ -35,7 +35,13 @@ public class DeleteColumnAuditLogEntry extends AuditLogEntry {
     public DeleteColumnAuditLogEntry() {
     }
 
-    public DeleteColumnAuditLogEntry(final BaseColumn column) {
+    public DeleteColumnAuditLogEntry(final String userName) {
+        super( userName );
+    }
+
+    public DeleteColumnAuditLogEntry(final String userName,
+                                     final BaseColumn column) {
+        super( userName );
         if ( column instanceof MetadataCol52 ) {
             this.columnHeader = ((MetadataCol52) column).getMetadata();
         } else if ( column instanceof AttributeCol52 ) {

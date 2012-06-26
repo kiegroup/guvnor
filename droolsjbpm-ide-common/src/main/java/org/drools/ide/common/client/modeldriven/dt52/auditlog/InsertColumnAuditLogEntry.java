@@ -43,7 +43,13 @@ public class InsertColumnAuditLogEntry extends AuditLogEntry {
     public InsertColumnAuditLogEntry() {
     }
 
-    public InsertColumnAuditLogEntry(final BaseColumn column) {
+    public InsertColumnAuditLogEntry(final String userName) {
+        super( userName );
+    }
+
+    public InsertColumnAuditLogEntry(final String userName,
+                                     final BaseColumn column) {
+        super( userName );
         this.details = getDetails( column );
     }
 

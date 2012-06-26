@@ -34,7 +34,7 @@ public interface Constants
         extends
         Messages {
 
-    Constants INSTANCE = GWT.create(Constants.class);
+    Constants INSTANCE = GWT.create( Constants.class );
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -1244,7 +1244,7 @@ public interface Constants
     String CreateANewBPMN2Process();
 
     String FormDefinition();
-    
+
     String NewEnumeration();
 
     String CreateANewEnumerationDropDownMapping();
@@ -2003,7 +2003,7 @@ public interface Constants
                                     String lastModifiedComment);
 
     String isContainedInTheFollowingList();
-    
+
     String isNotContainedInTheFollowingList();
 
     String RecentlyOpened();
@@ -2633,7 +2633,7 @@ public interface Constants
     String ConvertTo0(String convertTo);
 
     String YouMustEnterAColumnPattern();
-    
+
     String YouMustEnterAColumnFact();
 
     String YouMustEnterAColumnField();
@@ -2703,27 +2703,28 @@ public interface Constants
     String EnableAuthentication();
 
     String DownloadWar();
-    
+
     String DecisionTableAuditLog();
-    
+
     String DecisionTableAuditLogEvents();
-    
+
     String DecisionTableAuditLogEventDeleteColumn();
-    
+
     String DecisionTableAuditLogEventDeleteRow();
-    
+
     String DecisionTableAuditLogEventInsertColumn();
-    
+
     String DecisionTableAuditLogEventUpdateColumn();
-    
+
     String DecisionTableAuditLogEventInsertRow();
-    
-    String AuditLogEntryOn0(String date);
+
+    String AuditLogEntryOn1(String date,
+                            String who);
 
     String DecisionTableAuditLogInsertRowAt0(int index);
 
     String DecisionTableAuditLogDeleteRowAt0(int index);
-    
+
     String DecisionTableAuditLogDeleteColumn0(String header);
 
     String DecisionTableAuditLogInsertAttribute0(String attribute);
@@ -2735,28 +2736,32 @@ public interface Constants
     String DecisionTableAuditLogInsertActionInsertFact0(String actionInsertFactHeader);
 
     String DecisionTableAuditLogInsertActionSetField0(String actionSetFieldHeader);
-    
+
     String DecisionTableAuditLogInsertColumn0(String header);
 
     String DecisionTableAuditLogNoEntries();
 
     String FactTypeColon();
-    
+
     String FieldColon();
-    
+
     String OperatorColon();
-    
+
     String ValueColon();
-    
+
     String BoundVariableColon();
-    
-    String DecisionTableAuditLog0Was1(String value, String originalValue);
-    
-    String DecisionTableAuditLogUpdateCondition0Was1(String value, String originalValue);
-    
-    String DecisionTableAuditLogUpdateAction0Was1(String value, String originalValue);
-    
-    String DecisionTableAuditLogUpdateColumn0Was1(String value, String originalValue);
+
+    String DecisionTableAuditLog0Was1(String value,
+                                      String originalValue);
+
+    String DecisionTableAuditLogUpdateCondition0Was1(String value,
+                                                     String originalValue);
+
+    String DecisionTableAuditLogUpdateAction0Was1(String value,
+                                                  String originalValue);
+
+    String DecisionTableAuditLogUpdateColumn0Was1(String value,
+                                                  String originalValue);
 
     // Start simulation test
 

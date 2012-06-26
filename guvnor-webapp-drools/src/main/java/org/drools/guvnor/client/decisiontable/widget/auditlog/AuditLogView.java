@@ -27,7 +27,7 @@ public interface AuditLogView
     interface Presenter {
         //Erm, well... not a lot to see here. Future expansion
     }
-    
+
     void show();
 
 }

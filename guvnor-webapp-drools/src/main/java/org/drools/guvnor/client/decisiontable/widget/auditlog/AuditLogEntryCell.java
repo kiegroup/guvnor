@@ -62,9 +62,10 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
         //Audit Log entry type and date
         final String eventTypeDisplayText = AuditLogEntryCellHelper.getEventTypeDisplayText( value.getGenericType() );
-        final String whoWhenDisplayText = Constants.INSTANCE.AuditLogEntryOn0( format.format( value.getDateOfEntry() ) );
+        final String whenWhoDisplayText = Constants.INSTANCE.AuditLogEntryOn1( format.format( value.getDateOfEntry() ),
+                                                                               value.getUserName() );
         sb.append( TEMPLATE.entrySummary( eventTypeDisplayText,
-                                          whoWhenDisplayText ) );
+                                          whenWhoDisplayText ) );
 
         //Audit Log entry detail
         sb.append( helper.getSafeHtml( value ) );

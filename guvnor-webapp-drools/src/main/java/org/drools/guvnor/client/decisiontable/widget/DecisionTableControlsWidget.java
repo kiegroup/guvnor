@@ -17,6 +17,7 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.decisiontable.widget.auditlog.AuditLog;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,6 +39,7 @@ public class DecisionTableControlsWidget extends Composite {
 
     public DecisionTableControlsWidget(final AbstractDecisionTableWidget dtable,
                                        final GuidedDecisionTable52 model,
+                                       final UserSecurityContext userSecurityContext,
                                        final boolean isReadOnly) {
 
         Panel panel = new HorizontalPanel();
@@ -83,7 +85,8 @@ public class DecisionTableControlsWidget extends Composite {
                                      new ClickHandler() {
                                          public void onClick(ClickEvent event) {
                                              if ( dtable != null ) {
-                                                 AuditLog log = new AuditLog( dtable.model );
+                                                 AuditLog log = new AuditLog( dtable.model,
+                                                                              userSecurityContext );
                                                  log.show();
                                              }
                                          }

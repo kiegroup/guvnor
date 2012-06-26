@@ -19,26 +19,32 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * This is passed back to the client to give the UI some context information on what to display and
- * not display.
+ * This is passed back to the client to give the UI some context information on
+ * what to display and not display.
  */
-public class UserSecurityContext implements IsSerializable {
+public class UserSecurityContext
+    implements
+    IsSerializable {
 
-    private String userName;
+    private String  userName;
 
+    private boolean isAdministrator;
 
     public UserSecurityContext() {
     }
 
-    public UserSecurityContext(String userName) {
+    public UserSecurityContext(final String userName,
+                               final boolean isAdministrator) {
         this.userName = userName;
+        this.isAdministrator = isAdministrator;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public boolean isAdministrator() {
+        return this.isAdministrator;
     }
+
 }
