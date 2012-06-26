@@ -24,4 +24,21 @@ import org.drools.guvnor.shared.api.PortableObject;
  */
 @XStreamAlias("SimulationStepModel")
 public class SimulationStepModel implements PortableObject {
+
+    public static SimulationStepModel createNew() {
+        SimulationStepModel step = new SimulationStepModel();
+
+        return step;
+    }
+
+    private Long distanceMillis; // Distance to start of simulation
+
+    public Long getDistanceMillis() {
+        return distanceMillis;
+    }
+
+    public void setDistanceMillis(Long distanceMillis) {
+        this.distanceMillis = distanceMillis;
+    }
+
 }

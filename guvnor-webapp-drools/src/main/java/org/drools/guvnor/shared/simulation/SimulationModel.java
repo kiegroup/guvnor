@@ -18,10 +18,48 @@ package org.drools.guvnor.shared.simulation;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
+import org.drools.simulation.SimulationPath;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a DTO.
  */
 @XStreamAlias("SimulationModel")
 public class SimulationModel implements PortableObject {
+
+    public static SimulationModel createNew() {
+        SimulationModel simulation = new SimulationModel();
+        simulation.addPath(SimulationPathModel.createNew());
+        return simulation;
+    }
+
+    private Map<String, SimulationPathModel> paths = new HashMap<String, SimulationPathModel>();
+
+    public Map<String, SimulationPathModel> getPaths() {
+        return paths;
+    }
+
+    public void addPath(SimulationPathModel path) {
+        if (path.getName() == null) {
+            generatePathName(path);
+        }
+        if (paths.containsKey(path.getName())) {
+            throw new IllegalArgumentException("The simulation path's name ("
+                    + path.getName() + ") is not unique.");
+        }
+        paths.put(path.getName(), path);
+    }
+
+    private void generatePathName(SimulationPathModel path) {
+        String pathName;
+        int index = 0;
+        do {
+            pathName = "path_" + index;
+            index++;
+        } while (paths.containsKey(pathName));
+        path.setName(pathName);
+    }
+
 }

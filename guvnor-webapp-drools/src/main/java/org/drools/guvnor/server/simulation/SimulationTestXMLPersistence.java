@@ -61,7 +61,7 @@ public class SimulationTestXMLPersistence {
 
     public SimulationModel unmarshal(String xml) {
         if (StringUtils.isEmpty(xml)) {
-            return new SimulationModel();
+            return SimulationModel.createNew();
         }
         return (SimulationModel) xStream.fromXML(xml);
     }
