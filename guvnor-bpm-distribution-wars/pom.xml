@@ -47,7 +47,7 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-bpm-runtime</artifactId>
+      <artifactId>guvnor-jbpm-console-war</artifactId>
       <type>war</type>
     </dependency>
     <dependency><!-- Only used by jboss AS 6 -->

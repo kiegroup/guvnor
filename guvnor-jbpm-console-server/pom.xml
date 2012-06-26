@@ -12,7 +12,6 @@
   <artifactId>guvnor-jbpm-console-server</artifactId>
 
   <name>JBoss BPM - Console::Server::Webapp</name>
-  <packaging>war</packaging>
 
   <!-- Properties -->
   <properties>
@@ -223,188 +222,48 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
-    <!--  Include SOURCE in output artifact for GWT (GWT libraries must include source) -->
-    <!--resources>
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources-->
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
+    <!--<plugins>-->
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-compiler-plugin</artifactId>-->
+        <!--<configuration>-->
+          <!--<source>1.5</source>-->
+          <!--<target>1.5</target>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
 
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.build.finalName}</finalName>
-              <appendAssemblyId>true</appendAssemblyId>
-              <descriptors>
-                <descriptor>scripts/assembly-config.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<artifactId>maven-assembly-plugin</artifactId>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<phase>package</phase>-->
+            <!--<goals>-->
+              <!--<goal>single</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<finalName>${project.build.finalName}</finalName>-->
+              <!--<appendAssemblyId>true</appendAssemblyId>-->
+              <!--<descriptors>-->
+                <!--<descriptor>scripts/assembly-config.xml</descriptor>-->
+              <!--</descriptors>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <webResources>
-            <resource>
-              <!-- this is relative to the pom.xml directory -->
-              <directory>src/main/templates</directory>
-              <filtering>true</filtering>
-            </resource>
-          </webResources>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-war</id>
-            <configuration>
-              <filters>
-                <filter>${project.basedir}/src/main/properties/default.properties</filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-docs</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <java classname="org.jboss.bpm.console.server.util.RsDocGenerator">
-                  <arg value="${project.build.directory}/docs"/>
-                  <classpath>
-                    <pathelement path="${java.class.path}"/>
-                    <path refid="maven.compile.classpath"/>
-                  </classpath>
-                </java>
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>docs-package</id>
-            <phase>package</phase>
-            <configuration>
-              <classifier>docs</classifier>
-              <classesDirectory>${project.build.directory}/docs</classesDirectory>
-            </configuration>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
+    <!--</plugins>-->
 
     <finalName>gwt-console-server</finalName>
   </build>
 
-  <!--
-     jBPM profile
-  -->
-  <profiles>
-    <profile>
-      <id>jbpm</id>
-      <activation>
-        <property>
-          <name>!console.profile</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>jbpm-war</id>
-                <goals>
-                  <goal>war</goal>
-                </goals>
-                <configuration>
-                  <filters>
-                    <filter>${project.basedir}/src/main/properties/jbpm.properties</filter>
-                  </filters>
-                  <webappDirectory>${project.build.directory}/jbpm-war</webappDirectory>
-                  <classifier>jbpm</classifier>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>riftsaw</id>
-      <activation>
-        <property>
-          <name>console.profile</name>
-          <value>riftsaw</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>riftsaw-war</id>
-                <goals>
-                  <goal>war</goal>
-                </goals>
-                <configuration>
-                  <filters>
-                    <filter>${project.basedir}/src/main/properties/riftsaw.properties</filter>
-                  </filters>
-                  <webappDirectory>${project.build.directory}/riftsaw-war</webappDirectory>
-                  <classifier>riftsaw</classifier>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>

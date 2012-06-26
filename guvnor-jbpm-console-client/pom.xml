@@ -88,29 +88,6 @@
       <artifactId>report-shared</artifactId>
     </dependency>
 
-    <!--<dependency>-->
-    <!--<groupId>org.jboss.bpm</groupId>-->
-    <!--<artifactId>activity-monitor-ui-lib</artifactId>-->
-    <!--<exclusions>-->
-    <!--<exclusion>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-core</artifactId>-->
-    <!--</exclusion>-->
-    <!--<exclusion>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-annotations</artifactId>-->
-    <!--</exclusion>-->
-    <!--<exclusion>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-entitymanager</artifactId>-->
-    <!--</exclusion>-->
-    <!--<exclusion>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-tools</artifactId>-->
-    <!--</exclusion>-->
-    <!--</exclusions>-->
-    <!--</dependency>-->
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -126,20 +103,21 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <scope>provided</scope>
     </dependency>
-
-    <dependency>
+    <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
+      <!-- HACK to remove it from the runtime classpath -->
     </dependency>
-
-    <dependency>
+    <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <version>${gwt.version}</version>
-      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+      <scope>provided</scope>
+      <!-- HACK to remove it from the runtime classpath -->
     </dependency>
 
     <dependency>

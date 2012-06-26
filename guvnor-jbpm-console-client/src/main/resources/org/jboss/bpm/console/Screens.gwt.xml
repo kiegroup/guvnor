@@ -11,8 +11,11 @@
   <inherits name="com.google.gwt.xml.XML"/>
   <inherits name='org.jboss.bpm.report.BPMReport'/>
   <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF"/>
+  <inherits name="org.drools.guvnor.GuvnorCore"/>
 
   <source path='client'/>
   <source path='shared'/>
+
+  <entry-point class="org.drools.guvnor.client.GuvnorJBPMEntryPoint"/>
 
 </module>

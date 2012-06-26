@@ -14,7 +14,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-webapp-bpm-runtime:war</include>
+        <include>org.drools:guvnor-jbpm-console-war:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>

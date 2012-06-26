@@ -86,9 +86,13 @@
     <module>guvnor-webapp-core</module>
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
+
     <!--<module>guvnor-jbpm-console-shared</module>-->
     <!--<module>guvnor-jbpm-console-client</module>-->
     <!--<module>guvnor-jbpm-console-server</module>-->
+    <!--<module>guvnor-bpm-distribution-wars</module>-->
+    <!--<module>guvnor-jbpm-console-war</module>-->
+
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
     <module>guvnor-webapp-drools</module>

@@ -10,7 +10,7 @@
 
   <artifactId>droolsjbpm-ide-common</artifactId>
   <!--<packaging>jar</packaging>-->
-  
+
   <name>Drools and jBPM IDE common</name>
   <description>Common code between Guvnor and the Eclipse plugins</description>
 
@@ -18,6 +18,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

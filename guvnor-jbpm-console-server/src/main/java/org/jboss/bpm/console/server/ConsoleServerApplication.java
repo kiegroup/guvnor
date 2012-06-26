@@ -21,7 +21,6 @@
  */
 package org.jboss.bpm.console.server;
 
-import org.jboss.bpm.report.ReportFacade;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
