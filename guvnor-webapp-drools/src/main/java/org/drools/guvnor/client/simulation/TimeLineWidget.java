@@ -35,6 +35,8 @@ import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TimeLineWidget extends ResizeComposite {
 
@@ -44,7 +46,8 @@ public class TimeLineWidget extends ResizeComposite {
 
     private LayoutPanel timeLineContent;
 
-    private double millisecondsPerPixel = 10.0;
+    private Map<SimulationStepModel, PushButton> stepMap = null;
+    private double millisecondsPerPixel;
 
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
@@ -56,27 +59,36 @@ public class TimeLineWidget extends ResizeComposite {
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
         setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
-        refreshTimeLineContent();
-    }
-
-    private void refreshTimeLineContent() {
-        // TODO Do delta's and use use timeLineContent.animate(500) to while zooming
-        for (Iterator<Widget> it = timeLineContent.iterator(); it.hasNext(); ) {
-            it.next();
-            it.remove();
+        millisecondsPerPixel = 10.0;
+        if (stepMap != null) {
+            for (PushButton pushButton : stepMap.values()) {
+                timeLineContent.remove(pushButton);
+            }
         }
+        stepMap = new LinkedHashMap<SimulationStepModel, PushButton>();
         int pathTop = 0;
         for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
-                Button button = new Button(path.getName());
-                timeLineContent.add(button);
-                timeLineContent.setWidgetLeftWidth(button, step.getDistanceMillis() / millisecondsPerPixel,
+                PushButton pushButton = new PushButton(path.getName());
+                timeLineContent.add(pushButton);
+                timeLineContent.setWidgetLeftWidth(pushButton, step.getDistanceMillis() / millisecondsPerPixel,
                         Style.Unit.PX, 50, Style.Unit.PX);
-                timeLineContent.setWidgetTopHeight(button, pathTop, Style.Unit.PX,
+                timeLineContent.setWidgetTopHeight(pushButton, pathTop, Style.Unit.PX,
                         PATH_HEIGHT, Style.Unit.PX);
+                stepMap.put(step, pushButton);
             }
             pathTop += PATH_HEIGHT;
         }
+    }
+
+    private void refreshTimeLineContent() {
+        for (Map.Entry<SimulationStepModel, PushButton> stepEntry : stepMap.entrySet()) {
+            SimulationStepModel step = stepEntry.getKey();
+            PushButton pushButton = stepEntry.getValue();
+            timeLineContent.setWidgetLeftWidth(pushButton, step.getDistanceMillis() / millisecondsPerPixel,
+                    Style.Unit.PX, 50, Style.Unit.PX);
+        }
+        timeLineContent.animate(500);
     }
 
     public void zoomIn() {
@@ -85,6 +97,7 @@ public class TimeLineWidget extends ResizeComposite {
     }
 
     public void zoomOut() {
+        // TODO limit based on maximum panel width and widget width
         millisecondsPerPixel *= 2.0;
         refreshTimeLineContent();
     }
