@@ -48,8 +48,8 @@ public class TimeLineWidget extends ResizeComposite {
 
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
-        timeLineContent.setHeight(PATH_HEIGHT + "px");
         timeLineContent.setWidth("100%");
+        timeLineContent.setHeight(PATH_HEIGHT + "px");
         initWidget(timeLineContent);
     }
 
