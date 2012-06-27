@@ -34,6 +34,8 @@ import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
+import java.util.Iterator;
+
 public class TimeLineWidget extends ResizeComposite {
 
     private static final int PATH_HEIGHT = 20;
@@ -54,6 +56,15 @@ public class TimeLineWidget extends ResizeComposite {
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
         setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
+        refreshTimeLineContent();
+    }
+
+    private void refreshTimeLineContent() {
+        // TODO Do delta's and use use timeLineContent.animate(500) to while zooming
+        for (Iterator<Widget> it = timeLineContent.iterator(); it.hasNext(); ) {
+            it.next();
+            it.remove();
+        }
         int pathTop = 0;
         for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
@@ -68,6 +79,14 @@ public class TimeLineWidget extends ResizeComposite {
         }
     }
 
-    // TODO use timeLineContent.animate(500) to while zooming
+    public void zoomIn() {
+        millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
+        refreshTimeLineContent();
+    }
+
+    public void zoomOut() {
+        millisecondsPerPixel *= 2.0;
+        refreshTimeLineContent();
+    }
 
 }

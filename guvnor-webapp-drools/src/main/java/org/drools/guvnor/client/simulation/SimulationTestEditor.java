@@ -18,9 +18,11 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -65,6 +67,16 @@ public class SimulationTestEditor extends Composite
         SimulationModel simulation = (SimulationModel) asset.getContent();
         initWidget(uiBinder.createAndBindUi(this));
         timeLineWidget.setSimulation(simulation);
+    }
+
+    @UiHandler("zoomInButton")
+    void zoomIn(ClickEvent event) {
+        timeLineWidget.zoomIn();
+    }
+
+    @UiHandler("zoomOutButton")
+    void zoomOut(ClickEvent event) {
+        timeLineWidget.zoomOut();
     }
 
 }
