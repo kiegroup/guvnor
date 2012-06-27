@@ -36,4 +36,7 @@ public interface SimulationResources extends ClientBundle {
     @Source("zoomOut.png") // From Tango project (public domain license)
     ImageResource zoomOutIcon();
 
+    @Source("stepEmpty.png") // From Tango project (public domain license)
+    ImageResource stepEmpty();
+
 };

@@ -18,12 +18,19 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -40,13 +47,15 @@ import java.util.Map;
 
 public class TimeLineWidget extends ResizeComposite {
 
-    private static final int PATH_HEIGHT = 20;
+    private static final int PATH_HEIGHT = 30;
+
+    private SimulationResources simulationResources = GWT.create(SimulationResources.class);
 
     private SimulationModel simulation;
 
     private LayoutPanel timeLineContent;
 
-    private Map<SimulationStepModel, PushButton> stepMap = null;
+    private Map<SimulationStepModel, Image> stepMap = null;
     private double millisecondsPerPixel;
 
     public TimeLineWidget() {
@@ -61,32 +70,47 @@ public class TimeLineWidget extends ResizeComposite {
         setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
         millisecondsPerPixel = 10.0;
         if (stepMap != null) {
-            for (PushButton pushButton : stepMap.values()) {
-                timeLineContent.remove(pushButton);
+            for (Image image : stepMap.values()) {
+                timeLineContent.remove(image);
             }
         }
-        stepMap = new LinkedHashMap<SimulationStepModel, PushButton>();
+        stepMap = new LinkedHashMap<SimulationStepModel, Image>();
         int pathTop = 0;
         for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
-                PushButton pushButton = new PushButton(path.getName());
-                timeLineContent.add(pushButton);
-                timeLineContent.setWidgetLeftWidth(pushButton, step.getDistanceMillis() / millisecondsPerPixel,
-                        Style.Unit.PX, 50, Style.Unit.PX);
-                timeLineContent.setWidgetTopHeight(pushButton, pathTop, Style.Unit.PX,
-                        PATH_HEIGHT, Style.Unit.PX);
-                stepMap.put(step, pushButton);
+                ImageResource imageResource = simulationResources.stepEmpty();
+                final Image image = new Image(imageResource);
+                final PopupPanel popupPanel = new PopupPanel(true);
+                popupPanel.setWidget(new Label("Path " + path.getName() + ", step " + step.getDistanceMillis()));
+                image.addMouseOverHandler(new MouseOverHandler() {
+                    public void onMouseOver(MouseOverEvent event) {
+                        popupPanel.showRelativeTo(image);
+                    }
+                });
+                image.addMouseOutHandler(new MouseOutHandler() {
+                    public void onMouseOut(MouseOutEvent event) {
+                        popupPanel.hide();
+                    }
+                });
+                popupPanel.setAutoHideOnHistoryEventsEnabled(true);
+                timeLineContent.add(image);
+                timeLineContent.setWidgetLeftWidth(image, step.getDistanceMillis() / millisecondsPerPixel,
+                        Style.Unit.PX, image.getWidth(), Style.Unit.PX);
+                timeLineContent.setWidgetTopHeight(image,
+                        pathTop + (PATH_HEIGHT - image.getHeight()) / 2, Style.Unit.PX,
+                        image.getHeight(), Style.Unit.PX);
+                stepMap.put(step, image);
             }
             pathTop += PATH_HEIGHT;
         }
     }
 
     private void refreshTimeLineContent() {
-        for (Map.Entry<SimulationStepModel, PushButton> stepEntry : stepMap.entrySet()) {
+        for (Map.Entry<SimulationStepModel, Image> stepEntry : stepMap.entrySet()) {
             SimulationStepModel step = stepEntry.getKey();
-            PushButton pushButton = stepEntry.getValue();
-            timeLineContent.setWidgetLeftWidth(pushButton, step.getDistanceMillis() / millisecondsPerPixel,
-                    Style.Unit.PX, 50, Style.Unit.PX);
+            Image image = stepEntry.getValue();
+            timeLineContent.setWidgetLeftWidth(image, step.getDistanceMillis() / millisecondsPerPixel,
+                    Style.Unit.PX, image.getOffsetWidth(), Style.Unit.PX);
         }
         timeLineContent.animate(500);
     }
