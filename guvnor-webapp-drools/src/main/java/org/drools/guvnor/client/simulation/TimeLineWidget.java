@@ -45,6 +45,22 @@ public class TimeLineWidget extends ResizeComposite {
     private static final int PATH_HEIGHT = 30;
     // A timeStone is a milestone of time
     private static final int TIME_STONE_THRESHOLD_IN_PIXELS = 80;
+    private static final long[] TIME_STONE_INCREMENT_OPTIONS = new long[]{
+            100L, // 100ms
+            500L, // 500ms
+            1000L, // 1s
+            5000L, // 5s
+            10000L, // 10s
+            30000L, // 30s
+            60000L, // 1m
+            300000L, // 5m
+            600000L, // 10m
+            3600000L, // 1h
+            21600000L, // 6h
+            43200000L, // 12h
+            86400000L, // 1d
+            432000000L, // 5d
+    };
 
     private SimulationResources simulationResources = GWT.create(SimulationResources.class);
 
@@ -83,7 +99,7 @@ public class TimeLineWidget extends ResizeComposite {
             throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
                     + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
         }
-        long timeStoneIncrement = 1000L;
+        long timeStoneIncrement = calculateTimeStoneIncrement();
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         for (long i = 0L; i <= maximumDistanceMillis; i += timeStoneIncrement) {
             double x = ((double) i) / millisecondsPerPixel;
@@ -135,6 +151,17 @@ public class TimeLineWidget extends ResizeComposite {
             }
             pathTop += PATH_HEIGHT;
         }
+    }
+
+    private long calculateTimeStoneIncrement() {
+        long timeStoneIncrement;
+        int i = 0;
+        do {
+            timeStoneIncrement = TIME_STONE_INCREMENT_OPTIONS[i];
+            i++;
+        } while ((((double) timeStoneIncrement) / millisecondsPerPixel) < TIME_STONE_THRESHOLD_IN_PIXELS
+                && i < TIME_STONE_INCREMENT_OPTIONS.length);
+        return timeStoneIncrement;
     }
 
     private void refreshTimeLineContent() {
