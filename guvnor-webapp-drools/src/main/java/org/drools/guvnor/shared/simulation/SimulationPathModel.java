@@ -19,6 +19,7 @@ package org.drools.guvnor.shared.simulation;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
 
+import java.util.Random;
 import java.util.TreeMap;
 
 /**
@@ -30,9 +31,22 @@ public class SimulationPathModel implements PortableObject {
     public static SimulationPathModel createNew() {
         SimulationPathModel path = new SimulationPathModel();
         path.addStep(SimulationStepModel.createNew());
-        path.addStep(SimulationStepModel.createNew()); // TODO remove me
-        path.addStep(SimulationStepModel.createNew()); // TODO remove me
+        todoCreateTestdata(path);
         return path;
+    }
+
+    // TODO remove me
+    private static void todoCreateTestdata(SimulationPathModel path) {
+        long nextDistanceMillis = 1000;
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) {
+            nextDistanceMillis += random.nextInt(20000) + 1000;
+            if (random.nextBoolean()) {
+                SimulationStepModel step = SimulationStepModel.createNew();
+                step.setDistanceMillis(nextDistanceMillis);
+                path.addStep(step);
+            }
+        }
     }
 
     private String name;
