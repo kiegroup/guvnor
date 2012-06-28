@@ -42,6 +42,7 @@ import java.util.Set;
 public class TimeLineWidget extends ResizeComposite {
 
     private static final int HEADER_HEIGHT = 30;
+    private static final int FOOTER_HEIGHT = 30; // Must have enough space for the scrollbar
     private static final int PATH_HEIGHT = 30;
     // A timeStone is a milestone of time
     private static final int TIME_STONE_THRESHOLD_IN_PIXELS = 80;
@@ -75,13 +76,13 @@ public class TimeLineWidget extends ResizeComposite {
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
         timeLineContent.setWidth("100%");
-        timeLineContent.setHeight((HEADER_HEIGHT +PATH_HEIGHT) + "px");
+        timeLineContent.setHeight((HEADER_HEIGHT + PATH_HEIGHT + FOOTER_HEIGHT) + "px");
         initWidget(timeLineContent);
     }
 
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
-        setHeight((HEADER_HEIGHT + (simulation.getPaths().size() * PATH_HEIGHT)) + "px");
+        setHeight((HEADER_HEIGHT + (simulation.getPaths().size() * PATH_HEIGHT) + FOOTER_HEIGHT) + "px");
         millisecondsPerPixel = 10.0;
         if (timeStoneSet != null) {
             for (Widget timeStone : timeStoneSet) {
