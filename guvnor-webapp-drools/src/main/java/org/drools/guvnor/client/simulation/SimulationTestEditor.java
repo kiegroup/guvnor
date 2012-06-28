@@ -42,10 +42,10 @@ public class SimulationTestEditor extends Composite
     private static SimulationTestEditorBinder uiBinder = GWT.create(SimulationTestEditorBinder.class);
 
     @UiField
-    protected Button runSimulationButton;
+    protected PushButton runSimulationButton;
 
     @UiField
-    protected Button debugSimulationButton;
+    protected PushButton debugSimulationButton;
 
     @UiField
     protected PushButton zoomInButton;

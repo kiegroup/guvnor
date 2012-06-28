@@ -27,15 +27,19 @@
 
   <gwt:FlowPanel width="100%">
     <gwt:HorizontalPanel spacing="10">
-      <gwt:Button ui:field="runSimulationButton" text="{i18n.RunSimulation}"/>
-      <gwt:Button ui:field="debugSimulationButton" text="{i18n.DebugSimulation}"/>
+      <gwt:PushButton ui:field="runSimulationButton" text="{i18n.RunSimulation}">
+        <gwt:upFace image="{simulationResources.runSimulation}"/><!-- TODO does not show -->
+      </gwt:PushButton>
+      <gwt:PushButton ui:field="debugSimulationButton" text="{i18n.DebugSimulation}">
+        <gwt:upFace image="{simulationResources.debugSimulation}"/><!-- TODO does not show -->
+      </gwt:PushButton>
     </gwt:HorizontalPanel>
     <gwt:HorizontalPanel spacing="10">
       <gwt:PushButton ui:field="zoomInButton">
-        <gwt:upFace image="{simulationResources.zoomInIcon}"/>
+        <gwt:upFace image="{simulationResources.zoomIn}"/>
       </gwt:PushButton>
       <gwt:PushButton ui:field="zoomOutButton">
-        <gwt:upFace image="{simulationResources.zoomOutIcon}"/>
+        <gwt:upFace image="{simulationResources.zoomOut}"/>
       </gwt:PushButton>
     </gwt:HorizontalPanel>
     <gwt:ScrollPanel>

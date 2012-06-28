@@ -32,11 +32,17 @@ public interface SimulationResources extends ClientBundle {
 
     // Most images come from Tango project (public domain license)
 
+    @Source("runSimulation.png")
+    ImageResource runSimulation();
+
+    @Source("debugSimulation.png")
+    ImageResource debugSimulation();
+
     @Source("zoomIn.png")
-    ImageResource zoomInIcon();
+    ImageResource zoomIn();
 
     @Source("zoomOut.png")
-    ImageResource zoomOutIcon();
+    ImageResource zoomOut();
 
     @Source("timeStone.png")
     ImageResource timeStone();
