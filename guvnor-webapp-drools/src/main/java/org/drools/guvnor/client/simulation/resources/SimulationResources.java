@@ -30,13 +30,18 @@ public interface SimulationResources extends ClientBundle {
 
     SimulationResources INSTANCE = GWT.create(SimulationResources.class);
 
-    @Source("zoomIn.png") // From Tango project (public domain license)
+    // Most images come from Tango project (public domain license)
+
+    @Source("zoomIn.png")
     ImageResource zoomInIcon();
 
-    @Source("zoomOut.png") // From Tango project (public domain license)
+    @Source("zoomOut.png")
     ImageResource zoomOutIcon();
 
-    @Source("stepEmpty.png") // From Tango project (public domain license)
+    @Source("timeStone.png")
+    ImageResource timeStone();
+
+    @Source("stepEmpty.png")
     ImageResource stepEmpty();
 
 };

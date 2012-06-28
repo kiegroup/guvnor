@@ -55,8 +55,9 @@ public class TimeLineWidget extends ResizeComposite {
 
     private LayoutPanel timeLineContent;
 
-    private Map<SimulationStepModel, Image> stepMap = null;
     private double millisecondsPerPixel;
+    private Map<Integer, Image> timeStoneMap = null; // A timeStone is a milestone of time
+    private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
@@ -69,14 +70,35 @@ public class TimeLineWidget extends ResizeComposite {
         this.simulation = simulation;
         setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
         millisecondsPerPixel = 10.0;
+        if (timeStoneMap != null) {
+            for (Image image : timeStoneMap.values()) {
+                timeLineContent.remove(image);
+            }
+        }
         if (stepMap != null) {
             for (Image image : stepMap.values()) {
                 timeLineContent.remove(image);
             }
         }
+        timeStoneMap = new LinkedHashMap<Integer, Image>();
         stepMap = new LinkedHashMap<SimulationStepModel, Image>();
         int pathTop = 0;
+        if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
+            throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
+                    + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
+        }
         for (SimulationPathModel path : simulation.getPaths().values()) {
+            // TODO tmp code to display timeStoneImage
+            for (int i = 0; i <= 500; i += 100) {
+                Image timeStone = new Image(simulationResources.timeStone());
+                timeLineContent.add(timeStone);
+                timeLineContent.setWidgetLeftWidth(timeStone, i,
+                        Style.Unit.PX, timeStone.getWidth(), Style.Unit.PX);
+                timeLineContent.setWidgetTopHeight(timeStone,
+                        pathTop, Style.Unit.PX,
+                        timeStone.getHeight(), Style.Unit.PX);
+                timeStoneMap.put(i, timeStone);
+            }
             for (SimulationStepModel step : path.getSteps().values()) {
                 ImageResource imageResource = simulationResources.stepEmpty();
                 final Image image = new Image(imageResource);
