@@ -73,4 +73,11 @@ public class SimulationPathModel implements PortableObject {
         step.setDistanceMillis(stepDistanceMillis);
     }
 
+    public long getMaximumDistanceMillis() {
+        if (steps.isEmpty()) {
+            return 0L;
+        }
+        return steps.lastKey();
+    }
+
 }

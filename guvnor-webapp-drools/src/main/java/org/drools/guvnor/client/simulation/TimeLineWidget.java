@@ -23,31 +23,28 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class TimeLineWidget extends ResizeComposite {
 
+    private static final int HEADER_HEIGHT = 30;
     private static final int PATH_HEIGHT = 30;
+    // A timeStone is a milestone of time
+    private static final int TIME_STONE_THRESHOLD_IN_PIXELS = 80;
 
     private SimulationResources simulationResources = GWT.create(SimulationResources.class);
 
@@ -56,23 +53,23 @@ public class TimeLineWidget extends ResizeComposite {
     private LayoutPanel timeLineContent;
 
     private double millisecondsPerPixel;
-    private Map<Integer, Image> timeStoneMap = null; // A timeStone is a milestone of time
+    private Set<Widget> timeStoneSet = null;
     private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
         timeLineContent = new LayoutPanel();
         timeLineContent.setWidth("100%");
-        timeLineContent.setHeight(PATH_HEIGHT + "px");
+        timeLineContent.setHeight((HEADER_HEIGHT +PATH_HEIGHT) + "px");
         initWidget(timeLineContent);
     }
 
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
-        setHeight(simulation.getPaths().size() * PATH_HEIGHT + "px");
+        setHeight((HEADER_HEIGHT + (simulation.getPaths().size() * PATH_HEIGHT)) + "px");
         millisecondsPerPixel = 10.0;
-        if (timeStoneMap != null) {
-            for (Image image : timeStoneMap.values()) {
-                timeLineContent.remove(image);
+        if (timeStoneSet != null) {
+            for (Widget timeStone : timeStoneSet) {
+                timeLineContent.remove(timeStone);
             }
         }
         if (stepMap != null) {
@@ -80,25 +77,37 @@ public class TimeLineWidget extends ResizeComposite {
                 timeLineContent.remove(image);
             }
         }
-        timeStoneMap = new LinkedHashMap<Integer, Image>();
+        timeStoneSet = new LinkedHashSet<Widget>();
         stepMap = new LinkedHashMap<SimulationStepModel, Image>();
-        int pathTop = 0;
         if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
             throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
                     + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
         }
-        for (SimulationPathModel path : simulation.getPaths().values()) {
-            // TODO tmp code to display timeStoneImage
-            for (int i = 0; i <= 500; i += 100) {
-                Image timeStone = new Image(simulationResources.timeStone());
-                timeLineContent.add(timeStone);
-                timeLineContent.setWidgetLeftWidth(timeStone, i,
-                        Style.Unit.PX, timeStone.getWidth(), Style.Unit.PX);
-                timeLineContent.setWidgetTopHeight(timeStone,
-                        pathTop, Style.Unit.PX,
-                        timeStone.getHeight(), Style.Unit.PX);
-                timeStoneMap.put(i, timeStone);
+        long timeStoneIncrement = 1000L;
+        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
+        for (long i = 0L; i <= maximumDistanceMillis; i += timeStoneIncrement) {
+            double x = ((double) i) / millisecondsPerPixel;
+            Label timeStoneLabel = new Label("?");
+            timeLineContent.add(timeStoneLabel);
+            timeLineContent.setWidgetLeftWidth(timeStoneLabel,
+                    x, Style.Unit.PX, TIME_STONE_THRESHOLD_IN_PIXELS, Style.Unit.PX);
+            timeLineContent.setWidgetTopHeight(timeStoneLabel,
+                    5, Style.Unit.PX, HEADER_HEIGHT - 10, Style.Unit.PX);
+            timeStoneSet.add(timeStoneLabel);
+            int pathTop = HEADER_HEIGHT;
+            for (SimulationPathModel path : simulation.getPaths().values()) {
+                Image timeStoneImage = new Image(simulationResources.timeStone());
+                timeLineContent.add(timeStoneImage);
+                timeLineContent.setWidgetLeftWidth(timeStoneImage,
+                        x, Style.Unit.PX, timeStoneImage.getWidth(), Style.Unit.PX);
+                timeLineContent.setWidgetTopHeight(timeStoneImage,
+                        pathTop, Style.Unit.PX, timeStoneImage.getHeight(), Style.Unit.PX);
+                timeStoneSet.add(timeStoneImage);
+                pathTop += PATH_HEIGHT;
             }
+        }
+        int pathTop = HEADER_HEIGHT;
+        for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
                 ImageResource imageResource = simulationResources.stepEmpty();
                 final Image image = new Image(imageResource);
@@ -116,8 +125,9 @@ public class TimeLineWidget extends ResizeComposite {
                 });
                 popupPanel.setAutoHideOnHistoryEventsEnabled(true);
                 timeLineContent.add(image);
-                timeLineContent.setWidgetLeftWidth(image, step.getDistanceMillis() / millisecondsPerPixel,
-                        Style.Unit.PX, image.getWidth(), Style.Unit.PX);
+                timeLineContent.setWidgetLeftWidth(image,
+                        step.getDistanceMillis() / millisecondsPerPixel, Style.Unit.PX,
+                        image.getWidth(), Style.Unit.PX);
                 timeLineContent.setWidgetTopHeight(image,
                         pathTop + (PATH_HEIGHT - image.getHeight()) / 2, Style.Unit.PX,
                         image.getHeight(), Style.Unit.PX);

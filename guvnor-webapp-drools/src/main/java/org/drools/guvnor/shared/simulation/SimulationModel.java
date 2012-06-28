@@ -64,4 +64,15 @@ public class SimulationModel implements PortableObject {
         path.setName(pathName);
     }
 
+    public long getMaximumDistanceMillis() {
+        long maximumDistanceMillis = 0L;
+        for (SimulationPathModel path : paths.values()) {
+            long distanceMillis = path.getMaximumDistanceMillis();
+            if (maximumDistanceMillis < distanceMillis) {
+                maximumDistanceMillis = distanceMillis;
+            }
+        }
+        return maximumDistanceMillis;
+    }
+
 }
