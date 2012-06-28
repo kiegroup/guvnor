@@ -103,7 +103,7 @@ public class TimeLineWidget extends ResizeComposite {
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         for (long i = 0L; i <= maximumDistanceMillis; i += timeStoneIncrement) {
             double x = ((double) i) / millisecondsPerPixel;
-            Label timeStoneLabel = new Label("?");
+            Label timeStoneLabel = new Label(formatTimeStoneValue(i));
             timeLineContent.add(timeStoneLabel);
             timeLineContent.setWidgetLeftWidth(timeStoneLabel,
                     x, Style.Unit.PX, TIME_STONE_THRESHOLD_IN_PIXELS, Style.Unit.PX);
@@ -162,6 +162,34 @@ public class TimeLineWidget extends ResizeComposite {
         } while ((((double) timeStoneIncrement) / millisecondsPerPixel) < TIME_STONE_THRESHOLD_IN_PIXELS
                 && i < TIME_STONE_INCREMENT_OPTIONS.length);
         return timeStoneIncrement;
+    }
+
+    private String formatTimeStoneValue(long timeStoneValue) {
+        if (timeStoneValue == 0L) {
+            return "0";
+        }
+        StringBuilder timeStoneString = new StringBuilder();
+        long leftover = timeStoneValue;
+        if (leftover >= 86400000L) {
+            timeStoneString.append(leftover / 86400000L).append("d");
+            leftover %= 86400000L;
+        }
+        if (leftover >= 3600000L) {
+            timeStoneString.append(leftover / 3600000L).append("h");
+            leftover %= 3600000L;
+        }
+        if (leftover >= 60000L) {
+            timeStoneString.append(leftover / 60000L).append("m");
+            leftover %= 60000L;
+        }
+        if (leftover >= 1000L) {
+            timeStoneString.append(leftover / 1000L).append("s");
+            leftover %= 1000L;
+        }
+        if (leftover >= 1L) {
+            timeStoneString.append(leftover).append("ms");
+        }
+        return timeStoneString.toString();
     }
 
     private void refreshTimeLineContent() {
