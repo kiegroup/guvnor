@@ -180,6 +180,7 @@ public class TimeLineWidget extends ResizeComposite {
                 for (Widget timeStoneWidget : timeStoneWidgetList) {
                     timeLineContent.remove(timeStoneWidget);
                 }
+                timeStoneMap.remove(timeStoneValue);
             } else {
                 for (Widget timeStoneWidget : timeStoneWidgetList) {
                     double width = timeStoneWidget instanceof Image
