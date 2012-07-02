@@ -34,10 +34,11 @@ import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TimeLineWidget extends ResizeComposite {
 
@@ -70,7 +71,7 @@ public class TimeLineWidget extends ResizeComposite {
     private LayoutPanel timeLineContent;
 
     private double millisecondsPerPixel;
-    private Set<Widget> timeStoneSet = null;
+    private Map<Long, List<Widget>> timeStoneMap = null;
     private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
@@ -84,9 +85,11 @@ public class TimeLineWidget extends ResizeComposite {
         this.simulation = simulation;
         setHeight((HEADER_HEIGHT + (simulation.getPaths().size() * PATH_HEIGHT) + FOOTER_HEIGHT) + "px");
         millisecondsPerPixel = 10.0;
-        if (timeStoneSet != null) {
-            for (Widget timeStone : timeStoneSet) {
-                timeLineContent.remove(timeStone);
+        if (timeStoneMap != null) {
+            for (List<Widget> timeStoneList : timeStoneMap.values()) {
+                for (Widget timeStone : timeStoneList) {
+                    timeLineContent.remove(timeStone);
+                }
             }
         }
         if (stepMap != null) {
@@ -94,7 +97,7 @@ public class TimeLineWidget extends ResizeComposite {
                 timeLineContent.remove(image);
             }
         }
-        timeStoneSet = new LinkedHashSet<Widget>();
+        timeStoneMap = new LinkedHashMap<Long, List<Widget>>();
         stepMap = new LinkedHashMap<SimulationStepModel, Image>();
         if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
             throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
@@ -102,15 +105,16 @@ public class TimeLineWidget extends ResizeComposite {
         }
         long timeStoneIncrement = calculateTimeStoneIncrement();
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
-        for (long i = 0L; i <= maximumDistanceMillis; i += timeStoneIncrement) {
-            double x = ((double) i) / millisecondsPerPixel;
-            Label timeStoneLabel = new Label(formatTimeStoneValue(i));
+        for (long timeStoneValue = 0L; timeStoneValue <= maximumDistanceMillis; timeStoneValue += timeStoneIncrement) {
+            List<Widget> timeStoneWidgetList = new ArrayList<Widget>(simulation.getPaths().size());
+            double x = ((double) timeStoneValue) / millisecondsPerPixel;
+            Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
             timeLineContent.add(timeStoneLabel);
             timeLineContent.setWidgetLeftWidth(timeStoneLabel,
                     x, Style.Unit.PX, TIME_STONE_THRESHOLD_IN_PIXELS, Style.Unit.PX);
             timeLineContent.setWidgetTopHeight(timeStoneLabel,
                     5, Style.Unit.PX, HEADER_HEIGHT - 10, Style.Unit.PX);
-            timeStoneSet.add(timeStoneLabel);
+            timeStoneWidgetList.add(timeStoneLabel);
             int pathTop = HEADER_HEIGHT;
             for (SimulationPathModel path : simulation.getPaths().values()) {
                 Image timeStoneImage = new Image(simulationResources.timeStone());
@@ -119,9 +123,10 @@ public class TimeLineWidget extends ResizeComposite {
                         x, Style.Unit.PX, timeStoneImage.getWidth(), Style.Unit.PX);
                 timeLineContent.setWidgetTopHeight(timeStoneImage,
                         pathTop, Style.Unit.PX, timeStoneImage.getHeight(), Style.Unit.PX);
-                timeStoneSet.add(timeStoneImage);
+                timeStoneWidgetList.add(timeStoneImage);
                 pathTop += PATH_HEIGHT;
             }
+            timeStoneMap.put(timeStoneValue, timeStoneWidgetList);
         }
         int pathTop = HEADER_HEIGHT;
         for (SimulationPathModel path : simulation.getPaths().values()) {
@@ -152,6 +157,49 @@ public class TimeLineWidget extends ResizeComposite {
             }
             pathTop += PATH_HEIGHT;
         }
+    }
+
+    public void zoomIn() {
+        millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
+        refreshTimeLineContent();
+    }
+
+    public void zoomOut() {
+        // TODO limit based on maximum panel width and widget width
+        millisecondsPerPixel *= 2.0;
+        refreshTimeLineContent();
+    }
+
+    private void refreshTimeLineContent() {
+        long timeStoneIncrement = calculateTimeStoneIncrement();
+        for (Map.Entry<Long, List<Widget>> timeStoneEntry : timeStoneMap.entrySet()) {
+            long timeStoneValue = timeStoneEntry.getKey();
+            List<Widget> timeStoneWidgetList = timeStoneEntry.getValue();
+            double x = ((double) timeStoneValue) / millisecondsPerPixel;
+            if (timeStoneValue % timeStoneIncrement != 0) {
+                for (Widget timeStoneWidget : timeStoneWidgetList) {
+                    timeLineContent.remove(timeStoneWidget);
+                }
+            } else {
+                for (Widget timeStoneWidget : timeStoneWidgetList) {
+                    double width = timeStoneWidget instanceof Image
+                            ? ((Image) timeStoneWidget).getWidth() : TIME_STONE_THRESHOLD_IN_PIXELS;
+                    timeLineContent.setWidgetLeftWidth(timeStoneWidget,
+                            x, Style.Unit.PX, width, Style.Unit.PX);
+
+                }
+            }
+            // TODO add missing timestones
+
+
+        }
+        for (Map.Entry<SimulationStepModel, Image> stepEntry : stepMap.entrySet()) {
+            SimulationStepModel step = stepEntry.getKey();
+            Image image = stepEntry.getValue();
+            timeLineContent.setWidgetLeftWidth(image, step.getDistanceMillis() / millisecondsPerPixel,
+                    Style.Unit.PX, image.getOffsetWidth(), Style.Unit.PX);
+        }
+        timeLineContent.animate(500);
     }
 
     private long calculateTimeStoneIncrement() {
@@ -191,27 +239,6 @@ public class TimeLineWidget extends ResizeComposite {
             timeStoneString.append(leftover).append("ms");
         }
         return timeStoneString.toString();
-    }
-
-    private void refreshTimeLineContent() {
-        for (Map.Entry<SimulationStepModel, Image> stepEntry : stepMap.entrySet()) {
-            SimulationStepModel step = stepEntry.getKey();
-            Image image = stepEntry.getValue();
-            timeLineContent.setWidgetLeftWidth(image, step.getDistanceMillis() / millisecondsPerPixel,
-                    Style.Unit.PX, image.getOffsetWidth(), Style.Unit.PX);
-        }
-        timeLineContent.animate(500);
-    }
-
-    public void zoomIn() {
-        millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
-        refreshTimeLineContent();
-    }
-
-    public void zoomOut() {
-        // TODO limit based on maximum panel width and widget width
-        millisecondsPerPixel *= 2.0;
-        refreshTimeLineContent();
     }
 
 }
