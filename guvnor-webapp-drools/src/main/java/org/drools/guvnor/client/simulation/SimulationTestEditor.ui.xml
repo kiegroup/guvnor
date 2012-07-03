@@ -42,8 +42,6 @@
         <gwt:upFace image="{simulationResources.zoomOut}"/>
       </gwt:PushButton>
     </gwt:HorizontalPanel>
-    <gwt:ScrollPanel>
-      <simulation:TimeLineWidget ui:field="timeLineWidget"/>
-    </gwt:ScrollPanel>
+    <simulation:TimeLineWidget ui:field="timeLineWidget"/>
   </gwt:FlowPanel>
 </ui:UiBinder>
