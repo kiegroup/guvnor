@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import java.util.ArrayList;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
@@ -128,10 +129,34 @@ public class FieldConstraintHelper {
     }
 
     public void replaceFieldWith(Field newField) {
-        fact.getFieldData().set(
+        boolean notCollection=true;
+        for (Field ff : fact.getFieldData()){
+            if (ff instanceof FieldData){
+                FieldData fData = (FieldData)ff;
+               
+                if (fData.getNature() == FieldData.TYPE_COLLECTION){
+                    notCollection = false;
+                    List<FieldData> list = fData.collectionFieldList;
+                    boolean aNewItem=true;
+                    for (FieldData aField : list){
+                        if (aField.getNature()==0){
+                            aNewItem=false;
+                            aField.setNature(((FieldData)newField).getNature());
+                        }
+                    }
+                    if (aNewItem){
+                        list.set(list.indexOf(field), (FieldData)newField);
+                    }
+                }               
+            }
+            
+        } 
+        if (notCollection){
+            fact.getFieldData().set(
                 fact.getFieldData().indexOf(field),
                 newField);
-        field = newField;
+            field = newField;
+        }
     }
 
     public boolean isDependentEnum(FieldConstraintHelper child) {
