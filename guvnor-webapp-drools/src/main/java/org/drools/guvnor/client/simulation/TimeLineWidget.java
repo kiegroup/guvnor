@@ -18,11 +18,17 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -30,6 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,6 +79,7 @@ public class TimeLineWidget extends ResizeComposite {
 
     private double millisecondsPerPixel;
     private Map<Long, VerticalPanel> timeStoneMap = null;
+    private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
         contentHeight = HEADER_HEIGHT + FOOTER_HEIGHT;
@@ -98,6 +106,12 @@ public class TimeLineWidget extends ResizeComposite {
             }
         }
         timeStoneMap = new LinkedHashMap<Long, VerticalPanel>();
+        if (stepMap != null) {
+            for (Image stepWidget : stepMap.values()) {
+                timeLineContent.remove(stepWidget);
+            }
+        }
+        stepMap = new LinkedHashMap<SimulationStepModel, Image>();
         if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
             throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
                     + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
@@ -127,33 +141,29 @@ public class TimeLineWidget extends ResizeComposite {
         double width = (((double) maximumDistanceMillis) / millisecondsPerPixel) + (MARGIN_WIDTH * 2);
         timeLineContent.setWidth(width + "px");
 
-        // Refresh timestones
+        refreshTimeStones(scrollLeft, clientWidth, maximumDistanceMillis);
+        refreshSteps(scrollLeft, clientWidth);
+    }
+
+    private void refreshTimeStones(int scrollLeft, int clientWidth, long maximumDistanceMillis) {
         long timeStoneIncrement = calculateTimeStoneIncrement();
         for (Iterator<Map.Entry<Long, VerticalPanel>> it = timeStoneMap.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<Long, VerticalPanel> timeStoneEntry = it.next();
             double timeStoneValue = timeStoneEntry.getKey();
-            double x = MARGIN_WIDTH + (((double) timeStoneValue) / millisecondsPerPixel);
+            double x = calculateX(timeStoneValue);
             if (!isWithinViewportBounds(scrollLeft, clientWidth, x)
                     || (timeStoneValue % timeStoneIncrement) != 0) {
-                // Remove dead timestone
+                // Remove timestone
                 timeLineContent.remove(timeStoneEntry.getValue());
                 it.remove();
             }
         }
         for (long timeStoneValue = 0L; timeStoneValue <= maximumDistanceMillis; timeStoneValue += timeStoneIncrement) {
-            double x = MARGIN_WIDTH + (((double) timeStoneValue) / millisecondsPerPixel);
+            double x = calculateX(timeStoneValue);
             if (!timeStoneMap.containsKey(timeStoneValue)) {
                 // Add new timestone
                 if (isWithinViewportBounds(scrollLeft, clientWidth, x)) {
-                    VerticalPanel timeStonePanel = new VerticalPanel();
-                    Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
-                    timeStonePanel.add(timeStoneLabel);
-                    int pathTop = HEADER_HEIGHT;
-                    for (SimulationPathModel path : simulation.getPaths().values()) {
-                        Image timeStoneImage = new Image(simulationResources.timeStone());
-                        timeStonePanel.add(timeStoneImage);
-                        pathTop += PATH_HEIGHT;
-                    }
+                    VerticalPanel timeStonePanel = createTimeStonePanel(timeStoneValue);
                     timeLineContent.add(timeStonePanel);
                     timeLineContent.setWidgetLeftWidth(timeStonePanel,
                             x, Style.Unit.PX, TIME_STONE_THRESHOLD_IN_PIXELS, Style.Unit.PX);
@@ -168,37 +178,81 @@ public class TimeLineWidget extends ResizeComposite {
                         x, Style.Unit.PX, TIME_STONE_THRESHOLD_IN_PIXELS, Style.Unit.PX);
             }
         }
+    }
+
+    private VerticalPanel createTimeStonePanel(long timeStoneValue) {
+        VerticalPanel timeStonePanel = new VerticalPanel();
+        Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
+        timeStonePanel.add(timeStoneLabel);
         int pathTop = HEADER_HEIGHT;
-//        for (SimulationPathModel path : simulation.getPaths().values()) {
-//            for (SimulationStepModel step : path.getSteps().values()) {
-//                double x = MARGIN_WIDTH + (((double) step.getDistanceMillis()) / millisecondsPerPixel);
-//                if (isWithinViewportBounds(scrollLeft, clientWidth, x)) {
-//                    ImageResource imageResource = simulationResources.stepEmpty();
-//                    final Image image = new Image(imageResource);
-//                    final PopupPanel popupPanel = new PopupPanel(true);
-//                    popupPanel.setWidget(new Label("Path " + path.getName() + ", step " + step.getDistanceMillis()));
-//                    image.addMouseOverHandler(new MouseOverHandler() {
-//                        public void onMouseOver(MouseOverEvent event) {
-//                            popupPanel.showRelativeTo(image);
-//                        }
-//                    });
-//                    image.addMouseOutHandler(new MouseOutHandler() {
-//                        public void onMouseOut(MouseOutEvent event) {
-//                            popupPanel.hide();
-//                        }
-//                    });
-//                    popupPanel.setAutoHideOnHistoryEventsEnabled(true);
-//                    timeLineContent.add(image);
-//                    timeLineContent.setWidgetLeftWidth(image,
-//                            x, Style.Unit.PX,
-//                            image.getWidth(), Style.Unit.PX);
-//                    timeLineContent.setWidgetTopHeight(image,
-//                            pathTop + (PATH_HEIGHT - image.getHeight()) / 2, Style.Unit.PX,
-//                            image.getHeight(), Style.Unit.PX);
-//                }
-//            }
-//            pathTop += PATH_HEIGHT;
-//        }
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            Image timeStoneImage = new Image(simulationResources.timeStone());
+            timeStonePanel.add(timeStoneImage);
+            pathTop += PATH_HEIGHT;
+        }
+        return timeStonePanel;
+    }
+
+    private void refreshSteps(int scrollLeft, int clientWidth) {
+        for (Iterator<Map.Entry<SimulationStepModel, Image>> it = stepMap.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<SimulationStepModel, Image> stepEntry = it.next();
+            double distanceMillis = stepEntry.getKey().getDistanceMillis();
+            double x = calculateX(distanceMillis);
+            if (!isWithinViewportBounds(scrollLeft, clientWidth, x)) {
+                // Remove step
+                timeLineContent.remove(stepEntry.getValue());
+                it.remove();
+            }
+        }
+        int pathTop = HEADER_HEIGHT;
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            for (SimulationStepModel step : path.getSteps().values()) {
+                double x = calculateX(step.getDistanceMillis());
+                if (!stepMap.containsKey(step)) {
+                    // Add new step
+                    if (isWithinViewportBounds(scrollLeft, clientWidth, x)) {
+                        Image stepWidget = createStepWidget(path, step);
+                        timeLineContent.add(stepWidget);
+                        timeLineContent.setWidgetLeftWidth(stepWidget,
+                                x, Style.Unit.PX,
+                                stepWidget.getWidth(), Style.Unit.PX);
+                        timeLineContent.setWidgetTopHeight(stepWidget,
+                                pathTop + (PATH_HEIGHT - stepWidget.getHeight()) / 2, Style.Unit.PX,
+                                stepWidget.getHeight(), Style.Unit.PX);
+                        stepMap.put(step, stepWidget);
+                    }
+                } else {
+                    // Adjust existing step
+                    Image stepWidget = stepMap.get(step);
+                    timeLineContent.setWidgetLeftWidth(stepWidget,
+                            x, Style.Unit.PX, stepWidget.getWidth(), Style.Unit.PX);
+                }
+            }
+            pathTop += PATH_HEIGHT;
+        }
+    }
+
+    private Image createStepWidget(SimulationPathModel path, SimulationStepModel step) {
+        ImageResource imageResource = simulationResources.stepEmpty();
+        final Image image = new Image(imageResource);
+        final PopupPanel popupPanel = new PopupPanel(true);
+        popupPanel.setWidget(new Label("Path " + path.getName() + ", step " + step.getDistanceMillis()));
+        image.addMouseOverHandler(new MouseOverHandler() {
+            public void onMouseOver(MouseOverEvent event) {
+                popupPanel.showRelativeTo(image);
+            }
+        });
+        image.addMouseOutHandler(new MouseOutHandler() {
+            public void onMouseOut(MouseOutEvent event) {
+                popupPanel.hide();
+            }
+        });
+        popupPanel.setAutoHideOnHistoryEventsEnabled(true);
+        return image;
+    }
+
+    private double calculateX(double distanceMillis) {
+        return MARGIN_WIDTH + (distanceMillis / millisecondsPerPixel);
     }
 
     private boolean isWithinViewportBounds(int scrollLeft, int clientWidth, double x) {
