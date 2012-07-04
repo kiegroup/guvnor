@@ -39,8 +39,8 @@ public class SimulationPathModel implements PortableObject {
     private static void todoCreateTestdata(SimulationPathModel path) {
         long nextDistanceMillis = 1000;
         Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            nextDistanceMillis += random.nextInt(20000) + 1000;
+        for (int i = 0; i < 5; i++) {
+            nextDistanceMillis += random.nextInt(2000) + 1000;
             if (random.nextBoolean()) {
                 SimulationStepModel step = SimulationStepModel.createNew();
                 step.setDistanceMillis(nextDistanceMillis);

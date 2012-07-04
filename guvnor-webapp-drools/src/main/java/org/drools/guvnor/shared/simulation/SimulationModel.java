@@ -41,14 +41,16 @@ public class SimulationModel implements PortableObject {
     private static void todoCreateTestdata(SimulationModel simulation) {
         simulation.addPath(SimulationPathModel.createNew());
         simulation.addPath(SimulationPathModel.createNew());
-        simulation.addPath(SimulationPathModel.createNew());
-        simulation.addPath(SimulationPathModel.createNew());
     }
 
     private Map<String, SimulationPathModel> paths = new LinkedHashMap<String, SimulationPathModel>();
 
     public Map<String, SimulationPathModel> getPaths() {
         return paths;
+    }
+
+    public int getPathsSize() {
+        return paths.size();
     }
 
     public void addPath(SimulationPathModel path) {
