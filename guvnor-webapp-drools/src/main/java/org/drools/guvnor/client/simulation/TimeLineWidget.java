@@ -238,7 +238,8 @@ public class TimeLineWidget extends ResizeComposite {
         ImageResource imageResource = simulationResources.stepEmpty();
         final Image image = new Image(imageResource);
         final PopupPanel popupPanel = new PopupPanel(true);
-        popupPanel.setWidget(new Label("Path " + path.getName() + ", step " + step.getDistanceMillis()));
+        popupPanel.setWidget(new Label(path.getName()
+                + " @ " + formatTimeStoneValue(step.getDistanceMillis())));
         image.addMouseOverHandler(new MouseOverHandler() {
             public void onMouseOver(MouseOverEvent event) {
                 popupPanel.showRelativeTo(image);
