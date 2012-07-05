@@ -117,14 +117,24 @@ public class TimeLineWidget extends ResizeComposite {
     }
 
     public void zoomIn() {
+        int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
+        int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
+        long distanceMillis = calculateDistanceMillis(scrollLeft, clientWidth);
         millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
-        refreshTimeLineContent();
+        scrollLeft = calculateX(distanceMillis, clientWidth);
+        timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
+        refreshTimeLineContent(scrollLeft, clientWidth);
     }
 
     public void zoomOut() {
+        int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
+        int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
+        long distanceMillis = calculateDistanceMillis(scrollLeft, clientWidth);
         // TODO limit based on maximum panel width and widget width
         millisecondsPerPixel *= 2.0;
-        refreshTimeLineContent();
+        scrollLeft = calculateX(distanceMillis, clientWidth);
+        timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
+        refreshTimeLineContent(scrollLeft, clientWidth);
     }
 
     private void refreshTimeLineContent() {
@@ -135,7 +145,7 @@ public class TimeLineWidget extends ResizeComposite {
 
     private void refreshTimeLineContent(int scrollLeft, int clientWidth) {
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
-        double width = (((double) maximumDistanceMillis) / millisecondsPerPixel) + (MARGIN_WIDTH * 2);
+        int width = (int) (maximumDistanceMillis / millisecondsPerPixel) + (MARGIN_WIDTH * 2);
         timeLineContent.setWidth(width + "px");
 
         refreshTimeStones(scrollLeft, clientWidth, maximumDistanceMillis);
@@ -148,7 +158,7 @@ public class TimeLineWidget extends ResizeComposite {
         for (Iterator<Map.Entry<Long, VerticalPanel>> it = timeStoneMap.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<Long, VerticalPanel> timeStoneEntry = it.next();
             long timeStoneValue = timeStoneEntry.getKey();
-            double x = calculateX(timeStoneValue, itemWidth);
+            int x = calculateX(timeStoneValue, itemWidth);
             if (!isWithinViewportBounds(scrollLeft, clientWidth, x, itemWidth)
                     || (timeStoneValue % timeStoneIncrement) != 0) {
                 // Remove timestone
@@ -157,7 +167,7 @@ public class TimeLineWidget extends ResizeComposite {
             }
         }
         for (long timeStoneValue = 0L; timeStoneValue <= maximumDistanceMillis; timeStoneValue += timeStoneIncrement) {
-            double x = calculateX(timeStoneValue, itemWidth);
+            int x = calculateX(timeStoneValue, itemWidth);
             if (!timeStoneMap.containsKey(timeStoneValue)) {
                 // Add new timestone
                 if (isWithinViewportBounds(scrollLeft, clientWidth, x, itemWidth)) {
@@ -197,7 +207,7 @@ public class TimeLineWidget extends ResizeComposite {
         for (Iterator<Map.Entry<SimulationStepModel, Image>> it = stepMap.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<SimulationStepModel, Image> stepEntry = it.next();
             long distanceMillis = stepEntry.getKey().getDistanceMillis();
-            double x = calculateX(distanceMillis, itemWidth);
+            int x = calculateX(distanceMillis, itemWidth);
             if (!isWithinViewportBounds(scrollLeft, clientWidth, x, itemWidth)) {
                 // Remove step
                 timeLineContent.remove(stepEntry.getValue());
@@ -207,7 +217,7 @@ public class TimeLineWidget extends ResizeComposite {
         int pathTop = simulationStyle.timeLineHeaderHeight();
         for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
-                double x = calculateX(step.getDistanceMillis(), itemWidth);
+                int x = calculateX(step.getDistanceMillis(), itemWidth);
                 if (!stepMap.containsKey(step)) {
                     // Add new step
                     if (isWithinViewportBounds(scrollLeft, clientWidth, x, itemWidth)) {
@@ -252,12 +262,20 @@ public class TimeLineWidget extends ResizeComposite {
         return image;
     }
 
-    private double calculateX(long distanceMillis, int itemWidth) {
-        return calculateX(distanceMillis) - (itemWidth / 2.0);
+    private int calculateX(long distanceMillis, int itemWidth) {
+        return calculateX(distanceMillis) - (itemWidth / 2);
     }
 
-    private double calculateX(long distanceMillis) {
-        return MARGIN_WIDTH + (distanceMillis / millisecondsPerPixel);
+    private int calculateX(long distanceMillis) {
+        return MARGIN_WIDTH + (int) (distanceMillis / millisecondsPerPixel);
+    }
+
+    private long calculateDistanceMillis(int x, int itemWidth) {
+        return calculateDistanceMillis(x + (itemWidth / 2));
+    }
+
+    private long calculateDistanceMillis(int x) {
+        return (long) ((x - MARGIN_WIDTH) * millisecondsPerPixel);
     }
 
     private boolean isWithinViewportBounds(int scrollLeft, int clientWidth, double x, int itemWidth) {
