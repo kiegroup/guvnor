@@ -20,4 +20,6 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface SimulationStyle extends CssResource {
 
+    String timeStoneLabel();
+
 }

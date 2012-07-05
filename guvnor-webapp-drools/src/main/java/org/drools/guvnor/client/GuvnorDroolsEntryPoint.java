@@ -42,6 +42,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.drools.guvnor.client.simulation.resources.SimulationResources;
 
 /**
  * This is the main launching/entry point for the Guvnor web console. It
@@ -73,6 +74,7 @@ public class GuvnorDroolsEntryPoint
         WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
         WizardResources.INSTANCE.style().ensureInjected();
         DecisionTableResources.INSTANCE.style().ensureInjected();
+        SimulationResources.INSTANCE.style().ensureInjected();
     }
 
     /**

@@ -69,7 +69,7 @@ public class TimeLineWidget extends ResizeComposite {
             432000000L, // 5d
     };
 
-    private SimulationResources simulationResources = GWT.create(SimulationResources.class);
+    private SimulationResources simulationResources = SimulationResources.INSTANCE;
 
     private ScrollPanel timeLineScrollPanel;
     private LayoutPanel timeLineContent;
@@ -184,6 +184,7 @@ public class TimeLineWidget extends ResizeComposite {
     private VerticalPanel createTimeStonePanel(long timeStoneValue) {
         VerticalPanel timeStonePanel = new VerticalPanel();
         Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
+        timeStoneLabel.setStyleName(simulationResources.style().timeStoneLabel());
         timeStonePanel.add(timeStoneLabel);
         int pathTop = HEADER_HEIGHT;
         for (SimulationPathModel path : simulation.getPaths().values()) {

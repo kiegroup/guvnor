@@ -16,4 +16,9 @@
 
 @CHARSET "UTF-8";
 
+.timeStoneLabel {
+    height: 30px;
+    padding-left: 12px;
+}
+
 
