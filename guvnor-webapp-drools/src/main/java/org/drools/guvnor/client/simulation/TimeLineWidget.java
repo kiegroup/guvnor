@@ -88,16 +88,26 @@ public class TimeLineWidget extends ResizeComposite {
             }
         });
         initWidget(timeLineScrollPanel);
+        if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
+            throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
+                    + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
+        }
     }
 
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
+        clearMaps();
         int scrollPanelWidth = 800;
         timeLineScrollPanel.setWidth(scrollPanelWidth + "px");
         contentHeight = simulationStyle.timeLineHeaderHeight() + (simulation.getPathsSize() * PATH_HEIGHT) + FOOTER_HEIGHT;
         timeLineContent.setHeight(contentHeight + "px");
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = (double) maximumDistanceMillis / (scrollPanelWidth - MARGIN_WIDTH * 2);
+        adjustContentWidth(maximumDistanceMillis);
+        refreshTimeLineContent(0, scrollPanelWidth);
+    }
+
+    private void clearMaps() {
         if (timeStoneMap != null) {
             for (VerticalPanel timeStonePanel : timeStoneMap.values()) {
                 timeLineContent.remove(timeStonePanel);
@@ -110,18 +120,15 @@ public class TimeLineWidget extends ResizeComposite {
             }
         }
         stepMap = new LinkedHashMap<SimulationStepModel, Image>();
-        if (simulationResources.timeStone().getHeight() != PATH_HEIGHT) {
-            throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
-                    + ") must be equal to the PATH_HEIGHT (" + PATH_HEIGHT + ").");
-        }
-        refreshTimeLineContent(0, scrollPanelWidth);
     }
 
     public void zoomIn() {
         int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
         long distanceMillis = calculateDistanceMillis(scrollLeft, clientWidth);
+        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
+        adjustContentWidth(maximumDistanceMillis);
         scrollLeft = calculateX(distanceMillis, clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
@@ -134,9 +141,15 @@ public class TimeLineWidget extends ResizeComposite {
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         double maximumMillisecondsPerPixel = (double) maximumDistanceMillis / (clientWidth - MARGIN_WIDTH * 2);
         millisecondsPerPixel = Math.min(maximumMillisecondsPerPixel, millisecondsPerPixel * 2.0);
+        adjustContentWidth(maximumDistanceMillis);
         scrollLeft = calculateX(distanceMillis, clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
+    }
+
+    private void adjustContentWidth(long maximumDistanceMillis) {
+        int width = (int) (maximumDistanceMillis / millisecondsPerPixel) + (MARGIN_WIDTH * 2);
+        timeLineContent.setWidth(width + "px");
     }
 
     private void refreshTimeLineContent() {
@@ -146,15 +159,12 @@ public class TimeLineWidget extends ResizeComposite {
     }
 
     private void refreshTimeLineContent(int scrollLeft, int clientWidth) {
-        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
-        int width = (int) (maximumDistanceMillis / millisecondsPerPixel) + (MARGIN_WIDTH * 2);
-        timeLineContent.setWidth(width + "px");
-
-        refreshTimeStones(scrollLeft, clientWidth, maximumDistanceMillis);
+        refreshTimeStones(scrollLeft, clientWidth);
         refreshSteps(scrollLeft, clientWidth);
     }
 
-    private void refreshTimeStones(int scrollLeft, int clientWidth, long maximumDistanceMillis) {
+    private void refreshTimeStones(int scrollLeft, int clientWidth) {
+        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         int itemWidth = simulationResources.timeStone().getWidth();
         long timeStoneIncrement = calculateTimeStoneIncrement();
         for (Iterator<Map.Entry<Long, VerticalPanel>> it = timeStoneMap.entrySet().iterator(); it.hasNext(); ) {
