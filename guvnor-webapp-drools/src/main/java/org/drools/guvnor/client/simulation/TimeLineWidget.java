@@ -96,7 +96,8 @@ public class TimeLineWidget extends ResizeComposite {
         timeLineScrollPanel.setWidth(scrollPanelWidth + "px");
         contentHeight = simulationStyle.timeLineHeaderHeight() + (simulation.getPathsSize() * PATH_HEIGHT) + FOOTER_HEIGHT;
         timeLineContent.setHeight(contentHeight + "px");
-        millisecondsPerPixel = 10.0;
+        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
+        millisecondsPerPixel = (double) maximumDistanceMillis / (scrollPanelWidth - MARGIN_WIDTH * 2);
         if (timeStoneMap != null) {
             for (VerticalPanel timeStonePanel : timeStoneMap.values()) {
                 timeLineContent.remove(timeStonePanel);
@@ -130,8 +131,9 @@ public class TimeLineWidget extends ResizeComposite {
         int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
         long distanceMillis = calculateDistanceMillis(scrollLeft, clientWidth);
-        // TODO limit based on maximum panel width and widget width
-        millisecondsPerPixel *= 2.0;
+        long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
+        double maximumMillisecondsPerPixel = (double) maximumDistanceMillis / (clientWidth - MARGIN_WIDTH * 2);
+        millisecondsPerPixel = Math.min(maximumMillisecondsPerPixel, millisecondsPerPixel * 2.0);
         scrollLeft = calculateX(distanceMillis, clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
