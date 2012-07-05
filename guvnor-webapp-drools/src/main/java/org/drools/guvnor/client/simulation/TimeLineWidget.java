@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.simulation;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -32,21 +31,18 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
+import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TimeLineWidget extends ResizeComposite {
 
-    private static final int HEADER_HEIGHT = 30;
     private static final int FOOTER_HEIGHT = 30; // Must have enough space for the scrollbar
     private static final int MARGIN_WIDTH = 20;
     private static final int PATH_HEIGHT = 30;
@@ -70,6 +66,7 @@ public class TimeLineWidget extends ResizeComposite {
     };
 
     private SimulationResources simulationResources = SimulationResources.INSTANCE;
+    private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
     private ScrollPanel timeLineScrollPanel;
     private LayoutPanel timeLineContent;
@@ -82,7 +79,7 @@ public class TimeLineWidget extends ResizeComposite {
     private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
-        contentHeight = HEADER_HEIGHT + FOOTER_HEIGHT;
+        contentHeight = simulationStyle.timeLineHeaderHeight() + FOOTER_HEIGHT;
         timeLineContent = new LayoutPanel();
         timeLineScrollPanel = new ScrollPanel(timeLineContent);
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
@@ -97,7 +94,7 @@ public class TimeLineWidget extends ResizeComposite {
         this.simulation = simulation;
         int scrollPanelWidth = 800;
         timeLineScrollPanel.setWidth(scrollPanelWidth + "px");
-        contentHeight = HEADER_HEIGHT + (simulation.getPathsSize() * PATH_HEIGHT) + FOOTER_HEIGHT;
+        contentHeight = simulationStyle.timeLineHeaderHeight() + (simulation.getPathsSize() * PATH_HEIGHT) + FOOTER_HEIGHT;
         timeLineContent.setHeight(contentHeight + "px");
         millisecondsPerPixel = 10.0;
         if (timeStoneMap != null) {
@@ -184,9 +181,9 @@ public class TimeLineWidget extends ResizeComposite {
     private VerticalPanel createTimeStonePanel(long timeStoneValue) {
         VerticalPanel timeStonePanel = new VerticalPanel();
         Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
-        timeStoneLabel.setStyleName(simulationResources.style().timeStoneLabel());
+        timeStoneLabel.setStyleName(simulationStyle.timeStoneLabel());
         timeStonePanel.add(timeStoneLabel);
-        int pathTop = HEADER_HEIGHT;
+        int pathTop = simulationStyle.timeLineHeaderHeight();
         for (SimulationPathModel path : simulation.getPaths().values()) {
             Image timeStoneImage = new Image(simulationResources.timeStone());
             timeStonePanel.add(timeStoneImage);
@@ -207,7 +204,7 @@ public class TimeLineWidget extends ResizeComposite {
                 it.remove();
             }
         }
-        int pathTop = HEADER_HEIGHT;
+        int pathTop = simulationStyle.timeLineHeaderHeight();
         for (SimulationPathModel path : simulation.getPaths().values()) {
             for (SimulationStepModel step : path.getSteps().values()) {
                 double x = calculateX(step.getDistanceMillis(), itemWidth);

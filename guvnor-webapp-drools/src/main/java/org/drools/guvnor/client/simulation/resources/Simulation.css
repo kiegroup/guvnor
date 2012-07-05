@@ -16,8 +16,10 @@
 
 @CHARSET "UTF-8";
 
+@def timeLineHeaderHeight 30px;
+
 .timeStoneLabel {
-    height: 30px;
+    height: timeLineHeaderHeight;
     padding-left: 12px;
 }
 

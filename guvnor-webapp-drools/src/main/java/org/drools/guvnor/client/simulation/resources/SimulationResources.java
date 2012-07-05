@@ -44,7 +44,6 @@ public interface SimulationResources extends ClientBundle {
     @Source("zoomOut.png")
     ImageResource zoomOut();
 
-    @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.Vertical)
     @Source("timeStone.png")
     ImageResource timeStone();
 
