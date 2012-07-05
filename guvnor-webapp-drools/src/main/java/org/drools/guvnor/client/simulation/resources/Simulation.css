@@ -17,6 +17,7 @@
 @CHARSET "UTF-8";
 
 @def timeLineHeaderHeight 30px;
+@def timeLineFooterHeight 30px; /* Must have enough space for the scrollbar */
 
 .timeStoneLabel {
     height: timeLineHeaderHeight;

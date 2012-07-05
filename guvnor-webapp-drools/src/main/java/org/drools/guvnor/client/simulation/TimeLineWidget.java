@@ -43,7 +43,6 @@ import java.util.Map;
 
 public class TimeLineWidget extends ResizeComposite {
 
-    private static final int FOOTER_HEIGHT = 30; // Must have enough space for the scrollbar
     private static final int MARGIN_WIDTH = 20;
     private static final int PATH_HEIGHT = 30;
     // A timeStone is a milestone of time
@@ -79,7 +78,7 @@ public class TimeLineWidget extends ResizeComposite {
     private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
-        contentHeight = simulationStyle.timeLineHeaderHeight() + FOOTER_HEIGHT;
+        contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
         timeLineContent = new LayoutPanel();
         timeLineScrollPanel = new ScrollPanel(timeLineContent);
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
@@ -99,7 +98,8 @@ public class TimeLineWidget extends ResizeComposite {
         clearMaps();
         int scrollPanelWidth = 800;
         timeLineScrollPanel.setWidth(scrollPanelWidth + "px");
-        contentHeight = simulationStyle.timeLineHeaderHeight() + (simulation.getPathsSize() * PATH_HEIGHT) + FOOTER_HEIGHT;
+        contentHeight = simulationStyle.timeLineHeaderHeight() + (simulation.getPathsSize() * PATH_HEIGHT)
+                + simulationStyle.timeLineFooterHeight();
         timeLineContent.setHeight(contentHeight + "px");
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = (double) maximumDistanceMillis / (scrollPanelWidth - MARGIN_WIDTH * 2);
