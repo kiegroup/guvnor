@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
-    <version>5.3.3-SNAPSHOT</version></parent>
+    <version>5.3.3.Final</version></parent>
 
   <!--
     TODO Make this module obsolete by providing the functionality in a screen in Guvnor
