@@ -14,7 +14,7 @@ public class ListEditor extends VerticalPanel {
 
     public ListEditor(final CollectionFieldData field, FieldConstraintHelper helper, final ScenarioParentWidget parent) {
         if (field.getCollectionFieldList().isEmpty()) {
-            add(new ImageButton(DroolsGuvnorImages.INSTANCE.newItem(),
+            add(new ImageButton(DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
                     Constants.INSTANCE.AElementToAddInCollectionList(),
                     new ClickHandler() {
 

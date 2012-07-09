@@ -27,7 +27,7 @@
   <gwt:HorizontalPanel>
     <guvnor:FieldDataConstraintEditor ui:field="fieldDataConstraintEditor"/>
     <guvnorCommon:ImageButton ui:field="deleteItem"
-                              img="{images.deleteItemSmall}"
+                              img="{images.itemImages.deleteItemSmall}"
                               altText="{i18n.AElementToDelInCollectionList}"
         />
     <guvnorCommon:ImageButton ui:field="newItemBelow"
