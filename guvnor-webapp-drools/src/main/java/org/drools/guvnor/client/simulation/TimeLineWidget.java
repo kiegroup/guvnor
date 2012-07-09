@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -169,11 +168,15 @@ public class TimeLineWidget extends Composite {
     public void scrollToDistanceMillis(long distanceMillis) {
         int x = calculateX(distanceMillis);
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
-        int scrollLeft = x - (clientWidth / 2);
+        int scrollLeft = adjustScrollLeft(x - (clientWidth / 2), clientWidth);
+        refreshTimeLineContent(scrollLeft, clientWidth);
+    }
+
+    private int adjustScrollLeft(int scrollLeft, int clientWidth) {
         scrollLeft = Math.max(0, scrollLeft);
         scrollLeft = Math.min(contentWidth - clientWidth, scrollLeft);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
-        refreshTimeLineContent(scrollLeft, clientWidth);
+        return scrollLeft;
     }
 
     public void zoomIn() {
@@ -183,7 +186,7 @@ public class TimeLineWidget extends Composite {
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = Math.max(1.0, millisecondsPerPixel / 2.0);
         adjustContentWidth(maximumDistanceMillis);
-        scrollLeft = calculateX(distanceMillis, clientWidth);
+        scrollLeft = adjustScrollLeft(calculateX(distanceMillis, clientWidth), clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
     }
@@ -197,7 +200,7 @@ public class TimeLineWidget extends Composite {
                 (clientWidth - simulationStyle.timeLineMarginWidth() * 2);
         millisecondsPerPixel = Math.min(maximumMillisecondsPerPixel, millisecondsPerPixel * 2.0);
         adjustContentWidth(maximumDistanceMillis);
-        scrollLeft = calculateX(distanceMillis, clientWidth);
+        scrollLeft = adjustScrollLeft(calculateX(distanceMillis, clientWidth), clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
     }
