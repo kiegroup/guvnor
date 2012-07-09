@@ -27,10 +27,13 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,7 +48,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class TimeLineWidget extends ResizeComposite {
+public class TimeLineWidget extends Composite {
 
     // A timeStone is a milestone of time
     private static final int TIME_STONE_THRESHOLD_IN_PIXELS = 80;
@@ -76,6 +79,8 @@ public class TimeLineWidget extends ResizeComposite {
     protected ScrollPanel timeLineScrollPanel;
     @UiField
     protected LayoutPanel timeLineContent;
+    @UiField
+    protected FlowPanel addStepsPanel;
 
     private SimulationModel simulation;
     private int contentHeight;
@@ -106,11 +111,13 @@ public class TimeLineWidget extends ResizeComposite {
                 + (simulation.getPathsSize() * simulationStyle.timeLinePathHeight())
                 + simulationStyle.timeLineFooterHeight();
         timeLineContent.setHeight(contentHeight + "px");
+        addStepsPanel.setHeight(contentHeight + "px");
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = (double) maximumDistanceMillis /
                 (simulationStyle.timeLineScrollPanelWidth() - simulationStyle.timeLineMarginWidth() * 2);
         adjustContentWidth(maximumDistanceMillis);
         refreshTimeLineContent(0, simulationStyle.timeLineScrollPanelWidth());
+        refreshAddStepsPanel();
     }
 
     private void clearMaps() {
@@ -126,6 +133,13 @@ public class TimeLineWidget extends ResizeComposite {
             }
         }
         stepMap = new LinkedHashMap<SimulationStepModel, Image>();
+    }
+
+    private void refreshAddStepsPanel() {
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            PushButton addStepButton = new PushButton("TODO"); // TODO
+            addStepsPanel.add(addStepButton);
+        }
     }
 
     public void zoomIn() {

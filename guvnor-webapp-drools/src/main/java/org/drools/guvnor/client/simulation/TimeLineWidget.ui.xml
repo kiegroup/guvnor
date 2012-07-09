@@ -22,7 +22,10 @@
   <!--<ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />-->
   <!--<ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />-->
 
-  <gwt:ScrollPanel ui:field="timeLineScrollPanel">
-    <gwt:LayoutPanel ui:field="timeLineContent"/>
-  </gwt:ScrollPanel>
+  <gwt:HorizontalPanel spacing="0">
+    <gwt:ScrollPanel ui:field="timeLineScrollPanel">
+      <gwt:LayoutPanel ui:field="timeLineContent"/>
+    </gwt:ScrollPanel>
+    <gwt:FlowPanel ui:field="addStepsPanel"/>
+  </gwt:HorizontalPanel>
 </ui:UiBinder>
