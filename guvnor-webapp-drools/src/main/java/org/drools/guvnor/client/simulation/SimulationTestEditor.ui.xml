@@ -22,9 +22,6 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
-  <ui:style>
-  </ui:style>
-
   <gwt:FlowPanel width="100%">
     <gwt:HorizontalPanel spacing="10">
       <gwt:PushButton ui:field="runSimulationButton" text="{i18n.RunSimulation}">

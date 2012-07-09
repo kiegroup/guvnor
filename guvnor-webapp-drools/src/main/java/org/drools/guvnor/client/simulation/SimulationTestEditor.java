@@ -38,7 +38,7 @@ import org.drools.guvnor.shared.simulation.SimulationModel;
 public class SimulationTestEditor extends Composite
         implements EditorWidget {
 
-    interface SimulationTestEditorBinder extends UiBinder<Widget, SimulationTestEditor> {}
+    protected interface SimulationTestEditorBinder extends UiBinder<Widget, SimulationTestEditor> {}
     private static SimulationTestEditorBinder uiBinder = GWT.create(SimulationTestEditorBinder.class);
 
     @UiField

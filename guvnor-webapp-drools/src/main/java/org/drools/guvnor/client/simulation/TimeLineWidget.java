@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.simulation;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -24,6 +25,8 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -31,6 +34,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationModel;
@@ -62,11 +66,16 @@ public class TimeLineWidget extends ResizeComposite {
             432000000L, // 5d
     };
 
+    protected interface TimeLineWidgetBinder extends UiBinder<Widget, TimeLineWidget> {}
+    private static TimeLineWidgetBinder uiBinder = GWT.create(TimeLineWidgetBinder.class);
+
     private SimulationResources simulationResources = SimulationResources.INSTANCE;
     private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
-    private ScrollPanel timeLineScrollPanel;
-    private LayoutPanel timeLineContent;
+    @UiField
+    protected ScrollPanel timeLineScrollPanel;
+    @UiField
+    protected LayoutPanel timeLineContent;
 
     private SimulationModel simulation;
     private int contentHeight;
@@ -77,14 +86,12 @@ public class TimeLineWidget extends ResizeComposite {
 
     public TimeLineWidget() {
         contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
-        timeLineContent = new LayoutPanel();
-        timeLineScrollPanel = new ScrollPanel(timeLineContent);
+        initWidget(uiBinder.createAndBindUi(this));
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
             public void onScroll(ScrollEvent event) {
                 refreshTimeLineContent();
             }
         });
-        initWidget(timeLineScrollPanel);
         if (simulationResources.timeStone().getHeight() != simulationStyle.timeLinePathHeight()) {
             throw new IllegalStateException("The timeStone image height (" + simulationResources.timeStone().getHeight()
                     + ") must be equal to the PATH_HEIGHT (" + simulationStyle.timeLinePathHeight() + ").");
