@@ -18,6 +18,8 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -84,6 +86,7 @@ public class TimeLineWidget extends Composite {
 
     private SimulationModel simulation;
     private int contentHeight;
+    private int contentWidth;
 
     private double millisecondsPerPixel;
     private Map<Long, VerticalPanel> timeStoneMap = null;
@@ -143,11 +146,34 @@ public class TimeLineWidget extends Composite {
         for (SimulationPathModel path : simulation.getPaths().values()) {
             FlowPanel heightLimitingPanel = new FlowPanel();
             heightLimitingPanel.setHeight(simulationStyle.timeLinePathHeight() + "px");
-            PushButton addStepButton = new PushButton(new Image(simulationResources.addStep()));
-            addStepButton.addStyleName(simulationStyle.addStepButton());
+            PushButton addStepButton = createAddStepButton(path);
             heightLimitingPanel.add(addStepButton);
             addStepsPanel.add(heightLimitingPanel);
         }
+    }
+
+    private PushButton createAddStepButton(final SimulationPathModel path) {
+        PushButton addStepButton = new PushButton(new Image(simulationResources.addStep()));
+        addStepButton.addStyleName(simulationStyle.addStepButton());
+        addStepButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                SimulationStepModel step = SimulationStepModel.createNew();
+                path.addStep(step);
+                adjustContentWidth(simulation.getMaximumDistanceMillis());
+                scrollToDistanceMillis(step.getDistanceMillis());
+            }
+        });
+        return addStepButton;
+    }
+
+    public void scrollToDistanceMillis(long distanceMillis) {
+        int x = calculateX(distanceMillis);
+        int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
+        int scrollLeft = x - (clientWidth / 2);
+        scrollLeft = Math.max(0, scrollLeft);
+        scrollLeft = Math.min(contentWidth - clientWidth, scrollLeft);
+        timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
+        refreshTimeLineContent(scrollLeft, clientWidth);
     }
 
     public void zoomIn() {
@@ -177,8 +203,9 @@ public class TimeLineWidget extends Composite {
     }
 
     private void adjustContentWidth(long maximumDistanceMillis) {
-        int width = (int) (maximumDistanceMillis / millisecondsPerPixel) + (simulationStyle.timeLineMarginWidth() * 2);
-        timeLineContent.setWidth(width + "px");
+        contentWidth = (int) (maximumDistanceMillis / millisecondsPerPixel)
+                + (simulationStyle.timeLineMarginWidth() * 2);
+        timeLineContent.setWidth(contentWidth + "px");
     }
 
     private void refreshTimeLineContent() {
