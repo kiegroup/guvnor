@@ -20,8 +20,13 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface SimulationStyle extends CssResource {
 
+    int timeLineScrollPanelWidth();
+
     int timeLineHeaderHeight();
     int timeLineFooterHeight();
+    int timeLineMarginWidth();
+
+    int timeLinePathHeight();
 
     String timeStoneLabel();
 

@@ -16,8 +16,13 @@
 
 @CHARSET "UTF-8";
 
+@def timeLineScrollPanelWidth 800px;
+
 @def timeLineHeaderHeight 30px;
 @def timeLineFooterHeight 30px;
+@def timeLineMarginWidth 20px;
+
+@def timeLinePathHeight 30px;
 
 .timeStoneLabel {
     height: timeLineHeaderHeight;
