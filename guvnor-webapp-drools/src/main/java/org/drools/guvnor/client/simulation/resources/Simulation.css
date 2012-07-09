@@ -19,7 +19,7 @@
 @def timeLineScrollPanelWidth 800px;
 
 @def timeLineHeaderHeight 30px;
-@def timeLineFooterHeight 30px;
+@def timeLineFooterHeight 5px;
 @def timeLineMarginWidth 20px;
 
 @def timeLinePathHeight 30px;
@@ -27,6 +27,18 @@
 .timeStoneLabel {
     height: timeLineHeaderHeight;
     padding-left: 12px;
+}
+
+.addStepsPanel {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.addStepLabel {
+    height: timeLineHeaderHeight;
+}
+
+.addStepButton {
 }
 
 

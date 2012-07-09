@@ -30,4 +30,8 @@ public interface SimulationStyle extends CssResource {
 
     String timeStoneLabel();
 
+    String addStepsPanel();
+    String addStepLabel();
+    String addStepButton();
+
 }

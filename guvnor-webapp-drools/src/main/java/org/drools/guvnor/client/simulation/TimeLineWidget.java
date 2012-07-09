@@ -112,6 +112,7 @@ public class TimeLineWidget extends Composite {
                 + simulationStyle.timeLineFooterHeight();
         timeLineContent.setHeight(contentHeight + "px");
         addStepsPanel.setHeight(contentHeight + "px");
+        addStepsPanel.addStyleName(simulationStyle.addStepsPanel());
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = (double) maximumDistanceMillis /
                 (simulationStyle.timeLineScrollPanelWidth() - simulationStyle.timeLineMarginWidth() * 2);
@@ -136,9 +137,16 @@ public class TimeLineWidget extends Composite {
     }
 
     private void refreshAddStepsPanel() {
+        Label addStepLabel = new Label("");
+        addStepLabel.setStyleName(simulationStyle.addStepLabel());
+        addStepsPanel.add(addStepLabel);
         for (SimulationPathModel path : simulation.getPaths().values()) {
+            FlowPanel heightLimitingPanel = new FlowPanel();
+            heightLimitingPanel.setHeight(simulationStyle.timeLinePathHeight() + "px");
             PushButton addStepButton = new PushButton(new Image(simulationResources.addStep()));
-            addStepsPanel.add(addStepButton);
+            addStepButton.addStyleName(simulationStyle.addStepButton());
+            heightLimitingPanel.add(addStepButton);
+            addStepsPanel.add(heightLimitingPanel);
         }
     }
 
