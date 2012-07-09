@@ -7,12 +7,10 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.drools.ide.common.client.modeldriven.testing.Fact;
-import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
-import org.drools.ide.common.client.modeldriven.testing.Field;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.*;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 public class FieldConverter implements Converter {
 
@@ -37,7 +35,14 @@ public class FieldConverter implements Converter {
 
         reader.moveDown();
 
-        if (reader.getNodeName().equals("value")) {
+        if (reader.getNodeName().equals("collectionFieldList")) {
+
+            CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
+            reader.moveUp();
+
+            return collectionFieldData;
+
+        } else if (reader.getNodeName().equals("value")) {
             FieldData fieldData = new FieldData();
 
             fieldData.setName(name);
@@ -45,10 +50,22 @@ public class FieldConverter implements Converter {
             fieldData.setValue(reader.getValue());
             reader.moveUp();
 
+            // Nature is optional
             if (reader.hasMoreChildren()) {
                 reader.moveDown();
-                fieldData.setNature(Integer.parseInt(reader.getValue()));
+                String value = reader.getValue();
+                fieldData.setNature(Integer.parseInt(value));
                 reader.moveUp();
+            }
+
+            // Could be a legacy CollectionFieldData, let's see
+            if (reader.hasMoreChildren()) {
+                reader.moveDown();
+                if (reader.getNodeName().equals("collectionFieldList")) {
+                    CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
+                    reader.moveUp();
+                    return collectionFieldData;
+                }
             }
 
             return fieldData;
@@ -65,6 +82,14 @@ public class FieldConverter implements Converter {
         }
 
         throw new InvalidParameterException("Unknown Field instance.");
+    }
+
+    private CollectionFieldData createCollectionFieldData(UnmarshallingContext context, String name) {
+        CollectionFieldData collectionFieldData = new CollectionFieldData();
+        collectionFieldData.setName(name);
+
+        collectionFieldData.setCollectionFieldList((ArrayList) context.convertAnother(collectionFieldData, ArrayList.class));
+        return collectionFieldData;
     }
 
     @Override

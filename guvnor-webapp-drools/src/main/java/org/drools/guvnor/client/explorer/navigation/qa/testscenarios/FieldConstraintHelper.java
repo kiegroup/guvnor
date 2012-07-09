@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import java.util.ArrayList;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
@@ -33,6 +32,8 @@ public class FieldConstraintHelper {
     private final String factType;
     private Field field;
     private final Fact fact;
+
+    private boolean parentIsAList = false;
 
     public FieldConstraintHelper(Scenario scenario,
                                  ExecutionTrace executionTrace,
@@ -63,11 +64,7 @@ public class FieldConstraintHelper {
     }
 
     String resolveFieldType() {
-        if (field instanceof FieldData && ((FieldData) field).collectionType != null) {
-            return ((FieldData) field).collectionType;
-        } else {
-            return sce.getFieldType(factType, field.getName());
-        }
+        return sce.getFieldType(factType, field.getName());
     }
 
     boolean isItAList() {
@@ -88,10 +85,10 @@ public class FieldConstraintHelper {
         return this.scenario.getFactTypes().get(var);
     }
 
+
     String getFullFieldName() {
         return factType + "." + field.getName();
     }
-
 
     DropDownData getEnums() {
         Map<String, String> currentValueMap = new HashMap<String, String>();
@@ -112,15 +109,9 @@ public class FieldConstraintHelper {
         return sce.getFieldType(getFullFieldName());
     }
 
-    public String getParametricFieldType() {
-        return sce.getParametricFieldType(
-                factType,
-                field.getName());
-    }
-
     public FieldDataConstraintEditor createFieldDataConstraintEditor(final FieldData fieldData) {
         return new FieldDataConstraintEditor(
-                fieldData.collectionType,
+                factType,
                 fieldData,
                 fact,
                 sce,
@@ -129,32 +120,30 @@ public class FieldConstraintHelper {
     }
 
     public void replaceFieldWith(Field newField) {
-        boolean notCollection=true;
-        for (Field ff : fact.getFieldData()){
-            if (ff instanceof FieldData){
-                FieldData fData = (FieldData)ff;
-               
-                if (fData.getNature() == FieldData.TYPE_COLLECTION){
-                    notCollection = false;
-                    List<FieldData> list = fData.collectionFieldList;
-                    boolean aNewItem=true;
-                    for (FieldData aField : list){
-                        if (aField.getNature()==0){
-                            aNewItem=false;
-                            aField.setNature(((FieldData)newField).getNature());
-                        }
+        boolean notCollection = true;
+        for (Field factsField : fact.getFieldData()) {
+            if (factsField instanceof CollectionFieldData) {
+                CollectionFieldData fData = (CollectionFieldData) factsField;
+
+                notCollection = false;
+                List<FieldData> list = fData.getCollectionFieldList();
+                boolean aNewItem = true;
+                for (FieldData aField : list) {
+                    if (aField.getNature() == 0) {
+                        aNewItem = false;
+                        aField.setNature(((FieldData) newField).getNature());
                     }
-                    if (aNewItem){
-                        list.set(list.indexOf(field), (FieldData)newField);
-                    }
-                }               
+                }
+                if (aNewItem) {
+                    list.set(list.indexOf(field), (FieldData) newField);
+                }
             }
-            
-        } 
-        if (notCollection){
+
+        }
+        if (notCollection) {
             fact.getFieldData().set(
-                fact.getFieldData().indexOf(field),
-                newField);
+                    fact.getFieldData().indexOf(field),
+                    newField);
             field = newField;
         }
     }
@@ -165,5 +154,14 @@ public class FieldConstraintHelper {
         }
         return sce.isDependentEnum(fact.getType(), field.getName(), child.field.getName());
     }
+
+    public boolean isTheParentAList() {
+        return parentIsAList;
+    }
+
+    public void setParentIsAList(boolean parentIsAList) {
+        this.parentIsAList = parentIsAList;
+    }
+
 
 }

@@ -196,8 +196,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         FieldData fieldData = new FieldData(
                 "cheeseType",
                 "CheeseType.CHEDDAR");
-        fieldData.setNature(FieldData.TYPE_ENUM,
-                null);
+        fieldData.setNature(FieldData.TYPE_ENUM);
         FactData cheeseFactData = new FactData(
                 "Cheese",
                 "c1",
@@ -208,7 +207,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                 "cheeseType",
                 "CheeseType.CHEDDAR"
         );
-        cheeseType.setNature(FieldData.TYPE_ENUM, null);
+        cheeseType.setNature(FieldData.TYPE_ENUM);
         FactData f1 = new FactData(
                 "Cheese",
                 "f1",
