@@ -137,7 +137,7 @@ public class TimeLineWidget extends Composite {
 
     private void refreshAddStepsPanel() {
         for (SimulationPathModel path : simulation.getPaths().values()) {
-            PushButton addStepButton = new PushButton("TODO"); // TODO
+            PushButton addStepButton = new PushButton(new Image(simulationResources.addStep()));
             addStepsPanel.add(addStepButton);
         }
     }
