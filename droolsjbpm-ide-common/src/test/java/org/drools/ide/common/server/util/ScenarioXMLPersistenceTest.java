@@ -95,6 +95,65 @@ public class ScenarioXMLPersistenceTest {
     }
 
     @Test
+    public void testLoadCollectionFieldTestScenario() throws Exception {
+
+        StringBuffer contents = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("CollectionFieldTestScenario.xml")));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                contents.append(text);
+            }
+
+        } catch (Exception e) {
+            if (reader != null) {
+                reader.close();
+            }
+            throw new IllegalStateException("Error while reading file.", e);
+        }
+
+        Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(contents.toString());
+
+        verifyFieldDataNamesAreNotNull(scenario);
+
+        FactData factData = (FactData) scenario.getFixtures().get(0);
+        assertTrue(factData.getFieldData().get(0) instanceof CollectionFieldData);
+    }
+
+    @Test
+    public void testLoadCollectionLegacyFieldTestScenario() throws Exception {
+
+        StringBuffer contents = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("CollectionLegacyFieldTestScenario.xml")));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                contents.append(text);
+            }
+
+        } catch (Exception e) {
+            if (reader != null) {
+                reader.close();
+            }
+            throw new IllegalStateException("Error while reading file.", e);
+        }
+
+        Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(contents.toString());
+
+        verifyFieldDataNamesAreNotNull(scenario);
+
+        FactData factData = (FactData) scenario.getFixtures().get(0);
+        assertTrue(factData.getFieldData().get(0) instanceof CollectionFieldData);
+    }
+
+
+    @Test
     public void testLoadAssignedFactTestScenario() throws Exception {
 
         StringBuffer contents = new StringBuffer();

@@ -40,6 +40,7 @@ public class ScenarioXMLPersistence {
         xt.alias("field-data", FieldPlaceHolder.class);
         xt.alias("field-data", FieldData.class);
         xt.alias("field-data", FactAssignmentField.class);
+        xt.alias("field-data", CollectionFieldData.class);
         xt.alias("fixture", Fixture.class);
         xt.alias("retract-fact", RetractFact.class);
         xt.alias("expect-fact", VerifyFact.class);
@@ -70,7 +71,8 @@ public class ScenarioXMLPersistence {
             }
 
         }
-        return xt.toXML(sc);
+        String s = xt.toXML(sc);
+        return s;
     }
 
     public Scenario unmarshal(String xml) {

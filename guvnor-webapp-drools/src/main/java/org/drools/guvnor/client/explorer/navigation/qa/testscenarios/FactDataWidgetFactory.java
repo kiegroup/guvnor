@@ -171,7 +171,7 @@ public class FactDataWidgetFactory {
         if (field instanceof FieldData) {
             FieldDataConstraintEditor fieldDataConstraintEditor = new FieldDataConstraintEditor(
                     factType,
-                    (FieldData) field,
+                    (FieldData)field,
                     fact,
                     suggestionCompletionEngine,
                     scenario,
@@ -183,6 +183,14 @@ public class FactDataWidgetFactory {
                 }
             });
             return fieldDataConstraintEditor;
+        } else if (field instanceof CollectionFieldData) {
+            return new CollectionFieldDataConstraintEditor(
+                    factType,
+                    (CollectionFieldData)field,
+                    fact,
+                    suggestionCompletionEngine,
+                    scenario,
+                    executionTrace);
         } else if (field instanceof FactAssignmentField) {
             return new FactAssignmentFieldWidget(
                     (FactAssignmentField) field,
@@ -192,6 +200,7 @@ public class FactDataWidgetFactory {
                     parent,
                     executionTrace);
         } else if (field instanceof FieldPlaceHolder) {
+
             return new FieldSelectorWidget(
                     field,
                     new FieldConstraintHelper(

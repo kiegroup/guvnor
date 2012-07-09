@@ -86,8 +86,7 @@ public class FactPopulatorTest {
         FieldData fieldData = new FieldData(
                 "cheeseType",
                 "CheeseType.CHEDDAR");
-        fieldData.setNature(FieldData.TYPE_ENUM,
-                null);
+        fieldData.setNature(FieldData.TYPE_ENUM);
         FactData factData = new FactData("Cheese",
                 "c1",
                 asList((Field) fieldData),
@@ -453,7 +452,6 @@ public class FactPopulatorTest {
 
         FieldData field = new FieldData();
         field.setName("cheeses");
-        field.collectionType = "Cheese";
         field.setNature(FieldData.TYPE_COLLECTION);
         field.setValue("=[f1,f2,f3]");
         List<Field> lstField = new ArrayList<Field>();

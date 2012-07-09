@@ -50,7 +50,7 @@ public class TypeChoiceFormPopup
         if (helper.isThereABoundVariableToSet()) {
             addBoundVariableSelection();
         }
-        if (helper.isItAList()) {
+        if (helper.isItAList() && !helper.isTheParentAList()) {
             addListSelection();
         }
 

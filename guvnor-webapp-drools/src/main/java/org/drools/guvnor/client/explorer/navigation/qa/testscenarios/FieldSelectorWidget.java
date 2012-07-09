@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -72,21 +73,16 @@ public class FieldSelectorWidget
         if (selectionEvent.getSelectedItem() == FieldData.TYPE_FACT) {
             return new FactAssignmentField(field.getName(), helper.getFieldType());
         } else {
-            FieldData fieldData = new FieldData(field.getName(), "");
-            applyFieldDataNature(
-                    fieldData,
-                    selectionEvent.getSelectedItem());
-            return fieldData;
+            if (selectionEvent.getSelectedItem() == FieldData.TYPE_COLLECTION) {
+                CollectionFieldData collectionFieldData = new CollectionFieldData();
+                collectionFieldData.setName(field.getName());
+                return collectionFieldData;
+            } else {
+                FieldData fieldData = new FieldData(field.getName(), "");
+                fieldData.setNature(selectionEvent.getSelectedItem());
+                return fieldData;
+            }
         }
     }
 
-    private void applyFieldDataNature(FieldData fieldData, Integer fieldDataType) {
-        if (fieldDataType == FieldData.TYPE_COLLECTION) {
-            fieldData.setNature(
-                    FieldData.TYPE_COLLECTION,
-                    helper.getParametricFieldType());
-        } else {
-            fieldData.setNature(fieldDataType);
-        }
-    }
 }

@@ -80,14 +80,6 @@ public class FieldData
     */
     public static final int TYPE_FACT = 7;
 
-    /*
-     * In case the nature is set to TYPE_COLLECTION, collectionFactList may
-     * contain the list of factData
-     */
-    public List<FieldData> collectionFieldList = null;
-
-    public String collectionType;
-
     public FieldData() {
     }
 
@@ -99,15 +91,6 @@ public class FieldData
 
     public long getNature() {
         return this.nature;
-    }
-
-    public void setNature(long l,
-                          String collectionType) {
-        this.nature = l;
-        if (this.nature == TYPE_COLLECTION) {
-            collectionFieldList = new ArrayList<FieldData>();
-            this.collectionType = collectionType;
-        }
     }
 
     public void setName(String name) {
