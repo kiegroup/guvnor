@@ -24,7 +24,7 @@ import java.util.Date;
 @XmlRootElement(name="metadata")
 public class AssetMetadata {
 
-    private String Uuid;
+    private String uuid;
     private String[] categories;
     private String note;
     private Date created;
@@ -36,11 +36,11 @@ public class AssetMetadata {
     
     @XmlElement
     public String getUuid() {
-        return Uuid;
+        return uuid;
     }
 
     public void setUuid(String uuid) {
-        Uuid = uuid;
+        this.uuid = uuid;
     }
 
     @XmlElement
