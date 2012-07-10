@@ -17,26 +17,28 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
-import org.apache.abdera.model.Element;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
-import org.apache.abdera.model.Feed;
-import org.apache.abdera.model.Link;
-import org.apache.cxf.annotations.GZIP;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.dom4j.dom.DOMElement;
+import org.drools.guvnor.server.jaxrs.jaxb.*;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
+import org.drools.guvnor.server.jaxrs.providers.atom.Entry;
+import org.drools.guvnor.server.jaxrs.providers.atom.Feed;
+import org.drools.guvnor.server.jaxrs.providers.atom.Link;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
-import org.drools.guvnor.server.jaxrs.jaxb.Asset;
-import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleHistoryIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
+import org.jboss.seam.security.annotations.LoggedIn;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -93,6 +95,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
 @Path("/packages")
 @RequestScoped
 @Named
+@LoggedIn
 @GZIP
 public class PackageResource extends Resource {
     private HttpHeaders headers;
@@ -105,22 +108,20 @@ public class PackageResource extends Resource {
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackagesAsFeed() {
-        Factory factory = Abdera.getNewFactory();
-        Feed f = factory.getAbdera().newFeed();
+        Feed f = new Feed();
         f.setTitle("Packages");
-        f.setBaseUri(uriInfo.getBaseUriBuilder().path("packages").build().toString());
+        f.setBase(uriInfo.getBaseUriBuilder().path("packages").build());
         ModuleIterator iter = rulesRepository.listModules();
         while (iter.hasNext()) {
             ModuleItem item = iter.next();
-            Entry e = factory.getAbdera().newEntry();
+            Entry e = new Entry();
             e.setTitle(item.getName());
-            Link l = factory.newLink();
+            Link l = new Link();
             l.setHref(uriInfo.getBaseUriBuilder()
                     .path("packages/{itemName}")
-                    .build(item.getName())
-                    .toString());
-            e.addLink(l);
-            f.addEntry(e);
+                    .build(item.getName()));
+            e.getLinks().add(l);
+            f.getEntries().add(e);
         }
 
         return f;
@@ -176,16 +177,15 @@ public class PackageResource extends Resource {
     public Entry createPackageFromAtom(Entry entry) {
         try {
             String checkinComment = "Initial";
-            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
-                if (checkinCommentExtension != null) {
-                    checkinComment = checkinCommentExtension.getSimpleExtension(Translator.VALUE);
-                }
+            entry.getAnyOtherElement();
+
+            AtomPackageMetadata metaData = entry.getAnyOtherJAXBObject(AtomPackageMetadata.class);
+            if (metaData != null) {
+                checkinComment = metaData.getCheckinComment();
             }
             ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackageEntryAbdera(packageItem, uriInfo);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -203,7 +203,7 @@ public class PackageResource extends Resource {
             
             ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackage(packageItem, uriInfo);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -314,28 +314,26 @@ public class PackageResource extends Resource {
         }
         ModuleItem p = rulesRepository.loadModule(packageName);
 
-        Factory factory = Abdera.getNewFactory();
-        Feed f = factory.getAbdera().newFeed();
+        Feed f = new Feed();
         f.setTitle("Version history of " + p.getName());
-        f.setBaseUri(uriInfo.getBaseUriBuilder().path("packages").build().toString());
+        f.setBase(uriInfo.getBaseUriBuilder().path("packages").build());
         ModuleHistoryIterator it = p.getHistory();
 
         while (it.hasNext()) {
             try {
                 ModuleItem historicalPackage = it.next();
                 if (historicalPackage.getVersionNumber() != 0) {
-                    Entry e = factory.getAbdera().newEntry();
+                    Entry e = new Entry();
                     e.setTitle(Long.toString(historicalPackage
                             .getVersionNumber()));
                     e.setUpdated(historicalPackage.getLastModified().getTime());
-                    Link l = factory.newLink();
+                    Link l = new Link();
                     l.setHref(uriInfo
                             .getBaseUriBuilder()
                             .path("packages/{packageName}/versions/{versionNumber}")
-                            .build(p.getName(), Long.toString(historicalPackage.getVersionNumber()))
-                            .toString());
-                    e.addLink(l);
-                    f.addEntry(e);
+                            .build(p.getName(), Long.toString(historicalPackage.getVersionNumber())));
+                    e.getLinks().add(l);
+                    f.getEntries().add(e);
                 }
             } catch (RuntimeException e) {
                 throw new WebApplicationException(e);
@@ -401,35 +399,20 @@ public class PackageResource extends Resource {
             }
             
             // TODO: support LastContributor
-            if (entry.getAuthor() != null) {
+            if (!entry.getAuthors().isEmpty()) {
             }
 
             String checkinComment = "";
-            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);
-                if (archivedExtension != null) {
-                    existingModuleItem.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
-                }
 
-                ExtensibleElement checkinCommentExtension = metadataExtension.getExtension(Translator.CHECKIN_COMMENT);
-                if (checkinCommentExtension != null) {
-                    checkinComment =  checkinCommentExtension.getSimpleExtension(Translator.VALUE);
-                }
-                
-                // TODO: Package state is not fully supported yet
-                /*
-                 * ExtensibleElement stateExtension =
-                 * metadataExtension.getExtension(Translator.STATE);
-                 * if (stateExtension != null) {
-                 * p.updateState(stateExtension.getSimpleExtension
-                 * (Translator.STATE)); }
-                 */
-            }
+           AtomPackageMetadata packageMetadata = entry.getAnyOtherJAXBObject(AtomPackageMetadata.class);
+           if ( packageMetadata != null ) {
+               existingModuleItem.archiveItem(packageMetadata.isArchived());
+               checkinComment = packageMetadata.getCheckinComment();
+           }
 
             existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new WebApplicationException(e);
         }
     }
@@ -476,8 +459,7 @@ public class PackageResource extends Resource {
             @PathParam("packageName") String packageName,
             @QueryParam("format") List<String> formats) {
         try {
-            Factory factory = Abdera.getNewFactory();
-            Feed feed = factory.getAbdera().newFeed();
+            Feed feed = new Feed();
             ModuleItem p = rulesRepository.loadModule(packageName);
             feed.setTitle(p.getTitle() + "-asset-feed");
             
@@ -493,7 +475,7 @@ public class PackageResource extends Resource {
             }
             
             while (iter.hasNext())
-                feed.addEntry(toAssetEntryAbdera(iter.next(), uriInfo));
+                feed.getEntries().add(toAssetEntryAbdera(iter.next(), uriInfo));
             return feed;
         } catch (RuntimeException e) {
             throw new WebApplicationException(e);
@@ -546,7 +528,6 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
-
 
     @GET
     @Path("{packageName}/assets/{assetName}")
@@ -617,24 +598,10 @@ public class PackageResource extends Resource {
         try {
             String format = null;
             String[] categories = null;
-            ExtensibleElement metadataExtension = entry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
-                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
-                
-                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                if (categoryExtension != null) {
-                    List<Element> categoryValues = categoryExtension
-                            .getExtensions(Translator.VALUE);
-                    categories = new String[categoryValues.size()];
-                    for (int i=0; i< categoryValues.size(); i++) {
-                        String catgoryValue = categoryValues.get(i).getText();
-                        categories[i] = catgoryValue;
-                    }
-                }
-            }
+            AtomAssetMetadata assetMetadata = entry.getAnyOtherJAXBObject(AtomAssetMetadata.class);
+            categories = assetMetadata.getCategories();
 
-            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), null, format);
+            AssetItem ai = rulesRepository.loadModule(packageName).addAsset(entry.getTitle(), entry.getSummary(), null, assetMetadata.getFormat());
 
             if (categories != null) {
                 ai.updateCategoryList(categories);
@@ -644,7 +611,7 @@ public class PackageResource extends Resource {
             rulesRepository.save();
 
             return toAssetEntryAbdera(ai, uriInfo);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -703,26 +670,7 @@ public class PackageResource extends Resource {
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry) {
         try {
-            String format = null;
-            String[] categories = null;
-            String state = null;
-            ExtensibleElement metadataExtension = assetEntry.getExtension(Translator.METADATA);
-            if (metadataExtension != null) {
-                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
-                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
-                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                if (categoryExtension != null) {
-                    List<Element> categoryValues = categoryExtension
-                            .getExtensions(Translator.VALUE);
-                    categories = new String[categoryValues.size()];
-                    for (int i=0; i< categoryValues.size(); i++) {
-                        String catgoryValue = categoryValues.get(i).getText();
-                        categories[i] = catgoryValue;
-                    }
-                }
-                ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);
-                state = stateExtension != null ? stateExtension.getSimpleExtension(Translator.VALUE) : null;
-            }
+            AtomAssetMetadata assetMetadata = assetEntry.getAnyOtherJAXBObject(AtomAssetMetadata.class);
 
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
@@ -730,24 +678,24 @@ public class PackageResource extends Resource {
             ai.checkout();
             ai.updateTitle(assetEntry.getTitle());
             ai.updateDescription(assetEntry.getSummary());
-            if (format != null) {
-                ai.updateFormat(format);
+            if (assetMetadata.getFormat() != null) {
+                ai.updateFormat(assetMetadata.getFormat());
             }
             
             //REVISIT: What if the client really wants to set content to ""?
-            if (assetEntry.getContent() != null && !"".equals(assetEntry.getContent())) {
-                ai.updateContent(assetEntry.getContent());
+            if (assetEntry.getContent().getText() != null && !"".equals(assetEntry.getContent().getText())) {
+                ai.updateContent(assetEntry.getContent().getText());
             }
-            if (categories != null) {
-                ai.updateCategoryList(categories);
+            if (assetMetadata.getCategories() != null && assetMetadata.getCategories().length > 0) {
+                ai.updateCategoryList(assetMetadata.getCategories());
             }
-            if (state != null) {
-                ai.updateState(state);
+            if (assetMetadata.getState() != null) {
+                ai.updateState(assetMetadata.getState());
             }
             ai.updateValid(assetValidator.validate(ai));
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new WebApplicationException(e);
         }
     }
@@ -775,7 +723,8 @@ public class PackageResource extends Resource {
 
     @PUT
     @Path("{packageName}/assets/{assetName}/source")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
+    @Produces({MediaType.WILDCARD})
     public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String content) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
@@ -793,6 +742,7 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}/assets/{assetName}/binary")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.WILDCARD)
     public void updateAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, InputStream is) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
@@ -833,8 +783,7 @@ public class PackageResource extends Resource {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
             
-            Factory factory = Abdera.getNewFactory();
-            Feed f = factory.getAbdera().newFeed();
+            Feed f = new Feed();
             f.setTitle("Version history of " + asset.getName());
 
             URI base;
@@ -847,25 +796,25 @@ public class PackageResource extends Resource {
                         .path("packages/{packageName}/assets/{assetName}/versions")
                         .build(asset.getModuleName(), asset.getName());
             }
-            f.setBaseUri(base.toString());
+            f.setBase(base);
                         
             AssetHistoryIterator it = asset.getHistory();
             while (it.hasNext()) {
-                    AssetItem historicalAsset = it.next();
-                    if (historicalAsset.getVersionNumber() != 0) {
-                        Entry e = factory.getAbdera().newEntry();
-                        e.setTitle(Long.toString(historicalAsset
-                                .getVersionNumber()));
-                        e.setUpdated(historicalAsset.getLastModified().getTime());
-                        Link l = factory.newLink();
-                        l.setHref(uriInfo
-                                .getBaseUriBuilder()
-                                .path("packages/{packageName}/assets/{assetName}/versions/{versionNumber}")
-                                .build(asset.getModuleName(), asset.getName(),
-                                        Long.toString(historicalAsset.getVersionNumber())).toString());
-                        e.addLink(l);
-                        f.addEntry(e);
-                    }
+                AssetItem historicalAsset = it.next();
+                if (historicalAsset.getVersionNumber() != 0) {
+                    Entry e = new Entry();
+                    e.setTitle(Long.toString(historicalAsset
+                            .getVersionNumber()));
+                    e.setUpdated(historicalAsset.getLastModified().getTime());
+                    Link l = new Link();
+                    l.setHref(uriInfo
+                            .getBaseUriBuilder()
+                            .path("packages/{packageName}/assets/{assetName}/versions/{versionNumber}")
+                            .build(asset.getModuleName(), asset.getName(),
+                                    Long.toString(historicalAsset.getVersionNumber())));
+                    e.getLinks().add(l);
+                    f.getEntries().add(e);
+                }
             }
             return f;
         } catch (RuntimeException e) {
@@ -971,39 +920,37 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
-                                              @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is) {
+    public Asset createAssetFromBinaryAndJAXB(@PathParam("packageName") String packageName, @MultipartForm AssetMultipartForm assetMultipartForm) {
         /* Verify passed in asset object */
-        if (asset == null || asset.getMetadata() == null ){
+        if (assetMultipartForm == null || assetMultipartForm.getAsset() == null || assetMultipartForm.getAsset().getMetadata() == null ){
             throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
         }
-        final String assetName = asset.getTitle();
+        final String assetName = assetMultipartForm.getAsset().getTitle();
 
         /* Check for existence of asset name */
         if (assetName == null) {
             throw new WebApplicationException(Response.status(500).entity("Asset name must be specified (Asset.metadata.title)").build());
         }
 
-        AssetItem ai = rulesRepository.loadModule(packageName).addAsset(assetName, asset.getDescription());
+        AssetItem ai = rulesRepository.loadModule(packageName).addAsset(assetName, assetMultipartForm.getAsset().getDescription());
         ai.checkout();
-        ai.updateBinaryContentAttachmentFileName(asset.getBinaryContentAttachmentFileName());
-        ai.updateFormat(asset.getMetadata().getFormat());
-        ai.updateBinaryContentAttachment(is);
+        ai.updateBinaryContentAttachmentFileName(assetMultipartForm.getAsset().getBinaryContentAttachmentFileName());
+        ai.updateFormat(assetMultipartForm.getAsset().getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(assetMultipartForm.getBinary());
         ai.getModule().updateBinaryUpToDate(false);
         ai.updateValid(assetValidator.validate(ai));
-        ai.checkin(asset.getMetadata().getCheckInComment());
+        ai.checkin(assetMultipartForm.getAsset().getMetadata().getCheckInComment());
         rulesRepository.save();
-        return asset;
+        return assetMultipartForm.getAsset();
     }
 
     @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName, @Multipart(value = "asset", type = MediaType.APPLICATION_JSON) Asset asset,
-                                              @Multipart(value = "binary", type = MediaType.APPLICATION_OCTET_STREAM) InputStream is, @PathParam("assetName") final String assetName) {
+    public Asset updateAssetFromBinaryAndJAXB(@PathParam("packageName") final String packageName,@MultipartForm AssetMultipartForm assetMultipartForm, @PathParam("assetName") final String assetName) {
         /* Verify passed in asset object */
-        if (asset == null || asset.getMetadata() == null ){
+        if (assetMultipartForm == null || assetMultipartForm.getAsset() == null || assetMultipartForm.getAsset().getMetadata() == null ){
             throw new WebApplicationException(Response.status(500).entity("Request must contain asset and metadata").build());
         }
 
@@ -1014,15 +961,15 @@ public class PackageResource extends Resource {
 
         AssetItem ai = rulesRepository.loadModule(packageName).loadAsset(assetName);
         ai.checkout();
-        ai.updateDescription(asset.getDescription());
-        ai.updateBinaryContentAttachmentFileName(asset.getBinaryContentAttachmentFileName());
-        ai.updateFormat(asset.getMetadata().getFormat());
-        ai.updateBinaryContentAttachment(is);
+        ai.updateDescription(assetMultipartForm.getAsset().getDescription());
+        ai.updateBinaryContentAttachmentFileName(assetMultipartForm.getAsset().getBinaryContentAttachmentFileName());
+        ai.updateFormat(assetMultipartForm.getAsset().getMetadata().getFormat());
+        ai.updateBinaryContentAttachment(assetMultipartForm.getBinary());
         ai.getModule().updateBinaryUpToDate(false);
         ai.updateValid(assetValidator.validate(ai));
-        ai.checkin(asset.getMetadata().getCheckInComment());
+        ai.checkin(assetMultipartForm.getAsset().getMetadata().getCheckInComment());
         rulesRepository.save();
-        return asset;
+        return assetMultipartForm.getAsset();
     }
     
     private DateFormat createDateFormat(){

@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.api;
+package org.drools.guvnor.server.jaxrs.providers.atom;
 
-public enum Valid {
-    VALID,
-    INVALID,
-    UNDETERMINED;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.net.URI;
 
-    public static Valid fromString(String str) {
-        if (str != null) {
-            for (Valid value : values()) {
-                if (str.equals(value.toString())) {
-                    return value;
-                }
-            }
-        }
-        return UNDETERMINED;
-    }
+/**
+ * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
+ * @version $Revision: 1 $
+ */
+public class UriAdapter extends XmlAdapter<String, URI>
+{
+   public URI unmarshal(String s) throws Exception
+   {
+      if (s == null) return null;
+      return new URI(s);
+   }
 
-    public static Valid fromBoolean(boolean b) {
-          return b ? VALID : INVALID;
-    }
-
-
+   public String marshal(URI uri) throws Exception
+   {
+      if (uri == null) return null;
+      return uri.toString();
+   }
 }

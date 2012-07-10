@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.api;
+package org.drools.guvnor.server.jaxrs.jaxb;
 
-public enum Valid {
-    VALID,
-    INVALID,
-    UNDETERMINED;
 
-    public static Valid fromString(String str) {
-        if (str != null) {
-            for (Valid value : values()) {
-                if (str.equals(value.toString())) {
-                    return value;
-                }
-            }
-        }
-        return UNDETERMINED;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
+
+@XmlRootElement(name = "created")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Created {
+    @XmlElement
+    private Date value;
+    public Date getValue() {
+        return value;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public static Valid fromBoolean(boolean b) {
-          return b ? VALID : INVALID;
+    public void setValue(Date created) {
+        value = created;
     }
-
-
 }

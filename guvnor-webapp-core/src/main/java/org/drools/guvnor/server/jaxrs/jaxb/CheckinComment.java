@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.api;
+package org.drools.guvnor.server.jaxrs.jaxb;
 
-public enum Valid {
-    VALID,
-    INVALID,
-    UNDETERMINED;
 
-    public static Valid fromString(String str) {
-        if (str != null) {
-            for (Valid value : values()) {
-                if (str.equals(value.toString())) {
-                    return value;
-                }
-            }
-        }
-        return UNDETERMINED;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "checkinComment")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CheckinComment {
+    @XmlElement
+    private String value;
+    public String getValue() {
+        return value;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public static Valid fromBoolean(boolean b) {
-          return b ? VALID : INVALID;
+    public void setValue(String checkin) {
+        value = checkin;
     }
-
-
 }

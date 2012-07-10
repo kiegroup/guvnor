@@ -15,11 +15,11 @@
  */
 package org.drools.guvnor.server.test;
 
-import java.io.File;
-
-import javax.inject.Inject;
-
 import org.apache.commons.io.FileUtils;
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.dom4j.xpath.DefaultXPath;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.repository.TestRepositoryStartupService;
@@ -32,12 +32,21 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.picketlink.idm.impl.api.PasswordCredential;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RunWith(Arquillian.class)
 public abstract class GuvnorIntegrationTest {
@@ -56,9 +65,29 @@ public abstract class GuvnorIntegrationTest {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
+        modifyWebXml(webArchive, explodedWarFile);
         removeExcludedFiles(webArchive, explodedWarFile);
-        // dumpArchive(webArchive);
+       // dumpArchive(webArchive);
         return webArchive;
+    }
+
+    private static void modifyWebXml(WebArchive webArchive, File explodedWarFile) {
+        try {
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(explodedWarFile.getPath() + "/WEB-INF/web.xml"));
+            DefaultXPath xpath = new DefaultXPath("//j:context-param[j:param-name/text()=\"resteasy.injector.factory\"]");
+            Map<String,String> namespaces = new TreeMap<String,String>();
+            namespaces.put("j","http://java.sun.com/xml/ns/javaee");
+            xpath.setNamespaceURIs(namespaces);
+
+            Node node =  xpath.selectSingleNode(document);
+            node.detach();
+            File filteredWebXml = new File("target/filtered-xml/web.xml");
+            webArchive.delete(ArchivePaths.create("WEB-INF/web.xml"))   ;
+            webArchive.addAsWebInfResource(filteredWebXml, ArchivePaths.create("web.xml"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void dumpArchive(WebArchive webArchive) {
@@ -101,10 +130,15 @@ public abstract class GuvnorIntegrationTest {
         // For now, we just add what we need... this is not scalable
         webArchive.addClasses(
                 // Replace the production one
-                TestRepositoryStartupService.class,
+                TestRepositoryStartupService.class
+
                 // Stuff we need
-                org.apache.commons.httpclient.Credentials.class,
-                org.apache.commons.httpclient.UsernamePasswordCredentials.class);
+        ).addAsLibraries(
+                DependencyResolvers.use(MavenDependencyResolver.class)
+                        .artifact("org.apache.abdera:abdera-core:1.1.1")
+                        .artifact("org.apache.abdera:abdera-client:1.1.1")
+                        .resolveAsFiles())
+        .addAsLibrary(new File("target/test-classes/billasurf.jar"));
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
@@ -114,7 +148,7 @@ public abstract class GuvnorIntegrationTest {
         File libDir = new File(explodedWarFile, "WEB-INF/lib");
         for (File file : libDir.listFiles()) {
             String fileName = file.getName();
-            if (fileName.startsWith("weld-") && fileName.endsWith(".jar")) {
+            if (fileName.endsWith(".jar") && (fileName.startsWith("weld-") || fileName.startsWith("resteasy-"))) {
                 webArchive.delete(ArchivePaths.create("WEB-INF/lib/" + fileName));
             }
         }

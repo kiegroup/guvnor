@@ -16,23 +16,21 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
-import org.apache.abdera.model.Content.Type;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
-import org.drools.guvnor.server.jaxrs.jaxb.Asset;
-import org.drools.guvnor.server.jaxrs.jaxb.AssetMetadata;
-import org.drools.guvnor.server.jaxrs.jaxb.Category;
+import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
-import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
+import org.drools.guvnor.server.jaxrs.providers.atom.Content;
+import org.drools.guvnor.server.jaxrs.providers.atom.Entry;
+import org.drools.guvnor.server.jaxrs.providers.atom.Link;
+import org.drools.guvnor.server.jaxrs.providers.atom.Person;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceException;
 import java.net.URI;
 import java.util.*;
 
@@ -136,60 +134,50 @@ public class Translator {
     }
 
     public static Entry toPackageEntryAbdera(ModuleItem p, UriInfo uriInfo) {
-        URI baseURL;
+        URI baseUri;
         if (p.isHistoricalVersion()) {
-            baseURL = uriInfo.getBaseUriBuilder()
+            baseUri = uriInfo.getBaseUriBuilder()
                     .path("packages/{packageName}/versions/{version}").build(p.getName(), Long.toString(p.getVersionNumber()));
         } else {
-            baseURL = uriInfo.getBaseUriBuilder().path("packages/{packageName}").build(p.getName());
+            baseUri = uriInfo.getBaseUriBuilder().path("packages/{packageName}").build(p.getName());
         }
 
-        Factory factory = Abdera.getNewFactory();
-
-        org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
+        Entry e = new Entry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setBaseUri(baseURL.toString());
-        e.addAuthor(p.getLastContributor());
+        e.setBase(baseUri);
+        e.getAuthors().add(new Person(p.getLastContributor()));
 
-        e.setId(baseURL.toString());
+        e.setId(baseUri);
 
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
             AssetItem item = i.next();
-            org.apache.abdera.model.Link l = factory.newLink();
+            Link l = new Link();
 
-            l.setHref(UriBuilder.fromUri(baseURL).path("assets/{assetName}").build(item.getName()).toString());
+            l.setHref(UriBuilder.fromUri(baseUri).path("assets/{assetName}").build(item.getName()));
             l.setTitle(item.getTitle());
             l.setRel("asset");
-            e.addLink(l);
+            e.getLinks().add(l);
         }
-
         //generate meta data
-        ExtensibleElement extension = e.addExtension(METADATA);
-        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
-        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, p.isArchived() ? "true" : "false");
+        AtomPackageMetadata metaData = (AtomPackageMetadata) e.getAnyOtherJAXBObject();
+        if (metaData == null) {
+            metaData = new AtomPackageMetadata();
+        }
+        metaData.setArchived(p.isArchived());
+        metaData.setUuid(p.getUUID());
+        metaData.setState(p.getState() == null ? "" : p.getState().getName());
+        metaData.setVersionNumber(p.getVersionNumber());
+        metaData.setCheckinComment(p.getCheckinComment());
 
-        childExtension = extension.addExtension(UUID);
-        childExtension.addSimpleExtension(VALUE, p.getUUID());
-
-        childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
-
-        childExtension = extension.addExtension(VERSION_NUMBER);
-        childExtension.addSimpleExtension(VALUE, String.valueOf(p.getVersionNumber()));
-        
-        childExtension = extension.addExtension(CHECKIN_COMMENT);
-        childExtension.addSimpleExtension(VALUE, p.getCheckinComment());       
-        
-        org.apache.abdera.model.Content content = factory.newContent();
-        content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
-        content.setMimeType("application/octet-stream");
-        content.setContentType(Type.MEDIA);
-        e.setContentElement(content);
-
+        e.setAnyOtherJAXBObject(metaData);
+        Content content = new Content();
+        content.setSrc(UriBuilder.fromUri(baseUri).path("binary").build());
+        content.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+//        content.setContentType(Type.MEDIA); // TODO remove me if not it's base64 encoded fine
+        e.setContent(content);
         return e;
     }
 
@@ -236,60 +224,52 @@ public class Translator {
         return e;
     }*/
     public static Entry toAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
-        URI baseURL;
+        URI baseUri;
         if (a.isHistoricalVersion()) {
-            baseURL = uriInfo.getBaseUriBuilder()
+            baseUri = uriInfo.getBaseUriBuilder()
                     .path("packages/{packageName}/assets/{assetName}/versions/{version}")
                     .build(a.getModuleName(), a.getName(), Long.toString(a.getVersionNumber()));
         } else {
-            baseURL = uriInfo.getBaseUriBuilder()
+            baseUri = uriInfo.getBaseUriBuilder()
                     .path("packages/{packageName}/assets/{assetName}")
                     .build(a.getModuleName(), a.getName());
         }
 
-        Factory factory = Abdera.getNewFactory();
-
-        org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
+        Entry e = new Entry();
         e.setTitle(a.getTitle());
         e.setSummary(a.getDescription());
         e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
-        e.setBaseUri(baseURL.toString());
-        e.addAuthor(a.getLastContributor());
+        e.setBase(baseUri);
+        e.getAuthors().add(new Person(a.getLastContributor()));
 
-        e.setId(baseURL.toString());
-
-        //generate meta data
-        ExtensibleElement extension = e.addExtension(METADATA);
-        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
-        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, a.isArchived() ? "true" : "false");
-
-        childExtension = extension.addExtension(UUID);
-        childExtension.addSimpleExtension(VALUE, a.getUUID());
-
-        childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, a.getState() == null ? "" : a.getState().getName());
-
-        childExtension = extension.addExtension(FORMAT);
-        childExtension.addSimpleExtension(VALUE, a.getFormat());
-
-        childExtension = extension.addExtension(VERSION_NUMBER);
-        childExtension.addSimpleExtension(VALUE, String.valueOf(a.getVersionNumber()));
-        
-        childExtension = extension.addExtension(CHECKIN_COMMENT);
-        childExtension.addSimpleExtension(VALUE, a.getCheckinComment());    
-        
-        List<CategoryItem> categories = a.getCategories();
-        childExtension = extension.addExtension(CATEGORIES);
-        for (CategoryItem c : categories) {
-            childExtension.addSimpleExtension(VALUE, c.getName());
+        e.setId(baseUri);
+        try {
+            AtomAssetMetadata atomAssetMetadata  = e.getAnyOtherJAXBObject(AtomAssetMetadata.class);
+            if (atomAssetMetadata == null) {
+                atomAssetMetadata = new AtomAssetMetadata();
+            }
+            atomAssetMetadata.setArchived(a.isArchived());
+            atomAssetMetadata.setUuid(a.getUUID());
+            atomAssetMetadata.setState(a.getState() == null ? "" : a.getState().getName());
+            atomAssetMetadata.setFormat(a.getFormat());
+            atomAssetMetadata.setVersionNumber(a.getVersionNumber());
+            atomAssetMetadata.setCheckinComment(a.getCheckinComment());
+            String[] categories = new String[a.getCategories().size()];
+            int i = 0;
+            for (CategoryItem cItem : a.getCategories()) {
+                categories[i] = cItem.getName();
+                i++;
+            }
+            atomAssetMetadata.setCategories(categories);
+            e.setAnyOtherJAXBObject(atomAssetMetadata);
+        } catch (Exception ex) {
+            throw new WebServiceException(ex);
         }
-
-        org.apache.abdera.model.Content content = factory.newContent();
-        content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
-        content.setMimeType("application/octet-stream");
-        content.setContentType(Type.MEDIA);
-        e.setContentElement(content);
+        Content content = new Content();
+        content.setSrc(UriBuilder.fromUri(baseUri).path("binary").build());
+        content.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+//        content.setContentType(Type.MEDIA); // TODO remove me if not it's base64 encoded fine
+        e.setContent(content);
 
         return e;
     }

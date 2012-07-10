@@ -17,16 +17,17 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Feed;
-import org.apache.abdera.model.Link;
-import org.apache.cxf.annotations.GZIP;
+import org.drools.guvnor.server.jaxrs.providers.atom.Entry;
+import org.drools.guvnor.server.jaxrs.providers.atom.Feed;
+import org.drools.guvnor.server.jaxrs.providers.atom.Link;
+import org.jboss.resteasy.annotations.GZIP;
+
+
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
+import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -53,6 +54,7 @@ import org.jboss.resteasy.plugins.providers.atom.Link;*/
 @Path("/categories")
 @RequestScoped
 @Named
+@LoggedIn
 @GZIP
 public class CategoryResource extends Resource {
 
@@ -103,25 +105,23 @@ public class CategoryResource extends Resource {
     @Path("{categoryPath:.+}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryPath") String categoryPath) {
-        Factory factory = Abdera.getNewFactory();
-        Feed f = factory.getAbdera().newFeed();
+        Feed f = new Feed();
         f.setTitle(categoryPath);
         AssetItemPageResult result = rulesRepository.findAssetsByCategory(
                 categoryPath, 0, pageSize);
         List<AssetItem> assets = result.assets;
         for (AssetItem item : assets) {
             Entry e = toAssetEntryAbdera(item, uriInfo);
-            f.addEntry(e);
+            f.getEntries().add(e);
         }
 
         if (result.hasNext) {
-            Link l = factory.newLink();
+            Link l = new Link();
             l.setRel("next-page");
             l.setHref(uriInfo.getBaseUriBuilder()
                     .path("categories/{categoryPath}/assets//page/{pageNumber}")
-                    .build(categoryPath, (Integer) 1)
-                    .toString());
-            f.addLink(l);
+                    .build(categoryPath, (Integer) 1));
+            f.getLinks().add(l);
         }
 
         return f;
@@ -142,7 +142,7 @@ public class CategoryResource extends Resource {
 
     @PUT
     @Path("{categoryPath:.+}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.WILDCARD})
     public void createCategory(@PathParam("categoryPath") String categoryPath) {
         String parentPath;
         String name;
@@ -159,6 +159,7 @@ public class CategoryResource extends Resource {
 
     @DELETE
     @Path("{categoryPath:.+}")
+    @Consumes({MediaType.WILDCARD})
     public void deleteCategory(@PathParam("categoryPath") String categoryPath) {
         try {
             repositoryCategoryService.removeCategory(categoryPath);

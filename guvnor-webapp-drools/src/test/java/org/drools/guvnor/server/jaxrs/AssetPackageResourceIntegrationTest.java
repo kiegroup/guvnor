@@ -16,15 +16,15 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import java.util.Iterator;
 import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Element;
-import org.apache.abdera.model.ExtensibleElement;
+import org.apache.abdera.model.*;
+import org.apache.abdera.protocol.Response.ResponseType;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.abdera.protocol.client.RequestOptions;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
+import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
@@ -34,31 +34,26 @@ import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-import org.apache.abdera.model.Feed;
-import org.apache.abdera.protocol.Response.ResponseType;
-import org.apache.abdera.protocol.client.AbderaClient;
-import org.apache.abdera.protocol.client.ClientResponse;
-import org.apache.abdera.protocol.client.RequestOptions;
 
 import static org.junit.Assert.*;
 
 public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
 
-    private static int totalAssets = 7;
+    private static int totalAssets = 9;
 
     private Abdera abdera = new Abdera();
 
@@ -124,6 +119,31 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         rule3.updateFormat( AssetFormats.DRL_MODEL );
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
         rule3.checkin( "version 1" );
+
+        AssetItem rule5 = pkg.addAsset( "model5",
+                "desc for model5",
+                "AssetPackageResourceTestCategory",
+                AssetFormats.DRL_MODEL
+        );
+        rule5.updateFormat(AssetFormats.DRL_MODEL);
+        rule5.updateContent("declare Album5\n genre5: String \n end");
+        rule5.checkin("version 1");
+
+
+        AssetItem rule6 = pkg.addAsset( "model6",
+                "desc for model6",
+                "AssetPackageResourceTestCategory",
+                AssetFormats.DRL_MODEL
+        );
+        rule6.updateFormat(AssetFormats.DRL_MODEL);
+        rule6.updateContent("declare Album6\n genre6: String \n end");
+        rule6.checkin("version 1");
+
+
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "declare Album1\n genre1: String \n end" );
+        rule3.checkin( "version 1" );
+
 
         pkg.checkin( "version2" );
 
@@ -351,8 +371,8 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
     }
     
     @Test @RunAsClient
-    public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
+    public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model5");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -362,18 +382,17 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
         //System.out.println(GetContent(connection));
-        
         InputStream in = connection.getInputStream();
         assertNotNull(in);
         Document<Entry> doc = abdera.getParser().parse(in);
         Entry entry = doc.getRoot();
-        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());
-        assertEquals("model1", entry.getTitle());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model5", entry.getBaseUri().getPath());
+        assertEquals("model5", entry.getTitle());
         assertNotNull(entry.getPublished());
         assertNotNull(entry.getAuthor().getName());
-        assertEquals("desc for model1", entry.getSummary());
+        assertEquals("desc for model5", entry.getSummary());
         //assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
-        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model5/binary", entry.getContentSrc().getPath());
         
         ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
@@ -399,7 +418,7 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("PUT");
-        connection.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_ATOM_XML);
         connection.setDoOutput(true);
         entry.writeTo(connection.getOutputStream());
         assertEquals(204, connection.getResponseCode());
@@ -414,13 +433,12 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         //System.out.println(GetContent(connection));
-
         in = connection.getInputStream();
         assertNotNull(in);
+
         doc = abdera.getParser().parse(in);
         entry = doc.getRoot();
-        
-        metadataExtension  = entry.getExtension(Translator.METADATA); 
+        metadataExtension  = entry.getExtension(Translator.METADATA);
         archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
         assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE));      
         stateExtension = metadataExtension.getExtension(Translator.STATE);     
@@ -443,11 +461,24 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         }
         assertTrue(foundCategory1);
         assertTrue(foundCategory2);
+
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/model5/source");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
+        String result = IOUtils.toString(connection.getInputStream());
+        assertTrue(result.contains("declare Album5"));
+        assertTrue(result.contains("genre5: String"));
     }
     
     @Test @RunAsClient
-    public void testUpdateAssetFromAtomWithStateNotExist(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
+    public void testUpdateAssetFromAtomWithStateNotExist(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model6");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -489,7 +520,6 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient
@@ -518,8 +548,8 @@ public class AssetPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
         String result = IOUtils.toString(connection.getInputStream());
-        assertTrue(result.indexOf("declare Album2")>=0);
-        assertTrue(result.indexOf("genre2: String")>=0);
+        assertTrue(result.contains("declare Album2"));
+        assertTrue(result.contains("genre2: String"));
     }
 
     @Test @RunAsClient

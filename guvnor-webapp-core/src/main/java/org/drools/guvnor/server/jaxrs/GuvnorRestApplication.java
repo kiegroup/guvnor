@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.api;
+package org.drools.guvnor.server.jaxrs;
 
-public enum Valid {
-    VALID,
-    INVALID,
-    UNDETERMINED;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
-    public static Valid fromString(String str) {
-        if (str != null) {
-            for (Valid value : values()) {
-                if (str.equals(value.toString())) {
-                    return value;
-                }
-            }
-        }
-        return UNDETERMINED;
+public class GuvnorRestApplication extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(PackageResource.class);
+        classes.add(CategoryResource.class);
+        System.out.println("GuvnorRestApplication GuvnorRestApplicationGuvnorRestApplicationGuvnorRestApplicationGuvnorRestApplication");
+        return classes;
     }
-
-    public static Valid fromBoolean(boolean b) {
-          return b ? VALID : INVALID;
-    }
-
 
 }

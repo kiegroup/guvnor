@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.api;
+package org.drools.guvnor.server.jaxrs.jaxb;
 
-public enum Valid {
-    VALID,
-    INVALID,
-    UNDETERMINED;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    public static Valid fromString(String str) {
-        if (str != null) {
-            for (Valid value : values()) {
-                if (str.equals(value.toString())) {
-                    return value;
-                }
-            }
-        }
-        return UNDETERMINED;
+@XmlRootElement(name = "disabled")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Disabled {
+    @XmlElement
+    private boolean value;
+    public boolean getValue() {
+        return value;
     }
 
-    public static Valid fromBoolean(boolean b) {
-          return b ? VALID : INVALID;
+    public void setValue(boolean disabled) {
+        value = disabled;
     }
-
-
 }

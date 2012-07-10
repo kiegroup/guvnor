@@ -92,7 +92,19 @@ public class PackageMetadata {
 
     public void setCheckinComment(String checkinComment) {
         this.checkinComment = checkinComment;
-    }   
-	
-    
+    }
+
+
+    @Override
+    public String toString() {
+        return "PackageMetadata{" +
+                "uuid='" + uuid + '\'' +
+                ", created=" + created +
+                ", format='" + format + '\'' +
+                ", state='" + state + '\'' +
+                ", archived=" + archived +
+                ", versionNumber=" + versionNumber +
+                ", checkinComment='" + checkinComment + '\'' +
+                '}';
+    }
 }
