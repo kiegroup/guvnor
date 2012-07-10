@@ -87,11 +87,9 @@
     <!--module>guvnor-webapp-soa</module-->
     <!--module>guvnor-webapp-helloworld</module-->
 
-    <!--<module>guvnor-jbpm-console-shared</module>-->
-    <!--<module>guvnor-jbpm-console-client</module>-->
-    <!--<module>guvnor-jbpm-console-server</module>-->
-    <!--<module>guvnor-bpm-distribution-wars</module>-->
-    <!--<module>guvnor-jbpm-console-war</module>-->
+    <module>guvnor-jbpm-console-shared</module>
+    <module>guvnor-jbpm-console-client</module>
+    <module>guvnor-jbpm-console-server</module>
 
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
@@ -134,28 +132,6 @@
       </activation>
       <modules>
         <module>guvnorsoa-distribution-wars</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>ngbpmProfile</id>
-      <activation>
-        <property>
-          <name>bpm</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-jbpm-console-client</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>ngbpmfullProfile</id>
-      <activation>
-        <property>
-          <name>bpmFull</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-bpm-distribution-wars</module>
       </modules>
     </profile>
   </profiles>
