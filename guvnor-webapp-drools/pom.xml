@@ -114,29 +114,6 @@
           <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
         </configuration>
       </plugin>
-        <plugin>
-          <groupId>com.google.code.maven-config-processor-plugin</groupId>
-          <artifactId>maven-config-processor-plugin</artifactId>
-            <configuration>
-              <transformations>
-                <transformation>
-                  <input>${basedir}/src/main/webapp/WEB-INF/web.xml</input>
-                  <output>filtered-xml/web.xml</output>
-                  <config>${basedir}/src/main/assembly/web-xml-filter.xml</config>
-                </transformation>
-              </transformations>
-              <namespaceContexts>
-                <j>http://java.sun.com/xml/ns/javaee</j>
-              </namespaceContexts>
-            </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>process</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
     </plugins>
   </build>
 

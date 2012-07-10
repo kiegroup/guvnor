@@ -17,6 +17,7 @@ package org.drools.guvnor.server.test;
 
 import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
@@ -24,6 +25,7 @@ import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.repository.TestRepositoryStartupService;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.utils.IOUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.seam.security.Credentials;
@@ -65,16 +67,17 @@ public abstract class GuvnorIntegrationTest {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
-        modifyWebXml(webArchive, explodedWarFile);
+        filterWebXml(webArchive, explodedWarFile);
         removeExcludedFiles(webArchive, explodedWarFile);
        // dumpArchive(webArchive);
         return webArchive;
     }
 
-    private static void modifyWebXml(WebArchive webArchive, File explodedWarFile) {
+    private static void filterWebXml(WebArchive webArchive, File explodedWarFile) {
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(explodedWarFile.getPath() + "/WEB-INF/web.xml"));
+            // Keep in sync with guvnor-distribution-wars/src/main/config-processor-filter/jboss-as-7_0/web_xml-filter.xml
             DefaultXPath xpath = new DefaultXPath("//j:context-param[j:param-name/text()=\"resteasy.injector.factory\"]");
             Map<String,String> namespaces = new TreeMap<String,String>();
             namespaces.put("j","http://java.sun.com/xml/ns/javaee");
@@ -82,11 +85,21 @@ public abstract class GuvnorIntegrationTest {
 
             Node node =  xpath.selectSingleNode(document);
             node.detach();
-            File filteredWebXml = new File("target/filtered-xml/web.xml");
+            File filteredWebXml = new File("target/test/filtered/jboss-as-7_0/WEB-INF/web.xml");
+            filteredWebXml.getParentFile().mkdirs();
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(filteredWebXml);
+                document.write(writer);
+            } catch (IOException e) {
+                throw new IllegalStateException("filterWebXml failed", e);
+            } finally {
+                IOUtils.closeQuietly(writer);
+            }
             webArchive.delete(ArchivePaths.create("WEB-INF/web.xml"))   ;
             webArchive.addAsWebInfResource(filteredWebXml, ArchivePaths.create("web.xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (DocumentException e) {
+            throw new IllegalStateException("filterWebXml failed", e);
         }
     }
 

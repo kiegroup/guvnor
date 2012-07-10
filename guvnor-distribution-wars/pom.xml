@@ -21,6 +21,31 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>com.google.code.maven-config-processor-plugin</groupId>
+        <artifactId>maven-config-processor-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <transformations>
+            <transformation>
+              <!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+              <input>../guvnor-webapp-drools/src/main/webapp/WEB-INF/web.xml</input>
+              <config>src/main/config-processor-filter/jboss-as-7_0/web_xml-filter.xml</config>
+              <output>config-processor-filtered/jboss-as-7_0/WEB-INF/web.xml</output>
+            </transformation>
+          </transformations>
+          <namespaceContexts>
+            <j>http://java.sun.com/xml/ns/javaee</j>
+          </namespaceContexts>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -32,7 +57,7 @@
           </execution>
         </executions>
         <configuration>
-          <finalName>guvnor-${pom.version}</finalName>
+          <finalName>guvnor-${project.version}</finalName>
           <descriptors>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-eap-5_1.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-7_0.xml</descriptor>
