@@ -16,7 +16,6 @@
   <description>The DAO layer for Guvnor that uses the JCR API.</description>
 
   <build>
-    <finalName>guvnor-repository</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
