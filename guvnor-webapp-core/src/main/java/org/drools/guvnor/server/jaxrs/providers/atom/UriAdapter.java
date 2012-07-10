@@ -20,8 +20,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.net.URI;
 
 /**
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 public class UriAdapter extends XmlAdapter<String, URI>
 {

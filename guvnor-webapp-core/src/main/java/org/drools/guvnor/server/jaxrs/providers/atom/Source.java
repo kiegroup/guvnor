@@ -67,8 +67,7 @@ import java.util.List;
  *  in the atom:source element.
  * </pre>
  *
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"title", "subtitle", "categories", "updated", "id", "links", "authors", "contributors", "rights",

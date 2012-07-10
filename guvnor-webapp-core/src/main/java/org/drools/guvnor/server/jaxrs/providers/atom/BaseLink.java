@@ -29,8 +29,7 @@ import java.net.URI;
  * If invoked within the context of a JAX-RS call, it will automatically build a
  * URI based the base URI of the JAX-RS application.  Same URI as UriInfo.getBaseUri().
  *
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 @XmlRootElement(name = "link")
 @XmlAccessorType(XmlAccessType.PROPERTY)

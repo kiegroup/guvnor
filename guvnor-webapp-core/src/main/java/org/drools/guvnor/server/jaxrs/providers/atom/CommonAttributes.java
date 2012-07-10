@@ -27,8 +27,7 @@ import java.util.Map;
 /**
  * Attributes common across all atom types
  *
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class CommonAttributes

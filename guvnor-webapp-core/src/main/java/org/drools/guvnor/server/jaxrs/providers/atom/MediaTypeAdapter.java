@@ -20,8 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 public class MediaTypeAdapter extends XmlAdapter<String, MediaType>
 {

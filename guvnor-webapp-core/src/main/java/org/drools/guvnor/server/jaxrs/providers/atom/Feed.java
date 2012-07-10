@@ -94,8 +94,7 @@ import java.util.List;
  * latest atom:updated timestamp.
  * </pre>
  *
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * TODO remove this file when JBoss AS includes RESTEasy 2.3.4.Final or higher
  */
 @XmlRootElement(namespace = "http://www.w3.org/2005/Atom", name = "feed")
 @XmlAccessorType(XmlAccessType.PROPERTY)
