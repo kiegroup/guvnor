@@ -24,9 +24,12 @@ import java.util.StringTokenizer;
 @ServerInterceptor
 @ApplicationScoped
 public class BasicAuthentication implements PreProcessInterceptor {
+
+    private static final Logger log = LoggerFactory.getLogger(BasicAuthentication.class);
+
     @Inject
     protected SecurityServiceImpl securityService;
-    private static final Logger log = LoggerFactory.getLogger(BasicAuthentication.class);
+
     @Override
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException {
         if (request.getHttpHeaders().getRequestHeaders().containsKey("Authorization")) {
@@ -37,12 +40,12 @@ public class BasicAuthentication implements PreProcessInterceptor {
                 auth = new String(Base64.decode(auth));
                 tokenizer = new StringTokenizer(auth, ":");
             } catch (IOException e) {
-                log.error("Unable to parse authorization string" , e);
+                throw new IllegalArgumentException("Unable to parse authorization string" , e);
             }
             if (securityService.login(tokenizer.nextToken(), tokenizer.nextToken())) {
                 return null;
             }
-       }
+        }
 
         ServerResponse response = new ServerResponse();
         response.setStatus(HttpResponseCodes.SC_UNAUTHORIZED);
@@ -53,7 +56,6 @@ public class BasicAuthentication implements PreProcessInterceptor {
         response.setEntity("Error 401 Unauthorized: "
                 + request.getPreprocessedPath());
         return response;
-
-
     }
+
 }
