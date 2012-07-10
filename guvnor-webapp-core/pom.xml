@@ -35,11 +35,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-api</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
     </dependency>
     <dependency>
