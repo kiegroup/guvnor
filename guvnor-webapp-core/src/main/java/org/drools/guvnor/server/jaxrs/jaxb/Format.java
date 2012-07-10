@@ -24,13 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "format")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Format {
+
     @XmlElement
     private String value;
+
     public String getValue() {
-        return value;  //To change body of created methods use File | Settings | File Templates.
+        return value;
     }
 
     public void setValue(String format) {
         value = format;
     }
+
 }

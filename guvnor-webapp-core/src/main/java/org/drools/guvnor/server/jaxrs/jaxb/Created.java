@@ -26,13 +26,16 @@ import java.util.Date;
 @XmlRootElement(name = "created")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Created {
+
     @XmlElement
     private Date value;
+
     public Date getValue() {
-        return value;  //To change body of created methods use File | Settings | File Templates.
+        return value;
     }
 
     public void setValue(Date created) {
         value = created;
     }
+
 }

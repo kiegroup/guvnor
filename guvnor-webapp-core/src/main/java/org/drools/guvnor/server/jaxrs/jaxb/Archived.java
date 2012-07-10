@@ -25,8 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "archived")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Archived {
+
     @XmlElement
     private boolean value;
+
     public boolean getValue() {
         return value;
     }
@@ -34,4 +36,5 @@ public class Archived {
     public void setValue(boolean archived) {
         value = archived;
     }
+
 }

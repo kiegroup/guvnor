@@ -24,13 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "versionNumber")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class VersionNumber {
+
     @XmlElement
     private long value;
+
     public long getValue() {
-        return value;  //To change body of created methods use File | Settings | File Templates.
+        return value;
     }
 
     public void setValue(long uuid) {
         value = uuid;
     }
+
 }

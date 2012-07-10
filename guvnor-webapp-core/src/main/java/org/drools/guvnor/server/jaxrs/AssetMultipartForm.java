@@ -24,12 +24,22 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 
 public class AssetMultipartForm {
+
     @FormParam("asset")
     @PartType(MediaType.APPLICATION_JSON)
     private Asset asset;
+
     @FormParam("binary")
     @PartType(MediaType.APPLICATION_OCTET_STREAM)
     private InputStream binary;
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public void setAsset(Asset asset) {
+        this.asset = asset;
+    }
 
     public InputStream getBinary() {
         return binary;
@@ -39,13 +49,4 @@ public class AssetMultipartForm {
         this.binary = binary;
     }
 
-
-
-    public Asset getAsset() {
-        return asset;
-    }
-
-    public void setAsset(Asset asset) {
-        this.asset = asset;
-    }
 }

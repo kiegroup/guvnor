@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement()
 public class Asset {
+
     private String title;
     private String binaryContentAttachmentFileName;
     private String description;
@@ -113,4 +114,5 @@ public class Asset {
     public void setMetadata(AssetMetadata metadata) {
         this.metadata = metadata;
     }
+
 }

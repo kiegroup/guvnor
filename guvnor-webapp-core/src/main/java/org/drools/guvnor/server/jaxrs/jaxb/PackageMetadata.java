@@ -23,6 +23,7 @@ import java.util.Date;
 
 @XmlRootElement(name="metadata")
 public class PackageMetadata {
+
     private String uuid;
     private Date created;
     private String format;
@@ -94,7 +95,6 @@ public class PackageMetadata {
         this.checkinComment = checkinComment;
     }
 
-
     @Override
     public String toString() {
         return "PackageMetadata{" +
@@ -107,4 +107,5 @@ public class PackageMetadata {
                 ", checkinComment='" + checkinComment + '\'' +
                 '}';
     }
+
 }

@@ -24,6 +24,7 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({Categories.class})
 public class AtomAssetMetadata {
+
     @XmlElement
     private Uuid uuid;
     @XmlElement
@@ -56,6 +57,28 @@ public class AtomAssetMetadata {
         this.uuid.setValue(uuid);
     }
 
+    public String[] getCategories() {
+        return categories != null ? categories.getValues() : null;
+    }
+
+    public void setCategories(String[] categories) {
+        if (this.categories == null ) {
+            this.categories = new Categories();
+        }
+        this.categories.setValue(categories);
+    }
+
+    public String getNote() {
+        return note != null ? note.getValue() : null;
+    }
+
+    public void setNote(String note) {
+        if (this.note == null) {
+            this.note = new Note();
+        }
+        this.note.setValue(note);
+    }
+
     public Date getCreated() {
         return created != null ?created.getValue():null;
     }
@@ -76,6 +99,17 @@ public class AtomAssetMetadata {
             this.format = new Format();
         }
         this.format.setValue(format);
+    }
+
+    public boolean getDisabled() {
+        return disabled != null ? disabled.getValue() : false;
+    }
+
+    public void setDisabled(boolean disabled) {
+        if (this.disabled == null) {
+            this.disabled = new Disabled();
+        }
+        this.disabled.setValue(disabled);
     }
 
     public String getState() {
@@ -111,39 +145,6 @@ public class AtomAssetMetadata {
         this.checkinComment.setValue(checkinComment);
     }
 
-    public String[] getCategories() {
-        return categories != null ? categories.getValues() : null;
-    }
-
-    public void setCategories(String[] categories) {
-        if (this.categories == null ) {
-            this.categories = new Categories();
-        }
-        this.categories.setValue(categories);
-    }
-
-    public String getNote() {
-        return note != null ? note.getValue() : null;
-    }
-
-    public void setNote(String note) {
-        if (this.note == null) {
-            this.note = new Note();
-        }
-        this.note.setValue(note);
-    }
-
-    public boolean getDisabled() {
-        return disabled != null ? disabled.getValue() : false;
-    }
-
-    public void setDisabled(boolean disabled) {
-        if (this.disabled == null) {
-            this.disabled = new Disabled();
-        }
-        this.disabled.setValue(disabled);
-    }
-
     public boolean isArchived() {
         return archived != null ? archived.getValue() : false;
     }
@@ -170,4 +171,5 @@ public class AtomAssetMetadata {
                 ", archived=" + archived +
                 '}';
     }
+
 }

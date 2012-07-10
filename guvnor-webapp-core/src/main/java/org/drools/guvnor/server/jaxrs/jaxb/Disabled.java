@@ -24,8 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "disabled")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Disabled {
+
     @XmlElement
     private boolean value;
+
     public boolean getValue() {
         return value;
     }
@@ -33,4 +35,5 @@ public class Disabled {
     public void setValue(boolean disabled) {
         value = disabled;
     }
+
 }

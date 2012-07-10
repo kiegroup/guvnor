@@ -27,7 +27,6 @@ public class GuvnorRestApplication extends Application {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(PackageResource.class);
         classes.add(CategoryResource.class);
-        System.out.println("GuvnorRestApplication GuvnorRestApplicationGuvnorRestApplicationGuvnorRestApplicationGuvnorRestApplication");
         return classes;
     }
 

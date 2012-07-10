@@ -24,8 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "uuid")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Uuid {
+
     @XmlElement
     private String value;
+
     public String getValue() {
         return value;
     }
@@ -33,4 +35,5 @@ public class Uuid {
     public void setValue(String uuid) {
         value = uuid;
     }
+
 }

@@ -59,6 +59,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBException;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -185,7 +186,9 @@ public class PackageResource extends Resource {
             }
             ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackageEntryAbdera(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (JAXBException e) {
+            throw new WebApplicationException(e);
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -203,7 +206,7 @@ public class PackageResource extends Resource {
             
             ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription(), ModuleItem.MODULE_FORMAT, null, checkinComment);
             return toPackage(packageItem, uriInfo);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -412,7 +415,9 @@ public class PackageResource extends Resource {
 
             existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
-        } catch (Exception e) {
+       } catch (JAXBException e) {
+           throw new WebApplicationException(e);
+       } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }
@@ -611,7 +616,9 @@ public class PackageResource extends Resource {
             rulesRepository.save();
 
             return toAssetEntryAbdera(ai, uriInfo);
-        } catch (Exception e) {
+        } catch (JAXBException e) {
+            throw new WebApplicationException(e);
+        } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
@@ -695,7 +702,9 @@ public class PackageResource extends Resource {
             ai.updateValid(assetValidator.validate(ai));
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
-        } catch (Exception e) {
+        } catch (JAXBException e) {
+            throw new WebApplicationException(e);
+        } catch (RuntimeException e) {
             throw new WebApplicationException(e);
         }
     }

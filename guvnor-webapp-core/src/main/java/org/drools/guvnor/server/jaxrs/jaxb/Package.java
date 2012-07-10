@@ -24,6 +24,7 @@ import java.util.Set;
 
 @XmlRootElement()
 public class Package {
+
     private String title;
     private String description;
     private String author;    
@@ -115,4 +116,5 @@ public class Package {
     public void setMetadata(PackageMetadata metadata) {
         this.metadata = metadata;
     }
+
 }

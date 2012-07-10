@@ -24,8 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "state")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class State {
+
     @XmlElement
     private String value;
+
     public String getValue() {
         return value;
     }
@@ -33,4 +35,5 @@ public class State {
     public void setValue(String state) {
         value = state;
     }
+
 }

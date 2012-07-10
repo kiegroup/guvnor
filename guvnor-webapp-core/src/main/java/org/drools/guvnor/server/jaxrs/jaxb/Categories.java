@@ -25,6 +25,7 @@ import java.util.List;
 @XmlRootElement(name = "categories")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Categories {
+
     @XmlElement(name = "value")
     private String[] values;
 
@@ -35,4 +36,5 @@ public class Categories {
     public void setValue(String[] categories) {
         values = categories;
     }
+
 }

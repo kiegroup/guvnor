@@ -26,6 +26,7 @@ import java.util.Date;
 @XmlRootElement(name="metadata")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AtomPackageMetadata {
+
     @XmlElement
     private Uuid uuid;
     @XmlElement

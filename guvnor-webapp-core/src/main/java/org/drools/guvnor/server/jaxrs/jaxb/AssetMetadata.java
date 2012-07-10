@@ -23,6 +23,7 @@ import java.util.Date;
 
 @XmlRootElement(name="metadata")
 public class AssetMetadata {
+
     private String Uuid;
     private String[] categories;
     private String note;
