@@ -64,7 +64,12 @@ public class FieldConverter implements Converter {
                 if (reader.getNodeName().equals("collectionFieldList")) {
                     CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
                     reader.moveUp();
-                    return collectionFieldData;
+
+                    if (collectionFieldData.getCollectionFieldList().isEmpty()) {
+                        return fieldData;
+                    } else {
+                        return collectionFieldData;
+                    }
                 }
             }
 
