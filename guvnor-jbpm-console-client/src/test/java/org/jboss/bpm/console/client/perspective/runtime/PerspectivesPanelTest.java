@@ -30,12 +30,14 @@ import org.jboss.bpm.console.client.perspective.ChangePerspectiveEvent;
 import org.jboss.bpm.console.client.perspective.RunTimePerspective;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Ignore
 public class PerspectivesPanelTest {
 
     private PerspectivesPanel perspectivesPanel;
