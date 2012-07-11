@@ -30,6 +30,9 @@ public interface SimulationResources extends ClientBundle {
 
     SimulationResources INSTANCE = GWT.create(SimulationResources.class);
 
+    @Source({"Simulation.css"})
+    SimulationStyle style();
+
     // Most images come from Tango project (public domain license)
 
     @Source("runSimulation.png")
@@ -56,7 +59,7 @@ public interface SimulationResources extends ClientBundle {
     @Source("stepEmpty.png")
     ImageResource stepEmpty();
 
-    @Source({"Simulation.css"})
-    SimulationStyle style();
+    @Source("stepAssert.png")
+    ImageResource stepAssert();
 
 };

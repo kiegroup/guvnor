@@ -28,6 +28,7 @@ public interface SimulationStyle extends CssResource {
 
     int timeLinePathHeight();
 
+    String timeStonePanel();
     String timeStoneLabel();
 
     String addStepsPanel();

@@ -140,7 +140,7 @@ public class TimeLineWidget extends Composite {
 
     private void refreshAddStepsPanel() {
         Label addStepLabel = new Label("");
-        addStepLabel.setStyleName(simulationStyle.addStepLabel());
+        addStepLabel.addStyleName(simulationStyle.addStepLabel());
         addStepsPanel.add(addStepLabel);
         for (SimulationPathModel path : simulation.getPaths().values()) {
             FlowPanel heightLimitingPanel = new FlowPanel();
@@ -261,8 +261,9 @@ public class TimeLineWidget extends Composite {
 
     private VerticalPanel createTimeStonePanel(long timeStoneValue) {
         VerticalPanel timeStonePanel = new VerticalPanel();
+        timeStonePanel.addStyleName(simulationStyle.timeStonePanel());
         Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
-        timeStoneLabel.setStyleName(simulationStyle.timeStoneLabel());
+        timeStoneLabel.addStyleName(simulationStyle.timeStoneLabel());
         timeStonePanel.add(timeStoneLabel);
         int pathTop = simulationStyle.timeLineHeaderHeight();
         for (SimulationPathModel path : simulation.getPaths().values()) {

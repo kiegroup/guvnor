@@ -24,6 +24,10 @@
 
 @def timeLinePathHeight 30px;
 
+.timeStonePanel {
+    z-index: -1;
+}
+
 .timeStoneLabel {
     height: timeLineHeaderHeight;
     padding-left: 12px;
