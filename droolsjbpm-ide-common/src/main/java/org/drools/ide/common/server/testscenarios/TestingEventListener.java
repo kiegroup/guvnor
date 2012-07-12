@@ -48,8 +48,6 @@ public class TestingEventListener implements AgendaEventListener {
                 if (ruleNames.size() ==0) return true;
                 String ruleName = activation.getRule().getName();
 
-                http://www.wtf.com
-
                 //jdelong: please don't want to see records of cancelled activations
 
                 if (inclusive) {
