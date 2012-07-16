@@ -83,8 +83,8 @@
       <para>
       LDAP is perhaps the most popular choice for larger enterprises.  Here is an example that works
       with Active Directory. You can get much more information on how to configure JBoss AS for all scenarios
-      with LDAP from <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapLoginModule"/>
-      and <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapExtLoginModule"/>.
+      with LDAP from <link xlink:href="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapLoginModule">this wiki page</link>
+      and <link xlink:href="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapExtLoginModule">this wiki page</link>.
       </para>
 
       <programlisting language="XML"><![CDATA[<application-policy name="brms">

@@ -9,8 +9,8 @@
    <title>Database configuration</title>
 
    <para>
-   Guvnor uses the JCR standard for storing assets such as rules. The default implementation is Apache
-   Jackrabbit, <ulink url="http://jackrabbit.apache.org" />. This includes an out of the box storage
+   Guvnor uses the JCR standard for storing assets such as rules. The default implementation is
+   <link xlink:href="http://jackrabbit.apache.org">Apache Jackrabbit</link>. This includes an out of the box storage
    engine/database, which you can use as is, or configure to use an existing RDBMS if needed.
     </para>
 
@@ -86,8 +86,8 @@
       to let it generate the default <filename>repository.xml</filename>. Locate the <filename>repository.xml</filename>
       file that was generated, and open it -
       it will be annotated with comments describing many of the different
-      options. From here on, you will need to know a little about Jackrabbit
-      Persistence managers, <ulink url="http://wiki.apache.org/jackrabbit/PersistenceManagerFAQ" />.
+      options. From here on, you will need to know a little about
+      <link xlink:href="http://wiki.apache.org/jackrabbit/PersistenceManagerFAQ">Jackrabbit Persistence managers</link>.
       There are a few persistence managers, some are database specific
       (eg Oracle). There is a SimpleDBPersistenceManager which works with any
       database that supports JDBC - you also specify the database type, so it

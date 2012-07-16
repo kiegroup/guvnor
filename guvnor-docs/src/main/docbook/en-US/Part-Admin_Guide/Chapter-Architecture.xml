@@ -140,6 +140,6 @@
 
     <para>As an open source project, contributions from the wider community are encouraged. In order to contribute
     consult the wiki and project home pages. A useful way to contribute is via logging issues or feature requests in
-    JIRA. The JIRA link to use is <ulink url="https://jira.jboss.org/jira/browse/GUVNOR" />.</para>
+    JIRA. <link xlink:href="https://jira.jboss.org/jira/browse/GUVNOR">This is JIRA link to use.</link></para>
   </section>
 </chapter>
