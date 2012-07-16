@@ -158,6 +158,34 @@ public class ScenarioXMLPersistenceTest {
         assertTrue(factData.getFieldData().get(0) instanceof CollectionFieldData);
     }
 
+    @Test
+    public void testLoadEvenOlderCollectionLegacyFieldTestScenario() throws Exception {
+
+        StringBuffer contents = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("CollectionLegacyFieldTestScenario2.xml")));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                contents.append(text);
+            }
+
+        } catch (Exception e) {
+            if (reader != null) {
+                reader.close();
+            }
+            throw new IllegalStateException("Error while reading file.", e);
+        }
+
+        Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(contents.toString());
+
+        verifyFieldDataNamesAreNotNull(scenario);
+
+        FactData factData = (FactData) scenario.getFixtures().get(0);
+        assertTrue(factData.getFieldData().get(0) instanceof CollectionFieldData);
+    }
 
     @Test
     public void testLoadLegacyFieldDataTestScenario() throws Exception {
@@ -185,9 +213,10 @@ public class ScenarioXMLPersistenceTest {
         verifyFieldDataNamesAreNotNull(scenario);
 
         FactData factData = (FactData) scenario.getFixtures().get(0);
-        assertTrue(factData.getFieldData().get(0) instanceof FieldData);
-        FieldData fieldData=(FieldData)factData.getFieldData().get(0);
-        assertEquals("ratingSummaries",fieldData.getName());
+        assertTrue(factData.getFieldData().get(0) instanceof CollectionFieldData);
+        CollectionFieldData collectionFieldData=(CollectionFieldData)factData.getFieldData().get(0);
+        FieldData fieldData = collectionFieldData.getCollectionFieldList().get(0);
+        assertEquals("ratingSummaries", fieldData.getName());
         assertEquals("=[=c1]",fieldData.getValue());
     }
 

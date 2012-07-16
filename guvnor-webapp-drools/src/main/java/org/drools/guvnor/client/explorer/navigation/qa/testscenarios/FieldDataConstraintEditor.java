@@ -75,59 +75,90 @@ public class FieldDataConstraintEditor
         panel.clear();
 
         if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-            valueEditorWidget = booleanEditor();
-            panel.add(valueEditorWidget);
+            addBooleanEditor();
 
         } else if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_DATE)) {
-            valueEditorWidget = dateEditor();
-            panel.add(valueEditorWidget);
+            addDateEditor();
 
         } else {
             final DropDownData dropDownData = helper.getEnums();
 
             if (dropDownData != null) {
-                field.setNature(FieldData.TYPE_ENUM);
-                dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
-                valueEditorWidget = dropDownEditor(dropDownData);
-                panel.add(valueEditorWidget);
-
+                addDropDownEditor(dropDownData);
             } else {
-                if (field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED) {
-                    if (field.getValue().length() > 1 && field.getValue().charAt(1) == '[' && field.getValue().charAt(0) == '=') {
-                        field.setNature(FieldData.TYPE_LITERAL);
-                    } else if (field.getValue().charAt(0) == '=') {
-                        field.setNature(FieldData.TYPE_VARIABLE);
-                    } else {
-                        field.setNature(FieldData.TYPE_LITERAL);
-                    }
-                }
+
+                setFieldNatureIfItIsWasNotSetBefore();
+
                 if (field.getNature() == FieldData.TYPE_UNDEFINED && (helper.isThereABoundVariableToSet() == true || helper.isItAList() == true)) {
-                    helper.setParentIsAList(true);
-                    valueEditorWidget = new FieldSelectorWidget(field,
-                            helper,
-                            this);
-                    panel.add(valueEditorWidget);
-
-                } else if (field.getNature() == FieldData.TYPE_VARIABLE) {
-                    valueEditorWidget = variableEditor();
-                    panel.add(valueEditorWidget);
-
+                    addFieldSelectorWidget();
+                } else if (isFieldVariable()) {
+                    addVariableEditor();
                 } else {
-                    valueEditorWidget = textBoxEditor(new ValueChangeHandler<String>() {
-                        @Override
-                        public void onValueChange(ValueChangeEvent<String> newValue) {
-                            valueHasChanged(newValue.getValue());
-                        }
-                    },
-                            flType,
-                            field.getName(),
-                            field.getValue());
-
-                    panel.add(valueEditorWidget);
+                    addDefaultTextBoxWidget(flType);
                 }
             }
         }
 
+    }
+
+    private void addDateEditor() {
+        valueEditorWidget = dateEditor();
+        panel.add(valueEditorWidget);
+    }
+
+    private void addBooleanEditor() {
+        valueEditorWidget = booleanEditor();
+        panel.add(valueEditorWidget);
+    }
+
+    private void addDropDownEditor(DropDownData dropDownData) {
+        field.setNature(FieldData.TYPE_ENUM);
+        dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
+        valueEditorWidget = dropDownEditor(dropDownData);
+        panel.add(valueEditorWidget);
+    }
+
+    private void addDefaultTextBoxWidget(String flType) {
+        valueEditorWidget = textBoxEditor(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> newValue) {
+                valueHasChanged(newValue.getValue());
+            }
+        },
+                flType,
+                field.getName(),
+                field.getValue());
+
+        panel.add(valueEditorWidget);
+    }
+
+    private void setFieldNatureIfItIsWasNotSetBefore() {
+        if (field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED) {
+            if (field.getValue().length() > 1 && field.getValue().charAt(1) == '[' && field.getValue().charAt(0) == '=') {
+                field.setNature(FieldData.TYPE_LITERAL);
+            } else if (field.getValue().charAt(0) == '=') {
+                field.setNature(FieldData.TYPE_VARIABLE);
+            } else {
+                field.setNature(FieldData.TYPE_LITERAL);
+            }
+        }
+    }
+
+    private void addVariableEditor() {
+        valueEditorWidget = variableEditor();
+        panel.add(valueEditorWidget);
+    }
+
+    private void addFieldSelectorWidget() {
+        helper.setParentIsAList(true);
+        valueEditorWidget = new FieldSelectorWidget(field,
+                helper,
+                this);
+        panel.add(valueEditorWidget);
+    }
+
+    private boolean isFieldVariable() {
+        return field.getNature() == FieldData.TYPE_VARIABLE;
     }
 
     private EnumDropDown booleanEditor() {

@@ -895,7 +895,7 @@ public class SuggestionCompletionEngine
         return this.getModelFields().containsKey( modelClassName );
     }
 
-    private ModelField getField(String modelClassName,
+    public ModelField getField(String modelClassName,
                                 String fieldName) {
 
         String shortName = this.getFactNameFromType( modelClassName );
