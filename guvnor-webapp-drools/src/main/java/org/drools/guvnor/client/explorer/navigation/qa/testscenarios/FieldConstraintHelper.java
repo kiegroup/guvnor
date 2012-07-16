@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
@@ -64,7 +65,17 @@ public class FieldConstraintHelper {
     }
 
     String resolveFieldType() {
-        return sce.getFieldType(factType, field.getName());
+        ModelField modelField = sce.getField(factType, field.getName());
+
+        if (modelField == null) {
+            return null;
+        } else if (modelField.getType().equals("Collection")) {
+            return sce.getParametricFieldType(
+                    factType,
+                    field.getName());
+        } else {
+            return modelField.getType();
+        }
     }
 
     boolean isItAList() {
