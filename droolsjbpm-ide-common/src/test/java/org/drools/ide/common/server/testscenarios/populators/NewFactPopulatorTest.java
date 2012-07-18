@@ -16,13 +16,16 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
+import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.server.testscenarios.MockWorkingMemory;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -34,13 +37,21 @@ import static org.junit.Assert.*;
 
 public class NewFactPopulatorTest {
 
+    private TypeResolver typeResolver;
+    private HashMap<String, Object> populatedData;
+    private MockWorkingMemory workingMemory;
+
+    @Before
+    public void setUp() throws Exception {
+        typeResolver = new ClassTypeResolver(new HashSet<String>(),
+                Thread.currentThread().getContextClassLoader());
+        populatedData = new HashMap<String, Object>();
+        workingMemory = new MockWorkingMemory();
+    }
+
     @Test
     public void testDummyRunNoRules() throws Exception {
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),
-                Thread.currentThread().getContextClassLoader());
         typeResolver.addImport("org.drools.Cheese");
-
-        HashMap<String, Object> populatedData = new HashMap<String, Object>();
 
         List<Field> fieldData = new ArrayList<Field>();
         fieldData.add(new FieldData("type",
@@ -58,7 +69,6 @@ public class NewFactPopulatorTest {
                 Thread.currentThread().getContextClassLoader(),
                 fact);
 
-        MockWorkingMemory workingMemory = new MockWorkingMemory();
         newFactPopulator.populate(workingMemory, new HashMap<String, FactHandle>());
 
         assertTrue(populatedData.containsKey("c1"));

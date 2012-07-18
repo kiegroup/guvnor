@@ -15,32 +15,43 @@
  */
 package org.drools.ide.common.server.testscenarios.populators;
 
+import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+
 import java.util.Map;
-import static org.mvel2.MVEL.*;
-/**
- *
- * @author nheron
- */
+
+import static org.mvel2.MVEL.eval;
+
+
 public class CollectionFieldPopulator extends FieldPopulator {
-        private final String expression;
 
-    public CollectionFieldPopulator(Object factObject,
-                                    String fieldName,
-                                    String expression) {
-        super( factObject,
-               fieldName );
-        String result= expression;
-        
-        result = expression.replaceAll(",=", ",");
-        result = result.replaceAll("\\[=", "[");
-        this.expression = result;
 
+    private final String expression;
+
+    public CollectionFieldPopulator(Object factObject, CollectionFieldData field) {
+        super(factObject, field.getName());
+        this.expression = createExpression(field);
+    }
+
+    private String createExpression(CollectionFieldData field) {
+        String result = "[";
+
+        int index = 1;
+        for (FieldData fieldData : field.getCollectionFieldList()) {
+            result += fieldData.getValue().replace("=", "");
+            if (index < field.getCollectionFieldList().size()) {
+                result += ",";
+            }
+            index++;
+        }
+
+        return result + "]";
     }
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField( eval( expression,
-                             populatedData ),
-                       populatedData );
+        populateField(eval(expression,
+                populatedData),
+                populatedData);
     }
 }

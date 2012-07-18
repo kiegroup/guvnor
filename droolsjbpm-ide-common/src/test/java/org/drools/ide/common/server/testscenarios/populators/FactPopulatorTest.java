@@ -19,6 +19,7 @@ package org.drools.ide.common.server.testscenarios.populators;
 import org.drools.*;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -193,7 +194,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData("Cheese",
                                 "c1",
                                 new ArrayList(),
@@ -212,7 +213,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData("Cheese",
                                 "c1",
                                 Arrays.<Field>asList(
@@ -242,7 +243,7 @@ public class FactPopulatorTest {
                 new ExistingFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "x",
@@ -268,7 +269,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "c1",
@@ -284,7 +285,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData(
                                 "OuterFact",
                                 "p1",
@@ -342,7 +343,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData("Cheese",
                                 "c1",
                                 Arrays.<Field>asList(
@@ -357,7 +358,7 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "c2",
@@ -394,7 +395,7 @@ public class FactPopulatorTest {
                 new ExistingFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(), 
+                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "x",
@@ -477,10 +478,106 @@ public class FactPopulatorTest {
 
     }
 
-    private TypeResolver getTypeResolver() {
-        
-        TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),getClassLoader() );
+    @Test
+    public void testCollection() throws Exception {
+        TypeResolver typeResolver = getTypeResolver();
 
+        List<Field> fieldData = new ArrayList<Field>();
+        CollectionFieldData collectionFieldData = new CollectionFieldData();
+        collectionFieldData.setName("cheeses");
+        fieldData.add(collectionFieldData);
+        collectionFieldData.getCollectionFieldList().add(new FieldData("cheeses", "=cheese1"));
+        collectionFieldData.getCollectionFieldList().add(new FieldData("cheeses", "=cheese2"));
+
+        FactData cheeseryFactData = new FactData(
+                "Cheesery",
+                "cheesery",
+                fieldData,
+                false);
+
+        FactData cheeseFactData1 = new FactData(
+                "Cheese",
+                "cheese1",
+                Collections.EMPTY_LIST,
+                false
+        );
+        FactData cheeseFactData2 = new FactData(
+                "Cheese",
+                "cheese2",
+                Collections.EMPTY_LIST,
+                false
+        );
+
+        factPopulator.add(new NewFactPopulator(
+                populatedData,
+                typeResolver,
+                Thread.currentThread().getContextClassLoader(),
+                cheeseryFactData));
+
+        factPopulator.add(new NewFactPopulator(
+                populatedData,
+                typeResolver,
+                Thread.currentThread().getContextClassLoader(),
+                cheeseFactData1));
+
+        factPopulator.add(new NewFactPopulator(
+                populatedData,
+                typeResolver,
+                Thread.currentThread().getContextClassLoader(),
+                cheeseFactData2));
+
+        factPopulator.populate();
+
+        assertTrue(populatedData.containsKey("cheesery"));
+        Cheesery cheesery = (Cheesery) populatedData.get("cheesery");
+        assertNotNull(cheesery);
+
+        assertEquals(2, cheesery.getCheeses().size());
+        assertNotNull(cheesery.getCheeses().get(0));
+        assertTrue(cheesery.getCheeses().get(0) instanceof Cheese);
+        assertNotNull(cheesery.getCheeses().get(1));
+        assertTrue(cheesery.getCheeses().get(1) instanceof Cheese);
+    }
+
+    @Test
+    public void testCollectionSums() throws Exception {
+        TypeResolver typeResolver = getTypeResolver();
+
+        List<Field> fieldData = new ArrayList<Field>();
+        CollectionFieldData collectionFieldData = new CollectionFieldData();
+        collectionFieldData.setName("list");
+        fieldData.add(collectionFieldData);
+        collectionFieldData.getCollectionFieldList().add(new FieldData("list", "=1+3"));
+
+        FactData wrapperFactData = new FactData(
+                "MyCollectionWrapper",
+                "wrapper",
+                fieldData,
+                false);
+
+        factPopulator.add(new NewFactPopulator(
+                populatedData,
+                typeResolver,
+                Thread.currentThread().getContextClassLoader(),
+                wrapperFactData));
+
+
+        factPopulator.populate();
+
+        assertTrue(populatedData.containsKey("wrapper"));
+        MyCollectionWrapper wrapper = (MyCollectionWrapper) populatedData.get("wrapper");
+        assertNotNull(wrapper);
+
+        assertEquals(1, wrapper.getList().size());
+        assertNotNull(wrapper.getList().get(0));
+        assertEquals(4, wrapper.getList().get(0));
+    }
+
+    private TypeResolver getTypeResolver() {
+
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), getClassLoader());
+
+        resolver.addImport("org.drools.MyCollectionWrapper");
         resolver.addImport("org.drools.Cheesery");
         resolver.addImport("org.drools.Cheese");
         resolver.addImport("org.drools.SqlDateWrapper");
@@ -490,7 +587,7 @@ public class FactPopulatorTest {
 
         return resolver;
     }
-    
+
     private ClassLoader getClassLoader() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         return classLoader;
