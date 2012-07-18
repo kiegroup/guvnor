@@ -217,7 +217,7 @@ public class ScenarioXMLPersistenceTest {
         CollectionFieldData collectionFieldData=(CollectionFieldData)factData.getFieldData().get(0);
         FieldData fieldData = collectionFieldData.getCollectionFieldList().get(0);
         assertEquals("ratingSummaries", fieldData.getName());
-        assertEquals("=[=c1]",fieldData.getValue());
+        assertEquals("=c1",fieldData.getValue());
     }
 
     @Test
