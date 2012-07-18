@@ -48,6 +48,9 @@ public class SimulationTestEditor extends Composite
     protected PushButton debugSimulationButton;
 
     @UiField
+    protected PathTableWidget pathTableWidget;
+
+    @UiField
     protected PushButton zoomInButton;
 
     @UiField

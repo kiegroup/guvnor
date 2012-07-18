@@ -14,34 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.simulation;
+package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.SimulationPathModel;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This is a DTO.
  */
-@XStreamAlias("SimulationStepModel")
-public class SimulationStepModel implements PortableObject {
-
-    private AbstractCommandModel command;
-
-    public static SimulationStepModel createNew() {
-        SimulationStepModel step = new SimulationStepModel();
-
-        return step;
-    }
-
-    private Long distanceMillis; // Distance to start of simulation
-
-    public Long getDistanceMillis() {
-        return distanceMillis;
-    }
-
-    public void setDistanceMillis(Long distanceMillis) {
-        this.distanceMillis = distanceMillis;
-    }
+public abstract class AbstractCommandModel implements PortableObject {
 
 }
