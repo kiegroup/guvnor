@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.server.testscenarios;
 
+import org.drools.FactHandle;
 import org.drools.ide.common.client.modeldriven.testing.*;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
@@ -841,6 +842,32 @@ public class ScenarioRunnerTest extends RuleUnit {
                 vr.getExpectedCount().intValue());
         assertEquals(0,
                 vr.getActualResult().intValue());
+
+    }
+
+    @Test
+    public void testCollection() throws Exception {
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
+                Thread.currentThread().getContextClassLoader());
+        resolver.addImport("org.drools.Cheesery");
+        resolver.addImport("org.drools.Cheese");
+
+        WorkingMemory wm = getWorkingMemory("test_rules2.drl");
+
+        ScenarioRunner run = new ScenarioRunner(
+                resolver,
+                getClassLoader(),
+                (InternalWorkingMemory) wm);
+
+        Scenario scenario = new Scenario();
+
+        run.run(scenario);
+
+        Iterator iterator = ((InternalWorkingMemory) wm).getObjectStore().iterateFactHandles();
+        while (iterator.hasNext()){
+            FactHandle next = (FactHandle) iterator.next();
+            FactHandle next1 = next;
+        }
 
     }
 

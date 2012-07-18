@@ -17,6 +17,7 @@
 package org.drools.ide.common.server.testscenarios.populators;
 
 import org.drools.base.TypeResolver;
+import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -54,6 +55,10 @@ class FieldPopulatorFactory {
                     (FactAssignmentField) field,
                     typeResolver,
                     classLoader);
+        } else if (field instanceof CollectionFieldData) {
+            return new CollectionFieldPopulator(
+                    factObject,
+                    (CollectionFieldData) field);
         }
 
         throw new IllegalArgumentException("Unknown field type " + field.getClass());
@@ -61,11 +66,12 @@ class FieldPopulatorFactory {
 
     private FieldPopulator getFieldDataPopulator(Object factObject,
                                                  FieldData fieldData) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        if (fieldData.getNature() == FieldData.TYPE_COLLECTION) {
-            return new CollectionFieldPopulator(factObject,
-                    fieldData.getName(),
-                    fieldData.getValue().substring(1));
-        }else if (fieldData.getValue().startsWith("=")) {
+//        if (fieldData.getNature() == FieldData.TYPE_COLLECTION) {
+//            return new CollectionFieldPopulator(factObject,
+//                    fieldData.getName(),
+//                    fieldData.getValue().substring(1));
+//        } else
+        if (fieldData.getValue().startsWith("=")) {
             return new ExpressionFieldPopulator(factObject,
                     fieldData.getName(),
                     fieldData.getValue().substring(1));

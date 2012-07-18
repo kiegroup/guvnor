@@ -54,7 +54,9 @@ public class TypeChoiceFormPopup
             addListSelection();
         }
 
-        addCreateNewObject();
+        if (!helper.isTheParentAList()) {
+            addCreateNewObject();
+        }
     }
 
     private void addCreateNewObject() {
