@@ -15,18 +15,6 @@
   <name>Guvnor web application core</name>
   <description>Guvnor web application core for a generic service repository framework</description>
 
-  <build>
-    <resources>
-      <!-- TODO REVISIT guvnorNG: this is not needed if compileSourcesArtifact works -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>      
-    </resources>
-  </build>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -242,6 +230,6 @@
       <version>${gwt.version}</version>
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
-
   </dependencies>
+
 </project>
