@@ -76,6 +76,7 @@ public class SimulationTestEditor extends Composite
             PathTableWidget pathTableWidget = new PathTableWidget(path);
             pathTableTabPanel.add(pathTableWidget, path.getName());
         }
+        pathTableTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
     }
 
