@@ -31,7 +31,7 @@
         <gwt:upFace image="{simulationResources.debugSimulation}"/><!-- TODO does not show -->
       </gwt:PushButton>
     </gwt:HorizontalPanel>
-    <simulation:PathTableWidget ui:field="pathTableWidget"/>
+    <gwt:TabPanel ui:field="pathTableTabPanel"/>
     <gwt:HorizontalPanel spacing="10">
       <gwt:PushButton ui:field="zoomInButton">
         <gwt:upFace image="{simulationResources.zoomIn}"/>

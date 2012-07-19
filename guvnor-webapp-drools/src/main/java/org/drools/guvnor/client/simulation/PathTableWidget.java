@@ -18,10 +18,19 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
+import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 public class PathTableWidget extends Composite {
 
@@ -31,8 +40,29 @@ public class PathTableWidget extends Composite {
     private SimulationResources simulationResources = SimulationResources.INSTANCE;
     private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
-    public PathTableWidget() {
+    @UiField
+    protected FlexTable flexTable;
+
+    private SimulationPathModel path;
+
+    public PathTableWidget(SimulationPathModel path) {
+        this.path = path;
         initWidget(uiBinder.createAndBindUi(this));
+        setWidth("100%");
+
+        // TODO improve me
+        int i = 0;
+        for (SimulationStepModel step : path.getSteps().values()) {
+            Label stepLabel = new Label(step.getDistanceMillis() + "ms");
+            flexTable.setWidget(i, 0, stepLabel);
+            VerticalPanel stepActions = new VerticalPanel();
+            int r = 1 + Random.nextInt(4);
+            for (int j = 0; j < r; j++) {
+                stepActions.add(new TextBox());
+            }
+            flexTable.setWidget(i, 1, stepActions);
+            i++;
+        }
     }
 
 }

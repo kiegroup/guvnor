@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
@@ -34,6 +36,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.shared.simulation.SimulationModel;
+import org.drools.guvnor.shared.simulation.SimulationPathModel;
 
 public class SimulationTestEditor extends Composite
         implements EditorWidget {
@@ -48,7 +51,7 @@ public class SimulationTestEditor extends Composite
     protected PushButton debugSimulationButton;
 
     @UiField
-    protected PathTableWidget pathTableWidget;
+    protected TabPanel pathTableTabPanel;
 
     @UiField
     protected PushButton zoomInButton;
@@ -69,6 +72,10 @@ public class SimulationTestEditor extends Composite
         this.asset = asset;
         SimulationModel simulation = (SimulationModel) asset.getContent();
         initWidget(uiBinder.createAndBindUi(this));
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            PathTableWidget pathTableWidget = new PathTableWidget(path);
+            pathTableTabPanel.add(pathTableWidget, path.getName());
+        }
         timeLineWidget.setSimulation(simulation);
     }
 

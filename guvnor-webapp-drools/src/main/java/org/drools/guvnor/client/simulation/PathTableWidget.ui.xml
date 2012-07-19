@@ -22,6 +22,5 @@
   <!--<ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />-->
   <!--<ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />-->
 
-  <gwt:VerticalPanel>
-  </gwt:VerticalPanel>
+  <gwt:FlexTable ui:field="flexTable"/>
 </ui:UiBinder>
