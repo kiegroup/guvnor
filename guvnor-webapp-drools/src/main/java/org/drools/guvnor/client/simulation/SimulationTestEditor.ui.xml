@@ -31,7 +31,7 @@
         <gwt:upFace image="{simulationResources.debugSimulation}"/><!-- TODO does not show -->
       </gwt:PushButton>
     </gwt:HorizontalPanel>
-    <gwt:TabPanel ui:field="pathTableTabPanel"/>
+    <gwt:TabPanel ui:field="pathTableTabPanel" width="100%"/>
     <simulation:TimeLineWidget ui:field="timeLineWidget"/>
   </gwt:FlowPanel>
 </ui:UiBinder>

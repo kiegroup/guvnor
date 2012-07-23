@@ -19,7 +19,6 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:simulation="urn:import:org.drools.guvnor.client.simulation">
 
-  <!--<ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />-->
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel>

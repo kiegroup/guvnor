@@ -21,40 +21,35 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
-import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
-public class PathTableWidget extends Composite {
+public class StepWidget extends Composite {
 
-    protected interface PathTableWidgetBinder extends UiBinder<Widget, PathTableWidget> {}
-    private static PathTableWidgetBinder uiBinder = GWT.create(PathTableWidgetBinder.class);
+    protected interface StepWidgetBinder extends UiBinder<Widget, StepWidget> {}
+    private static StepWidgetBinder uiBinder = GWT.create(StepWidgetBinder.class);
 
     private SimulationResources simulationResources = SimulationResources.INSTANCE;
     private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
     @UiField
-    protected FlexTable flexTable;
+    protected VerticalPanel verticalPanel;
 
-    private SimulationPathModel path;
+    private SimulationStepModel step;
 
-    public PathTableWidget(SimulationPathModel path) {
-        this.path = path;
+    public StepWidget(SimulationStepModel step) {
+        this.step = step;
         initWidget(uiBinder.createAndBindUi(this));
-        int stepIndex = 0;
-        for (SimulationStepModel step : path.getSteps().values()) {
-            Label stepLabel = new Label(step.getDistanceMillis() + " ms");
-            flexTable.setWidget(stepIndex, 0, stepLabel);
-            StepWidget stepWidget = new StepWidget(step);
-            flexTable.setWidget(stepIndex, 1, stepWidget);
-            stepIndex++;
+
+        // TODO mock code
+        int r = 1 + Random.nextInt(4);
+        for (int j = 0; j < r; j++) {
+            verticalPanel.add(new TextBox());
         }
     }
 
