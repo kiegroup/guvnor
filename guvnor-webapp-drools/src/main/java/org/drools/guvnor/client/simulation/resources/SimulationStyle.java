@@ -37,4 +37,9 @@ public interface SimulationStyle extends CssResource {
 
     String zoomButtonsPanel();
 
+    String stepWidget();
+
+    String commandImage();
+    String commandLabel();
+
 }

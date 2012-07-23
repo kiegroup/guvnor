@@ -18,6 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
-  <gwt:VerticalPanel ui:field="verticalPanel" width="100%"/>
+  <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
+
+  <gwt:VerticalPanel ui:field="verticalPanel" width="100%" styleName="{simulationResources.style.stepWidget}"/>
 
 </ui:UiBinder>
