@@ -30,7 +30,7 @@ import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
-public class FireAllRulesCommandWidget extends Composite {
+public class FireAllRulesCommandWidget extends AbstractCommandWidget {
 
     protected interface FireAllRulesCommandWidgetBinder extends UiBinder<Widget, FireAllRulesCommandWidget> {}
     private static FireAllRulesCommandWidgetBinder uiBinder = GWT.create(FireAllRulesCommandWidgetBinder.class);

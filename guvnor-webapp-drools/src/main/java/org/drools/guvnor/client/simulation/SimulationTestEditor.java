@@ -40,8 +40,8 @@ public class SimulationTestEditor extends Composite
     @UiField
     protected PushButton runSimulationButton;
 
-    @UiField
-    protected PushButton debugSimulationButton;
+//    @UiField
+//    protected PushButton debugSimulationButton;
 
     @UiField
     protected TabPanel pathTabPanel;

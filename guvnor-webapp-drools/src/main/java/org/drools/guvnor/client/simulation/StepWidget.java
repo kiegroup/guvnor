@@ -25,10 +25,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.simulation.command.AbstractCommandWidget;
 import org.drools.guvnor.client.simulation.command.FireAllRulesCommandWidget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
+import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
 public class StepWidget extends Composite {
@@ -44,13 +46,19 @@ public class StepWidget extends Composite {
     public StepWidget(SimulationStepModel step) {
         this.step = step;
         initWidget(uiBinder.createAndBindUi(this));
-
-        // TODO mock code
-        int r = 1 + Random.nextInt(4);
-        for (int j = 0; j < r; j++) {
-            verticalPanel.add(new TextBox());
+        for (AbstractCommandModel command : step.getCommands()) {
+            AbstractCommandWidget commandWidget = buildCommandWidget(command);
+            verticalPanel.add(commandWidget);
         }
-        verticalPanel.add(new FireAllRulesCommandWidget(new FireAllRulesCommandModel()));
+    }
+
+    private AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
+        if (command instanceof FireAllRulesCommandModel) {
+            return new FireAllRulesCommandWidget((FireAllRulesCommandModel) command);
+        } else {
+            throw new IllegalArgumentException("The AbstractCommandModel (" + command.getClass()
+                    + ") is not supported yet as a CommandWidget.");
+        }
     }
 
 }

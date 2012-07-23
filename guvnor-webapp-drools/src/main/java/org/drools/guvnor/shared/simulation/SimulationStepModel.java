@@ -19,6 +19,10 @@ package org.drools.guvnor.shared.simulation;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a DTO.
@@ -26,15 +30,14 @@ import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 @XStreamAlias("SimulationStepModel")
 public class SimulationStepModel implements PortableObject {
 
-    private AbstractCommandModel command;
-
     public static SimulationStepModel createNew() {
         SimulationStepModel step = new SimulationStepModel();
-
+        step.addCommand(new FireAllRulesCommandModel());
         return step;
     }
 
     private Long distanceMillis; // Distance to start of simulation
+    private List<AbstractCommandModel> commands = new ArrayList<AbstractCommandModel>();
 
     public Long getDistanceMillis() {
         return distanceMillis;
@@ -42,6 +45,14 @@ public class SimulationStepModel implements PortableObject {
 
     public void setDistanceMillis(Long distanceMillis) {
         this.distanceMillis = distanceMillis;
+    }
+
+    public List<AbstractCommandModel> getCommands() {
+        return commands;
+    }
+
+    public void addCommand(AbstractCommandModel command) {
+        commands.add(command);
     }
 
 }

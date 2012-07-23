@@ -27,9 +27,9 @@
       <gwt:PushButton ui:field="runSimulationButton" text="{i18n.RunSimulation}">
         <gwt:upFace image="{simulationResources.runSimulation}"/><!-- TODO does not show -->
       </gwt:PushButton>
-      <gwt:PushButton ui:field="debugSimulationButton" text="{i18n.DebugSimulation}">
-        <gwt:upFace image="{simulationResources.debugSimulation}"/><!-- TODO does not show -->
-      </gwt:PushButton>
+      <!--<gwt:PushButton ui:field="debugSimulationButton" text="{i18n.DebugSimulation}">-->
+        <!--<gwt:upFace image="{simulationResources.debugSimulation}"/>-->
+      <!--</gwt:PushButton>-->
     </gwt:HorizontalPanel>
     <gwt:TabPanel ui:field="pathTabPanel" width="100%"/>
     <simulation:TimeLineWidget ui:field="timeLineWidget"/>
