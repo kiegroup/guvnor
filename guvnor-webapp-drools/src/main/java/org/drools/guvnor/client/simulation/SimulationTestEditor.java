@@ -54,12 +54,6 @@ public class SimulationTestEditor extends Composite
     protected TabPanel pathTableTabPanel;
 
     @UiField
-    protected PushButton zoomInButton;
-
-    @UiField
-    protected PushButton zoomOutButton;
-
-    @UiField
     protected TimeLineWidget timeLineWidget;
 
     private final Asset asset;
@@ -78,16 +72,6 @@ public class SimulationTestEditor extends Composite
         }
         pathTableTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
-    }
-
-    @UiHandler("zoomInButton")
-    void zoomIn(ClickEvent event) {
-        timeLineWidget.zoomIn();
-    }
-
-    @UiHandler("zoomOutButton")
-    void zoomOut(ClickEvent event) {
-        timeLineWidget.zoomOut();
     }
 
 }

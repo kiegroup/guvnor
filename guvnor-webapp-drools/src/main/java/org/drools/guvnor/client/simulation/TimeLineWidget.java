@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -73,9 +74,14 @@ public class TimeLineWidget extends Composite {
     protected interface TimeLineWidgetBinder extends UiBinder<Widget, TimeLineWidget> {}
     private static TimeLineWidgetBinder uiBinder = GWT.create(TimeLineWidgetBinder.class);
 
-    private SimulationResources simulationResources = SimulationResources.INSTANCE;
-    private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
+    @UiField
+    protected SimulationResources simulationResources = SimulationResources.INSTANCE;
+    protected SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
+    @UiField
+    protected PushButton zoomInButton;
+    @UiField
+    protected PushButton zoomOutButton;
     @UiField
     protected ScrollPanel timeLineScrollPanel;
     @UiField
@@ -92,8 +98,8 @@ public class TimeLineWidget extends Composite {
     private Map<SimulationStepModel, Image> stepMap = null;
 
     public TimeLineWidget() {
-        contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
         initWidget(uiBinder.createAndBindUi(this));
+        contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
             public void onScroll(ScrollEvent event) {
                 refreshTimeLineContent();
@@ -179,6 +185,11 @@ public class TimeLineWidget extends Composite {
         return scrollLeft;
     }
 
+    @UiHandler("zoomInButton")
+    protected void zoomIn(ClickEvent event) {
+        zoomIn();
+    }
+
     public void zoomIn() {
         int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
@@ -189,6 +200,11 @@ public class TimeLineWidget extends Composite {
         scrollLeft = adjustScrollLeft(calculateX(distanceMillis, clientWidth), clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         refreshTimeLineContent(scrollLeft, clientWidth);
+    }
+
+    @UiHandler("zoomOutButton")
+    protected void zoomOut(ClickEvent event) {
+        zoomOut();
     }
 
     public void zoomOut() {
