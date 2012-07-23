@@ -19,23 +19,19 @@ package org.drools.guvnor.client.simulation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
-public class PathTableWidget extends Composite {
+public class PathWidget extends Composite {
 
-    protected interface PathTableWidgetBinder extends UiBinder<Widget, PathTableWidget> {}
-    private static PathTableWidgetBinder uiBinder = GWT.create(PathTableWidgetBinder.class);
+    protected interface PathWidgetBinder extends UiBinder<Widget, PathWidget> {}
+    private static PathWidgetBinder uiBinder = GWT.create(PathWidgetBinder.class);
 
     private SimulationResources simulationResources = SimulationResources.INSTANCE;
     private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
@@ -45,7 +41,7 @@ public class PathTableWidget extends Composite {
 
     private SimulationPathModel path;
 
-    public PathTableWidget(SimulationPathModel path) {
+    public PathWidget(SimulationPathModel path) {
         this.path = path;
         initWidget(uiBinder.createAndBindUi(this));
         int stepIndex = 0;

@@ -17,19 +17,12 @@
 package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
@@ -51,7 +44,7 @@ public class SimulationTestEditor extends Composite
     protected PushButton debugSimulationButton;
 
     @UiField
-    protected TabPanel pathTableTabPanel;
+    protected TabPanel pathTabPanel;
 
     @UiField
     protected TimeLineWidget timeLineWidget;
@@ -59,7 +52,7 @@ public class SimulationTestEditor extends Composite
     private final Asset asset;
 
     public SimulationTestEditor(Asset asset, RuleViewer ruleViewer, ClientFactory clientFactory, EventBus eventBus) {
-        this( asset );
+        this(asset);
     }
 
     public SimulationTestEditor(Asset asset) {
@@ -67,10 +60,10 @@ public class SimulationTestEditor extends Composite
         SimulationModel simulation = (SimulationModel) asset.getContent();
         initWidget(uiBinder.createAndBindUi(this));
         for (SimulationPathModel path : simulation.getPaths().values()) {
-            PathTableWidget pathTableWidget = new PathTableWidget(path);
-            pathTableTabPanel.add(pathTableWidget, path.getName());
+            PathWidget pathWidget = new PathWidget(path);
+            pathTabPanel.add(pathWidget, path.getName());
         }
-        pathTableTabPanel.selectTab(0);
+        pathTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
     }
 
