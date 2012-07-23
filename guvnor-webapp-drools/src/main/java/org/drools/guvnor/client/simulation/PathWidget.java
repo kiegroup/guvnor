@@ -33,9 +33,6 @@ public class PathWidget extends Composite {
     protected interface PathWidgetBinder extends UiBinder<Widget, PathWidget> {}
     private static PathWidgetBinder uiBinder = GWT.create(PathWidgetBinder.class);
 
-    private SimulationResources simulationResources = SimulationResources.INSTANCE;
-    private SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
-
     @UiField
     protected FlexTable flexTable;
 

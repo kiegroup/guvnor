@@ -14,43 +14,35 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.simulation;
+package org.drools.guvnor.client.simulation.command;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.simulation.command.FireAllRulesCommandWidget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
-public class StepWidget extends Composite {
+public class FireAllRulesCommandWidget extends Composite {
 
-    protected interface StepWidgetBinder extends UiBinder<Widget, StepWidget> {}
-    private static StepWidgetBinder uiBinder = GWT.create(StepWidgetBinder.class);
+    protected interface FireAllRulesCommandWidgetBinder extends UiBinder<Widget, FireAllRulesCommandWidget> {}
+    private static FireAllRulesCommandWidgetBinder uiBinder = GWT.create(FireAllRulesCommandWidgetBinder.class);
 
     @UiField
-    protected VerticalPanel verticalPanel;
+    protected FlowPanel flowPanel;
 
-    private SimulationStepModel step;
+    private FireAllRulesCommandModel command;
 
-    public StepWidget(SimulationStepModel step) {
-        this.step = step;
+    public FireAllRulesCommandWidget(FireAllRulesCommandModel command) {
+        this.command = command;
         initWidget(uiBinder.createAndBindUi(this));
-
-        // TODO mock code
-        int r = 1 + Random.nextInt(4);
-        for (int j = 0; j < r; j++) {
-            verticalPanel.add(new TextBox());
-        }
-        verticalPanel.add(new FireAllRulesCommandWidget(new FireAllRulesCommandModel()));
     }
 
 }

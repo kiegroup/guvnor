@@ -2773,6 +2773,8 @@ public interface Constants
 
     String DebugSimulation();
 
+    String FireAllRules();
+
     // End simulation test
 
 }
