@@ -2774,6 +2774,7 @@ public interface Constants
     String DebugSimulation();
 
     String FireAllRules();
+    String AssertRuleFired();
 
     // End simulation test
 

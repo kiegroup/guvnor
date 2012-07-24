@@ -24,12 +24,28 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This is a DTO.
+ * This is a DTO, but it's always nested in {@link FireAllRulesCommandModel}.
  */
-@XStreamAlias("AssertRulesFiredCommandModel")
-public class AssertRulesFiredCommandModel extends AbstractCommandModel {
+@XStreamAlias("AssertRuleFiredCommandModel")
+public class AssertRuleFiredCommandModel implements PortableObject {
 
     private String ruleName;
     private int fireCount;
+
+    public String getRuleName() {
+        return ruleName;
+    }
+
+    public void setRuleName(String ruleName) {
+        this.ruleName = ruleName;
+    }
+
+    public int getFireCount() {
+        return fireCount;
+    }
+
+    public void setFireCount(int fireCount) {
+        this.fireCount = fireCount;
+    }
 
 }

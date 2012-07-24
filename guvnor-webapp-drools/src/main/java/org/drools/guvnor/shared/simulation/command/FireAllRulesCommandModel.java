@@ -18,10 +18,19 @@ package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a DTO.
  */
 @XStreamAlias("FireAllRulesCommandModel")
 public class FireAllRulesCommandModel extends AbstractCommandModel {
+
+    private List<AssertRuleFiredCommandModel> assertRuleFiredCommands = new ArrayList<AssertRuleFiredCommandModel>();
+
+    public List<AssertRuleFiredCommandModel> getAssertRuleFiredCommands() {
+        return assertRuleFiredCommands;
+    }
 
 }

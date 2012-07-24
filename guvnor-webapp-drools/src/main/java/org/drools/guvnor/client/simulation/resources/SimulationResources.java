@@ -67,4 +67,7 @@ public interface SimulationResources extends ClientBundle {
     @Source("fireAllRules.png")
     ImageResource fireAllRules();
 
+    @Source("assertRuleFired.png")
+    ImageResource assertRuleFired();
+
 };

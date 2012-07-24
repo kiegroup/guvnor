@@ -19,34 +19,21 @@ package org.drools.guvnor.client.simulation.command;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.simulation.resources.SimulationResources;
-import org.drools.guvnor.client.simulation.resources.SimulationStyle;
-import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
-import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
-public class FireAllRulesCommandWidget extends AbstractCommandWidget {
+public class AssertRuleFiredCommandWidget extends Composite {
 
-    protected interface FireAllRulesCommandWidgetBinder extends UiBinder<Widget, FireAllRulesCommandWidget> {}
-    private static FireAllRulesCommandWidgetBinder uiBinder = GWT.create(FireAllRulesCommandWidgetBinder.class);
+    protected interface AssertRuleFiredCommandWidgetBinder extends UiBinder<Widget, AssertRuleFiredCommandWidget> {}
+    private static AssertRuleFiredCommandWidgetBinder uiBinder = GWT.create(AssertRuleFiredCommandWidgetBinder.class);
 
-    @UiField
-    protected FlowPanel flowPanel;
+    private AssertRuleFiredCommandModel command;
 
-    private FireAllRulesCommandModel command;
-
-    public FireAllRulesCommandWidget(FireAllRulesCommandModel command) {
+    public AssertRuleFiredCommandWidget(AssertRuleFiredCommandModel command) {
         this.command = command;
         initWidget(uiBinder.createAndBindUi(this));
-        for (AssertRuleFiredCommandModel assertRuleFiredCommand : command.getAssertRuleFiredCommands()) {
-            flowPanel.add(new AssertRuleFiredCommandWidget(assertRuleFiredCommand));
-        }
     }
 
 }
