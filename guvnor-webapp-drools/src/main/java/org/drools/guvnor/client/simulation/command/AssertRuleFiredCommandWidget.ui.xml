@@ -23,7 +23,7 @@
 
   <gwt:HorizontalPanel spacing="10">
     <gwt:Image resource="{simulationResources.assertRuleFired}" styleName="{simulationResources.style.commandImage}"/>
-    <gwt:HorizontalPanel spacing="10">
+    <gwt:HorizontalPanel spacing="0">
       <gwt:Label text="{i18n.AssertRuleFired}" styleName="{simulationResources.style.commandLabel}"/>
     </gwt:HorizontalPanel>
   </gwt:HorizontalPanel>
