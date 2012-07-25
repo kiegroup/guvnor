@@ -16,6 +16,29 @@
 
 @CHARSET "UTF-8";
 
+.distanceMillisColumn {
+    width: 10%;
+}
+.stepWidgetColumn {
+    width: 90%;
+}
+.removeStepColumn {
+}
+
+.stepWidget {
+    margin: 0px;
+    border: thin solid black;
+    padding: 5px;
+}
+
+.commandImage {
+}
+.commandLabel {
+    font-weight: bold;
+}
+
+/*TimeLine*/
+
 @def timeLineScrollPanelWidth 800px;
 
 @def timeLineHeaderHeight 30px;
@@ -44,17 +67,5 @@
 
 .zoomButtonsPanel {
     margin-left: 700px; /* TODO hard-coded relative to timeLineScrollPanelWidth */
-}
-
-.stepWidget {
-    margin: 0px;
-    border: thin solid black;
-    padding: 5px;
-}
-
-.commandImage {
-}
-.commandLabel {
-    font-weight: bold;
 }
 

@@ -59,6 +59,9 @@ public class PathWidget extends Composite {
         this.path = path;
         this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
+        flexTable.getColumnFormatter().addStyleName(0, simulationStyle.distanceMillisColumn());
+        flexTable.getColumnFormatter().addStyleName(1, simulationStyle.stepWidgetColumn());
+        flexTable.getColumnFormatter().addStyleName(2, simulationStyle.removeStepColumn());
         int stepIndex = 0;
         for (SimulationStepModel step : path.getSteps().values()) {
             addStepWidget(stepIndex, step);
@@ -68,8 +71,8 @@ public class PathWidget extends Composite {
 
     // TODO remove stepIndex parameter
     private void addStepWidget(int stepIndex, SimulationStepModel step) {
-        Label stepLabel = new Label(step.getDistanceMillis() + " ms");
-        flexTable.setWidget(stepIndex, 0, stepLabel);
+        Label distanceMillisLabel = new Label(step.getDistanceMillis() + " ms");
+        flexTable.setWidget(stepIndex, 0, distanceMillisLabel);
         StepWidget stepWidget = new StepWidget(step, simulationTestEventHandler);
         flexTable.setWidget(stepIndex, 1, stepWidget);
         flexTable.setWidget(stepIndex, 2, createRemoveStepButton(step));

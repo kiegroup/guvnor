@@ -20,6 +20,17 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface SimulationStyle extends CssResource {
 
+    String distanceMillisColumn();
+    String stepWidgetColumn();
+    String removeStepColumn();
+
+    String stepWidget();
+
+    String commandImage();
+    String commandLabel();
+
+    // TimeLine
+
     int timeLineScrollPanelWidth();
 
     int timeLineHeaderHeight();
@@ -35,10 +46,5 @@ public interface SimulationStyle extends CssResource {
     String addStepHeader();
 
     String zoomButtonsPanel();
-
-    String stepWidget();
-
-    String commandImage();
-    String commandLabel();
 
 }
