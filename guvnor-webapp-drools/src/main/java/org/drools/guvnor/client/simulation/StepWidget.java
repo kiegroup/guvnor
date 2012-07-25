@@ -41,10 +41,12 @@ public class StepWidget extends Composite {
     @UiField
     protected VerticalPanel verticalPanel;
 
-    private SimulationStepModel step;
+    private final SimulationStepModel step;
+    private final SimulationTestEventHandler simulationTestEventHandler;
 
-    public StepWidget(SimulationStepModel step) {
+    public StepWidget(SimulationStepModel step, SimulationTestEventHandler simulationTestEventHandler) {
         this.step = step;
+        this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
         for (AbstractCommandModel command : step.getCommands()) {
             AbstractCommandWidget commandWidget = buildCommandWidget(command);

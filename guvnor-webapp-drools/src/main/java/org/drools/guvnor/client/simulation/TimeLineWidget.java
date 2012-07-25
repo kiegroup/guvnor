@@ -74,6 +74,8 @@ public class TimeLineWidget extends Composite {
     protected interface TimeLineWidgetBinder extends UiBinder<Widget, TimeLineWidget> {}
     private static TimeLineWidgetBinder uiBinder = GWT.create(TimeLineWidgetBinder.class);
 
+    private final SimulationTestEventHandler simulationTestEventHandler;
+
     @UiField
     protected SimulationResources simulationResources = SimulationResources.INSTANCE;
     protected SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
@@ -97,7 +99,8 @@ public class TimeLineWidget extends Composite {
     private Map<Long, VerticalPanel> timeStoneMap = null;
     private Map<SimulationStepModel, Image> stepMap = null;
 
-    public TimeLineWidget() {
+    public TimeLineWidget(SimulationTestEventHandler simulationTestEventHandler) {
+        this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
         contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
@@ -162,13 +165,15 @@ public class TimeLineWidget extends Composite {
         addStepButton.addStyleName(simulationStyle.addStepButton());
         addStepButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                SimulationStepModel step = SimulationStepModel.createNew();
-                path.addStep(step);
-                adjustContentWidth(simulation.getMaximumDistanceMillis());
-                scrollToDistanceMillis(step.getDistanceMillis());
+                simulationTestEventHandler.addStep(path);
             }
         });
         return addStepButton;
+    }
+
+    public void addedStep(SimulationStepModel step) {
+        adjustContentWidth(simulation.getMaximumDistanceMillis());
+        scrollToDistanceMillis(step.getDistanceMillis());
     }
 
     public void scrollToDistanceMillis(long distanceMillis) {

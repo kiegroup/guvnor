@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
@@ -30,9 +31,13 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SimulationTestEditor extends Composite
-        implements EditorWidget {
+        implements EditorWidget, SimulationTestEventHandler {
 
     protected interface SimulationTestEditorBinder extends UiBinder<Widget, SimulationTestEditor> {}
     private static SimulationTestEditorBinder uiBinder = GWT.create(SimulationTestEditorBinder.class);
@@ -45,8 +50,9 @@ public class SimulationTestEditor extends Composite
 
     @UiField
     protected TabPanel pathTabPanel;
+    private Map<SimulationPathModel, PathWidget> pathWidgetMap = new HashMap<SimulationPathModel, PathWidget>();
 
-    @UiField
+    @UiField(provided = true)
     protected TimeLineWidget timeLineWidget;
 
     private final Asset asset;
@@ -57,14 +63,23 @@ public class SimulationTestEditor extends Composite
 
     public SimulationTestEditor(Asset asset) {
         this.asset = asset;
-        SimulationModel simulation = (SimulationModel) asset.getContent();
+        timeLineWidget = new TimeLineWidget(this);
         initWidget(uiBinder.createAndBindUi(this));
+        SimulationModel simulation = (SimulationModel) asset.getContent();
         for (SimulationPathModel path : simulation.getPaths().values()) {
-            PathWidget pathWidget = new PathWidget(path);
+            PathWidget pathWidget = new PathWidget(path, this);
             pathTabPanel.add(pathWidget, path.getName());
+            pathWidgetMap.put(path, pathWidget);
         }
         pathTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
+    }
+
+    public void addStep(SimulationPathModel path) {
+        SimulationStepModel step = SimulationStepModel.createNew();
+        path.addStep(step);
+        pathWidgetMap.get(path).addedStep(step);
+        timeLineWidget.addedStep(step);
     }
 
 }

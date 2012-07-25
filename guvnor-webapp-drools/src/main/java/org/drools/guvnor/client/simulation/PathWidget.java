@@ -26,8 +26,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.simulation.resources.SimulationResources;
-import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
@@ -41,24 +39,34 @@ public class PathWidget extends Composite {
     @UiField
     protected PushButton addStepButton;
 
-    private SimulationPathModel path;
+    private final SimulationPathModel path;
+    private final SimulationTestEventHandler simulationTestEventHandler;
 
-    public PathWidget(SimulationPathModel path) {
+    public PathWidget(SimulationPathModel path, SimulationTestEventHandler simulationTestEventHandler) {
         this.path = path;
+        this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
         int stepIndex = 0;
         for (SimulationStepModel step : path.getSteps().values()) {
-            Label stepLabel = new Label(step.getDistanceMillis() + " ms");
-            flexTable.setWidget(stepIndex, 0, stepLabel);
-            StepWidget stepWidget = new StepWidget(step);
-            flexTable.setWidget(stepIndex, 1, stepWidget);
+            addStepWidget(stepIndex, step);
             stepIndex++;
         }
     }
 
+    private void addStepWidget(int stepIndex, SimulationStepModel step) {
+        Label stepLabel = new Label(step.getDistanceMillis() + " ms");
+        flexTable.setWidget(stepIndex, 0, stepLabel);
+        StepWidget stepWidget = new StepWidget(step, simulationTestEventHandler);
+        flexTable.setWidget(stepIndex, 1, stepWidget);
+    }
+
     @UiHandler("addStepButton")
     protected void addStep(ClickEvent event) {
-        // TODO
+        simulationTestEventHandler.addStep(path);
+    }
+
+    public void addedStep(SimulationStepModel step) {
+        addStepWidget(flexTable.getRowCount(), step);
     }
 
 }
