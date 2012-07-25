@@ -31,19 +31,37 @@ import java.util.List;
 @XStreamAlias("SimulationStepModel")
 public class SimulationStepModel implements PortableObject {
 
-    public static SimulationStepModel createNew() {
-        SimulationStepModel step = new SimulationStepModel();
+    public static SimulationStepModel createNew(SimulationPathModel path) {
+        SimulationStepModel step = new SimulationStepModel(path);
+        todoCreateTestdata(step);
+        // Do not add do path.addStep(step) yet because the client might want to set distanceMillis first.
+        return step;
+    }
+
+    private static void todoCreateTestdata(SimulationStepModel step) {
         FireAllRulesCommandModel fireAllRulesCommand = new FireAllRulesCommandModel();
         AssertRuleFiredCommandModel assertRuleFiredCommand = new AssertRuleFiredCommandModel();
         assertRuleFiredCommand.setRuleName("myFirstRule");
         assertRuleFiredCommand.setFireCount(1);
         fireAllRulesCommand.getAssertRuleFiredCommands().add(assertRuleFiredCommand);
         step.getCommands().add(fireAllRulesCommand);
-        return step;
     }
 
+    private SimulationPathModel path;
     private Long distanceMillis; // Distance to start of simulation
     private List<AbstractCommandModel> commands = new ArrayList<AbstractCommandModel>();
+
+    private SimulationStepModel() {
+        // For GWT serialization
+    }
+
+    public SimulationStepModel(SimulationPathModel path) {
+        this.path = path;
+    }
+
+    public SimulationPathModel getPath() {
+        return path;
+    }
 
     public Long getDistanceMillis() {
         return distanceMillis;

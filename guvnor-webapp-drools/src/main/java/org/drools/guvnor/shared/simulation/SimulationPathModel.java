@@ -30,7 +30,7 @@ public class SimulationPathModel implements PortableObject {
 
     public static SimulationPathModel createNew() {
         SimulationPathModel path = new SimulationPathModel();
-        path.addStep(SimulationStepModel.createNew());
+        path.addStep(SimulationStepModel.createNew(path));
         todoCreateTestdata(path);
         return path;
     }
@@ -42,7 +42,7 @@ public class SimulationPathModel implements PortableObject {
         for (int i = 0; i < 5; i++) {
             nextDistanceMillis += random.nextInt(2000) + 1000;
             if (random.nextBoolean()) {
-                SimulationStepModel step = SimulationStepModel.createNew();
+                SimulationStepModel step = SimulationStepModel.createNew(path);
                 step.setDistanceMillis(nextDistanceMillis);
                 path.addStep(step);
             }
@@ -67,6 +67,10 @@ public class SimulationPathModel implements PortableObject {
     }
 
     public void addStep(SimulationStepModel step) {
+        if (step.getPath() != this) {
+            throw new IllegalArgumentException("The simulation step's path ("
+                    + step.getPath() + ") is not this path (" + this + ").");
+        }
         if (step.getDistanceMillis() == null) {
             generateStepDistanceMillis(step);
         }
@@ -75,6 +79,19 @@ public class SimulationPathModel implements PortableObject {
                     + step.getDistanceMillis() + ") is not unique.");
         }
         steps.put(step.getDistanceMillis(), step);
+    }
+
+    public void removeStep(SimulationStepModel step) {
+        if (step.getPath() != this) {
+            throw new IllegalArgumentException("The simulation step's path ("
+                    + step.getPath() + ") is not this path (" + this + ").");
+        }
+        Long distanceMillis = step.getDistanceMillis();
+        if (!steps.containsKey(distanceMillis)) {
+            throw new IllegalArgumentException("The simulation step's distanceMillis ("
+                    + distanceMillis + ") is not known. It probably changed while it was in the Map.");
+        }
+        steps.remove(distanceMillis);
     }
 
     private void generateStepDistanceMillis(SimulationStepModel step) {

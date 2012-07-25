@@ -18,29 +18,42 @@ package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.simulation.resources.SimulationResources;
+import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PathWidget extends Composite {
 
     protected interface PathWidgetBinder extends UiBinder<Widget, PathWidget> {}
     private static PathWidgetBinder uiBinder = GWT.create(PathWidgetBinder.class);
 
+    private final SimulationPathModel path;
+    private final SimulationTestEventHandler simulationTestEventHandler;
+
+    @UiField
+    protected SimulationResources simulationResources = SimulationResources.INSTANCE;
+    protected SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
+
     @UiField
     protected FlexTable flexTable;
     @UiField
     protected PushButton addStepButton;
 
-    private final SimulationPathModel path;
-    private final SimulationTestEventHandler simulationTestEventHandler;
+    private Map<SimulationStepModel, Integer> stepRowIndexMap = new HashMap<SimulationStepModel, Integer>();
 
     public PathWidget(SimulationPathModel path, SimulationTestEventHandler simulationTestEventHandler) {
         this.path = path;
@@ -53,11 +66,35 @@ public class PathWidget extends Composite {
         }
     }
 
+    // TODO remove stepIndex parameter
     private void addStepWidget(int stepIndex, SimulationStepModel step) {
         Label stepLabel = new Label(step.getDistanceMillis() + " ms");
         flexTable.setWidget(stepIndex, 0, stepLabel);
         StepWidget stepWidget = new StepWidget(step, simulationTestEventHandler);
         flexTable.setWidget(stepIndex, 1, stepWidget);
+        flexTable.setWidget(stepIndex, 2, createRemoveStepButton(step));
+        stepRowIndexMap.put(step, stepIndex);
+    }
+
+    private PushButton createRemoveStepButton(final SimulationStepModel step) {
+        PushButton removeStepButton = new PushButton(new Image(simulationResources.removeStep()));
+        removeStepButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                simulationTestEventHandler.removeStep(step);
+            }
+        });
+        return removeStepButton;
+    }
+
+    private void removeStepWidget(SimulationStepModel step) {
+        int stepIndex = stepRowIndexMap.remove(step);
+        flexTable.removeRow(stepIndex);
+        for (Map.Entry<SimulationStepModel, Integer> entry : stepRowIndexMap.entrySet()) {
+            int otherStepIndex = entry.getValue();
+            if (otherStepIndex > stepIndex) {
+                entry.setValue(otherStepIndex - 1);
+            }
+        }
     }
 
     @UiHandler("addStepButton")
@@ -67,6 +104,10 @@ public class PathWidget extends Composite {
 
     public void addedStep(SimulationStepModel step) {
         addStepWidget(flexTable.getRowCount(), step);
+    }
+
+    public void removedStep(SimulationStepModel step) {
+        removeStepWidget(step);
     }
 
 }

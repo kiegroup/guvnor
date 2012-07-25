@@ -17,9 +17,11 @@
 package org.drools.guvnor.client.simulation;
 
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 public interface SimulationTestEventHandler {
 
     void addStep(SimulationPathModel path);
+    void removeStep(SimulationStepModel step);
 
 }

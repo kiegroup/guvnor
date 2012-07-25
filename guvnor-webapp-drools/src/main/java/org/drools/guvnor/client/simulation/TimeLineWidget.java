@@ -149,7 +149,7 @@ public class TimeLineWidget extends Composite {
 
     private void refreshAddStepsPanel() {
         Label addStepLabel = new Label("");
-        addStepLabel.addStyleName(simulationStyle.addStepLabel());
+        addStepLabel.addStyleName(simulationStyle.addStepHeader());
         addStepsPanel.add(addStepLabel);
         for (SimulationPathModel path : simulation.getPaths().values()) {
             FlowPanel heightLimitingPanel = new FlowPanel();
@@ -162,7 +162,6 @@ public class TimeLineWidget extends Composite {
 
     private PushButton createAddStepButton(final SimulationPathModel path) {
         PushButton addStepButton = new PushButton(new Image(simulationResources.addStep()));
-        addStepButton.addStyleName(simulationStyle.addStepButton());
         addStepButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 simulationTestEventHandler.addStep(path);
@@ -172,6 +171,15 @@ public class TimeLineWidget extends Composite {
     }
 
     public void addedStep(SimulationStepModel step) {
+        adjustContentWidth(simulation.getMaximumDistanceMillis());
+        scrollToDistanceMillis(step.getDistanceMillis());
+    }
+
+    public void removedStep(SimulationStepModel step) {
+        Image stepWidget = stepMap.remove(step);
+        if (stepWidget != null) {
+            timeLineContent.remove(stepWidget);
+        }
         adjustContentWidth(simulation.getMaximumDistanceMillis());
         scrollToDistanceMillis(step.getDistanceMillis());
     }

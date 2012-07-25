@@ -38,11 +38,8 @@
     margin-right: 5px;
 }
 
-.addStepLabel {
+.addStepHeader {
     height: timeLineHeaderHeight;
-}
-
-.addStepButton {
 }
 
 .zoomButtonsPanel {

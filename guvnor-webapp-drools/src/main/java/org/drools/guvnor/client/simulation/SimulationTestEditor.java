@@ -76,10 +76,17 @@ public class SimulationTestEditor extends Composite
     }
 
     public void addStep(SimulationPathModel path) {
-        SimulationStepModel step = SimulationStepModel.createNew();
+        SimulationStepModel step = SimulationStepModel.createNew(path);
         path.addStep(step);
         pathWidgetMap.get(path).addedStep(step);
         timeLineWidget.addedStep(step);
+    }
+
+    public void removeStep(SimulationStepModel step) {
+        SimulationPathModel path = step.getPath();
+        path.removeStep(step);
+        pathWidgetMap.get(path).removedStep(step);
+        timeLineWidget.removedStep(step);
     }
 
 }
