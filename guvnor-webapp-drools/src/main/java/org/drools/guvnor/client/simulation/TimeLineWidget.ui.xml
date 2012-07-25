@@ -22,6 +22,12 @@
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel>
+    <gwt:HorizontalPanel spacing="0">
+      <gwt:ScrollPanel ui:field="timeLineScrollPanel">
+        <gwt:LayoutPanel ui:field="timeLineContent"/>
+      </gwt:ScrollPanel>
+      <gwt:FlowPanel ui:field="addStepsPanel"/>
+    </gwt:HorizontalPanel>
     <gwt:HorizontalPanel spacing="10" addStyleNames="{simulationResources.style.zoomButtonsPanel}">
       <gwt:PushButton ui:field="zoomInButton">
         <gwt:upFace image="{simulationResources.zoomIn}"/>
@@ -29,12 +35,6 @@
       <gwt:PushButton ui:field="zoomOutButton">
         <gwt:upFace image="{simulationResources.zoomOut}"/>
       </gwt:PushButton>
-    </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel spacing="0">
-      <gwt:ScrollPanel ui:field="timeLineScrollPanel">
-        <gwt:LayoutPanel ui:field="timeLineContent"/>
-      </gwt:ScrollPanel>
-      <gwt:FlowPanel ui:field="addStepsPanel"/>
     </gwt:HorizontalPanel>
   </gwt:FlowPanel>
 </ui:UiBinder>
