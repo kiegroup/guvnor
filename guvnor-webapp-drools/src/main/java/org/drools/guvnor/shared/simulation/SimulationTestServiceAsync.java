@@ -22,6 +22,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 public interface SimulationTestServiceAsync {
 
-    void runSimulation(SimulationModel simulation, AsyncCallback<Void> callback);
+    void runSimulation(String moduleName, SimulationModel simulation, AsyncCallback<Void> callback);
 
 }

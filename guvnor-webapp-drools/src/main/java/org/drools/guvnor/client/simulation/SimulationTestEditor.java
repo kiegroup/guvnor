@@ -100,7 +100,8 @@ public class SimulationTestEditor extends Composite
 
     @UiHandler("runSimulationButton")
     protected void runSimulation(ClickEvent event) {
-        simulationTestService.runSimulation(simulation, new GenericCallback<Void>() {
+        simulationTestService.runSimulation(asset.getMetaData().getModuleName(),
+                simulation, new GenericCallback<Void>() {
             public void onSuccess(Void result) {
                 System.out.println("TODO ranSimulation");
             }

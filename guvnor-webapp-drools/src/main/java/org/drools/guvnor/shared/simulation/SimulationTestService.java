@@ -22,6 +22,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("simulationTestService")
 public interface SimulationTestService extends RemoteService {
 
-    void runSimulation(SimulationModel simulation);
+    void runSimulation(String moduleName, SimulationModel simulation);
 
 }

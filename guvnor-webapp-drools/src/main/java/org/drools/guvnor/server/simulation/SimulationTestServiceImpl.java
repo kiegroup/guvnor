@@ -16,16 +16,65 @@
 
 package org.drools.guvnor.server.simulation;
 
+import org.drools.KnowledgeBase;
+import org.drools.builder.ResourceType;
+import org.drools.command.World;
+import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
+import org.drools.fluent.simulation.SimulationFluent;
+import org.drools.fluent.simulation.impl.DefaultSimulationFluent;
 import org.drools.guvnor.shared.simulation.SimulationModel;
+import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.SimulationTestService;
+import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
+import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+import org.drools.io.ResourceFactory;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.RulesRepository;
+import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class SimulationTestServiceImpl implements SimulationTestService {
 
-    public void runSimulation(SimulationModel simulation) {
-        System.out.println("TODO runSimulation");
+    @Inject
+    private RulesRepository rulesRepository;
+
+    @LoggedIn
+    public void runSimulation(String moduleName, SimulationModel simulation) {
+        ModuleItem moduleItem = rulesRepository.loadModule(moduleName); // TODO check isBinaryUpToDate
+
+        SimulationFluent simulationFluent = new DefaultSimulationFluent();
+        for (SimulationPathModel path : simulation.getPaths().values()) {
+            simulationFluent.newPath(path.getName());
+            simulationFluent.newKnowledgeBuilder()
+                // TODO add moduleItem
+                .end();
+            simulationFluent.newKnowledgeBase().addKnowledgePackages().end(World.ROOT, KnowledgeBase.class.getName());
+            simulationFluent.newStatefulKnowledgeSession().end();
+            for (SimulationStepModel step : path.getSteps().values()) {
+                simulationFluent.newStep(step.getDistanceMillis());
+                StatefulKnowledgeSessionSimFluent session = simulationFluent.getStatefulKnowledgeSession();
+                for (AbstractCommandModel command : step.getCommands()) {
+                    if (command instanceof FireAllRulesCommandModel) {
+                        FireAllRulesCommandModel fireAllRulesCommand = (FireAllRulesCommandModel) command;
+                        session.fireAllRules();
+                        for (AssertRuleFiredCommandModel assertRuleFiredCommand
+                                : fireAllRulesCommand.getAssertRuleFiredCommands()) {
+                            session.assertRuleFired(assertRuleFiredCommand.getRuleName(),
+                                    assertRuleFiredCommand.getFireCount());
+                        }
+                    } else {
+                        throw new IllegalStateException("The AbstractCommandModel class ("
+                                + command.getClass() + ") is not implemented on the server side.");
+                    }
+                }
+            }
+        }
+        simulationFluent.runSimulation();
     }
 
 }

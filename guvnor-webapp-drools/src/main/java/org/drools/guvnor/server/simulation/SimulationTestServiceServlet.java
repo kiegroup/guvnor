@@ -32,8 +32,8 @@ public class SimulationTestServiceServlet extends RemoteServiceServlet implement
     @Inject
     private SimulationTestService simulationTestService;
 
-    public void runSimulation(SimulationModel simulation) {
-        simulationTestService.runSimulation(simulation);
+    public void runSimulation(String moduleName, SimulationModel simulation) {
+        simulationTestService.runSimulation(moduleName, simulation);
     }
 
 }
