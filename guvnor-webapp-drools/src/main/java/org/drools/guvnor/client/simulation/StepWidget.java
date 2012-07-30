@@ -26,12 +26,16 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.command.AbstractCommandWidget;
+import org.drools.guvnor.client.simulation.command.AssertBulkDataCommandWidget;
 import org.drools.guvnor.client.simulation.command.FireAllRulesCommandWidget;
+import org.drools.guvnor.client.simulation.command.InsertBulkDataCommandWidget;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
 public class StepWidget extends Composite {
 
@@ -55,8 +59,12 @@ public class StepWidget extends Composite {
     }
 
     private AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
-        if (command instanceof FireAllRulesCommandModel) {
+        if (command instanceof InsertBulkDataCommandModel) {
+            return new InsertBulkDataCommandWidget((InsertBulkDataCommandModel) command);
+        } else if (command instanceof FireAllRulesCommandModel) {
             return new FireAllRulesCommandWidget((FireAllRulesCommandModel) command);
+        } else if (command instanceof AssertBulkDataCommandModel) {
+            return new AssertBulkDataCommandWidget((AssertBulkDataCommandModel) command);
         } else {
             throw new IllegalArgumentException("The AbstractCommandModel (" + command.getClass()
                     + ") is not supported yet as a CommandWidget.");

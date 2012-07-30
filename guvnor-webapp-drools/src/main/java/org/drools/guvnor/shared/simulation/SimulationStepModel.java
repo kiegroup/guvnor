@@ -19,8 +19,10 @@ package org.drools.guvnor.shared.simulation;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +41,14 @@ public class SimulationStepModel implements PortableObject {
     }
 
     private static void todoCreateTestdata(SimulationStepModel step) {
+        step.getCommands().add(new InsertBulkDataCommandModel());
         FireAllRulesCommandModel fireAllRulesCommand = new FireAllRulesCommandModel();
         AssertRuleFiredCommandModel assertRuleFiredCommand = new AssertRuleFiredCommandModel();
         assertRuleFiredCommand.setRuleName("myFirstRule");
         assertRuleFiredCommand.setFireCount(1);
         fireAllRulesCommand.getAssertRuleFiredCommands().add(assertRuleFiredCommand);
         step.getCommands().add(fireAllRulesCommand);
+        step.getCommands().add(new AssertBulkDataCommandModel());
     }
 
     private SimulationPathModel path;

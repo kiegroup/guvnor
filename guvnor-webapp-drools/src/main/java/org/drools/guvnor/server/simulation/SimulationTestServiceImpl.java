@@ -59,22 +59,26 @@ public class SimulationTestServiceImpl implements SimulationTestService {
                 simulationFluent.newStep(step.getDistanceMillis());
                 StatefulKnowledgeSessionSimFluent session = simulationFluent.getStatefulKnowledgeSession();
                 for (AbstractCommandModel command : step.getCommands()) {
-                    if (command instanceof FireAllRulesCommandModel) {
-                        FireAllRulesCommandModel fireAllRulesCommand = (FireAllRulesCommandModel) command;
-                        session.fireAllRules();
-                        for (AssertRuleFiredCommandModel assertRuleFiredCommand
-                                : fireAllRulesCommand.getAssertRuleFiredCommands()) {
-                            session.assertRuleFired(assertRuleFiredCommand.getRuleName(),
-                                    assertRuleFiredCommand.getFireCount());
-                        }
-                    } else {
-                        throw new IllegalStateException("The AbstractCommandModel class ("
-                                + command.getClass() + ") is not implemented on the server side.");
-                    }
+                    addCommand(session, command);
                 }
             }
         }
         simulationFluent.runSimulation();
+    }
+
+    private void addCommand(StatefulKnowledgeSessionSimFluent session, AbstractCommandModel command) {
+        if (command instanceof FireAllRulesCommandModel) {
+            FireAllRulesCommandModel fireAllRulesCommand = (FireAllRulesCommandModel) command;
+            session.fireAllRules();
+            for (AssertRuleFiredCommandModel assertRuleFiredCommand
+                    : fireAllRulesCommand.getAssertRuleFiredCommands()) {
+                session.assertRuleFired(assertRuleFiredCommand.getRuleName(),
+                        assertRuleFiredCommand.getFireCount());
+            }
+        } else {
+            throw new IllegalStateException("The AbstractCommandModel class ("
+                    + command.getClass() + ") is not implemented on the server side.");
+        }
     }
 
 }

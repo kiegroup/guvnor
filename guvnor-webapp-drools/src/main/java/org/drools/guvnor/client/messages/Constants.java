@@ -2773,8 +2773,10 @@ public interface Constants
 
     String DebugSimulation();
 
+    String InsertBulkData();
     String FireAllRules();
     String AssertRuleFired();
+    String AssertBulkData();
 
     // End simulation test
 

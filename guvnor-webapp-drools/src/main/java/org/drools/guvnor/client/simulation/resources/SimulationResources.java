@@ -64,10 +64,16 @@ public interface SimulationResources extends ClientBundle {
 
     // Commands
 
+    @Source("insertBulkData.png")
+    ImageResource insertBulkData();
+
     @Source("fireAllRules.png")
     ImageResource fireAllRules();
 
     @Source("assertRuleFired.png")
     ImageResource assertRuleFired();
+
+    @Source("assertBulkData.png")
+    ImageResource assertBulkData();
 
 };
