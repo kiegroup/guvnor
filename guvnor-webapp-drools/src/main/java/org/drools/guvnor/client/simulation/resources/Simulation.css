@@ -32,6 +32,7 @@
 }
 
 .commandImage {
+    float: left;
 }
 .commandLabel {
     font-weight: bold;
