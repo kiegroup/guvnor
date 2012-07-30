@@ -17,9 +17,12 @@
 package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -27,11 +30,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
+import org.drools.guvnor.shared.simulation.SimulationTestService;
+import org.drools.guvnor.shared.simulation.SimulationTestServiceAsync;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +47,8 @@ public class SimulationTestEditor extends Composite
 
     protected interface SimulationTestEditorBinder extends UiBinder<Widget, SimulationTestEditor> {}
     private static SimulationTestEditorBinder uiBinder = GWT.create(SimulationTestEditorBinder.class);
+
+    private final SimulationTestServiceAsync simulationTestService = GWT.create(SimulationTestService.class);
 
     @UiField
     protected PushButton runSimulationButton;
@@ -56,6 +64,7 @@ public class SimulationTestEditor extends Composite
     protected TimeLineWidget timeLineWidget;
 
     private final Asset asset;
+    private final SimulationModel simulation;
 
     public SimulationTestEditor(Asset asset, RuleViewer ruleViewer, ClientFactory clientFactory, EventBus eventBus) {
         this(asset);
@@ -63,9 +72,9 @@ public class SimulationTestEditor extends Composite
 
     public SimulationTestEditor(Asset asset) {
         this.asset = asset;
+        simulation = (SimulationModel) asset.getContent();
         timeLineWidget = new TimeLineWidget(this);
         initWidget(uiBinder.createAndBindUi(this));
-        SimulationModel simulation = (SimulationModel) asset.getContent();
         for (SimulationPathModel path : simulation.getPaths().values()) {
             PathWidget pathWidget = new PathWidget(path, this);
             pathTabPanel.add(pathWidget, path.getName());
@@ -87,6 +96,15 @@ public class SimulationTestEditor extends Composite
         path.removeStep(step);
         pathWidgetMap.get(path).removedStep(step);
         timeLineWidget.removedStep(step);
+    }
+
+    @UiHandler("runSimulationButton")
+    protected void runSimulation(ClickEvent event) {
+        simulationTestService.runSimulation(simulation, new GenericCallback<Void>() {
+            public void onSuccess(Void result) {
+                System.out.println("TODO ranSimulation");
+            }
+        });
     }
 
 }

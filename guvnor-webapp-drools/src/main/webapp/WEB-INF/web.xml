@@ -90,6 +90,10 @@
     <servlet-class>org.drools.guvnor.server.TestScenarioServiceServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>simulationTestService</servlet-name>
+    <servlet-class>org.drools.guvnor.server.simulation.SimulationTestServiceServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>AssetFileServlet</servlet-name>
     <servlet-class>org.drools.guvnor.server.files.AssetFileServlet</servlet-class>
   </servlet>
@@ -209,6 +213,10 @@
   <servlet-mapping>
     <servlet-name>testScenarioService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/testScenarioService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>simulationTestService</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/simulationTestService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>
