@@ -2773,6 +2773,8 @@ public interface Constants
 
     String DebugSimulation();
 
+    String AddCommandPopupTitle();
+
     String InsertBulkData();
     String FireAllRules();
     String AssertRuleFired();

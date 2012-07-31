@@ -33,6 +33,7 @@ import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.SimulationTestUtils;
+import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class PathWidget extends Composite {
     protected PushButton addStepButton;
 
     private Map<SimulationStepModel, Integer> stepRowIndexMap = new HashMap<SimulationStepModel, Integer>();
+    private Map<SimulationStepModel, StepWidget> stepWidgetMap = new HashMap<SimulationStepModel, StepWidget>();
 
     public PathWidget(SimulationPathModel path, SimulationTestEventHandler simulationTestEventHandler) {
         this.path = path;
@@ -78,6 +80,7 @@ public class PathWidget extends Composite {
         flexTable.setWidget(stepIndex, 1, stepWidget);
         flexTable.setWidget(stepIndex, 2, createRemoveStepButton(step));
         stepRowIndexMap.put(step, stepIndex);
+        stepWidgetMap.put(step, stepWidget);
     }
 
     private PushButton createRemoveStepButton(final SimulationStepModel step) {
@@ -92,6 +95,7 @@ public class PathWidget extends Composite {
 
     private void removeStepWidget(SimulationStepModel step) {
         int stepIndex = stepRowIndexMap.remove(step);
+        stepWidgetMap.remove(step);
         flexTable.removeRow(stepIndex);
         for (Map.Entry<SimulationStepModel, Integer> entry : stepRowIndexMap.entrySet()) {
             int otherStepIndex = entry.getValue();
@@ -112,6 +116,10 @@ public class PathWidget extends Composite {
 
     public void removedStep(SimulationStepModel step) {
         removeStepWidget(step);
+    }
+
+    public void addedCommand(SimulationStepModel step, AbstractCommandModel command) {
+        stepWidgetMap.get(step).addedCommand(command);
     }
 
 }

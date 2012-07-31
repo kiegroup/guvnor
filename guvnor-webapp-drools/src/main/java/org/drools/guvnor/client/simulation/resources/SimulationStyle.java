@@ -27,6 +27,7 @@ public interface SimulationStyle extends CssResource {
 
     String stepWidget();
 
+    String addCommandButton();
     String commandImage();
     String commandLabel();
 

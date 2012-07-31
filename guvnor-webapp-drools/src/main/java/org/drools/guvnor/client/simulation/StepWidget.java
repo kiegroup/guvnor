@@ -25,7 +25,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.simulation.command.AbstractCommandWidget;
+import org.drools.guvnor.client.simulation.command.AddCommandWidget;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
@@ -47,14 +50,26 @@ public class StepWidget extends Composite {
         this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
         for (AbstractCommandModel command : step.getCommands()) {
-            AbstractCommandWidget commandWidget = AbstractCommandWidget.buildCommandWidget(command);
-            verticalPanel.add(commandWidget);
+            addCommandWidget(command);
         }
+    }
+
+    private void addCommandWidget(AbstractCommandModel command) {
+        AbstractCommandWidget commandWidget = AbstractCommandWidget.buildCommandWidget(command);
+        verticalPanel.add(commandWidget);
     }
 
     @UiHandler("addCommandButton")
     protected void addCommand(ClickEvent event) {
-        simulationTestEventHandler.addCommand(step);
+        FormStylePopup addCommandPopup = new FormStylePopup();
+        addCommandPopup.setTitle(Constants.INSTANCE.AddCommandPopupTitle());
+        addCommandPopup.setWidth("400px");
+        addCommandPopup.addRow(new AddCommandWidget(addCommandPopup, step, simulationTestEventHandler));
+        addCommandPopup.show();
+    }
+
+    public void addedCommand(AbstractCommandModel command) {
+        addCommandWidget(command);
     }
 
 }

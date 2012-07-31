@@ -24,7 +24,10 @@ import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
 public abstract class AbstractCommandWidget extends Composite {
 
+    // Keep in sync with: AddCommandWidget
+
     public static AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
+        // Replacing this by a Map<Class,Class> is impossible in GWT without code generation
         if (command instanceof InsertBulkDataCommandModel) {
             return new InsertBulkDataCommandWidget((InsertBulkDataCommandModel) command);
         } else if (command instanceof FireAllRulesCommandModel) {
@@ -36,5 +39,5 @@ public abstract class AbstractCommandWidget extends Composite {
                     + ") is not supported yet as a CommandWidget.");
         }
     }
-    
+
 }

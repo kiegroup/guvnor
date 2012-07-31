@@ -38,6 +38,7 @@ import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.SimulationTestService;
 import org.drools.guvnor.shared.simulation.SimulationTestServiceAsync;
+import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,8 +99,10 @@ public class SimulationTestEditor extends Composite
         timeLineWidget.removedStep(step);
     }
 
-    public void addCommand(SimulationStepModel step) {
-        // TODO
+    public void addCommand(SimulationStepModel step, AbstractCommandModel command) {
+        SimulationPathModel path = step.getPath();
+        pathWidgetMap.get(path).addedCommand(step, command);
+        // TODO notify timeLineWidget in case the step icon needs to change
     }
 
     @UiHandler("runSimulationButton")
