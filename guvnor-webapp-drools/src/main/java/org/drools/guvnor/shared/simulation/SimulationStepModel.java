@@ -35,20 +35,8 @@ public class SimulationStepModel implements PortableObject {
 
     public static SimulationStepModel createNew(SimulationPathModel path) {
         SimulationStepModel step = new SimulationStepModel(path);
-        todoCreateTestdata(step);
         // Do not add do path.addStep(step) yet because the client might want to set distanceMillis first.
         return step;
-    }
-
-    private static void todoCreateTestdata(SimulationStepModel step) {
-        step.getCommands().add(new InsertBulkDataCommandModel());
-        FireAllRulesCommandModel fireAllRulesCommand = new FireAllRulesCommandModel();
-        AssertRuleFiredCommandModel assertRuleFiredCommand = new AssertRuleFiredCommandModel();
-        assertRuleFiredCommand.setRuleName("myFirstRule");
-        assertRuleFiredCommand.setFireCount(1);
-        fireAllRulesCommand.getAssertRuleFiredCommands().add(assertRuleFiredCommand);
-        step.getCommands().add(fireAllRulesCommand);
-        step.getCommands().add(new AssertBulkDataCommandModel());
     }
 
     private SimulationPathModel path;
