@@ -21,13 +21,13 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
-  <gwt:HorizontalPanel spacing="10">
+  <gwt:FlowPanel>
     <gwt:Image resource="{simulationResources.assertRuleFired}" styleName="{simulationResources.style.commandImage}"/>
     <gwt:HTMLPanel>
       <div>
         <gwt:Label text="{i18n.AssertRuleFired}" styleName="{simulationResources.style.commandLabel}"/>
       </div>
     </gwt:HTMLPanel>
-  </gwt:HorizontalPanel>
+  </gwt:FlowPanel>
 
 </ui:UiBinder>

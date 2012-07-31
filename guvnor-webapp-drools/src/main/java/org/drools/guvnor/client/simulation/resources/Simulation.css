@@ -34,6 +34,9 @@
     padding: 5px;
 }
 
+.addCommandWidget {
+    width: 100%;
+}
 .addCommandButton {
     float: left;
 }
@@ -42,6 +45,8 @@
 }
 .commandLabel {
     font-weight: bold;
+    margin-left: 5px;
+    vertical-align: middle;
 }
 
 /*TimeLine*/

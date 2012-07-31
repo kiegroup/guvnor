@@ -21,27 +21,31 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
-  <gwt:HTMLPanel>
-    <div style="width: 100%;">
-      <div>
-        <gwt:PushButton ui:field="addInsertBulkDataButton" styleName="{simulationResources.style.addCommandButton}">
+  <gwt:VerticalPanel styleName="{simulationResources.style.addCommandWidget}">
+    <gwt:cell>
+      <gwt:FlowPanel>
+        <gwt:PushButton ui:field="addInsertBulkDataButton" addStyleNames="{simulationResources.style.addCommandButton}">
           <gwt:upFace image="{simulationResources.insertBulkData}"/>
         </gwt:PushButton>
         <gwt:Label text="{i18n.InsertBulkData}" styleName="{simulationResources.style.commandLabel}"/>
-      </div>
-      <div>
-        <gwt:PushButton ui:field="addFireAllRulesButton" styleName="{simulationResources.style.addCommandButton}">
+      </gwt:FlowPanel>
+    </gwt:cell>
+    <gwt:cell>
+      <gwt:FlowPanel>
+        <gwt:PushButton ui:field="addFireAllRulesButton" addStyleNames="{simulationResources.style.addCommandButton}">
           <gwt:upFace image="{simulationResources.fireAllRules}"/>
         </gwt:PushButton>
         <gwt:Label text="{i18n.FireAllRules}" styleName="{simulationResources.style.commandLabel}"/>
-      </div>
-      <div>
-        <gwt:PushButton ui:field="addAssertBulkDataButton" styleName="{simulationResources.style.addCommandButton}">
+      </gwt:FlowPanel>
+    </gwt:cell>
+    <gwt:cell>
+      <gwt:FlowPanel>
+        <gwt:PushButton ui:field="addAssertBulkDataButton" addStyleNames="{simulationResources.style.addCommandButton}">
           <gwt:upFace image="{simulationResources.assertBulkData}"/>
         </gwt:PushButton>
         <gwt:Label text="{i18n.AssertBulkData}" styleName="{simulationResources.style.commandLabel}"/>
-      </div>
-    </div>
-  </gwt:HTMLPanel>
+      </gwt:FlowPanel>
+    </gwt:cell>
+  </gwt:VerticalPanel>
 
 </ui:UiBinder>
