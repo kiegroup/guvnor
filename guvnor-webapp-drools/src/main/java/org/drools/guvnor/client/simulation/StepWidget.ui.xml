@@ -20,6 +20,13 @@
 
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
-  <gwt:VerticalPanel ui:field="verticalPanel" width="100%" styleName="{simulationResources.style.stepWidget}"/>
+  <gwt:FlowPanel styleName="{simulationResources.style.stepWidget}">
+    <gwt:VerticalPanel ui:field="verticalPanel" width="100%"/>
+    <gwt:HorizontalPanel>
+      <gwt:PushButton ui:field="addCommandButton">
+        <gwt:upFace image="{simulationResources.addCommand}"/>
+      </gwt:PushButton>
+    </gwt:HorizontalPanel>
+  </gwt:FlowPanel>
 
 </ui:UiBinder>

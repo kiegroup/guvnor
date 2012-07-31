@@ -23,7 +23,7 @@
 
   <gwt:FlowPanel width="100%">
     <gwt:FlexTable ui:field="flexTable" width="100%"/>
-    <gwt:HorizontalPanel spacing="10">
+    <gwt:HorizontalPanel styleName="{simulationResources.style.addStepButton}">
       <gwt:PushButton ui:field="addStepButton">
         <gwt:upFace image="{simulationResources.addStep}"/>
       </gwt:PushButton>

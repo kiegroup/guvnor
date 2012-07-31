@@ -24,6 +24,9 @@
 }
 .removeStepColumn {
 }
+.addStepButton {
+    margin-top: 10px;
+}
 
 .stepWidget {
     margin: 0px;

@@ -98,6 +98,10 @@ public class SimulationTestEditor extends Composite
         timeLineWidget.removedStep(step);
     }
 
+    public void addCommand(SimulationStepModel step) {
+        // TODO
+    }
+
     @UiHandler("runSimulationButton")
     protected void runSimulation(ClickEvent event) {
         simulationTestService.runSimulation(asset.getMetaData().getModuleName(),

@@ -23,6 +23,7 @@ public interface SimulationStyle extends CssResource {
     String distanceMillisColumn();
     String stepWidgetColumn();
     String removeStepColumn();
+    String addStepButton();
 
     String stepWidget();
 

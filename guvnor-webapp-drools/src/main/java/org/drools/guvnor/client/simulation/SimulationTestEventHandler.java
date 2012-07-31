@@ -24,4 +24,6 @@ public interface SimulationTestEventHandler {
     void addStep(SimulationPathModel path);
     void removeStep(SimulationStepModel step);
 
+    void addCommand(SimulationStepModel step);
+
 }

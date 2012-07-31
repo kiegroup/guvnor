@@ -62,6 +62,12 @@ public interface SimulationResources extends ClientBundle {
     @Source("stepAssert.png")
     ImageResource stepAssert();
 
+    @Source("addCommand.png")
+    ImageResource addCommand();
+
+    @Source("removeCommand.png")
+    ImageResource removeCommand();
+
     // Commands
 
     @Source("insertBulkData.png")

@@ -17,7 +17,24 @@
 package org.drools.guvnor.client.simulation.command;
 
 import com.google.gwt.user.client.ui.Composite;
+import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
+import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
+import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
 public abstract class AbstractCommandWidget extends Composite {
 
+    public static AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
+        if (command instanceof InsertBulkDataCommandModel) {
+            return new InsertBulkDataCommandWidget((InsertBulkDataCommandModel) command);
+        } else if (command instanceof FireAllRulesCommandModel) {
+            return new FireAllRulesCommandWidget((FireAllRulesCommandModel) command);
+        } else if (command instanceof AssertBulkDataCommandModel) {
+            return new AssertBulkDataCommandWidget((AssertBulkDataCommandModel) command);
+        } else {
+            throw new IllegalArgumentException("The AbstractCommandModel (" + command.getClass()
+                    + ") is not supported yet as a CommandWidget.");
+        }
+    }
+    
 }

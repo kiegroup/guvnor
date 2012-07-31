@@ -17,25 +17,17 @@
 package org.drools.guvnor.client.simulation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.simulation.command.AbstractCommandWidget;
-import org.drools.guvnor.client.simulation.command.AssertBulkDataCommandWidget;
-import org.drools.guvnor.client.simulation.command.FireAllRulesCommandWidget;
-import org.drools.guvnor.client.simulation.command.InsertBulkDataCommandWidget;
-import org.drools.guvnor.client.simulation.resources.SimulationResources;
-import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
-import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
-import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
-import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
 public class StepWidget extends Composite {
 
@@ -44,6 +36,8 @@ public class StepWidget extends Composite {
 
     @UiField
     protected VerticalPanel verticalPanel;
+    @UiField
+    protected PushButton addCommandButton;
 
     private final SimulationStepModel step;
     private final SimulationTestEventHandler simulationTestEventHandler;
@@ -53,22 +47,14 @@ public class StepWidget extends Composite {
         this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
         for (AbstractCommandModel command : step.getCommands()) {
-            AbstractCommandWidget commandWidget = buildCommandWidget(command);
+            AbstractCommandWidget commandWidget = AbstractCommandWidget.buildCommandWidget(command);
             verticalPanel.add(commandWidget);
         }
     }
 
-    private AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
-        if (command instanceof InsertBulkDataCommandModel) {
-            return new InsertBulkDataCommandWidget((InsertBulkDataCommandModel) command);
-        } else if (command instanceof FireAllRulesCommandModel) {
-            return new FireAllRulesCommandWidget((FireAllRulesCommandModel) command);
-        } else if (command instanceof AssertBulkDataCommandModel) {
-            return new AssertBulkDataCommandWidget((AssertBulkDataCommandModel) command);
-        } else {
-            throw new IllegalArgumentException("The AbstractCommandModel (" + command.getClass()
-                    + ") is not supported yet as a CommandWidget.");
-        }
+    @UiHandler("addCommandButton")
+    protected void addCommand(ClickEvent event) {
+        simulationTestEventHandler.addCommand(step);
     }
 
 }
