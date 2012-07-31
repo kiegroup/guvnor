@@ -45,6 +45,7 @@ import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
+import org.drools.guvnor.shared.simulation.SimulationTestUtils;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -291,7 +292,7 @@ public class TimeLineWidget extends Composite {
     private VerticalPanel createTimeStonePanel(long timeStoneValue) {
         VerticalPanel timeStonePanel = new VerticalPanel();
         timeStonePanel.addStyleName(simulationStyle.timeStonePanel());
-        Label timeStoneLabel = new Label(formatTimeStoneValue(timeStoneValue));
+        Label timeStoneLabel = new Label(SimulationTestUtils.formatMillis(timeStoneValue));
         timeStoneLabel.addStyleName(simulationStyle.timeStoneLabel());
         timeStonePanel.add(timeStoneLabel);
         int pathTop = simulationStyle.timeLineHeaderHeight();
@@ -349,7 +350,7 @@ public class TimeLineWidget extends Composite {
         final Image image = new Image(imageResource);
         final PopupPanel popupPanel = new PopupPanel(true);
         popupPanel.setWidget(new Label(path.getName()
-                + " @ " + formatTimeStoneValue(step.getDistanceMillis())));
+                + " @ " + SimulationTestUtils.formatMillis(step.getDistanceMillis())));
         image.addMouseOverHandler(new MouseOverHandler() {
             public void onMouseOver(MouseOverEvent event) {
                 popupPanel.showRelativeTo(image);
@@ -394,34 +395,6 @@ public class TimeLineWidget extends Composite {
         } while ((((double) timeStoneIncrement) / millisecondsPerPixel) < TIME_STONE_THRESHOLD_IN_PIXELS
                 && i < TIME_STONE_INCREMENT_OPTIONS.length);
         return timeStoneIncrement;
-    }
-
-    private String formatTimeStoneValue(long timeStoneValue) {
-        if (timeStoneValue == 0L) {
-            return "0";
-        }
-        StringBuilder timeStoneString = new StringBuilder();
-        long leftover = timeStoneValue;
-        if (leftover >= 86400000L) {
-            timeStoneString.append(leftover / 86400000L).append("d");
-            leftover %= 86400000L;
-        }
-        if (leftover >= 3600000L) {
-            timeStoneString.append(leftover / 3600000L).append("h");
-            leftover %= 3600000L;
-        }
-        if (leftover >= 60000L) {
-            timeStoneString.append(leftover / 60000L).append("m");
-            leftover %= 60000L;
-        }
-        if (leftover >= 1000L) {
-            timeStoneString.append(leftover / 1000L).append("s");
-            leftover %= 1000L;
-        }
-        if (leftover >= 1L) {
-            timeStoneString.append(leftover).append("ms");
-        }
-        return timeStoneString.toString();
     }
 
 }

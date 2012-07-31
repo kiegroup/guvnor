@@ -32,6 +32,7 @@ import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.drools.guvnor.client.simulation.resources.SimulationStyle;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
+import org.drools.guvnor.shared.simulation.SimulationTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class PathWidget extends Composite {
 
     // TODO remove stepIndex parameter
     private void addStepWidget(int stepIndex, SimulationStepModel step) {
-        Label distanceMillisLabel = new Label(step.getDistanceMillis() + " ms");
+        Label distanceMillisLabel = new Label(SimulationTestUtils.formatMillis(step.getDistanceMillis()));
         flexTable.setWidget(stepIndex, 0, distanceMillisLabel);
         StepWidget stepWidget = new StepWidget(step, simulationTestEventHandler);
         flexTable.setWidget(stepIndex, 1, stepWidget);
