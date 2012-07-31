@@ -25,25 +25,25 @@ public class SimulationTestUtils {
         StringBuilder millisString = new StringBuilder();
         long leftover = millis;
         if (leftover >= 86400000L) {
-            millisString.append(leftover / 86400000L).append("d");
+            millisString.append(leftover / 86400000L).append("d ");
             leftover %= 86400000L;
         }
         if (leftover >= 3600000L) {
-            millisString.append(leftover / 3600000L).append("h");
+            millisString.append(leftover / 3600000L).append("h ");
             leftover %= 3600000L;
         }
         if (leftover >= 60000L) {
-            millisString.append(leftover / 60000L).append("m");
+            millisString.append(leftover / 60000L).append("m ");
             leftover %= 60000L;
         }
         if (leftover >= 1000L) {
-            millisString.append(leftover / 1000L).append("s");
+            millisString.append(leftover / 1000L).append("s ");
             leftover %= 1000L;
         }
         if (leftover >= 1L) {
-            millisString.append(leftover).append("ms");
+            millisString.append(leftover).append("ms ");
         }
-        return millisString.toString();
+        return millisString.deleteCharAt(millisString.length() - 1).toString();
     }
 
     private SimulationTestUtils() {
