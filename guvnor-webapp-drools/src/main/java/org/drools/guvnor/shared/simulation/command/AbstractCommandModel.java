@@ -17,6 +17,7 @@
 package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 
@@ -26,6 +27,11 @@ import java.util.Map;
 /**
  * This is a DTO.
  */
+@XStreamInclude({
+        InsertBulkDataCommandModel.class,
+        FireAllRulesCommandModel.class,
+        AssertBulkDataCommandModel.class
+})
 public abstract class AbstractCommandModel implements PortableObject {
 
 }

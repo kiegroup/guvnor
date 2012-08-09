@@ -101,6 +101,7 @@ public class SimulationTestEditor extends Composite
 
     public void addCommand(SimulationStepModel step, AbstractCommandModel command) {
         SimulationPathModel path = step.getPath();
+        step.addCommand(command);
         pathWidgetMap.get(path).addedCommand(step, command);
         // TODO notify timeLineWidget in case the step icon needs to change
     }

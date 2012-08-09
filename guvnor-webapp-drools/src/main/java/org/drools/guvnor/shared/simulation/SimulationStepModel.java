@@ -67,4 +67,8 @@ public class SimulationStepModel implements PortableObject {
         return commands;
     }
 
+    public void addCommand(AbstractCommandModel command) {
+        commands.add(command);
+    }
+
 }
