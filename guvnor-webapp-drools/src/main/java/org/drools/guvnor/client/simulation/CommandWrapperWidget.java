@@ -32,45 +32,35 @@ import org.drools.guvnor.client.simulation.command.AddCommandWidget;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
-public class StepWidget extends Composite {
+public class CommandWrapperWidget extends Composite {
 
-    protected interface StepWidgetBinder extends UiBinder<Widget, StepWidget> {}
-    private static StepWidgetBinder uiBinder = GWT.create(StepWidgetBinder.class);
+    protected interface CommandWrapperWidgetBinder extends UiBinder<Widget, CommandWrapperWidget> {}
+    private static CommandWrapperWidgetBinder uiBinder = GWT.create(CommandWrapperWidgetBinder.class);
 
+    @UiField(provided = true)
+    protected AbstractCommandWidget commandWidget;
     @UiField
-    protected VerticalPanel verticalPanel;
+    protected PushButton moveUpCommandButton;
     @UiField
-    protected PushButton addCommandButton;
+    protected PushButton moveDownCommandButton;
+    @UiField
+    protected PushButton removeCommandButton;
 
-    private final SimulationStepModel step;
-    private final SimulationTestEventHandler simulationTestEventHandler;
-
-    public StepWidget(SimulationStepModel step, SimulationTestEventHandler simulationTestEventHandler) {
-        this.step = step;
-        this.simulationTestEventHandler = simulationTestEventHandler;
+    public CommandWrapperWidget(AbstractCommandWidget commandWidget) {
+        this.commandWidget = commandWidget;
         initWidget(uiBinder.createAndBindUi(this));
-        for (AbstractCommandModel command : step.getCommands()) {
-            addCommandWidget(command);
-        }
     }
 
-    private void addCommandWidget(AbstractCommandModel command) {
-        AbstractCommandWidget commandWidget = AbstractCommandWidget.buildCommandWidget(command);
-        CommandWrapperWidget commandWrapperWidget = new CommandWrapperWidget(commandWidget);
-        verticalPanel.add(commandWrapperWidget);
+    @UiHandler("moveUpCommandButton")
+    protected void moveUpCommand(ClickEvent event) {
     }
 
-    @UiHandler("addCommandButton")
-    protected void addCommand(ClickEvent event) {
-        FormStylePopup addCommandPopup = new FormStylePopup();
-        addCommandPopup.setTitle(Constants.INSTANCE.AddCommandPopupTitle());
-        addCommandPopup.setWidth("400px");
-        addCommandPopup.addRow(new AddCommandWidget(addCommandPopup, step, simulationTestEventHandler));
-        addCommandPopup.show();
+    @UiHandler("moveDownCommandButton")
+    protected void moveDownCommand(ClickEvent event) {
     }
 
-    public void addedCommand(AbstractCommandModel command) {
-        addCommandWidget(command);
+    @UiHandler("removeCommandButton")
+    protected void removeCommand(ClickEvent event) {
     }
 
 }

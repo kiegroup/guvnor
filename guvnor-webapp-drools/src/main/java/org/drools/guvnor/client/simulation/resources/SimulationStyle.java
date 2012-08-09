@@ -29,6 +29,7 @@ public interface SimulationStyle extends CssResource {
 
     String addCommandWidget();
     String addCommandButton();
+    String commandControlsPanel();
     String commandImage();
     String commandLabel();
 

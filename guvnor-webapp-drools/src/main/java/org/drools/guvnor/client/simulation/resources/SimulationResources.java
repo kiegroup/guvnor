@@ -68,6 +68,12 @@ public interface SimulationResources extends ClientBundle {
     @Source("removeCommand.png")
     ImageResource removeCommand();
 
+    @Source("moveUpCommand.png")
+    ImageResource moveUpCommand();
+
+    @Source("moveDownCommand.png")
+    ImageResource moveDownCommand();
+
     // Commands
 
     @Source("insertBulkData.png")

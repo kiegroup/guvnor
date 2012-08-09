@@ -40,6 +40,9 @@
 .addCommandButton {
     float: left;
 }
+.commandControlsPanel {
+    float: right;
+}
 .commandImage {
     float: left;
 }
