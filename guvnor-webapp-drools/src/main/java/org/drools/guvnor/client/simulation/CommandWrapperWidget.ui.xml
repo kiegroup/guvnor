@@ -22,8 +22,7 @@
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel width="100%">
-    <simulationCommand:AbstractCommandWidget ui:field="commandWidget"/>
-    <gwt:HorizontalPanel styleName="{simulationResources.style.commandControlsPanel}">
+    <gwt:HorizontalPanel styleName="{simulationResources.style.commandControlsPanel}"><!-- floats on the right -->
       <gwt:PushButton ui:field="moveUpCommandButton">
         <gwt:upFace image="{simulationResources.moveUpCommand}"/>
       </gwt:PushButton>
@@ -34,6 +33,7 @@
         <gwt:upFace image="{simulationResources.removeCommand}"/>
       </gwt:PushButton>
     </gwt:HorizontalPanel>
+    <simulationCommand:AbstractCommandWidget ui:field="commandWidget"/>
   </gwt:FlowPanel>
 
 </ui:UiBinder>
