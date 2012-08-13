@@ -108,11 +108,17 @@ public class SimulationTestEditor extends Composite
     }
 
     public void moveUpCommand(AbstractCommandModel command) {
-        // TODO generated
+        SimulationStepModel step = command.getStep();
+        SimulationPathModel path = step.getPath();
+        step.moveUpCommand(command);
+        pathWidgetMap.get(path).movedUpCommand(command);
     }
 
     public void moveDownCommand(AbstractCommandModel command) {
-        // TODO generated
+        SimulationStepModel step = command.getStep();
+        SimulationPathModel path = step.getPath();
+        step.moveDownCommand(command);
+        pathWidgetMap.get(path).movedDownCommand(command);
     }
 
     public void removeCommand(AbstractCommandModel command) {

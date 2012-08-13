@@ -120,6 +120,14 @@ public class PathWidget extends Composite {
         stepWidgetMap.get(command.getStep()).addedCommand(command);
     }
 
+    public void movedUpCommand(AbstractCommandModel command) {
+        stepWidgetMap.get(command.getStep()).movedUpCommand(command);
+    }
+
+    public void movedDownCommand(AbstractCommandModel command) {
+        stepWidgetMap.get(command.getStep()).movedDownCommand(command);
+    }
+
     public void removedCommand(AbstractCommandModel command) {
         stepWidgetMap.get(command.getStep()).removedCommand(command);
     }

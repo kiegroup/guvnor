@@ -54,6 +54,17 @@ public class StepWidget extends Composite {
         this.step = step;
         this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
+        addAllCommandWidgets();
+    }
+
+    private void refreshAllCommandWidgets() {
+        for (AbstractCommandModel command : step.getCommands()) {
+            removeCommandWidget(command);
+        }
+        addAllCommandWidgets();
+    }
+
+    private void addAllCommandWidgets() {
         for (AbstractCommandModel command : step.getCommands()) {
             addCommandWidget(command);
         }
@@ -89,6 +100,14 @@ public class StepWidget extends Composite {
 
     public void addedCommand(AbstractCommandModel command) {
         addCommandWidget(command);
+    }
+
+    public void movedUpCommand(AbstractCommandModel command) {
+        refreshAllCommandWidgets();
+    }
+
+    public void movedDownCommand(AbstractCommandModel command) {
+        refreshAllCommandWidgets();
     }
 
     public void removedCommand(AbstractCommandModel command) {

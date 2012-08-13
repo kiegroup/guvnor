@@ -75,7 +75,24 @@ public class SimulationStepModel implements PortableObject {
         commands.add(command);
     }
 
+    public void moveUpCommand(AbstractCommandModel command) {
+        int commandIndex = commands.indexOf(command);
+        int swapCommandIndex = commandIndex - 1;
+        AbstractCommandModel swapCommand = commands.get(swapCommandIndex);
+        commands.set(swapCommandIndex, command);
+        commands.set(commandIndex, swapCommand);
+    }
+
+    public void moveDownCommand(AbstractCommandModel command) {
+        int commandIndex = commands.indexOf(command);
+        int swapCommandIndex = commandIndex + 1;
+        AbstractCommandModel swapCommand = commands.get(swapCommandIndex);
+        commands.set(swapCommandIndex, command);
+        commands.set(commandIndex, swapCommand);
+    }
+
     public void removeCommand(AbstractCommandModel command) {
         commands.remove(command);
     }
+
 }
