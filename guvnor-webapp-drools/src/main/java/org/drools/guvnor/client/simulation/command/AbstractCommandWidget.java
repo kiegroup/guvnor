@@ -22,10 +22,9 @@ import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
-public abstract class AbstractCommandWidget extends Composite {
+public abstract class AbstractCommandWidget<C extends AbstractCommandModel> extends Composite {
 
     // Keep in sync with: AddCommandWidget
-
     public static AbstractCommandWidget buildCommandWidget(AbstractCommandModel command) {
         // Replacing this by a Map<Class,Class> is impossible in GWT without code generation
         if (command instanceof InsertBulkDataCommandModel) {
@@ -38,6 +37,16 @@ public abstract class AbstractCommandWidget extends Composite {
             throw new IllegalArgumentException("The AbstractCommandModel (" + command.getClass()
                     + ") is not supported yet as a CommandWidget.");
         }
+    }
+
+    protected final C command;
+
+    protected AbstractCommandWidget(C command) {
+        this.command = command;
+    }
+
+    public C getCommand() {
+        return command;
     }
 
 }

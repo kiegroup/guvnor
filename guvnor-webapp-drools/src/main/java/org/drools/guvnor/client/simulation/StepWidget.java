@@ -32,6 +32,9 @@ import org.drools.guvnor.client.simulation.command.AddCommandWidget;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StepWidget extends Composite {
 
     protected interface StepWidgetBinder extends UiBinder<Widget, StepWidget> {}
@@ -45,6 +48,8 @@ public class StepWidget extends Composite {
     private final SimulationStepModel step;
     private final SimulationTestEventHandler simulationTestEventHandler;
 
+    private Map<AbstractCommandModel, Integer> commandRowIndexMap = new HashMap<AbstractCommandModel, Integer>();
+
     public StepWidget(SimulationStepModel step, SimulationTestEventHandler simulationTestEventHandler) {
         this.step = step;
         this.simulationTestEventHandler = simulationTestEventHandler;
@@ -55,9 +60,22 @@ public class StepWidget extends Composite {
     }
 
     private void addCommandWidget(AbstractCommandModel command) {
+        int commandIndex = verticalPanel.getWidgetCount();
         AbstractCommandWidget commandWidget = AbstractCommandWidget.buildCommandWidget(command);
-        CommandWrapperWidget commandWrapperWidget = new CommandWrapperWidget(commandWidget);
+        CommandWrapperWidget commandWrapperWidget = new CommandWrapperWidget(commandWidget, simulationTestEventHandler);
         verticalPanel.add(commandWrapperWidget);
+        commandRowIndexMap.put(command, commandIndex);
+    }
+
+    private void removeCommandWidget(AbstractCommandModel command) {
+        int commandIndex = commandRowIndexMap.remove(command);
+        verticalPanel.remove(commandIndex);
+        for (Map.Entry<AbstractCommandModel, Integer> entry : commandRowIndexMap.entrySet()) {
+            int otherCommandIndex = entry.getValue();
+            if (otherCommandIndex > commandIndex) {
+                entry.setValue(otherCommandIndex - 1);
+            }
+        }
     }
 
     @UiHandler("addCommandButton")
@@ -71,6 +89,10 @@ public class StepWidget extends Composite {
 
     public void addedCommand(AbstractCommandModel command) {
         addCommandWidget(command);
+    }
+
+    public void removedCommand(AbstractCommandModel command) {
+        removeCommandWidget(command);
     }
 
 }

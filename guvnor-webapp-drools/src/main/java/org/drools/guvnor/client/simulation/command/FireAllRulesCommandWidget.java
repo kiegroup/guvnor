@@ -31,7 +31,7 @@ import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
-public class FireAllRulesCommandWidget extends AbstractCommandWidget {
+public class FireAllRulesCommandWidget extends AbstractCommandWidget<FireAllRulesCommandModel> {
 
     protected interface FireAllRulesCommandWidgetBinder extends UiBinder<Widget, FireAllRulesCommandWidget> {}
     private static FireAllRulesCommandWidgetBinder uiBinder = GWT.create(FireAllRulesCommandWidgetBinder.class);
@@ -39,10 +39,8 @@ public class FireAllRulesCommandWidget extends AbstractCommandWidget {
     @UiField
     protected FlowPanel flowPanel;
 
-    private FireAllRulesCommandModel command;
-
     public FireAllRulesCommandWidget(FireAllRulesCommandModel command) {
-        this.command = command;
+        super(command);
         initWidget(uiBinder.createAndBindUi(this));
         for (AssertRuleFiredCommandModel assertRuleFiredCommand : command.getAssertRuleFiredCommands()) {
             flowPanel.add(new AssertRuleFiredCommandWidget(assertRuleFiredCommand));

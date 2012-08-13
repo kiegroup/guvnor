@@ -17,6 +17,7 @@
 package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,5 +27,13 @@ import java.util.List;
  */
 @XStreamAlias("InsertBulkDataCommandModel")
 public class InsertBulkDataCommandModel extends AbstractCommandModel {
+
+    private InsertBulkDataCommandModel() {
+        // For GWT serialization
+    }
+
+    public InsertBulkDataCommandModel(SimulationStepModel step) {
+        super(step);
+    }
 
 }

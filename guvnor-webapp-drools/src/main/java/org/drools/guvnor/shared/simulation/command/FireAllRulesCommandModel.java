@@ -17,6 +17,7 @@
 package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,14 @@ import java.util.List;
 public class FireAllRulesCommandModel extends AbstractCommandModel {
 
     private List<AssertRuleFiredCommandModel> assertRuleFiredCommands = new ArrayList<AssertRuleFiredCommandModel>();
+
+    private FireAllRulesCommandModel() {
+        // For GWT serialization
+    }
+
+    public FireAllRulesCommandModel(SimulationStepModel step) {
+        super(step);
+    }
 
     public List<AssertRuleFiredCommandModel> getAssertRuleFiredCommands() {
         return assertRuleFiredCommands;

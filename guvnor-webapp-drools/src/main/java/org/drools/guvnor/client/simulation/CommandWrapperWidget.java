@@ -46,21 +46,28 @@ public class CommandWrapperWidget extends Composite {
     @UiField
     protected PushButton removeCommandButton;
 
-    public CommandWrapperWidget(AbstractCommandWidget commandWidget) {
+    private final SimulationTestEventHandler simulationTestEventHandler;
+
+    public CommandWrapperWidget(AbstractCommandWidget commandWidget,
+                                SimulationTestEventHandler simulationTestEventHandler) {
         this.commandWidget = commandWidget;
+        this.simulationTestEventHandler = simulationTestEventHandler;
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     @UiHandler("moveUpCommandButton")
     protected void moveUpCommand(ClickEvent event) {
+        simulationTestEventHandler.moveUpCommand(commandWidget.getCommand());
     }
 
     @UiHandler("moveDownCommandButton")
     protected void moveDownCommand(ClickEvent event) {
+        simulationTestEventHandler.moveDownCommand(commandWidget.getCommand());
     }
 
     @UiHandler("removeCommandButton")
     protected void removeCommand(ClickEvent event) {
+        simulationTestEventHandler.removeCommand(commandWidget.getCommand());
     }
 
 }

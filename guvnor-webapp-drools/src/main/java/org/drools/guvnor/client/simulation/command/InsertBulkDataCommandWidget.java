@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 
-public class InsertBulkDataCommandWidget extends AbstractCommandWidget {
+public class InsertBulkDataCommandWidget extends AbstractCommandWidget<InsertBulkDataCommandModel> {
 
     protected interface InsertBulkDataCommandWidgetBinder extends UiBinder<Widget, InsertBulkDataCommandWidget> {}
     private static InsertBulkDataCommandWidgetBinder uiBinder = GWT.create(InsertBulkDataCommandWidgetBinder.class);
@@ -32,10 +32,8 @@ public class InsertBulkDataCommandWidget extends AbstractCommandWidget {
     @UiField
     protected FlowPanel flowPanel;
 
-    private InsertBulkDataCommandModel command;
-
     public InsertBulkDataCommandWidget(InsertBulkDataCommandModel command) {
-        this.command = command;
+        super(command);
         initWidget(uiBinder.createAndBindUi(this));
     }
 

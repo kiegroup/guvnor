@@ -59,22 +59,22 @@ public class AddCommandWidget extends Composite {
 
     @UiHandler("addInsertBulkDataButton")
     protected void addInsertBulkData(ClickEvent event) {
-        addCommand(new InsertBulkDataCommandModel());
+        addCommand(new InsertBulkDataCommandModel(step));
     }
 
     @UiHandler("addFireAllRulesButton")
     protected void addFireAllRules(ClickEvent event) {
-        addCommand(new FireAllRulesCommandModel());
+        addCommand(new FireAllRulesCommandModel(step));
     }
 
     @UiHandler("addAssertBulkDataButton")
     protected void addAssertBulkDataData(ClickEvent event) {
-        addCommand(new AssertBulkDataCommandModel());
+        addCommand(new AssertBulkDataCommandModel(step));
     }
 
     public void addCommand(AbstractCommandModel command) {
         popup.hide();
-        simulationTestEventHandler.addCommand(step, command);
+        simulationTestEventHandler.addCommand(command);
     }
 
 }

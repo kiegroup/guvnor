@@ -65,15 +65,13 @@ public class PathWidget extends Composite {
         flexTable.getColumnFormatter().addStyleName(0, simulationStyle.distanceMillisColumn());
         flexTable.getColumnFormatter().addStyleName(1, simulationStyle.stepWidgetColumn());
         flexTable.getColumnFormatter().addStyleName(2, simulationStyle.removeStepColumn());
-        int stepIndex = 0;
         for (SimulationStepModel step : path.getSteps().values()) {
-            addStepWidget(stepIndex, step);
-            stepIndex++;
+            addStepWidget(step);
         }
     }
 
-    // TODO remove stepIndex parameter
-    private void addStepWidget(int stepIndex, SimulationStepModel step) {
+    private void addStepWidget(SimulationStepModel step) {
+        int stepIndex = flexTable.getRowCount();
         Label distanceMillisLabel = new Label(SimulationTestUtils.formatMillis(step.getDistanceMillis()));
         flexTable.setWidget(stepIndex, 0, distanceMillisLabel);
         StepWidget stepWidget = new StepWidget(step, simulationTestEventHandler);
@@ -111,15 +109,19 @@ public class PathWidget extends Composite {
     }
 
     public void addedStep(SimulationStepModel step) {
-        addStepWidget(flexTable.getRowCount(), step);
+        addStepWidget(step);
     }
 
     public void removedStep(SimulationStepModel step) {
         removeStepWidget(step);
     }
 
-    public void addedCommand(SimulationStepModel step, AbstractCommandModel command) {
-        stepWidgetMap.get(step).addedCommand(command);
+    public void addedCommand(AbstractCommandModel command) {
+        stepWidgetMap.get(command.getStep()).addedCommand(command);
+    }
+
+    public void removedCommand(AbstractCommandModel command) {
+        stepWidgetMap.get(command.getStep()).removedCommand(command);
     }
 
 }

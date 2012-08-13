@@ -99,10 +99,27 @@ public class SimulationTestEditor extends Composite
         timeLineWidget.removedStep(step);
     }
 
-    public void addCommand(SimulationStepModel step, AbstractCommandModel command) {
+    public void addCommand(AbstractCommandModel command) {
+        SimulationStepModel step = command.getStep();
         SimulationPathModel path = step.getPath();
         step.addCommand(command);
-        pathWidgetMap.get(path).addedCommand(step, command);
+        pathWidgetMap.get(path).addedCommand(command);
+        // TODO notify timeLineWidget in case the step icon needs to change
+    }
+
+    public void moveUpCommand(AbstractCommandModel command) {
+        // TODO generated
+    }
+
+    public void moveDownCommand(AbstractCommandModel command) {
+        // TODO generated
+    }
+
+    public void removeCommand(AbstractCommandModel command) {
+        SimulationStepModel step = command.getStep();
+        SimulationPathModel path = step.getPath();
+        step.removeCommand(command);
+        pathWidgetMap.get(path).removedCommand(command);
         // TODO notify timeLineWidget in case the step icon needs to change
     }
 

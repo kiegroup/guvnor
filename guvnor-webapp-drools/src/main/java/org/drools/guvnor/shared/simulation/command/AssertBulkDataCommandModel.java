@@ -17,11 +17,20 @@
 package org.drools.guvnor.shared.simulation.command;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 /**
  * This is a DTO.
  */
 @XStreamAlias("AssertBulkDataCommandModel")
 public class AssertBulkDataCommandModel extends AbstractCommandModel {
+
+    private AssertBulkDataCommandModel() {
+        // For GWT serialization
+    }
+
+    public AssertBulkDataCommandModel(SimulationStepModel step) {
+        super(step);
+    }
 
 }

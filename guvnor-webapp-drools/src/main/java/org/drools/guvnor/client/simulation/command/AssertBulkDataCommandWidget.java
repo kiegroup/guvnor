@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.shared.simulation.command.AssertBulkDataCommandModel;
 
-public class AssertBulkDataCommandWidget extends AbstractCommandWidget {
+public class AssertBulkDataCommandWidget extends AbstractCommandWidget<AssertBulkDataCommandModel> {
 
     protected interface AssertBulkDataCommandWidgetBinder extends UiBinder<Widget, AssertBulkDataCommandWidget> {}
     private static AssertBulkDataCommandWidgetBinder uiBinder = GWT.create(AssertBulkDataCommandWidgetBinder.class);
@@ -31,10 +31,8 @@ public class AssertBulkDataCommandWidget extends AbstractCommandWidget {
     @UiField
     protected FlowPanel flowPanel;
 
-    private AssertBulkDataCommandModel command;
-
     public AssertBulkDataCommandWidget(AssertBulkDataCommandModel command) {
-        this.command = command;
+        super(command);
         initWidget(uiBinder.createAndBindUi(this));
     }
 

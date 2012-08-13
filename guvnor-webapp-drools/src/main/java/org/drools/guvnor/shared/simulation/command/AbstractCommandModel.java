@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
+import org.drools.guvnor.shared.simulation.SimulationStepModel;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,5 +34,19 @@ import java.util.Map;
         AssertBulkDataCommandModel.class
 })
 public abstract class AbstractCommandModel implements PortableObject {
+
+    protected SimulationStepModel step;
+
+    protected AbstractCommandModel() {
+        // For GWT serialization
+    }
+
+    protected AbstractCommandModel(SimulationStepModel step) {
+        this.step = step;
+    }
+
+    public SimulationStepModel getStep() {
+        return step;
+    }
 
 }

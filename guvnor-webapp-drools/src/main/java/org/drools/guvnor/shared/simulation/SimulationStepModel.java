@@ -68,7 +68,14 @@ public class SimulationStepModel implements PortableObject {
     }
 
     public void addCommand(AbstractCommandModel command) {
+        if (command.getStep() != this) {
+            throw new IllegalArgumentException("The simulation command's step ("
+                    + command.getStep() + ") is not this step (" + this + ").");
+        }
         commands.add(command);
     }
 
+    public void removeCommand(AbstractCommandModel command) {
+        commands.remove(command);
+    }
 }
