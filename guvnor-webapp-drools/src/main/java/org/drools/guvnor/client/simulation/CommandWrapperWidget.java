@@ -55,6 +55,14 @@ public class CommandWrapperWidget extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
+    public void setMoveUpEnabled(boolean enabled) {
+        moveUpCommandButton.setEnabled(enabled);
+    }
+
+    public void setMoveDownEnabled(boolean enabled) {
+        moveDownCommandButton.setEnabled(enabled);
+    }
+
     @UiHandler("moveUpCommandButton")
     protected void moveUpCommand(ClickEvent event) {
         simulationTestEventHandler.moveUpCommand(commandWidget.getCommand());

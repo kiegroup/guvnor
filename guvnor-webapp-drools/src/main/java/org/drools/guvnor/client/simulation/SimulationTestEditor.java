@@ -140,6 +140,10 @@ public class SimulationTestEditor extends Composite
 
     public void moveUpCommand(AbstractCommandModel command) {
         SimulationStepModel step = command.getStep();
+        if (step.getCommands().indexOf(command) == 0) {
+            // TODO disable button instead
+            return;
+        }
         SimulationPathModel path = step.getPath();
         step.moveUpCommand(command);
         pathWidgetMap.get(path).movedUpCommand(command);
@@ -147,6 +151,10 @@ public class SimulationTestEditor extends Composite
 
     public void moveDownCommand(AbstractCommandModel command) {
         SimulationStepModel step = command.getStep();
+        if (step.getCommands().indexOf(command) == step.getCommands().size() - 1) {
+            // TODO disable button instead
+            return;
+        }
         SimulationPathModel path = step.getPath();
         step.moveDownCommand(command);
         pathWidgetMap.get(path).movedDownCommand(command);

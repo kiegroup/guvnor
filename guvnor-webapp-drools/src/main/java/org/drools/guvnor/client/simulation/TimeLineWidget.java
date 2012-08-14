@@ -121,11 +121,7 @@ public class TimeLineWidget extends Composite {
         this.simulation = simulation;
         clearMaps();
         timeLineScrollPanel.setWidth(simulationStyle.timeLineScrollPanelWidth() + "px");
-        contentHeight = simulationStyle.timeLineHeaderHeight()
-                + (simulation.getPathsSize() * simulationStyle.timeLinePathHeight())
-                + simulationStyle.timeLineFooterHeight();
-        timeLineContent.setHeight(contentHeight + "px");
-        addStepsPanel.setHeight(contentHeight + "px");
+        adjustContentHeight();
         addStepsPanel.addStyleName(simulationStyle.addStepsPanel());
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         millisecondsPerPixel = (double) maximumDistanceMillis /
@@ -174,11 +170,13 @@ public class TimeLineWidget extends Composite {
     }
 
     public void addedPath(SimulationPathModel path) {
+        adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
         scrollToDistanceMillis(0L);
     }
 
     public void removedPath(SimulationPathModel path) {
+        adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
         scrollToDistanceMillis(0L);
     }
@@ -256,6 +254,14 @@ public class TimeLineWidget extends Composite {
         contentWidth = (int) (maximumDistanceMillis / millisecondsPerPixel)
                 + (simulationStyle.timeLineMarginWidth() * 2);
         timeLineContent.setWidth(contentWidth + "px");
+    }
+
+    private void adjustContentHeight() {
+        contentHeight = simulationStyle.timeLineHeaderHeight()
+                + (simulation.getPathsSize() * simulationStyle.timeLinePathHeight())
+                + simulationStyle.timeLineFooterHeight();
+        timeLineContent.setHeight(contentHeight + "px");
+        addStepsPanel.setHeight(contentHeight + "px");
     }
 
     private void refreshTimeLineContent() {
