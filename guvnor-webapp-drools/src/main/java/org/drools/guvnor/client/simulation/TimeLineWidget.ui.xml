@@ -28,7 +28,7 @@
       </gwt:ScrollPanel>
       <gwt:FlowPanel ui:field="addStepsPanel"/>
     </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel spacing="10" addStyleNames="{simulationResources.style.zoomButtonsPanel}">
+    <gwt:HorizontalPanel spacing="0" addStyleNames="{simulationResources.style.zoomButtonsPanel}">
       <gwt:PushButton ui:field="zoomInButton">
         <gwt:upFace image="{simulationResources.zoomIn}"/>
       </gwt:PushButton>
