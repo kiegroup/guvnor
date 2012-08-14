@@ -54,6 +54,8 @@ public class PathWidget extends Composite {
     protected FlexTable flexTable;
     @UiField
     protected PushButton addStepButton;
+    @UiField
+    protected PushButton removePathButton;
 
     private Map<SimulationStepModel, Integer> stepRowIndexMap = new HashMap<SimulationStepModel, Integer>();
     private Map<SimulationStepModel, StepWidget> stepWidgetMap = new HashMap<SimulationStepModel, StepWidget>();
@@ -106,6 +108,11 @@ public class PathWidget extends Composite {
     @UiHandler("addStepButton")
     protected void addStep(ClickEvent event) {
         simulationTestEventHandler.addStep(path);
+    }
+
+    @UiHandler("removePathButton")
+    protected void removePath(ClickEvent event) {
+        simulationTestEventHandler.removePath(path);
     }
 
     public void addedStep(SimulationStepModel step) {

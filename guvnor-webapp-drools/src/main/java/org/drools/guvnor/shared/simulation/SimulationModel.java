@@ -63,6 +63,18 @@ public class SimulationModel implements PortableObject {
         }
         paths.put(path.getName(), path);
     }
+    public void removePath(SimulationPathModel path) {
+//        if (path.getSimulation() != this) {
+//            throw new IllegalArgumentException("The simulation path's simulation ("
+//                    + path.getSimulation() + ") is not this simulation (" + this + ").");
+//        }
+        String name = path.getName();
+        if (!paths.containsKey(name)) {
+            throw new IllegalArgumentException("The simulation path's name ("
+                    + name + ") is not known. It probably changed while it was in the Map.");
+        }
+        paths.remove(name);
+    }
 
     private void generatePathName(SimulationPathModel path) {
         String pathName;

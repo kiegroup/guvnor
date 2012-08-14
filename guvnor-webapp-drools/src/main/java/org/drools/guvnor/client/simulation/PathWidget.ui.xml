@@ -27,6 +27,9 @@
       <gwt:PushButton ui:field="addStepButton">
         <gwt:upFace image="{simulationResources.addStep}"/>
       </gwt:PushButton>
+      <gwt:PushButton ui:field="removePathButton">
+        <gwt:upFace image="{simulationResources.removePath}"/>
+      </gwt:PushButton>
     </gwt:HorizontalPanel>
   </gwt:FlowPanel>
 </ui:UiBinder>

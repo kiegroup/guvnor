@@ -78,12 +78,36 @@ public class SimulationTestEditor extends Composite
         timeLineWidget = new TimeLineWidget(this);
         initWidget(uiBinder.createAndBindUi(this));
         for (SimulationPathModel path : simulation.getPaths().values()) {
-            PathWidget pathWidget = new PathWidget(path, this);
-            pathTabPanel.add(pathWidget, path.getName());
-            pathWidgetMap.put(path, pathWidget);
+            addPathWidget(path);
         }
         pathTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
+    }
+
+    private void addPathWidget(SimulationPathModel path) {
+        PathWidget pathWidget = new PathWidget(path, this);
+        pathTabPanel.add(pathWidget, path.getName());
+        pathWidgetMap.put(path, pathWidget);
+    }
+
+    private void removePathWidget(SimulationPathModel path) {
+        PathWidget pathWidget = pathWidgetMap.remove(path);
+        int pathWidgetIndex = pathTabPanel.getWidgetIndex(pathWidget);
+        pathTabPanel.remove(pathWidgetIndex);
+        pathTabPanel.selectTab(Math.max(0, pathWidgetIndex - 1));
+    }
+
+    public void addPath() {
+        SimulationPathModel path = SimulationPathModel.createNew();
+        simulation.addPath(path);
+        addPathWidget(path);
+        timeLineWidget.addedPath(path);
+    }
+
+    public void removePath(SimulationPathModel path) {
+        simulation.removePath(path);
+        removePathWidget(path);
+        timeLineWidget.removedPath(path);
     }
 
     public void selectStep(SimulationStepModel step) {

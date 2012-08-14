@@ -50,6 +50,12 @@ public interface SimulationResources extends ClientBundle {
     @Source("timeStone.png")
     ImageResource timeStone();
 
+    @Source("addPath.png")
+    ImageResource addPath();
+
+    @Source("removePath.png")
+    ImageResource removePath();
+
     @Source("addStep.png")
     ImageResource addStep();
 

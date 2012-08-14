@@ -35,6 +35,9 @@
       <gwt:PushButton ui:field="zoomOutButton">
         <gwt:upFace image="{simulationResources.zoomOut}"/>
       </gwt:PushButton>
+      <gwt:PushButton ui:field="addPathButton">
+        <gwt:upFace image="{simulationResources.addPath}"/>
+      </gwt:PushButton>
     </gwt:HorizontalPanel>
   </gwt:FlowPanel>
 </ui:UiBinder>

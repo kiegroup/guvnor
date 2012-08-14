@@ -82,6 +82,8 @@ public class TimeLineWidget extends Composite {
     protected SimulationStyle simulationStyle = SimulationResources.INSTANCE.style();
 
     @UiField
+    protected PushButton addPathButton;
+    @UiField
     protected PushButton zoomInButton;
     @UiField
     protected PushButton zoomOutButton;
@@ -171,6 +173,16 @@ public class TimeLineWidget extends Composite {
         return addStepButton;
     }
 
+    public void addedPath(SimulationPathModel path) {
+        adjustContentWidth(simulation.getMaximumDistanceMillis());
+        scrollToDistanceMillis(0L);
+    }
+
+    public void removedPath(SimulationPathModel path) {
+        adjustContentWidth(simulation.getMaximumDistanceMillis());
+        scrollToDistanceMillis(0L);
+    }
+
     public void addedStep(SimulationStepModel step) {
         adjustContentWidth(simulation.getMaximumDistanceMillis());
         scrollToDistanceMillis(step.getDistanceMillis());
@@ -197,6 +209,11 @@ public class TimeLineWidget extends Composite {
         scrollLeft = Math.min(contentWidth - clientWidth, scrollLeft);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
         return scrollLeft;
+    }
+
+    @UiHandler("addPathButton")
+    protected void addPath(ClickEvent event) {
+        simulationTestEventHandler.addPath();
     }
 
     @UiHandler("zoomInButton")
