@@ -59,13 +59,14 @@ public class SimulationTestEditor extends Composite
 
     @UiField
     protected TabPanel pathTabPanel;
-    private Map<SimulationPathModel, PathWidget> pathWidgetMap = new HashMap<SimulationPathModel, PathWidget>();
 
     @UiField(provided = true)
     protected TimeLineWidget timeLineWidget;
 
     private final Asset asset;
     private final SimulationModel simulation;
+
+    private Map<SimulationPathModel, PathWidget> pathWidgetMap = new HashMap<SimulationPathModel, PathWidget>();
 
     public SimulationTestEditor(Asset asset, RuleViewer ruleViewer, ClientFactory clientFactory, EventBus eventBus) {
         this(asset);
@@ -83,6 +84,12 @@ public class SimulationTestEditor extends Composite
         }
         pathTabPanel.selectTab(0);
         timeLineWidget.setSimulation(simulation);
+    }
+
+    public void selectStep(SimulationStepModel step) {
+        SimulationPathModel path = step.getPath();
+        PathWidget pathWidget = pathWidgetMap.get(path);
+        pathTabPanel.selectTab(pathTabPanel.getWidgetIndex(pathWidget));
     }
 
     public void addStep(SimulationPathModel path) {

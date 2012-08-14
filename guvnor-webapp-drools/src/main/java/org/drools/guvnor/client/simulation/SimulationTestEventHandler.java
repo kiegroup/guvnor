@@ -22,6 +22,7 @@ import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 
 public interface SimulationTestEventHandler {
 
+    void selectStep(SimulationStepModel step);
     void addStep(SimulationPathModel path);
     void removeStep(SimulationStepModel step);
 

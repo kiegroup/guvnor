@@ -345,7 +345,7 @@ public class TimeLineWidget extends Composite {
         }
     }
 
-    private Image createStepWidget(SimulationPathModel path, SimulationStepModel step) {
+    private Image createStepWidget(SimulationPathModel path, final SimulationStepModel step) {
         ImageResource imageResource = simulationResources.stepEmpty();
         final Image image = new Image(imageResource);
         final PopupPanel popupPanel = new PopupPanel(true);
@@ -362,6 +362,12 @@ public class TimeLineWidget extends Composite {
             }
         });
         popupPanel.setAutoHideOnHistoryEventsEnabled(true);
+        image.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simulationTestEventHandler.selectStep(step);
+            }
+        });
         return image;
     }
 
