@@ -1047,12 +1047,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnDefinition = false;
 
-        // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-        }
-
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bUpdateColumnDefinition = true;
@@ -1071,7 +1065,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      columnData );
         }
 
-        //Insert new variable columns setting data from that above, if applicable
+        //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
         for ( BRLActionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLActionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
@@ -1133,12 +1127,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnDefinition = false;
 
-        // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-        }
-
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bUpdateColumnDefinition = true;
@@ -1157,7 +1145,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      columnData );
         }
 
-        //Insert new variable columns setting data from that above, if applicable
+        //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
         for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
             String key = getUpdateBRLConditionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
