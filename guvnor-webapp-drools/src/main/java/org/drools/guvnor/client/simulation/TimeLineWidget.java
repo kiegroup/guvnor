@@ -108,7 +108,7 @@ public class TimeLineWidget extends Composite {
         contentHeight = simulationStyle.timeLineHeaderHeight() + simulationStyle.timeLineFooterHeight();
         timeLineScrollPanel.addScrollHandler(new ScrollHandler() {
             public void onScroll(ScrollEvent event) {
-                refreshTimeLineContent();
+                updateTimeLineContent();
             }
         });
         if (simulationResources.timeStone().getHeight() != simulationStyle.timeLinePathHeight()) {
@@ -119,7 +119,7 @@ public class TimeLineWidget extends Composite {
 
     public void setSimulation(SimulationModel simulation) {
         this.simulation = simulation;
-        clearMaps();
+        clearTimeLineContent();
         timeLineScrollPanel.setWidth(simulationStyle.timeLineScrollPanelWidth() + "px");
         adjustContentHeight();
         addStepsPanel.addStyleName(simulationStyle.addStepsPanel());
@@ -127,11 +127,11 @@ public class TimeLineWidget extends Composite {
         millisecondsPerPixel = (double) maximumDistanceMillis /
                 (simulationStyle.timeLineScrollPanelWidth() - simulationStyle.timeLineMarginWidth() * 2);
         adjustContentWidth(maximumDistanceMillis);
-        refreshTimeLineContent(0, simulationStyle.timeLineScrollPanelWidth());
+        updateTimeLineContent(0, simulationStyle.timeLineScrollPanelWidth());
         refreshAddStepsPanel();
     }
 
-    private void clearMaps() {
+    private void clearTimeLineContent() {
         if (timeStoneMap != null) {
             for (VerticalPanel timeStonePanel : timeStoneMap.values()) {
                 timeLineContent.remove(timeStonePanel);
@@ -176,15 +176,17 @@ public class TimeLineWidget extends Composite {
     public void addedPath(SimulationPathModel path) {
         adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
-        refreshAddStepsPanel();
+        clearTimeLineContent();
         scrollToDistanceMillis(0L);
+        refreshAddStepsPanel();
     }
 
     public void removedPath(SimulationPathModel path) {
         adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
-        refreshAddStepsPanel();
+        clearTimeLineContent();
         scrollToDistanceMillis(0L);
+        refreshAddStepsPanel();
     }
 
     public void addedStep(SimulationStepModel step) {
@@ -205,7 +207,7 @@ public class TimeLineWidget extends Composite {
         int x = calculateX(distanceMillis);
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
         int scrollLeft = adjustScrollLeft(x - (clientWidth / 2), clientWidth);
-        refreshTimeLineContent(scrollLeft, clientWidth);
+        updateTimeLineContent(scrollLeft, clientWidth);
     }
 
     private int adjustScrollLeft(int scrollLeft, int clientWidth) {
@@ -234,7 +236,7 @@ public class TimeLineWidget extends Composite {
         adjustContentWidth(maximumDistanceMillis);
         scrollLeft = adjustScrollLeft(calculateX(distanceMillis, clientWidth), clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
-        refreshTimeLineContent(scrollLeft, clientWidth);
+        updateTimeLineContent(scrollLeft, clientWidth);
     }
 
     @UiHandler("zoomOutButton")
@@ -253,7 +255,7 @@ public class TimeLineWidget extends Composite {
         adjustContentWidth(maximumDistanceMillis);
         scrollLeft = adjustScrollLeft(calculateX(distanceMillis, clientWidth), clientWidth);
         timeLineScrollPanel.getElement().setScrollLeft(scrollLeft);
-        refreshTimeLineContent(scrollLeft, clientWidth);
+        updateTimeLineContent(scrollLeft, clientWidth);
     }
 
     private void adjustContentWidth(long maximumDistanceMillis) {
@@ -270,18 +272,18 @@ public class TimeLineWidget extends Composite {
         addStepsPanel.setHeight(contentHeight + "px");
     }
 
-    private void refreshTimeLineContent() {
+    private void updateTimeLineContent() {
         int scrollLeft = timeLineScrollPanel.getElement().getScrollLeft();
         int clientWidth = timeLineScrollPanel.getElement().getClientWidth();
-        refreshTimeLineContent(scrollLeft, clientWidth);
+        updateTimeLineContent(scrollLeft, clientWidth);
     }
 
-    private void refreshTimeLineContent(int scrollLeft, int clientWidth) {
-        refreshTimeStones(scrollLeft, clientWidth);
-        refreshSteps(scrollLeft, clientWidth);
+    private void updateTimeLineContent(int scrollLeft, int clientWidth) {
+        updateTimeStones(scrollLeft, clientWidth);
+        updateSteps(scrollLeft, clientWidth);
     }
 
-    private void refreshTimeStones(int scrollLeft, int clientWidth) {
+    private void updateTimeStones(int scrollLeft, int clientWidth) {
         long maximumDistanceMillis = simulation.getMaximumDistanceMillis();
         int itemWidth = simulationResources.timeStone().getWidth();
         long timeStoneIncrement = calculateTimeStoneIncrement();
@@ -333,7 +335,7 @@ public class TimeLineWidget extends Composite {
         return timeStonePanel;
     }
 
-    private void refreshSteps(int scrollLeft, int clientWidth) {
+    private void updateSteps(int scrollLeft, int clientWidth) {
         int itemWidth = simulationResources.stepEmpty().getWidth();
         for (Iterator<Map.Entry<SimulationStepModel, Image>> it = stepMap.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<SimulationStepModel, Image> stepEntry = it.next();
