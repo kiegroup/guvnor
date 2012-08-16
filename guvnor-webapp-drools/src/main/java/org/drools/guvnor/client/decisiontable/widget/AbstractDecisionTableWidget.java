@@ -1066,30 +1066,35 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
-        for ( BRLActionVariableColumn variable : editColumn.getChildColumns() ) {
+        model.getActionCols().add( model.getActionCols().indexOf( origColumn ),
+                                   editColumn );
+        final int index = model.getExpandedColumns().indexOf( editColumn.getChildColumns().get( 0 ) );
+        final List<BaseColumn> columns = new ArrayList<BaseColumn>();
+        final List<List<DTCellValue52>> columnsData = new ArrayList<List<DTCellValue52>>();
+        columns.addAll( editColumn.getChildColumns() );
+        for ( BaseColumn column : columns ) {
+            final BRLActionVariableColumn variable = (BRLActionVariableColumn) column;
             String key = getUpdateBRLActionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
             }
-
-            //Add new variable(s) with data to model
-            origColumn.getChildColumns().add( variable );
-            addColumn( variable,
-                       columnData,
-                       true );
+            columnsData.add( columnData );
         }
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( columns,
+                                                                                 columnsData,
+                                                                                 index,
+                                                                                 true );
+        eventBus.fireEvent( dce );
 
         //Delete columns for the original definition
-        for ( int iCol = 0; iCol < origColumn.getChildColumns().size(); iCol++ ) {
-            BRLActionVariableColumn columnToDelete = origColumn.getChildColumns().get( iCol );
-            if ( !editColumn.getChildColumns().contains( columnToDelete ) ) {
-                int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
-                DeleteColumnEvent dce = new DeleteColumnEvent( index,
-                                                               true );
-                eventBus.fireEvent( dce );
-            }
-        }
+        BRLActionVariableColumn firstColumn = origColumn.getChildColumns().get( 0 );
+        int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
+        int numberOfColumns = origColumn.getChildColumns().size();
+        deleteColumns( firstColumnIndex,
+                       numberOfColumns,
+                       true );
+        model.getConditions().remove( origColumn );
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
@@ -1098,9 +1103,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                     editColumn ) );
         }
 
-        // Copy new values into original column definition
-        populateModelColumn( origColumn,
-                             editColumn );
     }
 
     private String getUpdateBRLActionColumnKey(BRLActionVariableColumn variable) {
@@ -1146,30 +1148,35 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
-        for ( BRLConditionVariableColumn variable : editColumn.getChildColumns() ) {
+        model.getConditions().add( model.getConditions().indexOf( origColumn ),
+                                   editColumn );
+        final int index = model.getExpandedColumns().indexOf( editColumn.getChildColumns().get( 0 ) );
+        final List<BaseColumn> columns = new ArrayList<BaseColumn>();
+        final List<List<DTCellValue52>> columnsData = new ArrayList<List<DTCellValue52>>();
+        columns.addAll( editColumn.getChildColumns() );
+        for ( BaseColumn column : columns ) {
+            final BRLConditionVariableColumn variable = (BRLConditionVariableColumn) column;
             String key = getUpdateBRLConditionColumnKey( variable );
             List<DTCellValue52> columnData = origColumnVariables.get( key );
             if ( columnData == null ) {
                 columnData = cellValueFactory.makeColumnData( variable );
             }
-
-            //Add new variable(s) with data to model
-            origColumn.getChildColumns().add( variable );
-            addColumn( variable,
-                       columnData,
-                       true );
+            columnsData.add( columnData );
         }
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( columns,
+                                                                                 columnsData,
+                                                                                 index,
+                                                                                 true );
+        eventBus.fireEvent( dce );
 
         //Delete columns for the original definition
-        for ( int iCol = 0; iCol < origColumn.getChildColumns().size(); iCol++ ) {
-            BRLConditionVariableColumn columnToDelete = origColumn.getChildColumns().get( iCol );
-            if ( !editColumn.getChildColumns().contains( columnToDelete ) ) {
-                int index = model.getExpandedColumns().indexOf( origColumn.getChildColumns().get( 0 ) );
-                DeleteColumnEvent dce = new DeleteColumnEvent( index,
-                                                               true );
-                eventBus.fireEvent( dce );
-            }
-        }
+        BRLConditionVariableColumn firstColumn = origColumn.getChildColumns().get( 0 );
+        int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
+        int numberOfColumns = origColumn.getChildColumns().size();
+        deleteColumns( firstColumnIndex,
+                       numberOfColumns,
+                       true );
+        model.getConditions().remove( origColumn );
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
@@ -1177,10 +1184,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                     origColumn,
                                                                     editColumn ) );
         }
-
-        // Copy new values into original column definition
-        populateModelColumn( origColumn,
-                             editColumn );
 
         //Signal patterns changed event to Decision Table Widget
         BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
@@ -1773,16 +1776,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
-    private void populateModelColumn(final BRLActionColumn col,
-                                     final BRLActionColumn editingCol) {
-        col.setHeader( editingCol.getHeader() );
-        col.setDefaultValue( editingCol.getDefaultValue() );
-        col.setHideColumn( editingCol.isHideColumn() );
-        col.setDefinition( editingCol.getDefinition() );
-        col.setChildColumns( editingCol.getChildColumns() );
-    }
-
-    // Copy values from one (transient) model column into another
     private void populateModelColumn(final LimitedEntryBRLActionColumn col,
                                      final LimitedEntryBRLActionColumn editingCol) {
         col.setHeader( editingCol.getHeader() );
@@ -1807,16 +1800,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
-    }
-
-    // Copy values from one (transient) model column into another
-    private void populateModelColumn(final BRLConditionColumn col,
-                                     final BRLConditionColumn editingCol) {
-        col.setHeader( editingCol.getHeader() );
-        col.setDefaultValue( editingCol.getDefaultValue() );
-        col.setHideColumn( editingCol.isHideColumn() );
-        col.setDefinition( editingCol.getDefinition() );
-        col.setChildColumns( editingCol.getChildColumns() );
     }
 
     // Copy values from one (transient) model column into another
