@@ -102,12 +102,18 @@ public class SimulationTestEditor extends Composite
         simulation.addPath(path);
         addPathWidget(path);
         timeLineWidget.addedPath(path);
+        selectPath(path);
     }
 
     public void removePath(SimulationPathModel path) {
         simulation.removePath(path);
         removePathWidget(path);
         timeLineWidget.removedPath(path);
+    }
+
+    public void selectPath(SimulationPathModel path) {
+        PathWidget pathWidget = pathWidgetMap.get(path);
+        pathTabPanel.selectTab(pathTabPanel.getWidgetIndex(pathWidget));
     }
 
     public void selectStep(SimulationStepModel step) {
