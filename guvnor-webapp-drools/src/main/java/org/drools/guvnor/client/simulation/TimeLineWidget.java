@@ -147,6 +147,10 @@ public class TimeLineWidget extends Composite {
     }
 
     private void refreshAddStepsPanel() {
+        for (Iterator<Widget> it = addStepsPanel.iterator(); it.hasNext(); ) {
+            it.next();
+            it.remove();
+        }
         Label addStepLabel = new Label("");
         addStepLabel.addStyleName(simulationStyle.addStepHeader());
         addStepsPanel.add(addStepLabel);
@@ -172,12 +176,14 @@ public class TimeLineWidget extends Composite {
     public void addedPath(SimulationPathModel path) {
         adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
+        refreshAddStepsPanel();
         scrollToDistanceMillis(0L);
     }
 
     public void removedPath(SimulationPathModel path) {
         adjustContentHeight();
         adjustContentWidth(simulation.getMaximumDistanceMillis());
+        refreshAddStepsPanel();
         scrollToDistanceMillis(0L);
     }
 
