@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.drools.RuleBase;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
@@ -543,7 +544,7 @@ public class RepositoryModuleOperations {
     private ModuleAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
         ModuleAssemblerConfiguration moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
         moduleAssemblerConfiguration.setBuildMode( buildMode );
-        moduleAssemblerConfiguration.setStatusOperator( statusOperator );
+        moduleAssemblerConfiguration.setStatusOperator(statusOperator);
         moduleAssemblerConfiguration.setStatusDescriptionValue( statusDescriptionValue );
         moduleAssemblerConfiguration.setEnableStatusSelector( enableStatusSelector );
         moduleAssemblerConfiguration.setCategoryOperator( categoryOperator );
@@ -555,6 +556,15 @@ public class RepositoryModuleOperations {
 
     private String getCurrentUserName() {
         return rulesRepository.getSession().getUserID();
+    }
+
+    protected void buildModuleWithoutErrors(ModuleItem moduleItem, boolean force)
+            throws DetailedSerializationException {
+        BuilderResult result = buildModule(moduleItem, false);
+        if (result != null && result.getLines().size() != 0) {
+            throw new DetailedSerializationException("Error building module (" + moduleItem.getName() + ").",
+                    result.getLines());
+        }
     }
 
     protected BuilderResult buildModule(ModuleItem item,

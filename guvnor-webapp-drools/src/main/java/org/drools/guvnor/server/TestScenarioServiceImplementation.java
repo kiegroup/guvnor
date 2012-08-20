@@ -221,17 +221,11 @@ public class TestScenarioServiceImplementation
                         ruleBase);
                 return ruleBase;
             } else {
-                BuilderResult result = repositoryModuleOperations.buildModule(packageItem,
-                        false);
-                if (result == null || result.getLines().size() == 0) {
-                    RuleBase ruleBase = loadRuleBase(packageItem);
-                    RuleBaseCache.getInstance().put(packageItem.getUUID(),
-                            ruleBase);
-                    return ruleBase;
-                } else {
-                    throw new DetailedSerializationException("Build error",
-                            result.getLines());
-                }
+                repositoryModuleOperations.buildModuleWithoutErrors(packageItem, false);
+                RuleBase ruleBase = loadRuleBase(packageItem);
+                RuleBaseCache.getInstance().put(packageItem.getUUID(),
+                        ruleBase);
+                return ruleBase;
             }
 
         }

@@ -29,6 +29,7 @@ import org.drools.guvnor.shared.simulation.SimulationTestService;
 import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
+import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
@@ -46,6 +47,7 @@ public class SimulationTestServiceImpl implements SimulationTestService {
     @LoggedIn
     public void runSimulation(String moduleName, SimulationModel simulation) {
         ModuleItem moduleItem = rulesRepository.loadModule(moduleName); // TODO check isBinaryUpToDate
+        rulesRepository.isBin
 
         SimulationFluent simulationFluent = new DefaultSimulationFluent();
         for (SimulationPathModel path : simulation.getPaths().values()) {
@@ -66,18 +68,21 @@ public class SimulationTestServiceImpl implements SimulationTestService {
         simulationFluent.runSimulation();
     }
 
-    private void addCommand(StatefulKnowledgeSessionSimFluent session, AbstractCommandModel command) {
-        if (command instanceof FireAllRulesCommandModel) {
-            FireAllRulesCommandModel fireAllRulesCommand = (FireAllRulesCommandModel) command;
+    private void addCommand(StatefulKnowledgeSessionSimFluent session, AbstractCommandModel abstractCommand) {
+        if (abstractCommand instanceof InsertBulkDataCommandModel) {
+            InsertBulkDataCommandModel command = (InsertBulkDataCommandModel) abstractCommand;
+            session.insert("Hello world"); // TODO
+        } if (abstractCommand instanceof FireAllRulesCommandModel) {
+            FireAllRulesCommandModel command = (FireAllRulesCommandModel) abstractCommand;
             session.fireAllRules();
             for (AssertRuleFiredCommandModel assertRuleFiredCommand
-                    : fireAllRulesCommand.getAssertRuleFiredCommands()) {
+                    : command.getAssertRuleFiredCommands()) {
                 session.assertRuleFired(assertRuleFiredCommand.getRuleName(),
                         assertRuleFiredCommand.getFireCount());
             }
         } else {
             throw new IllegalStateException("The AbstractCommandModel class ("
-                    + command.getClass() + ") is not implemented on the server side.");
+                    + abstractCommand.getClass() + ") is not implemented on the server side.");
         }
     }
 
