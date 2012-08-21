@@ -18,10 +18,11 @@ package org.drools.guvnor.shared.simulation;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 @RemoteServiceRelativePath("simulationTestService")
 public interface SimulationTestService extends RemoteService {
 
-    void runSimulation(String moduleName, SimulationModel simulation);
+    void runSimulation(String moduleName, SimulationModel simulation) throws DetailedSerializationException;
 
 }

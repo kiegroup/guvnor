@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.simulation;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationTestService;
 import org.jboss.solder.core.Veto;
@@ -32,7 +33,7 @@ public class SimulationTestServiceServlet extends RemoteServiceServlet implement
     @Inject
     private SimulationTestService simulationTestService;
 
-    public void runSimulation(String moduleName, SimulationModel simulation) {
+    public void runSimulation(String moduleName, SimulationModel simulation) throws DetailedSerializationException {
         simulationTestService.runSimulation(moduleName, simulation);
     }
 

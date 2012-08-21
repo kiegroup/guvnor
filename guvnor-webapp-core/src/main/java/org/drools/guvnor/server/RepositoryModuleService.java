@@ -528,26 +528,18 @@ public class RepositoryModuleService
     /*
      * Set the Rule base in a cache
      */
-    private RuleBase loadCacheRuleBase(ModuleItem packageItem) throws DetailedSerializationException {
-
-        if ( packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( packageItem.getUUID() ) ) {
-            return RuleBaseCache.getInstance().get( packageItem.getUUID() );
+    public RuleBase loadCachedRuleBase(ModuleItem moduleItem) throws DetailedSerializationException {
+        if ( moduleItem.isBinaryUpToDate()
+                && RuleBaseCache.getInstance().contains(moduleItem.getUUID()) ) {
+            return RuleBaseCache.getInstance().get( moduleItem.getUUID() );
         } else {
-
-            // we have to build the package, and try again.
-            if ( packageItem.isBinaryUpToDate() ) {
-                RuleBase ruleBase = loadRuleBase( packageItem );
-                RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                                                 ruleBase );
-                return ruleBase;
-            } else {
-                repositoryModuleOperations.buildModuleWithoutErrors( packageItem, false );
-                RuleBase ruleBase = loadRuleBase( packageItem );
-                RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                                                 ruleBase );
-                return ruleBase;
+            if ( !moduleItem.isBinaryUpToDate() ) {
+                repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
             }
-
+            RuleBase ruleBase = loadRuleBase( moduleItem );
+            RuleBaseCache.getInstance().put( moduleItem.getUUID(),
+                    ruleBase );
+            return ruleBase;
         }
     }
 

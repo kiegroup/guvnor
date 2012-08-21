@@ -17,11 +17,14 @@
 package org.drools.guvnor.server.simulation;
 
 import org.drools.KnowledgeBase;
+import org.drools.RuleBase;
 import org.drools.builder.ResourceType;
 import org.drools.command.World;
 import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
 import org.drools.fluent.simulation.SimulationFluent;
 import org.drools.fluent.simulation.impl.DefaultSimulationFluent;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
 import org.drools.guvnor.shared.simulation.SimulationStepModel;
@@ -44,10 +47,13 @@ public class SimulationTestServiceImpl implements SimulationTestService {
     @Inject
     private RulesRepository rulesRepository;
 
+    @Inject
+    private RepositoryModuleService repositoryModuleService;
+
     @LoggedIn
-    public void runSimulation(String moduleName, SimulationModel simulation) {
-        ModuleItem moduleItem = rulesRepository.loadModule(moduleName); // TODO check isBinaryUpToDate
-        rulesRepository.isBin
+    public void runSimulation(String moduleName, SimulationModel simulation) throws DetailedSerializationException {
+        ModuleItem moduleItem = rulesRepository.loadModule(moduleName);
+        RuleBase ruleBase = repositoryModuleService.loadCachedRuleBase(moduleItem);
 
         SimulationFluent simulationFluent = new DefaultSimulationFluent();
         for (SimulationPathModel path : simulation.getPaths().values()) {
