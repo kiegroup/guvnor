@@ -525,21 +525,9 @@ public class RepositoryModuleService
         return repositoryModuleOperations.compareSnapshots( request );
     }
 
-    /*
-     * Set the Rule base in a cache
-     */
-    public RuleBase loadCachedRuleBase(ModuleItem moduleItem) throws DetailedSerializationException {
-        if ( moduleItem.isBinaryUpToDate()
-                && RuleBaseCache.getInstance().contains(moduleItem.getUUID()) ) {
-            return RuleBaseCache.getInstance().get( moduleItem.getUUID() );
-        } else {
-            if ( !moduleItem.isBinaryUpToDate() ) {
-                repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
-            }
-            RuleBase ruleBase = loadRuleBase( moduleItem );
-            RuleBaseCache.getInstance().put( moduleItem.getUUID(),
-                    ruleBase );
-            return ruleBase;
+    public void ensureBinaryUpToDate(ModuleItem moduleItem) throws DetailedSerializationException {
+        if (!moduleItem.isBinaryUpToDate()) {
+            repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
         }
     }
 

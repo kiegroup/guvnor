@@ -17,9 +17,15 @@
 package org.drools.guvnor.server.simulation;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.World;
+import org.drools.core.util.BinaryRuleBaseLoader;
+import org.drools.definition.KnowledgePackage;
 import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
 import org.drools.fluent.simulation.SimulationFluent;
 import org.drools.fluent.simulation.impl.DefaultSimulationFluent;
@@ -40,6 +46,8 @@ import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
 
 @ApplicationScoped
 public class SimulationTestServiceImpl implements SimulationTestService {
@@ -53,15 +61,18 @@ public class SimulationTestServiceImpl implements SimulationTestService {
     @LoggedIn
     public void runSimulation(String moduleName, SimulationModel simulation) throws DetailedSerializationException {
         ModuleItem moduleItem = rulesRepository.loadModule(moduleName);
-        RuleBase ruleBase = repositoryModuleService.loadCachedRuleBase(moduleItem);
+        repositoryModuleService.ensureBinaryUpToDate(moduleItem);
+//        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, classLoader));
 
         SimulationFluent simulationFluent = new DefaultSimulationFluent();
         for (SimulationPathModel path : simulation.getPaths().values()) {
             simulationFluent.newPath(path.getName());
-            simulationFluent.newKnowledgeBuilder()
-                // TODO add moduleItem
+            simulationFluent.newKnowledgeBuilder() // TODO only do once, for the root
+                .add(ResourceFactory.newByteArrayResource(moduleItem.getCompiledBinaryBytes()), ResourceType.PKG)
                 .end();
-            simulationFluent.newKnowledgeBase().addKnowledgePackages().end(World.ROOT, KnowledgeBase.class.getName());
+            simulationFluent.newKnowledgeBase()
+                    .addKnowledgePackages()
+                    .end(World.ROOT, KnowledgeBase.class.getName());
             simulationFluent.newStatefulKnowledgeSession().end();
             for (SimulationStepModel step : path.getSteps().values()) {
                 simulationFluent.newStep(step.getDistanceMillis());
