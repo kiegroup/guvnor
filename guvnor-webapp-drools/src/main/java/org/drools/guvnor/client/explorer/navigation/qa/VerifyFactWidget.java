@@ -22,6 +22,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -88,9 +89,7 @@ public class VerifyFactWidget extends Composite {
                                          public void onClick(ClickEvent w) {
 
                                              String[] fields = sce.getModelFields( type );
-                                             Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-                                             image.setAltText(Constants.INSTANCE.RuleAsset());
-                                             final FormStylePopup pop = new FormStylePopup(image,
+                                             final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                                                                                             Constants.INSTANCE.ChooseAFieldToAdd() );
                                              final ListBox b = new ListBox();
                                              for ( int i = 0; i < fields.length; i++ ) {

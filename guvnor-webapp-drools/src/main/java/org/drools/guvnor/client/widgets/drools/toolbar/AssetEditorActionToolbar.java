@@ -44,6 +44,7 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -448,9 +449,7 @@ public class AssetEditorActionToolbar extends Composite {
 
                     public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
-                        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-                        image.setAltText(Constants.INSTANCE.RuleAsset());
-                        final FormStylePopup form = new FormStylePopup(image,
+                        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                                 Constants.INSTANCE.VerificationReport() );
                         ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                 false ) );
@@ -596,9 +595,7 @@ public class AssetEditorActionToolbar extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.warningLarge());
-        image.setAltText(Constants.INSTANCE.Warning());
-        final FormStylePopup pop = new FormStylePopup(image,
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.WarningImage(),
                 Constants.INSTANCE.WARNINGUnCommittedChanges() );
         Button dis = new Button( Constants.INSTANCE.Discard() );
         Button can = new Button( Constants.INSTANCE.Cancel() );
@@ -627,9 +624,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doCopy() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-        image.setAltText(Constants.INSTANCE.RuleAsset());
-        final FormStylePopup form = new FormStylePopup(image,
+        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                 Constants.INSTANCE.CopyThisItem() );
         final TextBox newName = new TextBox();
         form.addAttribute( Constants.INSTANCE.NewName(),

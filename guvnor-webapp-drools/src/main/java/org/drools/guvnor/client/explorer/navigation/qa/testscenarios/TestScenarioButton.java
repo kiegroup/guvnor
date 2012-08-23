@@ -132,10 +132,4 @@ abstract class TestScenarioButton extends ImageButton {
             }
         }
     }
-
-    protected static Image getRuleAssetButton() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-        image.setAltText(Constants.INSTANCE.RuleAsset());
-        return image;
-    }
 }

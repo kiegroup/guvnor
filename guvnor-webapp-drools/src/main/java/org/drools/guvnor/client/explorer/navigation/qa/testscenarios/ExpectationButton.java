@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -54,7 +55,7 @@ public class ExpectationButton extends TestScenarioButton {
 
     class NewExpectationPopup extends TestScenarioButtonPopup {
         public NewExpectationPopup() {
-            super(getRuleAssetImage(),
+            super(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                    Constants.INSTANCE.NewExpectation() );
 
             Widget selectRule = parent.getRuleSelectionWidget( packageName,
@@ -112,11 +113,5 @@ public class ExpectationButton extends TestScenarioButton {
             }
 
         }
-    }
-
-    private static Image getRuleAssetImage() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-        image.setAltText(Constants.INSTANCE.RuleAsset());
-        return image;
     }
 }

@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -57,12 +58,6 @@ class GlobalButton extends ImageButton {
         } );
     }
 
-    private static Image getRuleAssetImage() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-        image.setAltText(Constants.INSTANCE.RuleAsset());
-        return image;
-    }
-
     class NewGlobalPopup extends FormStylePopup {
 
         final ListBox  factTypes;
@@ -70,7 +65,7 @@ class GlobalButton extends ImageButton {
         private Widget warning;
 
         public NewGlobalPopup() {
-            super(getRuleAssetImage(),
+            super(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                    Constants.INSTANCE.NewGlobal() );
 
             factTypes = new ListBox();

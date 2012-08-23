@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
@@ -122,9 +123,7 @@ public class ConfigWidget extends Composite {
                                String packageName,
                                final List<String> filterList,
                                ScenarioWidget scw) {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
-        image.setAltText(Constants.INSTANCE.RuleAsset());
-        final FormStylePopup pop = new FormStylePopup(image,
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                                                        Constants.INSTANCE.SelectRule() );
 
         Widget ruleSelector = scw.getRuleSelectionWidget( packageName,

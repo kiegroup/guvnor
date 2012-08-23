@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
@@ -505,9 +506,7 @@ public class PackageBuilderWidget extends Composite {
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.snapshot());
-        image.setAltText(Constants.INSTANCE.Snapshot());
-        final FormStylePopup form = new FormStylePopup(image,
+        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Snapshot(),
                 Constants.INSTANCE.CreateASnapshotForDeployment());
         form.addRow(new HTML(Constants.INSTANCE.SnapshotDescription()));
 

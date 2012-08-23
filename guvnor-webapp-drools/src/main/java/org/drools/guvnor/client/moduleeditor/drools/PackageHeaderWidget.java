@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -288,9 +289,7 @@ public class PackageHeaderWidget extends Composite {
                                   final ModuleHeader mh,
                                   final boolean global,
                                   String headerMessage) {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.homeIcon());
-        image.setAltText(Constants.INSTANCE.Home());
-        final FormStylePopup pop = new FormStylePopup(image,
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Home(),
                                                        Constants.INSTANCE.ChooseAFactType() );
         pop.addRow( new HTML( "<small><i>" + headerMessage + " </i></small>" ) ); //NON-NLS
         final ListBox factList = new ListBox();

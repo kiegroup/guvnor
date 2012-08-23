@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -54,7 +55,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( getRuleAssetButton(),
+            super( DroolsGuvnorImages.INSTANCE.RuleAsset(),
                    Constants.INSTANCE.NewInput() );
             List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
                                                                      false );

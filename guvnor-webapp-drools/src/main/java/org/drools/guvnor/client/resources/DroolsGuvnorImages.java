@@ -31,4 +31,28 @@ public class DroolsGuvnorImages {
         image.setAltText(Constants.INSTANCE.Wizard());
         return image;
     }
+
+    public Image WarningImage() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.warningLarge());
+        image.setAltText(Constants.INSTANCE.Warning());
+        return image;
+    }
+
+    public Image Snapshot() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.snapshot());
+        image.setAltText(Constants.INSTANCE.Snapshot());
+        return image;
+    }
+
+    public Image Home() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.homeIcon());
+        image.setAltText(Constants.INSTANCE.Home());
+        return image;
+    }
+
+    public Image RuleAsset() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
+        image.setAltText(Constants.INSTANCE.RuleAsset());
+        return image;
+    }
 }

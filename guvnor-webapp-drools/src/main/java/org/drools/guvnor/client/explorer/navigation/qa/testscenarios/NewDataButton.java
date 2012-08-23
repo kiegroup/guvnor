@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class NewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super(getRuleAssetButton(),
+            super(DroolsGuvnorImages.INSTANCE.RuleAsset(),
                     Constants.INSTANCE.NewInput());
 
             addAttribute(Constants.INSTANCE.InsertANewFact1(),
