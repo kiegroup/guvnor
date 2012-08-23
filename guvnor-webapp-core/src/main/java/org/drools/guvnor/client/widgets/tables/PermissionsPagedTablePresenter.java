@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -43,22 +44,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 
 
 public class PermissionsPagedTablePresenter implements Presenter {
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
     protected RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
     private final PermissionsPagedTableView view;
    
@@ -70,13 +60,15 @@ public class PermissionsPagedTablePresenter implements Presenter {
     public void bind() {
         Command newUserCommand = new Command() {
             public void execute() {
-                final FormStylePopup form = new FormStylePopup( images.snapshot(),
-                                                                constants.EnterNewUserName() );
+                Image image = new Image(ImagesCore.INSTANCE.snapshot());
+                image.setAltText(ConstantsCore.INSTANCE.Snapshot());
+                final FormStylePopup form = new FormStylePopup(image,
+                                                                ConstantsCore.INSTANCE.EnterNewUserName() );
                 final TextBox userName = new TextBox();
-                form.addAttribute( constants.NewUserName(),
+                form.addAttribute( ConstantsCore.INSTANCE.NewUserName(),
                                    userName );
 
-                Button btnOK = new Button( constants.OK() );
+                Button btnOK = new Button( ConstantsCore.INSTANCE.OK() );
                 form.addAttribute( "",
                                    btnOK );
                 btnOK.addClickHandler( new ClickHandler() {
@@ -108,7 +100,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
             public void execute() {
                 final String userName = view.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
-                        && Window.confirm( constants.AreYouSureYouWantToDeleteUser0( userName ) ) ) {
+                        && Window.confirm(ConstantsCore.INSTANCE.AreYouSureYouWantToDeleteUser0(userName)) ) {
                     repositoryService.deleteUser( userName,
                                                                          new GenericCallback<java.lang.Void>() {
                                                                              public void onSuccess(Void a) {
@@ -152,7 +144,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
     }
 
     private void showEditor(final String userName) {
-        LoadingPopup.showMessage( constants.LoadingUsersPermissions() );
+        LoadingPopup.showMessage(ConstantsCore.INSTANCE.LoadingUsersPermissions());
         repositoryService.retrieveUserPermissions( userName,
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
@@ -164,22 +156,24 @@ public class PermissionsPagedTablePresenter implements Presenter {
     }
     
     private void doPermissionEditor(final String userName, final Map<String, List<String>> perms) {
-        final FormStylePopup editor = new FormStylePopup(images.management(),
-                constants.EditUser0(userName));
-        editor.addRow(new HTML("<i>" + constants.UserAuthenticationTip()
+        Image image = new Image(ImagesCore.INSTANCE.management());
+        image.setAltText(ConstantsCore.INSTANCE.Management());
+        final FormStylePopup editor = new FormStylePopup(image,
+                ConstantsCore.INSTANCE.EditUser0(userName));
+        editor.addRow(new HTML("<i>" + ConstantsCore.INSTANCE.UserAuthenticationTip()
                 + "</i>"));
         // now render the actual permissions...
         VerticalPanel vp = new VerticalPanel();
         editor.addAttribute("", doPermsPanel(perms, vp));
 
         HorizontalPanel hp = new HorizontalPanel();
-        Button save = new Button(constants.SaveChanges());
+        Button save = new Button(ConstantsCore.INSTANCE.SaveChanges());
         hp.add(save);
         editor.addAttribute("", hp);
         save.addClickHandler(createClickHandlerForSaveButton(userName, perms,
                 editor));
 
-        Button cancel = new Button(constants.Cancel());
+        Button cancel = new Button(ConstantsCore.INSTANCE.Cancel());
         hp.add(cancel);
         cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
@@ -193,7 +187,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
             final Map<String, List<String>> perms, final FormStylePopup editor) {
         return new ClickHandler() {
             public void onClick(ClickEvent w) {
-                LoadingPopup.showMessage(constants.Updating());
+                LoadingPopup.showMessage(ConstantsCore.INSTANCE.Updating());
                 repositoryService.updateUserPermissions(
                         userName, perms, new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void a) {
@@ -217,13 +211,13 @@ public class PermissionsPagedTablePresenter implements Presenter {
             if ( perm.getKey().equals( "admin" ) ) { // NON-NLS
                 HorizontalPanel h = new HorizontalPanel();
                 h.add( new HTML( "<b>"
-                                 + constants.ThisUserIsAnAdministrator()
+                                 + ConstantsCore.INSTANCE.ThisUserIsAnAdministrator()
                                  + "</b>" ) ); // NON-NLS
-                Button del = new Button( constants.RemoveAdminRights() );
+                Button del = new Button( ConstantsCore.INSTANCE.RemoveAdminRights() );
 
                 del.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
-                        if ( Window.confirm( constants.AreYouSureYouWantToRemoveAdministratorPermissions() ) ) {
+                        if ( Window.confirm( ConstantsCore.INSTANCE.AreYouSureYouWantToRemoveAdministratorPermissions() ) ) {
                             perms.remove( "admin" ); // NON-NLS
                             doPermsPanel( perms,
                                           vp );
@@ -246,11 +240,11 @@ public class PermissionsPagedTablePresenter implements Presenter {
 
                 for ( int i = 0; i < permList.size(); i++ ) {
                     final String p = permList.get( i );
-                    ImageButton del = new ImageButton( images.itemImages().deleteItemSmall(),
-                                                       constants.RemovePermission(),
+                    ImageButton del = new ImageButton( ImagesCore.INSTANCE.itemImages().deleteItemSmall(),
+                                                       ConstantsCore.INSTANCE.RemovePermission(),
                                                        new ClickHandler() {
                                                            public void onClick(ClickEvent w) {
-                                                               if ( Window.confirm( constants.AreYouSureYouWantToRemovePermission0( p ) ) ) {
+                                                               if ( Window.confirm( ConstantsCore.INSTANCE.AreYouSureYouWantToRemovePermission0( p ) ) ) {
                                                                    permList.remove( p );
                                                                    if ( permList.size() == 0 ) {
                                                                        perms.remove( permType );
@@ -275,8 +269,8 @@ public class PermissionsPagedTablePresenter implements Presenter {
         }
 
         // now to be able to add...
-        ImageButton newPermission = new ImageButton( images.itemImages().newItem(),
-                                                     constants.AddANewPermission(),
+        ImageButton newPermission = new ImageButton( ImagesCore.INSTANCE.itemImages().newItem(),
+                                                     ConstantsCore.INSTANCE.AddANewPermission(),
                                                      createClickHandlerForNewPersmissionImageButton( perms,
                                                                                                      vp ) );
         vp.add( newPermission );
@@ -289,19 +283,19 @@ public class PermissionsPagedTablePresenter implements Presenter {
             public void onClick(ClickEvent w) {
                 final FormStylePopup pop = new FormStylePopup();
                 final ListBox permTypeBox = new ListBox();
-                permTypeBox.addItem( constants.Loading() );
+                permTypeBox.addItem( ConstantsCore.INSTANCE.Loading() );
 
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( permTypeBox );
-                hp.add( new InfoPopup( constants.PermissionDetails(),
-                                       constants.PermissionDetailsTip() ) );
-                pop.addAttribute( constants.PermissionType(),
+                hp.add( new InfoPopup( ConstantsCore.INSTANCE.PermissionDetails(),
+                                       ConstantsCore.INSTANCE.PermissionDetailsTip() ) );
+                pop.addAttribute( ConstantsCore.INSTANCE.PermissionType(),
                                   hp );
 
                 repositoryService.listAvailablePermissionRoleTypes( new GenericCallback<List<String>>() {
                     public void onSuccess(List<String> items) {
                         permTypeBox.clear();
-                        permTypeBox.addItem( constants.pleaseChoose1() );
+                        permTypeBox.addItem( ConstantsCore.INSTANCE.pleaseChoose1() );
                         for ( String roleType : items ) {
                             permTypeBox.addItem( roleType );
                         }
@@ -333,7 +327,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                                                                        vp,
                                                                                        pop,
                                                                                        sel );
-                            pop.addAttribute( constants.SelectCategoryToProvidePermissionFor(),
+                            pop.addAttribute( ConstantsCore.INSTANCE.SelectCategoryToProvidePermissionFor(),
                                               cat );
                         } else if ( sel.startsWith( "package" ) ) {
                             createButtonsPanelsAndHandlersForPackage( perms,
@@ -348,7 +342,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                                                           final FormStylePopup pop,
                                                                           final String sel) {
                         final RulePackageSelector rps = new RulePackageSelector( true );
-                        Button ok = new Button( constants.OK() );
+                        Button ok = new Button( ConstantsCore.INSTANCE.OK() );
                         ok.addClickHandler( new ClickHandler() {
                             public void onClick(ClickEvent w) {
                                 String pkName = rps.getSelectedPackage();
@@ -373,7 +367,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                         HorizontalPanel hp = new HorizontalPanel();
                         hp.add( rps );
                         hp.add( ok );
-                        pop.addAttribute( constants.SelectPackageToApplyPermissionTo(),
+                        pop.addAttribute( ConstantsCore.INSTANCE.SelectPackageToApplyPermissionTo(),
                                           hp );
                     }
 
@@ -403,9 +397,9 @@ public class PermissionsPagedTablePresenter implements Presenter {
                     private void createButtonsAndHandlersForAdmin(final Map<String, List<String>> perms,
                                                                   final Panel vp,
                                                                   final FormStylePopup pop) {
-                        Button ok = new Button( constants.OK() );
+                        Button ok = new Button( ConstantsCore.INSTANCE.OK() );
 
-                        pop.addAttribute( constants.MakeThisUserAdmin(),
+                        pop.addAttribute( ConstantsCore.INSTANCE.MakeThisUserAdmin(),
                                           ok );
                         ok.addClickHandler( new ClickHandler() {
                             public void onClick(ClickEvent w) {
@@ -417,7 +411,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                 pop.hide();
                             }
                         } );
-                        Button cancel = new Button( constants.Cancel() );
+                        Button cancel = new Button( ConstantsCore.INSTANCE.Cancel() );
 
                         pop.addAttribute( "",
                                           cancel );

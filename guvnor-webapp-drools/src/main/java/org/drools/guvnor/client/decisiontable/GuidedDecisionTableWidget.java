@@ -727,7 +727,9 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showMetaDataAndAttribute() {
                         // show choice of attributes
-                        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.config(),
+                        Image image = new Image(DroolsGuvnorImages.INSTANCE.config());
+                        image.setAltText(Constants.INSTANCE.Config());
+                        final FormStylePopup pop = new FormStylePopup(image,
                                                                        Constants.INSTANCE.AddAnOptionToTheRule() );
                         final ListBox list = RuleAttributeWidget.getAttributeList();
 

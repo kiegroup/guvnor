@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.DatePickerLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
@@ -37,15 +38,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.brl.DSLComplexVariableValue;
@@ -520,8 +512,10 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 this.btnCustomForm.addClickHandler(new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
-                        final CustomFormPopUp customFormPopUp = 
-                                new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.newexWiz(),
+                        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+                        image.setAltText(Constants.INSTANCE.Wizard());
+                        final CustomFormPopUp customFormPopUp =
+                                new CustomFormPopUp(image,
                                 Constants.INSTANCE.FieldValue(),
                                 DSLCustomFormButton.this.customFormConfiguration );
                         

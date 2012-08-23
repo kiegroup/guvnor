@@ -51,13 +51,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -477,7 +471,9 @@ public class KBaseConfigPanel extends DirtyableComposite {
 
     @UiHandler("btnRename")
     public void doRename(final ClickEvent e) {
-        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.packageLarge(), Constants.INSTANCE.RenameThisKBase());
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        image.setAltText(Constants.INSTANCE.Package());
+        final FormStylePopup pop = new FormStylePopup(image, Constants.INSTANCE.RenameThisKBase());
         final TextBox box = new TextBox();
         box.setText(kbase.getName());
         pop.addAttribute(Constants.INSTANCE.NewNameAsset(), box);

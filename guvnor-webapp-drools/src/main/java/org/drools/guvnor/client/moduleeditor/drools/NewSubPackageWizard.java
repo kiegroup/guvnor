@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -33,20 +35,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
@@ -62,7 +54,7 @@ public class NewSubPackageWizard extends FormStylePopup {
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
 
     public NewSubPackageWizard(final Command afterCreatedEvent) {
-        super( DroolsGuvnorImages.INSTANCE.newWiz(),
+        super(getImage(),
                Constants.INSTANCE.CreateANewSubPackage() );
         nameBox = new TextBox();
         descBox = new TextBox();
@@ -144,6 +136,12 @@ public class NewSubPackageWizard extends FormStylePopup {
 
     }
 
+    private static Image getImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        return image;
+    }
+
     private void createSubPackageAction(final String name,
                                         final String descr,
                                         String parentPackage,
@@ -193,7 +191,9 @@ public class NewSubPackageWizard extends FormStylePopup {
 
         panel.add( ok );
 
-        final FormStylePopup packageNamePopup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.packageLarge(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        image.setAltText(Constants.INSTANCE.Package());
+        final FormStylePopup packageNamePopup = new FormStylePopup(image,
                                                                     Constants.INSTANCE.PackageName() );
         HorizontalPanel packageNamePanel = new HorizontalPanel();
         packageNamePopup.addRow( new Label( Constants.INSTANCE.ImportedDRLContainsNoNameForThePackage() ) );

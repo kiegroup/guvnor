@@ -125,7 +125,9 @@ public class DependencyWidget extends Composite {
     }
 
     private void showEditor(final String dependencyPath) {
-        final FormStylePopup editor = new FormStylePopup(images.management(),
+        Image image = new Image(images.management());
+        image.setAltText("Management"); // This is soon to be dead code
+        final FormStylePopup editor = new FormStylePopup(image,
                 "Edit Dependency");
         /*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
         				+ "</i>"));

@@ -16,11 +16,13 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.asseteditor.PropertiesHolder;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable;
@@ -61,8 +63,10 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
         addSupplementaryWidget( panel );
     }
 
-    public ImageResource getIcon() {
-        return DroolsGuvnorImages.INSTANCE.newFileLarge();
+    public Image getIcon() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newFileLarge());
+        image.setAltText(ConstantsCore.INSTANCE.NewFile());
+        return image;
     }
 
     public String getOverallStyleName() {

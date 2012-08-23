@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -47,7 +48,7 @@ public class NewPackageWizard extends FormStylePopup {
     private final ClientFactory clientFactory;
 
     public NewPackageWizard(ClientFactory clientFactory, EventBus eventBus) {
-        super(DroolsGuvnorImages.INSTANCE.newexWiz(),
+        super(getImage(),
                 Constants.INSTANCE.CreateANewPackage());
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -142,6 +143,12 @@ public class NewPackageWizard extends FormStylePopup {
             }});
     }
 
+    private static Image getImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        return image;
+    }
+
     private void createPackageAction(final String name,
                                      final String descr) {
         LoadingPopup.showMessage(Constants.INSTANCE.CreatingPackagePleaseWait());
@@ -194,7 +201,9 @@ public class NewPackageWizard extends FormStylePopup {
         panel.add(hp);
 
 
-        final FormStylePopup packageNamePopup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.packageLarge(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        image.setAltText(Constants.INSTANCE.Package());
+        final FormStylePopup packageNamePopup = new FormStylePopup(image,
                 Constants.INSTANCE.PackageName());
         HorizontalPanel packageNamePanel = new HorizontalPanel();
         packageNamePopup.addRow(new Label(Constants.INSTANCE.ImportedDRLContainsNoNameForThePackage()));

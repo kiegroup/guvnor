@@ -482,12 +482,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                                                                                       factType,
                                                                                                                       fieldName );
 
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
         if ( customFormConfiguration != null ) {
             if ( !(con instanceof SingleFieldConstraint) ) {
                 Window.alert( "Unexpected constraint type!" );
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.newexWiz(),
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp(image,
                                                                          Constants.INSTANCE.FieldValue(),
                                                                          customFormConfiguration );
 
@@ -508,7 +510,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        final FormStylePopup form = new FormStylePopup(image,
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

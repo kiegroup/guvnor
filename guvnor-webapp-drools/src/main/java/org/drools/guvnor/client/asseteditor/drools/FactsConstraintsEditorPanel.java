@@ -224,8 +224,10 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private void showNewConstrainPop() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.config());
+        image.setAltText(Constants.INSTANCE.Config());
         final FormStylePopup pop = new FormStylePopup(
-                DroolsGuvnorImages.INSTANCE.config(),
+                image,
                 Constants.INSTANCE.AddNewConstraint());
         final Button addbutton = new Button(Constants.INSTANCE.OK());
         final ListBox consDefsCombo = new ListBox(false);

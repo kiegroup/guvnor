@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import com.google.gwt.resources.client.ImageResource;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -47,7 +48,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                   boolean lockLHS,
                                   boolean lockRHS,
                                   final Command refresh) {
-        super( DroolsGuvnorImages.INSTANCE.config(),
+        super(getImage(),
                Constants.INSTANCE.AddAnOptionToTheRule() );
 
         setTextBox( model,
@@ -61,6 +62,12 @@ public class AttributeSelectorPopup extends FormStylePopup {
                         lockRHS,
                         refresh );
 
+    }
+
+    private static Image getImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.config());
+        image.setAltText(Constants.INSTANCE.Config());
+        return image;
     }
 
     private void setTextBox(final RuleModel model,

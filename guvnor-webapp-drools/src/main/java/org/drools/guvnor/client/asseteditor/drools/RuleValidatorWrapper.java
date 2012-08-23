@@ -73,7 +73,9 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.addRow(h);
             pop.show();
         } else {
-            FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.packageBuilder(),
+            Image image = new Image(DroolsGuvnorImages.INSTANCE.packageBuilder());
+            image.setAltText(Constants.INSTANCE.PackageBuilder());
+            FormStylePopup pop = new FormStylePopup(image,
                     Constants.INSTANCE.ValidationResults());
             FlexTable errTable = new FlexTable();
             errTable.setStyleName("build-Results"); //NON-NLS

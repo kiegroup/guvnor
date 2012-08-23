@@ -54,7 +54,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( DroolsGuvnorImages.INSTANCE.ruleAsset(),
+            super( getRuleAssetButton(),
                    Constants.INSTANCE.NewInput() );
             List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
                                                                      false );

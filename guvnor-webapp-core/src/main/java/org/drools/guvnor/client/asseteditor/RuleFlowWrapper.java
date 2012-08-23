@@ -22,10 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.asseteditor.ruleflow.RuleFlowViewer;
 import org.drools.guvnor.client.common.ErrorPopup;
@@ -105,7 +102,9 @@ public class RuleFlowWrapper extends Composite
         LoadingPopup.showMessage( constants.CalculatingSource() );
 
         try {
-            FormStylePopup pop = new FormStylePopup( images.viewSource(),
+            Image image = new Image(images.viewSource());
+            image.setAltText(ConstantsCore.INSTANCE.ViewSource());
+            FormStylePopup pop = new FormStylePopup(image,
                     constants.ViewingDiagram(),
                     800);
 

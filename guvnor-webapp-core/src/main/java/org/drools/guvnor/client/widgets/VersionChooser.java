@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -36,10 +37,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 /**
@@ -171,7 +168,9 @@ public class VersionChooser extends Composite {
 
                                                                  public void onSuccess(Asset asset) {
                                                                      asset.setReadonly( true );
-                                                                     final FormStylePopup pop = new FormStylePopup( images.snapshot(),
+                                                                     Image image = new Image(images.snapshot());
+                                                                     image.setAltText(ConstantsCore.INSTANCE.Snapshot());
+                                                                     final FormStylePopup pop = new FormStylePopup(image,
                                                                                                                     constants.VersionNumber0Of1(
                                                                                                                                    asset.getVersionNumber(),
                                                                                                                                    asset.getName() ),

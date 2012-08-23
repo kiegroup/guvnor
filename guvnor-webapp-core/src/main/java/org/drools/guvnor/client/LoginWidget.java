@@ -21,6 +21,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -43,7 +44,9 @@ public class LoginWidget {
     private String userNameLoggedIn;
 
     public void show() {
-        final FormStylePopup pop = new FormStylePopup(images.login(),
+        Image image = new Image(images.login());
+        image.setAltText(ConstantsCore.INSTANCE.Login());
+        final FormStylePopup pop = new FormStylePopup(image,
                 constants.Login());
 
         final TextBox userName = new TextBox();

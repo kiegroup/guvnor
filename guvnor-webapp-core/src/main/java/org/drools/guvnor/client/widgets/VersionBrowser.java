@@ -209,7 +209,9 @@ public class VersionBrowser extends Composite {
             moduleService.loadModule( versionUUID,
                     new GenericCallback<Module>() {
                         public void onSuccess( Module conf ) {
-                            final FormStylePopup pop = new FormStylePopup( images.snapshot(),
+                            Image image = new Image(images.snapshot());
+                            image.setAltText(ConstantsCore.INSTANCE.Snapshot());
+                            final FormStylePopup pop = new FormStylePopup(image,
                                     constants.VersionNumber0Of1( conf.getVersionNumber(),
                                             conf.getName() ),
                                     800);
@@ -236,7 +238,9 @@ public class VersionBrowser extends Composite {
                         public void onSuccess(final Asset asset ) {
                             asset.setReadonly( true );
                             //asset.metaData.name = metaData.name;
-                            final FormStylePopup pop = new FormStylePopup( images.snapshot(),
+                            Image image = new Image(images.snapshot());
+                            image.setAltText(ConstantsCore.INSTANCE.Snapshot());
+                            final FormStylePopup pop = new FormStylePopup(image,
                                     constants.VersionNumber0Of1(
                                             asset.getVersionNumber(),
                                             asset.getName() ),

@@ -2637,5 +2637,18 @@ public interface ConstantsCore
     String ConversionResults();
 
     String Valid();
-    
+
+    String SystemSearch();
+
+    String Ruleflow();
+
+    String Management();
+
+    String Snapshot();
+
+    String EditCategory();
+
+    String Information();
+
+    String AttentionNeeded();
 }

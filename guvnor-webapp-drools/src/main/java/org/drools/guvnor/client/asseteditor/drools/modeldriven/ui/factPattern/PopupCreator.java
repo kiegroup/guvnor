@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -38,11 +39,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 public class PopupCreator {
 
@@ -183,7 +179,9 @@ public class PopupCreator {
      */
     public void showPatternPopupForComposite(Widget w,
                                              final HasConstraints hasConstraints) {
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup popup = new FormStylePopup(image,
                                                          Constants.INSTANCE.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
@@ -273,7 +271,9 @@ public class PopupCreator {
                                              con );
 
         String title = (con == null) ? Constants.INSTANCE.ModifyConstraintsFor0( fp.getFactType() ) : Constants.INSTANCE.AddSubFieldConstraint();
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup popup = new FormStylePopup(image,
                                                          title );
 
         final ListBox box = new ListBox();

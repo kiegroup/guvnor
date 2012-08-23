@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -49,16 +51,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a
@@ -96,7 +88,7 @@ public class NewAssetWizard extends FormStylePopup {
                            String format,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
-        super( DroolsGuvnorImages.INSTANCE.newWiz(),
+        super(getImage(),
                getTitle( format,
                          clientFactory ) );
         this.format = format;
@@ -138,6 +130,12 @@ public class NewAssetWizard extends FormStylePopup {
         globalAreaAssetSelector = new GlobalAreaAssetSelector( format );
         importAssetLayout.buildImportAssetLayout();
 
+    }
+
+    private static Image getImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        return image;
     }
 
     private static String getTitle(String format,

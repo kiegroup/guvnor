@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.drools.toolbar;
 
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -42,13 +43,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This contains the widgets used to action a package
@@ -290,7 +284,9 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.RenameThePackage() );
         pop.addRow( new HTML( Constants.INSTANCE.RenamePackageTip() ) );
         final TextBox name = new TextBox();
@@ -333,7 +329,9 @@ public class PackageEditorActionToolbar extends Composite {
      * Will show a copy dialog for copying the whole package.
      */
     private void doCopy() {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.CopyThePackage() );
         pop.addRow( new HTML( Constants.INSTANCE.CopyThePackageTip() ) );
         final TextBox name = new TextBox();

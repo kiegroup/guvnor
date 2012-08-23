@@ -34,7 +34,7 @@ public class CustomFormPopUp extends FormStylePopup {
     private final Button cancelButton;
     private Frame externalFrame;
 
-    public CustomFormPopUp(ImageResource image,
+    public CustomFormPopUp(Image image,
                            String title,
                            CustomFormConfiguration configuration) {
         super(image,

@@ -45,9 +45,6 @@ import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
  */
 public class DependencyWidget extends Composite {
 
-    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
-    private ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
-
     private DependenciesPagedTable table;
 
     private Module conf;
@@ -125,7 +122,9 @@ public class DependencyWidget extends Composite {
     }
 
     private void showEditor(final String dependencyPath) {
-        final FormStylePopup editor = new FormStylePopup(images.management(),
+        Image image = new Image(ImagesCore.INSTANCE.management());
+        image.setAltText(ConstantsCore.INSTANCE.Management());
+        final FormStylePopup editor = new FormStylePopup(image,
                 "Edit Dependency");
         /*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
         				+ "</i>"));
@@ -172,7 +171,7 @@ public class DependencyWidget extends Composite {
         });
         useSelectedVersionButton.setEnabled(!isHistoricalReadOnly);
 
-        Button cancel = new Button(constants.Cancel());
+        Button cancel = new Button(ConstantsCore.INSTANCE.Cancel());
         hp.add(cancel);
         cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {

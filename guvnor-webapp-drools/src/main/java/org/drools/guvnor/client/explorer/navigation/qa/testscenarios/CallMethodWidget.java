@@ -156,7 +156,9 @@ public class CallMethodWidget extends DirtyableComposite {
 
     protected void showAddFieldPopup(Widget w) {
 
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup popup = new FormStylePopup(image,
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         ListBox box = new ListBox();
         box.addItem( "..." );

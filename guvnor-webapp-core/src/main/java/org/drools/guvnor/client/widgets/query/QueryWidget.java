@@ -36,7 +36,7 @@ import java.util.*;
 
 public class QueryWidget extends Composite {
 
-    private ConstantsCore       constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private ConstantsCore       constants = GWT.create( ConstantsCore.class );
 
     private VerticalPanel       layout;
     private final ClientFactory clientFactory;
@@ -155,7 +155,7 @@ public class QueryWidget extends Composite {
 
         FormStyleLayout fm = new FormStyleLayout();
         for ( String fieldName : atts.keySet() ) {
-            final MetaDataQuery q = (MetaDataQuery) atts.get( fieldName );
+            final MetaDataQuery q = atts.get( fieldName );
             final TextBox box = new TextBox();
             box.setTitle( constants.WildCardsSearchTip() );
             fm.addAttribute( fieldName

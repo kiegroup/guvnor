@@ -329,7 +329,9 @@ public class PackageBuilderWidget extends Composite {
                                   String name) {
         int windowWidth = Window.getClientWidth() / 2;
         int windowHeight = Window.getClientHeight() / 2;
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.viewSource(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.viewSource());
+        image.setAltText(Constants.INSTANCE.ViewSource());
+        final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.ViewingSourceFor0( name ),
                                                        windowWidth );
 
@@ -503,7 +505,9 @@ public class PackageBuilderWidget extends Composite {
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
-        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.snapshot(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+        image.setAltText(Constants.INSTANCE.Snapshot());
+        final FormStylePopup form = new FormStylePopup(image,
                 Constants.INSTANCE.CreateASnapshotForDeployment());
         form.addRow(new HTML(Constants.INSTANCE.SnapshotDescription()));
 

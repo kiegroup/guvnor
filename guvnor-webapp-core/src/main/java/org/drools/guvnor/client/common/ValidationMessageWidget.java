@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.messages.ConstantsCore;
@@ -36,11 +38,17 @@ public class ValidationMessageWidget extends FormStylePopup {
     public ValidationMessageWidget(String heading,
                                    String body) {
 
-        super(images.attentionNeeded(),
+        super(getImage(),
                 heading);
         ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
         addAttribute(constants.Detail(),
                 details(body));
+    }
+
+    private static Image getImage() {
+        Image image = new Image(images.attentionNeeded());
+        image.setAltText(ConstantsCore.INSTANCE.AttentionNeeded());
+        return image;
     }
 
     private Widget details(String body) {

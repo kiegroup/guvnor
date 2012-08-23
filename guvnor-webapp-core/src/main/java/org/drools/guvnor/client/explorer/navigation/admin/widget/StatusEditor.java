@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -45,7 +46,7 @@ public class StatusEditor extends FormStylePopup {
     private Command          refresh;
 
     public StatusEditor(Command refresh) {
-        super( images.editCategory(),
+        super(getImage(),
                constants.CreateNewStatus() );
         this.refresh = refresh;
 
@@ -61,6 +62,12 @@ public class StatusEditor extends FormStylePopup {
         } );
         addAttribute( "",
                       ok );
+    }
+
+    private static Image getImage() {
+        Image image = new Image(images.editCategory());
+        image.setAltText(ConstantsCore.INSTANCE.EditCategory());
+        return image;
     }
 
     void ok() {

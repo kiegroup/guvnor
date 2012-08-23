@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
@@ -23,7 +24,6 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class XmlFileWidget extends AssetAttachmentFileWidget
@@ -63,7 +63,7 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
         addSupplementaryWidget( text );
     }
 
-    public ImageResource getIcon() {
+    public Image getIcon() {
         return null;
     }
 

@@ -22,6 +22,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
@@ -36,7 +37,7 @@ public class TypeChoiceFormPopup
 
 
     public TypeChoiceFormPopup(FieldConstraintHelper helper) {
-        super(DroolsGuvnorImages.INSTANCE.newexWiz(),
+        super(getImage(),
                 Constants.INSTANCE.FieldValue());
 
 
@@ -57,6 +58,12 @@ public class TypeChoiceFormPopup
         if (!helper.isTheParentAList()) {
             addCreateNewObject();
         }
+    }
+
+    private static Image getImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        return image;
     }
 
     private void addCreateNewObject() {

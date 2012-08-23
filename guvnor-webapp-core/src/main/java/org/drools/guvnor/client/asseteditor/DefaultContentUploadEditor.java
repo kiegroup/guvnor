@@ -16,12 +16,12 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,8 +42,10 @@ public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
         return new HTML( ConstantsCore.INSTANCE.UploadNewVersionDescription() );
     }
 
-    public ImageResource getIcon() {
-        return images.decisionTable();
+    public Image getIcon() {
+        Image image = new Image(images.decisionTable());
+        image.setAltText(ConstantsCore.INSTANCE.DecisionTable());
+        return image;
     }
 
     public String getOverallStyleName() {

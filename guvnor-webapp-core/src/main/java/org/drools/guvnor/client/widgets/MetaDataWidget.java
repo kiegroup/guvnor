@@ -270,7 +270,9 @@ public class MetaDataWidget extends Composite {
 
     private void showEditPackage(final String pkg,
             ClickEvent source) {
-        final FormStylePopup pop = new FormStylePopup(images.packageLarge(),
+        Image image = new Image(images.packageLarge());
+        image.setAltText(ConstantsCore.INSTANCE.Package());
+        final FormStylePopup pop = new FormStylePopup(image,
                 constants.MoveThisItemToAnotherPackage());
         pop.addAttribute(constants.CurrentPackage(),
                 new Label(pkg));

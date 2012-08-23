@@ -16,12 +16,12 @@
 
 package org.drools.guvnor.client.asseteditor;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -45,8 +45,10 @@ public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
         return new HTML( "<small><i>" + ConstantsCore.INSTANCE.RuleFlowUploadTip() + "</i></small>" );
     }
 
-    public ImageResource getIcon() {
-        return images.ruleflowLarge();
+    public Image getIcon() {
+        Image image = new Image(images.ruleflowLarge());
+        image.setAltText(ConstantsCore.INSTANCE.Ruleflow());
+        return image;
     }
 
     public String getOverallStyleName() {

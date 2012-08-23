@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.client.asseteditor;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -44,8 +44,10 @@ public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
         return new HTML( ConstantsCore.INSTANCE.POJOModelWidgetDescription() );
     }
 
-    public ImageResource getIcon() {
-        return images.modelLarge();
+    public Image getIcon() {
+        Image image = new Image(images.modelLarge());
+        image.setAltText(ConstantsCore.INSTANCE.Model());
+        return image;
     }
 
     public String getOverallStyleName() {

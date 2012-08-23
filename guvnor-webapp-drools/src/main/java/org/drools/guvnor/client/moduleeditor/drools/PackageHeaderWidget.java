@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.moduleeditor.drools;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
@@ -36,17 +37,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is for managing imports etc.
@@ -298,7 +288,9 @@ public class PackageHeaderWidget extends Composite {
                                   final ModuleHeader mh,
                                   final boolean global,
                                   String headerMessage) {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.homeIcon(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.homeIcon());
+        image.setAltText(Constants.INSTANCE.Home());
+        final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.ChooseAFactType() );
         pop.addRow( new HTML( "<small><i>" + headerMessage + " </i></small>" ) ); //NON-NLS
         final ListBox factList = new ListBox();

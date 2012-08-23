@@ -51,7 +51,9 @@ public class QuickFindWidget extends Composite {
         VerticalPanel container = new VerticalPanel();
         VerticalPanel criteria = new VerticalPanel();
 
-        FormStyleLayout layout = new FormStyleLayout( images.systemSearch(),
+        Image image = new Image(images.systemSearch());
+        image.setAltText(constants.SystemSearch());
+        FormStyleLayout layout = new FormStyleLayout(image,
                 "" );
 
         searchBox = new SuggestBox( new SuggestOracle() {

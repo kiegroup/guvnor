@@ -117,7 +117,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
     /**
      * @return The path to the icon to use.
      */
-    public abstract ImageResource getIcon();
+    public abstract Image getIcon();
 
     /**
      * return the overall style name to use.

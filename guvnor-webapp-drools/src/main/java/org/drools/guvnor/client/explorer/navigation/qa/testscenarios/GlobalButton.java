@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
@@ -27,11 +29,6 @@ import org.drools.ide.common.client.modeldriven.testing.FactData;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 
 class GlobalButton extends ImageButton {
 
@@ -61,6 +58,12 @@ class GlobalButton extends ImageButton {
         } );
     }
 
+    private static Image getRuleAssetImage() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        image.setAltText(Constants.INSTANCE.RuleAsset());
+        return image;
+    }
+
     class NewGlobalPopup extends FormStylePopup {
 
         final ListBox  factTypes;
@@ -68,7 +71,7 @@ class GlobalButton extends ImageButton {
         private Widget warning;
 
         public NewGlobalPopup() {
-            super( DroolsGuvnorImages.INSTANCE.ruleAsset(),
+            super(getRuleAssetImage(),
                    Constants.INSTANCE.NewGlobal() );
 
             factTypes = new ListBox();
@@ -82,6 +85,7 @@ class GlobalButton extends ImageButton {
             addAttribute( Constants.INSTANCE.GlobalColon(),
                           getHorizontalPanel() );
         }
+
 
         private HorizontalPanel getHorizontalPanel() {
             HorizontalPanel insertFact = new HorizontalPanel();

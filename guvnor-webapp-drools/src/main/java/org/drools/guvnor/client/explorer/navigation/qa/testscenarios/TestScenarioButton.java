@@ -19,9 +19,11 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -30,10 +32,6 @@ import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 
 abstract class TestScenarioButton extends ImageButton {
 
@@ -65,7 +63,7 @@ abstract class TestScenarioButton extends ImageButton {
     protected abstract TestScenarioButtonPopup getPopUp();
 
     protected abstract class TestScenarioButtonPopup extends FormStylePopup {
-        public TestScenarioButtonPopup(ImageResource image,
+        public TestScenarioButtonPopup(Image image,
                                        String text) {
             super( image,
                    text );
@@ -135,4 +133,9 @@ abstract class TestScenarioButton extends ImageButton {
         }
     }
 
+    protected static Image getRuleAssetButton() {
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        image.setAltText(Constants.INSTANCE.RuleAsset());
+        return image;
+    }
 }

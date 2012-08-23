@@ -198,7 +198,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup popup = new FormStylePopup(image,
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );

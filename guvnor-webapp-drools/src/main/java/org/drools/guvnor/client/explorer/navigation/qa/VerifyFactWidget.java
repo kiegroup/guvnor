@@ -87,8 +87,10 @@ public class VerifyFactWidget extends Composite {
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
 
-                                             String[] fields = (String[]) sce.getModelFields( type );
-                                             final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
+                                             String[] fields = sce.getModelFields( type );
+                                             Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+                                             image.setAltText(Constants.INSTANCE.RuleAsset());
+                                             final FormStylePopup pop = new FormStylePopup(image,
                                                                                             Constants.INSTANCE.ChooseAFieldToAdd() );
                                              final ListBox b = new ListBox();
                                              for ( int i = 0; i < fields.length; i++ ) {

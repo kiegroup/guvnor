@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
 
 import com.google.gwt.core.client.GWT;
@@ -30,17 +31,17 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class InfoPopup extends Composite {
 
-    private static ImagesCore images = (ImagesCore) GWT.create( ImagesCore.class );
-
     @UiConstructor
     public InfoPopup(final String title,
                      final String message) {
-        Image info = new Image( images.information() );
+        Image info = new Image( ImagesCore.INSTANCE.information() );
         info.setTitle( message );
         info.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                final FormStylePopup pop = new FormStylePopup( images.information(),
+                Image image = new Image(ImagesCore.INSTANCE.information());
+                image.setAltText(ConstantsCore.INSTANCE.Information());
+                final FormStylePopup pop = new FormStylePopup(image,
                                                                title );
                 pop.addRow( new SmallLabel( message ) );
                 pop.show();

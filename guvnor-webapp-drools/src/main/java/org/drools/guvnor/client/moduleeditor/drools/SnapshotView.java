@@ -26,20 +26,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -288,7 +275,9 @@ public class SnapshotView extends Composite {
                                                                   final ModuleServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
-                final FormStylePopup copy = new FormStylePopup( DroolsGuvnorImages.INSTANCE.snapshot(),
+                Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+                image.setAltText(Constants.INSTANCE.Snapshot());
+                final FormStylePopup copy = new FormStylePopup(image,
                                                                 Constants.INSTANCE.CopySnapshotText( snapshotName ) );
                 final List<RadioButton> options = new ArrayList<RadioButton>();
                 VerticalPanel vert = new VerticalPanel();
@@ -400,7 +389,9 @@ public class SnapshotView extends Composite {
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.snapshot(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+        image.setAltText(Constants.INSTANCE.Snapshot());
+        final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.NewSnapshot() );
         final RulePackageSelector sel = new RulePackageSelector();
 

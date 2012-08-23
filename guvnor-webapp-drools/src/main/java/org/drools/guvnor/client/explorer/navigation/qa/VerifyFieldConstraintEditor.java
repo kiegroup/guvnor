@@ -233,7 +233,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(Widget w,
                                 final VerifyField con) {
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup form = new FormStylePopup(image,
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

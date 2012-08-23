@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -37,21 +38,18 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
  */
 public class WorkspaceEditor extends FormStylePopup {
 
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
-    private static ConstantsCore constants = GWT.create( ConstantsCore.class );
-
     private TextBox          name      = new TextBox();
     private Command          refresh;
 
     public WorkspaceEditor(Command refresh) {
-        super( images.editCategory(),
-               constants.CreateNewStatus() );
+        super(getImage(),
+               ConstantsCore.INSTANCE.CreateNewStatus() );
         this.refresh = refresh;
 
-        addAttribute( constants.StatusName(),
+        addAttribute( ConstantsCore.INSTANCE.StatusName(),
                       name );
 
-        Button ok = new Button( constants.OK() );
+        Button ok = new Button( ConstantsCore.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 ok();
@@ -62,16 +60,22 @@ public class WorkspaceEditor extends FormStylePopup {
                       ok );
     }
 
+    private static Image getImage() {
+        Image image = new Image(ImagesCore.INSTANCE.editCategory());
+        image.setAltText(ConstantsCore.INSTANCE.EditCategory());
+        return image;
+    }
+
     void ok() {
         if ( "".equals( this.name.getText() ) ) {
-            ErrorPopup.showMessage( constants.CanTHaveAnEmptyWorkspaceName() );
+            ErrorPopup.showMessage( ConstantsCore.INSTANCE.CanTHaveAnEmptyWorkspaceName() );
         } else {
             createWorkspace( name );
         }
     }
 
     private void createWorkspace(final TextBox box) {
-        LoadingPopup.showMessage( constants.CreatingStatus() );
+        LoadingPopup.showMessage( ConstantsCore.INSTANCE.CreatingStatus() );
 
         RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
 

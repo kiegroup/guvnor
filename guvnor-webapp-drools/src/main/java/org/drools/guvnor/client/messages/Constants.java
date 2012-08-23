@@ -2782,4 +2782,15 @@ public interface Constants
 
     // End simulation test
 
+    String Wizard();
+
+    String RuleAsset();
+
+    String Home();
+
+    String Snapshot();
+
+    String Warning();
+
+    String PackageBuilder();
 }

@@ -74,8 +74,6 @@ public class AssetEditorActionToolbar extends Composite {
             UiBinder<Widget, AssetEditorActionToolbar> {
     }
 
-    private static ImagesCore images = GWT.create(ImagesCore.class);
-
     private static ActionToolbarBinder uiBinder = GWT.create(ActionToolbarBinder.class);
 
     @UiField
@@ -451,7 +449,9 @@ public class AssetEditorActionToolbar extends Composite {
 
                     public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
-                        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
+                        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+                        image.setAltText(Constants.INSTANCE.RuleAsset());
+                        final FormStylePopup form = new FormStylePopup(image,
                                 Constants.INSTANCE.VerificationReport() );
                         ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                 false ) );
@@ -597,7 +597,9 @@ public class AssetEditorActionToolbar extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.warningLarge(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.warningLarge());
+        image.setAltText(Constants.INSTANCE.Warning());
+        final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.WARNINGUnCommittedChanges() );
         Button dis = new Button( Constants.INSTANCE.Discard() );
         Button can = new Button( Constants.INSTANCE.Cancel() );
@@ -626,7 +628,9 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doCopy() {
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.ruleAsset(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        image.setAltText(Constants.INSTANCE.RuleAsset());
+        final FormStylePopup form = new FormStylePopup(image,
                 Constants.INSTANCE.CopyThisItem() );
         final TextBox newName = new TextBox();
         form.addAttribute( Constants.INSTANCE.NewName(),
@@ -678,7 +682,9 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( DroolsGuvnorImages.INSTANCE.packageLarge(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        image.setAltText(Constants.INSTANCE.Package());
+        final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( asset.getName() );

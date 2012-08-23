@@ -202,7 +202,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.newexWiz(),
+        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
+        image.setAltText(Constants.INSTANCE.Wizard());
+        final FormStylePopup popup = new FormStylePopup(image,
                                                          Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();
