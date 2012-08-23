@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 public class FactTypeBrowser extends Composite {
@@ -50,7 +50,7 @@ public class FactTypeBrowser extends Composite {
         if (sce.getFactTypes() != null) {
             for (String type : sce.getFactTypes()) {
                 TreeItem it = new TreeItem();
-                it.setHTML(AbstractImagePrototype.create(DroolsGuvnorImages.INSTANCE.classImage()).getHTML()
+                it.setHTML(AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.classImage()).getHTML()
                         + "<small>"
                         + type + "</small>");
                 it.setUserObject(type + "( )");
@@ -60,7 +60,7 @@ public class FactTypeBrowser extends Composite {
                 if (fields != null) {
                     for (String field : fields) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML(AbstractImagePrototype.create(DroolsGuvnorImages.INSTANCE.field()).getHTML()
+                        fi.setHTML(AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.field()).getHTML()
                                 + "<small>"
                                 + field + "</small>");
                         fi.setUserObject(field);

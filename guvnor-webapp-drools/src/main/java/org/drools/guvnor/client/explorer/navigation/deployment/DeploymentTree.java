@@ -32,7 +32,7 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -72,7 +72,7 @@ public class DeploymentTree extends NavigationItemBuilderOld
     }
 
     public ImageResource getImage() {
-        return DroolsGuvnorImages.INSTANCE.deploy();
+        return DroolsGuvnorImageResources.INSTANCE.deploy();
     }
 
     public IsWidget createContent() {

@@ -38,7 +38,7 @@ import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -75,7 +75,7 @@ public class SnapshotView extends Composite {
         this.parentConf = parentPackage;
         PrettyFormLayout head = new PrettyFormLayout();
 
-        head.addHeader( DroolsGuvnorImages.INSTANCE.snapshot(),
+        head.addHeader( DroolsGuvnorImageResources.INSTANCE.snapshot(),
                         header() );
 
         vert.add( head );
@@ -275,7 +275,7 @@ public class SnapshotView extends Composite {
                                                                   final ModuleServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
-                Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+                Image image = new Image(DroolsGuvnorImageResources.INSTANCE.snapshot());
                 image.setAltText(Constants.INSTANCE.Snapshot());
                 final FormStylePopup copy = new FormStylePopup(image,
                                                                 Constants.INSTANCE.CopySnapshotText( snapshotName ) );
@@ -389,7 +389,7 @@ public class SnapshotView extends Composite {
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.snapshot());
         image.setAltText(Constants.INSTANCE.Snapshot());
         final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.NewSnapshot() );

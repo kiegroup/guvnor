@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
@@ -71,7 +71,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image addNewConstraint = new ImageButton(DroolsGuvnorImages.INSTANCE.itemImages().newItem());
+        Image addNewConstraint = new ImageButton(DroolsGuvnorImageResources.INSTANCE.itemImages().newItem());
         addNewConstraint.setTitle(Constants.INSTANCE.AddNewConstraint());
 
         addNewConstraint.addClickHandler(new ClickHandler() {
@@ -80,7 +80,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image removeConstraint = new Image(DroolsGuvnorImages.INSTANCE.trash());
+        Image removeConstraint = new Image(DroolsGuvnorImageResources.INSTANCE.trash());
         removeConstraint.setTitle(Constants.INSTANCE.removeConstraint());
         removeConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -224,7 +224,7 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private void showNewConstrainPop() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.config());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.config());
         image.setAltText(Constants.INSTANCE.Config());
         final FormStylePopup pop = new FormStylePopup(
                 image,

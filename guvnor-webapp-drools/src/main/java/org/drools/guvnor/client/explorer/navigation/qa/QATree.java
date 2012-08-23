@@ -30,7 +30,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -67,7 +67,7 @@ public class QATree extends NavigationItemBuilderOld
     }
 
     public ImageResource getImage() {
-        return DroolsGuvnorImages.INSTANCE.analyze();
+        return DroolsGuvnorImageResources.INSTANCE.analyze();
     }
 
     public IsWidget createContent() {
@@ -107,7 +107,7 @@ public class QATree extends NavigationItemBuilderOld
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImageResources.INSTANCE.packages(),
                                 c.getName() ) );
 
                         node.addItem( pkg );
@@ -125,7 +125,7 @@ public class QATree extends NavigationItemBuilderOld
                     removeAnalysisIDs( itemWidgets );
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImages.INSTANCE.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImageResources.INSTANCE.packages(),
                                 c.getName() ) );
 
                         node.addItem( pkg );

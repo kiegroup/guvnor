@@ -20,7 +20,7 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -90,7 +90,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 if ( !v.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( DroolsGuvnorImages.INSTANCE.warning() ) );
+                                    new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
                     data.setWidget( i,
                                     4,
                                     new HTML( Constants.INSTANCE.ActualResult(v.getActualResult().toString()) ) );
@@ -102,7 +102,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( DroolsGuvnorImages.INSTANCE.testPassed() ) );
+                                    new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
                 }
 
             }
@@ -164,7 +164,7 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisRuleExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

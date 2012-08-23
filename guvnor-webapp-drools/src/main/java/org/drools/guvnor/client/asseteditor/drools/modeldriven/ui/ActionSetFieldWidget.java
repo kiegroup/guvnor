@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -128,7 +129,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -156,7 +157,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
+                h.add( new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
                                         Constants.INSTANCE.AddFirstNewField(),
                                         new ClickHandler() {
 
@@ -202,9 +203,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        final FormStylePopup popup = new FormStylePopup(image,
+        final FormStylePopup popup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();

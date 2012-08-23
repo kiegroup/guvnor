@@ -19,7 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -38,7 +38,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
                                      final Scenario scenario,
                                      final ExecutionTrace currentEx,
                                      ScenarioWidget scenarioWidget) {
-        super( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+        super( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
                Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,

@@ -43,8 +43,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.resources.ImagesCore;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.CheckinPopup;
@@ -449,7 +448,7 @@ public class AssetEditorActionToolbar extends Composite {
 
                     public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
-                        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+                        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
                         image.setAltText(Constants.INSTANCE.RuleAsset());
                         final FormStylePopup form = new FormStylePopup(image,
                                 Constants.INSTANCE.VerificationReport() );
@@ -597,7 +596,7 @@ public class AssetEditorActionToolbar extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.warningLarge());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.warningLarge());
         image.setAltText(Constants.INSTANCE.Warning());
         final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.WARNINGUnCommittedChanges() );
@@ -628,7 +627,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doCopy() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
         image.setAltText(Constants.INSTANCE.RuleAsset());
         final FormStylePopup form = new FormStylePopup(image,
                 Constants.INSTANCE.CopyThisItem() );
@@ -682,7 +681,7 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.packageLarge());
         image.setAltText(Constants.INSTANCE.Package());
         final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.RenameThisItem() );

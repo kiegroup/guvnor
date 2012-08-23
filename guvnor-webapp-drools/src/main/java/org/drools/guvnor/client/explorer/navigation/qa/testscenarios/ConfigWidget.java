@@ -25,8 +25,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
@@ -44,7 +43,7 @@ public class ConfigWidget extends Composite {
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+        final Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
                                            Constants.INSTANCE.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -56,7 +55,7 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
+        final Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
                                               Constants.INSTANCE.RemoveSelectedRule() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -123,7 +122,7 @@ public class ConfigWidget extends Composite {
                                String packageName,
                                final List<String> filterList,
                                ScenarioWidget scw) {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
         image.setAltText(Constants.INSTANCE.RuleAsset());
         final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.SelectRule() );

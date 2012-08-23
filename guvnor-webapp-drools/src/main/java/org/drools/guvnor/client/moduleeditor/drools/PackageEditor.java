@@ -30,7 +30,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -214,7 +214,7 @@ public class PackageEditor
     private void doValidatePackageConfiguration(final Command refresh) {
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add( new Label( Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait() ) );
-        busy.add( new Image( DroolsGuvnorImages.INSTANCE.redAnime() ) );
+        busy.add( new Image( DroolsGuvnorImageResources.INSTANCE.redAnime() ) );
 
         packageConfigurationValidationResult.add( busy );
 
@@ -256,7 +256,7 @@ public class PackageEditor
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        ImageButton remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+        ImageButton remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -270,7 +270,7 @@ public class PackageEditor
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.edit() );
+        Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit() );
         add.setTitle( Constants.INSTANCE.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {
@@ -299,7 +299,7 @@ public class PackageEditor
     }
 
     protected void showCatRuleSelector(Widget w) {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.config());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.config());
         image.setAltText(Constants.INSTANCE.Config());
         final FormStylePopup pop = new FormStylePopup(image,
                 Constants.INSTANCE.AddACategoryRuleToThePackage() );
@@ -341,7 +341,7 @@ public class PackageEditor
         packageConfigurationValidationResult.clear();
 
         if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith( "Class" ) ) {
-            Image img = new Image( DroolsGuvnorImages.INSTANCE.warning() );
+            Image img = new Image( DroolsGuvnorImageResources.INSTANCE.warning() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + Constants.INSTANCE.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
@@ -355,7 +355,7 @@ public class PackageEditor
             } );
             packageConfigurationValidationResult.add( show );
         } else {
-            Image img = new Image( DroolsGuvnorImages.INSTANCE.greenTick() );
+            Image img = new Image( DroolsGuvnorImageResources.INSTANCE.greenTick() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + Constants.INSTANCE.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );

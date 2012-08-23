@@ -29,6 +29,7 @@ import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
@@ -284,9 +285,7 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void doRename() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        final FormStylePopup pop = new FormStylePopup(image,
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
                 Constants.INSTANCE.RenameThePackage() );
         pop.addRow( new HTML( Constants.INSTANCE.RenamePackageTip() ) );
         final TextBox name = new TextBox();
@@ -329,9 +328,7 @@ public class PackageEditorActionToolbar extends Composite {
      * Will show a copy dialog for copying the whole package.
      */
     private void doCopy() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        final FormStylePopup pop = new FormStylePopup(image,
+        final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
                 Constants.INSTANCE.CopyThePackage() );
         pop.addRow( new HTML( Constants.INSTANCE.CopyThePackageTip() ) );
         final TextBox name = new TextBox();

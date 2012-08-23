@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 
@@ -46,17 +46,17 @@ public class VerifierResultWidget extends Composite {
         Tree tree = new Tree();
 
         TreeItem errors = doMessageLines( Constants.INSTANCE.Errors(),
-                                          DroolsGuvnorImages.INSTANCE.error(),
+                                          DroolsGuvnorImageResources.INSTANCE.error(),
                                           report.errors );
         tree.addItem( errors );
 
         TreeItem warnings = doMessageLines( Constants.INSTANCE.Warnings(),
-                                            DroolsGuvnorImages.INSTANCE.warning(),
+                                            DroolsGuvnorImageResources.INSTANCE.warning(),
                                             report.warnings );
         tree.addItem( warnings );
 
         TreeItem notes = doMessageLines( Constants.INSTANCE.Notes(),
-                                         DroolsGuvnorImages.INSTANCE.note(),
+                                         DroolsGuvnorImageResources.INSTANCE.note(),
                                          report.notes );
         tree.addItem( notes );
 

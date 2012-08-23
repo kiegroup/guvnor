@@ -23,12 +23,11 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -64,7 +63,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
     }
 
     public Image getIcon() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newFileLarge());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newFileLarge());
         image.setAltText(ConstantsCore.INSTANCE.NewFile());
         return image;
     }

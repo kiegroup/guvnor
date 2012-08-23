@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.AuditEventsImages;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.PercentageBar;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -105,7 +105,7 @@ public class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs.get(i);
             errTable.setWidget( row,
                                 0,
-                                new Image( DroolsGuvnorImages.INSTANCE.error() ) );
+                                new Image( DroolsGuvnorImageResources.INSTANCE.error() ) );
             if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
@@ -147,10 +147,10 @@ public class TestRunnerWidget extends Composite {
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
                 if ( !verifyRuleFired.getSuccessResult().booleanValue() ) {
-                    panel.add( new Image( DroolsGuvnorImages.INSTANCE.warning() ) );
+                    panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
                     failures++;
                 } else {
-                    panel.add( new Image( DroolsGuvnorImages.INSTANCE.testPassed() ) );
+                    panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
                 }
                 panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
@@ -162,10 +162,10 @@ public class TestRunnerWidget extends Composite {
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
                     if ( !verifyField.getSuccessResult().booleanValue() ) {
-                        panel.add( new Image( DroolsGuvnorImages.INSTANCE.warning() ) );
+                        panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
                         failures++;
                     } else {
-                        panel.add( new Image( DroolsGuvnorImages.INSTANCE.testPassed() ) );
+                        panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
                     }
                     panel.add( new SmallLabel( verifyField.getExplanation() ) );
                     resultsDetail.add( panel );

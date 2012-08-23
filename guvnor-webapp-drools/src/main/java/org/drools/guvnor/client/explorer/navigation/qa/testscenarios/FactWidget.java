@@ -22,13 +22,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 public abstract class FactWidget extends HorizontalPanel {
 
@@ -67,7 +66,7 @@ public abstract class FactWidget extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final FixtureList definitionList) {
-            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
+            super( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.RemoveThisBlockOfData() );
 
             addClickHandler( new ClickHandler() {

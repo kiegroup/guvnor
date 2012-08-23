@@ -16,12 +16,11 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -39,7 +38,7 @@ class GlobalButton extends ImageButton {
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioWidget parent) {
-        super( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+        super( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
                Constants.INSTANCE.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;
@@ -59,7 +58,7 @@ class GlobalButton extends ImageButton {
     }
 
     private static Image getRuleAssetImage() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
         image.setAltText(Constants.INSTANCE.RuleAsset());
         return image;
     }

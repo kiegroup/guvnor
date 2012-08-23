@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -81,18 +81,18 @@ public class PackageHeaderWidget extends Composite {
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
-                                                         DroolsGuvnorImages.INSTANCE.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+                                                         DroolsGuvnorImageResources.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
-                                                       DroolsGuvnorImages.INSTANCE.trashDisabled() );
+            ImageButton trashButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
+                                                       DroolsGuvnorImageResources.INSTANCE.trashDisabled() );
             trashButton.setEnabled( false );
             importActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
-                                                         DroolsGuvnorImages.INSTANCE.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+                                                         DroolsGuvnorImageResources.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -106,8 +106,8 @@ public class PackageHeaderWidget extends Composite {
             };
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
-                                                       DroolsGuvnorImages.INSTANCE.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
+                                                       DroolsGuvnorImageResources.INSTANCE.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -141,18 +141,18 @@ public class PackageHeaderWidget extends Composite {
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
-                                                         DroolsGuvnorImages.INSTANCE.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+                                                         DroolsGuvnorImageResources.INSTANCE.newItemDisabled() );
             newItemButton.setEnabled( false );
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
-                                                       DroolsGuvnorImages.INSTANCE.trashDisabled() );
+            ImageButton trashButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
+                                                       DroolsGuvnorImageResources.INSTANCE.trashDisabled() );
             trashButton.setEnabled( false );
             globalActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
-                                                         DroolsGuvnorImages.INSTANCE.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+                                                         DroolsGuvnorImageResources.INSTANCE.newItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -166,8 +166,8 @@ public class PackageHeaderWidget extends Composite {
             };
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( DroolsGuvnorImages.INSTANCE.trash(),
-                                                       DroolsGuvnorImages.INSTANCE.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
+                                                       DroolsGuvnorImageResources.INSTANCE.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -288,7 +288,7 @@ public class PackageHeaderWidget extends Composite {
                                   final ModuleHeader mh,
                                   final boolean global,
                                   String headerMessage) {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.homeIcon());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.homeIcon());
         image.setAltText(Constants.INSTANCE.Home());
         final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.ChooseAFactType() );

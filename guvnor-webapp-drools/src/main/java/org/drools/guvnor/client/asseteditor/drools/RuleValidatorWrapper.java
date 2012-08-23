@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.Asset;
@@ -68,12 +68,12 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.setWidth(200 + "px");
             pop.setTitle(Constants.INSTANCE.ValidationResultsDotDot());
             HorizontalPanel h = new HorizontalPanel();
-            h.add(new SmallLabel(AbstractImagePrototype.create(DroolsGuvnorImages.INSTANCE.greenTick()).getHTML() + "<i>"
+            h.add(new SmallLabel(AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.greenTick()).getHTML() + "<i>"
                     + Constants.INSTANCE.ItemValidatedSuccessfully() + "</i>"));
             pop.addRow(h);
             pop.show();
         } else {
-            Image image = new Image(DroolsGuvnorImages.INSTANCE.packageBuilder());
+            Image image = new Image(DroolsGuvnorImageResources.INSTANCE.packageBuilder());
             image.setAltText(Constants.INSTANCE.PackageBuilder());
             FormStylePopup pop = new FormStylePopup(image,
                     Constants.INSTANCE.ValidationResults());
@@ -84,7 +84,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
                 final BuilderResultLine res = result.getLines().get(i);
                 errTable.setWidget(row,
                         0,
-                        new Image(DroolsGuvnorImages.INSTANCE.error()));
+                        new Image(DroolsGuvnorImageResources.INSTANCE.error()));
                 if (res.getAssetFormat().equals("package")) {
                     errTable.setText(row,
                             1,

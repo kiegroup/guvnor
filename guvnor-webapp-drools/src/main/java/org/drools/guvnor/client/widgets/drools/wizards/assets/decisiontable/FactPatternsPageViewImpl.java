@@ -24,7 +24,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPWindowOpera
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.cells.PatternCell;
@@ -105,10 +105,10 @@ public class FactPatternsPageViewImpl extends Composite
     HorizontalPanel                         msgDuplicateBindings;
 
     @UiField(provided = true)
-    PushButton                              btnMoveUp   = new PushButton( AbstractImagePrototype.create( DroolsGuvnorImages.INSTANCE.shuffleUp() ).createImage() );
+    PushButton                              btnMoveUp   = new PushButton( AbstractImagePrototype.create( DroolsGuvnorImageResources.INSTANCE.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                              btnMoveDown = new PushButton( AbstractImagePrototype.create( DroolsGuvnorImages.INSTANCE.shuffleDown() ).createImage() );
+    PushButton                              btnMoveDown = new PushButton( AbstractImagePrototype.create( DroolsGuvnorImageResources.INSTANCE.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends

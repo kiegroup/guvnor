@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools.enums;
 
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.resources.client.ImageResource;
@@ -32,7 +32,7 @@ public class DeleteButtonCell extends ButtonCell {
     public void render(Context context,
                        SafeHtml data,
                        SafeHtmlBuilder sb) {
-        ImageResource imageResource = DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall();
+        ImageResource imageResource = DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall();
         sb.appendHtmlConstant( "<input type=\"image\" src=\"" + imageResource.getURL() + "\"  tabindex=\"-1\">" );
         sb.appendHtmlConstant( "</input>" );
     }

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
@@ -260,7 +260,7 @@ public class PackageBuilderWidget extends Composite {
 
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add(new Label(Constants.INSTANCE.ValidatingAndBuildingPackagePleaseWait()));
-        busy.add(new Image(DroolsGuvnorImages.INSTANCE.redAnime()));
+        busy.add(new Image(DroolsGuvnorImageResources.INSTANCE.redAnime()));
 
         buildResults.add(busy);
 
@@ -329,7 +329,7 @@ public class PackageBuilderWidget extends Composite {
                                   String name) {
         int windowWidth = Window.getClientWidth() / 2;
         int windowHeight = Window.getClientHeight() / 2;
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.viewSource());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.viewSource());
         image.setAltText(Constants.INSTANCE.ViewSource());
         final FormStylePopup pop = new FormStylePopup(image,
                                                        Constants.INSTANCE.ViewingSourceFor0( name ),
@@ -445,7 +445,7 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add(new HTML(AbstractImagePrototype.create(DroolsGuvnorImages.INSTANCE.greenTick()).getHTML()
+        vert.add(new HTML(AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.greenTick()).getHTML()
                 + "<i>"
                 + Constants.INSTANCE.PackageBuiltSuccessfully()
                 + " "
@@ -505,7 +505,7 @@ public class PackageBuilderWidget extends Composite {
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.snapshot());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.snapshot());
         image.setAltText(Constants.INSTANCE.Snapshot());
         final FormStylePopup form = new FormStylePopup(image,
                 Constants.INSTANCE.CreateASnapshotForDeployment());

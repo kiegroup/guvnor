@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
@@ -99,8 +99,8 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
-                                                     DroolsGuvnorImages.INSTANCE.editDisabled(),
+        ImageButton changePattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
+                                                     DroolsGuvnorImageResources.INSTANCE.editDisabled(),
                                                      Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -116,8 +116,8 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( DroolsGuvnorImages.INSTANCE.edit(),
-                                                 DroolsGuvnorImages.INSTANCE.editDisabled(),
+        ImageButton editField = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
+                                                 DroolsGuvnorImageResources.INSTANCE.editDisabled(),
                                                  Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {

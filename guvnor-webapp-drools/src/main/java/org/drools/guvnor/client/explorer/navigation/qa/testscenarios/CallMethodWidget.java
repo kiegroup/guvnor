@@ -11,6 +11,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
@@ -133,7 +134,7 @@ public class CallMethodWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( mCall.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( DroolsGuvnorImages.INSTANCE.addFieldToFact() );
+            Image edit = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addFieldToFact() );
             edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
             edit.addClickHandler( new ClickHandler() {
@@ -155,10 +156,7 @@ public class CallMethodWidget extends DirtyableComposite {
     }
 
     protected void showAddFieldPopup(Widget w) {
-
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        final FormStylePopup popup = new FormStylePopup(image,
+        final FormStylePopup popup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         ListBox box = new ListBox();
         box.addItem( "..." );
@@ -278,7 +276,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
+            super( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
                    Constants.INSTANCE.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {

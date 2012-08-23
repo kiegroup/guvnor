@@ -25,7 +25,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
@@ -34,7 +34,6 @@ import org.drools.guvnor.client.widgets.PopupListWidget;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -111,7 +110,7 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     }
 
     public Image getIcon() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.decisionTable());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.decisionTable());
         image.setAltText(ConstantsCore.INSTANCE.DecisionTable());
         return image;
     }

@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
@@ -28,7 +27,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,6 +38,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 
@@ -54,7 +54,7 @@ public class NewSubPackageWizard extends FormStylePopup {
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
 
     public NewSubPackageWizard(final Command afterCreatedEvent) {
-        super(getImage(),
+        super(DroolsGuvnorImages.INSTANCE.Wizard(),
                Constants.INSTANCE.CreateANewSubPackage() );
         nameBox = new TextBox();
         descBox = new TextBox();
@@ -136,12 +136,6 @@ public class NewSubPackageWizard extends FormStylePopup {
 
     }
 
-    private static Image getImage() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        return image;
-    }
-
     private void createSubPackageAction(final String name,
                                         final String descr,
                                         String parentPackage,
@@ -176,7 +170,7 @@ public class NewSubPackageWizard extends FormStylePopup {
         panel.add( upload );
 
         panel.add( new Label( Constants.INSTANCE.upload() ) );
-        ImageButton ok = new ImageButton( DroolsGuvnorImages.INSTANCE.upload(),
+        ImageButton ok = new ImageButton( DroolsGuvnorImageResources.INSTANCE.upload(),
                                           Constants.INSTANCE.Import() );
         ClickHandler okClickHandler = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -191,7 +185,7 @@ public class NewSubPackageWizard extends FormStylePopup {
 
         panel.add( ok );
 
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.packageLarge());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.packageLarge());
         image.setAltText(Constants.INSTANCE.Package());
         final FormStylePopup packageNamePopup = new FormStylePopup(image,
                                                                     Constants.INSTANCE.PackageName() );

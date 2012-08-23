@@ -23,7 +23,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
@@ -44,7 +44,7 @@ public class FieldSelectorWidget
         this.field = field;
         this.helper = helper;
         this.parent = parent;
-        this.clickMe = new Image(DroolsGuvnorImages.INSTANCE.edit());
+        this.clickMe = new Image(DroolsGuvnorImageResources.INSTANCE.edit());
         this.clickMe.addClickHandler(this);
     }
 

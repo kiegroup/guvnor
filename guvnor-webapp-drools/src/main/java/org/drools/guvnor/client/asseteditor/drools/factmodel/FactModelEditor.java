@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
 
 import java.util.List;
@@ -161,9 +161,9 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( DroolsGuvnorImages.INSTANCE.collapseExpand().collapse() );
+            icon.setResource( DroolsGuvnorImageResources.INSTANCE.collapseExpand().collapse() );
         } else {               
-            icon.setResource( DroolsGuvnorImages.INSTANCE.collapseExpand().expand() );
+            icon.setResource( DroolsGuvnorImageResources.INSTANCE.collapseExpand().expand() );
         }
     }
 

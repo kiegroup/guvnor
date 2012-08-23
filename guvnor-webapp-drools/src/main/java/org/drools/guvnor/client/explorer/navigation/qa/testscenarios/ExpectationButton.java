@@ -18,10 +18,9 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.ArrayList;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -39,7 +38,7 @@ public class ExpectationButton extends TestScenarioButton {
                              final ExecutionTrace previousEx,
                              final Scenario scenario,
                              ScenarioWidget scenarioWidget) {
-        super( DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+        super( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
                Constants.INSTANCE.AddANewExpectation(),
                previousEx,
                scenario,
@@ -116,7 +115,7 @@ public class ExpectationButton extends TestScenarioButton {
     }
 
     private static Image getRuleAssetImage() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
         image.setAltText(Constants.INSTANCE.RuleAsset());
         return image;
     }

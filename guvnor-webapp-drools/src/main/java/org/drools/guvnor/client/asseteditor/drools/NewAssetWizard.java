@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
@@ -31,6 +30,7 @@ import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
@@ -88,7 +88,7 @@ public class NewAssetWizard extends FormStylePopup {
                            String format,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
-        super(getImage(),
+        super(DroolsGuvnorImages.INSTANCE.Wizard(),
                getTitle( format,
                          clientFactory ) );
         this.format = format;
@@ -130,12 +130,6 @@ public class NewAssetWizard extends FormStylePopup {
         globalAreaAssetSelector = new GlobalAreaAssetSelector( format );
         importAssetLayout.buildImportAssetLayout();
 
-    }
-
-    private static Image getImage() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        return image;
     }
 
     private static String getTitle(String format,

@@ -38,7 +38,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Asset;
@@ -153,7 +153,7 @@ public class RuleModeller extends DirtyableComposite
         layout.clear();
         this.currentLayoutRow = 0;
 
-        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
+        Image addPattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem() );
         addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
@@ -189,7 +189,7 @@ public class RuleModeller extends DirtyableComposite
                               0,
                               new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
 
-            Image addAction = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
+            Image addAction = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem() );
             addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
@@ -313,7 +313,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().newItem() );
+        Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem() );
         add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
@@ -365,7 +365,7 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+            Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
             remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
@@ -564,7 +564,7 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
@@ -650,15 +650,15 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = new ImageButton( DroolsGuvnorImages.INSTANCE.newItemBelow() );
+        Image addPattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.newItemBelow() );
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleDown() );
+        Image moveDown = new ImageButton( DroolsGuvnorImageResources.INSTANCE.shuffleDown() );
         moveDown.setTitle( Constants.INSTANCE.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = new ImageButton( DroolsGuvnorImages.INSTANCE.shuffleUp() );
+        Image moveUp = new ImageButton( DroolsGuvnorImageResources.INSTANCE.shuffleUp() );
         moveUp.setTitle( Constants.INSTANCE.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
@@ -770,7 +770,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
                     this.addLineIcon( warning.patternOrderNumber + 1,
-                                      DroolsGuvnorImages.INSTANCE.warning(),
+                                      DroolsGuvnorImageResources.INSTANCE.warning(),
                                       warning.description );
                 }
             }
@@ -779,7 +779,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.patternOrderNumber != null ) {
                     this.addLineIcon( error.patternOrderNumber + 1,
-                                      DroolsGuvnorImages.INSTANCE.error(),
+                                      DroolsGuvnorImageResources.INSTANCE.error(),
                                       error.description );
                 }
             }

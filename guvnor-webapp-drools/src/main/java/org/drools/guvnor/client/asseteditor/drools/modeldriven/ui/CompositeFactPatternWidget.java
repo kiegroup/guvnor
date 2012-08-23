@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -124,7 +124,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+        final Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {

@@ -21,7 +21,7 @@
   xmlns:c="urn:import:org.drools.guvnor.client.common">
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field="images" type="org.drools.guvnor.client.resources.DroolsGuvnorImages" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.DroolsGuvnorImageResources" />
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">

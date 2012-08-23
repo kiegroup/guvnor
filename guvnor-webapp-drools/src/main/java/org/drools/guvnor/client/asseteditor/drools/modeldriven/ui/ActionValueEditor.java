@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
@@ -157,7 +158,7 @@ public class ActionValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall() );
+        Image clear = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
         clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
@@ -365,7 +366,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = new Image( DroolsGuvnorImages.INSTANCE.edit() );
+            Image clickme = new Image( DroolsGuvnorImageResources.INSTANCE.edit() );
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     showTypeChoice( (Widget) event.getSource() );
@@ -376,9 +377,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.newexWiz());
-        image.setAltText(Constants.INSTANCE.Wizard());
-        final FormStylePopup form = new FormStylePopup(image,
+        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

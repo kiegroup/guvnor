@@ -18,13 +18,11 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public class NewDataButton extends TestScenarioButton {
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super(DroolsGuvnorImages.INSTANCE.itemImages().newItem(),
+        super(DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
                 Constants.INSTANCE.AddANewDataInputToThisScenario(),
                 previousEx,
                 scenario,

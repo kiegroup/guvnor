@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -134,7 +134,7 @@ abstract class TestScenarioButton extends ImageButton {
     }
 
     protected static Image getRuleAssetButton() {
-        Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
         image.setAltText(Constants.INSTANCE.RuleAsset());
         return image;
     }

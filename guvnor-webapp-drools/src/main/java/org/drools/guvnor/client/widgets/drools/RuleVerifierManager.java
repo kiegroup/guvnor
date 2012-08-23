@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 
 /**
  * This controls category administration.
@@ -42,7 +42,7 @@ public class RuleVerifierManager extends Composite {
     public RuleVerifierManager() {
 
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( DroolsGuvnorImages.INSTANCE.ruleVerification(),
+        form.addHeader( DroolsGuvnorImageResources.INSTANCE.ruleVerification(),
                         new HTML( Constants.INSTANCE.EditRulesVerificationConfiguration() ) );
         form.startSection( Constants.INSTANCE.AutomaticVerification() );
 

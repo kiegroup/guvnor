@@ -21,7 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -66,7 +66,7 @@ public class ExecutionWidget extends Composite {
         } );
 
         HorizontalPanel layout = new HorizontalPanel();
-        layout.add( new Image( DroolsGuvnorImages.INSTANCE.executionTrace() ) );
+        layout.add( new Image( DroolsGuvnorImageResources.INSTANCE.executionTrace() ) );
         layout.add( choice );
         layout.add( simulDatePanel );
 

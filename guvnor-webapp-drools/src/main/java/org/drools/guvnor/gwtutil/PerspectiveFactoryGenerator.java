@@ -39,7 +39,7 @@ import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.util.Util;
@@ -77,7 +77,7 @@ public class PerspectiveFactoryGenerator extends Generator {
         composerFactory.addImport( Map.class.getCanonicalName() );
         composerFactory.addImport( List.class.getCanonicalName() );
         composerFactory.addImport( Constants.class.getCanonicalName() );
-        composerFactory.addImport( DroolsGuvnorImages.class.getCanonicalName() );
+        composerFactory.addImport( DroolsGuvnorImageResources.class.getCanonicalName() );
         composerFactory.addImport( ImageResource.class.getCanonicalName() );
         composerFactory.addImport( Asset.class.getCanonicalName() );
         composerFactory.addImport( RuleViewer.class.getCanonicalName() );
@@ -124,7 +124,7 @@ public class PerspectiveFactoryGenerator extends Generator {
 
     private void generateAttributes( SourceWriter sourceWriter ) {
         sourceWriter.indent();
-        sourceWriter.println( "private static DroolsGuvnorImages images = GWT.create(DroolsGuvnorImages.class);" );
+        sourceWriter.println( "private static DroolsGuvnorImageResources images = GWT.create(DroolsGuvnorImageResources.class);" );
         sourceWriter.println( "private static Constants constants = GWT.create(Constants.class);" );
     }
 

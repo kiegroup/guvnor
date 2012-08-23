@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.WidthCalculator;
 
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConversionMessageWidget extends Composite {
 
-    private static final DroolsGuvnorImages images          = GWT.create( DroolsGuvnorImages.class );
+    private static final DroolsGuvnorImageResources images          = GWT.create( DroolsGuvnorImageResources.class );
 
     private static WidthCalculator<String> widthCalculator = new WidthCalculator<String>( new TextCell() );
 

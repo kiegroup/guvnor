@@ -21,7 +21,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -82,13 +82,13 @@ public class VerifyFactWidget extends Composite {
         }
         this.showResults = showResults;
 
-        Image add = new ImageButton( DroolsGuvnorImages.INSTANCE.addFieldToFact(),
+        Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addFieldToFact(),
                                      Constants.INSTANCE.AddAFieldToThisExpectation(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
 
                                              String[] fields = sce.getModelFields( type );
-                                             Image image = new Image(DroolsGuvnorImages.INSTANCE.ruleAsset());
+                                             Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
                                              image.setAltText(Constants.INSTANCE.RuleAsset());
                                              final FormStylePopup pop = new FormStylePopup(image,
                                                                                             Constants.INSTANCE.ChooseAFieldToAdd() );
@@ -176,7 +176,7 @@ public class VerifyFactWidget extends Composite {
                             3,
                             cellEditor );
 
-            Image del = new ImageButton( DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall(),
+            Image del = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
                                          Constants.INSTANCE.RemoveThisFieldExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -198,7 +198,7 @@ public class VerifyFactWidget extends Composite {
                 if ( !fld.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( DroolsGuvnorImages.INSTANCE.warning() ) );
+                                    new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
                     data.setWidget( i,
                                     5,
                                     new HTML( Constants.INSTANCE.ActualResult( fld.getActualResult() ) ) );
@@ -210,7 +210,7 @@ public class VerifyFactWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( DroolsGuvnorImages.INSTANCE.testPassed() ) );
+                                    new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
                 }
             }
 

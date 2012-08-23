@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -79,7 +79,7 @@ public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, Imag
 
                                                  };
 
-    private static final ImageResource     image = DroolsGuvnorImages.INSTANCE.itemImages().deleteItemSmall();
+    private static final ImageResource     image = DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall();
 
     public AuditLogEntryDeleteCommentColumn() {
         super( cell );

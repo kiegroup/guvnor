@@ -32,14 +32,14 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.MavenArtifact;
 
 public class ArtifactDependenciesExplorerWidget
         extends DirtyableComposite
         implements ArtifactDependenciesExplorer {
 
-    private static DroolsGuvnorImages images = GWT.create(DroolsGuvnorImages.class);
+    private static DroolsGuvnorImageResources images = GWT.create(DroolsGuvnorImageResources.class);
     private final TreeItem root;
 
     //UI Elements
