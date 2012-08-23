@@ -21,13 +21,21 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
-  <gwt:FlowPanel ui:field="flowPanel" width="100%">
-    <gwt:HTMLPanel>
-      <div>
-        <gwt:Image resource="{simulationResources.fireAllRules}" styleName="{simulationResources.style.commandImage}"/>
-        <gwt:Label text="{i18n.FireAllRules}" styleName="{simulationResources.style.commandLabel}"/>
-      </div>
-    </gwt:HTMLPanel>
+  <ui:style>
+    .idented { margin-left: 20px; }
+  </ui:style>
+
+  <gwt:FlowPanel width="100%">
+    <gwt:FlowPanel>
+      <gwt:Image resource="{simulationResources.fireAllRules}" styleName="{simulationResources.style.commandImage}"/>
+      <gwt:Label text="{i18n.FireAllRules}" styleName="{simulationResources.style.commandLabel}"/>
+    </gwt:FlowPanel>
+    <gwt:VerticalPanel ui:field="verticalPanel" width="100%" addStyleNames="{style.idented}"/>
+    <gwt:HorizontalPanel addStyleNames="{style.idented}">
+      <gwt:PushButton ui:field="addAssertRuleFiredCommandButton">
+        <gwt:upFace image="{simulationResources.addAssertRuleFiredCommand}"/>
+      </gwt:PushButton>
+    </gwt:HorizontalPanel>
   </gwt:FlowPanel>
 
 </ui:UiBinder>

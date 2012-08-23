@@ -42,4 +42,8 @@ public class FireAllRulesCommandModel extends AbstractCommandModel {
         return assertRuleFiredCommands;
     }
 
+    public void addAssertRuleFiredCommandModel(AssertRuleFiredCommandModel assertRuleFiredCommand) {
+        assertRuleFiredCommands.add(assertRuleFiredCommand);
+    }
+
 }

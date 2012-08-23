@@ -17,17 +17,13 @@
 package org.drools.guvnor.client.simulation.command;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.simulation.resources.SimulationResources;
-import org.drools.guvnor.client.simulation.resources.SimulationStyle;
-import org.drools.guvnor.shared.simulation.SimulationStepModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 
@@ -37,14 +33,27 @@ public class FireAllRulesCommandWidget extends AbstractCommandWidget<FireAllRule
     private static FireAllRulesCommandWidgetBinder uiBinder = GWT.create(FireAllRulesCommandWidgetBinder.class);
 
     @UiField
-    protected FlowPanel flowPanel;
+    protected VerticalPanel verticalPanel;
+    @UiField
+    protected PushButton addAssertRuleFiredCommandButton;
 
     public FireAllRulesCommandWidget(FireAllRulesCommandModel command) {
         super(command);
         initWidget(uiBinder.createAndBindUi(this));
         for (AssertRuleFiredCommandModel assertRuleFiredCommand : command.getAssertRuleFiredCommands()) {
-            flowPanel.add(new AssertRuleFiredCommandWidget(assertRuleFiredCommand));
+            addSubCommandWidget(assertRuleFiredCommand);
         }
+    }
+
+    private void addSubCommandWidget(AssertRuleFiredCommandModel assertRuleFiredCommand) {
+        verticalPanel.add(new AssertRuleFiredCommandWidget(assertRuleFiredCommand));
+    }
+
+    @UiHandler("addAssertRuleFiredCommandButton")
+    protected void addAssertRuleFiredCommand(ClickEvent event) {
+        AssertRuleFiredCommandModel subCommand = new AssertRuleFiredCommandModel();
+        command.addAssertRuleFiredCommandModel(subCommand);
+        addSubCommandWidget(subCommand);
     }
 
 }
