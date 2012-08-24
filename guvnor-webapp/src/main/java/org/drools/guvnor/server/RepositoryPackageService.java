@@ -507,7 +507,7 @@ public class RepositoryPackageService
         JarEntry entry = null;
         while ((entry = jis.getNextJarEntry()) != null) {
             if ( !entry.isDirectory() ) {
-                if ( entry.getName().endsWith( ".class" ) ) {
+                if ( entry.getName().endsWith( ".class" ) && !entry.getName().endsWith( "package-info.class" ) ) {
                     res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
                 }
             }

@@ -198,9 +198,13 @@ public class ModelContentHandler extends ContentHandler
     }
 
     public static String convertPathToName(String name) {
-        return name.replace( ".class",
-                             "" ).replace( "/",
-                                           "." );
+        String convertedName = name.replace( ".class",
+                                             "" );
+        convertedName = convertedName.replace( "/",
+                                               "." );
+        convertedName = convertedName.replaceAll( "\\$",
+                                                  "." );
+        return convertedName;
     }
 
 }
