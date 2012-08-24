@@ -29,14 +29,16 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
  */
 public class ErrorPopup extends Popup {
 
-    private static ImagesCore images = (ImagesCore) GWT.create( ImagesCore.class );
-    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
+    private static ImagesCore images =  GWT.create( ImagesCore.class );
+    private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private VerticalPanel body = new VerticalPanel();
+
+    private static final String WIDTH= 400 + "px";;
 
     private ErrorPopup() {
 
         setTitle( constants.Error() );
-        setWidth( 400 + "px" );
+        setWidth( WIDTH );
         setModal( true );
 
         body.setWidth( "100%" );
@@ -76,9 +78,10 @@ public class ErrorPopup extends Popup {
                     VerticalPanel vp = new VerticalPanel();
                     vp.add( new HTML( "<hr/>" ) );
 
-                    Label lng = new Label( longDescription );
-                    lng.setStyleName( "error-long-message" );
-                    vp.add( lng );
+                    ScrollPanel longMessageLabel = new ScrollPanel(new Label( longDescription ));
+                    longMessageLabel.setWidth(WIDTH);
+                    longMessageLabel.setStyleName("error-long-message" );
+                    vp.add( longMessageLabel );
                     detailPanel.add( vp );
                 }
             } );

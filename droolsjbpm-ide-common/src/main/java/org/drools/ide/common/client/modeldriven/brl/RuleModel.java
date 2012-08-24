@@ -71,7 +71,7 @@ public class RuleModel
     }
 
     /**
-     * This will return the FactPattern that a variable is bound to.
+     * This will return the FactPattern that a variable is bound Eto.
      * 
      * @param var
      *            The bound fact variable (NOT bound field).
