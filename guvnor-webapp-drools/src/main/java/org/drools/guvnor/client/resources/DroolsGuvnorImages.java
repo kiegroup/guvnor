@@ -55,4 +55,10 @@ public class DroolsGuvnorImages {
         image.setAltText(Constants.INSTANCE.RuleAsset());
         return image;
     }
+
+    public Image PackageBuilder() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.packageBuilder());
+        image.setAltText(Constants.INSTANCE.PackageBuilder());
+        return image;
+    }
 }

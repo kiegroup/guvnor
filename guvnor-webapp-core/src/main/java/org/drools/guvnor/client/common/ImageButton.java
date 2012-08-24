@@ -18,94 +18,98 @@ package org.drools.guvnor.client.common;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiConstructor;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Really just an image, but tacks on the image-Button style name.
  */
-public class ImageButton extends Image {
+public class ImageButton extends FocusPanel {
 
-    private ImageResource       img;
-    private ImageResource       disabledImg;
-    private ClickHandler        clickHandler;
+    private final Image img;
+    private final Image disabledImg;
+    private ClickHandler clickHandler;
     private HandlerRegistration handlerRegistration;
 
-    public @UiConstructor
-    ImageButton(ImageResource img) {
-        super( img );
+    public
+    @UiConstructor
+    ImageButton(Image img) {
+        add(img);
         this.img = img;
         this.disabledImg = img;
-        setStyleName( "image-Button" );
+        setStyleName("image-Button");
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg,
+    public ImageButton(Image img,
+                       Image disabledImg,
                        String tooltip) {
-        super( img );
+        add(img);
         this.img = img;
         this.disabledImg = disabledImg;
-        setStyleName( "image-Button" );
+        setStyleName("image-Button");
+        setTitle(tooltip);
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg) {
-        super( img );
+    public ImageButton(Image img,
+                       Image disabledImg) {
+        add(img);
         this.img = img;
         this.disabledImg = disabledImg;
-        setStyleName( "image-Button" );
+        setStyleName("image-Button");
     }
 
-    public ImageButton(ImageResource img,
+    public ImageButton(Image img,
                        String tooltip) {
-        super( img );
+        add(img);
         this.img = img;
         this.disabledImg = img;
-        setStyleName( "image-Button" );
-        setTitle( tooltip );
+        setStyleName("image-Button");
+        setTitle(tooltip);
     }
 
-    public ImageButton(ImageResource img,
+    public ImageButton(Image img,
                        String tooltip,
                        ClickHandler clickHandler) {
-        this( img,
-              tooltip );
+        this(img,
+                tooltip);
         this.clickHandler = clickHandler;
         assertClickHandler();
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg,
+    public ImageButton(Image img,
+                       Image disabledImg,
                        String tooltip,
                        ClickHandler clickHandler) {
-        this( img,
-              disabledImg,
-              tooltip );
+        this(img,
+                disabledImg,
+                tooltip);
         this.clickHandler = clickHandler;
         assertClickHandler();
     }
 
     public void setEnabled(boolean enabled) {
-        if ( enabled ) {
-            super.setResource( img );
+        clear();
+        if (enabled) {
+            add(img);
             assertClickHandler();
         } else {
-            super.setResource( disabledImg );
+            add(disabledImg);
             removeClickHandler();
         }
     }
 
     private void assertClickHandler() {
-        if ( this.clickHandler != null ) {
-            if ( this.handlerRegistration == null ) {
-                this.handlerRegistration = addClickHandler( this.clickHandler );
+        if (this.clickHandler != null) {
+            if (this.handlerRegistration == null) {
+                this.handlerRegistration = addClickHandler(this.clickHandler);
             }
         }
     }
 
     private void removeClickHandler() {
-        if ( this.handlerRegistration != null ) {
+        if (this.handlerRegistration != null) {
             this.handlerRegistration.removeHandler();
             this.handlerRegistration = null;
         }

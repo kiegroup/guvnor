@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.Asset;
@@ -73,9 +74,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.addRow(h);
             pop.show();
         } else {
-            Image image = new Image(DroolsGuvnorImageResources.INSTANCE.packageBuilder());
-            image.setAltText(Constants.INSTANCE.PackageBuilder());
-            FormStylePopup pop = new FormStylePopup(image,
+            FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.PackageBuilder(),
                     Constants.INSTANCE.ValidationResults());
             FlexTable errTable = new FlexTable();
             errTable.setStyleName("build-Results"); //NON-NLS
