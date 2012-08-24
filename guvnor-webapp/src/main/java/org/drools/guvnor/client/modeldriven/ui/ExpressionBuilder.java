@@ -146,7 +146,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                 GLOBAL_VARIABLE_VALUE_PREFIX + "." + gv );
         }
 
-        for ( String v : getRuleModel().getAllVariables() ) {
+        for ( String v : getRuleModel().getAllLHSVariables() ) {
             startPoint.addItem( v,
                                 VARIABLE_VALUE_PREFIX + "." + v );
         }
@@ -186,8 +186,10 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( fact != null ) {
                 variable = new ExpressionVariable( fact );
             } else {
-                //TODO {baunax} fix it!!! to make recursive
-                variable = new ExpressionFieldVariable( attrib );
+                //if the variable is not bound to a Fact Pattern then it must
+                //be boubd to a Field
+                String lhsBindingType = getRuleModel().getLHSBindingType(attrib);
+                variable = new ExpressionFieldVariable(attrib, lhsBindingType );
             }
             expression.appendPart( variable );
 

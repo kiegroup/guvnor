@@ -27,10 +27,10 @@ public class ExpressionFieldVariable extends ExpressionText {
     protected ExpressionFieldVariable() {
     }
 
-    public ExpressionFieldVariable(String name) {
+    public ExpressionFieldVariable(String name, String type) {
         super( name,
-               "java.lang.String",
-               SuggestionCompletionEngine.TYPE_FINAL_OBJECT );
+               type,
+               type);
     }
 
     @Override
