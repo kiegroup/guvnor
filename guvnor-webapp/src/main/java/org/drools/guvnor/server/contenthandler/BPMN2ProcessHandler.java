@@ -61,17 +61,9 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     public void retrieveAssetContent(RuleAsset asset,
                                      AssetItem item) throws SerializationException {
-        RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
-        if ( process != null ) {
-            RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
-            content.setXml( item.getContent() );
-            asset.setContent( content );
-        } else {
-            // we are very fault tolerant
-            RuleFlowContentModel content = new RuleFlowContentModel();
-            content.setXml( item.getContent() );
-            asset.setContent( content );
-        }
+    	RuleFlowContentModel content = new RuleFlowContentModel();
+        content.setXml( item.getContent() );
+        asset.setContent( content );
     }
 
     protected RuleFlowProcess readProcess(InputStream is) {
