@@ -876,7 +876,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
           
           <example>
             <title>Retrieving package versions as an Atom Feed</title>
-            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersionsSampleCode.java" parse="text" /></programlisting>
           </example>
           <example>
             <title>Sample message returned from server</title>          
