@@ -31,8 +31,10 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SessionExpiredException;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
@@ -590,6 +592,24 @@ public class PackageBuilderWidget extends Composite {
                                     refreshCmd.execute();
                                 }
                                 LoadingPopup.close();
+                            }
+                            public void onFailure(Throwable t) {
+                                LoadingPopup.close();
+                                if (t instanceof SessionExpiredException) {
+                                    showSessionExpiry();
+                                } else if (t instanceof DetailedSerializationException) {
+                                	if(((DetailedSerializationException)t).getMessage().contains("Your package has not been built since last change")) {
+                                		ErrorPopup.showMessage(constants.PackageHadNotBeenBuiltWarning());
+                                	} else {
+                                        ErrorPopup.showMessage((DetailedSerializationException) t);
+                                	}
+                                } else {
+                                    String message = t.getMessage();
+                                    if (t.getMessage()!=null && t.getMessage().trim().equals("0")){
+                                        message = ((Constants) GWT.create(Constants.class)).CommunicationError();
+                                    }
+                                    ErrorPopup.showMessage(message);
+                                }
                             }
                         });
             }

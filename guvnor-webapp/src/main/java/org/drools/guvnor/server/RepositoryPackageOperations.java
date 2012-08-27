@@ -34,6 +34,8 @@ import java.util.StringTokenizer;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -43,6 +45,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
@@ -484,10 +487,13 @@ public class RepositoryPackageOperations {
     public void createPackageSnapshot(String packageName,
                                          String snapshotName,
                                          boolean replaceExisting,
-                                         String comment) {
+                                         String comment) throws SerializationException {
 
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
-
+        PackageItem p = repository.loadPackage(packageName);
+        if (!p.isBinaryUpToDate()) {
+        	throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
+        }
         if ( replaceExisting ) {
             if (getRulesRepository().containsSnapshot(packageName, snapshotName)) {
                 getRulesRepository().removePackageSnapshot( packageName,

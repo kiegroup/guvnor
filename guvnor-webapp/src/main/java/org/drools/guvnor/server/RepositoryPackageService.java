@@ -357,7 +357,7 @@ public class RepositoryPackageService
     public void createPackageSnapshot(String packageName,
                                       String snapshotName,
                                       boolean replaceExisting,
-                                      String comment) {
+                                      String comment) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         repositoryPackageOperations.createPackageSnapshot( packageName,
                 snapshotName,

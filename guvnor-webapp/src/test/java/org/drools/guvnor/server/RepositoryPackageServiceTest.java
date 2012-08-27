@@ -115,6 +115,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
+        repositoryPackageService.buildPackage(packageUuid, true);
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "testSnapshotDiff",
                                                         "FIRST",
@@ -142,7 +143,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                    AssetFormats.DRL );
 
         repositoryAssetService.unArchiveAsset( restoredRuleUuid );
-
+        repositoryPackageService.buildPackage(packageUuid, true);
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createPackageSnapshot( "testSnapshotDiff",
                                                         "SECOND",
@@ -379,7 +380,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   "snapshotTesting",
                                                   "y" );
-        repositoryPackageService.createPackage( "testSnapshot",
+        String puuid = repositoryPackageService.createPackage( "testSnapshot",
                                                 "d",
                                                 "package" );
         @SuppressWarnings("unused")
@@ -388,7 +389,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                           "snapshotTesting",
                                           "testSnapshot",
                                           AssetFormats.DRL );
-
+        repositoryPackageService.buildPackage(puuid, true);
         repositoryPackageService.createPackageSnapshot( "testSnapshot",
                                                         "X",
                                                         false,
@@ -674,7 +675,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         String uuid = it.getUUID();
         it.updateCoverage( "xyz" );
         it.updateExternalURI( "ext" );
-        DroolsHeader.updateDroolsHeader( "header",
+        DroolsHeader.updateDroolsHeader( "package com.test",
                                                   it );
         impl.getRulesRepository().save();
 
@@ -683,7 +684,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       data.getName() );
-        assertEquals( "header",
+        assertEquals( "package com.test",
                       data.getHeader() );
         assertEquals( "ext",
                       data.getExternalURI() );
@@ -695,7 +696,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         Date original = data.getLastModified();
 
         Thread.sleep( 100 );
-
+        repositoryPackageService.buildPackage(uuid, true);
         repositoryPackageService.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                         "TEST SNAP 2.0",
                                                         false,
@@ -880,7 +881,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                        "snapshotDiffTestingCategory",
                                                        "snapshotDiffTestingPackage",
                                                        AssetFormats.DRL );
-
+        repositoryPackageService.buildPackage(packageUuid, true);
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
                                                         "FIRST",
@@ -914,6 +915,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryAssetService.unArchiveAsset( restoredRuleUuid );
 
         // Create a snapshot called SECOND for the package
+        repositoryPackageService.buildPackage(packageUuid, true);
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
                                                         "SECOND",
                                                         false,
@@ -1008,6 +1010,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                        "snapshotDiffTestingCategory",
                                                        "snapshotDiffTestingPackage",
                                                        AssetFormats.DRL );
+        repositoryPackageService.buildPackage(packageUuid, true);
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
@@ -1042,6 +1045,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryAssetService.unArchiveAsset( restoredRuleUuid );
 
         // Create a snapshot called SECOND for the package
+        repositoryPackageService.buildPackage(packageUuid, true);
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
                                                         "SECOND",
                                                         false,

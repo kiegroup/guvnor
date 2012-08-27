@@ -2527,4 +2527,6 @@ public interface Constants
 
     String CannotDeleteADeclarationThatIsASuperType();
     
+    String PackageHadNotBeenBuiltWarning();
+    
 }

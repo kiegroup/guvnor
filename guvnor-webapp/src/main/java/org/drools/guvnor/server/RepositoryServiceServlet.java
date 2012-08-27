@@ -272,7 +272,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void createPackageSnapshot(java.lang.String p0,
                                       java.lang.String p1,
                                       boolean p2,
-                                      java.lang.String p3) {
+                                      java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
         getPackageService().createPackageSnapshot( p0,
                 p1,
                 p2,

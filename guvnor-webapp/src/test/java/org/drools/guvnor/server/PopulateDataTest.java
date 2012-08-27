@@ -64,12 +64,15 @@ public class PopulateDataTest extends GuvnorTestBase {
 
         createSomeRules( serv,
                          repositoryAssetService );
-
+        
+        PackageItem pkg = serv.getRulesRepository().loadPackage( "com.billasurf.manufacturing" );
+        repositoryPackageService.buildPackage( pkg.getUUID(),
+                true );
+        
         createPackageSnapshots( repositoryPackageService );
 
         createPermissions( serv );
 
-        PackageItem pkg = serv.getRulesRepository().loadPackage( "com.billasurf.manufacturing.plant" );
 
         repositoryPackageService.buildPackage( pkg.getUUID(),
                                                true );
@@ -142,7 +145,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     }
 
-    private void createPackageSnapshots(RepositoryPackageService serv) {
+    private void createPackageSnapshots(RepositoryPackageService serv) throws SerializationException {
         serv.createPackageSnapshot( "com.billasurf.manufacturing",
                                     "TEST",
                                     false,

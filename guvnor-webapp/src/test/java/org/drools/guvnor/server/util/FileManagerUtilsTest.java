@@ -166,6 +166,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
                                                   pkg );
         pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
+        pkg.updateBinaryUpToDate(true);
 
         assertTrue( before < uploadHelper.getLastModified( pkg.getName(),
                                                            "LATEST" ) );

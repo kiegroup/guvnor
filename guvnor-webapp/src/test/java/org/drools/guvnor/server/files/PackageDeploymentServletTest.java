@@ -291,8 +291,9 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
         RepositoryPackageService repoServiceImpl = getRepositoryPackageService();
 
-        repo.createPackage( "testScenariosURL",
+        PackageItem p = repo.createPackage( "testScenariosURL",
                             "" );
+        repoServiceImpl.buildPackage(p.getUUID(), true);
         repoServiceImpl.createPackageSnapshot( "testScenariosURL",
                                     "SNAP1",
                                     false,

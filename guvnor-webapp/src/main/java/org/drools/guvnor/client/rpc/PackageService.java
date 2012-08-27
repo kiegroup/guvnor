@@ -107,7 +107,7 @@ public interface PackageService
     public void createPackageSnapshot(String packageName,
                                       String snapshotName,
                                       boolean replaceExisting,
-                                      String comment);
+                                      String comment) throws SerializationException;
 
     /**
      * This alters an existing snapshot, it can be used to copy or delete it.

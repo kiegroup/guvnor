@@ -289,7 +289,7 @@ public class RepositoryPackageOperationsTest {
     }
 
     @Test
-    public void testCreatePackageSnapshotAndReplacingExisting() {
+    public void testCreatePackageSnapshotAndReplacingExisting() throws SerializationException {
         initSession();
         final String packageName = "packageName";
         final String snapshotName = "snapshotName";
@@ -298,8 +298,14 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackageSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadPackageSnapshot( packageName,
+                snapshotName ) ).thenReturn( packageItem );
         when( this.rulesRepository.containsSnapshot( packageName,
-                                                        snapshotName ) ).thenReturn( true );
+
+                snapshotName ) ).thenReturn( true );
+
+        when( this.rulesRepository.loadPackage( packageName) ).thenReturn( packageItem );
+        when( packageItem.isBinaryUpToDate(  )).thenReturn( true );
         this.repositoryPackageOperations.createPackageSnapshot( packageName,
                                                                 snapshotName,
                                                                 true,
@@ -313,7 +319,7 @@ public class RepositoryPackageOperationsTest {
     }
 
     @Test
-    public void testCreatePackageSnapshotAndNotReplacingExisting() {
+    public void testCreatePackageSnapshotAndNotReplacingExisting() throws SerializationException {
         initSession();
         final String packageName = "packageName";
         final String snapshotName = "snapshotName";
@@ -322,10 +328,13 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackageSnapshot( packageName,
                                                         snapshotName ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadPackage( packageName) ).thenReturn( packageItem );
+        when( packageItem.isBinaryUpToDate(  )).thenReturn( true );        
         this.repositoryPackageOperations.createPackageSnapshot( packageName,
                                                                 snapshotName,
                                                                 false,
                                                                 comment );
+
         verify( this.rulesRepository,
                 never() ).removePackageSnapshot( packageName,
                                                               snapshotName );
