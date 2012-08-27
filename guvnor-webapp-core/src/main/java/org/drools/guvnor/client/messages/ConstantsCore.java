@@ -2651,4 +2651,8 @@ public interface ConstantsCore
     String Information();
 
     String AttentionNeeded();
+
+    String NewItem();
+
+    String AddNewCategory();
 }

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -240,7 +241,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
 
                 for ( int i = 0; i < permList.size(); i++ ) {
                     final String p = permList.get( i );
-                    ImageButton del = new ImageButton( ImagesCore.INSTANCE.itemImages().deleteItemSmall(),
+                    ImageButton del = new ImageButton( GuvnorImages.DeleteItemSmall(),
                                                        ConstantsCore.INSTANCE.RemovePermission(),
                                                        new ClickHandler() {
                                                            public void onClick(ClickEvent w) {
@@ -269,7 +270,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
         }
 
         // now to be able to add...
-        ImageButton newPermission = new ImageButton( ImagesCore.INSTANCE.itemImages().newItem(),
+        ImageButton newPermission = new ImageButton( GuvnorImages.NewItem(),
                                                      ConstantsCore.INSTANCE.AddANewPermission(),
                                                      createClickHandlerForNewPersmissionImageButton( perms,
                                                                                                      vp ) );

@@ -22,6 +22,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -77,7 +78,8 @@ public class AssetCategoryEditor extends DirtyableComposite {
 
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
-        Image add = new ImageButton( images.itemImages().newItem() );
+        Image add = GuvnorImages.INSTANCE.NewItem();
+        add.setAltText(ConstantsCore.AddNewCategory());
         add.setTitle( constants.AddANewCategory() );
 
         add.addClickHandler( new ClickHandler() {
