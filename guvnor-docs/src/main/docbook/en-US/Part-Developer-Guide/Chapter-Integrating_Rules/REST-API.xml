@@ -29,7 +29,7 @@
     any coherent and meaningful concept that may be addressed. A
     representation of a resource is typically a document that captures the
     current or intended state of a resource. The REST protocol is often
-    considered as a light protocol versus SOAP</para>
+    considered as a light protocol versus SOAP.</para>
   </section>
 
   <section>
@@ -39,7 +39,7 @@
     around accessing rule assets by their names and packages and the second 
     accessing rule assets by categories.</para>
 
-    <para>A rule asset represents all elements that can be stored and handled
+    <para>A rule asset represents any element that can be stored and handled
     in Guvnor : a guided rule, a web decision table, a test scenario,
     etc.</para>
 
@@ -136,7 +136,7 @@
               <entry>application/atom+xml</entry>
 
               <entry>Creates a package from an Atom Entry. Returns the newly
-              created package in Atom Entry format</entry>
+              created package in Atom Entry format. Following info are required from the input Atom Entry: package name, package description.</entry>
             </row>
 
             <row>
@@ -272,7 +272,20 @@
               <entry>Updates the metadata of package {packageName} with a
               given Atom Entry.</entry>
             </row>
+            
+            <row>
+              <entry>/packages/{packageName}</entry>
 
+              <entry>PUT</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>none</entry>
+
+              <entry>Updates the metadata of package {packageName} with a
+              given JSON or XML.</entry>
+            </row>
+            
             <row>
               <entry>/packages/{packageName}</entry>
 
@@ -393,7 +406,7 @@
 
               <entry>Creates a binary asset in package {packageName} from the
               input stream. The value of Slug header is used to indicate the
-              name of the asset. This returns HTTP 500 error is the slug
+              name of the asset. This returns HTTP 500 error if the Slug
               header is missing.</entry>
             </row>
 
@@ -567,6 +580,20 @@
           </imageobject>
         </mediaobject>
       </figure>
+      
+
+      <figure>
+        <title>UML representation of the Asset Object</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
     </section>
     
     <section>
@@ -682,17 +709,6 @@
         </tgroup>
       </table>
 
-      <figure>
-        <title>UML representation of the Asset Object</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
-                       format="PNG" xml:base="../../"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
     </section>
 
     
@@ -701,7 +717,7 @@
   <section>
     <title>Source code Example</title>
 
-    <para>We are giving a list of example to help using the Guvnor's Rest
+    <para>We are giving a list of examples to help using the Guvnor's Rest
     API</para>
 
     <section>
@@ -806,5 +822,83 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
 &lt;/project&gt;        </programlisting>
       </example>
     </section>
+    
+    <section>
+        <title>Retriving package list, package metadata, package source and binary, package version info etc using Atom</title>
+        <para>In this example we are using Apache Abdera to help parsing and creating Atom Entry and Feed.</para>   
+          
+        <section>
+          <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+          <example>
+            <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageListSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+          <para>The client can navigate to specific packages using the package URL retrieved from package list.</para>   
+          
+          <example>
+            <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageMetadataSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageMetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the source code of the specified package as plain text</title>           
+          <example>
+            <title>Retrieving the source code of the specified package as plain text</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageSourceSampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the compiled binary of the specified package as binary stream</title>
+          <para>Retrieving the compiled binary of the specified package as a binary stream. If the package has not been compiled yet or its binary is not up to date, Guvnor will compile the package first.</para>   
+          
+          <example>
+            <title>Retrieving the compiled binary of the specified package as binary stream</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageBinarySampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>          
+        
+        <section>
+          <title>Retrieving package versions as an Atom Feed</title>
+          
+          <example>
+            <title>Retrieving package versions as an Atom Feed</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersionsSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersionsSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+         
+        <section>
+          <title>Retrieving package metadata with specified version as an Atom Entry</title>
+          <para>Retrieving package metadata with specified version as an Atom Entry.</para>   
+          
+          <example>
+            <title>Retrieving package metadata with specified version as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersion5MetadataSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersion5MetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+                                    
+    </section>
+
   </section>
 </section>
