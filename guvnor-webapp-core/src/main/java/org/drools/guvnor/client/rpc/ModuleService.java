@@ -94,11 +94,18 @@ public interface ModuleService
      * @param replaceExisting Replace the existing one (must be true to replace an existing
      *                        snapshot of the same name).
      * @param comment         A comment to be added to the copied one.
-     */
-    public void createModuleSnapshot(String moduleName,
-                                      String snapshotName,
-                                      boolean replaceExisting,
-                                      String comment);
+     * @throws SerializationException 
+    */
+   public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment) throws SerializationException;
+   
+   public void createModuleSnapshot(String moduleName,
+           String snapshotName,
+           boolean replaceExisting,
+           String comment,
+           boolean checkIsBinaryUpToDate) throws SerializationException;
 
     /**
      * This alters an existing snapshot, it can be used to copy or delete it.

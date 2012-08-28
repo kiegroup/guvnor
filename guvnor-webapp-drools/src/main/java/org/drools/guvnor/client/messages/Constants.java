@@ -2793,4 +2793,6 @@ public interface Constants
     String Warning();
 
     String PackageBuilder();
+    
+    String PackageHadNotBeenBuiltWarning();
 }

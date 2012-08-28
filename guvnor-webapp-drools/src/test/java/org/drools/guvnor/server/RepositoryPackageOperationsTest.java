@@ -280,7 +280,7 @@ public class RepositoryPackageOperationsTest {
     }
 
     @Test
-    public void testCreatePackageSnapshotAndReplacingExisting() {
+    public void testCreatePackageSnapshotAndReplacingExisting() throws SerializationException {
         initSession();
         final String packageName = "packageName";
         final String snapshotName = "snapshotName";
@@ -304,7 +304,7 @@ public class RepositoryPackageOperationsTest {
     }
 
     @Test
-    public void testCreatePackageSnapshotAndNotReplacingExisting() {
+    public void testCreatePackageSnapshotAndNotReplacingExisting() throws SerializationException {
         initSession();
         final String packageName = "packageName";
         final String snapshotName = "snapshotName";

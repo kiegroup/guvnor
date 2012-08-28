@@ -139,7 +139,7 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
 
     }
 
-    private void createPackageSnapshots() {
+    private void createPackageSnapshots() throws SerializationException {
         repositoryPackageService.createModuleSnapshot( "com.billasurf.manufacturing",
                                                        "TEST",
                                                        false,

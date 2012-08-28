@@ -585,6 +585,7 @@ public class PackageBuilderWidget extends Composite {
                     name,
                     replace,
                     comment.getText(),
+                    true,
                     new GenericCallback<java.lang.Void>() {
                         public void onSuccess(Void v) {
                             Window.alert(Constants.INSTANCE.TheSnapshotCalled0WasSuccessfullyCreated(name));
@@ -593,6 +594,24 @@ public class PackageBuilderWidget extends Composite {
                                 refreshCmd.execute();
                             }
                             LoadingPopup.close();
+                        }
+                        public void onFailure(Throwable t) {
+                            LoadingPopup.close();
+                            if (t instanceof SessionExpiredException) {
+                                showSessionExpiry();
+                            } else if (t instanceof DetailedSerializationException) {
+                            	if(((DetailedSerializationException)t).getMessage().contains("Your package has not been built since last change")) {
+                            		ErrorPopup.showMessage(Constants.INSTANCE.PackageHadNotBeenBuiltWarning());
+                            	} else {
+                                    ErrorPopup.showMessage((DetailedSerializationException) t);
+                            	}
+                            } else {
+                                String message = t.getMessage();
+                                if (t.getMessage()!=null && t.getMessage().trim().equals("0")){
+                                    message = ((Constants) GWT.create(Constants.class)).CommunicationError();
+                                }
+                                ErrorPopup.showMessage(message);
+                            }
                         }
                     });
             }
