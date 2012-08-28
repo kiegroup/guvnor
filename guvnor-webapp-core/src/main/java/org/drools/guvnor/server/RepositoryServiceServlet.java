@@ -213,13 +213,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void createModuleSnapshot(java.lang.String p0,
                                       java.lang.String p1,
                                       boolean p2,
-                                      java.lang.String p3) {
+                                      java.lang.String p3) throws SerializationException {
         moduleService.createModuleSnapshot( p0,
                 p1,
                 p2,
                 p3 );
     }
 
+	public void createModuleSnapshot(java.lang.String p0, java.lang.String p1,
+			boolean p2, java.lang.String p3, boolean p4)
+			throws SerializationException {
+		moduleService.createModuleSnapshot(p0, p1, p2, p3, p4);
+	}
+    
     public void copyOrRemoveSnapshot(java.lang.String p0,
                                      java.lang.String p1,
                                      boolean p2,

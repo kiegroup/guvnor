@@ -2703,4 +2703,6 @@ public interface Constants
     String EnableAuthentication();
 
     String DownloadWar();
+    
+    String PackageHadNotBeenBuiltWarning();
 }

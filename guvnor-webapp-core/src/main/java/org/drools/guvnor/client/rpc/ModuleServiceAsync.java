@@ -52,4 +52,5 @@ public interface ModuleServiceAsync {
     public void updateDependency(String uuid, String dependencyPath, AsyncCallback cb);
     public void getDependencies(String uuid, AsyncCallback<java.lang.String[]> cb);
     public void loadSnapshotInfo(String packageName, String snapshotName, AsyncCallback<SnapshotInfo> async);
+    public void createModuleSnapshot(java.lang.String p0, java.lang.String p1,	boolean p2, java.lang.String p3, boolean p4, AsyncCallback cb);
 }

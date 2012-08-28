@@ -53,7 +53,8 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
 
     public void createModuleSnapshot(String p0, String p1, boolean p2, String p3, AsyncCallback cb) {
     }
-
+    public void createModuleSnapshot(String p0, String p1, boolean p2, String p3, boolean p4, AsyncCallback cb) {
+    }
     public void copyOrRemoveSnapshot(String p0, String p1, boolean p2, String p3, AsyncCallback cb) {
     }
 

@@ -347,15 +347,31 @@ public class RepositoryModuleService
     public void createModuleSnapshot(String moduleName,
                                      String snapshotName,
                                      boolean replaceExisting,
-                                     String comment) {
+                                     String comment) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
         repositoryModuleOperations.createModuleSnapshot(moduleName,
                 snapshotName,
                 replaceExisting,
-                comment);
+                comment,
+                false);
 
     }
-
+    
+    @WebRemote
+    @LoggedIn
+    public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment,
+                                     boolean checkIsBinaryUpToDate) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
+        repositoryModuleOperations.createModuleSnapshot(moduleName,
+                snapshotName,
+                replaceExisting,
+                comment,
+                checkIsBinaryUpToDate);
+    }
+    
     @WebRemote
     @LoggedIn
     public void copyOrRemoveSnapshot(String moduleName,

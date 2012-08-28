@@ -307,6 +307,5 @@ public class ModulesTreeItemTest {
         public void listModules(AsyncCallback<Module[]> cb) {
             cb.onSuccess( packageConfigDatas );
         }
-
     }
 }

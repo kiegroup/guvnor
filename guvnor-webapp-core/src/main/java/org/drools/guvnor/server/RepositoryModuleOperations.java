@@ -471,14 +471,27 @@ public class RepositoryModuleOperations {
         }
         return res;
     }
-
+    
+    public void createModuleSnapshot(String moduleName,
+            String snapshotName,
+            boolean replaceExisting,
+            String comment) throws SerializationException {
+    	createModuleSnapshot(moduleName, snapshotName, replaceExisting, comment, false);
+    }
+    
     public void createModuleSnapshot(String moduleName,
                                          String snapshotName,
                                          boolean replaceExisting,
-                                         String comment) {
+                                         String comment, 
+                                         boolean checkIsBinaryUpToDate) throws SerializationException {
 
         log.info( "USER:" + getCurrentUserName() + " CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
-
+        
+        ModuleItem p = rulesRepository.loadModule(moduleName);
+        if (checkIsBinaryUpToDate && !p.isBinaryUpToDate()) {
+        	throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
+        }
+        
         if ( replaceExisting ) {
             if(rulesRepository.containsSnapshot(moduleName, snapshotName)) {
                 rulesRepository.removeModuleSnapshot( moduleName, snapshotName );
