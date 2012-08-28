@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeUri;
 //import com.google.gwt.safehtml.shared.SafeUri;
 
 public class ComparableImageResource
@@ -54,6 +55,10 @@ public class ComparableImageResource
 
     public String getURL() {
         return this.imageResource.getURL();
+    }
+
+    public SafeUri getSafeUri() {
+        return this.imageResource.getSafeUri();
     }
 
     public int getWidth() {
