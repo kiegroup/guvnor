@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import com.google.gwt.user.client.Command;
 
@@ -44,10 +45,7 @@ public class SuggestionCompletionCacheTest {
     @Test
     public void testCache() throws Exception {
 
-        //need to proxy out the constants.
-        Constants cs = (Constants) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {Constants.class}, new ConstantsProxy());
-
-        final SuggestionCompletionCache cache = new SuggestionCompletionCache(cs) {
+        final SuggestionCompletionCache cache = new SuggestionCompletionCache() {
 
             public void loadPackage(String packageName,
                              Command command) {
@@ -85,16 +83,6 @@ public class SuggestionCompletionCacheTest {
 
         });
 
-
-
-
-    }
-
-    class ConstantsProxy implements InvocationHandler {
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            return "testing";
-        }
     }
 
 }

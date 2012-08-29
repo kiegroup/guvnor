@@ -43,7 +43,6 @@ public class SuggestionCompletionCache {
     private static SuggestionCompletionCache INSTANCE = null;
 
     Map<String, SuggestionCompletionEngine> cache = new HashMap<String, SuggestionCompletionEngine>();
-    private final Constants constants;
 
 
     public static SuggestionCompletionCache getInstance() {
@@ -53,17 +52,8 @@ public class SuggestionCompletionCache {
         return INSTANCE;
     }
 
-    private SuggestionCompletionCache() {
-        constants = GWT.create(Constants.class);
+    SuggestionCompletionCache() {
     }
-
-    /**
-     * This should only be used for tests !
-     */
-    SuggestionCompletionCache(Constants cs) {
-        constants = cs;
-    }
-
 
     /**
      * This will do the action, after refreshing the cache if necessary.
@@ -81,7 +71,7 @@ public class SuggestionCompletionCache {
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
         SuggestionCompletionEngine eng = cache.get( packageName );
         if (eng == null) {
-            ErrorPopup.showMessage(constants.UnableToGetContentAssistanceForThisRule());
+            ErrorPopup.showMessage(Constants.INSTANCE.UnableToGetContentAssistanceForThisRule());
             return null;
         }
         return eng;
@@ -90,7 +80,7 @@ public class SuggestionCompletionCache {
 
     public void loadPackage(final String packageName, final Command command) {
 
-        LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
+        LoadingPopup.showMessage(Constants.INSTANCE.InitialisingInfoFor0PleaseWait(packageName));
 
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
@@ -100,7 +90,7 @@ public class SuggestionCompletionCache {
 
             public void onFailure(Throwable t) {
                 LoadingPopup.close();
-                ErrorPopup.showMessage(constants.UnableToValidatePackageForSCE(packageName));
+                ErrorPopup.showMessage(Constants.INSTANCE.UnableToValidatePackageForSCE(packageName));
                 command.execute();
             }
         });
