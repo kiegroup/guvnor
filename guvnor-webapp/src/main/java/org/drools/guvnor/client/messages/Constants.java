@@ -2535,4 +2535,28 @@ public interface Constants
     String NewItem();
 
     String Trash();
+
+    String Wizard();
+
+    String Warning();
+
+    String Snapshot();
+
+    String Home();
+
+    String RuleAsset();
+
+    String PackageBuilder();
+
+    String NewItemBelow();
+
+    String SuffleDown();
+
+    String SuffleUp();
+
+    String EditDisabled();
+
+    String AddConnective();
+
+    String NewItemDisabled();
 }
