@@ -66,6 +66,7 @@ public class EnumDropDown extends ListBox
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if ( dropData != null && dropData.fixedList == null && dropData.queryExpression != null ) {
+
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
                     LoadingPopup.showMessage( constants.RefreshingList() );
@@ -142,18 +143,21 @@ public class EnumDropDown extends ListBox
 
         if ( !selected ) {
             setSelectedIndex( 0 );
-
-                //Schedule notification after GWT has finished tying everything together as not all 
-                //Event Handlers have been set-up by consumers of this class at Construction time
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-
-                public void execute() {
-                    valueChangedCommand.valueChanged( getItemText( 0 ),
-                                                      getValue( 0 ) );
-                }
-
-            });
-            
         }
+
+        //Schedule notification after GWT has finished tying everything together as not all 
+        //Event Handlers have been set-up by consumers of this class at Construction time
+        Scheduler.get().scheduleFinally( new ScheduledCommand() {
+
+            public void execute() {
+                final int selectedIndex = getSelectedIndex();
+                if ( selectedIndex >= 0 ) {
+                    valueChangedCommand.valueChanged( getItemText( selectedIndex ),
+                                                      getValue( selectedIndex ) );
+                }
+            }
+
+        } );
+
     }
 }

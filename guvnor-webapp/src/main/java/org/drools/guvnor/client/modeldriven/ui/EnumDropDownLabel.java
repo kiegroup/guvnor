@@ -149,7 +149,8 @@ public class EnumDropDownLabel extends Composite {
     }
 
     private Label createTextLabel() {
-        Label label = new Label();
+        final String currentValue = constraint.getValue();
+        final Label label = new Label( currentValue == null ? "" : currentValue );
         label.setStyleName( "form-field" );
         if ( enabled ) {
             label.addClickHandler( new ClickHandler() {
