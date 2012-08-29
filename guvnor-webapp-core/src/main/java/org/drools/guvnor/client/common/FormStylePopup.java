@@ -62,7 +62,7 @@ public class FormStylePopup extends Popup {
     }
 
     public int addAttribute(String label,
-                             IsWidget wid) {
+                            Widget wid) {
         return form.addAttribute( label,
                                   wid );
     }

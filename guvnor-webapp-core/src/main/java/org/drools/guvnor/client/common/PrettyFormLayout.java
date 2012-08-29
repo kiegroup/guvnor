@@ -116,7 +116,7 @@ public class PrettyFormLayout extends Composite {
     }
 
     public int addAttribute(String lbl, final Widget categories) {
-    	String id = DOM.createUniqueId()+"_";
+    	String id = DOM.createUniqueId();
     	categories.getElement().setAttribute("aria-labelledby", id);
     	categories.getElement().setAttribute("aria-required", String.valueOf(true));
     	categories.getElement().setTabIndex(0);

@@ -64,11 +64,17 @@ public class FormStyleLayout extends Composite {
      * @return Index of row created
      */
     public int addAttribute(String lbl,
-                            IsWidget editor) {
-    	String id = DOM.createUniqueId()+"_";
-    	editor.asWidget().getElement().setAttribute("aria-labelledby", id);
-    	editor.asWidget().getElement().setAttribute("aria-required", String.valueOf(true));
-    	editor.asWidget().getElement().setTabIndex(0);
+                            Widget editor) {
+    	String id = DOM.createUniqueId();
+    	if(editor instanceof CheckBox) {
+    	    editor.getElement().getFirstChildElement().setAttribute("aria-labelledby", id);
+    	    editor.getElement().getFirstChildElement().setAttribute("aria-required", String.valueOf(true));
+    	    editor.getElement().getFirstChildElement().setTabIndex(0);
+    	} else {
+        	editor.getElement().setAttribute("aria-labelledby", id);
+        	editor.getElement().setAttribute("aria-required", String.valueOf(true));
+        	editor.getElement().setTabIndex(0);    		
+    	}
 
         int row = numInLayout;
         HTML label = new HTML( "<div class='form-field' id=" + id + ">" + lbl + "</div>" );
