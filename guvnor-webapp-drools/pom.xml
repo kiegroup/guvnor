@@ -467,6 +467,14 @@
       <!-- HACK to remove it from the runtime classpath -->
     </dependency>
 
+    <!-- GWT 2.5 RC1 bug #7527, moved com/google/gwt/core/client/GWTBridge to com/google/gwt/core/shared/GWTBridge -->
+    <dependency>
+      <groupId>com.google.web.bindery</groupId>
+      <artifactId>requestfactory-server</artifactId>
+      <version>${gwt.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    
     <!-- used by service config to generate a war file -->
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
