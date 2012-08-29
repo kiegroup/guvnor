@@ -366,7 +366,7 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = DroolsGuvnorImages.INSTANCE.NewItem();
+            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
             remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
@@ -565,7 +565,7 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = DroolsGuvnorImages.INSTANCE.NewItem();
+        final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
