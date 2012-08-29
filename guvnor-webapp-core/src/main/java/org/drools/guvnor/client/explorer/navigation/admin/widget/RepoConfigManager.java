@@ -67,11 +67,11 @@ public class RepoConfigManager extends Composite {
     private Hidden                 hiddenRepoConfig   = new Hidden( "repoConfig" );
 
     @SuppressWarnings("deprecation")
-    public RepoConfigManager() {
+    public RepoConfigManager() {     
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.config(),
+        form.addHeader( images.configLarge(),
                         new HTML( constants.ManageRepositoryConfig() ) );
-
+        
         DockPanel dock = new DockPanel();
         dock.setSpacing( 4 );
         dock.setHorizontalAlignment( DockPanel.ALIGN_CENTER );

@@ -142,7 +142,10 @@ public interface ImagesCore
 
     @Source("images/config.png")
     ImageResource config();
-
+    
+    @Source("images/config_large.png")
+    ImageResource configLarge();
+    
     @Source("images/close.gif")
     ImageResource close();
 
