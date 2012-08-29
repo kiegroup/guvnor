@@ -34,27 +34,43 @@ public class FactTypeBrowser extends Composite {
 
     public FactTypeBrowser(SuggestionCompletionEngine sce,
                            final ClickEvent ev) {
-        Tree tree = new Tree();
+        final Tree tree = new Tree();
 
         final VerticalPanel panel = new VerticalPanel();
 
-        HorizontalPanel hp = new HorizontalPanel();
+        final HorizontalPanel hpFactsAndHide = new HorizontalPanel();
+
+        final HorizontalPanel hpShow = new HorizontalPanel();
 
         Constants constants = GWT.create(Constants.class);
-        hp.add(new SmallLabel(constants.FactTypes()));
-        hp.add(new ClickableLabel(constants.hide(),
+
+        hpShow.add(new ClickableLabel(constants.ShowFactTypes(),
                 new ClickHandler() {
                     public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
-                        panel.setVisible(false);
+                        hpShow.setVisible(false);
+                        hpFactsAndHide.setVisible(true);
+                        tree.setVisible(true);
                     }
                 }));
-        panel.add(hp);
+        panel.add(hpShow);
+
+
+        hpFactsAndHide.add(new SmallLabel(constants.FactTypes()));
+        hpFactsAndHide.add(new ClickableLabel(constants.hide(),
+                new ClickHandler() {
+                    public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+                        hpShow.setVisible(true);
+                        hpFactsAndHide.setVisible(false);
+                        tree.setVisible(false);
+                    }
+                }));
+        panel.add(hpFactsAndHide);
 
         panel.add(tree);
         if (sce.getFactTypes() != null) {
             for (String type : sce.getFactTypes()) {
                 TreeItem it = new TreeItem();
-                it.setHTML(AbstractImagePrototype.create(images.classImage()).getHTML() 
+                it.setHTML(AbstractImagePrototype.create(images.classImage()).getHTML()
                         + "<small>"
                         + type + "</small>");
                 it.setUserObject(type + "( )");
@@ -64,7 +80,7 @@ public class FactTypeBrowser extends Composite {
                 if (fields != null) {
                     for (String field : fields) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML(AbstractImagePrototype.create(images.field()).getHTML() 
+                        fi.setHTML(AbstractImagePrototype.create(images.field()).getHTML()
                                 + "<small>"
                                 + field + "</small>");
                         fi.setUserObject(field);
@@ -84,6 +100,10 @@ public class FactTypeBrowser extends Composite {
                 }
             }
         });
+
+        tree.setVisible(false);
+        hpFactsAndHide.setVisible(false);
+        hpShow.setVisible(true);
 
         initWidget(panel);
     }
