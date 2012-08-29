@@ -587,6 +587,8 @@ public interface Constants
 
     String FactTypes();
 
+    String ShowFactTypes();
+
     String Cancel();
 
     String CreateANewFactTemplate();

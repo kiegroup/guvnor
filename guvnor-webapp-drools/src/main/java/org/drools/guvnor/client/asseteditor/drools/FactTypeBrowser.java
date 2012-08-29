@@ -19,8 +19,12 @@ package org.drools.guvnor.client.asseteditor.drools;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.*;
-
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
@@ -30,21 +34,34 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 public class FactTypeBrowser extends Composite {
 
     public FactTypeBrowser(SuggestionCompletionEngine sce,
-                           final ClickEvent ev) {
-        Tree tree = new Tree();
+            final ClickEvent ev) {
+        final Tree tree = new Tree();
 
         final VerticalPanel panel = new VerticalPanel();
 
-        HorizontalPanel hp = new HorizontalPanel();
+        final HorizontalPanel hpFactsAndHide = new HorizontalPanel();
+        final HorizontalPanel hpShow = new HorizontalPanel();
 
-        hp.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
-        hp.add(new ClickableLabel(Constants.INSTANCE.hide(),
+        hpShow.add(new ClickableLabel(Constants.INSTANCE.ShowFactTypes(),
                 new ClickHandler() {
                     public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
-                        panel.setVisible(false);
+                        hpShow.setVisible(false);
+                        hpFactsAndHide.setVisible(true);
+                        tree.setVisible(true);
                     }
                 }));
-        panel.add(hp);
+        panel.add(hpShow);
+
+        hpFactsAndHide.add(new SmallLabel(Constants.INSTANCE.FactTypes()));
+        hpFactsAndHide.add(new ClickableLabel(Constants.INSTANCE.hide(),
+                new ClickHandler() {
+                    public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+                        hpShow.setVisible(true);
+                        hpFactsAndHide.setVisible(false);
+                        tree.setVisible(false);
+                    }
+                }));
+        panel.add(hpFactsAndHide);
 
         panel.add(tree);
         if (sce.getFactTypes() != null) {
@@ -81,10 +98,15 @@ public class FactTypeBrowser extends Composite {
             }
         });
 
+        tree.setVisible(false);
+        hpFactsAndHide.setVisible(false);
+        hpShow.setVisible(true);
+
         initWidget(panel);
     }
 
     public static interface ClickEvent {
+
         public void selected(String text);
     }
 
