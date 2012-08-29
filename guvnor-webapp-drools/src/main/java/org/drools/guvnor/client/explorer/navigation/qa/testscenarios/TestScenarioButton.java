@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -31,7 +30,6 @@ import org.drools.ide.common.client.modeldriven.testing.Fixture;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ImageResource;
 
 abstract class TestScenarioButton extends ImageButton {
 
@@ -40,7 +38,7 @@ abstract class TestScenarioButton extends ImageButton {
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
     protected final ExecutionTrace             previousEx;
 
-    public TestScenarioButton(ImageResource img,
+    public TestScenarioButton(Image img,
                               String tooltip,
                               final ExecutionTrace previousEx,
                               final Scenario scenario,

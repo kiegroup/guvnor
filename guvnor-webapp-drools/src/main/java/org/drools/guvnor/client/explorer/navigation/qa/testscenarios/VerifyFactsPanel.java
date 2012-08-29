@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyFactWidget;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -70,7 +71,7 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final VerifyFact verifyFact) {
-            super( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
                    Constants.INSTANCE.DeleteTheExpectationForThisFact() );
 
             addClickHandler( new ClickHandler() {

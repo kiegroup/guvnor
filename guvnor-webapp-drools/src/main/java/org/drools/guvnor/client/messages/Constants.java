@@ -2793,6 +2793,22 @@ public interface Constants
     String Warning();
 
     String PackageBuilder();
-    
+
+    String NewItem();
+
+    String NewItemBelow();
+
+    String SuffleDown();
+
+    String SuffleUp();
+
+    String EditDisabled();
+
+    String Trash();
+
+    String AddConnective();
+
+    String NewItemDisabled();
+
     String PackageHadNotBeenBuiltWarning();
 }

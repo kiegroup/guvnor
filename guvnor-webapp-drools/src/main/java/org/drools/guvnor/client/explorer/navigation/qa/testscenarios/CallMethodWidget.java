@@ -134,7 +134,7 @@ public class CallMethodWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( mCall.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addFieldToFact() );
+            Image edit = DroolsGuvnorImages.INSTANCE.AddFieldToFact();
             edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
             edit.addClickHandler( new ClickHandler() {
@@ -276,7 +276,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
+            super( DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
                    Constants.INSTANCE.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {

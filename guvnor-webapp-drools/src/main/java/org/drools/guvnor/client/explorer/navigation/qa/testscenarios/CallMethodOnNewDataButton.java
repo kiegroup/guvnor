@@ -39,7 +39,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
                                      final Scenario scenario,
                                      final ExecutionTrace currentEx,
                                      ScenarioWidget scenarioWidget) {
-        super( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+        super( DroolsGuvnorImages.INSTANCE.NewItem(),
                Constants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,

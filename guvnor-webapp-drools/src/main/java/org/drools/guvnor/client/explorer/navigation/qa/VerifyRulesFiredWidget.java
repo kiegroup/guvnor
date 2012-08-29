@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -164,20 +165,21 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
-                                         Constants.INSTANCE.RemoveThisRuleExpectation(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
-                                                     rfl.remove( v );
-                                                     sc.removeFixture( v );
-                                                     outer.setWidget( 1,
-                                                                      0,
-                                                                      render( rfl,
-                                                                              sc ) );
-                                                 }
-                                             }
-                                         } );
+            Image del = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            del.setAltText(Constants.INSTANCE.RemoveThisRuleExpectation());
+            del.setTitle(Constants.INSTANCE.RemoveThisRuleExpectation());
+            del.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent w) {
+                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
+                        rfl.remove( v );
+                        sc.removeFixture( v );
+                        outer.setWidget( 1,
+                                0,
+                                render( rfl,
+                                        sc ) );
+                    }
+                }
+            });
 
             data.setWidget( i,
                             3,

@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -93,18 +94,16 @@ public class DSLRuleEditor extends DirtyableComposite {
 
         VerticalPanel vert = new VerticalPanel();
 
-        Image lhsOptions = new ImageButton(DroolsGuvnorImageResources.INSTANCE.newDSLPattern());
-        final String msg = Constants.INSTANCE.AddANewCondition();
-        lhsOptions.setTitle(msg);
+        Image lhsOptions = DroolsGuvnorImages.INSTANCE.NewDSLPattern();
+        lhsOptions.setTitle(Constants.INSTANCE.AddANewCondition());
         lhsOptions.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showSuggestions(conditions);
             }
         });
 
-        Image rhsOptions = new ImageButton(DroolsGuvnorImageResources.INSTANCE.newDSLAction());
-        final String msg2 = Constants.INSTANCE.AddAnAction();
-        rhsOptions.setTitle(msg2);
+        Image rhsOptions = DroolsGuvnorImages.INSTANCE.NewDSLAction();
+        rhsOptions.setTitle(Constants.INSTANCE.AddAnAction());
         rhsOptions.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showSuggestions(actions);

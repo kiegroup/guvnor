@@ -33,6 +33,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -140,8 +141,8 @@ public class ConditionPopup extends FormStylePopup {
         doPatternLabel();
 
         //Pattern selector
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                     DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        ImageButton changePattern = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+                                                     DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                                      Constants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -217,8 +218,8 @@ public class ConditionPopup extends FormStylePopup {
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                          DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        this.editField = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+                                          DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                           Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                           new ClickHandler() {
                                               public void onClick(ClickEvent w) {
@@ -234,8 +235,8 @@ public class ConditionPopup extends FormStylePopup {
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        this.editOp = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                       DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        this.editOp = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+                                       DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                        Constants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                        new ClickHandler() {
                                            public void onClick(ClickEvent w) {

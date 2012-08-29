@@ -34,6 +34,7 @@ import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -256,7 +257,7 @@ public class MetaDataWidget extends Composite {
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.setStyleName("metadata-Widget"); //NON-NLS
             horiz.add(readOnlyText(packageName));
-            Image editPackage = new ImageButton(images.edit());
+            Image editPackage = GuvnorImages.INSTANCE.Edit();
             editPackage.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     showEditPackage(packageName,

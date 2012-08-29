@@ -25,13 +25,13 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 
 import java.util.Date;
 
 public class DatePickerTextBox extends DatePicker {
     private ConstantsCore constants = GWT.create(ConstantsCore.class);
-    private static ImagesCore images = GWT.create(ImagesCore.class);
 
     public DatePickerTextBox(String selectedDate) {
         this(selectedDate,
@@ -61,7 +61,7 @@ public class DatePickerTextBox extends DatePicker {
         },
                 visualFormatFormatter);
 
-        ImageButton select = new ImageButton(images.edit());
+        ImageButton select = new ImageButton(GuvnorImages.INSTANCE.Edit());
         select.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 datePickerPopUp.setPopupPosition(textWidget.getAbsoluteLeft(),

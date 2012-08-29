@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -116,7 +117,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                              1 + col,
                              valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
             remove.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {

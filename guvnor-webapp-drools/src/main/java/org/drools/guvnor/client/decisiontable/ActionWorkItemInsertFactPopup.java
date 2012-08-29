@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -29,6 +30,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -46,13 +48,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A popup to define an Action to insert a new Fact and set one of its fields to
@@ -103,8 +98,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                     DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        ImageButton changePattern = new ImageButton( createEnabledEdit(),
+                                                     createDisabledEdit(),
                                                      Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -120,8 +115,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                 DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        ImageButton editField = new ImageButton( createEnabledEdit(),
+                                                 createDisabledEdit(),
                                                  Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {
@@ -215,6 +210,18 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         addAttribute( "",
                       apply );
 
+    }
+
+    private Image createDisabledEdit() {
+        Image disabledEdit = DroolsGuvnorImages.INSTANCE.EditDisabled();
+        disabledEdit.setAltText(Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo());
+        return disabledEdit;
+    }
+
+    private Image createEnabledEdit() {
+        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        edit.setAltText(Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo());
+        return edit;
     }
 
     private ActionWorkItemInsertFactCol52 cloneActionInsertColumn(ActionWorkItemInsertFactCol52 col) {

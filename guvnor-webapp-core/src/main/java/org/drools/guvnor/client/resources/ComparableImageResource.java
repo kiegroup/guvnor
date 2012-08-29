@@ -17,7 +17,6 @@ package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeUri;
-//import com.google.gwt.safehtml.shared.SafeUri;
 
 public class ComparableImageResource
     implements
@@ -57,10 +56,6 @@ public class ComparableImageResource
         return this.imageResource.getURL();
     }
 
-    public SafeUri getSafeUri() {
-        return this.imageResource.getSafeUri();
-    }
-
     public int getWidth() {
         return this.imageResource.getWidth();
     }
@@ -68,10 +63,10 @@ public class ComparableImageResource
     public boolean isAnimated() {
         return this.imageResource.isAnimated();
     }
-/*
+
     @Override
     public SafeUri getSafeUri() {
         return this.imageResource.getSafeUri();
-    }*/
+    }
 
 }

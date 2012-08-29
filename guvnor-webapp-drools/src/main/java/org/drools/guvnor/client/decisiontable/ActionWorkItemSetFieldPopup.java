@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
@@ -43,12 +45,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A popup to define an Action to set a field on an existing Fact to the value
@@ -99,8 +95,12 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                     DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        edit.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
+        Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
+        editDisabled.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
+        ImageButton changePattern = new ImageButton( edit,
+                                                     editDisabled,
                                                      Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -116,14 +116,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                 DroolsGuvnorImageResources.INSTANCE.editDisabled(),
-                                                 Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
-                                                 new ClickHandler() {
-                                                     public void onClick(ClickEvent w) {
-                                                         showFieldChange();
-                                                     }
-                                                 } );
+        ImageButton editField = createEditField();
         editField.setEnabled( !isReadOnly );
         field.add( editField );
         addAttribute( Constants.INSTANCE.Field(),
@@ -210,6 +203,22 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         addAttribute( "",
                       apply );
 
+    }
+
+    private ImageButton createEditField() {
+        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        edit.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());
+        Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
+        editDisabled.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());
+
+        return new ImageButton(edit,
+                editDisabled,
+                Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
+                new ClickHandler() {
+                    public void onClick(ClickEvent w) {
+                        showFieldChange();
+                    }
+                });
     }
 
     private ActionWorkItemSetFieldCol52 cloneActionSetColumn(ActionWorkItemSetFieldCol52 col) {

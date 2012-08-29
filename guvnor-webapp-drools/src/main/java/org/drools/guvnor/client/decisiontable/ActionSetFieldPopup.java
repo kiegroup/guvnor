@@ -18,13 +18,14 @@ package org.drools.guvnor.client.decisiontable;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -43,13 +44,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetFieldPopup extends FormStylePopup {
 
@@ -99,8 +93,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                     DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        ImageButton changePattern = new ImageButton( createEnabledEditButton(),
+                                                     createDisabledEditButton(),
                                                      Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -116,8 +110,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                                 DroolsGuvnorImageResources.INSTANCE.editDisabled(),
+        ImageButton editField = new ImageButton( createEnabledEditButton(),
+                                                 createDisabledEditButton(),
                                                  Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick(ClickEvent w) {
@@ -254,6 +248,18 @@ public class ActionSetFieldPopup extends FormStylePopup {
         addAttribute( "",
                       apply );
 
+    }
+
+    private Image createDisabledEditButton() {
+        Image disabledChangePattern = DroolsGuvnorImages.INSTANCE.EditDisabled();
+        disabledChangePattern.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
+        return disabledChangePattern;
+    }
+
+    private Image createEnabledEditButton() {
+        Image enabledChangePattern = DroolsGuvnorImages.INSTANCE.Edit();
+        enabledChangePattern.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
+        return enabledChangePattern;
     }
 
     private boolean allowEmptyValues() {

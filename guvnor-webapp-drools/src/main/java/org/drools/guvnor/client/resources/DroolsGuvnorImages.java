@@ -61,4 +61,107 @@ public class DroolsGuvnorImages {
         image.setAltText(Constants.INSTANCE.PackageBuilder());
         return image;
     }
+
+    public Image DeleteItemSmall() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall());
+        image.setAltText(Constants.INSTANCE.DeleteItem());
+        return image;
+    }
+
+    public Image NewItem() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.itemImages().newItem());
+        image.setAltText(Constants.INSTANCE.NewItem());
+        return image;
+    }
+
+    public Image NewItemBelow() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newItemBelow());
+        image.setAltText(Constants.INSTANCE.NewItemBelow());
+        return image;
+    }
+
+    public Image SuffleDown() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.shuffleDown());
+        image.setAltText(Constants.INSTANCE.SuffleDown());
+
+        return image;
+    }
+
+    public Image SuffleUp() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.shuffleUp());
+        image.setAltText(Constants.INSTANCE.SuffleUp());
+        return image;
+    }
+
+    public Image WarningSmall() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.warning());
+        image.setAltText(Constants.INSTANCE.Warning());
+        return image;
+    }
+
+    public Image Error() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.error());
+        image.setAltText(Constants.INSTANCE.Error());
+        return image;
+    }
+
+    public Image Edit() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.edit());
+        image.setAltText(Constants.INSTANCE.Edit());
+        return image;
+    }
+
+    public Image EditDisabled() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.editDisabled());
+        image.setAltText(Constants.INSTANCE.EditDisabled());
+        return image;
+    }
+
+    public Image Trash() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.trash());
+        image.setAltText(Constants.INSTANCE.Trash());
+        return image;
+    }
+
+    public Image NewDSLPattern() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newDSLPattern());
+        image.setAltText(Constants.INSTANCE.AddANewCondition());
+        return image;
+    }
+
+    public Image NewDSLAction() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newDSLAction());
+        image.setAltText(Constants.INSTANCE.AddAnAction());
+        return image;
+    }
+
+    public Image AddConnective() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.addConnective());
+        image.setAltText(Constants.INSTANCE.AddConnective());
+        return image;
+    }
+
+    public Image AddFieldToFact() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.addFieldToFact());
+        image.setAltText(Constants.INSTANCE.AddAFieldToThisExpectation());
+        return image;
+    }
+
+    public Image Upload() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.upload());
+        image.setAltText(Constants.INSTANCE.Upload());
+        return image;
+    }
+
+    public Image NewItemDisabled() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newItemDisabled());
+        image.setAltText(Constants.INSTANCE.NewItemDisabled());
+        return image;
+    }
+
+    public Image TrashDisabled() {
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.trash());
+        image.setAltText(Constants.INSTANCE.Trash());
+        return image;
+    }
 }

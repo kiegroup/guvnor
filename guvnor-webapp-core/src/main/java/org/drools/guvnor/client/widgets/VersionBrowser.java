@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 
@@ -84,7 +85,7 @@ public class VersionBrowser extends Composite {
                 0,
                 HasHorizontalAlignment.ALIGN_LEFT );
 
-        refresh = new ImageButton( images.refresh() );
+        refresh = GuvnorImages.INSTANCE.Refresh();
 
         refresh.addClickHandler( clickHandler );
 

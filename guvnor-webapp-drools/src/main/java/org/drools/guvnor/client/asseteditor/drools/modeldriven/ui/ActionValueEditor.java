@@ -158,7 +158,8 @@ public class ActionValueEditor extends DirtyableComposite {
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+        Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        clear.setAltText( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 

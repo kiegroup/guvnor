@@ -170,8 +170,8 @@ public class NewSubPackageWizard extends FormStylePopup {
         panel.add( upload );
 
         panel.add( new Label( Constants.INSTANCE.upload() ) );
-        ImageButton ok = new ImageButton( DroolsGuvnorImageResources.INSTANCE.upload(),
-                                          Constants.INSTANCE.Import() );
+        Image ok = DroolsGuvnorImages.INSTANCE.Upload();
+        ok.setAltText(Constants.INSTANCE.Import() );
         ClickHandler okClickHandler = new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( Constants.INSTANCE.ImportMergeWarning() ) ) {

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -202,7 +203,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+            Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
             clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
@@ -394,7 +395,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+                Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
                 clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 
@@ -502,7 +503,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Image createAddConnectiveImageButton(final RuleModeller modeller,
                                                  final SingleFieldConstraint constraint) {
-        Image addConnective = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addConnective() );
+        Image addConnective = DroolsGuvnorImages.INSTANCE.AddConnective();
         addConnective.setTitle( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
 

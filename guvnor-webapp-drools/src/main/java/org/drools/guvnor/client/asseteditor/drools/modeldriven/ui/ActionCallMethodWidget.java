@@ -174,7 +174,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( model.state == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addFieldToFact() );
+            Image edit = DroolsGuvnorImages.INSTANCE.AddFieldToFact();
+            edit.setAltText( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
 

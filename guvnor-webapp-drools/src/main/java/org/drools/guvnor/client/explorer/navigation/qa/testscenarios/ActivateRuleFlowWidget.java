@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -75,21 +76,23 @@ public class ActivateRuleFlowWidget extends Composite {
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
-            Image del = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
-                                         Constants.INSTANCE.RemoveThisRuleFlowActivation(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 retList.remove( acticateRuleFlowGroup );
-                                                 sc.getFixtures().remove( acticateRuleFlowGroup );
-                                                 render( retList,
-                                                         outer,
-                                                         sc );
-                                                 parent.renderEditor();
-                                             }
-                                         } );
-            outer.setWidget( row,
-                             1,
-                             del );
+            Image image = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            image.setAltText(Constants.INSTANCE.RemoveThisRuleFlowActivation());
+            ImageButton del = new ImageButton(image,
+                    Constants.INSTANCE.RemoveThisRuleFlowActivation(),
+                    new ClickHandler() {
+                        public void onClick(ClickEvent w) {
+                            retList.remove(acticateRuleFlowGroup);
+                            sc.getFixtures().remove(acticateRuleFlowGroup);
+                            render(retList,
+                                    outer,
+                                    sc);
+                            parent.renderEditor();
+                        }
+                    });
+            outer.setWidget(row,
+                    1,
+                    del);
 
             row++;
         }

@@ -26,19 +26,19 @@
 
   <gwt:HorizontalPanel>
     <guvnor:FieldDataConstraintEditor ui:field="fieldDataConstraintEditor"/>
-    <guvnorCommon:ImageButton ui:field="deleteItem"
-                              img="{images.itemImages.deleteItemSmall}"
-                              altText="{i18n.AElementToDelInCollectionList}"
+    <gwt:Image ui:field="deleteItem"
+               resource="{images.itemImages.deleteItemSmall}"
+               altText="{i18n.AElementToDelInCollectionList}"
         />
-    <guvnorCommon:ImageButton ui:field="newItemBelow"
-                              img="{images.newItemBelow}"
-                              altText="{i18n.AddElementBelow}"/>
-    <guvnorCommon:ImageButton ui:field="suffleDown"
-                              img="{images.shuffleDown}"
-                              altText="{i18n.MoveDownListMove}"
+    <gwt:Image ui:field="newItemBelow"
+               resource="{images.newItemBelow}"
+               altText="{i18n.AddElementBelow}"/>
+    <gwt:Image ui:field="suffleDown"
+               resource="{images.shuffleDown}"
+               altText="{i18n.MoveDownListMove}"
         />
-    <guvnorCommon:ImageButton ui:field="suffleUp"
-                              img="{images.shuffleUp}"
-                              altText="{i18n.MoveUpList}"/>
+    <gwt:Image ui:field="suffleUp"
+               resource="{images.shuffleUp}"
+               altText="{i18n.MoveUpList}"/>
   </gwt:HorizontalPanel>
 </ui:UiBinder>

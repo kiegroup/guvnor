@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
@@ -220,7 +221,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                                      ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+        final Image remove= DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        remove.setAltText( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
 

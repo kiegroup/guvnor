@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
@@ -28,16 +29,16 @@ public class ListEditorRow extends Composite {
     FieldDataConstraintEditor fieldDataConstraintEditor;
 
     @UiField
-    ImageButton deleteItem;
+    Image deleteItem;
 
     @UiField
-    ImageButton newItemBelow;
+    Image newItemBelow;
 
     @UiField
-    ImageButton suffleDown;
+    Image suffleDown;
 
     @UiField
-    ImageButton suffleUp;
+    Image suffleUp;
 
     private final int index;
     private final CollectionFieldData parentField;

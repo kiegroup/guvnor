@@ -37,4 +37,22 @@ public class GuvnorImages {
         image.setAltText(ConstantsCore.INSTANCE.NewItem());
         return image;
     }
+
+    public Image Trash() {
+        Image image = new Image(ImagesCore.INSTANCE.trash());
+        image.setAltText(ConstantsCore.INSTANCE.Trash());
+        return image;
+    }
+
+    public Image Edit() {
+        Image image = new Image(ImagesCore.INSTANCE.edit());
+        image.setAltText(ConstantsCore.INSTANCE.Edit());
+        return image;
+    }
+
+    public Image Refresh() {
+        Image image = new Image(ImagesCore.INSTANCE.refresh());
+        image.setAltText(ConstantsCore.INSTANCE.Refresh());
+        return image;
+    }
 }

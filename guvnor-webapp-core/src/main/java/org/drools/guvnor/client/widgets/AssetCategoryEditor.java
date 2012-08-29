@@ -79,7 +79,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
         Image add = GuvnorImages.INSTANCE.NewItem();
-        add.setAltText(ConstantsCore.AddNewCategory());
+        add.setAltText(ConstantsCore.INSTANCE.AssetCategoryEditorAddNewCategory());
         add.setTitle( constants.AddANewCategory() );
 
         add.addClickHandler( new ClickHandler() {
@@ -120,7 +120,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
                             new SmallLabel( data.getCategories()[i] ) );
             if ( !readOnly ) {
 
-                Image del = new ImageButton( images.trash() );
+                Image del = GuvnorImages.INSTANCE.Trash();
                 del.setTitle( constants.RemoveThisCategory() );
                 del.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {

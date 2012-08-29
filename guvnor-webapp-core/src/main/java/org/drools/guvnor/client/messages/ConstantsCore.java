@@ -2655,4 +2655,8 @@ public interface ConstantsCore
     String NewItem();
 
     String AddNewCategory();
+
+    String Trash();
+
+    String AssetCategoryEditorAddNewCategory();
 }

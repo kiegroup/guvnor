@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
 
@@ -228,7 +228,7 @@ public class FactDataWidgetFactory {
     class DeleteFactColumnButton extends ImageButton {
 
         public DeleteFactColumnButton(final FactData fact) {
-            super(DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
                     Constants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
 
             addClickHandler(new ClickHandler() {
@@ -249,7 +249,7 @@ public class FactDataWidgetFactory {
     class DeleteFieldRowButton extends ImageButton {
         public DeleteFieldRowButton(final Fact fact,
                                     final String fieldName) {
-            super(DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
                     Constants.INSTANCE.RemoveThisRow());
 
             addClickHandler(new ClickHandler() {

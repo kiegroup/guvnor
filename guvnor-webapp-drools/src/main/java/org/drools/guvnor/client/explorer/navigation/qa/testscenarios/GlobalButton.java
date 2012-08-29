@@ -39,7 +39,7 @@ class GlobalButton extends ImageButton {
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioWidget parent) {
-        super( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
+        super( DroolsGuvnorImages.INSTANCE.NewItem(),
                Constants.INSTANCE.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;

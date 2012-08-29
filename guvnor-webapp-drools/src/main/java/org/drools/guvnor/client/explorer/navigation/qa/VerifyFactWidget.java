@@ -83,38 +83,38 @@ public class VerifyFactWidget extends Composite {
         }
         this.showResults = showResults;
 
-        Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.addFieldToFact(),
-                                     Constants.INSTANCE.AddAFieldToThisExpectation(),
-                                     new ClickHandler() {
-                                         public void onClick(ClickEvent w) {
+        Image add = DroolsGuvnorImages.INSTANCE.AddFieldToFact();
+        add.setTitle(Constants.INSTANCE.AddAFieldToThisExpectation());
+        add.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent w) {
 
-                                             String[] fields = sce.getModelFields( type );
-                                             final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
-                                                                                            Constants.INSTANCE.ChooseAFieldToAdd() );
-                                             final ListBox b = new ListBox();
-                                             for ( int i = 0; i < fields.length; i++ ) {
-                                                 b.addItem( fields[i] );
-                                             }
-                                             pop.addRow( b );
-                                             Button ok = new Button( Constants.INSTANCE.OK() );
-                                             ok.addClickHandler( new ClickHandler() {
-                                                 public void onClick(ClickEvent w) {
-                                                     String f = b.getItemText( b.getSelectedIndex() );
-                                                     vf.getFieldValues().add( new VerifyField( f,
-                                                                                          "",
-                                                                                          "==" ) );
-                                                     FlexTable data = render( vf );
-                                                     outer.setWidget( 1,
-                                                                      0,
-                                                                      data );
-                                                     pop.hide();
-                                                 }
-                                             } );
-                                             pop.addRow( ok );
-                                             pop.show();
+                String[] fields = sce.getModelFields(type);
+                final FormStylePopup pop = new FormStylePopup(DroolsGuvnorImages.INSTANCE.RuleAsset(),
+                        Constants.INSTANCE.ChooseAFieldToAdd());
+                final ListBox b = new ListBox();
+                for (int i = 0; i < fields.length; i++) {
+                    b.addItem(fields[i]);
+                }
+                pop.addRow(b);
+                Button ok = new Button(Constants.INSTANCE.OK());
+                ok.addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent w) {
+                        String f = b.getItemText(b.getSelectedIndex());
+                        vf.getFieldValues().add(new VerifyField(f,
+                                "",
+                                "=="));
+                        FlexTable data = render(vf);
+                        outer.setWidget(1,
+                                0,
+                                data);
+                        pop.hide();
+                    }
+                });
+                pop.addRow(ok);
+                pop.show();
 
-                                         }
-                                     } );
+            }
+        });
 
         ab.add( add );
         outer.setWidget( 0,
@@ -175,20 +175,21 @@ public class VerifyFactWidget extends Composite {
                             3,
                             cellEditor );
 
-            Image del = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
-                                         Constants.INSTANCE.RemoveThisFieldExpectation(),
-                                         new ClickHandler() {
-                                             public void onClick(ClickEvent w) {
-                                                 if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
-                                                                                     fld.getFieldName() ) ) ) {
-                                                     vf.getFieldValues().remove( fld );
-                                                     FlexTable data = render( vf );
-                                                     outer.setWidget( 1,
-                                                                      0,
-                                                                      data );
-                                                 }
-                                             }
-                                         } );
+            Image del = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            del.setAltText(Constants.INSTANCE.RemoveThisFieldExpectation());
+            del.setTitle(Constants.INSTANCE.RemoveThisFieldExpectation());
+            del.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent w) {
+                    if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
+                            fld.getFieldName()))) {
+                        vf.getFieldValues().remove(fld);
+                        FlexTable data = render(vf);
+                        outer.setWidget(1,
+                                0,
+                                data);
+                    }
+                }
+            });
             data.setWidget( i,
                             4,
                             del );

@@ -129,7 +129,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -157,14 +157,16 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( DroolsGuvnorImageResources.INSTANCE.edit(),
-                                        Constants.INSTANCE.AddFirstNewField(),
-                                        new ClickHandler() {
+                Image image = DroolsGuvnorImages.INSTANCE.Edit();
+                image.setAltText(Constants.INSTANCE.AddFirstNewField());
+                image.setTitle(Constants.INSTANCE.AddFirstNewField());
+                image.addClickHandler(new ClickHandler() {
 
-                                            public void onClick(ClickEvent sender) {
-                                                showAddFieldPopup( sender );
-                                            }
-                                        } ) );
+                    public void onClick(ClickEvent sender) {
+                        showAddFieldPopup(sender);
+                    }
+                });
+                h.add(image);
             }
             layout.setWidget( 0,
                               0,

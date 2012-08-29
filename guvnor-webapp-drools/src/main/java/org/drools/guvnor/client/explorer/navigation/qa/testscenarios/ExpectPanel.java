@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
@@ -52,7 +53,7 @@ public class ExpectPanel extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall(),
+            super(DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
                    Constants.INSTANCE.DeleteItem() );
             addClickHandler( new ClickHandler() {
 

@@ -23,9 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -40,12 +38,13 @@ public class ConfigWidget extends Composite {
         final ListBox box = new ListBox( true );
 
         for ( int i = 0; i < sc.getRules().size(); i++ ) {
-            box.addItem( (String) sc.getRules().get( i ) );
+            box.addItem( sc.getRules().get( i ) );
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem(),
-                                           Constants.INSTANCE.AddANewRule() );
+        final Image add = DroolsGuvnorImages.INSTANCE.NewItem();
+        add.setAltText(Constants.INSTANCE.AddANewRule() );
+        add.setTitle(Constants.INSTANCE.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showRulePopup( (Widget) event.getSource(),
@@ -56,8 +55,9 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( DroolsGuvnorImageResources.INSTANCE.trash(),
-                                              Constants.INSTANCE.RemoveSelectedRule() );
+        final Image remove = DroolsGuvnorImages.INSTANCE.Trash();
+        remove.setAltText(Constants.INSTANCE.RemoveSelectedRule() );
+        remove.setTitle(Constants.INSTANCE.RemoveSelectedRule() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if ( box.getSelectedIndex() == -1 ) {
