@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -64,8 +65,13 @@ public class FormStyleLayout extends Composite {
      */
     public int addAttribute(String lbl,
                             IsWidget editor) {
+    	String id = DOM.createUniqueId()+"_";
+    	editor.asWidget().getElement().setAttribute("aria-labelledby", id);
+    	editor.asWidget().getElement().setAttribute("aria-required", String.valueOf(true));
+    	editor.asWidget().getElement().setTabIndex(0);
+
         int row = numInLayout;
-        HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
+        HTML label = new HTML( "<div class='form-field' id=" + id + ">" + lbl + "</div>" );
         layout.setWidget( numInLayout,
                           0,
                           label );
@@ -114,6 +120,8 @@ public class FormStyleLayout extends Composite {
      * @return Index of row created
      */
     public int addRow(Widget w) {
+    	//TODO ARIA: what to do with widget has no visible label? 
+
         int row = numInLayout;
         layout.setWidget( numInLayout,
                           0,

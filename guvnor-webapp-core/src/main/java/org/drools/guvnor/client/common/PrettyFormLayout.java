@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -103,6 +104,8 @@ public class PrettyFormLayout extends Composite {
     }
 
     public void addRow(final Widget widget) {
+    	//TODO ARIA: what to do with widget has no visible label? 
+
         int row = currentTable.getRowCount();
         currentTable.setWidget( row,
                                 0,
@@ -113,11 +116,18 @@ public class PrettyFormLayout extends Composite {
     }
 
     public int addAttribute(String lbl, final Widget categories) {
-        
+    	String id = DOM.createUniqueId()+"_";
+    	categories.getElement().setAttribute("aria-labelledby", id);
+    	categories.getElement().setAttribute("aria-required", String.valueOf(true));
+    	categories.getElement().setTabIndex(0);
+    	
         int row = currentTable.getRowCount();
+        Label label = new Label( lbl );
+        label.getElement().setAttribute("id", id);
+
         currentTable.setWidget( row,
                                 0,
-                                new Label( lbl ) );
+                                label );
         currentTable.setWidget( row,
                                 1,
                                 categories );
