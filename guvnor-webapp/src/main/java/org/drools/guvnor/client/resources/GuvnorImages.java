@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.messages.Constants;
 
@@ -290,6 +291,12 @@ public class GuvnorImages {
     public Image Analyze() {
         Image image = new Image(Images.INSTANCE.analyzeLarge());
         image.setAltText("");
+        return image;
+    }
+
+    public Image Collapse() {
+        Image image = new Image(Images.INSTANCE.collapse());
+        image.setAltText(Constants.INSTANCE.Collapse());
         return image;
     }
 }

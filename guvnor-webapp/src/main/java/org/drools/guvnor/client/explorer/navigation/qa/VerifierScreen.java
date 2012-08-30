@@ -36,7 +36,6 @@ import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 public class VerifierScreen extends Composite {
 
     private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
 
     private final VerticalPanel layout = new VerticalPanel();
     private final String packageUUID;

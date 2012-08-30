@@ -2562,11 +2562,7 @@ public interface Constants
 
     String NewItemDisabled();
 
-    String Backup();
+    String Collapse();
 
-    String UserPermissions();
-
-    String Scenario();
-
-    String WorkspaceManager();
+    String Expand();
 }

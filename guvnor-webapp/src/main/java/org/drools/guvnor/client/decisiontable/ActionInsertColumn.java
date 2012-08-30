@@ -24,7 +24,6 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -51,7 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionInsertColumn extends FormStylePopup {
 
-    private static Images              images       = (Images) GWT.create( Images.class );
     private Constants                  constants    = GWT.create( Constants.class );
 
     private GuidedDecisionTable52      model;

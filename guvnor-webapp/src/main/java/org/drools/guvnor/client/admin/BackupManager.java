@@ -43,8 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class BackupManager extends Composite {
 
-    private static Images images    = (Images) GWT.create( Images.class );
-
     private Constants     constants = GWT.create( Constants.class );
 
     public BackupManager() {

@@ -20,12 +20,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -49,7 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ActionSetColumn extends FormStylePopup {
 
     private Constants                  constants    = GWT.create( Constants.class );
-    private static Images              images       = (Images) GWT.create( Images.class );
 
     private ActionSetFieldCol52        editingCol;
     private SmallLabel                 bindingLabel = new SmallLabel();

@@ -29,7 +29,6 @@ import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -88,7 +87,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private static Constants           constants                   = ((Constants) GWT.create( Constants.class ));
-    private static Images              images                      = (Images) GWT.create( Images.class );
 
     private GuidedDecisionTable52      model;
     private SuggestionCompletionEngine sce;

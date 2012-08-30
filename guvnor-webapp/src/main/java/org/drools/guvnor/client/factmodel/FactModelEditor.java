@@ -38,8 +38,7 @@ import java.util.List;
 
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-    private static Images    images    = (Images) GWT.create( Images.class );
+    private static Constants constants = GWT.create( Constants.class );
 
     interface FactModelEditorBinder
             extends
@@ -164,9 +163,11 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( images.collapse() );
+            icon.setResource( Images.INSTANCE.collapse() );
+            icon.setAltText( Constants.INSTANCE.Collapse());
         } else {
-            icon.setResource( images.expand() );
+            icon.setResource( Images.INSTANCE.expand() );
+            icon.setAltText(Constants.INSTANCE.Expand());
         }
     }
 
