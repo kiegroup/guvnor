@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -92,18 +93,18 @@ public class PackageHeaderWidget extends Composite {
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton(GuvnorImages.INSTANCE.NewItem(),
+                                                        GuvnorImages.INSTANCE.NewItemDisabled());
             newItemButton.setEnabled( false );
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() );
+            ImageButton trashButton = new ImageButton( GuvnorImages.INSTANCE.Trash(),
+                                                       GuvnorImages.INSTANCE.TrashDisabled());
             trashButton.setEnabled( false );
             importActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
+                                                         GuvnorImages.INSTANCE.NewItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -117,8 +118,8 @@ public class PackageHeaderWidget extends Composite {
             };
             importActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( GuvnorImages.INSTANCE.Trash(),
+                                                       GuvnorImages.INSTANCE.TrashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -148,18 +149,18 @@ public class PackageHeaderWidget extends Composite {
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
         if ( isHistoricalReadOnly ) {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() );
+            ImageButton newItemButton = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
+                    GuvnorImages.INSTANCE.NewItemDisabled() );
             newItemButton.setEnabled( false );
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() );
+            ImageButton trashButton = new ImageButton( GuvnorImages.INSTANCE.Trash(),
+                    GuvnorImages.INSTANCE.TrashDisabled() );
             trashButton.setEnabled( false );
             globalActions.add( trashButton );
         } else {
-            ImageButton newItemButton = new ImageButton( images.newItem(),
-                                                         images.newItemDisabled() ) {
+            ImageButton newItemButton = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
+                    GuvnorImages.INSTANCE.NewItemDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -173,8 +174,8 @@ public class PackageHeaderWidget extends Composite {
             };
             globalActions.add( newItemButton );
 
-            ImageButton trashButton = new ImageButton( images.trash(),
-                                                       images.trashDisabled() ) {
+            ImageButton trashButton = new ImageButton( GuvnorImages.INSTANCE.Trash(),
+                    GuvnorImages.INSTANCE.TrashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {

@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -44,13 +45,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:30:04
- * To change this template use File | Settings | File Templates.
- */
+
 public class VerifyRulesFiredWidget extends Composite {
 
     private Constants     constants = GWT.create( Constants.class );
@@ -175,7 +170,7 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = new ImageButton( images.deleteItemSmall(),
+            ImageButton del = new ImageButton(GuvnorImages.INSTANCE.DeleteItemSmall(),
                                          constants.RemoveThisRuleExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
@@ -148,7 +149,8 @@ public class AttributeSelectorPopup extends FormStylePopup {
     private Image getAddButton(final RuleModel model,
                                final Command refresh,
                                final TextBox box) {
-        final Image addbutton = new ImageButton( images.newItem() );
+        final Image addbutton = GuvnorImages.INSTANCE.NewItem();
+        addbutton.setAltText( constants.AddMetadataToTheRule() );
         addbutton.setTitle( constants.AddMetadataToTheRule() );
 
         addbutton.addClickHandler( new ClickHandler() {

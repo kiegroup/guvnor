@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -73,7 +74,7 @@ public class FactsConstraintsEditorPanel extends Composite {
             }
         });
 
-        Image addNewConstraint = new ImageButton(images.newItem());
+        Image addNewConstraint = GuvnorImages.INSTANCE.NewItem();
         addNewConstraint.setTitle(constants.AddNewConstraint());
 
         addNewConstraint.addClickHandler(new ClickHandler() {

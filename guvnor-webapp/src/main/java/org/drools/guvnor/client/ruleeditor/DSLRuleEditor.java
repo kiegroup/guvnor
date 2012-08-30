@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
@@ -94,7 +95,7 @@ public class DSLRuleEditor extends DirtyableComposite {
 
         VerticalPanel vert = new VerticalPanel();
 
-        Image lhsOptions = new ImageButton(images.newDSLPattern());
+        Image lhsOptions = GuvnorImages.INSTANCE.NewDSLPattern();
         Constants constants = GWT.create(Constants.class);
         final String msg = constants.AddANewCondition();
         lhsOptions.setTitle(msg);
@@ -104,7 +105,7 @@ public class DSLRuleEditor extends DirtyableComposite {
             }
         });
 
-        Image rhsOptions = new ImageButton(images.newDSLAction());
+        Image rhsOptions = GuvnorImages.INSTANCE.NewDSLAction();
         final String msg2 = constants.AddAnAction();
         rhsOptions.setTitle(msg2);
         rhsOptions.addClickHandler(new ClickHandler() {

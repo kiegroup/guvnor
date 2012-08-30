@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -259,7 +260,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                                                                     executionTrace );
             hpanel.add( fieldElement );
             final int index = i;
-            Image del = new ImageButton( images.deleteItemSmall(),
+            ImageButton del = new ImageButton(GuvnorImages.INSTANCE.DeleteItemSmall(),
                                          constants.AElementToDelInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -271,7 +272,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             hpanel.add( del );
 
-            Image addPattern = new ImageButton( images.newItemBelow() );
+            ImageButton addPattern = new ImageButton( GuvnorImages.INSTANCE.NewItemBelow() );
             addPattern.setTitle( constants.AddElementBelow() );
 
             addPattern.addClickHandler( new ClickHandler() {
@@ -286,7 +287,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 }
             } );
             hpanel.add( addPattern );
-            Image moveDown = new ImageButton( images.shuffleDown() );
+            ImageButton moveDown = new ImageButton( GuvnorImages.INSTANCE.SuffleDown() );
             moveDown.setTitle( constants.MoveDownListMove() );
             moveDown.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -304,7 +305,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             } );
             hpanel.add( moveDown );
 
-            Image moveUp = new ImageButton( images.shuffleUp() );
+            ImageButton moveUp = new ImageButton( GuvnorImages.INSTANCE.SuffleUp() );
             moveUp.setTitle( constants.MoveUpList() );
             moveUp.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -326,7 +327,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
 
         if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( images.newItem(),
+            ImageButton add = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
                                          constants.AElementToAddInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {

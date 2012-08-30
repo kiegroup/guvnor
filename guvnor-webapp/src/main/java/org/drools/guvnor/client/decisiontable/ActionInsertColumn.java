@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -84,7 +85,7 @@ public class ActionInsertColumn extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( images.edit(),
+        ImageButton changePattern = new ImageButton(GuvnorImages.INSTANCE.Edit(),
                                                constants.ChooseAPatternThatThisColumnAddsDataTo(),
                                                new ClickHandler() {
                                                    public void onClick(ClickEvent w) {
@@ -97,7 +98,7 @@ public class ActionInsertColumn extends FormStylePopup {
 
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
-        Image editField = new ImageButton( images.edit(),
+        ImageButton editField = new ImageButton( GuvnorImages.INSTANCE.Edit(),
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
                                            new ClickHandler() {
                                                public void onClick(ClickEvent w) {

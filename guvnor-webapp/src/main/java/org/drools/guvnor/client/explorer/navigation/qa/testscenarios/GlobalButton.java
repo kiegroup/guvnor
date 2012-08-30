@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -46,7 +47,7 @@ class GlobalButton extends ImageButton {
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioWidget parent) {
-        super( images.newItem(),
+        super(GuvnorImages.INSTANCE.NewItem(),
                constants.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;

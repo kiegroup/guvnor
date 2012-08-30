@@ -24,6 +24,7 @@ import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -88,7 +89,8 @@ public class Connectives {
                 hp.add( connectiveValueEditor( con ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = new ImageButton( images.deleteItemSmall() );
+                    Image clear = GuvnorImages.INSTANCE.DeleteItemSmall();
+                    clear.setAltText( constants.RemoveThisRestriction() );
                     clear.setTitle( constants.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                   i ) );

@@ -31,6 +31,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
@@ -140,7 +141,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editAction( final ActionCol52 c ) {
-        return new ImageButton( images.edit(),
+        return new ImageButton(GuvnorImages.INSTANCE.Edit(),
                 constants.EditThisActionColumnConfiguration(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -255,7 +256,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAction( final ActionCol52 c ) {
-        Image del = new ImageButton( images.deleteItemSmall(),
+        ImageButton del = new ImageButton( GuvnorImages.INSTANCE.DeleteItemSmall(),
                 constants.RemoveThisActionColumn(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -329,7 +330,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editCondition( final ConditionCol52 origCol ) {
-        return new ImageButton( images.edit(),
+        return new ImageButton( GuvnorImages.INSTANCE.Edit(),
                 constants.EditThisColumnsConfiguration(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -379,7 +380,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeCondition( final ConditionCol52 origCol ) {
-        Image del = new ImageButton( images.deleteItemSmall(),
+        return new ImageButton( GuvnorImages.INSTANCE.DeleteItemSmall(),
                 constants.RemoveThisConditionColumn(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -406,8 +407,6 @@ public class GuidedDecisionTableWidget extends Composite
                         }
                     }
                 } );
-
-        return del;
     }
 
     private Widget getAttributes() {
@@ -526,7 +525,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget newAttr() {
-        ImageButton but = new ImageButton( images.newItem(),
+        ImageButton but = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
                 constants.AddANewAttributeMetadata(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -550,7 +549,7 @@ public class GuidedDecisionTableWidget extends Composite
                             }
                         }
 
-                        final Image addbutton = new ImageButton( images.newItem() );
+                        final Image addbutton = GuvnorImages.INSTANCE.NewItem();
                         final TextBox box = new TextBox();
                         box.setVisibleLength( 15 );
 
@@ -615,7 +614,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAttr( final AttributeCol52 at ) {
-        Image del = new ImageButton( images.deleteItemSmall(),
+        return new ImageButton( GuvnorImages.INSTANCE.DeleteItemSmall(),
                 constants.RemoveThisAttribute(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -627,12 +626,10 @@ public class GuidedDecisionTableWidget extends Composite
                         }
                     }
                 } );
-
-        return del;
     }
 
     private Widget removeMeta( final MetadataCol52 md ) {
-        Image del = new ImageButton( images.deleteItemSmall(),
+        return new ImageButton( GuvnorImages.INSTANCE.DeleteItemSmall(),
                 constants.RemoveThisMetadata(),
                 new ClickHandler() {
                     public void onClick( ClickEvent w ) {
@@ -644,8 +641,6 @@ public class GuidedDecisionTableWidget extends Composite
                         }
                     }
                 } );
-
-        return del;
     }
 
     private void setupColumnsNote() {

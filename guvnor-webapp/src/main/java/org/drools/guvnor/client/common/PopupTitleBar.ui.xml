@@ -26,7 +26,7 @@
         <gwt:Label ui:field="titleLabel"></gwt:Label>
       </div>
       <div class='guvnor-PopupTitleBar-close-button' style='float:right;'>
-        <guvnor:ImageButton ui:field="closeButton" img='{images.close}'></guvnor:ImageButton>
+        <gwt:Image ui:field="closeButton" resource='{images.close}'></gwt:Image>
       </div>
       <div style='clear:both;'></div>
     </div>

@@ -23,9 +23,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 
 import java.util.Date;
@@ -62,7 +64,7 @@ public class DatePickerTextBox extends DatePicker {
         },
                 visualFormatFormatter);
 
-        ImageButton select = new ImageButton(images.edit());
+        Image select = GuvnorImages.INSTANCE.Edit();
         select.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 datePickerPopUp.setPopupPosition(textWidget.getAbsoluteLeft(),

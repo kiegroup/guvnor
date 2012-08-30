@@ -31,6 +31,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -300,7 +301,7 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( images.edit() );
+        Image add = GuvnorImages.INSTANCE.Edit();
         add.setTitle( constants.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {

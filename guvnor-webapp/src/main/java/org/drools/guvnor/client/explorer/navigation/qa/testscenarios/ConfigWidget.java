@@ -26,18 +26,12 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nheron
- * Date: 7 nov. 2009
- * Time: 19:33:37
- * To change this template use File | Settings | File Templates.
- */
 public class ConfigWidget extends Composite {
 
     private final Constants constants = GWT.create( Constants.class );
@@ -50,11 +44,11 @@ public class ConfigWidget extends Composite {
         final ListBox box = new ListBox( true );
 
         for ( int i = 0; i < sc.getRules().size(); i++ ) {
-            box.addItem( (String) sc.getRules().get( i ) );
+            box.addItem( sc.getRules().get( i ) );
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( images.newItem(),
+        final ImageButton add = new ImageButton(GuvnorImages.INSTANCE.NewItem(),
                                            constants.AddANewRule() );
         add.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -66,7 +60,7 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( images.trash(),
+        final ImageButton remove = new ImageButton( GuvnorImages.INSTANCE.Trash(),
                                               constants.RemoveSelectedRule() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {

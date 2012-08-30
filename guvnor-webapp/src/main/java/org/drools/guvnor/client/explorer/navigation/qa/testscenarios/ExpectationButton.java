@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.ArrayList;
 
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -39,7 +40,7 @@ public class ExpectationButton extends TestScenarioButton {
                              final ExecutionTrace previousEx,
                              final Scenario scenario,
                              ScenarioWidget scenarioWidget) {
-        super( images.newItem(),
+        super(GuvnorImages.INSTANCE.NewItem(),
                constants.AddANewExpectation(),
                previousEx,
                scenario,

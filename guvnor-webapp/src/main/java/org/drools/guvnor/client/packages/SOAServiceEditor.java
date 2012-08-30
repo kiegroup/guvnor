@@ -30,6 +30,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -257,7 +258,8 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( images.edit() );
+        Image add = GuvnorImages.INSTANCE.Edit();
+        add.setAltText( constants.AddCatRuleToThePackage() );
         add.setTitle( constants.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {

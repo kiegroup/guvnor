@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -81,26 +82,30 @@ public class ActionSetColumn extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        Image changePattern = new ImageButton( images.edit(),
-                                               constants.ChooseABoundFactThatThisColumnPertainsTo(),
-                                               new ClickHandler() {
-                                                   public void onClick(ClickEvent w) {
-                                                       showChangeFact( w );
-                                                   }
-                                               } );
+        Image changePattern = GuvnorImages.INSTANCE.Edit();
+        changePattern.setAltText(constants.ChooseABoundFactThatThisColumnPertainsTo());
+        changePattern.setTitle(constants.ChooseABoundFactThatThisColumnPertainsTo());
+        changePattern.addClickHandler(
+                new ClickHandler() {
+                    public void onClick(ClickEvent w) {
+                        showChangeFact(w);
+                    }
+                });
         pattern.add( changePattern );
         addAttribute( constants.Fact(),
                       pattern );
 
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
-        Image editField = new ImageButton( images.edit(),
-                                           constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickHandler() {
-                                               public void onClick(ClickEvent w) {
-                                                   showFieldChange();
-                                               }
-                                           } );
+        Image editField = GuvnorImages.INSTANCE.Edit();
+        editField.setAltText(constants.EditTheFieldThatThisColumnOperatesOn());
+        editField.setTitle(constants.EditTheFieldThatThisColumnOperatesOn());
+        editField.addClickHandler(
+                new ClickHandler() {
+                    public void onClick(ClickEvent w) {
+                        showFieldChange();
+                    }
+                });
         field.add( editField );
         addAttribute( constants.Field(),
                       field );

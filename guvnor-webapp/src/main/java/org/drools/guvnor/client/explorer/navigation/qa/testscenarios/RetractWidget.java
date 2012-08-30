@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
@@ -97,7 +98,7 @@ public class RetractWidget extends FlexTable {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final RetractFact retractFact) {
-            super( images.deleteItemSmall(),
+            super(GuvnorImages.INSTANCE.DeleteItemSmall(),
                    constants.RemoveThisRetractStatement() );
 
             addClickHandler( new ClickHandler() {

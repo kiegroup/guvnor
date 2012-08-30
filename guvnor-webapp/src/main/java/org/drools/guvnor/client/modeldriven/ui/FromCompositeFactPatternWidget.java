@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -183,7 +184,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected Widget addRemoveButton(Widget w, ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton(images.deleteItemSmall());
+        final Image remove = GuvnorImages.INSTANCE.DeleteItemSmall();
+        remove.setAltText(constants.RemoveThisBlockOfData());
         remove.setTitle(constants.RemoveThisBlockOfData());
         remove.addClickHandler(listener);
 

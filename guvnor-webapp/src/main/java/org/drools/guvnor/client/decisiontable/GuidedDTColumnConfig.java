@@ -28,6 +28,7 @@ import org.drools.guvnor.client.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -136,7 +137,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        ImageButton changePattern = new ImageButton( images.edit(),
+        ImageButton changePattern = new ImageButton(GuvnorImages.INSTANCE.Edit(),
                                                      constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
@@ -197,8 +198,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( images.edit(),
-                                          images.editDisabled(),
+        this.editField = new ImageButton( GuvnorImages.INSTANCE.Edit(),
+                                          GuvnorImages.INSTANCE.EditDisabled(),
                                           constants.EditTheFieldThatThisColumnOperatesOn(),
                                           new ClickHandler() {
                                               public void onClick(ClickEvent w) {
@@ -212,8 +213,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        this.editOp = new ImageButton( images.edit(),
-                                       images.editDisabled(),
+        this.editOp = new ImageButton( GuvnorImages.INSTANCE.Edit(),
+                                       GuvnorImages.INSTANCE.EditDisabled(),
                                        constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                        new ClickHandler() {
                                            public void onClick(ClickEvent w) {

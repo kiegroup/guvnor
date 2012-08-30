@@ -11,6 +11,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
@@ -137,7 +138,8 @@ public class CallMethodWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( mCall.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( images.addFieldToFact() );
+            Image edit = GuvnorImages.INSTANCE.AddFieldToFact();
+            edit.setAltText( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
             edit.addClickHandler( new ClickHandler() {
@@ -280,7 +282,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( images.deleteItemSmall(),
+            super( GuvnorImages.INSTANCE.DeleteItemSmall(),
                    constants.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {

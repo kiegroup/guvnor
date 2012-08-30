@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -61,8 +62,8 @@ import com.google.gwt.view.client.HasData;
 
 
 public class PermissionsPagedTablePresenter implements Presenter {
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
-    private static Images         images    = (Images) GWT.create( Images.class );  
+    private Constants             constants = GWT.create( Constants.class );
+    private static Images         images    = GWT.create( Images.class );
     protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
     private final PermissionsPagedTableView view;
    
@@ -250,7 +251,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
 
                 for ( int i = 0; i < permList.size(); i++ ) {
                     final String p = permList.get( i );
-                    ImageButton del = new ImageButton( images.deleteItemSmall(),
+                    ImageButton del = new ImageButton(GuvnorImages.INSTANCE.DeleteItemSmall(),
                                                        constants.RemovePermission(),
                                                        new ClickHandler() {
                                                            public void onClick(ClickEvent w) {
@@ -279,7 +280,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
         }
 
         // now to be able to add...
-        ImageButton newPermission = new ImageButton( images.newItem(),
+        ImageButton newPermission = new ImageButton( GuvnorImages.INSTANCE.NewItem(),
                                                      constants.AddANewPermission(),
                                                      createClickHandlerForNewPersmissionImageButton( perms,
                                                                                                      vp ) );
