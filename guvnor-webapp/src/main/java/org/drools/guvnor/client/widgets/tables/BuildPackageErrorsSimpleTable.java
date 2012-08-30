@@ -118,7 +118,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
                                                                                assetNameColumn ),
                                 true );
 
-        Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue(BuilderResultLine row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

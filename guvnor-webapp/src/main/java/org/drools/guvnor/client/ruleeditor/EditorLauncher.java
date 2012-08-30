@@ -42,7 +42,7 @@ public class EditorLauncher {
 
     private static Images                                    images      = GWT.create( Images.class );
 
-    public static final Map<String, RuleFormatImageResource> TYPE_IMAGES = getTypeImages();
+    //public static final Map<String, RuleFormatImageResource> TYPE_IMAGES = getTypeImages();
     private static RepositoryServiceAsync                    SERVICE     = RepositoryServiceFactory.getService();
     public static Boolean hostedMode = Boolean.FALSE;
 
@@ -116,7 +116,7 @@ public class EditorLauncher {
 
     }
 */
-    private static Map<String, RuleFormatImageResource> getTypeImages() {
+/*    private static Map<String, RuleFormatImageResource> getTypeImages() {
         Map<String, RuleFormatImageResource> result = new HashMap<String, RuleFormatImageResource>();
 
         result.put( AssetFormats.DRL,
@@ -171,10 +171,10 @@ public class EditorLauncher {
         return result;
     }
 
-    /**
+    *//**
      * Get the icon name (not the path), including the extension, for the appropriate
      * asset format.
-     */
+     *//*
     public static RuleFormatImageResource getAssetFormatIcon(String format) {
         RuleFormatImageResource result = TYPE_IMAGES.get( format );
         if ( result == null ) {
@@ -183,6 +183,6 @@ public class EditorLauncher {
         } else {
             return result;
         }
-    }
+    }*/
 
 }

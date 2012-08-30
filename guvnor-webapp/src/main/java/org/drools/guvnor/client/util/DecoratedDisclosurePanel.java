@@ -28,6 +28,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -45,7 +46,7 @@ public class DecoratedDisclosurePanel extends Composite
 
     private LazyStackPanelHeader header;
     
-    public DecoratedDisclosurePanel(String headerText, ImageResource headerIcon) {
+    public DecoratedDisclosurePanel(String headerText, Image headerIcon) {
         widget.setAnimationEnabled( true );
         widget.setHeader( createHeader( headerText, headerIcon ) );
         initWidget( widget );
@@ -63,7 +64,7 @@ public class DecoratedDisclosurePanel extends Composite
         return header;
     }
 
-    private LazyStackPanelHeader createHeader(String headerText, ImageResource headerIcon) {
+    private LazyStackPanelHeader createHeader(String headerText, Image headerIcon) {
         header = new LazyStackPanelHeader( headerText, headerIcon );
         setupEventHandlers();
         return header;

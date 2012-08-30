@@ -70,7 +70,7 @@ public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> imple
     protected void addAncillaryColumns( ColumnPicker<InboxPageRow> columnPicker,
                                         SortableHeaderGroup<InboxPageRow> sortableHeaderGroup ) {
 
-        Column<InboxPageRow, RuleFormatImageResource> formatColumn = new Column<InboxPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<InboxPageRow, RuleFormatImageResource> formatColumn = new Column<InboxPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue( InboxPageRow row ) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

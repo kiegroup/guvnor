@@ -153,4 +153,77 @@ public class GuvnorImages {
         image.setAltText(Constants.INSTANCE.Trash());
         return image;
     }
+    
+/*    public Image RuleAsset() {
+        Image image = new Image(Images.INSTANCE.ruleAsset());
+        image.setAltText(Constants.INSTANCE.BusinessRuleAssets());
+        return image;
+    }   */
+    
+    public Image SpreadsheetSmall() {
+        Image image = new Image(Images.INSTANCE.spreadsheetSmall());
+        image.setAltText(Constants.INSTANCE.BusinessRuleAssets());
+        return image;
+    }
+    
+    public Image Gdst() {
+        Image image = new Image(Images.INSTANCE.gdst());
+        image.setAltText(Constants.INSTANCE.BusinessRuleAssets());
+        return image;
+    }  
+    
+    public Image TechnicalRuleAssets() {
+        Image image = new Image(Images.INSTANCE.technicalRuleAssets());
+        image.setAltText(Constants.INSTANCE.TechnicalRuleAssets());
+        return image;
+    } 
+    
+    public Image FunctionAssets() {
+        Image image = new Image(Images.INSTANCE.functionAssets());
+        image.setAltText(Constants.INSTANCE.Functions());
+        return image;
+    } 
+    public Image Dsl() {
+        Image image = new Image(Images.INSTANCE.dsl());
+        image.setAltText(Constants.INSTANCE.DSLConfigurations());
+        return image;
+    }  
+    
+    public Image ModelAsset() {
+        Image image = new Image(Images.INSTANCE.modelAsset());
+        image.setAltText(Constants.INSTANCE.Model());
+        return image;
+    } 
+
+    public Image RuleflowSmall() {
+        Image image = new Image(Images.INSTANCE.ruleflowSmall());
+        image.setAltText(Constants.INSTANCE.RuleFlows());
+        return image;
+    }   
+    public Image Enumeration() {
+        Image image = new Image(Images.INSTANCE.enumeration());
+        image.setAltText(Constants.INSTANCE.Enumerations());
+        return image;
+    }  
+    public Image TestManager() {
+        Image image = new Image(Images.INSTANCE.testManager());
+        image.setAltText(Constants.INSTANCE.TestScenarios());
+        return image;
+    }   
+    public Image NewFile() {
+        Image image = new Image(Images.INSTANCE.newFile());
+        image.setAltText(Constants.INSTANCE.OtherAssetsDocumentation());
+        return image;
+    }   
+    public Image Workingset() {
+        Image image = new Image(Images.INSTANCE.workingset());
+        image.setAltText(Constants.INSTANCE.WorkingSets());
+        return image;
+    }   
+    public Image EventLogSmall() {
+        Image image = new Image(Images.INSTANCE.eventLogSmall());
+        image.setAltText(Constants.INSTANCE.Documentation());
+        return image;
+    }      
+ 
 }

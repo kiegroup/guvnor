@@ -72,7 +72,7 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
     protected void addAncillaryColumns(ColumnPicker<StatePageRow> columnPicker,
                                        SortableHeaderGroup<StatePageRow> sortableHeaderGroup) {
 
-        Column<StatePageRow, RuleFormatImageResource> formatColumn = new Column<StatePageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<StatePageRow, RuleFormatImageResource> formatColumn = new Column<StatePageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue(StatePageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

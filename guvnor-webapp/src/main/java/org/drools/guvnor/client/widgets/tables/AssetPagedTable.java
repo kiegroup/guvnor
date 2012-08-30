@@ -89,7 +89,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     protected void addAncillaryColumns(ColumnPicker<AssetPageRow> columnPicker,
                                         SortableHeaderGroup<AssetPageRow> sortableHeaderGroup) {
 
-        Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue(AssetPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

@@ -24,7 +24,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -57,9 +56,8 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
                                                                  };
 
     public LazyStackPanelHeader(String headerText,
-                                ImageResource headerIcon) {
+                                Image titleIcon) {
         this();
-        Image titleIcon = new Image( headerIcon );
         container.add( titleIcon );
         Label titleLabel = new Label( headerText );
         titleLabel.setStyleName( "guvnor-cursor" );

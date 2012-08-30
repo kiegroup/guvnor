@@ -147,7 +147,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
     protected void addAncillaryColumns(ColumnPicker<QueryPageRow> columnPicker,
                                        SortableHeaderGroup<QueryPageRow> sortableHeaderGroup) {
 
-        Column<QueryPageRow, RuleFormatImageResource> formatColumn = new Column<QueryPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<QueryPageRow, RuleFormatImageResource> formatColumn = new Column<QueryPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue(QueryPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

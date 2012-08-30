@@ -23,7 +23,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class RuleFormatImageResourceCell extends AbstractCell<RuleFormatImageResource> {
+public class RuleFormatImageCell extends AbstractCell<RuleFormatImageResource> {
 
     @Override
     public void render(Context context,

@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 
 public class RuleFormatImageResource
     implements
@@ -23,16 +24,16 @@ public class RuleFormatImageResource
     Comparable<RuleFormatImageResource> {
 
     private final String        format;
-    private final ImageResource imageResource;
+    private final Image imageResource;
 
     public RuleFormatImageResource(String format,
-                                   ImageResource imageResource) {
+                                   Image imageResource) {
         this.format = format;
         this.imageResource = imageResource;
     }
 
     public String getName() {
-        return this.imageResource.getName();
+        return this.imageResource.getTitle();
     }
 
     public int compareTo(RuleFormatImageResource o) {
@@ -44,15 +45,15 @@ public class RuleFormatImageResource
     }
 
     public int getLeft() {
-        return this.imageResource.getLeft();
+        return this.imageResource.getOriginLeft();
     }
 
     public int getTop() {
-        return this.imageResource.getTop();
+        return this.imageResource.getOriginTop();
     }
 
     public String getURL() {
-        return this.imageResource.getURL();
+        return this.imageResource.getUrl();
     }
 
     public int getWidth() {
@@ -60,7 +61,8 @@ public class RuleFormatImageResource
     }
 
     public boolean isAnimated() {
-        return this.imageResource.isAnimated();
+    	return true;
+        //return this.imageResource.isAnimated();
     }
 
 }

@@ -31,12 +31,12 @@ import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -77,7 +77,7 @@ public class AssetViewerActivityViewImpl extends Composite
     public void addAssetFormat(final List<String> formatsInList,
                                final Boolean formatIsRegistered,
                                final String title,
-                               final ImageResource icon,
+                               final Image icon,
                                final PackageConfigData packageConfigData,
                                final ClientFactory clientFactory) {
         LazyStackPanel lsp = new LazyStackPanel();

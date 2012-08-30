@@ -98,7 +98,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
     protected void addAncillaryColumns(ColumnPicker<AdminArchivedPageRow> columnPicker,
                                        SortableHeaderGroup<AdminArchivedPageRow> sortableHeaderGroup) {
 
-        Column<AdminArchivedPageRow, RuleFormatImageResource> formatColumn = new Column<AdminArchivedPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+        Column<AdminArchivedPageRow, RuleFormatImageResource> formatColumn = new Column<AdminArchivedPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
 
             public RuleFormatImageResource getValue(AdminArchivedPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();

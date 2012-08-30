@@ -8,35 +8,35 @@
     <asseteditor>
         <class>org.drools.guvnor.client.modeldriven.ui.RuleModeller</class> 
         <format>brl</format>
-        <icon>images.ruleAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.RuleValidatorWrapper</class> 
         <format>dslr</format>
-        <icon>images.ruleAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget</class> 
         <format>xls</format>
-        <icon>images.spreadsheetSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.SpreadsheetSmall()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget</class> 
         <format>gdst</format>
-        <icon>images.gdst()</icon>
+        <icon>GuvnorImages.INSTANCE.Gdst()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor</class> 
         <format>template</format>
-        <icon>images.ruleAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
     <!--  end of business rules group-->
@@ -44,35 +44,35 @@
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.DrlEditor</class> 
         <format>drl</format>
-        <icon>images.technicalRuleAssets()</icon>
+        <icon>GuvnorImages.INSTANCE.TechnicalRuleAssets()</icon>
         <title>constants.TechnicalRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.FunctionEditor</class> 
         <format>function</format>
-        <icon>images.functionAssets()</icon>
+        <icon>GuvnorImages.INSTANCE.FunctionAssets()</icon>
         <title>constants.Functions()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget</class> 
         <format>dsl</format>
-        <icon>images.dsl()</icon>
+        <icon>GuvnorImages.INSTANCE.Dsl()</icon>
         <title>constants.DSLConfigurations()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.common.POJOModelUploadWidget</class> 
         <format>jar</format>
-        <icon>images.modelAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.ModelAsset()</icon>
         <title>constants.Model()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.factmodel.FactModelsWidget</class> 
         <format>model.drl</format>
-        <icon>images.modelAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.ModelAsset()</icon>
         <title>constants.Model()</title>    
     </asseteditor>
     
@@ -80,28 +80,28 @@
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class> 
         <format>rf</format>
-        <icon>images.ruleflowSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor</class> 
         <format>bpmn</format>
-        <icon>images.ruleflowSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor</class> 
         <format>bpmn2</format>
-        <icon>images.ruleflowSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class> 
         <format>rf</format>
-        <icon>images.ruleflowSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>    
     <!--  end of jBPM editor group   -->
@@ -109,56 +109,56 @@
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget</class> 
         <format>enumeration</format>
-        <icon>images.enumeration()</icon>
+        <icon>GuvnorImages.INSTANCE.Enumeration()</icon>
         <title>constants.Enumerations()</title>    
     </asseteditor>       
     
     <asseteditor>
         <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
         <format>scenario</format>
-        <icon>images.testManager()</icon>
+        <icon>GuvnorImages.INSTANCE.TestManager()</icon>
         <title>constants.TestScenarios()</title>    
     </asseteditor>       
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget</class> 
         <format>properties</format>
-        <icon>images.newFile()</icon>
+        <icon>GuvnorImages.INSTANCE.NewFile()</icon>
         <title>constants.XMLProperties()</title>    
     </asseteditor>   
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>xml</format>
-        <icon>images.newFile()</icon>
+        <icon>GuvnorImages.INSTANCE.NewFile()</icon>
         <title>constants.XMLProperties()</title>    
     </asseteditor> 
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget</class> 
         <format></format>
-        <icon>images.newFile()</icon>
+        <icon>GuvnorImages.INSTANCE.NewFile()</icon>
         <title>constants.OtherAssetsDocumentation()</title>    
     </asseteditor>
 
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.WorkingSetEditor</class> 
         <format>workingset</format>
-        <icon>images.workingset()</icon>
+        <icon>GuvnorImages.INSTANCE.Workingset()</icon>
         <title>constants.WorkingSets()</title>    
     </asseteditor>   
             
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor</class> 
         <format>springContext</format>
-        <icon>images.enumeration()</icon>
+        <icon>GuvnorImages.INSTANCE.Enumeration()</icon>
         <title>constants.SpringContext()</title>    
     </asseteditor>    
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.workitem.WorkitemDefinitionEditor</class> 
         <format>wid</format>
-        <icon>images.enumeration()</icon>
+        <icon>GuvnorImages.INSTANCE.Enumeration()</icon>
         <title>constants.WorkItemDefinition()</title>    
     </asseteditor>           
     
@@ -166,73 +166,73 @@
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>xmlschema</format>
-        <icon>images.ruleAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.RuleAsset()</icon>
         <title>constants.XMLSchemas()</title>    
     </asseteditor> 
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>samplemessages</format>
-        <icon>images.gdst()</icon>
+        <icon>GuvnorImages.INSTANCE.Gdst()</icon>
         <title>constants.SampleMessages()</title>    
     </asseteditor>   
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>wsdl</format>
-        <icon>images.technicalRuleAssets()</icon>
+        <icon>GuvnorImages.INSTANCE.TechnicalRuleAssets()</icon>
         <title>constants.WSDLs()</title>    
     </asseteditor>
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>esbconfig</format>
-        <icon>images.dsl()</icon>
+        <icon>GuvnorImages.INSTANCE.Dsl()</icon>
         <title>constants.JBOSSESBConfig()</title>    
     </asseteditor>     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>smooks</format>
-        <icon>images.functionAssets()</icon>
+        <icon>GuvnorImages.INSTANCE.FunctionAssets()</icon>
         <title>constants.Smooks()</title>    
     </asseteditor>   
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>scenariodiagram</format>
-        <icon>images.enumeration()</icon>
+        <icon>GuvnorImages.INSTANCE.Enumeration()</icon>
         <title>constants.ScenarioDiagrams()</title>    
     </asseteditor>        
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>choreographymodel</format>
-        <icon>images.testManager()</icon>
+        <icon>GuvnorImages.INSTANCE.TestManager()</icon>
         <title>constants.ChoreographyModels()</title>    
     </asseteditor>   
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>deploymentarchive</format>
-        <icon>images.modelAsset()</icon>
+        <icon>GuvnorImages.INSTANCE.ModelAsset()</icon>
         <title>constants.DeploymentArchives()</title>    
     </asseteditor>   
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>jmsdestination</format>
-        <icon>images.workingset()</icon>
+        <icon>GuvnorImages.INSTANCE.Workingset()</icon>
         <title>constants.JMSDestinations()</title>    
     </asseteditor>   
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>javasource</format>
-        <icon>images.newFile()</icon>
+        <icon>GuvnorImages.INSTANCE.NewFile()</icon>
         <title>constants.JavaSource()</title>    
     </asseteditor>        
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>doc</format>
-        <icon>images.eventLogSmall()</icon>
+        <icon>GuvnorImages.INSTANCE.EventLogSmall()</icon>
         <title>constants.Documentation()</title>    
     </asseteditor>         
     <asseteditor>
         <class>org.drools.guvnor.client.common.DefaultContentUploadEditor</class> 
         <format>other</format>
-        <icon>images.newFile()</icon>
+        <icon>GuvnorImages.INSTANCE.NewFile()</icon>
         <title>constants.Other()</title>    
     </asseteditor>    
 </asseteditors>
