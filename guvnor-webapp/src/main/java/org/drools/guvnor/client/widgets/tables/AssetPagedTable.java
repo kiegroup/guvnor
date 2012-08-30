@@ -26,7 +26,7 @@ import com.google.gwt.view.client.HasData;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImage;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -89,16 +89,16 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     protected void addAncillaryColumns(ColumnPicker<AssetPageRow> columnPicker,
                                         SortableHeaderGroup<AssetPageRow> sortableHeaderGroup) {
 
-        Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
+        Column<AssetPageRow, ComparableImage> formatColumn = new Column<AssetPageRow, ComparableImage>( new ComparableImageCell() ) {
 
-            public RuleFormatImageResource getValue(AssetPageRow row) {
+            public ComparableImage getValue(AssetPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource( row.getFormat(),
+                return new ComparableImage( row.getFormat(),
                                                     factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<AssetPageRow, RuleFormatImageResource>( sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, ComparableImage>( sortableHeaderGroup,
                                                                                            constants.Format(),
                                                                                            formatColumn ),
                                 true );

@@ -26,7 +26,7 @@ import com.google.gwt.view.client.HasData;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImage;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -70,15 +70,15 @@ public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> imple
     protected void addAncillaryColumns( ColumnPicker<InboxPageRow> columnPicker,
                                         SortableHeaderGroup<InboxPageRow> sortableHeaderGroup ) {
 
-        Column<InboxPageRow, RuleFormatImageResource> formatColumn = new Column<InboxPageRow, RuleFormatImageResource>( new RuleFormatImageCell() ) {
+        Column<InboxPageRow, ComparableImage> formatColumn = new Column<InboxPageRow, ComparableImage>( new ComparableImageCell() ) {
 
-            public RuleFormatImageResource getValue( InboxPageRow row ) {
+            public ComparableImage getValue( InboxPageRow row ) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource( row.getFormat(), factory.getAssetEditorIcon( row.getFormat() ) );
+                return new ComparableImage( row.getFormat(), factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                new SortableHeader<InboxPageRow, RuleFormatImageResource>(
+                new SortableHeader<InboxPageRow, ComparableImage>(
                         sortableHeaderGroup,
                         constants.Format(),
                         formatColumn ),

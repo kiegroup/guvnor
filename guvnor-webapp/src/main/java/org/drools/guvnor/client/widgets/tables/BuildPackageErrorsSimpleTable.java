@@ -21,7 +21,7 @@ import java.util.Set;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImage;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 
 import com.google.gwt.cell.client.ButtonCell;
@@ -118,15 +118,15 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
                                                                                assetNameColumn ),
                                 true );
 
-        Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageCell() ) {
+        Column<BuilderResultLine, ComparableImage> formatColumn = new Column<BuilderResultLine, ComparableImage>( new ComparableImageCell() ) {
 
-            public RuleFormatImageResource getValue(BuilderResultLine row) {
+            public ComparableImage getValue(BuilderResultLine row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new RuleFormatImageResource(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
+                return new ComparableImage(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<BuilderResultLine, RuleFormatImageResource>(
+                                new SortableHeader<BuilderResultLine, ComparableImage>(
                                                                                                 sortableHeaderGroup,
                                                                                                 constants.Format(),
                                                                                                 formatColumn ),

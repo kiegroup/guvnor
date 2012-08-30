@@ -15,22 +15,28 @@
 */
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.resources.ComparableImage;
 
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class RuleFormatImageCell extends AbstractCell<RuleFormatImageResource> {
 
+public class ComparableImageCell extends AbstractCell<ComparableImage> {
+/*	interface Template extends SafeHtmlTemplates {
+		@Template("<img src=\"{0}\"/>")
+		SafeHtml img(String url);
+	}
+	private static Template template;*/
+	
     @Override
     public void render(Context context,
-                       RuleFormatImageResource value,
+                       ComparableImage value,
                        SafeHtmlBuilder sb) {
-        SafeHtml html = SafeHtmlUtils.fromTrustedString( AbstractImagePrototype.create( value ).getHTML() );
-        sb.append( html );
+        if (value != null) {
+            // The template will sanitize the URI.
+        	sb.append(SafeHtmlUtils.fromTrustedString(value.getImageHTML()));
+          }
     }
 
 }
