@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 
 import com.google.gwt.core.client.GWT;
@@ -49,7 +50,7 @@ public class BackupManager extends Composite {
     public BackupManager() {
 
         PrettyFormLayout widtab = new PrettyFormLayout();
-        widtab.addHeader( images.backupLarge(),
+        widtab.addHeader(GuvnorImages.INSTANCE.BackUp(),
                           new HTML( constants.ImportOrExport() ) );
 
         widtab.startSection( constants.ImportFromAnXmlFile() );

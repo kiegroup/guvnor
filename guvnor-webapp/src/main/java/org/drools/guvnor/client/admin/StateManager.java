@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
@@ -44,7 +45,7 @@ public class StateManager extends Composite {
 
     public StateManager() {
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.statusLarge(),
+        form.addHeader(GuvnorImages.INSTANCE.Status(),
                         new HTML( "<b>" + constants.ManageStatuses() + "</b>" ) );
         form.startSection( constants.StatusTagsAreForTheLifecycleOfAnAsset() );
 

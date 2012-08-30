@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.VerificationService;
@@ -57,7 +58,7 @@ public class VerifierScreen extends Composite {
         } );
         vert.add( run );
 
-        pf.addHeader( images.analyzeLarge(),
+        pf.addHeader(GuvnorImages.INSTANCE.Analyze(),
                 vert );
         layout.add( pf );
 

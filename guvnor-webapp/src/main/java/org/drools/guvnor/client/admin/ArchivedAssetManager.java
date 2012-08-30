@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -61,7 +62,7 @@ public class ArchivedAssetManager extends Composite {
         VerticalPanel header = new VerticalPanel();
         header.add( new HTML( constants.ArchivedItems() ) );
 
-        pf.addHeader( images.backupLarge(),
+        pf.addHeader(GuvnorImages.INSTANCE.BackUp(),
                       header );
 
         loadPackages();

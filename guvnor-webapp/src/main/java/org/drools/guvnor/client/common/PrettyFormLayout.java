@@ -56,11 +56,11 @@ public class PrettyFormLayout extends Composite {
         this.layout.clear();
     }
 
-    public void addHeader(ImageResource img,
+    public void addHeader(Image img,
                           String name,
                           Image edit) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( new Image( img ) );
+        h.add( img );
         h.add( new HTML( "&nbsp;" ) );
         h.add( new Label( name ) );
         if ( edit != null ) h.add( edit );
@@ -71,10 +71,10 @@ public class PrettyFormLayout extends Composite {
         layout.add( f );
     }
 
-    public void addHeader(ImageResource img,
+    public void addHeader(Image img,
                           Widget content) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( new Image( img ) );
+        h.add( img );
         h.add( new HTML( "&nbsp;" ) );
         h.add( content );
         FormPanel f = newForm( null );

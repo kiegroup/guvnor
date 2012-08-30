@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.widgets.tables.LogPagedTable;
@@ -51,7 +52,7 @@ public class EventLogViewImpl extends Composite
         caption.getElement().getStyle().setFontWeight(FontWeight.BOLD);
         header.add(caption);
 
-        pf.addHeader(images.eventLogLarge(),
+        pf.addHeader(GuvnorImages.INSTANCE.EventLog(),
                 header);
 
         layout = new VerticalPanel();

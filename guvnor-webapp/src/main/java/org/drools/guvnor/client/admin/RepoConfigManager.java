@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RdbmsConfigurable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -71,7 +72,7 @@ public class RepoConfigManager extends Composite {
     @SuppressWarnings("deprecation")
     public RepoConfigManager() {
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.config(),
+        form.addHeader(GuvnorImages.INSTANCE.Config(),
                         new HTML( constants.ManageRepositoryConfig() ) );
 
         DockPanel dock = new DockPanel();

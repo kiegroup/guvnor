@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTablePresenter;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTableView;
@@ -41,7 +42,7 @@ public class PermissionViewer extends Composite {
         header.add(caption);
         header.add(howToTurnOn());
 
-        pf.addHeader(images.userPermissionsLarge(),
+        pf.addHeader(GuvnorImages.INSTANCE.UserPermissions(),
                 header);
 
         layout = new VerticalPanel();

@@ -21,6 +21,7 @@ import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -52,7 +53,7 @@ public class CategoryManager extends Composite {
     public CategoryManager() {
 
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.editCategory(),
+        form.addHeader(GuvnorImages.INSTANCE.EditCategories(),
                         new HTML( constants.EditCategories() ) );
         form.startSection( constants.CategoriesPurposeTip() );
 

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -74,7 +75,7 @@ public class ScenarioPackageScreen extends Composite {
 
         vert.add( run );
 
-        pf.addHeader( images.scenarioLarge(),
+        pf.addHeader(GuvnorImages.INSTANCE.Scenario(),
                 vert );
 
         layout.add( pf );

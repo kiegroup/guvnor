@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.packages;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,30 +23,14 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.common.RulePackageSelector;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
@@ -57,6 +38,9 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the new snapshot view.
@@ -91,22 +75,24 @@ public class SnapshotView extends Composite {
         this.parentConf = parentPackage;
         PrettyFormLayout head = new PrettyFormLayout();
 
-        head.addHeader(images.snapshot(),
+        Image snapshot = GuvnorImages.INSTANCE.Snapshot();
+        snapshot.setAltText("");
+        head.addHeader(snapshot,
                 header());
 
         vert.add(head);
-        
+
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(parentConf.uuid,
                 clientFactory);
         assetViewerActivity.start(new AcceptItem() {
-                    public void add(String tabTitle, IsWidget widget) {
-                        ScrollPanel pnl = new ScrollPanel();
-                        pnl.setWidth("100%");
-                        pnl.add(widget);
-                        vert.add(pnl);
-                    }
-                }, null);
-        
+            public void add(String tabTitle, IsWidget widget) {
+                ScrollPanel pnl = new ScrollPanel();
+                pnl.setWidth("100%");
+                pnl.add(widget);
+                vert.add(pnl);
+            }
+        }, null);
+
         vert.setWidth("100%");
         initWidget(vert);
 
@@ -199,7 +185,7 @@ public class SnapshotView extends Composite {
     }
 
     private Widget getCompareWidget(final String packageName,
-            final String snapshotName) {
+                                    final String snapshotName) {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add(new Label("Compare to:"));
 
@@ -235,7 +221,7 @@ public class SnapshotView extends Composite {
     }
 
     private Button getDeleteButton(final String snapshotName,
-            final String moduleName) {
+                                   final String moduleName) {
         Button btn = new Button(constants.Delete());
         btn.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -263,7 +249,7 @@ public class SnapshotView extends Composite {
     }
 
     private Button getCopyButton(final String snapshotName,
-            final String packageName) {
+                                 final String packageName) {
         final PackageServiceAsync serv = RepositoryServiceFactory.getPackageService();
         Button btn = new Button(constants.Copy());
         btn.addClickHandler(new ClickHandler() {
@@ -278,8 +264,8 @@ public class SnapshotView extends Composite {
     }
 
     private GenericCallback<SnapshotInfo[]> createGenericCallback(final String snapshotName,
-            final String packageName,
-            final PackageServiceAsync serv) {
+                                                                  final String packageName,
+                                                                  final PackageServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
                 final FormStylePopup copy = new FormStylePopup(images.snapshot(),
@@ -378,7 +364,7 @@ public class SnapshotView extends Composite {
                     }
 
                     private boolean checkUnique(SnapshotInfo[] snaps,
-                            String name) {
+                                                String name) {
                         for (SnapshotInfo sn : snaps) {
                             if (sn.getName().equals(name)) {
                                 Window.alert(constants.PleaseEnterANonExistingSnapshotName());

@@ -2561,4 +2561,12 @@ public interface Constants
     String AddConnective();
 
     String NewItemDisabled();
+
+    String Backup();
+
+    String UserPermissions();
+
+    String Scenario();
+
+    String WorkspaceManager();
 }
