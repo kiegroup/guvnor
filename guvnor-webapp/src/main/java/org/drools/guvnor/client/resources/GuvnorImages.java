@@ -299,4 +299,10 @@ public class GuvnorImages {
         image.setAltText(Constants.INSTANCE.Collapse());
         return image;
     }
+    
+    public Image Feed() {
+        Image image = new Image(Images.INSTANCE.feed());
+        image.setAltText(Constants.INSTANCE.Feed());
+        return image;
+    }    
 }

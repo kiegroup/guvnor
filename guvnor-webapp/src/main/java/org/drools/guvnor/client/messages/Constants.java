@@ -2565,4 +2565,6 @@ public interface Constants
     String Collapse();
 
     String Expand();
+    
+    String Feed();
 }

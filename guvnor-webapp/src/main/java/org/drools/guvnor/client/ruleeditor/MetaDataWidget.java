@@ -204,7 +204,7 @@ public class MetaDataWidget extends Composite {
 
         startSection(constants.VersionHistory());
 
-        Image image = new Image(images.feed());
+        Image image = GuvnorImages.INSTANCE.Feed();
         image.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 Window.open(getVersionFeed(artifact), "_blank", null);
