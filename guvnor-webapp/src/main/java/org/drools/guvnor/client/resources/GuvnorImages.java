@@ -305,4 +305,5 @@ public class GuvnorImages {
         image.setAltText(Constants.INSTANCE.Feed());
         return image;
     }    
+ 
 }

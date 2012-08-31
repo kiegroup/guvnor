@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -275,7 +276,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = new Image( images.edit() );
+            Image clickme = GuvnorImages.INSTANCE.Edit();
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     showTypeChoice( (Widget) event.getSource() );

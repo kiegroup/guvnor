@@ -153,7 +153,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
-                    Image clickme = new Image( images.edit() );
+                    Image clickme = GuvnorImages.INSTANCE.Edit();
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
                             showTypeChoice( w,

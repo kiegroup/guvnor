@@ -18,6 +18,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 
@@ -123,7 +124,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
         Image btn;
         if ( !this.readOnly ) {
-            btn = new Image(images.edit());
+            btn = GuvnorImages.INSTANCE.Edit();
             btn.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
