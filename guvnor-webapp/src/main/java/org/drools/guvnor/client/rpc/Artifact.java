@@ -7,17 +7,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Artifact
     implements
     IsSerializable {
-    public String  uuid;
-    public String  name;
-    public String  description;
-    public Date    lastModified;
-    public String  lastContributor;
-    public String  state      = "";
-    public Date    dateCreated;
-    public String  checkinComment;
-    public long    versionNumber;
-    public boolean readonly = false;
-    public String   format = "";
+    
+    private String  uuid;
+    private String  name;
+    private String  description;
+    private Date    lastModified;
+    private String  lastContributor;
+    private String  state      = "";
+    private Date    dateCreated;
+    private String  checkinComment;
+    private long    versionNumber;
+    private boolean isReadonly = false;
+    private boolean isArchived = false;
+    private String   format = "";
     
     public String getUuid() {
         return uuid;
@@ -101,11 +103,11 @@ public class Artifact
     }
 
     public boolean isReadonly() {
-        return readonly;
+        return isReadonly;
     }
 
-    public Artifact setReadonly(boolean isreadonly) {
-        this.readonly = isreadonly;
+    public Artifact setReadonly(boolean isReadonly) {
+        this.isReadonly = isReadonly;
         return this;
     }
 
@@ -115,6 +117,15 @@ public class Artifact
 
     public Artifact setFormat(String format) {
         this.format = format;
+        return this;
+    }
+    
+    public boolean isArchived() {
+        return isArchived;
+    }
+    
+    public Artifact setArchived(boolean isArchived) {
+        this.isArchived = isArchived;
         return this;
     }
 

@@ -668,7 +668,7 @@ public class RuleViewer extends GuvnorEditor {
      * closes itself
      */
     private void close() {
-        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.getUuid() ) ) );
     }
 
     private void completedCopying(String name,

@@ -96,7 +96,7 @@ public class VerificationServiceImplementationTest {
     public RuleAsset getAsset(String content) {
         RuleAsset ruleAsset = new RuleAsset();
 
-        ruleAsset.uuid = "mockUUID";
+        ruleAsset.setUuid( "mockUUID" );
         ruleAsset.metaData = getMetaData();
         ruleAsset.setFormat( AssetFormats.DRL);
         ruleAsset.content = getRuleContentText(content);

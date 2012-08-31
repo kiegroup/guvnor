@@ -576,7 +576,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
+                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.getUuid() ) ) );
                 refreshPackageList();
             }
         };

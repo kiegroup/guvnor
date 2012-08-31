@@ -88,7 +88,7 @@ public class ExplorerNodeConfig {
 
     private static void buildDeploymentTree( TreeItem root, Folder fldr ) {
         if ( fldr.getPackageConfigData() != null ) {
-            TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getPackageConfigData().name ) );
+            TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getPackageConfigData().getName() ) );
             pkg.setUserObject( fldr.getPackageConfigData() );
             pkg.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
             root.addItem( pkg );

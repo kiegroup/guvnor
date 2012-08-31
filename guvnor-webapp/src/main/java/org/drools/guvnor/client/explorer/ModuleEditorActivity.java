@@ -50,7 +50,7 @@ public class ModuleEditorActivity extends Activity {
                     public void onSuccess( PackageConfigData packageConfigData ) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
                         acceptTabItem.add(
-                                packageConfigData.name,
+                                packageConfigData.getName(),
                                 new ModuleEditorWrapper( packageConfigData, clientFactory, eventBus ) );
 
                         view.closeLoadingPackageInformationMessage();

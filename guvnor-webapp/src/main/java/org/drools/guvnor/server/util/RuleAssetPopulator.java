@@ -31,6 +31,7 @@ public class RuleAssetPopulator {
         ruleAsset.setCheckinComment( assetItem.getCheckinComment() );
         ruleAsset.setVersionNumber( assetItem.getVersionNumber() );
         ruleAsset.setFormat(assetItem.getFormat());
+        ruleAsset.setArchived(assetItem.isArchived());
         return ruleAsset;
     }
 

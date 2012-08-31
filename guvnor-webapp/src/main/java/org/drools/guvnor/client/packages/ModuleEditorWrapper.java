@@ -84,7 +84,7 @@ public class ModuleEditorWrapper extends Composite {
         layout.clear();
         layout.add(actionToolBar);
 
-        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.getUuid(),
                 clientFactory);
         assetViewerActivity.start(new AcceptItem() {
                     public void add(String tabTitle, IsWidget widget) {

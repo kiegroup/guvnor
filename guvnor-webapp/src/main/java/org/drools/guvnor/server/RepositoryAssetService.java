@@ -130,7 +130,7 @@ public class RepositoryAssetService
         handler.retrieveAssetContent(asset,
                 item);
 
-        asset.setReadonly(asset.getMetaData().isHasSucceedingVersion());
+        asset.setReadonly(asset.getMetaData().isHasSucceedingVersion() || asset.isArchived());
 
         if (packageItem.isSnapshot()) {
             asset.setReadonly(true);

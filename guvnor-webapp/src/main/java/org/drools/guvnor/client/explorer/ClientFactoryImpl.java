@@ -162,7 +162,7 @@ public class ClientFactoryImpl
                                       eventBus,
                                       historicalReadOnly,
                                       refreshCommand );
-        } else if ( packageConfigData.format.equals( "soaservice" ) ) {
+        } else if ( packageConfigData.getFormat().equals( "soaservice" ) ) {
             return new SOAServiceEditor(
                                          packageConfigData,
                                          clientFactory,
