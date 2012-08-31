@@ -16,94 +16,87 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.AnalysisReportLine;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.AnalysisReportLine;
 
 /**
  * Shows the results of an analysis run.
  */
 public class VerifierResultWidget extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
     public VerifierResultWidget(AnalysisReport report,
                                 boolean showFactUsage) {
-        
+
         FormStyleLayout layout = new FormStyleLayout();
 
         Tree tree = new Tree();
 
-        TreeItem errors = doMessageLines( constants.Errors(),
-                                          images.error(),
-                                          report.errors );
-        tree.addItem( errors );
+        TreeItem errors = doMessageLines(constants.Errors(),
+                images.error(),
+                report.errors);
+        tree.addItem(errors);
 
-        TreeItem warnings = doMessageLines( constants.Warnings(),
-                                            images.warning(),
-                                            report.warnings );
-        tree.addItem( warnings );
+        TreeItem warnings = doMessageLines(constants.Warnings(),
+                images.warning(),
+                report.warnings);
+        tree.addItem(warnings);
 
-        TreeItem notes = doMessageLines( constants.Notes(),
-                                         images.note(),
-                                         report.notes );
-        tree.addItem( notes );
+        TreeItem notes = doMessageLines(constants.Notes(),
+                images.note(),
+                report.notes);
+        tree.addItem(notes);
 
-        if ( showFactUsage ) {
-            tree.addItem( new FactUsagesItem( report.factUsages ) );
+        if (showFactUsage) {
+            tree.addItem(new FactUsagesItem(report.factUsages));
         }
 
-        tree.addCloseHandler( new CloseHandler<TreeItem>() {
+        tree.addCloseHandler(new CloseHandler<TreeItem>() {
             public void onClose(CloseEvent<TreeItem> event) {
-                swapTitleWithUserObject( event.getTarget() );
+                swapTitleWithUserObject(event.getTarget());
             }
-        } );
-        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+        });
+        tree.addOpenHandler(new OpenHandler<TreeItem>() {
             public void onOpen(OpenEvent<TreeItem> event) {
-                swapTitleWithUserObject( event.getTarget() );
+                swapTitleWithUserObject(event.getTarget());
             }
-        } );
-        layout.addRow( tree );
+        });
+        layout.addRow(tree);
 
-        initWidget( layout );
+        initWidget(layout);
     }
 
     private TreeItem doMessageLines(String messageType,
                                     ImageResource icon,
                                     AnalysisReportLine[] lines) {
 
-        TreeItem linesItem;
+        String summary = constants.analysisResultSummary(messageType, lines.length);
 
-        String summary = constants.analysisResultSummary(messageType, lines.length );
-
-        String topicHtml = AbstractImagePrototype.create(icon).getHTML() + "&nbsp; " + summary;
-
-        linesItem = new VerifierMessageLinesItem( topicHtml,
-                                                  lines );
-
-        return linesItem;
+        return new VerifierMessageLinesItem(
+                "<img src=\"" + icon.getURL() + "\" alt=\"\"/>&nbsp;" + summary,
+                lines);
     }
 
     private void swapTitleWithUserObject(TreeItem x) {
-        if ( x.getUserObject() != null ) {
+        if (x.getUserObject() != null) {
             Widget currentW = x.getWidget();
-            x.setWidget( (Widget) x.getUserObject() );
-            x.setUserObject( currentW );
+            x.setWidget((Widget) x.getUserObject());
+            x.setUserObject(currentW);
         }
     }
 
