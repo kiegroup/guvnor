@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+package org.drools.guvnor.client.util;
 
-/**
- * General CSS for Guvnor. Use of standalone CSS files should be migrated to here
- */
-public interface GuvnorCss
-    extends
-    CssResource {
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 
-    String warningContainer();
-    
-    String warningMessage();
+import static org.drools.guvnor.client.resources.Images.*;
 
-    String closeTabImage();
+public class FocusableAccessibleImage extends FocusPanel {
+
+    public FocusableAccessibleImage(final String altText) {
+        final Image image = new Image(INSTANCE.transparentIco());
+        image.setAltText( altText );
+        setWidget( image );
+    }
+
 }

@@ -19,7 +19,6 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
@@ -34,7 +33,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public abstract class FactWidget extends HorizontalPanel {
 
     protected static Constants     constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final ScenarioWidget parent;
     protected final Scenario       scenario;

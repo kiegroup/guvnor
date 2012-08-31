@@ -30,6 +30,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -37,6 +38,8 @@ import org.drools.guvnor.client.util.Util;
 
 import java.util.Iterator;
 import java.util.Map;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public class QATree extends NavigationItemBuilderOld
         implements
@@ -106,9 +109,8 @@ public class QATree extends NavigationItemBuilderOld
 
                     for (int i = 0; i < conf.length; i++) {
                         final PackageConfigData c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader(INSTANCE.PackagesAltPackage(),
                                 c.getName() ) );
-
                         node.addItem( pkg );
                         pkg.setUserObject( c );
                         itemWidgets.put( pkg,
@@ -123,9 +125,8 @@ public class QATree extends NavigationItemBuilderOld
                     removeAnalysisIDs( itemWidgets );
                     for (int i = 0; i < conf.length; i++) {
                         final PackageConfigData c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
+                        TreeItem pkg = new TreeItem( Util.getHeader( INSTANCE.PackagesAltPackage(),
                                 c.getName() ) );
-
                         node.addItem( pkg );
                         pkg.setUserObject( c );
                         itemWidgets.put( pkg,

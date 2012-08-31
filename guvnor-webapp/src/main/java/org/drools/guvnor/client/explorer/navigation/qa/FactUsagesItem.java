@@ -34,9 +34,9 @@ class FactUsagesItem extends TreeItem {
     public FactUsagesItem(AnalysisFactUsage[] factUsages) {
         setStyleName("analysis-Report");
 
-        setHTML(createImageTag(images.factTemplate()) + " <b> " + constants.ShowFactUsages() + " </b> ");
+        setHTML(createImageTag(images.factTemplate(), "") + " <b> " + constants.ShowFactUsages() + " </b> ");
 
-        setUserObject(new HTML(createImageTag(images.factTemplate()) + " <b>" + constants.FactUsages() + ":</b>"));
+        setUserObject(new HTML(createImageTag(images.factTemplate(), "") + " <b>" + constants.FactUsages() + ":</b>"));
 
         doFacts(factUsages);
     }
@@ -44,7 +44,7 @@ class FactUsagesItem extends TreeItem {
     private void doFacts(AnalysisFactUsage[] factUsages) {
         for (AnalysisFactUsage factUsage : factUsages) {
 
-            TreeItem fact = new TreeItem(createImageTag(images.fact()) + factUsage.name);
+            TreeItem fact = new TreeItem(createImageTag(images.fact(), constants.Fact()) + factUsage.name);
             TreeItem fieldList = doFields(factUsage.fields);
             fact.addItem(fieldList);
             fieldList.setState(true);
@@ -58,7 +58,7 @@ class FactUsagesItem extends TreeItem {
         TreeItem fieldList = new TreeItem(constants.FieldsUsed());
 
         for (AnalysisFieldUsage fieldUsage : fields) {
-            TreeItem field = new TreeItem(createImageTag(images.field()) + fieldUsage.name);
+            TreeItem field = new TreeItem(createImageTag(images.field(), constants.Field()) + fieldUsage.name);
             fieldList.addItem(field);
             TreeItem ruleList = doAffectedRules(fieldUsage);
             field.addItem(ruleList);
@@ -72,12 +72,12 @@ class FactUsagesItem extends TreeItem {
         TreeItem ruleList = new TreeItem(constants.ShowRulesAffected());
         ruleList.setUserObject(new HTML(constants.RulesAffected()));
         for (String ruleName : fieldUsage.rules) {
-            ruleList.addItem(new TreeItem(createImageTag(images.ruleAsset()) + ruleName));
+            ruleList.addItem(new TreeItem(createImageTag(images.ruleAsset(), constants.Rule()) + ruleName));
         }
         return ruleList;
     }
 
-    private String createImageTag(ImageResource imageResource) {
-        return "<img src=\"" + imageResource.getURL() + "\" alt=\"\"/>";
+    private String createImageTag(ImageResource imageResource, String alt) {
+        return "<img src=\"" + imageResource.getURL() + "\" alt=\"" + alt + "\"/>";
     }
 }

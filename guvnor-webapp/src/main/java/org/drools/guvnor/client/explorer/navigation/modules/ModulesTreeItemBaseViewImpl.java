@@ -9,15 +9,15 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public abstract class ModulesTreeItemBaseViewImpl
     implements
     ModulesTreeItemBaseView {
 
     protected static Constants constants = GWT.create( Constants.class );
-    protected static Images    images    = GWT.create( Images.class );
 
     protected final Tree       tree      = new Tree();
     protected Presenter          presenter;
@@ -51,13 +51,13 @@ public abstract class ModulesTreeItemBaseViewImpl
 
     public IsTreeItem addModuleTreeItem(IsTreeItem parentTreeItem,
                                         String moduleName) {
-        return parentTreeItem.asTreeItem().addItem( Util.getHeader( images.emptyPackage(),
+        return parentTreeItem.asTreeItem().addItem( Util.getHeader( INSTANCE.EmptyPackageAlt(),
                                                                     moduleName ) );
     }
 
     public IsTreeItem addModuleTreeSelectableItem(IsTreeItem parentTreeItem,
                                                   String moduleName) {
-        return parentTreeItem.asTreeItem().addItem( Util.getHeader( images.packages(),
+        return parentTreeItem.asTreeItem().addItem( Util.getHeader( INSTANCE.PackagesAltPackage(),
                                                                     moduleName ) );
     }
 

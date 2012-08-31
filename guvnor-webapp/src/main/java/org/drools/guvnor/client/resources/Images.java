@@ -350,4 +350,6 @@ public interface Images
     @Source("images/info-large.png")
     ImageResource infoLarge();
 
+    @Source("images/transparentIco.png")
+    ImageResource transparentIco();
 }

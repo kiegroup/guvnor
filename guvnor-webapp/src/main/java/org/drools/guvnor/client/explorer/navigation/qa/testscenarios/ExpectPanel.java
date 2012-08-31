@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -33,7 +32,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class ExpectPanel extends HorizontalPanel {
 
     private Constants              constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final Scenario       scenario;
     protected final ScenarioWidget parent;

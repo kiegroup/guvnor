@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.StackItemHeader;
@@ -74,6 +75,8 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public class NavigationViewFactoryImpl
     implements
@@ -170,17 +173,17 @@ public class NavigationViewFactoryImpl
     //TODO: get header from configuration instead of hard coding. - JLIU
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {
         String title;
-        ImageResource image;
+        Image image;
         if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
             title = "Services";
-            image = images.packages();
+            image = INSTANCE.PackagesNotAlt();
         } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
             title = constants.Packages();
-            image = images.chartOrganisation();
+            image = INSTANCE.ChartOrganisationNoAlt();
         } else {
             //Default
             title = constants.Packages();
-            image = images.chartOrganisation();
+            image = INSTANCE.ChartOrganisationNoAlt();
         }
 
         return Util.getHeader( image,

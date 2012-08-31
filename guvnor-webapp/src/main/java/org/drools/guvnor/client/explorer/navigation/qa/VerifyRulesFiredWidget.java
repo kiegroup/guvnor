@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -41,7 +40,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -49,7 +47,6 @@ import com.google.gwt.user.client.ui.TextBox;
 public class VerifyRulesFiredWidget extends Composite {
 
     private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
 
     private Grid          outer;
     private boolean       showResults;
@@ -87,7 +84,7 @@ public class VerifyRulesFiredWidget extends Composite {
 
     private FlexTable render(final FixtureList rfl,
                              final Scenario sc) {
-        FlexTable data = new DirtyableFlexTable();
+        final FlexTable data = new DirtyableFlexTable();
 
         for ( int i = 0; i < rfl.size(); i++ ) {
             final VerifyRuleFired v = (VerifyRuleFired) rfl.get( i );
@@ -96,7 +93,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 if ( !v.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.warning() ) );
+                                    GuvnorImages.INSTANCE.WarningAlt() );
                     data.setWidget( i,
                                     4,
                                     new HTML( constants.ActualResult(v.getActualResult().toString()) ) );
@@ -108,7 +105,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.testPassed() ) );
+                                    GuvnorImages.INSTANCE.TestPassedAlt() );
                 }
 
             }

@@ -20,13 +20,10 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
@@ -37,16 +34,17 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
+
 /*
  * This class contains static node config for BRMS' explorer widgets
  */
 public class ExplorerNodeConfig {
 
     private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
 
     // Browse
-     public static final String CATEGORY_ID = "category";                                 // NON-NLS
+    public static final String CATEGORY_ID = "category";                                 // NON-NLS
     public static final String RECENT_EDITED_ID = "recentEdited";
     public static final String RECENT_VIEWED_ID = "recentViewed";
     public static final String INCOMING_ID = "incoming";
@@ -65,7 +63,7 @@ public class ExplorerNodeConfig {
     public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
 
     public static void setupDeploymentTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
-        TreeItem root = tree.addItem( Util.getHeader( images.chartOrganisation(), constants.PackageSnapshots() ) );
+        TreeItem root = tree.addItem( Util.getHeader( INSTANCE.ChartOrganisationNoAlt(), constants.PackageSnapshots() ) );
         root.setState( true );
         itemWidgets.put( root, PACKAGE_SNAPSHOTS );
         deploymentListPackages( root );
@@ -88,12 +86,12 @@ public class ExplorerNodeConfig {
 
     private static void buildDeploymentTree( TreeItem root, Folder fldr ) {
         if ( fldr.getPackageConfigData() != null ) {
-            TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getPackageConfigData().getName() ) );
+            TreeItem pkg = new TreeItem( Util.getHeader(INSTANCE.SnapshotSmallAltPackage(), fldr.getPackageConfigData().getName()) );
             pkg.setUserObject( fldr.getPackageConfigData() );
             pkg.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
             root.addItem( pkg );
         } else {
-            TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(), fldr.getFolderName() ) );
+            TreeItem tn = new TreeItem( Util.getHeader( INSTANCE.EmptyPackageAlt(), fldr.getFolderName() ) );
             root.addItem( tn );
             for (Folder c : fldr.getChildren()) {
                 buildDeploymentTree( tn, c );
@@ -120,14 +118,14 @@ public class ExplorerNodeConfig {
                 for (int i = 0; i < value.length; i++) {
 
                     final String current = value[i];
-                    final TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), current ) );
+                    final TreeItem childNode = new TreeItem( Util.getHeader( INSTANCE.CategoryAlt(), current ) );
 
                     //ID for category tabs. 
                     String widgetId = CATEGORY_ID + "-" + ((path.equals( "/" )) ? current : path + "/" + current);
                     itemWidgets.put( childNode, widgetId );
                     treeItem.addItem( childNode );
 
-                    childNode.addItem( new TreeItem( Util.getHeader( images.categorySmall(), constants.PleaseWaitDotDotDot() ) ) );
+                    childNode.addItem( new TreeItem( Util.getHeader( INSTANCE.CategoryAlt(), constants.PleaseWaitDotDotDot() ) ) );
                     childNode.getTree().addOpenHandler( createOpenHandlerForTree( itemWidgets, childNode ) );
                 }
             }
@@ -160,12 +158,12 @@ public class ExplorerNodeConfig {
         Tree tree = new Tree();
         tree.setAnimationEnabled( true );
 
-        final TreeItem scenarios = new TreeItem( Util.getHeader( images.testManager(), constants.TestScenariosInPackages() ) );
+        final TreeItem scenarios = new TreeItem( Util.getHeader( INSTANCE.TestManagerNoAlt(), constants.TestScenariosInPackages() ) );
         scenarios.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
         tree.addItem( scenarios );
         itemWidgets.put( scenarios, TEST_SCENARIOS_ROOT_ID );
 
-        final TreeItem analysis = new TreeItem( Util.getHeader( images.analyze(), constants.Analysis() ) );
+        final TreeItem analysis = new TreeItem( Util.getHeader( INSTANCE.AnalyzeNoAlt(), constants.Analysis() ) );
         analysis.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
         itemWidgets.put( analysis, ANALYSIS_ROOT_ID );
 

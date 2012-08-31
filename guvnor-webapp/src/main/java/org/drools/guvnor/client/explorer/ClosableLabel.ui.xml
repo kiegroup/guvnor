@@ -8,18 +8,13 @@
   the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:util="urn:import:org.drools.guvnor.client.util">
 
-  <ui:with field='images' type='org.drools.guvnor.client.resources.Images' />
+  <ui:with field="res" type="org.drools.guvnor.client.resources.GuvnorResources" />
 
-  <gwt:FocusPanel ui:field="basePanel">
-    <gwt:HorizontalPanel>
-      <gwt:Label ui:field="text"></gwt:Label>
-      <gwt:SimplePanel width="10px">
-        <gwt:Image ui:field="closeButton" resource='{images.close}'
-          visible='false'></gwt:Image>
-      </gwt:SimplePanel>
-    </gwt:HorizontalPanel>
-  </gwt:FocusPanel>
+  <gwt:HorizontalPanel>
+    <gwt:Label ui:field="text"/>
+    <util:FocusableAccessibleImage ui:field="closePanel" styleName="{res.guvnorCss.closeTabImage}"/>
+  </gwt:HorizontalPanel>
 
 </ui:UiBinder>

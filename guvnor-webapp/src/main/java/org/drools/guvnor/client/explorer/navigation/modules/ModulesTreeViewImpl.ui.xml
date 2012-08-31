@@ -37,16 +37,16 @@
       <gwt:HorizontalPanel styleName="icon-bar">
         <gwt:HorizontalPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" />
+            <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" altText="{i18n.ExpandAll}" />
           </gwt:HTMLPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" />
+            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" altText="{i18n.CollapseAll}" />
           </gwt:HTMLPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" />
+            <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" altText="{i18n.FlatView}" />
           </gwt:HTMLPanel>
           <gwt:HTMLPanel styleName="icon-bar-item">
-            <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" />
+            <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" altText="{i18n.HierarchicalView}"/>
           </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
       </gwt:HorizontalPanel>

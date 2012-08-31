@@ -17,8 +17,6 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -27,9 +25,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.FocusableAccessibleImage;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public class ClosableLabel extends Composite
     implements
@@ -45,26 +46,18 @@ public class ClosableLabel extends Composite
     @UiField
     Label                              text;
 
-    @UiField
-    Image                              closeButton;
+    @UiField(provided = true)
+    FocusableAccessibleImage           closePanel;
 
     public ClosableLabel(final String title) {
+        closePanel = new FocusableAccessibleImage( Constants.INSTANCE.Close() );
+
         initWidget( uiBinder.createAndBindUi( this ) );
 
         text.setText( title );
     }
 
-    @UiHandler("basePanel")
-    void showCloseButton(MouseOverEvent event) {
-        closeButton.setVisible( true );
-    }
-
-    @UiHandler("basePanel")
-    void hideCloseButton(MouseOutEvent event) {
-        closeButton.setVisible( false );
-    }
-
-    @UiHandler("closeButton")
+    @UiHandler("closePanel")
     void closeTab(ClickEvent clickEvent) {
         CloseEvent.fire( this,
                          this );

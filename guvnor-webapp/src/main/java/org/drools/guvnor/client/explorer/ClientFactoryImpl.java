@@ -52,11 +52,11 @@ public class ClientFactoryImpl
     private PerspectivesPanelView     perspectivesPanelView;
     private NavigationViewFactoryImpl navigationViewFactory;
 
-    private AssetEditorFactory assetEditorFactory;
-    private PerspectiveFactory perspectiveFactory;
-    private PlaceHistoryHandler placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
-    private final EventBus eventBus;
+    private AssetEditorFactory        assetEditorFactory;
+    private PerspectiveFactory        perspectiveFactory;
+    private PlaceHistoryHandler       placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
+    private final EventBus            eventBus;
     private WizardFactory             wizardFactory;
 
     public ClientFactoryImpl(EventBus eventBus) {

@@ -15,12 +15,15 @@
 */
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
 public interface AuditEventsImages
     extends
     ClientBundle {
+
+    public AuditEventsImages INSTANCE = GWT.create(AuditEventsImages.class);
 
     @Source("images/audit_events/misc_event.gif")
     ImageResource miscEvent();

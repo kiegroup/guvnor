@@ -2567,4 +2567,28 @@ public interface Constants
     String Expand();
     
     String Feed();
+
+    String TestPassed();
+
+    String EmptyPackage();
+
+    String Busy();
+
+    String ExecutionTrace();
+
+    String MiscEvent();
+
+    String Inserted();
+
+    String Updated();
+
+    String Retracted();
+
+    String ActivationCreated();
+
+    String ActivationCancelled();
+
+    String BeforeActivationFire();
+
+    String AfterActivationFire();
 }

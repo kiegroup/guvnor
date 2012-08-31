@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
@@ -26,8 +27,6 @@ import org.drools.guvnor.client.rpc.Cause;
 class VerifierMessageLinesItem extends TreeItem {
 
     private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
-
 
     public VerifierMessageLinesItem(String topicHtml,
                                     AnalysisReportLine[] lines) {
@@ -73,9 +72,7 @@ class VerifierMessageLinesItem extends TreeItem {
 
         for (final String ruleAssetGuid : line.impactedRules.keySet()) {
             HorizontalPanel rule = new HorizontalPanel();
-            Image image = new Image(images.ruleAsset());
-            image.setAltText("");
-            rule.add(image);
+            rule.add(GuvnorImages.INSTANCE.RuleAssetNoAlt());
             rule.add(new Label(line.impactedRules.get(ruleAssetGuid)));
 
             // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised

@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyFactWidget;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -38,7 +37,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class VerifyFactsPanel extends VerticalPanel {
 
     private Constants            constants = GWT.create( Constants.class );
-    private static Images        images    = GWT.create( Images.class );
 
     private final Scenario       scenario;
 

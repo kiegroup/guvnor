@@ -18,12 +18,6 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -32,10 +26,15 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +46,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ExecutionWidget extends Composite {
 
     private Constants            constants = GWT.create( Constants.class );
-    private static Images        images    = GWT.create( Images.class );
 
     private final ExecutionTrace executionTrace;
 
@@ -77,7 +75,7 @@ public class ExecutionWidget extends Composite {
         } );
 
         HorizontalPanel layout = new HorizontalPanel();
-        layout.add( new Image( images.executionTrace() ) );
+        layout.add( INSTANCE.ExecutionTraceAlt() );
         layout.add( choice );
         layout.add( simulDatePanel );
 

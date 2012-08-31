@@ -24,7 +24,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -60,11 +59,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
+
 public class ScenarioWidget extends Composite
     implements
     EditorWidget {
     private Constants                          constants = GWT.create( Constants.class );
-    private static Images                      images    = GWT.create( Images.class );
+//    private static Images                      images    = GWT.create( Images.class );
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
@@ -265,9 +266,8 @@ public class ScenarioWidget extends Composite
 
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
-                    final Image busy = new Image( images.searching() );
                     final Label loading = new SmallLabel( constants.loadingList1() );
-                    horizontalPanel.add( busy );
+                    horizontalPanel.add( INSTANCE.SearchingAltBusy() );
                     horizontalPanel.add( loading );
 
                     Scheduler scheduler = Scheduler.get();
@@ -276,7 +276,7 @@ public class ScenarioWidget extends Composite
                             RepositoryServiceFactory.getPackageService().listRulesInPackage( packageName,
                                                                                       createGenericCallback( horizontalPanel,
                                                                                                              ruleNameTextBox,
-                                                                                                             busy,
+                                                                                                             INSTANCE.SearchingAltBusy(),
                                                                                                              loading ) );
                         }
 

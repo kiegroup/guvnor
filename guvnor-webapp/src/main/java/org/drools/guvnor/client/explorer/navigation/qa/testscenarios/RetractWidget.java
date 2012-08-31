@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
@@ -43,7 +42,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 public class RetractWidget extends FlexTable {
 
     private Constants              constants = GWT.create( Constants.class );
-    private static Images          images    = GWT.create( Images.class );
 
     protected final FixtureList    retractList;
     protected final Scenario       scenario;

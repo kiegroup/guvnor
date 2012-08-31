@@ -28,7 +28,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -58,7 +57,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class DataInputWidget extends DirtyableFlexTable {
 
     protected static Constants               constants = GWT.create( Constants.class );
-    private static Images                    images    = GWT.create( Images.class );
 
     private final Scenario                   scenario;
     private final SuggestionCompletionEngine suggestionCompletionEngine;

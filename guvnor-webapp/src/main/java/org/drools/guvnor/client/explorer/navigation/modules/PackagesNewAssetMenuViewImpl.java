@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.NewPackageWizard;

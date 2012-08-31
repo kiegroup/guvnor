@@ -50,5 +50,6 @@ public class StackItemHeaderViewImpl extends Composite implements StackItemHeade
 
     public void setImageResource(ImageResource imageResource) {
         this.imageResource.setResource(imageResource);
+        this.imageResource.setAltText("");
     }
 }

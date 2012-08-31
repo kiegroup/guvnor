@@ -27,16 +27,16 @@ import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
+
 public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
     private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
     private TreeItem root;
     private TreeItem states;
     private TreeItem inbox;
@@ -57,14 +57,14 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     @UiField
     Tree tree;
 
-    public BrowseTreeViewImpl(ClientFactory clientFactory) {
+    public BrowseTreeViewImpl(final ClientFactory clientFactory) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         this.clientFactory = clientFactory;
 
         addSelectionHandler();
         addOpenHandler();
-        inbox = tree.addItem( Util.getHeader( images.inbox(), constants.Inbox() ) );
+        inbox = tree.addItem( Util.getHeader(INSTANCE.InboxNoAlt(), constants.Inbox() ) );
     }
 
     private void addSelectionHandler() {
@@ -84,25 +84,25 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         } );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
     }
 
     public IsTreeItem addRootTreeItem() {
-        root = tree.addItem( Util.getHeader( images.ruleAsset(), constants.AssetsTreeView() ) );
+        root = tree.addItem( Util.getHeader( INSTANCE.RuleAssetNoAlt(), constants.AssetsTreeView() ) );
         return root;
     }
 
     public IsTreeItem addInboxIncomingTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxIncomingName() ) );
+        return inbox.addItem( Util.getHeader( INSTANCE.CategorySmallNoAlt(), getInboxIncomingName() ) );
     }
 
     public IsTreeItem addInboxRecentEditedTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxRecentEditedName() ) );
+        return inbox.addItem( Util.getHeader( INSTANCE.CategorySmallNoAlt(), getInboxRecentEditedName() ) );
     }
 
     public IsTreeItem addInboxRecentViewedTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxRecentViewedName() ) );
+        return inbox.addItem( Util.getHeader( INSTANCE.CategorySmallNoAlt(), getInboxRecentViewedName() ) );
     }
     
     public String getInboxIncomingName() {
@@ -117,7 +117,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         return constants.RecentlyOpened();
     }
 
-    public Collection<IsTreeItem> getChildren(IsTreeItem openedItem) {
+    public Collection<IsTreeItem> getChildren(final IsTreeItem openedItem) {
         Collection<IsTreeItem> children = new ArrayList<IsTreeItem>();
 
         TreeItem parent = openedItem.asTreeItem();
@@ -129,19 +129,19 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     }
     
     public IsTreeItem addFind() {
-        return root.addItem( Util.getHeader( images.find(), constants.Find() ) );
+        return root.addItem( Util.getHeader( INSTANCE.FindNoAlt(), constants.Find() ) );
     }
 
     public IsTreeItem addRootStateTreeItem() {
-        states = root.addItem( Util.getHeader( images.statusSmall(), constants.ByStatus() ) );
+        states = root.addItem( Util.getHeader( INSTANCE.StatusSmallNoAlt(), constants.ByStatus() ) );
         return states;
     }
 
     public IsTreeItem addRootCategoryTreeItem() {
-        return root.addItem( Util.getHeader( images.chartOrganisation(), constants.ByCategory() ) );
+        return root.addItem( Util.getHeader( INSTANCE.ChartOrganisationNoAlt(), constants.ByCategory() ) );
     }
 
-    public IsTreeItem addTreeItem(IsTreeItem parent, String name) {
+    public IsTreeItem addTreeItem(final IsTreeItem parent, final String name) {
         return parent.asTreeItem().addItem( name );
     }
 
@@ -149,11 +149,11 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         states.removeItems();
     }
 
-    public IsTreeItem addStateItem(String state) {
+    public IsTreeItem addStateItem(final String state) {
         return states.addItem( state );
     }
 
-    public void removeCategories(IsTreeItem treeItem) {
+    public void removeCategories(final IsTreeItem treeItem) {
         treeItem.asTreeItem().removeItems();
     }
     

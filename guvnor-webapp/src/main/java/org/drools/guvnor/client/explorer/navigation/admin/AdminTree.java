@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.admin;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.messages.Constants;
@@ -48,7 +49,9 @@ public class AdminTree extends Tree {
         for (int i = 0; i < adminStructure.length; i++) {
 
             Object[] packageData = adminStructure[i];
-            TreeItem localChildNode = new TreeItem(Util.getHeader((ImageResource) packageData[1], (String) packageData[0]));
+            final Image icon = new Image((ImageResource) packageData[1]);
+            icon.setAltText("");
+            final TreeItem localChildNode = new TreeItem(Util.getHeader(icon, (String) packageData[0]));
             itemWidgets.put(localChildNode, (String) packageData[2]);
 
             addItem(localChildNode);

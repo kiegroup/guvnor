@@ -19,23 +19,6 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.AuditEventsImages;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.util.PercentageBar;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,6 +34,21 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorImages;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.util.PercentageBar;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,9 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class TestRunnerWidget extends Composite {
 
     private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
-    private static AuditEventsImages auditEventsImages = (AuditEventsImages) GWT.create( AuditEventsImages.class );
-
 
     FlexTable             results   = new FlexTable();
     VerticalPanel         layout    = new VerticalPanel();
@@ -119,7 +114,7 @@ public class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs.get(i);
             errTable.setWidget( row,
                                 0,
-                                new Image( images.error() ) );
+                                GuvnorImages.INSTANCE.Error() );
             if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
@@ -161,10 +156,10 @@ public class TestRunnerWidget extends Composite {
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
                 if ( !verifyRuleFired.getSuccessResult().booleanValue() ) {
-                    panel.add( new Image( images.warning() ) );
+                    panel.add( GuvnorImages.INSTANCE.WarningAlt() );
                     failures++;
                 } else {
-                    panel.add( new Image( images.testPassed() ) );
+                    panel.add( GuvnorImages.INSTANCE.TestPassedAlt() );
                 }
                 panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
@@ -176,10 +171,10 @@ public class TestRunnerWidget extends Composite {
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
                     if ( !verifyField.getSuccessResult().booleanValue() ) {
-                        panel.add( new Image( images.warning() ) );
+                        panel.add( GuvnorImages.INSTANCE.WarningAlt() );
                         failures++;
                     } else {
-                        panel.add( new Image( images.testPassed() ) );
+                        panel.add( GuvnorImages.INSTANCE.TestPassedAlt() );
                     }
                     panel.add( new SmallLabel( verifyField.getExplanation() ) );
                     resultsDetail.add( panel );
@@ -295,7 +290,7 @@ public class TestRunnerWidget extends Composite {
             } else {
                 g.setWidget( row,
                              0,
-                             new Image(auditEventsImages.miscEvent()));
+                             GuvnorImages.INSTANCE.MiscEventAlt() );
                 g.setWidget( row,
                              1,
                              new SmallLabel( "<font color='grey'>" + lg[1] + "</font>" ) );
@@ -321,26 +316,27 @@ public class TestRunnerWidget extends Composite {
         try {
             type = Integer.parseInt(eventType);
         } catch (NumberFormatException e) {
-            return new Image(auditEventsImages.miscEvent());
+            return GuvnorImages.INSTANCE.MiscEventAlt();
         }
 
+        //Magic Numbers came from LogEvent
         switch (type) {
         case 1:
-            return new Image(auditEventsImages.image1());
+            return GuvnorImages.INSTANCE.Image1AltInserted();
         case 2:
-            return new Image(auditEventsImages.image2());
+            return GuvnorImages.INSTANCE.Image2AltUpdated();
         case 3:
-            return new Image(auditEventsImages.image3());
+            return GuvnorImages.INSTANCE.Image3NoAlt();
         case 4:
-            return new Image(auditEventsImages.image4());
+            return GuvnorImages.INSTANCE.Image4AltActivationCreated();
         case 5:
-            return new Image(auditEventsImages.image5());
+            return GuvnorImages.INSTANCE.Image5AltActivationCancelled();
         case 6:
-            return new Image(auditEventsImages.image6());
+            return GuvnorImages.INSTANCE.Image6AltBeforeActivationFire();
         case 7:
-            return new Image(auditEventsImages.image7());
+            return GuvnorImages.INSTANCE.Image7AltAfterActivationFire();
         default:
-            return new Image(auditEventsImages.miscEvent());
+            return GuvnorImages.INSTANCE.MiscEventAlt();
         }
     }
 }

@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 
 import com.google.gwt.resources.client.ImageResource;
@@ -47,9 +48,30 @@ public class Util {
      * @param text  the header text
      * @return the header as a string
      */
-    public static SafeHtml getHeader(ImageResource image,
+    public static SafeHtml getHeader(ImageResource imageResource,
                                      final String text) {
-        return HEADER_TEMPLATE.message(SafeHtmlUtils.fromTrustedString(AbstractImagePrototype.create(image).getHTML()),
+        final Image image = new Image(imageResource);
+        image.setAltText( "" );
+        return getHeader( image, text );
+    }
+
+
+    /**
+     * Get a string representation of the header that includes an image and some
+     * text.
+     *
+     * @param image the {@link com.google.gwt.user.client.ui.Image} to add next to the header
+     * @param text  the header text
+     * @return the header as a string
+     */
+    public static SafeHtml getHeader(final Image image, final String text) {
+
+        return HEADER_TEMPLATE.message(
+                new SafeHtml() {
+                   public String asString() {
+                       return image.toString();
+                   }
+                },
                 new SafeHtml() {
                     public String asString() {
                         return text;

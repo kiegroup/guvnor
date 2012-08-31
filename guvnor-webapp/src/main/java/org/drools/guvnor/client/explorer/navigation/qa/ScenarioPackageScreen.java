@@ -31,7 +31,6 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
@@ -45,7 +44,6 @@ import java.util.Arrays;
 public class ScenarioPackageScreen extends Composite {
 
     private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
 
     private final VerticalPanel layout = new VerticalPanel();
 

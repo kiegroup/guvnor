@@ -208,7 +208,7 @@ public class VerifyFactWidget extends Composite {
                 if ( !fld.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.warning() ) );
+                                    GuvnorImages.INSTANCE.WarningAlt() );
                     data.setWidget( i,
                                     5,
                                     new HTML( constants.ActualResult( fld.getActualResult() ) ) );
@@ -220,7 +220,7 @@ public class VerifyFactWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( images.testPassed() ) );
+                                    GuvnorImages.INSTANCE.TestPassedAlt() );
                 }
             }
 

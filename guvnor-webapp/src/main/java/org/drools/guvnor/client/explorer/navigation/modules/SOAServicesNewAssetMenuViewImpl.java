@@ -25,20 +25,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.packages.NewSOAServiceWizard;
 import org.drools.guvnor.client.perspectives.PerspectiveFactory;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuView {
 
     private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
 
     private MenuBar createNewMenu = new MenuBar( true );
     private Presenter presenter;
@@ -63,7 +61,7 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
     }
 
     private void addNewServiceMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.newPackage(), "New Service" ).asString(),
+        createNewMenu.addItem( Util.getHeader(INSTANCE.NewPackageNoAlt(), "New Service" ).asString(),
                 true,
                 new Command() {
                     public void execute() {

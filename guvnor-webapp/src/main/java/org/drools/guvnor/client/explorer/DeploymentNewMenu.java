@@ -27,15 +27,16 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
+
 public class DeploymentNewMenu {
     private static Constants constants = (Constants) GWT.create( Constants.class );
-    private static Images    images    = (Images) GWT.create( Images.class );
 
     public static MenuBar getMenu(final NavigationItemBuilderOld manager) {
 
         MenuBar createNewMenu = new MenuBar( true );
 
-        createNewMenu.addItem( Util.getHeader( images.snapshotSmall(),
+        createNewMenu.addItem( Util.getHeader( INSTANCE.SnapshotSmallNoAlt(),
                                                constants.NewDeploymentSnapshot() ).asString(),
                                true,
                                new Command() {
@@ -49,7 +50,7 @@ public class DeploymentNewMenu {
                                    }
                                } );
 
-        createNewMenu.addItem( Util.getHeader( images.refresh(),
+        createNewMenu.addItem( Util.getHeader( INSTANCE.RefreshNoAlt(),
                                                constants.RebuildAllSnapshotBinaries() ).asString(),
                                true,
                                new Command() {

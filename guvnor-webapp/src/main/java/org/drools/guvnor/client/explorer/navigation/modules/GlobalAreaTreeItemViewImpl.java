@@ -17,7 +17,10 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.util.Util;
+
+import static org.drools.guvnor.client.resources.GuvnorImages.INSTANCE;
 
 public class GlobalAreaTreeItemViewImpl
         extends ModulesTreeItemBaseViewImpl
@@ -26,7 +29,7 @@ public class GlobalAreaTreeItemViewImpl
     @Override
     protected SafeHtml getTreeHeader() {
         return Util.getHeader(
-                images.chartOrganisation(),
+                INSTANCE.ChartOrganisationNoAlt(),
                 constants.GlobalArea() );
     }
 }
