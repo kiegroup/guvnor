@@ -25,6 +25,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -34,6 +35,7 @@ import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
@@ -68,7 +70,7 @@ public class AssetEditorFactoryGenerator extends Generator {
         composerFactory.addImport( List.class.getCanonicalName() );
         composerFactory.addImport( Constants.class.getCanonicalName() );
         composerFactory.addImport( DroolsGuvnorImageResources.class.getCanonicalName() );
-        composerFactory.addImport( ImageResource.class.getCanonicalName() );
+        //composerFactory.addImport( ImageResource.class.getCanonicalName() );
         composerFactory.addImport( Asset.class.getCanonicalName() );
         composerFactory.addImport( RuleViewer.class.getCanonicalName() );
         composerFactory.addImport( DefaultContentUploadEditor.class.getCanonicalName() );
@@ -76,6 +78,8 @@ public class AssetEditorFactoryGenerator extends Generator {
         composerFactory.addImport( GWT.class.getCanonicalName() );
         composerFactory.addImport( ClientFactory.class.getCanonicalName() );
         composerFactory.addImport( EventBus.class.getCanonicalName() );
+        composerFactory.addImport( GuvnorImages.class.getCanonicalName() );
+        composerFactory.addImport( Image.class.getCanonicalName() );
         composerFactory.addImplementedInterface( objectType
                 .getQualifiedSourceName() );
 
@@ -141,7 +145,7 @@ public class AssetEditorFactoryGenerator extends Generator {
     }
 
     private void generateGetAssetEditorIcon( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
-        sourceWriter.println( "public ImageResource getAssetEditorIcon(String format) {" );
+        sourceWriter.println( "public Image getAssetEditorIcon(String format) {" );
         sourceWriter.indent();
 
         for (AssetEditorConfiguration a : registeredEditors) {
@@ -153,7 +157,7 @@ public class AssetEditorFactoryGenerator extends Generator {
             sourceWriter.outdent();
             sourceWriter.println( "}" );
         }
-        sourceWriter.println( "return images.ruleAsset();" );
+        sourceWriter.println( "return GuvnorImages.INSTANCE.RuleAsset();" );
         sourceWriter.outdent();
         sourceWriter.println( "}" );
     }

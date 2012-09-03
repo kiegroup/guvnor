@@ -57,9 +57,9 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
                                                                  };
 
     public LazyStackPanelHeader(String headerText,
-                                ImageResource headerIcon) {
+                                Image headerIcon) {
         this();
-        Image titleIcon = new Image( headerIcon );
+        Image titleIcon = headerIcon;
         container.add( titleIcon );
         Label titleLabel = new Label( headerText );
         titleLabel.setStyleName( "guvnor-cursor" );

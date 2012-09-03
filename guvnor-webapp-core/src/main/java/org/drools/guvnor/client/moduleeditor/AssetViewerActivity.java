@@ -31,6 +31,7 @@ import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 
 /**
  * An Activity to view a Module's assets
@@ -136,7 +137,7 @@ public class AssetViewerActivity extends Activity
 
                                                                        //If the group contains assets add a section
                                                                        String title = getGroupTitle( formatList.getFirst() );
-                                                                       ImageResource icon = getGroupIcon( formatList.getFirst() );
+                                                                       Image icon = getGroupIcon( formatList.getFirst() );
                                                                        AssetViewerSection section = new AssetViewerSection( title,
                                                                                                                             icon,
                                                                                                                             formatsInList,
@@ -206,7 +207,7 @@ public class AssetViewerActivity extends Activity
     private static class AssetViewerSection {
 
         AssetViewerSection(String title,
-                           ImageResource icon,
+                           Image icon,
                            List<String> formatsInList,
                            Boolean formatIsRegistered) {
             this.title = title;
@@ -217,7 +218,7 @@ public class AssetViewerActivity extends Activity
 
         String        title;
 
-        ImageResource icon;
+        Image icon;
 
         List<String>  formatsInList;
 
@@ -245,7 +246,7 @@ public class AssetViewerActivity extends Activity
         return clientFactory.getAssetEditorFactory().getAssetEditorTitle( format );
     }
 
-    private ImageResource getGroupIcon(String format) {
+    private Image getGroupIcon(String format) {
         return clientFactory.getAssetEditorFactory().getAssetEditorIcon( format );
     }
 

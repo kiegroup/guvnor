@@ -15,8 +15,10 @@
  */
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.shared.api.Valid;
 
 public class GuvnorImages {
 
@@ -54,5 +56,101 @@ public class GuvnorImages {
         Image image = new Image(ImagesCore.INSTANCE.refresh());
         image.setAltText(ConstantsCore.INSTANCE.Refresh());
         return image;
+    }
+
+	public Image RuleAsset() {
+		Image image = new Image(ImagesCore.INSTANCE.ruleAsset());
+		image.setAltText(ConstantsCore.INSTANCE.BusinessRuleAssets());
+		return image;
+	}
+
+	public Image SpreadsheetSmall() {
+		Image image = new Image(ImagesCore.INSTANCE.spreadsheetSmall());
+		image.setAltText(ConstantsCore.INSTANCE.BusinessRuleAssets());
+		return image;
+	}
+
+	public Image Gdst() {
+		Image image = new Image(ImagesCore.INSTANCE.gdst());
+		image.setAltText(ConstantsCore.INSTANCE.BusinessRuleAssets());
+		return image;
+	}
+
+	public Image TechnicalRuleAssets() {
+		Image image = new Image(ImagesCore.INSTANCE.technicalRuleAssets());
+		image.setAltText(ConstantsCore.INSTANCE.TechnicalRuleAssets());
+		return image;
+	}
+
+	public Image FunctionAssets() {
+		Image image = new Image(ImagesCore.INSTANCE.functionAssets());
+		image.setAltText(ConstantsCore.INSTANCE.Functions());
+		return image;
+	}
+
+	public Image Dsl() {
+		Image image = new Image(ImagesCore.INSTANCE.dsl());
+		image.setAltText(ConstantsCore.INSTANCE.DSLConfigurations());
+		return image;
+	}
+
+	public Image ModelAsset() {
+		Image image = new Image(ImagesCore.INSTANCE.modelAsset());
+		image.setAltText(ConstantsCore.INSTANCE.Model());
+		return image;
+	}
+
+	public Image RuleflowSmall() {
+		Image image = new Image(ImagesCore.INSTANCE.ruleflowSmall());
+		image.setAltText(ConstantsCore.INSTANCE.RuleFlows());
+		return image;
+	}
+
+	public Image Enumeration() {
+		Image image = new Image(ImagesCore.INSTANCE.enumeration());
+		image.setAltText(ConstantsCore.INSTANCE.Enumerations());
+		return image;
+	}
+
+	public Image TestManager() {
+		Image image = new Image(ImagesCore.INSTANCE.testManager());
+		image.setAltText(ConstantsCore.INSTANCE.TestScenarios());
+		return image;
+	}
+
+	public Image NewFile() {
+		Image image = new Image(ImagesCore.INSTANCE.newFile());
+		image.setAltText(ConstantsCore.INSTANCE.OtherAssetsDocumentation());
+		return image;
+	}
+
+	public Image Workingset() {
+		Image image = new Image(ImagesCore.INSTANCE.workingset());
+		image.setAltText(ConstantsCore.INSTANCE.WorkingSets());
+		return image;
+	}
+
+	public Image EventLogSmall() {
+		Image image = new Image(ImagesCore.INSTANCE.eventLogSmall());
+		image.setAltText(ConstantsCore.INSTANCE.Documentation());
+		return image;
+	}  
+
+    public Image getValidImage(Valid valid) {
+        switch (valid) {
+            case INVALID:
+        		Image image = new Image(ImagesCore.INSTANCE.validationError());
+        		//image.setAltText(ConstantsCore.INSTANCE.Documentation());
+                return image;
+            case VALID:
+        		Image image2 = new Image(ImagesCore.INSTANCE.greenTick());
+        		//image2.setAltText(ConstantsCore.INSTANCE.Documentation());
+                return image2;
+            default:
+        		Image image3 = new Image(ImagesCore.INSTANCE.warning());
+        		//image3.setAltText(ConstantsCore.INSTANCE.Documentation());
+                return image3;
+
+        }
     }
 }

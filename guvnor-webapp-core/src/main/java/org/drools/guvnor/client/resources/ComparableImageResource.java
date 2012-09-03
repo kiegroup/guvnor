@@ -15,58 +15,24 @@
  */
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.ui.Image;
 
-public class ComparableImageResource
-    implements
-    ImageResource,
-    Comparable<ComparableImageResource> {
+public class ComparableImageResource implements Comparable<ComparableImageResource> {
 
-    private final String compareString;
-    private final ImageResource imageResource;
+    private final String        format;
+    private final Image imageResource;
 
-    public ComparableImageResource(String compareString,
-                                   ImageResource imageResource) {
-        this.compareString = compareString;
+    public ComparableImageResource(String format,
+                           Image imageResource) {
+        this.format = format;
         this.imageResource = imageResource;
     }
 
-    public String getName() {
-        return this.imageResource.getName();
+    public String getImageHTML() {
+    	return this.imageResource.toString();
     }
-
+    
     public int compareTo(ComparableImageResource o) {
-        return compareString.compareTo( o.compareString);
+        return format.compareTo( o.format );
     }
-
-    public int getHeight() {
-        return this.imageResource.getHeight();
-    }
-
-    public int getLeft() {
-        return this.imageResource.getLeft();
-    }
-
-    public int getTop() {
-        return this.imageResource.getTop();
-    }
-
-    public String getURL() {
-        return this.imageResource.getURL();
-    }
-
-    public int getWidth() {
-        return this.imageResource.getWidth();
-    }
-
-    public boolean isAnimated() {
-        return this.imageResource.isAnimated();
-    }
-
-    @Override
-    public SafeUri getSafeUri() {
-        return this.imageResource.getSafeUri();
-    }
-
 }

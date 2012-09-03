@@ -45,8 +45,8 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
@@ -146,7 +146,7 @@ public class AssetEditorActionToolbar extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         setState(asset.getState());
-        setValidIndicator(ValidImageFactory.getImage(asset.getMetaData().getValid()));
+        setValidIndicator(GuvnorImages.INSTANCE.getValidImage(asset.getMetaData().getValid()));
         applyToolBarConfiguration();
         this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
         
@@ -160,9 +160,9 @@ public class AssetEditorActionToolbar extends Composite {
         status.setText(Constants.INSTANCE.statusIs(newStatus));
     }
 
-    public void setValidIndicator(ImageResource valid) {
+    public void setValidIndicator(Image valid) {
 
-        validIndicator.setResource(valid);
+        validIndicator = valid;
     }
 
     private void applyToolBarConfiguration() {
@@ -338,7 +338,7 @@ public class AssetEditorActionToolbar extends Composite {
 
                                 public void onSuccess(BuilderResult results) {
                                     RuleValidatorWrapper.showBuilderErrors( results );
-                                    setValidIndicator(ValidImageFactory.getImage(
+                                    setValidIndicator(GuvnorImages.INSTANCE.getValidImage(
                                             Valid.fromBoolean(results == null || !results.hasLines())));
                                 }
                             } );

@@ -29,6 +29,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -84,7 +85,7 @@ public class LazyStackPanel extends Composite
     }
 
     public void add(String headerText,
-                    ImageResource icon,
+                    Image icon,
                     LoadContentCommand contentLoad) {
         LazyStackPanelHeader header = new LazyStackPanelHeader( headerText,
                                                                 icon );

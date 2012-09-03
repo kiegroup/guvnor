@@ -22,13 +22,14 @@ import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public interface AssetEditorFactory {
     /**
      * This will return the asset editor icon image.
      */
-    public ImageResource getAssetEditorIcon(String format);
+    public Image getAssetEditorIcon(String format);
     /**
      * This will return the asset editor title.
      */

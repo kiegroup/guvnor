@@ -37,6 +37,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -77,7 +78,7 @@ public class AssetViewerActivityViewImpl extends Composite
     public void addAssetFormat(final List<String> formatsInList,
                                final Boolean formatIsRegistered,
                                final String title,
-                               final ImageResource icon,
+                               final Image icon,
                                final Module packageConfigData,
                                final ClientFactory clientFactory) {
         LazyStackPanel lsp = new LazyStackPanel();

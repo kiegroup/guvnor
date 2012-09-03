@@ -18,19 +18,17 @@ package org.drools.guvnor.client.widgets.tables;
 import org.drools.guvnor.client.resources.ComparableImageResource;
 
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class ComparableImageResourceCell extends AbstractCell<ComparableImageResource> {
-
     @Override
     public void render(Context context,
                        ComparableImageResource value,
                        SafeHtmlBuilder sb) {
-        SafeHtml html = SafeHtmlUtils.fromTrustedString( AbstractImagePrototype.create( value ).getHTML() );
-        sb.append( html );
+        if (value != null) {
+            // The template will sanitize the URI.
+        	sb.append(SafeHtmlUtils.fromTrustedString(value.getImageHTML()));
+          }
     }
-
 }

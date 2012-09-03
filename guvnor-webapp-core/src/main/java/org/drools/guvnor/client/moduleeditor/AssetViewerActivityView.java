@@ -22,6 +22,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Module;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -37,7 +38,7 @@ public interface AssetViewerActivityView
     void addAssetFormat(List<String> formatsInList,
                         Boolean formatIsRegistered,
                         String title,
-                        ImageResource icon,
+                        Image icon,
                         Module packageConfigData,
                         ClientFactory clientFactory);
 

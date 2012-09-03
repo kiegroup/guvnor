@@ -29,11 +29,11 @@ import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.ComparableImageResource;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.util.ValidImageFactory;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import java.util.Date;
@@ -110,8 +110,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
         Column<AssetPageRow, ComparableImageResource> validColumn = new Column<AssetPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
             public ComparableImageResource getValue(AssetPageRow row) {
-                ImageResource image = ValidImageFactory.getImage(row.getValid());
-                return new ComparableImageResource(row.getValid().toString(), image);
+                return new ComparableImageResource(row.getValid().toString(), GuvnorImages.INSTANCE.getValidImage(row.getValid()));
             }
         };
 
