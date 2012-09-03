@@ -119,6 +119,8 @@
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
+            <!-- Explicitly add the test-jar to the package phase because this is a war -->
+            <!-- Workaround until jira.codehaus.org/browse/MJAR-160 is fixed -->
             <id>test-jar</id>
             <phase>package</phase>
             <goals>
