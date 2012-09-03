@@ -32,7 +32,7 @@
       <gwt:Button ui:field="openSelectedToSingleTabButton" text='{i18n.openSelectedToSingleTab}'/>
       <gwt:Button ui:field="archiveSelectedButton" text='{i18n.ArchiveSelected}' />
       <gwt:ToggleButton ui:field="columnPickerButton"/>
-      <gwt:Image ui:field="feedImage" resource='{images.feed}'></gwt:Image>
+      <gwt:Image ui:field="feedImage" resource='{images.feed}' altText='{i18n.Feed}'></gwt:Image>
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/>
     <guvnor-pager:GuvnorSimplePager ui:field="pager"/>

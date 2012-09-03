@@ -153,4 +153,10 @@ public class GuvnorImages {
 
         }
     }
+    
+    public Image Feed() {
+        Image image = new Image(ImagesCore.INSTANCE.feed());
+        image.setAltText(ConstantsCore.INSTANCE.Feed());
+        return image;
+    }  
 }

@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -172,7 +173,7 @@ public class DiscussionWidget extends Composite {
 
         final String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((Asset) artifact).getMetaData().getModuleName()
                 + "&assetName=" + URL.encode(artifact.getName()) + "&viewUrl=" + Util.getSelfURL();
-        Image image = new Image(images.feed());
+        Image image = GuvnorImages.INSTANCE.Feed();
         image.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 Window.open(feedURL, "_blank", null);
