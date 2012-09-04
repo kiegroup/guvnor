@@ -36,6 +36,7 @@ public class InfoPopup extends Composite {
                      final String message) {
         Image info = new Image( ImagesCore.INSTANCE.information() );
         info.setTitle( message );
+        info.setAltText(message);
         info.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
