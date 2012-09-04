@@ -2813,4 +2813,8 @@ public interface Constants
     String NewItemDisabled();
 
     String PackageHadNotBeenBuiltWarning();
+
+    String Collapse();
+
+    String Expand();
 }

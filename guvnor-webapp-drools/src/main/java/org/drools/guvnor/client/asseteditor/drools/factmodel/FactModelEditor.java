@@ -162,8 +162,10 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     private void setIconImage() {
         if ( expanded ) {
             icon.setResource( DroolsGuvnorImageResources.INSTANCE.collapseExpand().collapse() );
+            icon.setAltText( Constants.INSTANCE.Collapse());
         } else {               
             icon.setResource( DroolsGuvnorImageResources.INSTANCE.collapseExpand().expand() );
+            icon.setAltText(Constants.INSTANCE.Expand());
         }
     }
 
