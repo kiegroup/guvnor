@@ -166,6 +166,8 @@ public class FormStyleLayout extends Composite {
 
     private void doHeader(Image image,
                           Widget title) {
+        //The image in FormStyleLayout is merely for the purpose of decoration, no need to set it's alt text for section 508. 
+        image.setAltText("");
         layout.setWidget( 0,
                           0,
                           image );
