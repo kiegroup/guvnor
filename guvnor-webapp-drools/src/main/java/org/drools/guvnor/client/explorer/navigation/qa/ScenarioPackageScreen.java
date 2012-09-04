@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.TestScenarioService;
 import org.drools.guvnor.client.rpc.TestScenarioServiceAsync;
@@ -73,7 +74,7 @@ public class ScenarioPackageScreen
 
         vert.add( run );
 
-        pf.addHeader( DroolsGuvnorImageResources.INSTANCE.scenarioLarge(),
+        pf.addHeader( GuvnorImages.INSTANCE.Scenario(),
                 vert );
 
         layout.add( pf );

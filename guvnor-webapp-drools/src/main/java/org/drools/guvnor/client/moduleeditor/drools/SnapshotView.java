@@ -40,6 +40,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
@@ -76,7 +77,9 @@ public class SnapshotView extends Composite {
         this.parentConf = parentPackage;
         PrettyFormLayout head = new PrettyFormLayout();
 
-        head.addHeader( DroolsGuvnorImageResources.INSTANCE.snapshot(),
+        Image snapshot = GuvnorImages.INSTANCE.Snapshot();
+        snapshot.setAltText("");
+        head.addHeader(snapshot,
                         header() );
 
         vert.add( head );

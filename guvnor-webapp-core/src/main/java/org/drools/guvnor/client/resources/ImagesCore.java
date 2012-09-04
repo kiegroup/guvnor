@@ -338,5 +338,5 @@ public interface ImagesCore
     
     @Source("images/calendar.png")
     ImageResource calendar();
-    
+
 }

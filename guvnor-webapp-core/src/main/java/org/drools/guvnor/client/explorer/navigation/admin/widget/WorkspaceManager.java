@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 
@@ -47,7 +48,7 @@ public class WorkspaceManager extends Composite {
 
     public WorkspaceManager() {
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader( images.statusLarge(),
+        form.addHeader( GuvnorImages.INSTANCE.WorkspaceManager(),
                         new HTML( "<b>" + constants.ManageWorkspaces() + "</b>" ) );
         form.startSection( constants.Workspaces() );
 
