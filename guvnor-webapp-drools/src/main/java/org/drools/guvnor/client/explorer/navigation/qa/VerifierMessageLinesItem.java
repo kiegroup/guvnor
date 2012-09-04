@@ -74,7 +74,10 @@ class VerifierMessageLinesItem extends TreeItem {
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
             HorizontalPanel rule = new HorizontalPanel();
-            rule.add(new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset()));
+            Image image = new Image(DroolsGuvnorImageResources.INSTANCE.ruleAsset());
+            image.setAltText("");
+            rule.add(image);
+
             rule.add(new Label(line.impactedRules.get( ruleAssetGuid )));
             
             // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised

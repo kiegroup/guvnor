@@ -16,60 +16,64 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TreeItem;
-
 class FactUsagesItem extends TreeItem {
 
     public FactUsagesItem(AnalysisFactUsage[] factUsages) {
-        setStyleName( "analysis-Report" );
+        setStyleName("analysis-Report");
 
-        setHTML( AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.factTemplate()).getHTML() + "<b>" + Constants.INSTANCE.ShowFactUsages() + "</b>" );
+        setHTML(createImageTag(DroolsGuvnorImageResources.INSTANCE.factTemplate()) + "<b>" + Constants.INSTANCE.ShowFactUsages() + "</b>");
 
-        setUserObject( new HTML( AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.factTemplate()).getHTML() + "<b>" + Constants.INSTANCE.FactUsages() + ":</b>" ) );
+        setUserObject(createImageTag(DroolsGuvnorImageResources.INSTANCE.factTemplate()) + "<b>" + Constants.INSTANCE.FactUsages() + ":</b>");
 
-        doFacts( factUsages );
+        doFacts(factUsages);
     }
 
     private void doFacts(AnalysisFactUsage[] factUsages) {
-        for ( AnalysisFactUsage factUsage : factUsages ) {
+        for (AnalysisFactUsage factUsage : factUsages) {
 
-            TreeItem fact = new TreeItem( AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.fact()).getHTML() + factUsage.name );
-            TreeItem fieldList = doFields( factUsage.fields );
-            fact.addItem( fieldList );
-            fieldList.setState( true );
+            TreeItem fact = new TreeItem(createImageTag(DroolsGuvnorImageResources.INSTANCE.fact()) + factUsage.name);
+            TreeItem fieldList = doFields(factUsage.fields);
+            fact.addItem(fieldList);
+            fieldList.setState(true);
 
-            addItem( fact );
-            fact.setState( true );
+            addItem(fact);
+            fact.setState(true);
         }
     }
 
     private TreeItem doFields(AnalysisFieldUsage[] fields) {
-        TreeItem fieldList = new TreeItem( Constants.INSTANCE.FieldsUsed() );
+        TreeItem fieldList = new TreeItem(Constants.INSTANCE.FieldsUsed());
 
-        for ( AnalysisFieldUsage fieldUsage : fields ) {
-            TreeItem field = new TreeItem( AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.field()).getHTML() + fieldUsage.name );
-            fieldList.addItem( field );
-            TreeItem ruleList = doAffectedRules( fieldUsage );
-            field.addItem( ruleList );
-            field.setState( true );
+        for (AnalysisFieldUsage fieldUsage : fields) {
+            TreeItem field = new TreeItem(createImageTag(DroolsGuvnorImageResources.INSTANCE.field()) + fieldUsage.name);
+            fieldList.addItem(field);
+            TreeItem ruleList = doAffectedRules(fieldUsage);
+            field.addItem(ruleList);
+            field.setState(true);
         }
 
         return fieldList;
     }
 
     private TreeItem doAffectedRules(AnalysisFieldUsage fieldUsage) {
-        TreeItem ruleList = new TreeItem( Constants.INSTANCE.ShowRulesAffected() );
-        ruleList.setUserObject( new HTML( Constants.INSTANCE.RulesAffected() ) );
-        for ( String ruleName : fieldUsage.rules ) {
-            ruleList.addItem( new TreeItem( AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.ruleAsset()).getHTML() + ruleName ) );
+        TreeItem ruleList = new TreeItem(Constants.INSTANCE.ShowRulesAffected());
+        ruleList.setUserObject(new HTML(Constants.INSTANCE.RulesAffected()));
+        for (String ruleName : fieldUsage.rules) {
+            ruleList.addItem(new TreeItem(AbstractImagePrototype.create(DroolsGuvnorImageResources.INSTANCE.ruleAsset()).getHTML() + ruleName));
         }
         return ruleList;
+    }
+
+    private String createImageTag(ImageResource imageResource) {
+        return "<img src=\"" + imageResource.getURL() + "\" alt=\"\"/>";
     }
 }

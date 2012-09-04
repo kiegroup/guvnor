@@ -83,16 +83,10 @@ public class VerifierResultWidget extends Composite {
                                     ImageResource icon,
                                     AnalysisReportLine[] lines) {
 
-        TreeItem linesItem;
-
         String summary = Constants.INSTANCE.analysisResultSummary(messageType, lines.length );
 
-        String topicHtml = AbstractImagePrototype.create(icon).getHTML() + "&nbsp; " + summary;
-
-        linesItem = new VerifierMessageLinesItem( topicHtml,
+        return new VerifierMessageLinesItem( "<img src=\"" + icon.getURL() + "\" alt=\"\"/>&nbsp;" + summary,
                                                   lines );
-
-        return linesItem;
     }
 
     private void swapTitleWithUserObject(TreeItem x) {
