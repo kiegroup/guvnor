@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -157,7 +158,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                Image image = DroolsGuvnorImages.INSTANCE.Edit();
+                Image image = GuvnorImages.INSTANCE.Edit();
                 image.setAltText(Constants.INSTANCE.AddFirstNewField());
                 image.setTitle(Constants.INSTANCE.AddFirstNewField());
                 image.addClickHandler(new ClickHandler() {

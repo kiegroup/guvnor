@@ -34,6 +34,7 @@ import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -141,7 +142,7 @@ public class ConditionPopup extends FormStylePopup {
         doPatternLabel();
 
         //Pattern selector
-        ImageButton changePattern = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+        ImageButton changePattern = new ImageButton( GuvnorImages.INSTANCE.Edit(),
                                                      DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                                      Constants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
@@ -218,7 +219,7 @@ public class ConditionPopup extends FormStylePopup {
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+        this.editField = new ImageButton( GuvnorImages.INSTANCE.Edit(),
                                           DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                           Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                           new ClickHandler() {
@@ -235,7 +236,7 @@ public class ConditionPopup extends FormStylePopup {
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        this.editOp = new ImageButton( DroolsGuvnorImages.INSTANCE.Edit(),
+        this.editOp = new ImageButton( GuvnorImages.INSTANCE.Edit(),
                                        DroolsGuvnorImages.INSTANCE.EditDisabled(),
                                        Constants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                        new ClickHandler() {

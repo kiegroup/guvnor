@@ -40,6 +40,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -154,7 +155,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
-                    Image clickme = new Image( DroolsGuvnorImageResources.INSTANCE.edit() );
+                    Image clickme = GuvnorImages.INSTANCE.Edit();
                     clickme.addClickHandler( new ClickHandler() {
 
                         public void onClick(ClickEvent event) {

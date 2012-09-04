@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
 import org.drools.ide.common.client.modeldriven.testing.Field;
@@ -44,7 +45,7 @@ public class FieldSelectorWidget
         this.field = field;
         this.helper = helper;
         this.parent = parent;
-        this.clickMe = new Image(DroolsGuvnorImageResources.INSTANCE.edit());
+        this.clickMe = GuvnorImages.INSTANCE.Edit();
         this.clickMe.addClickHandler(this);
     }
 

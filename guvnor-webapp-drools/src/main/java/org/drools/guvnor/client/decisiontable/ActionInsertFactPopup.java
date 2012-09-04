@@ -30,6 +30,7 @@ import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -246,7 +247,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createEditFieldButton() {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());
         Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
         editDisabled.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());
@@ -261,7 +262,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createChangePatternButton() {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo());
         Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
         editDisabled.setAltText(Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo());

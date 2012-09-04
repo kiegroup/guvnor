@@ -32,6 +32,7 @@ import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
@@ -271,7 +272,7 @@ public class PackageEditor
     }
 
     private Widget getAddCatRules() {
-        Image add = DroolsGuvnorImages.INSTANCE.Edit();
+        Image add = GuvnorImages.INSTANCE.Edit();
         add.setAltText( Constants.INSTANCE.AddCatRuleToThePackage() );
         add.setTitle( Constants.INSTANCE.AddCatRuleToThePackage() );
 

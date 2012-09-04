@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -219,7 +220,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     private Image createEnabledEdit() {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo());
         return edit;
     }

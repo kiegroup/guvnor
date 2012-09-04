@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DTCellValueUtilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -257,7 +258,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private Image createEnabledEditButton() {
-        Image enabledChangePattern = DroolsGuvnorImages.INSTANCE.Edit();
+        Image enabledChangePattern = GuvnorImages.INSTANCE.Edit();
         enabledChangePattern.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
         return enabledChangePattern;
     }

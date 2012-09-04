@@ -36,6 +36,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
@@ -285,7 +286,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         if ( c instanceof ActionWorkItemSetFieldCol52 ) {
             final ActionWorkItemSetFieldCol52 awisf = (ActionWorkItemSetFieldCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -309,7 +310,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionSetFieldCol52 ) {
             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -333,7 +334,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemInsertFactCol52 ) {
             final ActionWorkItemInsertFactCol52 awiif = (ActionWorkItemInsertFactCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -357,7 +358,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionInsertFactCol52 ) {
             final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -381,7 +382,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionRetractFactCol52 ) {
             final ActionRetractFactCol52 arf = (ActionRetractFactCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -404,7 +405,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemCol52 ) {
             final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -430,7 +431,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof LimitedEntryBRLActionColumn ) {
             final LimitedEntryBRLActionColumn column = (LimitedEntryBRLActionColumn) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -450,7 +451,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof BRLActionColumn ) {
             final BRLActionColumn column = (BRLActionColumn) c;
-            Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+            Image edit = GuvnorImages.INSTANCE.Edit();
             edit.setAltText(Constants.INSTANCE.EditThisActionColumnConfiguration());
             return new ImageButton( edit,
                                     Constants.INSTANCE.EditThisActionColumnConfiguration(),
@@ -1133,7 +1134,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget editCondition(final Pattern52 origPattern,
                                  final ConditionCol52 origCol) {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.EditThisColumnsConfiguration());
         return new ImageButton( edit,
                                 Constants.INSTANCE.EditThisColumnsConfiguration(),
@@ -1162,7 +1163,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editCondition(final BRLConditionColumn origCol) {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.EditThisColumnsConfiguration());
         if ( origCol instanceof LimitedEntryBRLConditionColumn ) {
             return new ImageButton( edit,

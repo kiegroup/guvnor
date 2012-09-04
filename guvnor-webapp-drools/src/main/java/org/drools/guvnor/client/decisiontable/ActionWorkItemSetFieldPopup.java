@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
@@ -95,7 +96,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
         Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
         editDisabled.setAltText(Constants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo());
@@ -206,7 +207,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     }
 
     private ImageButton createEditField() {
-        Image edit = DroolsGuvnorImages.INSTANCE.Edit();
+        Image edit = GuvnorImages.INSTANCE.Edit();
         edit.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());
         Image editDisabled = DroolsGuvnorImages.INSTANCE.EditDisabled();
         editDisabled.setAltText(Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn());

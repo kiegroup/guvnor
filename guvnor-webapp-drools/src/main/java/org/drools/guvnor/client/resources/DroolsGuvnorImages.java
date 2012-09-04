@@ -105,12 +105,6 @@ public class DroolsGuvnorImages {
         return image;
     }
 
-    public Image Edit() {
-        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.edit());
-        image.setAltText(Constants.INSTANCE.Edit());
-        return image;
-    }
-
     public Image EditDisabled() {
         Image image = new Image(DroolsGuvnorImageResources.INSTANCE.editDisabled());
         image.setAltText(Constants.INSTANCE.EditDisabled());

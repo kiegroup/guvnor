@@ -33,6 +33,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -163,7 +164,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //Show an editor for the constraint value type
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            Image clickme = new Image( DroolsGuvnorImageResources.INSTANCE.edit() );
+            Image clickme = GuvnorImages.INSTANCE.Edit();
             clickme.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {

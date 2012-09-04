@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -218,7 +219,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     private Widget choice() {
-        Image clickme = new Image( DroolsGuvnorImageResources.INSTANCE.edit() );
+        Image clickme = GuvnorImages.INSTANCE.Edit();
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
