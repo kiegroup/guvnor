@@ -22,7 +22,7 @@
   <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel>
-    <gwt:Image resource="{simulationResources.assertRuleFired}" styleName="{simulationResources.style.commandImage}"/>
+    <gwt:Image resource="{simulationResources.assertRuleFired}" altText="" styleName="{simulationResources.style.commandImage}"/>
     <gwt:HTMLPanel>
       <div>
         <gwt:Label text="{i18n.AssertRuleFired}" styleName="{simulationResources.style.commandLabel}"/>

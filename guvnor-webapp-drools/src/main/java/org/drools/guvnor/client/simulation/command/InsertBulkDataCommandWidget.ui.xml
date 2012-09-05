@@ -24,7 +24,7 @@
   <gwt:FlowPanel ui:field="flowPanel" width="100%">
     <gwt:HTMLPanel>
       <div>
-        <gwt:Image resource="{simulationResources.insertBulkData}" styleName="{simulationResources.style.commandImage}"/>
+        <gwt:Image resource="{simulationResources.insertBulkData}" altText="" styleName="{simulationResources.style.commandImage}"/>
         <gwt:Label text="{i18n.InsertBulkData}" styleName="{simulationResources.style.commandLabel}"/>
       </div>
     </gwt:HTMLPanel>

@@ -27,7 +27,7 @@
 
   <gwt:FlowPanel width="100%">
     <gwt:FlowPanel>
-      <gwt:Image resource="{simulationResources.fireAllRules}" styleName="{simulationResources.style.commandImage}"/>
+      <gwt:Image resource="{simulationResources.fireAllRules}" altText="" styleName="{simulationResources.style.commandImage}"/>
       <gwt:Label text="{i18n.FireAllRules}" styleName="{simulationResources.style.commandLabel}"/>
     </gwt:FlowPanel>
     <gwt:VerticalPanel ui:field="verticalPanel" width="100%" addStyleNames="{style.idented}"/>
