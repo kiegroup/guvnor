@@ -724,7 +724,7 @@ GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal(conten
 
       <para>In the second line of code above, we are retrieving the source
       content by accessing the
-      /rest/packages/{packageName}/assets/{assetName}/source where i our case
+      /rest/packages/{packageName}/assets/{assetName}/source, where in our case
       packageName is "essaiRest" and assetName is "tab2".</para>
 
       <para>In the third line of code above, the source code we get is the
@@ -751,7 +751,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
 
       <para>In the first line of code above, we are first creating a java
       String variable that contains the authorization element needed to update
-      an asset on the Guvnor repository.</para>
+      an asset in the Guvnor repository.</para>
 
       <para>In the next lines of code above, we are doing some stuff to modify
       the Web decision table.</para>
