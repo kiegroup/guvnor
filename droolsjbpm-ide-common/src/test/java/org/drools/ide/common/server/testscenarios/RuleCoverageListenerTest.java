@@ -20,6 +20,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
 import org.junit.Test;
 
@@ -109,6 +110,10 @@ class MockActivation
 
     public Rule getRule() {
         return new Rule( ruleName );
+    }
+
+    public Consequence getConsequence() {
+        return null;
     }
 
     public ActivationNode getActivationNode() {
