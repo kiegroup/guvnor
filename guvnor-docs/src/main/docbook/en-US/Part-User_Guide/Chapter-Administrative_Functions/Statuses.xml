@@ -8,46 +8,53 @@
          xmlns:ns="http://docbook.org/ns/docbook" xml:base="../..">
   <title>Status management</title>
 
-  <para>Each asset (and also package) in Guvnor has a status flag set. The
-  values of the status flag are set in the Administration section of the
-  Guvnor. (you can add your own status names). Similar to Categories, Statuses
-  do NOT effect the execution in any way, and are purely informational. Unlike
-  categories, assets only have one status AT A TIME.</para>
+  <para>Every asset, including packages, can be assigned a status. Unlike 
+  categories assets can only have one status. The use of statuses is optional 
+  and does not affect the execution of assets, however, statuses may be used 
+  to compile packages when using selectors.</para>
 
-  <para>Using statuses is completely optional. You can use it to manage the
-  lifecycle of assets (which you can alternatively do with categories if you
-  like).</para>
+  <para>Statuses may help to manage the lifecycle of assets, by assigning 
+  assets a status that indicates its current state, for example, draft, review, 
+  production.</para>
 
-  <figure>
-    <title>Asset status</title>
+  <para>If the status for an entire package is changed, it changes the status 
+  for every asset in the package.</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
+  <procedure>
+    <title>Setting the available statuses</title>
+    <step>
+      <para>From the navigation panel, select 
+      <menuchoice><guimenu>Administration</guimenu><guisubmenu>Status
+      </guisubmenu></menuchoice>.</para>
+    </step>
+    <step>
+      <para>Click <guilabel>New status</guilabel>, enter the status name in 
+      the text box, and click <guilabel>OK</guilabel>.</para>
+    </step>
+  </procedure>
+  <para>The new status will show up in <guilabel>Current statuses</guilabel> 
+  field.</para>
+
+  <procedure>
+    <title>Changing asset status</title>
+    <step>
+      <para>Open the asset in the asset editor.</para>
+    </step>
+    <step>
+      <para>Select <menuchoice><guimenu>Edit</guimenu><guisubmenu>Change 
+      status</guisubmenu></menuchoice>, choose the status from the drop 
+      down menu and click <guilabel>Change status</guilabel>.</para>
+      <figure>
+        <title>Asset status</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AssetChangeStatus.png"
-                   format="PNG"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <para>You can change the status of an individual asset (like in the diagram
-  above). Its change takes effect immediately, no separate save is
-  needed.</para>
-
-  <figure>
-    <title>Asset status</title>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/PackageChangeStatus.png"
-                   format="PNG"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <para>You can change the status of a whole package - this sets the status
-  flag on the package itself, but it ALSO changes the statuses on ALL the
-  assets that belong to this package in one hit (to be the same as what you
-  set the package to).</para>
+                   format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </step>
+  </procedure>
+  <para>The status of the asset will be changed immediately.</para>
 </section>
