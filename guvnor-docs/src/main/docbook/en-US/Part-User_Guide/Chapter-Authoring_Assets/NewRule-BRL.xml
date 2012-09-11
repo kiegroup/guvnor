@@ -504,6 +504,15 @@
     section.</para>
 
     <para>Click on the "-" icon beside each metadata or attribute to remove it.</para>
+    <section>
+		<title>Salience</title>
+		<para>
+			Each rule has a salience value which is an integer value that defaults to zero. The salience value 
+			represents the priority of the rule with higher salience values representing higher priority. Salience 
+			values can be positive or negative.
+		</para>
+	</section>
+
   </section>
 
   <section>
