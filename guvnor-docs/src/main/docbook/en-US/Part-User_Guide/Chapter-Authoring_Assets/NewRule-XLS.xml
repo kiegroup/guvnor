@@ -8,9 +8,10 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Spreadsheet decision tables</title>
 
-  <para>Multiple rules can be stored in a spreadsheet (each row is a rule).
-  The details of the spreadsheet are not covered in this chapter (as there is
-  a separate chapter for them).</para>
+  <para>Multiple rules can be stored in a spreadsheet. Each row in the 
+  spreadsheet is a rule, and each column is either a condition, an action, or 
+  an option. The Drools Expert User Guide discusses spreadsheet decision 
+  tables in more detail.</para>
 
   <figure>
     <title>Spreadsheet decision table</title>
