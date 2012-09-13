@@ -14,6 +14,9 @@
 
   <inherits name="org.drools.guvnor.GuvnorApi"/>
 
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
+
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
   

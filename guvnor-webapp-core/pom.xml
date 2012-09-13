@@ -237,6 +237,61 @@
       <scope>test</scope>
     </dependency>
 
+    <!--uberfire-->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+      <version>2.1.0.Beta1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.inject</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>

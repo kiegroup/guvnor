@@ -461,6 +461,37 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
     </dependency>
