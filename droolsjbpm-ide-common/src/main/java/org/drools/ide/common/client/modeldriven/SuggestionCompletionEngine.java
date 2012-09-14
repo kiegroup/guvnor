@@ -1072,4 +1072,43 @@ public class SuggestionCompletionEngine
         return result;
     }
 
+    /**
+     * Check whether the childField is related to the parentField through a
+     * chain of enumeration dependencies. Both fields belong to the same Fact
+     * Type. Furthermore code consuming this function should ensure both
+     * parentField and childField relate to the same Fact Pattern
+     * 
+     * @param factType
+     * @param baseField
+     * @param childField
+     * @return
+     */
+    public boolean isDependentEnum(String factType,
+                                   String parentField,
+                                   String childField) {
+        Map<String, Object> enums = loadDataEnumLookupFields();
+        if ( enums.isEmpty() ) {
+            return false;
+        }
+        //Check if the childField is a direct descendant of the parentField
+        final String key = factType + "." + childField;
+        if ( !enums.containsKey( key ) ) {
+            return false;
+        }
+
+        //Otherwise follow the dependency chain...
+        final Object _parent = enums.get( key );
+        if ( _parent instanceof String ) {
+            final String _parentField = (String) _parent;
+            if ( _parentField.equals( parentField ) ) {
+                return true;
+            } else {
+                return isDependentEnum( factType,
+                                        parentField,
+                                        _parentField );
+            }
+        }
+        return false;
+    }
+    
 }

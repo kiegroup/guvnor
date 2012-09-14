@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -175,6 +176,8 @@ public class DataInputWidget extends DirtyableFlexTable {
                            new SmallLabel( "[" + factData.getName() + "]" ) );
 
                 Map<String, Integer> presentFields = new HashMap<String, Integer>();
+                
+                Map<FieldData, FieldDataConstraintEditor> enumEditorMap = new HashMap<FieldData, FieldDataConstraintEditor>();
 
                 // Sets row name and delete button.
                 for ( final FieldData fieldData : factData.getFieldData() ) {
@@ -188,15 +191,27 @@ public class DataInputWidget extends DirtyableFlexTable {
 
                     // Sets row data
                     int fieldRowIndex = rowIndexByFieldName.getRowIndex( fieldData.getName() );
+                    IsWidget editableCell = editableCell( fieldData,
+                                                          factData,
+                                                          factData.getType(),
+                                                          this.executionTrace );
                     setWidget( fieldRowIndex,
                                col,
-                               editableCell( fieldData,
-                                             factData,
-                                             factData.getType(),
-                                             this.executionTrace ) );
+                               editableCell );
                     presentFields.remove( fieldData.getName() );
+                    
+                    if (fieldData.getNature() == FieldData.TYPE_ENUM) {
+                        enumEditorMap.put(fieldData, (FieldDataConstraintEditor) editableCell);
+                    }
                 }
-
+                for (FieldDataConstraintEditor outerEnumEditor : enumEditorMap.values()) {
+                    for (FieldDataConstraintEditor innerEnumEditor : enumEditorMap.values()) {
+                        if (outerEnumEditor != innerEnumEditor) {
+                            outerEnumEditor.addIfDependentEnumEditor(innerEnumEditor);
+                        }
+                    }
+                }
+                
                 // 
                 for ( Map.Entry<String, Integer> entry : presentFields.entrySet() ) {
                     int fieldRow = ((Integer) entry.getValue()).intValue();

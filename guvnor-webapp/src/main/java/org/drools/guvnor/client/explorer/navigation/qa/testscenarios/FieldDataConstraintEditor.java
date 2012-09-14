@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -75,6 +77,9 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     private SuggestionCompletionEngine sce;
     private ValueChanged               callback;
 
+    private IsWidget                        valueEditorWidget;
+    private List<FieldDataConstraintEditor> dependentEnumEditors = null;
+
     public FieldDataConstraintEditor(String factType,
                                      ValueChanged callback,
                                      FieldData field,
@@ -99,32 +104,19 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         String flType = sce.getFieldType( key );
         panel.clear();
         if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            final TextBox box = editableTextBox( callback,
-                                                 field.getName(),
-                                                 field.getValue() );
-            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
-            panel.add( box );
+            valueEditorWidget =  editableTextBox( callback,
+                                                  field.getName(),
+                                                  field.getValue() );
+            panel.add( valueEditorWidget );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            String[] c = new String[]{"true", "false"};
-            panel.add( new EnumDropDown( field.getValue(),
-                                         new DropDownValueChanged() {
-                                             public void valueChanged(String newText,
-                                                                      String newValue) {
-                                                 callback.valueChanged( newValue );
-                                             }
-                                         },
-                                         DropDownData.create( c ) ) );
+            valueEditorWidget = booleanEditor();
+            panel.add( valueEditorWidget );
+            
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
-            String m = ((Constants) GWT.create( Constants.class )).ValueFor0( field.getName() );
-            datePicker.setTitle( m );
-            datePicker.addValueChanged( new ValueChanged() {
-                public void valueChanged(String newValue) {
-                    field.setValue( newValue );
-                }
-            } );
+            valueEditorWidget = dateEditor();
+            panel.add( valueEditorWidget );
 
-            panel.add( datePicker );
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             for (FieldData otherFieldData : givenFact.getFieldData()) {
@@ -133,14 +125,9 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             DropDownData dropDownData = sce.getEnums(factType, field.getName(), currentValueMap);
             if ( dropDownData != null ) {
                 field.setNature( FieldData.TYPE_ENUM );
-                panel.add( new EnumDropDown( field.getValue(),
-                                             new DropDownValueChanged() {
-                                                 public void valueChanged(String newText,
-                                                                          String newValue) {
-                                                     callback.valueChanged( newValue );
-                                                 }
-                                             },
-                                             dropDownData ) );
+                dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
+                valueEditorWidget = dropDownEditor( dropDownData );
+                panel.add( valueEditorWidget );
 
             } else {
                 if ( field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
@@ -175,9 +162,9 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     }
 
-    private static TextBox editableTextBox(final ValueChanged changed,
-                                           String fieldName,
-                                           String initialValue) {
+    private TextBox editableTextBox(final ValueChanged changed,
+                                    String fieldName,
+                                    String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
         String m = ((Constants) GWT.create( Constants.class )).ValueFor0( fieldName );
@@ -188,10 +175,50 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 changed.valueChanged( tb.getText() );
             }
         } );
+        
+        tb.addKeyPressHandler( new NumbericFilterKeyPressHandler( tb ) );
 
         return tb;
     }
+    
+    private EnumDropDown booleanEditor() {
+        return new EnumDropDown( field.getValue(),
+                                 new DropDownValueChanged() {
+                                     public void valueChanged(String newText,
+                                                              String newValue) {
+                                         callback.valueChanged( newValue );
+                                     }
 
+                                 },
+                                 DropDownData.create( new String[]{"true", "false"} ) );
+    }
+
+    private EnumDropDown dropDownEditor(final DropDownData dropDownData) {
+        return new EnumDropDown( field.getValue(),
+                                 new DropDownValueChanged() {
+                                     public void valueChanged(String newText,
+                                                              String newValue) {
+                                         callback.valueChanged( newValue );
+                                         for ( FieldDataConstraintEditor dependentEnumEditor : dependentEnumEditors ) {
+                                             dependentEnumEditor.refreshDropDownData();
+                                         }
+                                     }
+                                 },
+                                 dropDownData );
+
+    }
+
+    private DatePickerTextBox dateEditor() {
+        DatePickerTextBox editor = new DatePickerTextBox( field.getValue() );
+        editor.setTitle( Constants.INSTANCE.ValueFor0( field.getName() ) );
+        editor.addValueChanged( new ValueChanged() {
+            public void valueChanged(String newValue) {
+                field.setValue( newValue );
+            }
+        } );
+        return editor;
+    }
+    
     private Widget variableEditor(final ValueChanged changed) {
         List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
                                                                true );
@@ -461,5 +488,38 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         panel.setWidth( "100%" );
         return panel;
     }
+    
+
+    public void addIfDependentEnumEditor(FieldDataConstraintEditor candidateDependentEnumEditor) {
+        if ( isDependentEnum( candidateDependentEnumEditor ) ) {
+            dependentEnumEditors.add( candidateDependentEnumEditor );
+        }
+    }
+    
+    public boolean isDependentEnum(FieldDataConstraintEditor child) {
+        if ( !factType.equals( child.factType ) ) {
+            return false;
+        }
+        return sce.isDependentEnum( factType,
+                                    field.getName(),
+                                    child.field.getName() );
+    }
+    
+    private void refreshDropDownData() {
+        if ( this.valueEditorWidget instanceof EnumDropDown ) {
+            final EnumDropDown dropdown = (EnumDropDown) this.valueEditorWidget;
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            for ( FieldData otherFieldData : givenFact.getFieldData() ) {
+                currentValueMap.put( otherFieldData.getName(),
+                                     otherFieldData.getValue() );
+            }
+            DropDownData dropDownData = sce.getEnums( factType,
+                                                      field.getName(),
+                                                      currentValueMap );
+            dropdown.setDropDownData( field.getValue(),
+                                      dropDownData );
+        }
+    }
+
 
 }
