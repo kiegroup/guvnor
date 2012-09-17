@@ -54,7 +54,7 @@ public class RuleFlowHandler extends ContentHandler
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
 
         if ( process != null ) {
-            RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
+	    RuleFlowContentModel content = new RuleFlowContentModel();
             content.setXml( item.getContent() );
             asset.setContent( content );
         } else if ( process == null && !"".equals( item.getContent() ) ) {

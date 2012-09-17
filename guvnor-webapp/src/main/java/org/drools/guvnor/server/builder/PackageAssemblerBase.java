@@ -53,10 +53,12 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     protected void buildAsset(AssetItem asset) {
         ContentHandler contentHandler = ContentManager.getHandler( asset.getFormat() );
 
-        if ( contentHandler instanceof ICompilable && !asset.getDisabled() ) {
+        if ( contentHandler instanceof ICompilable && !asset.getDisabled()) {
             try {
-                compile( asset,
-                         (ICompilable) contentHandler );
+            	if(asset.getFormat() != null && !asset.getFormat().equals("bpmn2") && !asset.getFormat().equals("bpmn")) {
+	                compile( asset,
+	                         (ICompilable) contentHandler );
+            	}
             } catch ( DroolsParserException e ) {
                 errorLogger.addError( asset,
                                       e.getMessage() );
