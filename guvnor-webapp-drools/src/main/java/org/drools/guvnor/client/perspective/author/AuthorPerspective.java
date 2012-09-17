@@ -29,7 +29,10 @@ import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.perspective.Perspective;
 
-public class AuthorPerspective extends Perspective {
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class AuthorPerspective implements Perspective {
 
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
 

@@ -71,7 +71,7 @@ public class PerspectivesPanelViewImpl extends Composite
     Anchor logoutAnchor;
 
     public PerspectivesPanelViewImpl(ClientFactory clientFactory, EventBus eventBus) {
-        this.navigationPanel = new NavigationPanel(clientFactory, eventBus);
+//        this.navigationPanel = new NavigationPanel(clientFactory, eventBus);
 
         this.explorerCenterPanel = new ExplorerViewCenterPanel(clientFactory, eventBus);
 

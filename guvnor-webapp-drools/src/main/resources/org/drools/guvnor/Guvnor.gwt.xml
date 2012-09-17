@@ -16,7 +16,7 @@ the end of the URL. <extend-property name="locale" values="fr"/> -->
   <extend-property name="locale" values="fr_FR"/>
 
   <!-- Specify the app entry point class. -->
-  <entry-point class="org.drools.guvnor.client.GuvnorDroolsEntryPoint"/>
+  <!--<entry-point class="org.drools.guvnor.client.GuvnorDroolsEntryPoint"/>-->
 
   <servlet path="/verificationService" class="org.drools.guvnor.server.VerificationServiceImplementation"/>
   <servlet path="/oryxeditor" class="org.drools.guvnor.server.files.OryxEditorServlet"/>

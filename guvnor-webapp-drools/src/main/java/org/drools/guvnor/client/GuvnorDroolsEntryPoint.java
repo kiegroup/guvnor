@@ -144,11 +144,11 @@ public class GuvnorDroolsEntryPoint
     private void createMain() {
         EventBus eventBus = new SimpleEventBus();
         SuggestionCompletionCache.getInstance().setEventBus(eventBus);
-        ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
-        appController = new AppControllerImpl(clientFactory,eventBus);
+//        ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
+//        appController = new AppControllerImpl(clientFactory,eventBus);
 
         if (Window.Location.getPath().contains("StandaloneEditor.html")) {
-            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
+//            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
         } else {
 
             RootLayoutPanel.get().add(appController.getMainPanel());
@@ -157,7 +157,7 @@ public class GuvnorDroolsEntryPoint
         askToInstallSampleRepository();
 
         //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
-        clientFactory.getPlaceController().goTo(new FindPlace());
+//        clientFactory.getPlaceController().goTo(new FindPlace());
     }
 
     private void askToInstallSampleRepository() {

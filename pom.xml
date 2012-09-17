@@ -62,17 +62,17 @@
         </plugin>
 
         <plugin>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-maven-plugin</artifactId>
-            <version>1.5.0</version>
-            <configuration>
-                <!-- Process sub-modules separately, sharing parent config -->
-                <enableModules>true</enableModules>
-                <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-                <srcDir>src/main/java</srcDir>
-                <transDir>src/main/java/</transDir>
-                <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
-            </configuration>
+          <groupId>org.zanata</groupId>
+          <artifactId>zanata-maven-plugin</artifactId>
+          <version>1.5.0</version>
+          <configuration>
+            <!-- Process sub-modules separately, sharing parent config -->
+            <enableModules>true</enableModules>
+            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
+            <srcDir>src/main/java</srcDir>
+            <transDir>src/main/java/</transDir>
+            <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>com.google.code.maven-config-processor-plugin</groupId>

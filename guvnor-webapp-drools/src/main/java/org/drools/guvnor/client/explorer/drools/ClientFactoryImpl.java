@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.drools;
 
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
 import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
@@ -26,10 +27,15 @@ import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+@ApplicationScoped
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     private WizardFactory             wizardFactory;
 
-    public ClientFactoryImpl(EventBus eventBus) {
+    @Inject
+    public ClientFactoryImpl(GuvnorEventBus eventBus) {
         super(eventBus);
     }
 

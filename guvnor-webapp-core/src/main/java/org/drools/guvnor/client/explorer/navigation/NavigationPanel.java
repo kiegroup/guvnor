@@ -16,24 +16,36 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
+import org.drools.guvnor.client.perspective.Perspective;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@WorkbenchScreen(identifier = "navigationPanel")
 public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget {
 
     private final NavigationPanelView view;
     private final ClientFactory clientFactory;
     private final ResettableEventBus eventBus;
 
-    public NavigationPanel(ClientFactory clientFactory, EventBus eventBus) {
+    @Inject
+    public NavigationPanel(ClientFactory clientFactory, GuvnorEventBus eventBus, Perspective perspective) {
         view = clientFactory.getNavigationViewFactory().getNavigationPanelView();
         eventBus.addHandler(ChangePerspectiveEvent.TYPE, this);
         this.eventBus = new ResettableEventBus(eventBus);
         this.clientFactory = clientFactory;
+
+        addNavigationItems(perspective);
     }
 
     public void add(IsWidget header, IsWidget content) {
@@ -44,12 +56,11 @@ public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget
         view.clear();
         eventBus.removeHandlers();
 
-        addNavigationItems(changePerspectiveEvent);
+        addNavigationItems(changePerspectiveEvent.getPerspective());
     }
 
-    private void addNavigationItems(ChangePerspectiveEvent changePerspectiveEvent) {
-        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective()
-                .getBuilders(clientFactory, eventBus)) {
+    private void addNavigationItems(Perspective perspective) {
+        for (NavigationItemBuilder navigationItemBuilder : perspective.getBuilders(clientFactory, eventBus)) {
             addNavigationItem(navigationItemBuilder);
         }
     }
@@ -60,6 +71,12 @@ public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget
         }
     }
 
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "Navigation"; //TODO -Rikkola-
+    }
+
+    @WorkbenchPartView
     public Widget asWidget() {
         return view.asWidget();
     }

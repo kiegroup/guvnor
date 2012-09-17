@@ -23,9 +23,9 @@ import com.google.gwt.place.shared.PlaceController;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
-public abstract class Perspective {
+public interface Perspective {
 
-    public abstract Collection<NavigationItemBuilder> getBuilders(
+    public Collection<NavigationItemBuilder> getBuilders(
             ClientFactory clientFactory,
             EventBus eventBus);
 }

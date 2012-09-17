@@ -31,9 +31,16 @@ import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.widgets.tables.QueryPagedTable;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import java.util.*;
 
+@Dependent
+@WorkbenchScreen(identifier = "search")
 public class QueryWidget extends Composite {
 
     private ConstantsCore       constants = GWT.create( ConstantsCore.class );
@@ -41,6 +48,7 @@ public class QueryWidget extends Composite {
     private VerticalPanel       layout;
     private final ClientFactory clientFactory;
 
+    @Inject
     public QueryWidget(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
         layout = new VerticalPanel();
@@ -236,5 +244,16 @@ public class QueryWidget extends Composite {
         advancedDisclosure.setContent( container );
 
         layout.add( advancedDisclosure );
+    }
+
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return constants.Find();
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
     }
 }
