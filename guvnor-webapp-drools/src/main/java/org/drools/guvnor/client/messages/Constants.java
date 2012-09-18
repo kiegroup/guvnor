@@ -2800,15 +2800,9 @@ public interface Constants
 
     String NewItemBelow();
 
-    String SuffleDown();
-
-    String SuffleUp();
-
     String EditDisabled();
 
     String Trash();
-
-    String AddConnective();
 
     String NewItemDisabled();
 

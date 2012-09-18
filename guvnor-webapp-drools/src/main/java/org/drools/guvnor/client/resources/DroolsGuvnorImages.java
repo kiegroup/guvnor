@@ -80,16 +80,16 @@ public class DroolsGuvnorImages {
         return image;
     }
 
-    public Image SuffleDown() {
+    public Image MoveDown() {
         Image image = new Image(DroolsGuvnorImageResources.INSTANCE.shuffleDown());
-        image.setAltText(Constants.INSTANCE.SuffleDown());
+        image.setAltText(Constants.INSTANCE.MoveDown());
 
         return image;
     }
 
-    public Image SuffleUp() {
+    public Image MoveUp() {
         Image image = new Image(DroolsGuvnorImageResources.INSTANCE.shuffleUp());
-        image.setAltText(Constants.INSTANCE.SuffleUp());
+        image.setAltText(Constants.INSTANCE.MoveUp());
         return image;
     }
 
@@ -131,7 +131,7 @@ public class DroolsGuvnorImages {
 
     public Image AddConnective() {
         Image image = new Image(DroolsGuvnorImageResources.INSTANCE.addConnective());
-        image.setAltText(Constants.INSTANCE.AddConnective());
+        image.setAltText(Constants.INSTANCE.AddMoreOptionsToThisFieldsValues());
         return image;
     }
 
