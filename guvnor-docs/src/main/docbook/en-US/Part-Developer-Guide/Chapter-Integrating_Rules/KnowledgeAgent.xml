@@ -107,8 +107,8 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
   <para>You can see the "Package URI" - this is the URL that you would copy
   and paste into the <filename>change-set.xml</filename> file to specify that
   you want this package. It specifies an exact version (in this case to a
-  snapshot) - each snapshot has its own URL. If you want the "latest" - then
-  replace "NewSnapshot" with "LATEST".</para>
+  snapshot) - each snapshot has its own URL. If you want the latest snapshot,
+  replace the name of the snapshot in the URL with the word "LATEST".</para>
 
   <para>You can also download a .pkg file from here, which you can drop in a
   directory and use the "file" or "dir" feature of the KnowledgeAgent if
