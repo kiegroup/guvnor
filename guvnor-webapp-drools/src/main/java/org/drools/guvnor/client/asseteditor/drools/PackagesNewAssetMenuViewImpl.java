@@ -56,7 +56,7 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
        	addNewFormDefinitionMenuItem();
         addNewEnumerationMenuItem();
         addNewTestScenarioMenuItem();
-        addNewSimulationTestMenuItem();
+//        addNewSimulationTestMenuItem();
         addNewFileMenuItem();
         rebuildAllPackagesMenuItem();
 
