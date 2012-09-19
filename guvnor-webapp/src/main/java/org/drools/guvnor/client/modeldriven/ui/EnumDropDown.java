@@ -136,28 +136,27 @@ public class EnumDropDown extends ListBox
             }
             if ( currentValue != null && currentValue.equals( val ) ) {
                 setSelectedIndex( i );
-                //                setSelectedIndex( i + 1 );
                 selected = true;
             }
         }
 
         if ( !selected ) {
             setSelectedIndex( 0 );
-        }
 
-        //Schedule notification after GWT has finished tying everything together as not all 
-        //Event Handlers have been set-up by consumers of this class at Construction time
-        Scheduler.get().scheduleFinally( new ScheduledCommand() {
+            //Schedule notification after GWT has finished tying everything together as not all 
+            //Event Handlers have been set-up by consumers of this class at Construction time
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
-            public void execute() {
-                final int selectedIndex = getSelectedIndex();
-                if ( selectedIndex >= 0 ) {
-                    valueChangedCommand.valueChanged( getItemText( selectedIndex ),
-                                                      getValue( selectedIndex ) );
+                public void execute() {
+                    final int selectedIndex = getSelectedIndex();
+                    if ( selectedIndex >= 0 ) {
+                        valueChangedCommand.valueChanged( getItemText( selectedIndex ),
+                                                          getValue( selectedIndex ) );
+                    }
                 }
-            }
 
-        } );
+            } );
+        }
 
     }
 }
