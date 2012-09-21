@@ -27,9 +27,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.drools.guvnor.server.jaxrs.jaxb.AtomAssetMetadata;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBContextFinder;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlTypeProvider;
 import org.w3c.dom.Element;
@@ -117,6 +119,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"title", "links", "categories", "updated", "id", "published", "authors", "contributors", "source",
         "rights", "content", "summary", "anyOther"})
+@XmlSeeAlso(AtomAssetMetadata.class) 
 public class Entry extends CommonAttributes
 {
    private List<Person> authors = new ArrayList<Person>();
