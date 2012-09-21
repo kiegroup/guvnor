@@ -26,6 +26,7 @@ import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,18 +35,26 @@ import javax.inject.Inject;
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     private WizardFactory             wizardFactory;
 
+//    @Inject
+    PlaceManager placeManager;
+
     @Inject
     public ClientFactoryImpl(GuvnorEventBus eventBus) {
         super(eventBus);
     }
 
-	/*
-	 * TODO: Alternatively, we can do below: 
-	 * <generate-with class="org.drools.guvnor.client.util.ActivityMapper">
-	 *     <when-type-assignable class="org.drools.guvnor.client.explorer.GuvnorDroolsActivityMapper"/>
-	 * </generate-with>
-	 * We will revisit this code to decide which way is better later.
-	 */
+    @Override
+    public PlaceManager getPlaceManager() {
+        return placeManager;
+    }
+
+    /*
+      * TODO: Alternatively, we can do below:
+      * <generate-with class="org.drools.guvnor.client.util.ActivityMapper">
+      *     <when-type-assignable class="org.drools.guvnor.client.explorer.GuvnorDroolsActivityMapper"/>
+      * </generate-with>
+      * We will revisit this code to decide which way is better later.
+      */
     public GuvnorActivityMapper getActivityMapper() {
         return new GuvnorDroolsActivityMapper( this );
     }    

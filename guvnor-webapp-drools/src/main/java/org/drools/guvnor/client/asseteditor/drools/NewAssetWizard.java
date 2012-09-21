@@ -400,7 +400,7 @@ public class NewAssetWizard extends FormStylePopup {
                                                                                                                 format,
                                                                                                                 content );
                 final NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
-                clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
+                clientFactory.getDeprecatedPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
             }
         };
 
@@ -589,7 +589,7 @@ public class NewAssetWizard extends FormStylePopup {
      * @param uuid
      */
     protected void openEditor(String uuid) {
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ) );
+        clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( uuid ) );
     }
 
 }

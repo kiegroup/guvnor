@@ -156,7 +156,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
             public void update(int index,
                                BuilderResultLine row,
                                String value) {
-                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ));
+                clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( row.getUuid() ));
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -174,7 +174,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
     void openSelected(ClickEvent e) {
         Set<BuilderResultLine> selectedSet = selectionModel.getSelectedSet();
         for ( BuilderResultLine selected : selectedSet ) {
-            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ));
+            clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ));
         }
     }
 

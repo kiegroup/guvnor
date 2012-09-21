@@ -109,7 +109,7 @@ public class ExplorerViewCenterPanel extends Composite
             public void onBeforeSelection(BeforeSelectionEvent<Integer> integerBeforeSelectionEvent) {
                 if ( !tabLayoutPanel.isCanSelectTabToggle() ) {
                     integerBeforeSelectionEvent.cancel();
-                    clientFactory.getPlaceController().goTo( openedTabs.getKey( integerBeforeSelectionEvent.getItem() ) );
+                    clientFactory.getDeprecatedPlaceController().goTo( openedTabs.getKey( integerBeforeSelectionEvent.getItem() ) );
                 }
             }
         } );
@@ -200,7 +200,7 @@ public class ExplorerViewCenterPanel extends Composite
     }
 
     private void goTo(Place place) {
-        clientFactory.getPlaceController().goTo( place );
+        clientFactory.getDeprecatedPlaceController().goTo( place );
     }
 
     private Place getNeighbour(int widgetIndex) {

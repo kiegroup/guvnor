@@ -71,7 +71,7 @@ public class AppControllerTest {
         
         placeController = mock( PlaceController.class );
         when(
-                clientFactory.getPlaceController()
+                clientFactory.getDeprecatedPlaceController()
         ).thenReturn(
                 placeController
         );

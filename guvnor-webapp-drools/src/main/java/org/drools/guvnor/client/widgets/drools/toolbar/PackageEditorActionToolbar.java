@@ -29,7 +29,6 @@ import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
@@ -321,7 +320,7 @@ public class PackageEditorActionToolbar extends Composite {
     }
 
     private void openModule(String newAssetUUID) {
-        clientFactory.getPlaceController().goTo( new ModuleEditorPlace( newAssetUUID ) );
+        clientFactory.getDeprecatedPlaceController().goTo( new ModuleEditorPlace( newAssetUUID ) );
     }
 
     /**

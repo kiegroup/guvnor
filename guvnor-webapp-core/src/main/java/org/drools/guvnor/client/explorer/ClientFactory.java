@@ -31,10 +31,13 @@ import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import org.uberfire.client.mvp.PlaceManager;
 
 public interface ClientFactory {
 
-    PlaceController getPlaceController();
+    PlaceController getDeprecatedPlaceController();
+
+    PlaceManager getPlaceManager();
 
     MultiActivityManager getActivityManager();
 

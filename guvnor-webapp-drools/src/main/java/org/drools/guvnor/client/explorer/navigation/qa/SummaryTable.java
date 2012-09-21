@@ -39,7 +39,7 @@ public class SummaryTable
     }
 
     public void openTestScenario(String uuid) {
-        clientFactory.getPlaceController().goTo(new AssetEditorPlace(uuid));
+        clientFactory.getDeprecatedPlaceController().goTo(new AssetEditorPlace(uuid));
     }
 
     static class Row {

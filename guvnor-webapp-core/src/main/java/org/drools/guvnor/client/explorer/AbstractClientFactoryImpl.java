@@ -44,7 +44,7 @@ public abstract class AbstractClientFactoryImpl
         this.placeController = new PlaceController(eventBus);
     }
 
-    public PlaceController getPlaceController() {
+    public PlaceController getDeprecatedPlaceController() {
         return placeController;
     }
 

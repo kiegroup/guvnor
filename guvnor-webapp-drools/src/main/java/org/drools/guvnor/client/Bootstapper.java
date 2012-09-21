@@ -6,9 +6,14 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.FileExplorerRootService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collection;
 
 @ApplicationScoped
 public class Bootstapper {

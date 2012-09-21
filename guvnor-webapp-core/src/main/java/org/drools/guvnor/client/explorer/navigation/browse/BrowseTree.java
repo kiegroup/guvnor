@@ -26,6 +26,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import java.util.*;
 
@@ -112,6 +113,7 @@ public class BrowseTree implements Presenter {
 
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
         if ( states.contains( selectedItem ) ) {
+            clientFactory.getPlaceManager().goTo(new PlaceRequest("stateScreen").addParameter("state",title));
             goTo( new StatePlace( title ) );
         } else if ( categories.containsKey( selectedItem ) ) {
             goTo( new CategoryPlace( categories.get( selectedItem ) ) );
@@ -122,12 +124,12 @@ public class BrowseTree implements Presenter {
         } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
             goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
         } else if ( selectedItem.equals( findRootTreeItem ) ) {
-            clientFactory.getPlaceController().goTo( new FindPlace() );
+            clientFactory.getDeprecatedPlaceController().goTo( new FindPlace() );
         }
     }
 
     private void goTo(Place newPlace) {
-        clientFactory.getPlaceController().goTo( newPlace );
+        clientFactory.getDeprecatedPlaceController().goTo( newPlace );
     }
 
     public void onTreeItemOpen(IsTreeItem openedItem) {

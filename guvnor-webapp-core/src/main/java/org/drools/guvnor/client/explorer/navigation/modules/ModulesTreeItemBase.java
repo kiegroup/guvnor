@@ -54,7 +54,7 @@ public abstract class ModulesTreeItemBase
 
     public void onModuleSelected(Object userObject) {
         if (userObject instanceof Place) {
-            clientFactory.getPlaceController().goTo((Place) userObject);
+            clientFactory.getDeprecatedPlaceController().goTo((Place) userObject);
         }
     }
 

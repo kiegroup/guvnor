@@ -45,7 +45,7 @@ public class AppControllerImpl implements AppController {
     private void setUpHistoryMapper() {
         PlaceHistoryHandler historyHandler = clientFactory.getPlaceHistoryHandler();
         historyHandler.register(
-                clientFactory.getPlaceController(),
+                clientFactory.getDeprecatedPlaceController(),
                 eventBus,
                 new FindPlace());
 

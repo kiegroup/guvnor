@@ -66,10 +66,10 @@ public class GuvnorActivityMapper
             return new CategoryActivity(
                     ((CategoryPlace) place).getCategoryPath(),
                     clientFactory );
-        } else if ( place instanceof StatePlace ) {
-            return new StateActivity(
-                    ((StatePlace) place).getStateName(),
-                    clientFactory );
+//        } else if ( place instanceof StatePlace ) {
+//            return new StateActivity(
+//                    ((StatePlace) place).getStateName(),
+//                    clientFactory );
         } else if ( place instanceof InboxPlace ) {
             return new InboxActivity(
                     (InboxPlace) place,

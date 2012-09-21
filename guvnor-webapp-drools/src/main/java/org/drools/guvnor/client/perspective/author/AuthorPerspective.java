@@ -48,11 +48,11 @@ public class AuthorPerspective implements Perspective {
 
         navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
 
-        navigationItemBuilders.add(new QATreeBuilder(clientFactory.getPlaceController()));
+        navigationItemBuilders.add(new QATreeBuilder(clientFactory.getDeprecatedPlaceController()));
 
-        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getPlaceController()));
+        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getDeprecatedPlaceController()));
 
-        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory.getPlaceController()));
+        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory.getDeprecatedPlaceController()));
 
         return navigationItemBuilders;
     }

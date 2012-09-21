@@ -41,7 +41,7 @@ public class SummaryTableTest {
         ClientFactory clientFactory = mock(ClientFactory.class);
         placeController = mock(PlaceController.class);
         when(
-                clientFactory.getPlaceController()
+                clientFactory.getDeprecatedPlaceController()
         ).thenReturn(
                 placeController
         );

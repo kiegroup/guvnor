@@ -17,7 +17,6 @@ package org.drools.guvnor.client.widgets.drools.toolbar;
 
 import java.util.Set;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.*;
 import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;

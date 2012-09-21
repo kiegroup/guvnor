@@ -6,6 +6,9 @@ import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,16 +16,16 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class GuvnorDefaultPerspective {
 
-    @Perspective(identifier = "homePerspective", isDefault = true)
+    @Perspective(identifier = "org.drools.guvnor.home", isDefault = true)
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition definition = new PerspectiveDefinition();
+        final PerspectiveDefinition definition = new PerspectiveDefinitionImpl();
         definition.setName("home");
 
-        final PanelDefinition east = new PanelDefinition();
-        east.addPart(new PartDefinition(new PlaceRequest("navigationPanel")));
+        final PanelDefinition east = new PanelDefinitionImpl();
+        east.addPart(new PartDefinitionImpl(new PlaceRequest("navigationPanel")));
         definition.getRoot().setChild(Position.WEST, east);
 
-        definition.getRoot().addPart(new PartDefinition(new PlaceRequest("search")));
+        definition.getRoot().addPart(new PartDefinitionImpl(new PlaceRequest("search")));
 
         return definition;
     }

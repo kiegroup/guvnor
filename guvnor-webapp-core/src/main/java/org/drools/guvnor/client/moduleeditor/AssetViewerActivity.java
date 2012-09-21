@@ -30,7 +30,6 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -75,7 +74,7 @@ public class AssetViewerActivity extends Activity
     }
 
     public void viewPackageDetail(Module packageConfigData) {
-        clientFactory.getPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
+        clientFactory.getDeprecatedPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
 
     private void fillModuleItemStructure() {

@@ -18,6 +18,9 @@
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
+  <inherits name="org.uberfire.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.backend.UberfireServerBackend"/>
 
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
