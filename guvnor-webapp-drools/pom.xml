@@ -554,6 +554,39 @@
       <classifier>sources</classifier>
       <version>0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-commons</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-commons</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.gwt</groupId>

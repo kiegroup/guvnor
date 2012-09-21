@@ -35,6 +35,9 @@ import javax.inject.Inject;
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     private WizardFactory             wizardFactory;
 
+//    @Inject
+    PlaceManager placeManager;
+
     @Inject
     PlaceManager placeManager;
 
