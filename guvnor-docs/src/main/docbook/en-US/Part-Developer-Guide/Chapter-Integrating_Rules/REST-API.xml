@@ -9,7 +9,7 @@
   <title>REST API</title>
 
   <para>The repository back end can also be accessed via Rest. Rest is a http
-  based protocol API - which has clients on all platforms and in all
+  based protocol API, which has clients on all platforms and in all
   programming languages.</para>
 
   <section>
@@ -84,7 +84,7 @@
               <entry>none</entry>
 
               <entry>Returns all packages contained in the Guvnor repository
-              in Atom Feed format</entry>
+              in Atom Feed format.</entry>
             </row>
 
             <row>
@@ -97,7 +97,7 @@
               <entry>none</entry>
 
               <entry>Returns all packages contained in the Guvnor repository
-              in JSON or XML format</entry>
+              in JSON or XML format.</entry>
             </row>
 
             <row>
@@ -136,7 +136,7 @@
               <entry>application/atom+xml</entry>
 
               <entry>Creates a package from an Atom Entry. Returns the newly
-              created package in Atom Entry format. Following info are required from the input Atom Entry: package name, package description.</entry>
+              created package in Atom Entry format.</entry>
             </row>
 
             <row>
@@ -216,7 +216,7 @@
               <entry>none</entry>
 
               <entry>Returns the list of package {packageName} versions as
-              an Atom Feed .</entry>
+              an Atom Feed.</entry>
             </row>
 
             <row>
@@ -229,7 +229,7 @@
               <entry>none</entry>
 
               <entry>Returns the metadata of package {packageName} and of
-              version {version} as an Atom Entry .</entry>
+              version {version} as an Atom Entry.</entry>
             </row>
 
             <row>
@@ -321,7 +321,7 @@
               <entry>none</entry>
 
               <entry>Returns the list of rule assets contained in package
-              {packageName} in JSON or XML format</entry>
+              {packageName} in JSON or XML format.</entry>
             </row>
 
             <row>
@@ -376,8 +376,8 @@
               <entry>none</entry>
 
               <entry>Returns the content of rule asset {assetName} contained
-              in package {packageName}. If this is a binary asset, returns the 
-              binary data as a byte array. If the asset {assetName} does not exist, status 404 is returned.</entry>
+                in package {packageName}. If this is a binary asset, the
+                binary data is returned as a byte array. If the asset {assetName} does not exist, status 404 is returned.</entry>
             </row>
 
             <row>
@@ -473,7 +473,7 @@
               <entry>none</entry>
 
               <entry>Returns the list of rule asset {assetName} versions contained in package {packageName} as
-              an Atom Feed .</entry>
+              an Atom Feed.</entry>
             </row>
 
             <row>
@@ -486,7 +486,7 @@
               <entry>none</entry>
 
               <entry>Returns the metadata of rule asset {assetName} of version {version} 
-              contained in package {packageName} as an Atom Entry .</entry>
+              contained in package {packageName} as an Atom Entry.</entry>
             </row>
 
             <row>
@@ -513,7 +513,7 @@
 
               <entry>Returns the binary content of rule asset {assetName} of version {version} 
               contained in package {packageName}.  If this asset has no binary
-              content, returns its source content instead.</entry>
+              content, its source content is returned instead.</entry>
             </row>
             
             <row>
