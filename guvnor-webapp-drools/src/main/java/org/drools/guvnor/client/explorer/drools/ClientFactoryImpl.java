@@ -38,7 +38,7 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     @Inject
     PlaceManager placeManager;
 
-//    @Inject
+    @Inject
     PlaceManager placeManager;
 
     @Inject
