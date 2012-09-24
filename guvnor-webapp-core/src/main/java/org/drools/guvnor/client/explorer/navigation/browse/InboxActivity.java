@@ -1,61 +1,55 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
-import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.client.explorer.AcceptItem;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.util.Activity;
-import org.drools.guvnor.client.widgets.tables.InboxIncomingPagedTable;
 import org.drools.guvnor.client.widgets.tables.InboxPagedTable;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 
-public class InboxActivity extends Activity {
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-    private final InboxPlace place;
+@Dependent
+@WorkbenchScreen(identifier = "inbox")
+public class InboxActivity {
+
     private final ClientFactory clientFactory;
+    private final PlaceManager placeManager;
+    private String inboxType;
 
-    public InboxActivity(InboxPlace place,
-                         ClientFactory clientFactory) {
-        this.place = place;
+    @Inject
+    public InboxActivity(PlaceManager placeManager, ClientFactory clientFactory) {
+        this.placeManager = placeManager;
         this.clientFactory = clientFactory;
     }
 
-    @Override
-    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-        if ( ExplorerNodeConfig.INCOMING_ID.equals( place.getInboxType() ) ) {
-            openInboxIncomingPagedTable(
-                    tabbedPanel,
-                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxIncomingName(),
-                    place.getInboxType() );
-        } else if ( ExplorerNodeConfig.RECENT_EDITED_ID.equals( place.getInboxType() ) ) {
-            openInboxPagedTable(
-                    tabbedPanel,
-                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentEditedName(),
-                    place.getInboxType() );
-        } else if ( ExplorerNodeConfig.RECENT_VIEWED_ID.equals( place.getInboxType() ) ) {
-            openInboxPagedTable(
-                    tabbedPanel,
-                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentViewedName(),
-                    place.getInboxType() );
+    @OnStart
+    public void init() {
+        inboxType = placeManager.getCurrentPlaceRequest().getParameters().get("inboxType");
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return new InboxPagedTable(
+                inboxType,
+                clientFactory);
+    }
+
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        if (ExplorerNodeConfig.INCOMING_ID.equals(inboxType)) {
+            return clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxIncomingName();
+        } else if (ExplorerNodeConfig.RECENT_EDITED_ID.equals(inboxType)) {
+            return clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentEditedName();
+        } else if (ExplorerNodeConfig.RECENT_VIEWED_ID.equals(inboxType)) {
+            return clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentViewedName();
+        } else {
+            return "";
         }
-    }
-
-    private void openInboxIncomingPagedTable(AcceptItem tabbedPanel,
-                                             String title,
-                                             String type) {
-        tabbedPanel.add(
-                title,
-                new InboxIncomingPagedTable(
-                        type,
-                        clientFactory ) );
-    }
-
-    private void openInboxPagedTable(AcceptItem tabbedPanel,
-                                     String title,
-                                     String type) {
-        tabbedPanel.add(
-                title,
-                new InboxPagedTable(
-                        type,
-                        clientFactory ) );
     }
 }

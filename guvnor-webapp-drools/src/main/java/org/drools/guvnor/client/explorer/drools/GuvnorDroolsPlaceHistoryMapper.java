@@ -26,7 +26,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionT
                 ManagerPlace.Tokenizer.class,
                 CategoryPlace.Tokenizer.class,
                 StatePlace.Tokenizer.class,
-                InboxPlace.Tokenizer.class,
                 MultiAssetPlace.Tokenizer.class,
                 TestScenarioListPlace.Tokenizer.class,
                 VerifierPlace.Tokenizer.class,

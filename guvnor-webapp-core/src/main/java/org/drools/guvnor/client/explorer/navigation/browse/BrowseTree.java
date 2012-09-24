@@ -17,14 +17,12 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -46,7 +44,7 @@ public class BrowseTree implements Presenter {
     public BrowseTree(ClientFactory clientFactory, EventBus eventBus) {
         this.view = clientFactory.getNavigationViewFactory().getBrowseTreeView();
         this.clientFactory = clientFactory;
-        this.view.setPresenter( this );
+        this.view.setPresenter(this);
 
 /*        if ( canShowMenu() ) {
             this.view.setNewAssetMenu((new RulesNewMenu( clientFactory, eventBus )).asWidget());
@@ -54,7 +52,7 @@ public class BrowseTree implements Presenter {
         root = this.view.addRootTreeItem();
         addInbox();
         findRootTreeItem = this.view.addFind();
-        if ( canShowStates() ) {
+        if (canShowStates()) {
             IsTreeItem statesRootTreeItem = this.view.addRootStateTreeItem();
         }
         addRootCategory();
@@ -67,23 +65,23 @@ public class BrowseTree implements Presenter {
     }
 
     private boolean canShowStates() {
-        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
+        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW);
     }
 
     private void addRootCategory() {
         categoriesRootItem = this.view.addRootCategoryTreeItem();
-        categories.put( categoriesRootItem, "/" );
+        categories.put(categoriesRootItem, "/");
     }
 
     private void addCategoryItem(String categoryName, IsTreeItem treeItem) {
-        IsTreeItem subItem = view.addTreeItem( treeItem, categoryName );
-        String path = getItemPath( categoryName, categories.get( treeItem ) );
-        categories.put( subItem, path );
+        IsTreeItem subItem = view.addTreeItem(treeItem, categoryName);
+        String path = getItemPath(categoryName, categories.get(treeItem));
+        categories.put(subItem, path);
     }
 
     private String getItemPath(String categoryName, String parentItemPath) {
         String path;
-        if ( isParentRoot( parentItemPath ) ) {
+        if (isParentRoot(parentItemPath)) {
             path = parentItemPath + categoryName;
         } else {
             path = parentItemPath + "/" + categoryName;
@@ -92,19 +90,19 @@ public class BrowseTree implements Presenter {
     }
 
     private boolean isParentRoot(String parentItemPath) {
-        return parentItemPath.equals( "/" );
+        return parentItemPath.equals("/");
     }
 
     private void addSubStatesToTreeItem() {
         view.removeStates();
-        clientFactory.getRepositoryService().listStates( new GenericCallback<String[]>() {
+        clientFactory.getRepositoryService().listStates(new GenericCallback<String[]>() {
             public void onSuccess(String[] result) {
                 for (String name : result) {
-                    IsTreeItem item = view.addStateItem( name );
-                    states.add( item );
+                    IsTreeItem item = view.addStateItem(name);
+                    states.add(item);
                 }
             }
-        } );
+        });
     }
 
     public BrowseTreeView getView() {
@@ -112,51 +110,51 @@ public class BrowseTree implements Presenter {
     }
 
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
-        if ( states.contains( selectedItem ) ) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("stateScreen").addParameter("state",title));
+        if (states.contains(selectedItem)) {
+            clientFactory.getPlaceManager().goTo(new PlaceRequest("stateScreen").addParameter("state", title));
         } else if (categories.containsKey(selectedItem)) {
             clientFactory.getPlaceManager().goTo(new PlaceRequest("categoryScreen").addParameter("category", categories.get(selectedItem)));
-        } else if ( selectedItem.equals( incomingInboxTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.INCOMING_ID ) );
-        } else if ( selectedItem.equals( inboxRecentlyEditedTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_EDITED_ID ) );
-        } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
-        } else if ( selectedItem.equals( findRootTreeItem ) ) {
+        } else if (selectedItem.equals(incomingInboxTreeItem)) {
+            goTo(new InboxPlace(ExplorerNodeConfig.INCOMING_ID));
+        } else if (selectedItem.equals(inboxRecentlyEditedTreeItem)) {
+            goTo(new InboxPlace(ExplorerNodeConfig.RECENT_EDITED_ID));
+        } else if (selectedItem.equals(inboxRecentlyViewedTreeItem)) {
+            goTo(new InboxPlace(ExplorerNodeConfig.RECENT_VIEWED_ID));
+        } else if (selectedItem.equals(findRootTreeItem)) {
             clientFactory.getPlaceManager().goTo(new PlaceRequest("search"));
         }
     }
 
-    private void goTo(Place newPlace) {
-        clientFactory.getDeprecatedPlaceController().goTo( newPlace );
+    private void goTo(PlaceRequest newPlace) {
+        clientFactory.getPlaceManager().goTo(newPlace);
     }
 
     public void onTreeItemOpen(IsTreeItem openedItem) {
-        if ( root.equals( openedItem ) ) {
-            if ( canShowStates() ) {
+        if (root.equals(openedItem)) {
+            if (canShowStates()) {
                 addSubStatesToTreeItem();
             }
-            view.removeCategories( categoriesRootItem );
-            loadCategories( categoriesRootItem );
-        } else if ( categories.containsKey( openedItem ) ) {
-            Collection<IsTreeItem> children = view.getChildren( openedItem );
+            view.removeCategories(categoriesRootItem);
+            loadCategories(categoriesRootItem);
+        } else if (categories.containsKey(openedItem)) {
+            Collection<IsTreeItem> children = view.getChildren(openedItem);
             for (IsTreeItem child : children) {
-                view.removeCategories( child );
-                loadCategories( child );
+                view.removeCategories(child);
+                loadCategories(child);
             }
         }
     }
 
     private void loadCategories(final IsTreeItem treeItem) {
-        String path = categories.get( treeItem );
-        clientFactory.getCategoryService().loadChildCategories( path,
+        String path = categories.get(treeItem);
+        clientFactory.getCategoryService().loadChildCategories(path,
                 new GenericCallback<String[]>() {
                     public void onSuccess(String[] result) {
                         for (String categoryName : result) {
-                            addCategoryItem( categoryName, treeItem );
+                            addCategoryItem(categoryName, treeItem);
                         }
                     }
-                } );
+                });
     }
 
 }

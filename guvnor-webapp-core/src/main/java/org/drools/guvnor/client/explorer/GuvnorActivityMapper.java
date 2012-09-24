@@ -70,10 +70,10 @@ public class GuvnorActivityMapper
 //            return new StateActivity(
 //                    ((StatePlace) place).getStateName(),
 //                    clientFactory );
-        } else if ( place instanceof InboxPlace ) {
-            return new InboxActivity(
-                    (InboxPlace) place,
-                    clientFactory );
+//        } else if ( place instanceof InboxPlace ) {
+//            return new InboxActivity(
+//                    (InboxPlace) place,
+//                    clientFactory );
         } else if ( place instanceof MultiAssetPlace ) {
             return new MultiAssetActivity(
                     (MultiAssetPlace) place,

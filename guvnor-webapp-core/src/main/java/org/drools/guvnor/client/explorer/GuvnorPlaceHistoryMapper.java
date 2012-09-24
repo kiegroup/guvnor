@@ -18,7 +18,6 @@ import com.google.gwt.place.shared.WithTokenizers;
                 ManagerPlace.Tokenizer.class,
                 CategoryPlace.Tokenizer.class,
                 StatePlace.Tokenizer.class,
-                InboxPlace.Tokenizer.class,
                 MultiAssetPlace.Tokenizer.class
         }
 )
