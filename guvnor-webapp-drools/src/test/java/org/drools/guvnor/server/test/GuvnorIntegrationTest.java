@@ -62,7 +62,7 @@ public abstract class GuvnorIntegrationTest {
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
 
-        File explodedWarFile = new File("target/guvnor-webapp-drools-5.5.0-SNAPSHOT");
+        File explodedWarFile = new File("target/guvnor-webapp-drools-5.5.0.Beta1");
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
