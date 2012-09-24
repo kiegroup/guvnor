@@ -47,7 +47,7 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     @Inject
     Event<NotificationEvent> notifications;
 
-//    @Inject
+    @Inject
     PlaceManager placeManager;
 
     @Inject
