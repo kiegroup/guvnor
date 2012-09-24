@@ -62,10 +62,10 @@ public class GuvnorActivityMapper
             return new ManagerActivity(
                     ((ManagerPlace) place).getId(),
                     clientFactory );
-        } else if ( place instanceof CategoryPlace ) {
-            return new CategoryActivity(
-                    ((CategoryPlace) place).getCategoryPath(),
-                    clientFactory );
+//        } else if ( place instanceof CategoryPlace ) {
+//            return new CategoryActivity(
+//                    ((CategoryPlace) place).getCategoryPath(),
+//                    clientFactory );
 //        } else if ( place instanceof StatePlace ) {
 //            return new StateActivity(
 //                    ((StatePlace) place).getStateName(),
