@@ -40,10 +40,15 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+
+@Dependent
+@WorkbenchScreen(identifier = "backupManager")
 public class BackupManager extends Composite {
-
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
     private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
@@ -160,6 +165,16 @@ public class BackupManager extends Composite {
 
             LoadingPopup.close();
         }
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.ImportExport();
     }
 
 }

@@ -35,14 +35,14 @@ public class AdminTree extends Tree {
         setAnimationEnabled(true);
 
         Object[][] adminStructure = new Object[][]{
-                {constants.Category(), images.categorySmall(), "0"},
-                {constants.Status(), images.statusSmall(), "2"},
-                {constants.Archive(), images.backupSmall(), "1"},
-                {constants.EventLog(), images.eventLogSmall(), "4"},
-                {constants.UserPermission(), images.userPermissionsSmall(), "5"},
-                {constants.ImportExport(), images.saveEdit(), "3"},
-                {constants.RepositoryConfiguration(), images.config(), "8"},
-                {constants.About(), images.information(), "6"}
+                {constants.Category(), images.categorySmall(), "categoryManager"},
+                {constants.Status(), images.statusSmall(), "statusManager"},
+                {constants.Archive(), images.backupSmall(), "archiveManager"},
+                {constants.EventLog(), images.eventLogSmall(), "eventLogManager"},
+                {constants.UserPermission(), images.userPermissionsSmall(), "userPermissionManager"},
+                {constants.ImportExport(), images.saveEdit(), "backupManager"},
+                {constants.RepositoryConfiguration(), images.config(), "repositoryConfigManager"},
+                {constants.About(), images.information(), "aboutScreen"}
         };
 
         for (Object[] packageData : adminStructure) {

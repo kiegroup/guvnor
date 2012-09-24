@@ -16,28 +16,24 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin;
 
-import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
-import org.drools.guvnor.client.explorer.ClientFactory;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 public class AdministrationTree extends NavigationItemBuilderOld {
 
-    private static ConstantsCore constants = GWT.create(ConstantsCore.class);
-    private static ImagesCore images = GWT.create(ImagesCore.class);
-    private final PlaceController placeController;
+    private final PlaceManager placeManager;
 
-    public AdministrationTree(PlaceController placeController) {
-        this.placeController = placeController;
+    public AdministrationTree(PlaceManager placeManager) {
+        this.placeManager = placeManager;
         mainTree.addSelectionHandler(this);
     }
 
@@ -50,11 +46,11 @@ public class AdministrationTree extends NavigationItemBuilderOld {
     }
 
     public String getName() {
-        return constants.Administration();
+        return ConstantsCore.INSTANCE.Administration();
     }
 
     public ImageResource getImage() {
-        return images.rules();
+        return ImagesCore.INSTANCE.rules();
     }
 
     public IsWidget createContent() {
@@ -62,15 +58,13 @@ public class AdministrationTree extends NavigationItemBuilderOld {
     }
 
     public void refreshTree() {
-        //TODO: Generated code -Rikkola-
+        //TODO: Generated code
     }
 
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
-        String widgetID = itemWidgets.get(item);
 
-        int id = Integer.parseInt(widgetID);
-        placeController.goTo( new ManagerPlace(id) );
+        placeManager.goTo(new PlaceRequest(itemWidgets.get(item)));
     }
 }

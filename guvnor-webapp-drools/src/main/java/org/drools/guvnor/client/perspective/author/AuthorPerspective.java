@@ -30,11 +30,15 @@ import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.perspective.Perspective;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class AuthorPerspective implements Perspective {
 
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
+
+    @Inject
+    AdminTreeBuilder adminTreeBuilder;
 
     public AuthorPerspective() {
     }
@@ -52,7 +56,7 @@ public class AuthorPerspective implements Perspective {
 
         navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getDeprecatedPlaceController()));
 
-        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory.getDeprecatedPlaceController()));
+        navigationItemBuilders.add(adminTreeBuilder);
 
         return navigationItemBuilders;
     }

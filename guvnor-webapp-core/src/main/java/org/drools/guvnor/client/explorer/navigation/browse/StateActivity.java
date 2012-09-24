@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
@@ -8,28 +9,34 @@ import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.widgets.tables.StatePagedTable;
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.Map;
 
-//@Dependent
-//@WorkbenchScreen(identifier = "stateScreen")
+@Dependent
+@WorkbenchScreen(identifier = "stateScreen")
 public class StateActivity {
 
-    private final String stateName;
     private final ClientFactory clientFactory;
+    private final PlaceManager placeManager;
+    private String stateName;
 
     @Inject
-    PlaceManager placeManager;
-
-    @Inject
-    public StateActivity(ClientFactory clientFactory) {
-        this.stateName = placeManager.getCurrentPlaceRequest().getParameters().get("state");
+    public StateActivity(PlaceManager placeManager, ClientFactory clientFactory) {
+        this.placeManager = placeManager;
         this.clientFactory = clientFactory;
+    }
+
+    @OnStart
+    public void init(){
+        stateName = placeManager.getCurrentPlaceRequest().getParameters().get("state");
     }
 
     @WorkbenchPartView
@@ -58,7 +65,7 @@ public class StateActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ConstantsCore.INSTANCE.Status() + stateName;
+        return ConstantsCore.INSTANCE.Status() + " " + stateName;
     }
 
 }

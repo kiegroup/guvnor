@@ -23,13 +23,19 @@ import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.uberfire.client.mvp.PlaceManager;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
 public class AdminTreeBuilder extends NavigationItemBuilder {
 
     private final AdministrationTree administrationTree;
 
-    public AdminTreeBuilder(PlaceController placeController) {
-        administrationTree = new AdministrationTree( placeController );
+    @Inject
+    public AdminTreeBuilder(PlaceManager placeManager) {
+        administrationTree = new AdministrationTree( placeManager );
     }
 
     @Override
