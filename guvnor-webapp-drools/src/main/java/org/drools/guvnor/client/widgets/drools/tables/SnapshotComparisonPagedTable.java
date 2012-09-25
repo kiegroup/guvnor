@@ -160,7 +160,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
             public void update(int index,
                                SnapshotComparisonPageRow row,
                                String value) {
-                clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( row.getDiff().rightUuid ));
+                clientFactory.getPlaceManager().goTo( new AssetEditorPlace( row.getDiff().rightUuid ));
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -226,7 +226,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     void openSelected(ClickEvent e) {
         Set<SnapshotComparisonPageRow> selectedSet = selectionModel.getSelectedSet();
         for ( SnapshotComparisonPageRow selected : selectedSet ) {
-            clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( selected.getDiff().rightUuid ));
+            clientFactory.getPlaceManager().goTo( new AssetEditorPlace( selected.getDiff().rightUuid ));
         }
     }
 

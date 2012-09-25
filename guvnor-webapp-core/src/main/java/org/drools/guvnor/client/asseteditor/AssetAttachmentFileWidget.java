@@ -20,19 +20,18 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
-import org.drools.guvnor.client.asseteditor.ShowMessageEvent.MessageType;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * This wraps a file uploader utility for model packages. Model packages are jar
@@ -42,8 +41,6 @@ import org.drools.guvnor.client.rpc.Asset;
 public abstract class AssetAttachmentFileWidget extends Composite
         implements
         EditorWidget {
-
-    protected static final ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
 
     private FormPanel                form;
     private FormStyleLayout          layout;
@@ -136,13 +133,12 @@ public abstract class AssetAttachmentFileWidget extends Composite
 
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
                     //Raise an Event to show an information message
-                    eventBus.fireEvent( new ShowMessageEvent( ConstantsCore.INSTANCE.FileWasUploadedSuccessfully(),
-                                                              MessageType.INFO ) );
+                    clientFactory.getNotificationEvents().fire(new NotificationEvent(ConstantsCore.INSTANCE.FileWasUploadedSuccessfully()));
 
                     //Reload asset as the upload operation commits the asset's content. If we don't 
                     //reload the asset we receive a optimistic lock error appearing as "Unable to save 
                     //this asset, as it has been recently updated" message to users
-                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(),  asset.getUuid() ) );
+                    clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                 } else {
                     ErrorPopup.showMessage( ConstantsCore.INSTANCE.UnableToUploadTheFile() );
                 }

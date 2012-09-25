@@ -18,6 +18,7 @@ package org.drools.guvnor.client.asseteditor;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
@@ -45,7 +46,7 @@ public class POJOModelUploadWidget extends AssetAttachmentFileWidget {
     }
 
     public Image getIcon() {
-        Image image = new Image(images.modelLarge());
+        Image image = new Image(ImagesCore.INSTANCE.modelLarge());
         image.setAltText(ConstantsCore.INSTANCE.Model());
         return image;
     }

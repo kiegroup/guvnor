@@ -228,7 +228,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             public void update(int index,
                                T row,
                                String value) {
-                clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
+                clientFactory.getPlaceManager().goTo( new AssetEditorPlace( row.getUuid() ) );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -290,7 +290,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     void openSelected(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for (T selected : selectedSet) {
-            clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ) );
+            clientFactory.getPlaceManager().goTo( new AssetEditorPlace( selected.getUuid() ) );
         }
     }
 

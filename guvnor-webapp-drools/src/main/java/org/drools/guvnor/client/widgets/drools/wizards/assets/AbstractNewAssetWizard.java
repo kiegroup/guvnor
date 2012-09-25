@@ -92,7 +92,7 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * @param uuid
      */
     protected void openEditor(String uuid) {
-        clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( uuid ) );
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid ) );
     }
 
 }

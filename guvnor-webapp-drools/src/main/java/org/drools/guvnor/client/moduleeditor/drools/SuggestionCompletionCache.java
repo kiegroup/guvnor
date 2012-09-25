@@ -35,14 +35,18 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 /**
  * This utility cache will maintain a cache of suggestion completion engines,
  * as they are somewhat heavy to load.
  * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
  */
-public class SuggestionCompletionCache
-        implements RefreshModuleDataModelEvent.Handler {
+@ApplicationScoped
+public class SuggestionCompletionCache {
 
     private static SuggestionCompletionCache INSTANCE = null;
 
@@ -53,19 +57,15 @@ public class SuggestionCompletionCache
      */
     Map<String, FactTypeFilter> filters = new HashMap<String, FactTypeFilter>();
 
+    public SuggestionCompletionCache() {
+        INSTANCE = this;
+    }
 
     public static SuggestionCompletionCache getInstance() {
-        if (INSTANCE == null){
-            INSTANCE = new SuggestionCompletionCache();
-        }
         return INSTANCE;
     }
     
-    public void setEventBus(final EventBus eventBus) {   
-        eventBus.addHandler(RefreshModuleDataModelEvent.TYPE, this);
-    }
-    
-    public void onRefreshModuleDataModel(RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
+    public void onRefreshModuleDataModel(@Observes RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
         loadPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
     }
     

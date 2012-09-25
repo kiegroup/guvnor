@@ -24,7 +24,6 @@ import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.widgets.MessageWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -33,20 +32,17 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import javax.enterprise.event.Observes;
+
 /**
  * The main layout parent/controller the rule viewer.
+ * TODO: This needs to be injected, Observers are not active now -Rikkola-
  */
-public class RuleViewerWrapper extends GuvnorEditor
-    implements
-    RefreshAssetEditorEvent.Handler,
-    ShowMessageEvent.Handler {
-    private ConstantsCore constants            = GWT.create( ConstantsCore.class );
+public class RuleViewerWrapper extends GuvnorEditor {
 
     private Asset               asset;
     private boolean             isHistoricalReadOnly = false;
     private RuleViewerSettings  ruleViewerSettings   = null;
-
-    private final MessageWidget messageWidget        = new MessageWidget();
 
     VerticalPanel               layout               = new VerticalPanel();
     private final ClientFactory clientFactory;
@@ -69,12 +65,6 @@ public class RuleViewerWrapper extends GuvnorEditor
         this.eventBus = eventBus;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
-
-        //Wire-up event handlers
-        eventBus.addHandler( RefreshAssetEditorEvent.TYPE,
-                             this );
-        eventBus.addHandler( ShowMessageEvent.TYPE,
-                             this );
 
         initWidget( layout );
         setWidth( "100%" );
@@ -104,29 +94,28 @@ public class RuleViewerWrapper extends GuvnorEditor
 
         layout.clear();
         layout.add( actionToolBar );
-        layout.add( messageWidget );
 
         TabPanel tabPanel = new TabPanel();
         tabPanel.setWidth( "100%" );
 
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.add( artifactEditor );
-        tabPanel.add( scrollPanel,
-                      constants.Attributes() );
+        tabPanel.add(scrollPanel,
+                ConstantsCore.INSTANCE.Attributes());
 
         scrollPanel = new ScrollPanel();
         scrollPanel.add( ruleViewer );
         tabPanel.add( scrollPanel,
-                      constants.Edit() );
+                ConstantsCore.INSTANCE.Edit() );
         tabPanel.selectTab( 1 );
 
         layout.add( tabPanel );
     }
 
-    public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
+    public void onRefreshAsset(@Observes RefreshAssetEditorEvent refreshAssetEditorEvent) {
         //AssetUUID == null means to refresh all asset editors contained by the specified module. 
         if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getModuleName().equals(refreshAssetEditorEvent.getModuleName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
-            LoadingPopup.showMessage( constants.RefreshingItem() );
+            LoadingPopup.showMessage( ConstantsCore.INSTANCE.RefreshingItem() );
             AssetServiceAsync assetService = GWT.create(AssetService.class);
             assetService.loadRuleAsset( asset.getUuid(),
                                                                       new GenericCallback<Asset>() {
@@ -138,10 +127,4 @@ public class RuleViewerWrapper extends GuvnorEditor
                                                                       } );
         }
     }
-
-    public void onShowMessage(ShowMessageEvent event) {
-        messageWidget.showMessage( event.getMessage(),
-                                   event.getMessageType() );
-    }
-
 }

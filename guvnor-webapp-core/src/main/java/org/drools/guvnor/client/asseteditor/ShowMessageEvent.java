@@ -1,25 +1,14 @@
 package org.drools.guvnor.client.asseteditor;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An Event to show a message in the Notification area
+ * TODO: Deprecated, Uberfire has notifications for this -Rikkola-
  */
-public class ShowMessageEvent extends GwtEvent<ShowMessageEvent.Handler> {
+public class ShowMessageEvent {
 
-    public interface Handler
-        extends
-        EventHandler {
+    private final String message;
 
-        void onShowMessage(ShowMessageEvent event);
-    }
-
-    public static Type<Handler> TYPE = new Type<Handler>();
-
-    private final String        message;
-
-    private final MessageType   messageType;
+    private final MessageType messageType;
 
     public ShowMessageEvent(String message,
                             MessageType messageType) {
@@ -33,16 +22,6 @@ public class ShowMessageEvent extends GwtEvent<ShowMessageEvent.Handler> {
 
     public MessageType getMessageType() {
         return this.messageType;
-    }
-
-    @Override
-    public Type<ShowMessageEvent.Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(ShowMessageEvent.Handler handler) {
-        handler.onShowMessage( this );
     }
 
     public static enum MessageType {

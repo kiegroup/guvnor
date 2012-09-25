@@ -50,11 +50,11 @@ public class MultiActivityManagerCloseTabsTest extends MultiActivityManagerTestB
         return new EventBusMock();
     }
 
-    @Test
-    public void testItIsSafeToCloseATabThatDoesNotExist() throws Exception {
-        multiActivityManager.onClosePlace(new ClosePlaceEvent(new AssetEditorPlace("I-do-Not-Exist")));
-        // Does nothing
-    }
+//    @Test
+//    public void testItIsSafeToCloseATabThatDoesNotExist() throws Exception {
+//        multiActivityManager.onClosePlace(new ClosePlaceEvent(new AssetEditorPlace("I-do-Not-Exist")));
+//        // Does nothing
+//    }
 
     @Test
     public void testClosingATabIsBlockedByTheActivity() throws Exception {

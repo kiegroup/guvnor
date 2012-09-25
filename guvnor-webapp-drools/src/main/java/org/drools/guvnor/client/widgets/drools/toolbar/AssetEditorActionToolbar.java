@@ -513,7 +513,7 @@ public class AssetEditorActionToolbar extends Composite {
      * closes itself
      */
     private void close() {
-        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.getUuid() ) ) );
+//        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.getUuid() ) ) );
     }
 
     void doDelete() {
@@ -601,13 +601,13 @@ public class AssetEditorActionToolbar extends Composite {
                             //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
 
                             //set assetUUID to null means to refresh all asset editors contained by the specified package. 
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(moduleName, null));
+                            clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(moduleName, null));
                             LoadingPopup.close();
                         }
                     } );
         } else {
             //No need to refresh other asset editors, refresh the current asset editor only.
-            eventBus.fireEvent( new RefreshAssetEditorEvent(moduleName, uuid));
+            clientFactory.getRefreshAssetEditorEvents().fire( new RefreshAssetEditorEvent(moduleName, uuid));
         }
     }
 
@@ -715,7 +715,7 @@ public class AssetEditorActionToolbar extends Composite {
                             public void onSuccess(String data) {
                                 Window.alert( Constants.INSTANCE.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
+                                clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -748,7 +748,7 @@ public class AssetEditorActionToolbar extends Composite {
                             flushSuggestionCompletionCache(asset.getMetaData().getModuleName(), null);
                             flushSuggestionCompletionCache("globalArea", null);
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
+                            clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                         }
 
                         @Override

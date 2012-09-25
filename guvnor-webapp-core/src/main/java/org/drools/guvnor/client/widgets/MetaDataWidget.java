@@ -296,7 +296,7 @@ public class MetaDataWidget extends Composite {
                         constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
-                                eventBus.fireEvent(new RefreshAssetEditorEvent(sel.getSelectedPackage(), uuid));
+                                clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(sel.getSelectedPackage(), uuid));
                                 pop.hide();
                             }
 
@@ -307,10 +307,6 @@ public class MetaDataWidget extends Composite {
         });
 
         pop.show();
-    }
-
-    private void close() {
-        eventBus.fireEvent(new ClosePlaceEvent(new AssetEditorPlace(uuid)));
     }
 
     private Widget getVersionNumberLabel() {

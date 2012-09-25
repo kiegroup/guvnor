@@ -16,31 +16,34 @@
 
 package org.drools.guvnor.client.explorer.drools;
 
+import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.GuvnorEventBus;
+import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
 import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
-
 import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @ApplicationScoped
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
-    private WizardFactory             wizardFactory;
+    private WizardFactory wizardFactory;
 
     @Inject
     PlaceManager placeManager;
 
     @Inject
-    PlaceManager placeManager;
+    private Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
 
+    @Inject
+    private Event<NotificationEvent> notifications;
+    
     @Inject
     public ClientFactoryImpl(GuvnorEventBus eventBus) {
         super(eventBus);
@@ -59,22 +62,32 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
       * We will revisit this code to decide which way is better later.
       */
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorDroolsActivityMapper( this );
-    }    
+        return new GuvnorDroolsActivityMapper(this);
+    }
 
     public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
-        if ( guvnorPlaceHistoryMapper == null ) {
-            guvnorPlaceHistoryMapper = GWT.create( GuvnorDroolsPlaceHistoryMapper.class );
+        if (guvnorPlaceHistoryMapper == null) {
+            guvnorPlaceHistoryMapper = GWT.create(GuvnorDroolsPlaceHistoryMapper.class);
         }
         return guvnorPlaceHistoryMapper;
     }
-    
+
     public WizardFactory getWizardFactory() {
-        if ( wizardFactory == null ) {
-            wizardFactory = new WizardFactoryImpl( this,
-                                                   eventBus );
+        if (wizardFactory == null) {
+            wizardFactory = new WizardFactoryImpl(this,
+                    eventBus);
         }
         return wizardFactory;
+    }
+
+    @Override
+    public Event<RefreshAssetEditorEvent> getRefreshAssetEditorEvents() {
+        return refreshAssetEditorEvents;
+    }
+
+    @Override
+    public Event<NotificationEvent> getNotificationEvents() {
+        return notifications;
     }
 
 }

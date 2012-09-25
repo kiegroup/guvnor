@@ -30,9 +30,6 @@
   <gwt:HTMLPanel>
     <gwt:VerticalPanel width="100%">
 
-      <guvnor-widgets:MessageWidget
-        ui:field="messageWidget">
-      </guvnor-widgets:MessageWidget>
       <guvnor-widgets:MetaDataWidget
         ui:field="metaWidget" styleName="{style.metadata-widget}">
       </guvnor-widgets:MetaDataWidget>

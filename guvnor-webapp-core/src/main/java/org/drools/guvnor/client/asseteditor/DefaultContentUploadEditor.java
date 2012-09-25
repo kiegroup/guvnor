@@ -19,11 +19,13 @@ package org.drools.guvnor.client.asseteditor;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.CoreImages;
 
 public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
 
@@ -43,7 +45,7 @@ public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
     }
 
     public Image getIcon() {
-        Image image = new Image(images.decisionTable());
+        Image image = new Image(ImagesCore.INSTANCE.decisionTable());
         image.setAltText(ConstantsCore.INSTANCE.DecisionTable());
         return image;
     }

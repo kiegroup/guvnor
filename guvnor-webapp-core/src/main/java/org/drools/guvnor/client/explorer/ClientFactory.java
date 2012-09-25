@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
@@ -32,6 +33,11 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 public interface ClientFactory {
 
@@ -69,4 +75,7 @@ public interface ClientFactory {
 
     SecurityServiceAsync getSecurityService();
 
+    Event<RefreshAssetEditorEvent> getRefreshAssetEditorEvents();
+
+    Event<NotificationEvent> getNotificationEvents();
 }

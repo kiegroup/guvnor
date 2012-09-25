@@ -17,82 +17,101 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.util.Activity;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 
-public class AssetEditorActivity extends Activity {
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+@Dependent
+@WorkbenchScreen(identifier = "assetEditor")
+public class AssetEditorActivity {
 
-    private final AssetEditorPlace place;
+
     private final ClientFactory clientFactory;
-    private EventBus eventBus;
+    private final EventBus eventBus;
+    private final PlaceManager placeManager;
+    private final SimplePanel simplePanel = new SimplePanel();
 
-    public AssetEditorActivity(AssetEditorPlace place,
-                               ClientFactory clientFactory) {
+    @Inject
+    private Event<RefreshModuleDataModelEvent> refreshModuleDataModelEvents;
+
+    @Inject
+    public AssetEditorActivity(PlaceManager placeManager, ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
-        this.place = place;
+        this.placeManager = placeManager;
+        this.eventBus = eventBus;
     }
 
-    @Override
-    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
-        this.eventBus = eventBus;
+    @OnStart
+    public void init() {
+        loadRuleAsset(placeManager.getCurrentPlaceRequest().getParameters().get("uuid"));
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return simplePanel;
+
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "ruleAsset.getName()";
+    }
+
+    private boolean[] loadingTimer() {
         final boolean[] loading = {true};
 
-        Timer t = new Timer() {
+        Timer timer = new Timer() {
             public void run() {
-                if ( loading[0] ) {
-                    LoadingPopup.showMessage( constants.LoadingAsset() );
+                if (loading[0]) {
+                    LoadingPopup.showMessage(ConstantsCore.INSTANCE.LoadingAsset());
                 }
             }
         };
-        t.schedule( 200 );
-
-        loadRuleAsset(
-                tabbedPanel,
-                place.getUuid(),
-                loading );
+        timer.schedule(200);
+        return loading;
     }
 
-    private void loadRuleAsset(final AcceptItem tabbedPanel,
-                               final String uuid,
-                               final boolean[] loading) {
-        clientFactory.getAssetService().loadRuleAsset( uuid,
-                createGenericCallback(
-                        tabbedPanel,
-                        loading ) );
+
+    private void loadRuleAsset(String uuid) {
+        clientFactory.getAssetService().loadRuleAsset(uuid,
+                createGenericCallback(loadingTimer()));
     }
 
-    private GenericCallback<Asset> createGenericCallback(final AcceptItem tabbedPanel,
-                                                             final boolean[] loading) {
+    private GenericCallback<Asset> createGenericCallback(final boolean[] loading) {
         return new GenericCallback<Asset>() {
             public void onSuccess(final Asset ruleAsset) {
-            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.moduleName,
-            	        createOnRefreshModuleDataModelCompletion( loading,
-                                ruleAsset )));
+                refreshModuleDataModelEvents.fire(
+                        new RefreshModuleDataModelEvent(
+                                ruleAsset.metaData.moduleName,
+                                createOnRefreshModuleDataModelCompletion(ruleAsset, loading)));
             }
 
-            private Command createOnRefreshModuleDataModelCompletion(final boolean[] loading,
-                                                                   final Asset ruleAsset) {
+            private Command createOnRefreshModuleDataModelCompletion(final Asset ruleAsset, final boolean[] loading) {
                 return new Command() {
                     public void execute() {
                         loading[0] = false;
 
-                        tabbedPanel.add(
-                                ruleAsset.getName(),
+                        simplePanel.add(
                                 new RuleViewerWrapper(
                                         clientFactory,
                                         eventBus,
-                                        ruleAsset ) );
+                                        ruleAsset));
 
                         LoadingPopup.close();
                     }

@@ -589,7 +589,7 @@ public class NewAssetWizard extends FormStylePopup {
      * @param uuid
      */
     protected void openEditor(String uuid) {
-        clientFactory.getDeprecatedPlaceController().goTo( new AssetEditorPlace( uuid ) );
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid ) );
     }
 
 }

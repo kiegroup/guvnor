@@ -26,7 +26,6 @@ import org.drools.guvnor.client.asseteditor.GuvnorEditor;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.widgets.MessageWidget;
 import org.drools.guvnor.client.widgets.MetaDataWidget;
 import org.drools.guvnor.client.widgets.RuleDocumentWidget;
 
@@ -46,9 +45,6 @@ public class ArtifactEditor extends GuvnorEditor {
 
     @UiField(provided = true)
     final RuleDocumentWidget            ruleDocumentWidget;
-
-    @UiField
-    MessageWidget                       messageWidget;
 
     protected Artifact                  artifact;
     private long                        lastSaved = System.currentTimeMillis();

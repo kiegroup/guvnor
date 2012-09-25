@@ -255,7 +255,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid) );
+                                                    clientFactory.getRefreshAssetEditorEvents().fire( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid) );
                                                     //fire after check-in event
                                                     eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, null));
                                                     pop.hide();
