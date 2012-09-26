@@ -6,7 +6,7 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Introduction</title>
 
-  <para>This section introduces the Guvnor. See the other relevant sections for installation, usage and
+  <para>This section introduces &guvnor.app.name;. See the other relevant sections for installation, usage and
   administration.</para>
 
   <figure>
