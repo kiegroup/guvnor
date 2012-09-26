@@ -13,20 +13,20 @@
 
   <artifactId>guvnor-docs</artifactId>
   <packaging>jdocbook</packaging>
-  
+
   <name>Guvnor documentation</name>
   <description>Guvnor documentation</description>
 
   <build>
-      <plugins>
-          <plugin>
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <configuration>
-                  <sourceDocumentName>Guvnor_Manual.xml</sourceDocumentName>
-              </configuration>
-          </plugin>
-      </plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <configuration>
+          <sourceDocumentName>Guvnor_Manual.xml</sourceDocumentName>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
