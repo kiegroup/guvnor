@@ -42,7 +42,7 @@ public class AdminTree extends Tree {
                 {constants.UserPermission(), images.userPermissionsSmall(), "userPermissionManager"},
                 {constants.ImportExport(), images.saveEdit(), "backupManager"},
                 {constants.RepositoryConfiguration(), images.config(), "repositoryConfigManager"},
-                {constants.About(), images.information(), "aboutScreen"}
+                {constants.About(), images.information(), "aboutPopup"}
         };
 
         for (Object[] packageData : adminStructure) {

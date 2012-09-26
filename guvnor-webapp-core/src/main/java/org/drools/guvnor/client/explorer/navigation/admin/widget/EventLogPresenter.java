@@ -16,24 +16,34 @@
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.*;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.ConstantsCore;
+import org.drools.guvnor.client.rpc.*;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
  * Presenter for Event Log
  */
+@Dependent
+@WorkbenchScreen(identifier = "eventLogManager")
 public class EventLogPresenter {
 
     public interface EventLogView
-        extends
-        IsWidget {
+            extends
+            IsWidget {
 
         HasClickHandlers getClearEventLogButton();
 
@@ -53,42 +63,43 @@ public class EventLogPresenter {
 
     }
 
-    private final EventLogView       view;
+    private final EventLogView view;
 
     protected RepositoryServiceAsync repositoryService;
 
-    public EventLogPresenter(RepositoryServiceAsync repositoryService,
-                             EventLogView view) {
-        this.repositoryService = repositoryService;
+    @Inject
+    public EventLogPresenter(ClientFactory clientFactory,
+                             EventLogViewImpl view) {
+        this.repositoryService = clientFactory.getRepositoryService();
         this.view = view;
         bind();
         setDataProvider();
     }
 
     public void bind() {
-        view.getClearEventLogButton().addClickHandler( new ClickHandler() {
+        view.getClearEventLogButton().addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 doClearEventLog();
             }
-        } );
+        });
 
-        view.getRefreshEventLogButton().addClickHandler( new ClickHandler() {
+        view.getRefreshEventLogButton().addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 doRefreshEventLog();
             }
-        } );
+        });
 
     }
 
     private void doClearEventLog() {
         view.showClearingLogMessage();
         RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
-        repositoryService.cleanLog( new GenericCallback<java.lang.Void>() {
+        repositoryService.cleanLog(new GenericCallback<java.lang.Void>() {
             public void onSuccess(Void v) {
                 view.refresh();
                 view.hideClearingLogMessage();
             }
-        } );
+        });
     }
 
     private void doRefreshEventLog() {
@@ -96,22 +107,31 @@ public class EventLogPresenter {
     }
 
     private void setDataProvider() {
-        view.setDataProvider( new AsyncDataProvider<LogPageRow>() {
+        view.setDataProvider(new AsyncDataProvider<LogPageRow>() {
             protected void onRangeChanged(HasData<LogPageRow> table) {
                 PageRequest request = new PageRequest();
-                request.setStartRowIndex( view.getStartRowIndex() );
-                request.setPageSize( view.getPageSize() );
-                repositoryService.showLog( request,
-                                           new GenericCallback<PageResponse<LogPageRow>>() {
-                                               public void onSuccess(PageResponse<LogPageRow> response) {
-                                                   updateRowCount( response.getTotalRowSize(),
-                                                                   response.isTotalRowSizeExact() );
-                                                   updateRowData( response.getStartRowIndex(),
-                                                                  response.getPageRowList() );
-                                               }
-                                           } );
+                request.setStartRowIndex(view.getStartRowIndex());
+                request.setPageSize(view.getPageSize());
+                repositoryService.showLog(request,
+                        new GenericCallback<PageResponse<LogPageRow>>() {
+                            public void onSuccess(PageResponse<LogPageRow> response) {
+                                updateRowCount(response.getTotalRowSize(),
+                                        response.isTotalRowSizeExact());
+                                updateRowData(response.getStartRowIndex(),
+                                        response.getPageRowList());
+                            }
+                        });
             }
-        } );
+        });
     }
 
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.EventLog();
+    }
 }

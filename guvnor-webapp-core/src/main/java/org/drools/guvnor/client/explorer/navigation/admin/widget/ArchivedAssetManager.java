@@ -23,6 +23,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -32,30 +33,36 @@ import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.tables.AdminArchivedPagedTable;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@WorkbenchScreen(identifier = "archiveManager")
 public class ArchivedAssetManager extends Composite {
 
     private AssetServiceAsync assetService = GWT.create(AssetService.class);
     private ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
 
-    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
-
     private AdminArchivedPagedTable table;
     private ListBox packages = new ListBox(true);
-    private ConstantsCore constants = GWT.create(ConstantsCore.class);
     private Button btnRestorePackage;
     private Button btnDeletePackage;
     private EventBus eventBus;
 
+    @Inject
     public ArchivedAssetManager(ClientFactory clientFactory,
-                                EventBus eventBus) {
+                                GuvnorEventBus eventBus) {
 
         this.eventBus = eventBus;
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        header.add(new HTML(constants.ArchivedItems()));
+        header.add(new HTML(ConstantsCore.INSTANCE.ArchivedItems()));
 
         pf.addHeader(GuvnorImages.INSTANCE.Backup(),
                 header);
@@ -66,14 +73,14 @@ public class ArchivedAssetManager extends Composite {
 
             public void execute() {
                 if (table.getSelectedRowUUIDs() == null) {
-                    Window.alert(constants.PleaseSelectAnItemToRestore());
+                    Window.alert(ConstantsCore.INSTANCE.PleaseSelectAnItemToRestore());
                     return;
                 }
                 assetService.archiveAssets(table.getSelectedRowUUIDs(),
                         false,
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void arg0) {
-                                Window.alert(constants.ItemRestored());
+                                Window.alert(ConstantsCore.INSTANCE.ItemRestored());
                                 table.refresh();
                             }
                         });
@@ -85,16 +92,16 @@ public class ArchivedAssetManager extends Composite {
 
             public void execute() {
                 if (table.getSelectedRowUUIDs() == null) {
-                    Window.alert(constants.PleaseSelectAnItemToPermanentlyDelete());
+                    Window.alert(ConstantsCore.INSTANCE.PleaseSelectAnItemToPermanentlyDelete());
                     return;
                 }
-                if (!Window.confirm(constants.AreYouSureDeletingAsset())) {
+                if (!Window.confirm(ConstantsCore.INSTANCE.AreYouSureDeletingAsset())) {
                     return;
                 }
                 assetService.removeAssets(table.getSelectedRowUUIDs(),
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void arg0) {
-                                Window.alert(constants.ItemDeleted());
+                                Window.alert(ConstantsCore.INSTANCE.ItemDeleted());
                                 table.refresh();
                             }
                         });
@@ -107,12 +114,12 @@ public class ArchivedAssetManager extends Composite {
                 deleteSelectedAssetCommand,
                 clientFactory);
         HorizontalPanel packagesToolbar = new HorizontalPanel();
-        btnRestorePackage = new Button(constants.RestoreSelectedPackage());
+        btnRestorePackage = new Button(ConstantsCore.INSTANCE.RestoreSelectedPackage());
         btnRestorePackage.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 if (packages.getSelectedIndex() == -1) {
-                    Window.alert(constants.PleaseSelectAnItemToRestore());
+                    Window.alert(ConstantsCore.INSTANCE.PleaseSelectAnItemToRestore());
                     return;
                 }
                 restorePackage(packages.getValue(packages.getSelectedIndex()));
@@ -121,15 +128,15 @@ public class ArchivedAssetManager extends Composite {
         });
         packagesToolbar.add(btnRestorePackage);
 
-        btnDeletePackage = new Button(constants.PermanentlyDeletePackage());
+        btnDeletePackage = new Button(ConstantsCore.INSTANCE.PermanentlyDeletePackage());
         btnDeletePackage.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 if (packages.getSelectedIndex() == -1) {
-                    Window.alert(constants.PleaseSelectAnItemToPermanentlyDelete());
+                    Window.alert(ConstantsCore.INSTANCE.PleaseSelectAnItemToPermanentlyDelete());
                     return;
                 }
-                if (Window.confirm(constants.AreYouSurePackageDelete())) {
+                if (Window.confirm(ConstantsCore.INSTANCE.AreYouSurePackageDelete())) {
                     deletePackage(packages.getValue(packages.getSelectedIndex()));
                 }
             }
@@ -137,12 +144,12 @@ public class ArchivedAssetManager extends Composite {
         });
         packagesToolbar.add(btnDeletePackage);
 
-        pf.startSection(constants.ArchivedPackagesList());
+        pf.startSection(ConstantsCore.INSTANCE.ArchivedPackagesList());
         pf.addRow(packagesToolbar);
         pf.addRow(packages);
         pf.endSection();
 
-        pf.startSection(constants.ArchivedAssets());
+        pf.startSection(ConstantsCore.INSTANCE.ArchivedAssets());
         pf.addRow(table);
         pf.endSection();
 
@@ -153,7 +160,7 @@ public class ArchivedAssetManager extends Composite {
         moduleService.removeModule(uuid,
                 new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void data) {
-                        Window.alert(constants.PackageDeleted());
+                        Window.alert(ConstantsCore.INSTANCE.PackageDeleted());
                         packages.clear();
                         loadPackages();
                     }
@@ -168,7 +175,7 @@ public class ArchivedAssetManager extends Composite {
                         moduleService.saveModule(cf,
                                 new GenericCallback<ValidatedResponse>() {
                                     public void onSuccess(ValidatedResponse data) {
-                                        Window.alert(constants.PackageRestored());
+                                        Window.alert(ConstantsCore.INSTANCE.PackageRestored());
                                         packages.clear();
                                         loadPackages();
                                         table.refresh();
@@ -188,7 +195,7 @@ public class ArchivedAssetManager extends Composite {
                             config.getUuid());
                 }
                 if (configs.length == 0) {
-                    packages.addItem(constants.noArchivedPackages());
+                    packages.addItem(ConstantsCore.INSTANCE.noArchivedPackages());
                 }
                 boolean enabled = (configs.length != 0);
                 packages.setEnabled(enabled);
@@ -200,4 +207,13 @@ public class ArchivedAssetManager extends Composite {
         return packages;
     }
 
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.ArchivedManager();
+    }
 }

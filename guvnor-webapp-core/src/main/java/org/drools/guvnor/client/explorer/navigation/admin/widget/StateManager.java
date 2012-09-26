@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
@@ -28,27 +29,27 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+
+@Dependent
+@WorkbenchScreen(identifier = "statusManager")
 public class StateManager extends Composite {
 
     private RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
 
     private ListBox       currentStatuses;
 
     public StateManager() {
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( GuvnorImages.INSTANCE.Status(),
-                        new HTML( "<b>" + constants.ManageStatuses() + "</b>" ) );
-        form.startSection( constants.StatusTagsAreForTheLifecycleOfAnAsset() );
+                        new HTML( "<b>" + ConstantsCore.INSTANCE.ManageStatuses() + "</b>" ) );
+        form.startSection( ConstantsCore.INSTANCE.StatusTagsAreForTheLifecycleOfAnAsset() );
 
         currentStatuses = new ListBox();
         currentStatuses.setVisibleItemCount( 7 );
@@ -56,12 +57,12 @@ public class StateManager extends Composite {
 
         refreshList();
 
-        form.addAttribute( constants.CurrentStatuses(),
+        form.addAttribute( ConstantsCore.INSTANCE.CurrentStatuses(),
                            currentStatuses );
 
         HorizontalPanel hPanel = new HorizontalPanel();
-        Button create = new Button( constants.NewStatus() );
-        //create.setTitle( constants.CreateANewCategory() );
+        Button create = new Button( ConstantsCore.INSTANCE.NewStatus() );
+        //create.setTitle( ConstantsCore.INSTANCE.CreateANewCategory() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 StatusEditor newCat = new StatusEditor( new Command() {
@@ -74,12 +75,12 @@ public class StateManager extends Composite {
             }
         } );
 
-        Button edit = new Button( constants.RenameSelected() );
+        Button edit = new Button( ConstantsCore.INSTANCE.RenameSelected() );
         edit.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
-                    Window.alert( constants.PleaseSelectAStatusToRename() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseSelectAStatusToRename() );
                     return;
                 }
                 renameSelected();
@@ -87,12 +88,12 @@ public class StateManager extends Composite {
             }
         } );
 
-        Button remove = new Button( constants.DeleteSelected() );
+        Button remove = new Button( ConstantsCore.INSTANCE.DeleteSelected() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
-                    Window.alert( constants.PleaseSelectAStatusToRemove() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseSelectAStatusToRemove() );
                     return;
                 }
 
@@ -118,7 +119,7 @@ public class StateManager extends Composite {
         repositoryService.removeState(name,
                 new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void v) {
-                        Window.alert(constants.StatusRemoved());
+                        Window.alert(ConstantsCore.INSTANCE.StatusRemoved());
                         refreshList();
                     }
                 });
@@ -126,7 +127,7 @@ public class StateManager extends Composite {
 
     private void renameSelected() {
 
-        String newName = Window.prompt( constants.PleaseEnterTheNameYouWouldLikeToChangeThisStatusTo(),
+        String newName = Window.prompt( ConstantsCore.INSTANCE.PleaseEnterTheNameYouWouldLikeToChangeThisStatusTo(),
                                         "" );
 
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
@@ -136,7 +137,7 @@ public class StateManager extends Composite {
                                                                newName,
                                                                new GenericCallback<Void>() {
                                                                    public void onSuccess(Void data) {
-                                                                       Window.alert( constants.StatusRenamed() );
+                                                                       Window.alert( ConstantsCore.INSTANCE.StatusRenamed() );
                                                                        refreshList();
                                                                    }
                                                                } );
@@ -144,7 +145,7 @@ public class StateManager extends Composite {
     }
 
     private void refreshList() {
-        LoadingPopup.showMessage( constants.LoadingStatuses() );
+        LoadingPopup.showMessage( ConstantsCore.INSTANCE.LoadingStatuses() );
         repositoryService.listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] statii) {
                 currentStatuses.clear();
@@ -156,4 +157,13 @@ public class StateManager extends Composite {
         } );
     }
 
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.StateManager();
+    }
 }

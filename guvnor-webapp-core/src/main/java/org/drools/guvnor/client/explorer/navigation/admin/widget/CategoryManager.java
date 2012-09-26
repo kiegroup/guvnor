@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.ConstantsCore;
@@ -29,23 +30,21 @@ import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+
+import javax.enterprise.context.Dependent;
 
 /**
  * This controls category administration.
  */
+@Dependent
+@WorkbenchScreen(identifier = "categoryManager")
 public class CategoryManager extends Composite {
-
-    private static ImagesCore images    = (ImagesCore) GWT.create( ImagesCore.class );
-    private ConstantsCore constants = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     public VerticalPanel           layout    = new VerticalPanel();
     //public String selectedPath;
@@ -55,8 +54,8 @@ public class CategoryManager extends Composite {
 
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( GuvnorImages.INSTANCE.EditCategories(),
-                        new HTML( constants.EditCategories() ) );
-        form.startSection( constants.CategoriesPurposeTip() );
+                        new HTML( ConstantsCore.INSTANCE.EditCategories() ) );
+        form.startSection( ConstantsCore.INSTANCE.CategoriesPurposeTip() );
 
         explorer = new CategoryExplorerWidget( new CategorySelectHandler() {
             public void selected(String sel) {
@@ -66,7 +65,7 @@ public class CategoryManager extends Composite {
         SimplePanel editable = new SimplePanel();
         editable.add( explorer );
 
-        form.addAttribute( constants.CurrentCategories(),
+        form.addAttribute( ConstantsCore.INSTANCE.CurrentCategories(),
                            editable );
 
         HorizontalPanel actions = new HorizontalPanel();
@@ -74,8 +73,8 @@ public class CategoryManager extends Composite {
         form.addAttribute( "",
                            actions );
 
-        Button newCat = new Button( constants.NewCategory() );
-        newCat.setTitle( constants.CreateANewCategory() );
+        Button newCat = new Button( ConstantsCore.INSTANCE.NewCategory() );
+        newCat.setTitle( ConstantsCore.INSTANCE.CreateANewCategory() );
         newCat.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath(),
@@ -91,11 +90,11 @@ public class CategoryManager extends Composite {
 
         actions.add( newCat );
 
-        Button rename = new Button( constants.RenameSelected() );
+        Button rename = new Button( ConstantsCore.INSTANCE.RenameSelected() );
         rename.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( !explorer.isSelected() ) {
-                    Window.alert( constants.PleaseSelectACategoryToRename() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseSelectACategoryToRename() );
                     return;
                 }
                 renameSelected();
@@ -104,17 +103,17 @@ public class CategoryManager extends Composite {
 
         actions.add( rename );
 
-        Button delete = new Button( constants.DeleteSelected() );
+        Button delete = new Button( ConstantsCore.INSTANCE.DeleteSelected() );
         delete.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( !explorer.isSelected() ) {
-                    Window.alert( constants.PleaseSelectACategoryToDelete() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseSelectACategoryToDelete() );
                     return;
                 }
                 deleteSelected();
             }
         } );
-        delete.setTitle( constants.DeleteSelectedCat() );
+        delete.setTitle( ConstantsCore.INSTANCE.DeleteSelectedCat() );
 
         actions.add( delete );
 
@@ -126,7 +125,7 @@ public class CategoryManager extends Composite {
 
     private void renameSelected() {
 
-        String name = Window.prompt( constants.CategoryNewNamePleaseEnter(),
+        String name = Window.prompt( ConstantsCore.INSTANCE.CategoryNewNamePleaseEnter(),
                                      "" );
         if ( name != null ) {
             CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
@@ -134,7 +133,7 @@ public class CategoryManager extends Composite {
                                                                   name,
                                                                   new GenericCallback<java.lang.Void>() {
                                                                       public void onSuccess(Void v) {
-                                                                          Window.alert( constants.CategoryRenamed() );
+                                                                          Window.alert( ConstantsCore.INSTANCE.CategoryRenamed() );
                                                                           explorer.refresh();
                                                                       }
                                                                   } );
@@ -142,7 +141,7 @@ public class CategoryManager extends Composite {
     }
 
     private void deleteSelected() {
-        if ( Window.confirm( constants.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedPath() ) ) {
+        if ( Window.confirm( ConstantsCore.INSTANCE.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedPath() ) ) {
             CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
             categoryService.removeCategory( explorer.getSelectedPath(),
                                                                   new GenericCallback<java.lang.Void>() {
@@ -153,5 +152,15 @@ public class CategoryManager extends Composite {
 
                                                                   } );
         }
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.CategoryManager();
     }
 }

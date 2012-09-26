@@ -22,6 +22,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -51,7 +52,7 @@ public class AssetEditorActivity {
     private Event<RefreshModuleDataModelEvent> refreshModuleDataModelEvents;
 
     @Inject
-    public AssetEditorActivity(PlaceManager placeManager, ClientFactory clientFactory, EventBus eventBus) {
+    public AssetEditorActivity(PlaceManager placeManager, ClientFactory clientFactory, GuvnorEventBus eventBus) {
         this.clientFactory = clientFactory;
         this.placeManager = placeManager;
         this.eventBus = eventBus;

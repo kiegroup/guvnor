@@ -57,9 +57,9 @@ public class ManagerActivity extends Activity {
                                  new CategoryManager() );
                 break;
             case 1 :
-                tabbedPanel.add( constants.ArchivedManager(),
-                                 new ArchivedAssetManager( clientFactory,
-                                                           eventBus ) );
+//                tabbedPanel.add( constants.ArchivedManager(),
+//                                 new ArchivedAssetManager( clientFactory,
+//                                                           eventBus ) );
                 break;
 
             case 2 :
@@ -74,8 +74,8 @@ public class ManagerActivity extends Activity {
             case 4 :
                 EventLogPresenter.EventLogView eventLogView = new EventLogViewImpl();
                 RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
-                new EventLogPresenter( repositoryService,
-                                       eventLogView );
+//                new EventLogPresenter( repositoryService,
+//                                       eventLogView );
                 tabbedPanel.add( constants.EventLog(),
                                  eventLogView );
                 break;

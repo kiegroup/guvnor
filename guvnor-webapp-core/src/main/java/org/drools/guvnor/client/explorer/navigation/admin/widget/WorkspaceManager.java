@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceManager extends Composite {
-    private static ImagesCore images    = GWT.create( ImagesCore.class );
     private ConstantsCore constants = GWT.create( ConstantsCore.class );
     private RepositoryServiceAsync repositoryService = GWT.create( RepositoryService.class );
     private ModuleServiceAsync moduleService = GWT.create( ModuleService.class );

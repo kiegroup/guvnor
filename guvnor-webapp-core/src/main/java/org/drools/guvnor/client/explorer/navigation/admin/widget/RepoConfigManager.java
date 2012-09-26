@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
@@ -32,29 +33,15 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratorPanel;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import javax.enterprise.context.Dependent;
 
+@Dependent
+@WorkbenchScreen(identifier = "repositoryConfigManager")
 public class RepoConfigManager extends Composite {
-
-    private static ImagesCore images             = (ImagesCore) GWT.create( ImagesCore.class );
-    private ConstantsCore constants          = ((ConstantsCore) GWT.create( ConstantsCore.class ));
 
     private RepositoryServiceAsync service            = GWT.create(RepositoryService.class);
     private RdbmsConfigurable      rdbmsConf          = new RdbmsConfigurable();
@@ -71,7 +58,7 @@ public class RepoConfigManager extends Composite {
     public RepoConfigManager() {     
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( GuvnorImages.INSTANCE.Config(),
-                        new HTML( constants.ManageRepositoryConfig() ) );
+                        new HTML( ConstantsCore.INSTANCE.ManageRepositoryConfig() ) );
         
         DockPanel dock = new DockPanel();
         dock.setSpacing( 4 );
@@ -102,7 +89,7 @@ public class RepoConfigManager extends Composite {
         idock.add( repoDisplayArea,
                    DockPanel.WEST );
 
-        final Button saveButton = new Button( constants.SaveRepo() );
+        final Button saveButton = new Button( ConstantsCore.INSTANCE.SaveRepo() );
         saveButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String name = rdbmsConf.getDbType() + "-repository";
@@ -119,8 +106,8 @@ public class RepoConfigManager extends Composite {
         VerticalPanel formHolder = new VerticalPanel();
         HorizontalPanel saveInfoHolder = new HorizontalPanel();
         saveInfoHolder.add( saveButton );
-        saveInfoHolder.add( new InfoPopup( constants.SaveRepo(),
-                                           constants.SaveRepoInfo() ) );
+        saveInfoHolder.add( new InfoPopup( ConstantsCore.INSTANCE.SaveRepo(),
+                                           ConstantsCore.INSTANCE.SaveRepoInfo() ) );
         formHolder.add( saveInfoHolder );
         formHolder.add( hiddenRepoConfig );
 
@@ -133,7 +120,7 @@ public class RepoConfigManager extends Composite {
         dock.add( idock,
                   DockPanel.EAST );
 
-        form.startSection( constants.ManageRepositoryConfigDesc() );
+        form.startSection( ConstantsCore.INSTANCE.ManageRepositoryConfigDesc() );
         form.addAttribute( "",
                            dock );
         form.endSection();
@@ -204,7 +191,7 @@ public class RepoConfigManager extends Composite {
 
         layoutA.setHTML( 1,
                          0,
-                         constants.SelectRdbmsType() );
+                         ConstantsCore.INSTANCE.SelectRdbmsType() );
         final ListBox databaseList = getDatabaseList();
         databaseList.addChangeHandler( new ChangeHandler() {
 
@@ -243,7 +230,7 @@ public class RepoConfigManager extends Composite {
 
         layoutA.setHTML( 2,
                          0,
-                         constants.UseJndi() );
+                         ConstantsCore.INSTANCE.UseJndi() );
 
         final CheckBox useJndi = new CheckBox();
         useJndi.setChecked( rdbmsConf.isJndi() );
@@ -271,7 +258,7 @@ public class RepoConfigManager extends Composite {
         continueButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( databaseList.getSelectedIndex() == 0 ) {
-                    Window.alert( constants.PleaseSelectRdbmsType() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseSelectRdbmsType() );
                     return;
                 }
                 if ( !useJndi.getValue() ) {
@@ -371,20 +358,20 @@ public class RepoConfigManager extends Composite {
                            1,
                            userPassInput );
 
-        Button generateButton = new Button( constants.GenerateRepositoryConfiguration() );
+        Button generateButton = new Button( ConstantsCore.INSTANCE.GenerateRepositoryConfiguration() );
         generateButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( driverInput.getValue() == null || driverInput.getValue().trim().length() < 1 ) {
-                    Window.alert( constants.PleaseEnterDriver() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseEnterDriver() );
                     return;
                 } else if ( urlInput.getValue() == null || urlInput.getValue().trim().length() < 1 ) {
-                    Window.alert( constants.PleaseEnterUrl() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseEnterUrl() );
                     return;
                 } else if ( userNameInput.getValue() == null || userNameInput.getValue().trim().length() < 1 ) {
-                    Window.alert( constants.PleaseEnterUserName() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseEnterUserName() );
                     return;
                 } else if ( userPassInput.getValue() == null || userPassInput.getValue().trim().length() < 1 ) {
-                    Window.alert( constants.PleaseEnterPassword() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseEnterPassword() );
                     return;
                 }
                 rdbmsConf.setDbDriver( driverInput.getValue() );
@@ -434,11 +421,11 @@ public class RepoConfigManager extends Composite {
                            1,
                            jndiNameInput );
 
-        Button generateButton = new Button( constants.GenerateRepositoryConfiguration() );
+        Button generateButton = new Button( ConstantsCore.INSTANCE.GenerateRepositoryConfiguration() );
         generateButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( jndiNameInput.getValue() == null || jndiNameInput.getValue().trim().length() < 1 ) {
-                    Window.alert( constants.PleaseEnterJndiName() );
+                    Window.alert( ConstantsCore.INSTANCE.PleaseEnterJndiName() );
                     return;
                 }
                 rdbmsConf.setJndiDsName( jndiNameInput.getValue() );
@@ -453,5 +440,15 @@ public class RepoConfigManager extends Composite {
         DecoratorPanel decPanel = new DecoratorPanel();
         decPanel.setWidget( layoutC );
         return decPanel;
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.RepositoryConfig();
     }
 }

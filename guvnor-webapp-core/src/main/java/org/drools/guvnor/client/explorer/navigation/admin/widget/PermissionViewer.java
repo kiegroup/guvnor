@@ -16,20 +16,23 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTablePresenter;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTableView;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
+import javax.enterprise.context.Dependent;
+
+@Dependent
+@WorkbenchScreen(identifier = "userPermissionManager")
 public class PermissionViewer extends Composite {
-    private static ImagesCore images = (ImagesCore) GWT.create(ImagesCore.class);
-    private ConstantsCore constants = ((ConstantsCore) GWT.create(ConstantsCore.class));
 
     private VerticalPanel layout;
 
@@ -37,7 +40,7 @@ public class PermissionViewer extends Composite {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        Label caption = new Label(constants.PermissionDetails());
+        Label caption = new Label(ConstantsCore.INSTANCE.PermissionDetails());
         caption.getElement().getStyle().setFontWeight(FontWeight.BOLD);
         header.add(caption);
         header.add(howToTurnOn());
@@ -60,10 +63,10 @@ public class PermissionViewer extends Composite {
     private Widget howToTurnOn() {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new HTML("<small><i>"
-                + constants.TipAuthEnable()
+                + ConstantsCore.INSTANCE.TipAuthEnable()
                 + "</i></small>"));
-        InfoPopup pop = new InfoPopup(constants.EnablingAuthorization(),
-                constants.EnablingAuthPopupTip());
+        InfoPopup pop = new InfoPopup(ConstantsCore.INSTANCE.EnablingAuthorization(),
+                ConstantsCore.INSTANCE.EnablingAuthPopupTip());
         hp.add(pop);
         return hp;
     }
@@ -72,5 +75,15 @@ public class PermissionViewer extends Composite {
         PermissionsPagedTableView table = new PermissionsPagedTableView();
         PermissionsPagedTablePresenter presenter = new PermissionsPagedTablePresenter(table);
         layout.add(table);
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return this;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.UserPermissionMappings();
     }
 }
