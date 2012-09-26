@@ -13,20 +13,37 @@
 
   <artifactId>guvnor-docs</artifactId>
   <packaging>jdocbook</packaging>
-  
+
   <name>Guvnor documentation</name>
   <description>Guvnor documentation</description>
 
   <build>
-      <plugins>
-          <plugin>
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <configuration>
-                  <sourceDocumentName>Guvnor_Manual.xml</sourceDocumentName>
-              </configuration>
-          </plugin>
-      </plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <configuration>
+          <sourceDocumentName>Guvnor_Manual.xml</sourceDocumentName>
+          <injections>
+            <injection><!-- Fix maven-jdocbook-plugin so project.version doesn't need to be duplicated -->
+              <name>project.version</name>
+              <value>${project.version}</value>
+            </injection>
+            <!-- Docbook variables that can be replaced by BRMS-->
+            <injection>
+              <name>guvnor.app.name</name>
+              <value>Guvnor</value>
+              <!--<value>BRMS</value>-->
+            </injection>
+            <injection>
+              <name>guvnor.war.name</name>
+              <value>guvnor.war</value>
+              <!--<value>jboss-brms</value>-->
+            </injection>
+          </injections>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
