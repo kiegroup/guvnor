@@ -62,8 +62,6 @@ public interface NavigationViewFactory {
 
     WizardActivityView getWizardView(WizardContext context);
 
-    ModuleEditorActivityView getModuleEditorActivityView();
-
     AssetViewerActivityView getAssetViewerActivityView();
 
     PerspectivesPanelView getPerspectivesPanelView();

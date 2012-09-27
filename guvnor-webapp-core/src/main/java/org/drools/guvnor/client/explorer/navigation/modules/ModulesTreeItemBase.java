@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
 import org.drools.guvnor.client.rpc.Module;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 public abstract class ModulesTreeItemBase
         implements
@@ -53,8 +54,8 @@ public abstract class ModulesTreeItemBase
     protected abstract void fillModulesTree(final IsTreeItem treeItem);
 
     public void onModuleSelected(Object userObject) {
-        if (userObject instanceof Place) {
-            clientFactory.getDeprecatedPlaceController().goTo((Place) userObject);
+        if (userObject instanceof PlaceRequest) {
+            clientFactory.getPlaceManager().goTo((PlaceRequest) userObject);
         }
     }
 

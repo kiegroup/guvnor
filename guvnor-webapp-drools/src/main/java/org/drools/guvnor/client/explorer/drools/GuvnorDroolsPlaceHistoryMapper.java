@@ -20,7 +20,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionT
 @WithTokenizers(
         {
                 FindPlace.Tokenizer.class,
-                ModuleEditorPlace.Tokenizer.class,
                 AssetViewerPlace.Tokenizer.class,
                 ManagerPlace.Tokenizer.class,
                 CategoryPlace.Tokenizer.class,

@@ -15,46 +15,13 @@
  */
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceTokenizer;
+import org.uberfire.shared.mvp.PlaceRequest;
 
-public class ModuleEditorPlace extends Place {
-
-    private final String uuid;
+public class ModuleEditorPlace extends PlaceRequest {
 
     public ModuleEditorPlace(String uuid) {
-        this.uuid = uuid;
+        super("moduleEditor");
+        addParameter("uuid", uuid);
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-
-        ModuleEditorPlace that = (ModuleEditorPlace) o;
-
-        if ( uuid != null ? !uuid.equals( that.uuid ) : that.uuid != null ) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
-    }
-
-    public static class Tokenizer implements PlaceTokenizer<ModuleEditorPlace> {
-
-        public String getToken(ModuleEditorPlace place) {
-            return place.getUuid();
-        }
-
-        public ModuleEditorPlace getPlace(String token) {
-            return new ModuleEditorPlace( token );
-        }
-    }
 }

@@ -16,9 +16,12 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -30,20 +33,18 @@ public class ModuleEditorActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        clientFactory = mock( ClientFactory.class );
+        clientFactory = mock(ClientFactory.class);
         setUpNavigationFactory();
 
         ModuleEditorActivityView view = mock(ModuleEditorActivityView.class);
-        when(
-                clientFactory.getNavigationViewFactory().getModuleEditorActivityView()
-        ).thenReturn(
-                view
-        );
-         new ModuleEditorActivity("mockUuid", clientFactory);
+
+        GuvnorEventBus eventBus = mock(GuvnorEventBus.class);
+        PlaceManager placeManager = mock(PlaceManager.class);
+        new ModuleEditorActivity(placeManager,view, clientFactory, eventBus);
     }
 
     private NavigationViewFactory setUpNavigationFactory() {
-        NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
         when(
                 clientFactory.getNavigationViewFactory()
         ).thenReturn(
@@ -51,9 +52,10 @@ public class ModuleEditorActivityTest {
         );
         return navigationViewFactory;
     }
+
     @Test
     public void testMock() throws Exception {
-        assertTrue( true );
+        assertTrue(true);
     }
 
     //    @Test

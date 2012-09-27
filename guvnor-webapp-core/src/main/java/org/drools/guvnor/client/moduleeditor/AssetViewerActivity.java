@@ -74,7 +74,7 @@ public class AssetViewerActivity extends Activity
     }
 
     public void viewPackageDetail(Module packageConfigData) {
-        clientFactory.getDeprecatedPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
+        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
 
     private void fillModuleItemStructure() {

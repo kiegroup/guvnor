@@ -48,9 +48,9 @@ public class GuvnorActivityMapper
             return new FindActivity( clientFactory );
 //        } else if ( place instanceof AssetEditorPlace ) {
 //            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
-        } else if ( place instanceof ModuleEditorPlace ) {
-            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
-                    clientFactory );
+//        } else if ( place instanceof ModuleEditorPlace ) {
+//            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
+//                    clientFactory );
         } else if ( place instanceof AssetViewerPlace ) {
             return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
                     clientFactory );

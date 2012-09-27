@@ -136,10 +136,6 @@ public class NavigationViewFactoryImpl
                                            eventBus );
     }
 
-    public ModuleEditorActivityView getModuleEditorActivityView() {
-        return new ModuleEditorActivityViewImpl();
-    }
-
     public AssetViewerActivityView getAssetViewerActivityView() {
         return new AssetViewerActivityViewImpl();
     }

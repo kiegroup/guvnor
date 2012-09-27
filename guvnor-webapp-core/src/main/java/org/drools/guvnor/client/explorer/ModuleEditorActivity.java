@@ -16,44 +16,66 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.util.Activity;
+import org.uberfire.client.annotations.*;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
-public class ModuleEditorActivity extends Activity {
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@WorkbenchScreen(identifier = "moduleEditor")
+public class ModuleEditorActivity {
 
     private final ClientFactory clientFactory;
     private ModuleEditorActivityView view;
-    private String uuid;
+    private final PlaceManager placeManager;
+    private final SimplePanel simplePanel = new SimplePanel();
+    private final GuvnorEventBus eventBus;
 
     // TODO: add handler for module refresh event -Rikkola-
 
-    public ModuleEditorActivity( String uuid, ClientFactory clientFactory ) {
-        this.view = clientFactory.getNavigationViewFactory().getModuleEditorActivityView();
-
-        this.uuid = uuid;
+    @Inject
+    public ModuleEditorActivity(PlaceManager placeManager,
+                                ModuleEditorActivityView view,
+                                ClientFactory clientFactory,
+                                GuvnorEventBus eventBus) {
+        this.placeManager = placeManager;
+        this.view = view;
+        this.eventBus = eventBus;
 
         this.clientFactory = clientFactory;
     }
 
-    @Override
-    public void start( final AcceptItem acceptTabItem, final EventBus eventBus ) {
-
-        view.showLoadingPackageInformationMessage();
-
-        clientFactory.getModuleService().loadModule( uuid,
+    @OnStart
+    public void init() {
+        clientFactory.getModuleService().loadModule(placeManager.getCurrentPlaceRequest().getParameters().get("uuid"),
                 new GenericCallback<Module>() {
-                    public void onSuccess( Module packageConfigData ) {
+                    public void onSuccess(Module packageConfigData) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
-                        acceptTabItem.add(
-                                packageConfigData.getName(),
-                                new ModuleEditorWrapper( packageConfigData, clientFactory, eventBus ) );
+                        simplePanel.add(new ModuleEditorWrapper(packageConfigData, clientFactory, eventBus));
 
                         view.closeLoadingPackageInformationMessage();
                     }
-                } );
+                });
+
+        view.showLoadingPackageInformationMessage();
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return simplePanel;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "packageConfigData.getName()"; // TODO : -Rikkola-
     }
 }
