@@ -176,9 +176,11 @@ public class ActionValueEditor extends DirtyableComposite {
         } );
 
         wrapper.add( w );
-        wrapper.add( clear );
-        wrapper.setCellVerticalAlignment( clear,
-                                          HasVerticalAlignment.ALIGN_MIDDLE );
+        if ( !this.readOnly ) {
+            wrapper.add( clear );
+            wrapper.setCellVerticalAlignment( clear,
+                                              HasVerticalAlignment.ALIGN_MIDDLE );
+        }
         return wrapper;
     }
 
@@ -379,7 +381,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

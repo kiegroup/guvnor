@@ -135,9 +135,7 @@ public class RuleModeller extends DirtyableComposite
 
     protected void doLayout() {
         layout = new DirtyableFlexTable();
-
         initWidget();
-
         layout.setStyleName( "model-builder-Background" );
         initWidget( layout );
         setWidth( "100%" );
@@ -148,8 +146,8 @@ public class RuleModeller extends DirtyableComposite
      * This updates the widget to reflect the state of the model.
      */
     public void initWidget() {
-        layout.clear();
-        this.currentLayoutRow = 0;
+        layout.removeAllRows();
+        currentLayoutRow = 0;
 
         Image addPattern = DroolsGuvnorImages.INSTANCE.NewItem();
         addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
@@ -161,20 +159,27 @@ public class RuleModeller extends DirtyableComposite
         } );
 
         layout.getColumnFormatter().setWidth( 0,
-                                              "8%" );
+                                              "20px" );
         layout.getColumnFormatter().setWidth( 1,
-                                              "87%" );
+                                              "20px" );
         layout.getColumnFormatter().setWidth( 2,
-                                              "5%" );
+                                              "48px" );
+        layout.getColumnFormatter().setWidth( 3,
+                                              "*" );//90%
+        layout.getColumnFormatter().setWidth( 4,
+                                              "64px" );
 
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
                               new SmallLabel( "<b>" + Constants.INSTANCE.WHEN() + "</b>" ) );
+            layout.getFlexCellFormatter().setColSpan( currentLayoutRow,
+                                                      0,
+                                                      4 );
 
             if ( !lockLHS() ) {
                 layout.setWidget( currentLayoutRow,
-                                  2,
+                                  1,
                                   addPattern );
             }
             currentLayoutRow++;
@@ -186,6 +191,9 @@ public class RuleModeller extends DirtyableComposite
             layout.setWidget( currentLayoutRow,
                               0,
                               new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
+            layout.getFlexCellFormatter().setColSpan( currentLayoutRow,
+                                                      0,
+                                                      4 );
 
             Image addAction = DroolsGuvnorImages.INSTANCE.NewItem();
             addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
@@ -198,7 +206,7 @@ public class RuleModeller extends DirtyableComposite
             } );
             if ( !lockRHS() ) {
                 layout.setWidget( currentLayoutRow,
-                                  2,
+                                  1,
                                   addAction );
             }
             currentLayoutRow++;
@@ -219,29 +227,29 @@ public class RuleModeller extends DirtyableComposite
                                                                          public void onClick(ClickEvent event) {
                                                                              showingOptions = true;
                                                                              layout.setWidget( tmp1,
-                                                                                               0,
+                                                                                               2,
                                                                                                new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
                                                                              layout.setWidget( tmp1,
-                                                                                               2,
+                                                                                               4,
                                                                                                getAddAttribute() );
                                                                              layout.setWidget( tmp2,
-                                                                                               1,
+                                                                                               3,
                                                                                                new RuleAttributeWidget( self,
                                                                                                                         self.model ) );
                                                                          }
                                                                      } );
                 layout.setWidget( tmp1,
-                                  0,
+                                  2,
                                   showMoreOptions );
             } else {
                 layout.setWidget( tmp1,
-                                  0,
+                                  2,
                                   new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
                 layout.setWidget( tmp1,
-                                  2,
+                                  4,
                                   getAddAttribute() );
                 layout.setWidget( tmp2,
-                                  1,
+                                  3,
                                   new RuleAttributeWidget( self,
                                                            self.model ) );
 
@@ -251,10 +259,10 @@ public class RuleModeller extends DirtyableComposite
 
         currentLayoutRow++;
         layout.setWidget( currentLayoutRow + 1,
-                          1,
+                          3,
                           spacerWidget() );
         layout.getCellFormatter().setHeight( currentLayoutRow + 1,
-                                             1,
+                                             3,
                                              "100%" );
 
         this.verifyRule( null );
@@ -356,64 +364,49 @@ public class RuleModeller extends DirtyableComposite
                                                                  readOnly );
             w.addOnModifiedCommand( this.onWidgetModifiedCommand );
 
-            w.setWidth( "100%" );
+            widget.add( wrapRHSWidget( model,
+                                       i,
+                                       w ) );
             widget.add( spacerWidget() );
 
-            DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-            horiz.setWidth( "100%" );
-            //horiz.setBorderWidth(2);
+            layout.setWidget( currentLayoutRow,
+                              0,
+                              new DirtyableHorizontalPane() );
+            layout.setWidget( currentLayoutRow,
+                              1,
+                              new DirtyableHorizontalPane() );
 
-            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
-            remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
-            final int idx = i;
-            remove.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
-                        model.removeRhsItem( idx );
-                        refreshWidget();
-
-                        //Signal possible change in Template variables
-                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-                        eventBus.fireEventFromSource( tvce,
-                                                      model );
-                    }
-                }
-            } );
-            horiz.add( w );
-            if ( !(w instanceof ActionRetractFactWidget) ) {
-                w.setWidth( "100%" ); //NON-NLS
-                horiz.setWidth( "100%" );
-            }
-
-            if ( !(this.lockRHS() || w.isReadOnly()) ) {
-                horiz.add( remove );
-            }
-
-            widget.add( horiz );
-
-            layout.setHTML( currentLayoutRow,
-                            0,
-                            "<div class='form-field'>" + (i + 1) + ".</div>" );
+            layout.setWidget( currentLayoutRow,
+                              2,
+                              this.wrapLineNumber( i + 1,
+                                                   false ) );
             layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  0,
+                                                                  2,
                                                                   HasHorizontalAlignment.ALIGN_CENTER );
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                                0,
+                                                                2,
                                                                 HasVerticalAlignment.ALIGN_MIDDLE );
 
             layout.setWidget( currentLayoutRow,
-                              1,
+                              3,
                               widget );
             layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  1,
+                                                                  3,
                                                                   HasHorizontalAlignment.ALIGN_LEFT );
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                                1,
+                                                                3,
                                                                 HasVerticalAlignment.ALIGN_TOP );
             layout.getFlexCellFormatter().setWidth( currentLayoutRow,
-                                                    1,
+                                                    3,
                                                     "100%" );
+
+            if ( !w.isFactTypeKnown() ) {
+                final Image image = DroolsGuvnorImages.INSTANCE.Error();
+                image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
+                this.addLineIcon( currentLayoutRow,
+                                  0,
+                                  image );
+            }
 
             final int index = i;
             if ( !(this.lockRHS() || w.isReadOnly()) ) {
@@ -495,32 +488,40 @@ public class RuleModeller extends DirtyableComposite
 
             layout.setWidget( currentLayoutRow,
                               0,
+                              new DirtyableHorizontalPane() );
+            layout.setWidget( currentLayoutRow,
+                              1,
+                              new DirtyableHorizontalPane() );
+
+            layout.setWidget( currentLayoutRow,
+                              2,
                               this.wrapLineNumber( i + 1,
                                                    true ) );
             layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  0,
+                                                                  2,
                                                                   HasHorizontalAlignment.ALIGN_CENTER );
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                                0,
+                                                                2,
                                                                 HasVerticalAlignment.ALIGN_MIDDLE );
 
             layout.setWidget( currentLayoutRow,
-                              1,
+                              3,
                               vert );
             layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  1,
+                                                                  3,
                                                                   HasHorizontalAlignment.ALIGN_LEFT );
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                                1,
+                                                                3,
                                                                 HasVerticalAlignment.ALIGN_TOP );
             layout.getFlexCellFormatter().setWidth( currentLayoutRow,
-                                                    1,
+                                                    3,
                                                     "100%" );
 
             if ( !w.isFactTypeKnown() ) {
                 final Image image = DroolsGuvnorImages.INSTANCE.Error();
                 image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
                 this.addLineIcon( currentLayoutRow,
+                                  0,
                                   image );
             }
 
@@ -561,14 +562,25 @@ public class RuleModeller extends DirtyableComposite
         return h;
     }
 
+    private Widget wrapLineNumber(int number,
+                                  boolean isLHSLine) {
+        String id = "rhsLine";
+        if ( isLHSLine ) {
+            id = "lhsLine";
+        }
+        id += number;
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        horiz.add( new HTML( "<div class='form-field' id='" + id + "'>" + number + ".</div>" ) );
+        return horiz;
+    }
+
     /**
      * This adds the widget to the UI, also adding the remove icon.
      */
     private Widget wrapLHSWidget(final RuleModel model,
                                  int i,
                                  RuleModellerWidget w) {
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-
+        final DirtyableFlexTable wrapper = new DirtyableFlexTable();
         final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
@@ -590,58 +602,99 @@ public class RuleModeller extends DirtyableComposite
             }
         } );
 
-        horiz.setWidth( "100%" );
+        wrapper.getColumnFormatter().setWidth( 0,
+                                               "100%" );
         w.setWidth( "100%" );
-
-        horiz.add( w );
+        wrapper.setWidget( 0,
+                           0,
+                           w );
         if ( !(this.lockLHS() || w.isReadOnly()) || !w.isFactTypeKnown() ) {
-            horiz.add( remove );
+            wrapper.setWidget( 0,
+                               1,
+                               remove );
+            wrapper.getColumnFormatter().setWidth( 1,
+                                                   "20px" );
         }
 
-        return horiz;
+        return wrapper;
     }
 
-    private Widget wrapLineNumber(int number,
-                                  boolean isLHSLine) {
-        String id = "rhsLine";
-        if ( isLHSLine ) {
-            id = "lhsLine";
+    /**
+     * This adds the widget to the UI, also adding the remove icon.
+     */
+    private Widget wrapRHSWidget(final RuleModel model,
+                                 int i,
+                                 RuleModellerWidget w) {
+        final DirtyableFlexTable wrapper = new DirtyableFlexTable();
+        final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
+        final int idx = i;
+        remove.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                    model.removeRhsItem( idx );
+                    refreshWidget();
+
+                    //Signal possible change in Template variables
+                    TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
+                    eventBus.fireEventFromSource( tvce,
+                                                  model );
+                }
+            }
+        } );
+
+        //        if ( !(w instanceof ActionRetractFactWidget) ) {
+        //            w.setWidth( "100%" );
+        //            horiz.setWidth( "100%" );
+        //        }
+
+        wrapper.getColumnFormatter().setWidth( 0,
+                                               "100%" );
+        w.setWidth( "100%" );
+        wrapper.setWidget( 0,
+                           0,
+                           w );
+
+        if ( !(this.lockRHS() || w.isReadOnly()) || !w.isFactTypeKnown() ) {
+            wrapper.setWidget( 0,
+                               1,
+                               remove );
+            wrapper.getColumnFormatter().setWidth( 1,
+                                                   "20px" );
         }
-        id += number;
 
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( new HTML( "<div class='form-field' id='" + id + "'>" + number + ".</div>" ) );
-
-        return horiz;
+        return wrapper;
     }
 
     private void addLineIcon(int row,
+                             int col,
                              Image icon) {
         Widget widget = layout.getWidget( row,
-                                          0 );
+                                          col );
         if ( widget instanceof DirtyableHorizontalPane ) {
             DirtyableHorizontalPane horiz = (DirtyableHorizontalPane) widget;
             horiz.add( icon );
         }
     }
 
-    private void clearLineIcons(int row) {
-        if ( layout.getCellCount( row ) <= 0 ) {
+    private void clearLineIcons(int row,
+                                int col) {
+        if ( layout.getCellCount( row ) <= col ) {
             return;
         }
         Widget widget = layout.getWidget( row,
-                                          0 );
+                                          col );
         if ( widget instanceof DirtyableHorizontalPane ) {
             DirtyableHorizontalPane horiz = (DirtyableHorizontalPane) widget;
-            while ( horiz.getWidgetCount() > 1 ) {
-                horiz.remove( horiz.getWidgetCount() - 1 );
-            }
+            horiz.clear();
         }
     }
 
-    private void clearLinesIcons() {
+    private void clearLinesIcons(int col) {
         for ( int i = 0; i < layout.getRowCount(); i++ ) {
-            this.clearLineIcons( i );
+            this.clearLineIcons( i,
+                                 col );
         }
     }
 
@@ -669,13 +722,13 @@ public class RuleModeller extends DirtyableComposite
         hp.add( moveUp );
 
         layout.setWidget( currentLayoutRow,
-                          2,
+                          4,
                           hp );
         layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                              2,
+                                                              4,
                                                               HasHorizontalAlignment.ALIGN_CENTER );
         layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                            2,
+                                                            4,
                                                             HasVerticalAlignment.ALIGN_MIDDLE );
     }
 
@@ -767,7 +820,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private void showWarningsAndErrors() {
-        this.clearLinesIcons();
+        this.clearLinesIcons( 1 );
         if ( this.warnings != null ) {
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
@@ -775,6 +828,7 @@ public class RuleModeller extends DirtyableComposite
                     image.setTitle( warning.description );
 
                     this.addLineIcon( warning.patternOrderNumber + 1,
+                                      1,
                                       image );
                 }
             }
@@ -785,6 +839,7 @@ public class RuleModeller extends DirtyableComposite
                     Image image = DroolsGuvnorImages.INSTANCE.Error();
                     image.setTitle( error.description );
                     this.addLineIcon( error.patternOrderNumber + 1,
+                                      1,
                                       image );
                 }
             }

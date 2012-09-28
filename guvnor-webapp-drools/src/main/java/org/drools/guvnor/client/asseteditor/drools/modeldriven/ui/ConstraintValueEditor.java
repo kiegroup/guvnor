@@ -227,9 +227,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } );
 
         wrapper.add( w );
-        wrapper.add( clear );
-        wrapper.setCellVerticalAlignment( clear,
-                                          HasVerticalAlignment.ALIGN_MIDDLE );
+        if ( !this.readOnly ) {
+            wrapper.add( clear );
+            wrapper.setCellVerticalAlignment( clear,
+                                              HasVerticalAlignment.ALIGN_MIDDLE );
+        }
         return wrapper;
     }
 
