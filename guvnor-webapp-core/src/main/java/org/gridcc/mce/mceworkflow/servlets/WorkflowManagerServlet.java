@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.files.AssetFileServlet;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -66,7 +67,7 @@ public class WorkflowManagerServlet extends AssetFileServlet {
 
     private static final long serialVersionUID = 510l;
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)

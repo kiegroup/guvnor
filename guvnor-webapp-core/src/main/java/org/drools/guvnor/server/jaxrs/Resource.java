@@ -20,6 +20,7 @@ package org.drools.guvnor.server.jaxrs;
 import org.drools.guvnor.server.*;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.files.RepositoryServlet;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.utils.AssetValidator;
 import org.jboss.seam.security.Credentials;
@@ -47,7 +48,7 @@ public abstract class Resource {
     protected RepositoryCategoryService repositoryCategoryService;
     @Inject
     protected RepositoryModuleOperations repositoryModuleOperations;
-    @Inject
+    @Inject @Preferred
     protected RulesRepository rulesRepository;
     @Inject
     protected FileManagerService fileManagerService;

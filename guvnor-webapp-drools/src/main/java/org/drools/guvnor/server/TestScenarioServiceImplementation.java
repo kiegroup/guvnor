@@ -47,6 +47,7 @@ import org.drools.guvnor.client.rpc.WorkItemService;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.server.testscenarios.RuleCoverageListener;
@@ -73,7 +74,7 @@ public class TestScenarioServiceImplementation
 
     private static final LoggingHelper log = LoggingHelper.getLogger(TestScenarioService.class);
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

@@ -45,6 +45,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -58,6 +59,7 @@ import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
+
 import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
@@ -69,7 +71,7 @@ public class RepositoryModuleService
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    @Inject
+    @Inject @Preferred 
     private RulesRepository            rulesRepository;
 
     @Inject
@@ -96,6 +98,7 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public Module[] listModules() {
+        //log.info("----------listModules, jcr sessoin: " + rulesRepository.getSession() + ",rulesRepository: " + rulesRepository + " ,thread: " + Thread.currentThread().getId());
         return listModules( null );
     }
 

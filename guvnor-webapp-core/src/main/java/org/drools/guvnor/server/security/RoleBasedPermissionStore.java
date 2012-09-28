@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.security;
 
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
 
@@ -32,7 +33,7 @@ import java.util.Map;
 @RequestScoped
 public class RoleBasedPermissionStore implements Serializable {
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
 

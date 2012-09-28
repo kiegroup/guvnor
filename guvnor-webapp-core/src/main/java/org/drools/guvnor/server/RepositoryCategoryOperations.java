@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -40,7 +41,7 @@ public class RepositoryCategoryOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryCategoryOperations.class);
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

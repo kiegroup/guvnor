@@ -18,6 +18,7 @@ package org.drools.guvnor.server.files;
 
 import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.ModuleNameType;
 import org.drools.guvnor.server.security.RoleType;
@@ -43,7 +44,7 @@ public class FeedServlet extends RepositoryServlet {
 
     private static final String VIEW_URL = "viewUrl";
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

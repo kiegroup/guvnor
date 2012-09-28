@@ -20,6 +20,7 @@ import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
 import org.apache.commons.io.IOUtils;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
@@ -53,7 +54,7 @@ public class WebDAVImpl
     private static final Map<String, byte[]> osxDoubleData = Collections.synchronizedMap( new WeakHashMap<String, byte[]>() );
 
     // Note that a RulesRepository is @RequestScoped, so there's no need to put it into a thread local
-    @Inject
+    @Inject @Preferred
     protected RulesRepository                rulesRepository;
 
     @Inject

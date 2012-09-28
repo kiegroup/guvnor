@@ -53,6 +53,7 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -82,7 +83,7 @@ public class RepositoryModuleOperations {
      */
     private static final int MAX_ASSETS_TO_SHOW_IN_MODULE_LIST = 5000;
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

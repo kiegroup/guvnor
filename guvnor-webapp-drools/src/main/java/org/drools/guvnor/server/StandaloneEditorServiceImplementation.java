@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.standalonededitor.BRLRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.NewRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.RuleAssetProvider;
@@ -52,7 +53,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     
     private static final long serialVersionUID = 530l;
     
-    @Inject
+    @Inject @Preferred
     public RulesRepository repository;
 
     @Inject

@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.files;
 
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.RulesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class RepositoryServlet extends HttpServlet {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Inject
+    @Inject @Preferred
     protected RulesRepository rulesRepository;
 
     @Inject

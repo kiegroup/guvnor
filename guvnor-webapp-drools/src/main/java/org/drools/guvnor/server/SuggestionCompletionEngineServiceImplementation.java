@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.SuggestionCompletionEngineService;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.ModuleItem;
@@ -33,7 +34,7 @@ public class SuggestionCompletionEngineServiceImplementation
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SuggestionCompletionEngineService.class);
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @WebRemote

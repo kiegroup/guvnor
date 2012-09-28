@@ -56,6 +56,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
@@ -86,7 +87,7 @@ public class RepositoryAssetOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetOperations.class);
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

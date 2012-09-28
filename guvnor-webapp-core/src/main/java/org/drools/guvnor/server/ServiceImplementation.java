@@ -65,6 +65,7 @@ import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.RoleType;
@@ -115,7 +116,7 @@ public class ServiceImplementation
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository            rulesRepository;
 
     @Inject

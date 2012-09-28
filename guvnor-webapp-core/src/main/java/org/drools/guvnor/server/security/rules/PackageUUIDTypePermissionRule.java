@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.ModuleUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.repository.RulesRepository;
@@ -31,7 +32,7 @@ public class PackageUUIDTypePermissionRule
     implements
     PermissionRule {
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     public boolean hasPermission(Object requestedObject,

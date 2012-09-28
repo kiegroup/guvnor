@@ -46,6 +46,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.FileUploadedEvent;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
@@ -69,7 +70,7 @@ import org.jboss.seam.security.Identity;
 @ApplicationScoped
 public class FileManagerService {
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository repository;
 
     @Inject

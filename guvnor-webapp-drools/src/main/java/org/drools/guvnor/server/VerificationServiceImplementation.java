@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
@@ -54,7 +55,7 @@ public class VerificationServiceImplementation
     @Inject
     protected ServiceSecurity serviceSecurity;
     
-    @Inject
+    @Inject @Preferred
     protected RulesRepository rulesRepository;
     
     @Inject

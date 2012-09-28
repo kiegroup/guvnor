@@ -45,6 +45,7 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.converters.ConversionService;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.guvnor.server.util.Discussion;
@@ -70,7 +71,7 @@ public class RepositoryAssetService
 
     private static final LoggingHelper  log              = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    @Inject
+    @Inject @Preferred
     protected RulesRepository           rulesRepository;
 
     @Inject

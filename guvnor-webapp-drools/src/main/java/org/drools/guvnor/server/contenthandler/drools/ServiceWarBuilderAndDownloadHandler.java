@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceConfig;
 import org.drools.guvnor.server.files.RepositoryServlet;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 
@@ -33,7 +34,7 @@ import static org.drools.guvnor.server.generators.ServiceWarGenerator.*;
 
 public class ServiceWarBuilderAndDownloadHandler extends RepositoryServlet {
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository repository;
 
     private static final long serialVersionUID = 1L;

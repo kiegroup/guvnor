@@ -26,6 +26,7 @@ import org.drools.guvnor.client.rpc.TestScenarioService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.TestScenarioServiceImplementation;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -55,7 +56,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private static final String RFC822DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z";
     private static final Locale HEADER_LOCALE = Locale.US;
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject

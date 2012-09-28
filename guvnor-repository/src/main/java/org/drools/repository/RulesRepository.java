@@ -132,6 +132,10 @@ public class RulesRepository {
 
     boolean initialized = false;
 
+    //NOTE: DO NOT call this constructor. This is a hack to keep CDI happy - proxyable. 
+    public RulesRepository() {
+    	this.session = null;
+    }
     /**
      * This requires a JCR session be setup, and the repository be configured.
      */
@@ -140,7 +144,7 @@ public class RulesRepository {
         checkForDataMigration(this);
     }
 
-    private synchronized void checkForDataMigration(RulesRepository self) {
+	private synchronized void checkForDataMigration(RulesRepository self) {
         if (initialized) {
             return;
         }
