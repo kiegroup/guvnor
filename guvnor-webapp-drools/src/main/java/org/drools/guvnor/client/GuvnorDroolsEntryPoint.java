@@ -142,7 +142,7 @@ public class GuvnorDroolsEntryPoint
      * render the view. If not, the default view is shown.
      */
     private void createMain() {
-        EventBus eventBus = new SimpleEventBus();“
+        EventBus eventBus = new SimpleEventBus();
 //        ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
 //        appController = new AppControllerImpl(clientFactory,eventBus);
 
