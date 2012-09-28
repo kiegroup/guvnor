@@ -889,6 +889,9 @@ public class SuggestionCompletionEngine
     }
 
     public boolean containsFactType(String modelClassName) {
+        if ( modelClassName == null ) {
+            return false;
+        }
         if ( modelClassName.contains( "." ) ) {
             modelClassName = modelClassName.substring( modelClassName.lastIndexOf( "." ) + 1 );
         }

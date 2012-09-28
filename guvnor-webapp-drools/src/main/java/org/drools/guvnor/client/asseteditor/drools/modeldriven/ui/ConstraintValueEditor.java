@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.TextBoxFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
@@ -164,14 +165,16 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //Show an editor for the constraint value type
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            Image clickme = GuvnorImages.INSTANCE.Edit();
-            clickme.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    showTypeChoice( (Widget) event.getSource(),
-                                    constraint );
-                }
-            } );
+            ImageButton clickme = new ImageButton( GuvnorImages.INSTANCE.Edit(),
+                                                   DroolsGuvnorImages.INSTANCE.EditDisabled(),
+                                                   ConstantsCore.INSTANCE.Edit(),
+                                                   new ClickHandler() {
+                                                       public void onClick(ClickEvent event) {
+                                                           showTypeChoice( (Widget) event.getSource(),
+                                                                           constraint );
+                                                       }
+                                                   } );
+            clickme.setEnabled( !this.readOnly );
             constraintWidget = clickme;
 
         } else {
@@ -202,6 +205,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
+        if ( this.readOnly ) {
+            return w;
+        }
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
         clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
@@ -489,7 +495,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 Window.alert( "Unexpected constraint type!" );
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp(DroolsGuvnorImages.INSTANCE.Wizard(),
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                                          Constants.INSTANCE.FieldValue(),
                                                                          customFormConfiguration );
 
@@ -510,7 +516,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

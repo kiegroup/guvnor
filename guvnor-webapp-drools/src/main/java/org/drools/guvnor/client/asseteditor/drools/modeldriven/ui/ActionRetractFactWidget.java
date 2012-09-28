@@ -31,6 +31,8 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
 
     private boolean readOnly;
 
+    private boolean isFactTypeKnown;
+
     public ActionRetractFactWidget(RuleModeller modeller,
                                    EventBus eventBus,
                                    ActionRetractFact model,
@@ -41,8 +43,9 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         layout.setWidth( "100%" );
         layout.setStyleName( "model-builderInner-Background" );
 
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( model.variableName ) );
         if ( readOnly == null ) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( model.variableName ) );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -63,6 +66,11 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
 }

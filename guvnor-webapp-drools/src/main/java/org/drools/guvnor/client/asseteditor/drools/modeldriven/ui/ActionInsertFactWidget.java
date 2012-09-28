@@ -21,12 +21,9 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.Templat
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -60,6 +57,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final String             factType;
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionInsertFactWidget(RuleModeller mod,
                                   EventBus eventBus,
                                   ActionInsertFact set,
@@ -76,8 +75,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 
+        this.isFactTypeKnown = completions.containsFactType( set.factType );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( set.factType );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -202,7 +202,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     protected void showAddFieldPopup(Widget w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -264,4 +264,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

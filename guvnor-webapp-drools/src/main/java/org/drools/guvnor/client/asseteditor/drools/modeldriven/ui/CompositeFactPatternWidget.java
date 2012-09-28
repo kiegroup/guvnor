@@ -22,9 +22,7 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
@@ -60,6 +58,8 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
     protected boolean                          readOnly;
 
+    protected boolean                          isFactTypeKnown;
+
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       EventBus eventBus,
                                       CompositeFactPattern pattern,
@@ -74,8 +74,10 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
         if ( readOnly != null ) {
             this.readOnly = readOnly;
+            this.isFactTypeKnown = true;
         } else {
             this.readOnly = false;
+            this.isFactTypeKnown = true;
             if ( this.pattern != null && this.pattern.getPatterns() != null ) {
                 IFactPattern[] patterns = this.pattern.getPatterns();
                 for ( int i = 0; i < patterns.length; i++ ) {
@@ -88,6 +90,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
                     if ( !completions.containsFactType( p.getFactType() ) ) {
                         this.readOnly = true;
+                        this.isFactTypeKnown = false;
                         break;
                     }
                 }
@@ -109,6 +112,11 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
     private HTML spacerWidget() {

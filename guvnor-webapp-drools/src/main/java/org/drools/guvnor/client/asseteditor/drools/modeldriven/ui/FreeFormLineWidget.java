@@ -38,10 +38,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FreeFormLineWidget extends RuleModellerWidget {
 
-    private FreeFormLine           action;
-    private DirtyableFlexTable     layout    = new DirtyableFlexTable();
-    private DynamicTextArea        textArea  = new DynamicTextArea();
-    private boolean                readOnly;
+    private FreeFormLine       action;
+    private DirtyableFlexTable layout   = new DirtyableFlexTable();
+    private DynamicTextArea    textArea = new DynamicTextArea();
+    private boolean            readOnly;
 
     public FreeFormLineWidget(RuleModeller mod,
                               EventBus eventBus,
@@ -160,4 +160,10 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return true;
+    }
+
 }

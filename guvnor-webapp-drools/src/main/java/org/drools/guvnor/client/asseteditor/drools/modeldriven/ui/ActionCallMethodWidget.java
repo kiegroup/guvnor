@@ -22,10 +22,8 @@ import java.util.List;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
@@ -60,6 +58,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     private String                   variableClass;
 
     private boolean                  readOnly;
+
+    private boolean                  isFactTypeKnown;
 
     public ActionCallMethodWidget(RuleModeller mod,
                                   EventBus eventBus,
@@ -134,8 +134,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -200,7 +201,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -295,6 +296,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
 }

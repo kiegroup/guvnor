@@ -20,18 +20,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.DatePickerLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
+import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.DSLComplexVariableValue;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -39,16 +41,21 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
-import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
-import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
-import org.drools.ide.common.client.modeldriven.brl.DSLComplexVariableValue;
-import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This displays a widget to edit a DSL sentence.
  */
 public class DSLSentenceWidget extends RuleModellerWidget {
-    
+
     private final List<Widget>      widgets;
     private final List<DSLDropDown> dropDownWidgets;
     private final DSLSentence       sentence;
@@ -204,23 +211,25 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         if ( currVariable.contains( ":" ) ) {
             if ( currVariable.contains( ":" + DSLSentence.ENUM_TAG + ":" ) ) {
                 result = getEnumDropdown( currVariable,
-                                          value);
+                                          value );
             } else if ( currVariable.contains( ":" + DSLSentence.DATE_TAG + ":" ) ) {
                 result = getDateSelector( currVariable,
-                                          value);
+                                          value );
             } else if ( currVariable.contains( ":" + DSLSentence.BOOLEAN_TAG + ":" ) ) {
                 result = getCheckbox( currVariable,
-                                      value);
+                                      value );
             } else if ( currVariable.contains( ":" + DSLSentence.CUSTOM_FORM_TAG + ":" ) ) {
                 result = getCustomFormEditor( currVariable,
-                                      value );
+                                              value );
             } else {
                 String regex = currVariable.substring( currVariable.indexOf( ":" ) + 1,
                                                        currVariable.length() );
-                result = getBox( value, regex );
+                result = getBox( value,
+                                 regex );
             }
         } else {
-            result = getBox( value, "" );
+            result = getBox( value,
+                             "" );
         }
 
         return result;
@@ -237,19 +246,22 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     public Widget getBox(DSLVariableValue variableDef,
                          String regex) {
-        return this.getBox(variableDef, regex, false);
+        return this.getBox( variableDef,
+                            regex,
+                            false );
     }
-    
+
     public Widget getBox(DSLVariableValue variableDef,
-                         String regex, boolean readonly) {
+                         String regex,
+                         boolean readonly) {
 
         FieldEditor currentBox = new FieldEditor();
         currentBox.setVisibleLength( variableDef.getValue().length() + 1 );
         currentBox.setValue( variableDef );
         currentBox.setRestriction( regex );
 
-        currentBox.box.setEnabled(!readonly);
-        
+        currentBox.box.setEnabled( !readonly );
+
         return currentBox;
     }
 
@@ -258,54 +270,61 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return new DSLCheckBox( variableDef,
                                 value );
     }
-    
+
     /**
      * If there is an active working-set defining a custom form configuration
      * for the factType and field defined by variableDef, then a button a custom
-     * form editor (aka Widget wrapping a button) is returned. Otherwise, 
-     * the result of {@link #getBox(org.drools.ide.common.client.modeldriven.brl.DSLVariableValue, java.lang.String) } is
-     * returned.
+     * form editor (aka Widget wrapping a button) is returned. Otherwise, the
+     * result of
+     * {@link #getBox(org.drools.ide.common.client.modeldriven.brl.DSLVariableValue, java.lang.String) }
+     * is returned.
      * 
      * @param variableDef
      * @param value
-     * @return 
+     * @return
      */
     public Widget getCustomFormEditor(String variableDef,
-                              DSLVariableValue value) {
-        
+                                      DSLVariableValue value) {
+
         //Parse Fact Type and Field for retrieving Custom Form configuration
         //from WorkingSetManager
         //Format for the custom form definition within a DSLSentence is <varName>:<type>:<Fact.field>
         int lastIndex = variableDef.lastIndexOf( ":" );
         String factAndField = variableDef.substring( lastIndex + 1,
                                                          variableDef.length() );
-        int dotIndex = factAndField.indexOf( "." );        
-        
-        
+        int dotIndex = factAndField.indexOf( "." );
+
         String pkg = this.getModeller().getAsset().getMetaData().getModuleName();
-        
+
         String factType = factAndField.substring( 0,
-                                               dotIndex );
+                                                  dotIndex );
         String field = factAndField.substring( dotIndex + 1,
                                                 factAndField.length() );
-        
+
         //is there any custom form configurated for this factType.field?
         final CustomFormConfiguration customFormConfiguration = WorkingSetManager.
-                getInstance().getCustomFormConfiguration( pkg, factType, field );
-        
-        boolean editorReadOnly = this.readOnly; 
-            
-        if (!editorReadOnly){
+                getInstance().getCustomFormConfiguration( pkg,
+                                                          factType,
+                                                          field );
+
+        boolean editorReadOnly = this.readOnly;
+
+        if ( !editorReadOnly ) {
             //if no one is forcing us to be in readonly mode, let's see
             //if there is a constraint for the fact type of the custom form
-            editorReadOnly = !this.getModeller().getSuggestionCompletions().containsFactType(factType);
+            editorReadOnly = !this.getModeller().getSuggestionCompletions().containsFactType( factType );
         }
-        
+
         if ( customFormConfiguration != null ) {
-            return new DSLCustomFormButton(variableDef, value, customFormConfiguration, editorReadOnly);
+            return new DSLCustomFormButton( variableDef,
+                                            value,
+                                            customFormConfiguration,
+                                            editorReadOnly );
         }
-        
-        return getBox(value, "", editorReadOnly);
+
+        return getBox( value,
+                       "",
+                       editorReadOnly );
     }
 
     public Widget getDateSelector(String variableDef,
@@ -341,23 +360,26 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         int iVariable = 0;
         for ( Iterator<Widget> iter = widgets.iterator(); iter.hasNext(); ) {
             Widget wid = iter.next();
-            if (wid instanceof DSLVariableEditor){
-                sentence.getValues().set( iVariable++, ((DSLVariableEditor)wid).getSelectedValue());
+            if ( wid instanceof DSLVariableEditor ) {
+                sentence.getValues().set( iVariable++,
+                                          ((DSLVariableEditor) wid).getSelectedValue() );
             }
         }
         this.setModified( true );
     }
-    
+
     interface DSLVariableEditor {
         DSLVariableValue getSelectedValue();
     }
 
-    class FieldEditor extends DirtyableComposite implements DSLVariableEditor {
+    class FieldEditor extends DirtyableComposite
+        implements
+        DSLVariableEditor {
 
-        private TextBox             box;
-        private String              oldValue  = "";
-        private DSLVariableValue    oldVariableValue;
-        private String              regex     = "";
+        private TextBox          box;
+        private String           oldValue = "";
+        private DSLVariableValue oldVariableValue;
+        private String           regex    = "";
 
         public FieldEditor() {
             box = new TextBox();
@@ -390,7 +412,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             this.regex = regex;
         }
 
-        
         public void setValue(DSLVariableValue value) {
             this.oldVariableValue = value;
             box.setText( value.getValue() );
@@ -403,15 +424,18 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         public DSLVariableValue getSelectedValue() {
             //if oldVariableValue was of type DSLComplexVariableValue, then return a
             //copy of it with only the 'value' part modified
-            if (oldVariableValue instanceof DSLComplexVariableValue){
-                return new DSLComplexVariableValue(((DSLComplexVariableValue)oldVariableValue).getId(),box.getText());
+            if ( oldVariableValue instanceof DSLComplexVariableValue ) {
+                return new DSLComplexVariableValue( ((DSLComplexVariableValue) oldVariableValue).getId(),
+                                                    box.getText() );
             }
-            return new DSLVariableValue(box.getText());
+            return new DSLVariableValue( box.getText() );
         }
 
     }
 
-    class DSLDropDown extends DirtyableComposite implements DSLVariableEditor {
+    class DSLDropDown extends DirtyableComposite
+        implements
+        DSLVariableEditor {
 
         final SuggestionCompletionEngine completions  = getModeller().getSuggestionCompletions();
         EnumDropDown                     resultWidget = null;
@@ -441,7 +465,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                          String newValue) {
 
                     makeDirty();
-                    selectedValue = new DSLVariableValue(newValue);
+                    selectedValue = new DSLVariableValue( newValue );
 
                     //When the value changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.
                     //An improvement would be to determine the chain of dependent drop-downs and only update
@@ -468,9 +492,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         public DSLVariableValue getSelectedValue() {
             int selectedIndex = resultWidget.getSelectedIndex();
             if ( selectedIndex != -1 ) {
-                return new DSLVariableValue(resultWidget.getValue( selectedIndex ));
+                return new DSLVariableValue( resultWidget.getValue( selectedIndex ) );
             } else {
-                return new DSLVariableValue("");
+                return new DSLVariableValue( "" );
             }
         }
 
@@ -487,68 +511,71 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
     }
-    
-    class DSLCustomFormButton extends DirtyableComposite implements DSLVariableEditor {
+
+    class DSLCustomFormButton extends DirtyableComposite
+        implements
+        DSLVariableEditor {
 
         private DSLVariableValue        selectedValue;
         private CustomFormConfiguration customFormConfiguration;
         private Button                  btnCustomForm;
 
         public DSLCustomFormButton(final String variableDef,
-                           final DSLVariableValue value, 
-                           CustomFormConfiguration customFormConfiguration,
-                           boolean readonly) {
+                                   final DSLVariableValue value,
+                                   CustomFormConfiguration customFormConfiguration,
+                                   boolean readonly) {
 
             this.customFormConfiguration = customFormConfiguration;
-            
-            this.selectedValue = value;
-            
-            this.btnCustomForm = new Button( selectedValue.getValue());
 
-            this.btnCustomForm.setEnabled(!readonly);
-            
+            this.selectedValue = value;
+
+            this.btnCustomForm = new Button( selectedValue.getValue() );
+
+            this.btnCustomForm.setEnabled( !readonly );
+
             //for security reasons, only add the handler if we are not in 
             //read-only mode
-            if (!readonly){
-                this.btnCustomForm.addClickHandler(new ClickHandler() {
+            if ( !readonly ) {
+                this.btnCustomForm.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
                         final CustomFormPopUp customFormPopUp =
-                                new CustomFormPopUp(DroolsGuvnorImages.INSTANCE.Wizard(),
-                                Constants.INSTANCE.FieldValue(),
-                                DSLCustomFormButton.this.customFormConfiguration );
-                        
+                                new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.Wizard(),
+                                                     Constants.INSTANCE.FieldValue(),
+                                                     DSLCustomFormButton.this.customFormConfiguration );
+
                         customFormPopUp.addOkButtonHandler( new ClickHandler() {
 
                             public void onClick(ClickEvent event) {
                                 String id = customFormPopUp.getFormId();
                                 String value = customFormPopUp.getFormValue();
-                                btnCustomForm.setText(value);
-                                
-                                selectedValue = new DSLComplexVariableValue(id, value);
-                                
+                                btnCustomForm.setText( value );
+
+                                selectedValue = new DSLComplexVariableValue( id,
+                                                                             value );
+
                                 updateSentence();
                                 makeDirty();
                                 customFormPopUp.hide();
                             }
-                        });
+                        } );
 
                         //if selectedValue is an instance of DSLComplexVariableValue,
                         //then both id and value are passed to the custom form
                         //if not, only the value is passed and "" is passed as id
-                        if (selectedValue instanceof DSLComplexVariableValue){
+                        if ( selectedValue instanceof DSLComplexVariableValue ) {
                             DSLComplexVariableValue complexSelectedValue = (DSLComplexVariableValue) selectedValue;
                             customFormPopUp.show( complexSelectedValue.getId(),
-                                  complexSelectedValue.getValue());
-                        }else{
+                                                  complexSelectedValue.getValue() );
+                        } else {
                             customFormPopUp.show( "",
-                                  selectedValue.getValue());
+                                                  selectedValue.getValue() );
                         }
-                        
+
                     }
                 } );
             }
-            
+
             //Wrap the button within a HorizontalPanel to add a space before and after the Widget
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;" ) );
@@ -564,7 +591,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     }
 
-    class DSLCheckBox extends Composite implements DSLVariableEditor {
+    class DSLCheckBox extends Composite
+        implements
+        DSLVariableEditor {
 
         ListBox resultWidget = null;
 
@@ -601,11 +630,13 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
         public DSLVariableValue getSelectedValue() {
             String value = this.resultWidget.getSelectedIndex() == 0 ? "true" : "false";
-            return new DSLVariableValue(value);
+            return new DSLVariableValue( value );
         }
     }
 
-    class DSLDateSelector extends Composite implements DSLVariableEditor {
+    class DSLDateSelector extends Composite
+        implements
+        DSLVariableEditor {
 
         DatePickerLabel resultWidget = null;
 
@@ -631,13 +662,18 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public DSLVariableValue getSelectedValue() {
-            return new DSLVariableValue(resultWidget.getDateString());
+            return new DSLVariableValue( resultWidget.getDateString() );
         }
     }
 
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return true;
     }
 
     //When a value in a drop-down changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.

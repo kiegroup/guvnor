@@ -21,9 +21,7 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -47,6 +45,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected DirtyableFlexTable       layout;
     protected boolean                  readOnly;
 
+    protected boolean                  isFactTypeKnown;
+
     public FromCompositeFactPatternWidget(RuleModeller modeller,
                                           EventBus eventBus,
                                           FromCompositeFactPattern pattern) {
@@ -69,6 +69,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
             this.calculateReadOnly();
         } else {
             this.readOnly = readOnly;
+            this.isFactTypeKnown = true;
         }
 
         this.layout = new DirtyableFlexTable();
@@ -221,7 +222,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                                      ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove= DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
         remove.setAltText( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
@@ -242,7 +243,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.factPattern != null ) {
-            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
+            this.isFactTypeKnown = this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
+            this.readOnly = !this.isFactTypeKnown;
         }
     }
 
@@ -250,4 +252,10 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

@@ -32,6 +32,8 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private boolean            readOnly;
 
+    private boolean            isFactTypeKnown;
+
     public GlobalCollectionAddWidget(RuleModeller mod,
                                      EventBus eventBus,
                                      ActionGlobalCollectionAdd action) {
@@ -59,8 +61,9 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         super( modeller,
                eventBus );
 
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( action.factName ) );
         if ( readOnly == null ) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( action.factName ) );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -69,7 +72,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         SimplePanel sp = new SimplePanel();
         sp.setStyleName( "model-builderInner-Background" ); //NON-NLS
         sp.add( new SmallLabel( "&nbsp;" + Constants.INSTANCE.AddXToListY( gca.factName,
-                                                                  gca.globalName ) ) );
+                                                                           gca.globalName ) ) );
 
         if ( this.readOnly ) {
             this.layout.addStyleName( "editor-disabled-widget" );
@@ -94,4 +97,10 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

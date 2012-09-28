@@ -144,15 +144,15 @@ public class ModelContentHandler extends ContentHandler
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
                 if ( entry.getName().endsWith( ".class" ) && !entry.getName().endsWith( "package-info.class" ) ) {
-                    String fullyQualifiedName = convertPathToName( entry.getName() );
+                    final String fullyQualifiedName = convertPathToName( entry.getName() );
+                    final String fullyQualifiedClassName = convertPathToClassName( entry.getName() );
                     if ( isClassVisible( cl,
-                                         fullyQualifiedName,
+                                         fullyQualifiedClassName,
                                          assetPackageName ) ) {
                         String leafName = getLeafName( fullyQualifiedName );
                         if ( !nonCollidingImports.containsKey( leafName ) ) {
                             nonCollidingImports.put( leafName,
-                                                     fullyQualifiedName.replaceAll( "\\$",
-                                                                                    "." ) );
+                                                     fullyQualifiedName );
                         }
                     }
                 }
@@ -197,11 +197,16 @@ public class ModelContentHandler extends ContentHandler
         return true;
     }
 
-    public static String convertPathToName(String name) {
+    private static String convertPathToClassName(String name) {
         String convertedName = name.replace( ".class",
                                              "" );
         convertedName = convertedName.replace( "/",
                                                "." );
+        return convertedName;
+    }
+
+    public static String convertPathToName(String name) {
+        String convertedName = convertPathToClassName( name );
         convertedName = convertedName.replaceAll( "\\$",
                                                   "." );
         return convertedName;

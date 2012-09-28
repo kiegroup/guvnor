@@ -22,10 +22,8 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -59,6 +57,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private String[]                 fieldCompletions;
     private String                   variableClass;
     private boolean                  readOnly;
+
+    private boolean                  isFactTypeKnown;
 
     public ActionSetFieldWidget(RuleModeller mod,
                                 EventBus eventBus,
@@ -96,11 +96,12 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         if ( this.variableClass == null ) {
             readOnly = true;
-            ErrorPopup.showMessage(Constants.INSTANCE.CouldNotFindTheTypeForVariable0(set.variable));
+            ErrorPopup.showMessage( Constants.INSTANCE.CouldNotFindTheTypeForVariable0( set.variable ) );
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -159,15 +160,15 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
                 Image image = GuvnorImages.INSTANCE.Edit();
-                image.setAltText(Constants.INSTANCE.AddFirstNewField());
-                image.setTitle(Constants.INSTANCE.AddFirstNewField());
-                image.addClickHandler(new ClickHandler() {
+                image.setAltText( Constants.INSTANCE.AddFirstNewField() );
+                image.setTitle( Constants.INSTANCE.AddFirstNewField() );
+                image.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent sender) {
-                        showAddFieldPopup(sender);
+                        showAddFieldPopup( sender );
                     }
-                });
-                h.add(image);
+                } );
+                h.add( image );
             }
             layout.setWidget( 0,
                               0,
@@ -198,7 +199,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
         String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
-                                           descFact );
+                                                    descFact );
         return new ClickableLabel( sl,
                                    clk,
                                    !this.readOnly );//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
@@ -206,7 +207,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup(DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();
@@ -293,4 +294,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }
