@@ -17,7 +17,6 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.dom4j.dom.DOMElement;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.providers.atom.Entry;
