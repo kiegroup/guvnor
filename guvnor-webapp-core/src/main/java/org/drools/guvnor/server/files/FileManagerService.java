@@ -361,6 +361,7 @@ public class FileManagerService {
             }
         }
 
+        pkg.updateBinaryUpToDate(false);
         repository.save();
 
         /* Return the name of the new package to the caller */

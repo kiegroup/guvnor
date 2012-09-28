@@ -27,10 +27,13 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleHistoryIterator;
@@ -150,6 +153,7 @@ public class PackageResource extends Resource {
          */
         try {
             String packageName = fileManagerService.importClassicDRL(is, null);
+            //NOTE: no need to call packageItem.updateBinaryUpToDate(false) as this done by importClassicDRL
             return toPackageEntryAbdera(rulesRepository.loadModule(packageName), uriInfo);
         } catch (RuntimeException e) {
             throw new WebApplicationException(e);
@@ -166,6 +170,7 @@ public class PackageResource extends Resource {
          */
         try {
             String packageName = fileManagerService.importClassicDRL(is, null);
+            //NOTE: no need to call packageItem.updateBinaryUpToDate(false) as this done by importClassicDRL
             return toPackage(rulesRepository.loadModule(packageName), uriInfo);
         } catch (RuntimeException e) {
             throw new WebApplicationException(e);
@@ -185,6 +190,7 @@ public class PackageResource extends Resource {
                 checkinComment = metaData.getCheckinComment();
             }
             ModuleItem packageItem = rulesRepository.createModule(entry.getTitle(), entry.getSummary(), ModuleItem.MODULE_FORMAT, null, checkinComment);
+            //NOTE: no need to call packageItem.updateBinaryUpToDate(false) for a newly created module as the default value of BinaryUpToDate is false
             return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (JAXBException e) {
             throw new WebApplicationException(e);
@@ -205,6 +211,7 @@ public class PackageResource extends Resource {
             }
             
             ModuleItem packageItem = rulesRepository.createModule(p.getTitle(), p.getDescription(), ModuleItem.MODULE_FORMAT, null, checkinComment);
+            //NOTE: no need to call packageItem.updateBinaryUpToDate(false) for a newly created module as the default value of BinaryUpToDate is false
             return toPackage(packageItem, uriInfo);
         } catch (RuntimeException e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
@@ -413,6 +420,7 @@ public class PackageResource extends Resource {
                checkinComment = packageMetadata.getCheckinComment();
            }
 
+            existingModuleItem.updateBinaryUpToDate(false);
             existingModuleItem.checkin(checkinComment);
             rulesRepository.save();
        } catch (JAXBException e) {
@@ -437,6 +445,7 @@ public class PackageResource extends Resource {
             existingModuleItem.updateDescription(module.getDescription());
             
             /* TODO: add more updates to package item from JSON */
+            existingModuleItem.updateBinaryUpToDate(false);
             existingModuleItem.checkin(module.getMetadata().getCheckinComment());
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -613,6 +622,7 @@ public class PackageResource extends Resource {
             }
             
             //The categories are not saved by addAsset(). Need to force it here.
+            ai.getModule().updateBinaryUpToDate(false);
             rulesRepository.save();
 
             return toAssetEntryAbdera(ai, uriInfo);
@@ -700,6 +710,11 @@ public class PackageResource extends Resource {
                 ai.updateState(assetMetadata.getState());
             }
             ai.updateValid(assetValidator.validate(ai));
+            if (AssetFormats.affectsBinaryUpToDate(ai.getFormat())) {
+                ModuleItem pkg = ai.getModule();
+                pkg.updateBinaryUpToDate(false);
+                RuleBaseCache.getInstance().remove(pkg.getUUID());
+            }
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();
         } catch (JAXBException e) {
@@ -723,6 +738,11 @@ public class PackageResource extends Resource {
             ai.updateTitle(asset.getTitle());
             ai.updateDescription(asset.getDescription());
             ai.updateValid(assetValidator.validate(ai));
+            if (AssetFormats.affectsBinaryUpToDate(ai.getFormat())) {
+                ModuleItem pkg = ai.getModule();
+                pkg.updateBinaryUpToDate(false);
+                RuleBaseCache.getInstance().remove(pkg.getUUID());
+            }
             ai.checkin(asset.getMetadata().getCheckInComment());
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -741,6 +761,11 @@ public class PackageResource extends Resource {
             asset.checkout();
             asset.updateContent(content);
             asset.updateValid(assetValidator.validate(asset));
+            if (AssetFormats.affectsBinaryUpToDate(asset.getFormat())) {
+                ModuleItem pkg = asset.getModule();
+                pkg.updateBinaryUpToDate(false);
+                RuleBaseCache.getInstance().remove(pkg.getUUID());
+            }
             asset.checkin("Updated asset source from REST interface");
             rulesRepository.save();
         } catch (RuntimeException e) {
@@ -759,6 +784,11 @@ public class PackageResource extends Resource {
             asset.checkout();
             asset.updateBinaryContentAttachment(is);
             asset.updateValid(assetValidator.validate(asset));
+            if (AssetFormats.affectsBinaryUpToDate(asset.getFormat())) {
+                ModuleItem pkg = asset.getModule();
+                pkg.updateBinaryUpToDate(false);
+                RuleBaseCache.getInstance().remove(pkg.getUUID());
+            }
             asset.checkin("Update binary");
             rulesRepository.save();
         } catch (RuntimeException e) {
