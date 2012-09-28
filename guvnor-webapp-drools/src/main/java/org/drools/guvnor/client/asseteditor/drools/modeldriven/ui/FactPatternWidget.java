@@ -74,6 +74,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
 
+    private boolean                                                 isFactTypeKnown;
+
     public FactPatternWidget(RuleModeller mod,
                              EventBus eventBus,
                              IPattern p,
@@ -127,8 +129,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.isAll0WithLabel = isAll0WithLabel;
 
         //if readOnly == null, the RO attribute is calculated.
+        this.isFactTypeKnown = mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
         if ( readOnly == null ) {
-            this.readOnly = !mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -856,6 +859,11 @@ public class FactPatternWidget extends RuleModellerWidget {
         for ( ConstraintValueEditor cve : constraintValueEditors ) {
             cve.refreshDropDownData();
         }
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
 }

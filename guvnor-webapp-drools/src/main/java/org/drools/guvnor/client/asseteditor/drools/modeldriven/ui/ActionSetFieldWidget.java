@@ -58,6 +58,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private String                   variableClass;
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionSetFieldWidget(RuleModeller mod,
                                 EventBus eventBus,
                                 ActionSetField set,
@@ -94,11 +96,12 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         if ( this.variableClass == null ) {
             readOnly = true;
-            ErrorPopup.showMessage(Constants.INSTANCE.CouldNotFindTheTypeForVariable0(set.variable));
+            ErrorPopup.showMessage( Constants.INSTANCE.CouldNotFindTheTypeForVariable0( set.variable ) );
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -194,7 +197,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
         String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
-                                           descFact );
+                                                    descFact );
         return new ClickableLabel( sl,
                                    clk,
                                    !this.readOnly );//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
@@ -289,4 +292,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

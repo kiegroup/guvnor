@@ -46,6 +46,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected DirtyableFlexTable       layout;
     protected boolean                  readOnly;
 
+    protected boolean                  isFactTypeKnown;
+
     public FromCompositeFactPatternWidget(RuleModeller modeller,
                                           EventBus eventBus,
                                           FromCompositeFactPattern pattern) {
@@ -68,6 +70,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
             this.calculateReadOnly();
         } else {
             this.readOnly = readOnly;
+            this.isFactTypeKnown = true;
         }
 
         this.layout = new DirtyableFlexTable();
@@ -240,7 +243,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.factPattern != null ) {
-            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
+            this.isFactTypeKnown = this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
+            this.readOnly = !this.isFactTypeKnown;
         }
     }
 
@@ -248,4 +252,10 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

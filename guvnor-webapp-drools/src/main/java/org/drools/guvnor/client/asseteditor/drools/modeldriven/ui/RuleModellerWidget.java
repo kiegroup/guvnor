@@ -52,6 +52,16 @@ public abstract class RuleModellerWidget extends DirtyableComposite {
      */
     public abstract boolean isReadOnly();
 
+    /**
+     * Does the Fact Type the Widget represents known to the
+     * SuggestionCompletionEngine. If the Fact Type is known the Widget can be
+     * edited or deleted (unless read-only). If the Fact Type is not known the
+     * Widget can be deleted but cannot be edited (i.e. it is always read-only).
+     * 
+     * @return
+     */
+    public abstract boolean isFactTypeKnown();
+
     public RuleModeller getModeller() {
         return modeller;
     }

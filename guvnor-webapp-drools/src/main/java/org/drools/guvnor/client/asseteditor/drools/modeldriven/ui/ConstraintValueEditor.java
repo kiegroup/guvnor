@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
@@ -201,6 +202,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap(Widget w) {
+        if ( this.readOnly ) {
+            return w;
+        }
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = new ImageButton( DroolsGuvnorImages.INSTANCE.deleteItemSmall() );
         clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );

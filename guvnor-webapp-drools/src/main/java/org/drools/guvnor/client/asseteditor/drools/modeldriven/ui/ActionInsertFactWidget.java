@@ -58,6 +58,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final String             factType;
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionInsertFactWidget(RuleModeller mod,
                                   EventBus eventBus,
                                   ActionInsertFact set,
@@ -74,8 +76,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 
+        this.isFactTypeKnown = completions.containsFactType( set.factType );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( set.factType );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -261,4 +264,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

@@ -71,6 +71,8 @@ public class ExpressionBuilder extends RuleModellerWidget
     private ExpressionFormLine           expression;
     private boolean                      readOnly;
 
+    private boolean                      isFactTypeKnown;
+
     public ExpressionBuilder(RuleModeller modeller,
                              EventBus eventBus,
                              ExpressionFormLine expression) {
@@ -88,8 +90,9 @@ public class ExpressionBuilder extends RuleModellerWidget
                eventBus );
         this.expression = expression;
 
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
         if ( readOnly == null ) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -187,8 +190,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( fact != null ) {
                 variable = new ExpressionVariable( fact );
             } else {
-                //if the variable is not bound to a Fact Pattern then it must
-                //be boubd to a Field
+                //if the variable is not bound to a Fact Pattern then it must be bound to a Field
                 String lhsBindingType = getRuleModel().getLHSBindingType( attrib );
                 variable = new ExpressionFieldVariable( attrib,
                                                         lhsBindingType );
@@ -401,10 +403,6 @@ public class ExpressionBuilder extends RuleModellerWidget
         return completions;
     }
 
-    // private String getCurrentPartName() {
-    // return expression.getCurrentName();
-    // }
-
     private RuleModel getRuleModel() {
         return this.getModeller().getModel();
     }
@@ -429,17 +427,14 @@ public class ExpressionBuilder extends RuleModellerWidget
         return expression.getParametricType();
     }
 
-    // private String getPreviousClassType() {
-    // return expression.getPreviousType();
-    // }
-    //
-    // private ExpressionPart getRootExpression() {
-    // return expression.getRootExpression();
-    // }
-
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
     /**

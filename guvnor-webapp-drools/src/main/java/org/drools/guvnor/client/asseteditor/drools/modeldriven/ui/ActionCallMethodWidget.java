@@ -60,6 +60,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionCallMethodWidget(RuleModeller mod,
                                   EventBus eventBus,
                                   ActionCallMethod set,
@@ -133,8 +135,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -293,6 +296,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
 }
