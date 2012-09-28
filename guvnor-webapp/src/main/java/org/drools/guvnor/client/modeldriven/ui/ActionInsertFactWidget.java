@@ -19,7 +19,6 @@ package org.drools.guvnor.client.modeldriven.ui;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
@@ -61,6 +60,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final String             factType;
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionInsertFactWidget(RuleModeller mod,
                                   ActionInsertFact set) {
         this( mod,
@@ -82,8 +83,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 
+        this.isFactTypeKnown = completions.containsFactType( set.factType );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( set.factType );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -93,9 +95,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         }
 
         doLayout();
-
         initWidget( this.layout );
-
     }
 
     private void doLayout() {
@@ -150,8 +150,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         DropDownData enums = completions.getEnums( this.factType,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
 
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
@@ -227,8 +228,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             }
         } );
         /*
-         * Propose a textBox to the user
-         * to make him set a variable name 
+         * Propose a textBox to the user to make him set a variable name
          */
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
@@ -263,4 +263,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return isFactTypeKnown;
+    }
+
 }

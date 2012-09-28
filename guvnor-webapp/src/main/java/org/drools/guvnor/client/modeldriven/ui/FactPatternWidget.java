@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
@@ -75,6 +74,8 @@ public class FactPatternWidget extends RuleModellerWidget {
     private boolean                           bindable;
     private boolean                           isAll0WithLabel;
     private boolean                           readOnly;
+
+    private boolean                           isFactTypeKnown;
 
     private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
 
@@ -136,8 +137,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.isAll0WithLabel = isAll0WithLabel;
 
         //if readOnly == null, the RO attribute is calculated.
+        this.isFactTypeKnown = mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
         if ( readOnly == null ) {
-            this.readOnly = !mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -837,6 +839,11 @@ public class FactPatternWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
     private void refreshConstraintValueEditorsDropDownData() {

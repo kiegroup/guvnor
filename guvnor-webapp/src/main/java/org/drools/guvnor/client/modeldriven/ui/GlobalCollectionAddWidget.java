@@ -16,12 +16,13 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Add Variable to global collection Widget
@@ -29,47 +30,58 @@ import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
     private DirtyableFlexTable layout = new DirtyableFlexTable();
-    private boolean readOnly;
+    private boolean            readOnly;
 
-    public GlobalCollectionAddWidget(RuleModeller mod, ActionGlobalCollectionAdd action) {
-        this(mod, action, null);
+    private boolean            isFactTypeKnown;
+
+    public GlobalCollectionAddWidget(RuleModeller mod,
+                                     ActionGlobalCollectionAdd action) {
+        this( mod,
+              action,
+              null );
     }
 
     /**
      * Creates a new FactPatternWidget
-     *
+     * 
      * @param mod
      * @param p
-     * @param readOnly if the widget should be in RO mode. If this parameter
-     *                 is null, the readOnly attribute is calculated.
+     * @param readOnly
+     *            if the widget should be in RO mode. If this parameter is null,
+     *            the readOnly attribute is calculated.
      */
-    public GlobalCollectionAddWidget(RuleModeller modeller, ActionGlobalCollectionAdd action,
+    public GlobalCollectionAddWidget(RuleModeller modeller,
+                                     ActionGlobalCollectionAdd action,
                                      Boolean readOnly) {
 
-        super(modeller);
+        super( modeller );
 
-        if (readOnly == null) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getLHSBindingType(action.factName));
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( action.factName ) );
+        if ( readOnly == null ) {
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
 
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
-        sp.setStyleName("model-builderInner-Background"); //NON-NLS
-        Constants constants = ((Constants) GWT.create(Constants.class));
-        sp.add(new SmallLabel("&nbsp;" + constants.AddXToListY(gca.factName, gca.globalName)));
+        sp.setStyleName( "model-builderInner-Background" ); //NON-NLS
+        Constants constants = ((Constants) GWT.create( Constants.class ));
+        sp.add( new SmallLabel( "&nbsp;" + constants.AddXToListY( gca.factName,
+                                                                  gca.globalName ) ) );
 
-        if (this.readOnly) {
-            this.layout.addStyleName("editor-disabled-widget");
-            sp.addStyleName("editor-disabled-widget");
+        if ( this.readOnly ) {
+            this.layout.addStyleName( "editor-disabled-widget" );
+            sp.addStyleName( "editor-disabled-widget" );
         }
 
-        layout.setWidget(0, 0, sp);
-        initWidget(layout);
+        layout.setWidget( 0,
+                          0,
+                          sp );
+        initWidget( layout );
 
         //This widget couldn't be modified
-        this.setModified(false);
+        this.setModified( false );
     }
 
     @Override
@@ -81,4 +93,10 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }

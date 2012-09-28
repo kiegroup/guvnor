@@ -56,8 +56,16 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             if ( this.lhs[i] instanceof FactPattern ) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.getBoundName() != null ) {
+                if ( p.isBound() ) {
                     list.add( p.getBoundName() );
+                }
+            } else if ( this.lhs[i] instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) this.lhs[i];
+                final FactPattern p = composite.getFactPattern();
+                if ( p != null ) {
+                    if ( p.isBound() ) {
+                        list.add( p.getBoundName() );
+                    }
                 }
             }
         }
@@ -69,7 +77,6 @@ public class RuleModel
      * 
      * @param var
      *            The bound fact variable (NOT bound field).
-     * 
      * @return null or the FactPattern found.
      */
     public FactPattern getLHSBoundFact(final String var) {
@@ -79,8 +86,16 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             if ( this.lhs[i] instanceof FactPattern ) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+                if ( p.isBound() && var.equals( p.getBoundName() ) ) {
                     return p;
+                }
+            } else if ( this.lhs[i] instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) this.lhs[i];
+                final FactPattern p = composite.getFactPattern();
+                if ( p != null ) {
+                    if ( p.isBound() && var.equals( p.getBoundName() ) ) {
+                        return p;
+                    }
                 }
             }
         }
@@ -92,7 +107,6 @@ public class RuleModel
      * 
      * @param var
      *            The bound field variable (NOT bound fact).
-     * 
      * @return null or the FieldConstraint found.
      */
     public FieldConstraint getLHSBoundField(final String var) {
@@ -102,13 +116,33 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             if ( this.lhs[i] instanceof FactPattern ) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
-                    FieldConstraint fc = p.getFieldConstraints()[j];
-                    List<String> fieldBindings = getFieldBinding( fc );
-                    if ( fieldBindings.contains( var ) ) {
+                final FieldConstraint fc = getLHSBoundField( p,
+                                                             var );
+                if ( fc != null ) {
+                    return fc;
+                }
+            } else if ( this.lhs[i] instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) this.lhs[i];
+                final FactPattern p = composite.getFactPattern();
+                if ( p != null ) {
+                    final FieldConstraint fc = getLHSBoundField( p,
+                                                                 var );
+                    if ( fc != null ) {
                         return fc;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private FieldConstraint getLHSBoundField(final FactPattern p,
+                                             final String var) {
+        for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
+            FieldConstraint fc = p.getFieldConstraints()[j];
+            List<String> fieldBindings = getFieldBinding( fc );
+            if ( fieldBindings.contains( var ) ) {
+                return fc;
             }
         }
         return null;
@@ -118,7 +152,6 @@ public class RuleModel
      * Get the data-type associated with the binding
      * 
      * @param var
-     * 
      * @return The data-type, or null if the binding could not be found
      */
     public String getLHSBindingType(final String var) {
@@ -128,16 +161,36 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             if ( this.lhs[i] instanceof FactPattern ) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.isBound() && var.equals( p.getBoundName() ) ) {
-                    return p.getFactType();
+                final String type = getLHSBindingType( p,
+                                                       var );
+                if ( type != null ) {
+                    return type;
                 }
-                for ( FieldConstraint fc : p.getFieldConstraints() ) {
-                    String type = getFieldBinding( fc,
-                                                   var );
+            } else if ( this.lhs[i] instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) this.lhs[i];
+                final FactPattern p = composite.getFactPattern();
+                if ( p != null ) {
+                    final String type = getLHSBindingType( p,
+                                                           var );
                     if ( type != null ) {
                         return type;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private String getLHSBindingType(final FactPattern p,
+                                     final String var) {
+        if ( p.isBound() && var.equals( p.getBoundName() ) ) {
+            return p.getFactType();
+        }
+        for ( FieldConstraint fc : p.getFieldConstraints() ) {
+            String type = getFieldBinding( fc,
+                                           var );
+            if ( type != null ) {
+                return type;
             }
         }
         return null;
@@ -229,16 +282,36 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             if ( this.lhs[i] instanceof FactPattern ) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
-                    return p;
+                final FactPattern parent = getLHSParentFactPatternForBinding( p,
+                                                                              var );
+                if ( parent != null ) {
+                    return parent;
                 }
-                for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
-                    FieldConstraint fc = p.getFieldConstraints()[j];
-                    List<String> fieldBindings = getFieldBinding( fc );
-                    if ( fieldBindings.contains( var ) ) {
-                        return p;
+            } else if ( this.lhs[i] instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) this.lhs[i];
+                final FactPattern p = composite.getFactPattern();
+                if ( p != null ) {
+                    final FactPattern parent = getLHSParentFactPatternForBinding( p,
+                                                                                  var );
+                    if ( parent != null ) {
+                        return parent;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private FactPattern getLHSParentFactPatternForBinding(final FactPattern p,
+                                                          final String var) {
+        if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+            return p;
+        }
+        for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
+            FieldConstraint fc = p.getFieldConstraints()[j];
+            List<String> fieldBindings = getFieldBinding( fc );
+            if ( fieldBindings.contains( var ) ) {
+                return p;
             }
         }
         return null;
@@ -253,7 +326,7 @@ public class RuleModel
         result.addAll( getAllRHSVariables() );
         return result;
     }
-    
+
     /**
      * This will get a list of all LHS bound variables, including bound fields.
      */
@@ -262,7 +335,7 @@ public class RuleModel
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = this.lhs[i];
             if ( pat instanceof FactPattern ) {
-                FactPattern fact = (FactPattern) pat;
+                final FactPattern fact = (FactPattern) pat;
                 if ( fact.isBound() ) {
                     result.add( fact.getBoundName() );
                 }
@@ -284,9 +357,17 @@ public class RuleModel
                         }
                     }
                 }
+            } else if ( pat instanceof FromCompositeFactPattern ) {
+                final FromCompositeFactPattern composite = (FromCompositeFactPattern) pat;
+                final FactPattern fact = composite.getFactPattern();
+                if ( fact != null ) {
+                    if ( fact.isBound() ) {
+                        result.add( fact.getBoundName() );
+                    }
+                }
             }
         }
-        
+
         return result;
     }
 
@@ -304,7 +385,7 @@ public class RuleModel
                 }
             }
         }
-        
+
         return result;
     }
 

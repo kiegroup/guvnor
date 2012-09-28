@@ -29,7 +29,6 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
@@ -74,6 +73,8 @@ public class ExpressionBuilder extends RuleModellerWidget
     private ExpressionFormLine           expression;
     private boolean                      readOnly;
 
+    private boolean                      isFactTypeKnown;
+
     public ExpressionBuilder(RuleModeller modeller,
                              ExpressionFormLine expression) {
         this( modeller,
@@ -87,8 +88,9 @@ public class ExpressionBuilder extends RuleModellerWidget
         super( modeller );
         this.expression = expression;
 
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
         if ( readOnly == null ) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -150,7 +152,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             startPoint.addItem( v,
                                 VARIABLE_VALUE_PREFIX + "." + v );
         }
-        
+
         startPoint.setVisibleItemCount( 1 );
         startPoint.addChangeHandler( new ChangeHandler() {
 
@@ -188,8 +190,9 @@ public class ExpressionBuilder extends RuleModellerWidget
             } else {
                 //if the variable is not bound to a Fact Pattern then it must
                 //be boubd to a Field
-                String lhsBindingType = getRuleModel().getLHSBindingType(attrib);
-                variable = new ExpressionFieldVariable(attrib, lhsBindingType );
+                String lhsBindingType = getRuleModel().getLHSBindingType( attrib );
+                variable = new ExpressionFieldVariable( attrib,
+                                                        lhsBindingType );
             }
             expression.appendPart( variable );
 
@@ -365,10 +368,10 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                  0 );
 
             for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
-                
+
                 //You can't use "this" in a nested accessor
                 if ( !isNested || !field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                    
+
                     boolean changed = false;
                     for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
                         String method = i.next();
@@ -418,17 +421,14 @@ public class ExpressionBuilder extends RuleModellerWidget
         return expression.getParametricType();
     }
 
-    // private String getPreviousClassType() {
-    // return expression.getPreviousType();
-    // }
-    //
-    // private ExpressionPart getRootExpression() {
-    // return expression.getRootExpression();
-    // }
-
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
     /**

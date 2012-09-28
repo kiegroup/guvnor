@@ -516,6 +516,11 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return this.readOnly;
     }
 
+    @Override
+    public boolean isFactTypeKnown() {
+        return true;
+    }
+
     //When a value in a drop-down changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.
     //An improvement would be to determine the chain of dependent drop-downs and only update children of the
     //one whose value changes. However in reality DSLSentences only contain a couple of drop-downs so it's 

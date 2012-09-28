@@ -27,7 +27,6 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.Capability;
@@ -37,7 +36,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -54,7 +52,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -72,7 +69,6 @@ public class RuleModeller extends DirtyableComposite
     RuleModelEditor {
 
     private static final Constants    constants               = GWT.create( Constants.class );
-    private static final Images       images                  = GWT.create( Images.class );
 
     private DirtyableFlexTable        layout;
     private RuleModel                 model;
@@ -438,7 +434,10 @@ public class RuleModeller extends DirtyableComposite
 
     protected void showActionSelector(Widget w,
                                       Integer position) {
-        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model, this, packageName, position );
+        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model,
+                                                                                     this,
+                                                                                     packageName,
+                                                                                     position );
         popup.show();
     }
 
@@ -556,7 +555,7 @@ public class RuleModeller extends DirtyableComposite
         w.setWidth( "100%" );
 
         horiz.add( w );
-        if ( !(this.lockLHS() || w.isReadOnly()) ) {
+        if ( !(this.lockLHS() || w.isReadOnly()) || !w.isFactTypeKnown() ) {
             horiz.add( remove );
         }
 

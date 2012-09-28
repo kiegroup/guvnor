@@ -145,7 +145,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
             } );
         } else {
-            btn=new Image(images.editDisabled());
+            btn = new Image( images.editDisabled() );
         }
 
         return btn;
@@ -160,4 +160,10 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return true;
+    }
+
 }

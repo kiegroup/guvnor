@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
@@ -51,18 +50,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
-    private Constants                constants   = GWT.create( Constants.class );
-    private static Images            images      = (Images) GWT.create( Images.class );
+    private Constants                constants       = GWT.create( Constants.class );
+    private static Images            images          = (Images) GWT.create( Images.class );
 
     final private ActionCallMethod   model;
     final private DirtyableFlexTable layout;
-    private boolean                  isBoundFact = false;
+    private boolean                  isBoundFact     = false;
 
     private String[]                 fieldCompletionTexts;
     private String[]                 fieldCompletionValues;
     private String                   variableClass;
 
     private boolean                  readOnly;
+
+    private boolean                  isFactTypeKnown;
 
     public ActionCallMethodWidget(RuleModeller mod,
                                   ActionCallMethod set) {
@@ -83,18 +84,18 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         if ( completions.isGlobalVariable( set.variable ) ) {
 
-            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable(set.variable);
-            if (infos != null) {
+            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable( set.variable );
+            if ( infos != null ) {
                 this.fieldCompletionTexts = new String[infos.size()];
                 this.fieldCompletionValues = new String[infos.size()];
                 int i = 0;
-                for (MethodInfo info : infos) {
+                for ( MethodInfo info : infos ) {
                     this.fieldCompletionTexts[i] = info.getName();
                     this.fieldCompletionValues[i] = info.getNameWithParameters();
                     i++;
                 }
 
-                this.variableClass = completions.getGlobalVariable(set.variable);
+                this.variableClass = completions.getGlobalVariable( set.variable );
 
             } else {
                 this.fieldCompletionTexts = new String[0];
@@ -103,8 +104,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
 
         } else {
-            
-            FactPattern pattern = mod.getModel().getLHSBoundFact(set.variable);
+
+            FactPattern pattern = mod.getModel().getLHSBoundFact( set.variable );
             if ( pattern != null ) {
                 List<String> methodList = completions.getMethodNames( pattern.getFactType() );
                 fieldCompletionTexts = new String[methodList.size()];
@@ -117,10 +118,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 }
                 this.variableClass = pattern.getFactType();
                 this.isBoundFact = true;
-                
+
             } else {
                 /*
-                 *  if the call method is applied on a bound variable created in the rhs
+                 * if the call method is applied on a bound variable created in
+                 * the rhs
                  */
                 ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.variable );
                 if ( patternRhs != null ) {
@@ -141,8 +143,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -261,15 +264,16 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         if ( completions.isGlobalVariable( this.model.variable ) ) {
             type = completions.getGlobalVariable( this.model.variable );
         } else {
-            type = this.getModeller().getModel().getLHSBindingType(this.model.variable);
+            type = this.getModeller().getModel().getLHSBindingType( this.model.variable );
             if ( type == null ) {
-                type = this.getModeller().getModel().getRHSBoundFact(this.model.variable).factType;
+                type = this.getModeller().getModel().getRHSBoundFact( this.model.variable ).factType;
             }
         }
 
         DropDownData enums = completions.getEnums( type,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
 
         return new MethodParameterValueEditor( val,
                                                enums,
@@ -301,6 +305,11 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
+    }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
     }
 
 }

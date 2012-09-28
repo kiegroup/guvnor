@@ -61,6 +61,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private String                   variableClass;
     private boolean                  readOnly;
 
+    private boolean                  isFactTypeKnown;
+
     public ActionSetFieldWidget(RuleModeller mod,
                                 ActionSetField set) {
         this( mod,
@@ -105,8 +107,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             ErrorPopup.showMessage( constants.CouldNotFindTheTypeForVariable0( set.variable ) );
         }
 
+        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
         if ( readOnly == null ) {
-            this.readOnly = !completions.containsFactType( this.variableClass );
+            this.readOnly = !isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
@@ -196,7 +199,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
-        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ), descFact );
+        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
+                                           descFact );
         return new ClickableLabel( sl,
                                    clk,
                                    !this.readOnly );//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
@@ -254,8 +258,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
 
         DropDownData enums = completions.getEnums( type,
-                val.field, this.model.fieldValues
-        );
+                                                   val.field,
+                                                   this.model.fieldValues
+                );
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
                                                                      this.getModeller(),
@@ -289,4 +294,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    @Override
+    public boolean isFactTypeKnown() {
+        return this.isFactTypeKnown;
+    }
+
 }
