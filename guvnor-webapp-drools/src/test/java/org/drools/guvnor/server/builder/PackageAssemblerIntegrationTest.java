@@ -1162,7 +1162,68 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         assertEquals( "rule2",
                       pk.getRules()[0].getName() );
     }
+    
+    @Test
+    public void testFunctionWithFactType() throws Exception {
+        RulesRepository repo = rulesRepository;
 
+        //first, setup the package correctly:
+        ModuleItem pkg = repo.createModule( "testFunctionWithFactType",
+                                            "" );
+
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function String PersonToString(Person p) {\n" +
+                "String result = \"\";\n" +
+                "result = p.getName() + \", age: \" + p.getAge();\n" +
+                "return result;\n" +
+                "}\n" );
+        func.checkin( "" );
+
+        AssetItem testRule1 = pkg.addAsset( "testRule1",
+                                        "" );
+        testRule1.updateFormat( AssetFormats.DRL );
+        testRule1.updateContent( "dialect 'mvel'\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "System.out.println(PersonToString($p));\n" +
+                "end");
+        testRule1.checkin( "" );
+
+        repo.save();
+
+        PackageAssembler asm = new PackageAssembler();
+        asm.init( pkg,
+                  null );
+        asm.compile();
+        assertFalse( asm.hasErrors() );
+        
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+
+            Thread.currentThread().setContextClassLoader( asm.getBuilder().getRootClassLoader() );
+
+            Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+
+            assertNotNull( binPkgs );
+            assertEquals( 1,
+                          binPkgs.length );
+
+            Package bin = binPkgs[0];
+            assertNotNull( bin );
+
+            assertEquals( 2,
+                          bin.getRules().length );
+            assertEquals( 1,
+                          bin.getFunctions().size() );
+        } finally {
+            Thread.currentThread().setContextClassLoader( currentClassLoader );
+        }
+
+    }
+    
     private void assertNotEmpty(String s) {
         if ( s == null ) fail( "should not be null" );
         if ( s.trim().equals( "" ) ) fail( "should not be empty string" );
