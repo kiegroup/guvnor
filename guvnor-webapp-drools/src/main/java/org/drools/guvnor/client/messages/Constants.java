@@ -2811,4 +2811,7 @@ public interface Constants
     String Collapse();
 
     String Expand();
+    
+    String InvalidPatternSectionDisabled();
+    
 }

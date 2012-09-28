@@ -76,7 +76,7 @@ public class RuleModeller extends DirtyableComposite
     private boolean                   showingOptions          = false;
     private int                       currentLayoutRow        = 0;
     private String                    packageName;
-    private Asset                 asset;
+    private Asset                     asset;
     private ModellerWidgetFactory     widgetFactory;
     private EventBus                  eventBus;
 
@@ -517,6 +517,13 @@ public class RuleModeller extends DirtyableComposite
                                                     1,
                                                     "100%" );
 
+            if ( !w.isFactTypeKnown() ) {
+                final Image image = DroolsGuvnorImages.INSTANCE.Error();
+                image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
+                this.addLineIcon( currentLayoutRow,
+                                  image );
+            }
+
             final int index = i;
             if ( !(this.lockLHS() || w.isReadOnly()) ) {
                 this.addActionsButtonsToLayout( Constants.INSTANCE.AddAConditionBelow(),
@@ -765,10 +772,10 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
                     Image image = DroolsGuvnorImages.INSTANCE.WarningSmall();
-                    image.setTitle(warning.description);
-                           
+                    image.setTitle( warning.description );
+
                     this.addLineIcon( warning.patternOrderNumber + 1,
-                                      image);
+                                      image );
                 }
             }
         }
@@ -776,9 +783,9 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.patternOrderNumber != null ) {
                     Image image = DroolsGuvnorImages.INSTANCE.Error();
-                    image.setTitle(error.description );
+                    image.setTitle( error.description );
                     this.addLineIcon( error.patternOrderNumber + 1,
-                                      image);
+                                      image );
                 }
             }
         }
