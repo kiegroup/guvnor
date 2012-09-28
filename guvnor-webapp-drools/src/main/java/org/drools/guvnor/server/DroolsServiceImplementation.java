@@ -25,6 +25,7 @@ import org.drools.guvnor.client.rpc.DroolsService;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.RulesRepository;
@@ -49,7 +50,7 @@ public class DroolsServiceImplementation
     }
 
     @Inject
-    public DroolsServiceImplementation(RulesRepository rulesRepository,
+    public DroolsServiceImplementation(@Preferred RulesRepository rulesRepository,
                                        ServiceSecurity serviceSecurity) {
         this.rulesRepository = rulesRepository;
         this.serviceSecurity = serviceSecurity;
