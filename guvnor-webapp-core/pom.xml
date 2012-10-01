@@ -206,8 +206,8 @@
     </dependency>
     <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies -->
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies  -->
     <dependency>
