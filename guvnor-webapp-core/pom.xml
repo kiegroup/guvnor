@@ -270,7 +270,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>backend-api</artifactId>
       <classifier>sources</classifier>
-      <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>

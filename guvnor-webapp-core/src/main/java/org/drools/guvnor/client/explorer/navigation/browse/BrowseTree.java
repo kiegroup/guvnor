@@ -123,19 +123,6 @@ public class BrowseTree implements Presenter {
         } else if (selectedItem.equals(inboxRecentlyViewedTreeItem)) {
             goTo(new InboxPlace(ExplorerNodeConfig.RECENT_VIEWED_ID));
         } else if (selectedItem.equals(findRootTreeItem)) {
-=======
-        if ( states.contains( selectedItem ) ) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("stateScreen").addParameter("state",title));
-        } else if (categories.containsKey(selectedItem)) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("categoryScreen").addParameter("category", categories.get(selectedItem)));
-        } else if ( selectedItem.equals( incomingInboxTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.INCOMING_ID ) );
-        } else if ( selectedItem.equals( inboxRecentlyEditedTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_EDITED_ID ) );
-        } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
-            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
-        } else if ( selectedItem.equals( findRootTreeItem ) ) {
->>>>>>> GUVNOR-1942 : Make Guvnor use Uberfire
             clientFactory.getPlaceManager().goTo(new PlaceRequest("search"));
         }
     }
