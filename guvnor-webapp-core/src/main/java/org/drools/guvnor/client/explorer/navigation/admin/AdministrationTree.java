@@ -26,7 +26,6 @@ import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.PlaceRequest;
 
 public class AdministrationTree extends NavigationItemBuilderOld {
 
@@ -65,6 +64,6 @@ public class AdministrationTree extends NavigationItemBuilderOld {
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
 
-        placeManager.goTo(new PlaceRequest(itemWidgets.get(item)));
+        placeManager.goTo(itemWidgets.get(item));
     }
 }

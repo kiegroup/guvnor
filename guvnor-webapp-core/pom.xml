@@ -238,27 +238,76 @@
     </dependency>
 
     <!--uberfire-->
+
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench</artifactId>
+      <artifactId>security-client</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <artifactId>security-client</artifactId>
       <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>backend-api</artifactId>
       <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
       <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
       <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -269,18 +318,23 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>vfs-model</artifactId>
+      <artifactId>security-client</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-client</artifactId>
       <classifier>sources</classifier>
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>widgets-core</artifactId>
+      <artifactId>security-server</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>widgets-core</artifactId>
+      <artifactId>security-server</artifactId>
       <classifier>sources</classifier>
       <version>0.1-SNAPSHOT</version>
     </dependency>
@@ -297,12 +351,12 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>backend-server</artifactId>
+      <artifactId>uberfire-workbench</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>backend-server</artifactId>
+      <artifactId>uberfire-workbench</artifactId>
       <classifier>sources</classifier>
       <version>0.1-SNAPSHOT</version>
     </dependency>
@@ -313,8 +367,63 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>vfs-fs</artifactId>
       <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+      <classifier>sources</classifier>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <!-- CDI Integration Modules -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+      <version>${errai.version}</version>
+    </dependency>
+
+    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+      <version>${errai.version}</version>
+      <scope>provided</scope>
     </dependency>
     <!-- Weld Modules -->
     <dependency>
@@ -333,10 +442,18 @@
       <version>${weld.version}</version>
     </dependency>
 
+    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+      <version>${errai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
-      <version>2.1.0.Beta1</version>
+      <version>${errai.version}</version>
       <exclusions>
         <exclusion>
           <groupId>javax.inject</groupId>

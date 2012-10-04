@@ -25,6 +25,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import java.util.*;
 
@@ -112,9 +113,9 @@ public class BrowseTree implements Presenter {
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
 <<<<<<< HEAD
         if (states.contains(selectedItem)) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("stateScreen").addParameter("state", title));
+            clientFactory.getPlaceManager().goTo(new DefaultPlaceRequest("stateScreen").addParameter("state", title));
         } else if (categories.containsKey(selectedItem)) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("categoryScreen").addParameter("category", categories.get(selectedItem)));
+            clientFactory.getPlaceManager().goTo(new DefaultPlaceRequest("categoryScreen").addParameter("category", categories.get(selectedItem)));
         } else if (selectedItem.equals(incomingInboxTreeItem)) {
             goTo(new InboxPlace(ExplorerNodeConfig.INCOMING_ID));
         } else if (selectedItem.equals(inboxRecentlyEditedTreeItem)) {

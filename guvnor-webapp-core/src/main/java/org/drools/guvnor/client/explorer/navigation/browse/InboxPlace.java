@@ -1,8 +1,8 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-public class InboxPlace extends PlaceRequest {
+public class InboxPlace extends DefaultPlaceRequest {
 
     public InboxPlace(String inboxType) {
         super("inbox");

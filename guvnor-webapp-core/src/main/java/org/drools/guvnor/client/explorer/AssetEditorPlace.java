@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-public class AssetEditorPlace extends PlaceRequest {
+public class AssetEditorPlace extends DefaultPlaceRequest {
 
     public AssetEditorPlace(String uuid) {
         super("assetEditor");

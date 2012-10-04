@@ -25,7 +25,6 @@ import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.rpc.Module;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

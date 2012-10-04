@@ -10,6 +10,7 @@ import org.uberfire.java.nio.file.FileSystems;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.net.URI;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class AppSetup {
         fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }
 
-    @Produces
+    @Produces @Named("fs")
     public ActiveFileSystems fileSystems() {
         return fileSystems;
     }
