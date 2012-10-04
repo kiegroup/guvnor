@@ -42,7 +42,10 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     PlaceManager placeManager;
 
     @Inject
-    PlaceManager placeManager;
+    Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
+
+    @Inject
+    Event<NotificationEvent> notifications;
 
     @Inject
     Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
