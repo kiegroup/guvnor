@@ -359,7 +359,7 @@ public class RuleModeller extends DirtyableComposite
                 horiz.setWidth( "100%" );
             }
 
-            if ( !(this.lockRHS() || w.isReadOnly()) ) {
+            if ( !(this.lockRHS() || w.isReadOnly()) || !w.isFactTypeKnown() ) {
                 horiz.add( remove );
             }
 
