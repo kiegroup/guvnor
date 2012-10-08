@@ -59,9 +59,8 @@
       <listitem>
         <para><emphasis role="bold">Surf to the Guvnor webapp</emphasis>. This will probably be at
         <literal>localhost</literal> on port <literal>8080</literal>, for example at <link
-        xlink:href="http//localhost:8080/guvnor/">http//localhost:8080/guvnor/</link> or (if you haven't rename the war
-        file) at something like <link
-        xlink:href="http//localhost:8080/guvnor-5.2.0-jboss-eap-5.1/">http//localhost:8080/guvnor-5.2.0-jboss-eap-5.1/</link>.</para>
+        xlink:href="&guvnor.url.base;">&guvnor.url.base;</link> (the url
+        depends on the name of the war file you're using).</para>
       </listitem>
     </orderedlist>
   </section>

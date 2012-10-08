@@ -60,7 +60,7 @@ kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); </programlisting
             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
             xs:schemaLocation="http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd" &gt;
     &lt;add&gt;
-      &lt;resource source="http://localhost:8080/guvnor/org.drools.guvnor.Guvnor/package/mortgages/LATEST" type="PKG" basicAuthentication="enabled" username="uid" password="pwd"/&gt;
+      &lt;resource source="&guvnor.url.base;/org.drools.guvnor.Guvnor/package/mortgages/LATEST" type="PKG" basicAuthentication="enabled" username="uid" password="pwd"/&gt;
     &lt;/add&gt; 
 &lt;/change-set&gt;</programlisting>
 
