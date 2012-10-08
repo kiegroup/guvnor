@@ -55,7 +55,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
         if ( contentHandler instanceof ICompilable && !asset.getDisabled()) {
             try {
-            	if(asset.getFormat() != null && !asset.getFormat().equals("bpmn2") && !asset.getFormat().equals("bpmn")) {
+            	if(asset.getFormat() != null) {
 	                compile( asset,
 	                         (ICompilable) contentHandler );
             	}
