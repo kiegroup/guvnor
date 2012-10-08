@@ -38,7 +38,12 @@
             <injection>
               <name>guvnor.war.name</name>
               <value>guvnor.war</value>
-              <!--<value>jboss-brms</value>-->
+              <!--<value>jboss-brms.war</value>-->
+            </injection>
+            <injection>
+              <name>guvnor.url.base</name>
+              <value>http://localhost:8080/guvnor-${project.version}</value>
+              <!--<value>http://localhost:8080/jboss-brms</value>-->
             </injection>
           </injections>
         </configuration>

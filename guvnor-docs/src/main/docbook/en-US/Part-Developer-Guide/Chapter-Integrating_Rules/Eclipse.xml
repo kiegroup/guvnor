@@ -134,7 +134,7 @@
     Of course, any of these fields can be edited by typing in the
     corresponding text box. Drag-and-drop or paste into the Location field of
     a typical Guvnor repository URL such as <link
-    xlink:href="http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav">http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav</link>
+    xlink:href="&guvnor.url.base;/org.drools.guvnor.Guvnor/webdav">&guvnor.url.base;/org.drools.guvnor.Guvnor/webdav</link>
     results in the URL being parsed into the respective fields as well. The
     authentication information (user name and password) can optionally be
     stored in the Eclipse workbench's key-ring file based on the selection of

@@ -68,7 +68,7 @@
     <itemizedlist>
       <listitem>
         <para>Once deployed, go to <link
-        xlink:href="http://localhost:8080/guvnor-webapp/">http://localhost:8080/guvnor-webapp/</link> This will show the
+        xlink:href="&guvnor.url.base;/">&guvnor.url.base;/</link> This will show the
         initial info screen or login screen depending on the configuration.</para>
       </listitem>
 

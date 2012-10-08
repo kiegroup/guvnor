@@ -44,21 +44,21 @@
     etc.</para>
 
     <para>The http address to use as base address is
-    http://{ServerName}/{httpPort}/{drools-Guvnor}/rest where ServerName is
+    http://{ServerName}/{httpPort}/{guvnorWarFilename}/rest where ServerName is
     the host name on the server on which Guvnor is deployed, httpPort the port
-    number (8080 by default development), drools-guvnor the name of the
-    archived deployed (guvnor-webapp-5.3.0 for version 5.3.0).</para>
+    number (8080 by default development) and guvnorWarFilename the name of the
+    archived deployed (guvnor-webapp-5.3.0 for version 5.3.0) without the extension.</para>
 
     <section>
          	<title>Accessing Rules by Package</title>
 		<para>
 			Use the URLs listed below to access rules assets by package. The 
-			examples below assume a base URL of <link xlink:href="http://localhost:8080/drools-guvnor/rest/">http://localhost:8080/drools-guvnor/rest/</link>.
+			examples below assume a base URL of <link xlink:href="&guvnor.url.base;/rest/">&guvnor.url.base;/rest/</link>.
 		</para>
 		<formalpara>
 			<title>/packages</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages">http://localhost:8080/drools-guvnor/rest/packages</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages">&guvnor.url.base;/rest/packages</link>
 			</para>
 		</formalpara>
 		<para>
@@ -138,7 +138,7 @@
 		<formalpara>
 			<title>/packages/{packageName}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}">http://localhost:8080/drools-guvnor/rest/packages/{packageName}</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}">&guvnor.url.base;/rest/packages/{packageName}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -197,7 +197,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/source</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/source">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/source</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/source">&guvnor.url.base;/rest/packages/{packageName}/source</link>
 			</para>
 		</formalpara>
 		<para>
@@ -217,7 +217,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/binary</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/binary">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/binary</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/binary">&guvnor.url.base;/rest/packages/{packageName}/binary</link>
 			</para>
 		</formalpara>
 		<para>
@@ -239,7 +239,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/versions</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions">&guvnor.url.base;/rest/packages/{packageName}/versions</link>
 			</para>
 		</formalpara>
 		<para>
@@ -259,7 +259,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/versions/{version}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions/{version}">&guvnor.url.base;/rest/packages/{packageName}/versions/{version}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -279,7 +279,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/versions/{version}/source</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/versions/{version}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/versions/{version}/source</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/versions/{version}/source">&guvnor.url.base;/rest/packages{packageName}/versions/{version}/source</link>
 			</para>
 		</formalpara>
 		<para>
@@ -299,7 +299,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/versions/{version}/binary</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}/binary">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}/binary</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions/{version}/binary">&guvnor.url.base;/rest/packages/{packageName}/versions/{version}/binary</link>
 			</para>
 		</formalpara>
 		<para>
@@ -321,7 +321,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets">&guvnor.url.base;/rest/packages{packageName}/assets</link>
 			</para>
 		</formalpara>
 		<para>
@@ -408,7 +408,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -479,7 +479,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/binary</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/binary">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/binary</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/binary">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/binary</link>
 			</para>
 		</formalpara>
 		<para>
@@ -514,7 +514,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/source</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/source</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/source">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/source</link>
 			</para>
 		</formalpara>
 		<para>
@@ -549,7 +549,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/versions</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions</link>
 			</para>
 		</formalpara>
 		<para>
@@ -569,7 +569,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/versions/{version}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -590,7 +590,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/source</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/source</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/source">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/source</link>
 			</para>
 		</formalpara>
 		<para>
@@ -610,7 +610,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/binary</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary</link>
 			</para>
 		</formalpara>
 		<para>
@@ -631,7 +631,7 @@
 		<formalpara>
 			<title>/packages/{packageName}/snapshot/{snapshotName}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/snapshot/{snapshotName}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/snapshot/{snapshotName}</link>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/snapshot/{snapshotName}">&guvnor.url.base;/rest/packages{packageName}/snapshot/{snapshotName}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -669,12 +669,12 @@
 	<section>
 		<title>Accessing Rules by Category</title>
 		<para>
-			Use the URLs listed below to access rules assets by category. The examples below assume a base URL of <link xlink:href="http://localhost:8080/drools-guvnor/rest/">http://localhost:8080/drools-guvnor/rest/</link>
+			Use the URLs listed below to access rules assets by category. The examples below assume a base URL of <link xlink:href="&guvnor.url.base;/rest/">&guvnor.url.base;/rest/</link>
 		</para>
 		<formalpara>
 			<title>/categories/</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories">http://localhost:8080/drools-guvnor/rest/categories</link>
+				<link xlink:href="&guvnor.url.base;/rest/categories">&guvnor.url.base;/rest/categories</link>
 			</para>
 		</formalpara>
 		<para>
@@ -698,7 +698,7 @@
 		<formalpara>
 			<title>/categories/{categoryPath}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}</link>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}">&guvnor.url.base;/rest/categories/{categoryPath}</link>
 			</para>
 		</formalpara>
 		<para>
@@ -728,7 +728,7 @@
 		<formalpara>
 			<title>/categories/{categoryPath}/children</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/children">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/children</link>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/children">&guvnor.url.base;/rest/categories/{categoryPath}/children</link>
 			</para>
 		</formalpara>
 		<para>
@@ -752,7 +752,7 @@
 		<formalpara>
 			<title>/categories/{categoryPath}/assets</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets</link>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/assets">&guvnor.url.base;/rest/categories/{categoryPath}/assets</link>
 			</para>
 		</formalpara>
 		<para>
@@ -781,7 +781,7 @@
 		<formalpara>
 			<title>/categories/{categoryPath}/assets/page/{page}</title>
 			<para>
-				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets/page/{page}">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets/page/{page}</link>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/assets/page/{page}">&guvnor.url.base;/rest/categories/{categoryPath}/assets/page/{page}</link>
 			</para>
 		</formalpara>
 		<para>
