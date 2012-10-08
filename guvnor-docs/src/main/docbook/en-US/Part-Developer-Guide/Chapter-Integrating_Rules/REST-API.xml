@@ -50,524 +50,594 @@
     archived deployed (guvnor-webapp-5.3.0 for version 5.3.0).</para>
 
     <section>
-      <title>Accessing Rule Assets by Package</title>
-
-      <para>This part of the API allows to access all rule assets by package
-      (with its name) and by the asset name.</para>
-
-      <table>
-        <title>Accessing Rule Assets by Package</title>
-
-        <tgroup cols="5">
-          <thead>
-            <row>
-              <entry align="center">URL</entry>
-
-              <entry align="center">Mode</entry>
-
-              <entry align="center">Produces MIME-Type</entry>
-
-              <entry align="center">Consumes MIME-Type</entry>
-
-              <entry align="center">Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry>/packages</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns all packages contained in the Guvnor repository
-              in Atom Feed format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns all packages contained in the Guvnor repository
-              in JSON or XML format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>Creates a new package from an input stream of DRL.
-              Returns the newly created package in Atom Entry format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>Creates a package from an input stream of DRL. Returns
-              the newly created package in JSON or XML format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>Creates a package from an Atom Entry. Returns the newly
-              created package in Atom Entry format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Creates a package from JSON or XML. Returns the newly
-              created package in JSON or XML format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the metadata of the package {packageName} as an Atom Entry. If the package {packageName}
-              does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the metadata of the package {packageName} as a Package element (see UML representation
-              below). If the package {packageName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/source</entry>
-
-              <entry>GET</entry>
-
-              <entry>plain/text</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the source code of the package {packageName} as a
-              text file. If the package {packageName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/binary</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the compiled binary of the package {packageName}
-              as a binary stream. If the package has not been compiled yet or
-              its binary is not up to date, this will compile the package
-              first. If the package {packageName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/versions</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the list of package {packageName} versions as
-              an Atom Feed.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/versions/{version}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the metadata of package {packageName} and of
-              version {version} as an Atom Entry.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/versions/{version}/source</entry>
-
-              <entry>GET</entry>
-
-              <entry>text/plain</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the source code of package {packageName} and of
-              version {version} as a text file.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/versions/{version}/binary</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the binary (compiled code) of package
-              {packageName} and of version {version} as an octet stream. If
-              the package version was never built, it returns HTTP code 500 with an
-              error message.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the metadata of package {packageName} with a
-              given Atom Entry.</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the metadata of package {packageName} with a
-              given JSON or XML.</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}</entry>
-
-              <entry>DELETE</entry>
-
-              <entry>none</entry>
-
-              <entry>none</entry>
-
-              <entry>Deletes package {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the list of rule assets contained in package
-              {packageName} as an Atom Feed.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the list of rule assets contained in package
-              {packageName} in JSON or XML format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the rule asset {assetName} contained in package {packageName} in Atom Entry format.
-              If the asset {assetName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as an Asset in JSON or XML format (see the UML
-              representation below). If the asset {assetName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/binary</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the binary content of rule asset {assetName}
-              contained in package {packageName}. If this asset has no binary
-              content, returns its source content instead.
-              If the asset {assetName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/source</entry>
-
-              <entry>GET</entry>
-
-              <entry>plain/text</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the content of rule asset {assetName} contained
-                in package {packageName}. If this is a binary asset, the
-                binary data is returned as a byte array. If the asset {assetName} does not exist, status 404 is returned.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>Creates an asset in package {packageName} from the Atom
-              Entry provided. Following info are required from the input Atom
-              Entry: asset name, asset description, asset initial category,
-              asset format.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>Creates a binary asset in package {packageName} from the
-              input stream. The value of Slug header is used to indicate the
-              name of the asset. This returns HTTP 500 error if the Slug
-              header is missing.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the metadata of the rule asset {assetName}
-              contained in package {packageName} with a given Atom Entry.</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the metadata of the rule asset {assetName}
-              contained in package {packageName} with a given Asset (see the
-              UML representation below).</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/source</entry>
-
-              <entry>PUT</entry>
-
-              <entry>plain/text</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the source code of the rule asset {assetName}
-              contained in package {packageName}.</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/binary</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the binary content of the rule asset {assetName}
-              contained in package {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/versions</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the list of rule asset {assetName} versions contained in package {packageName} as
-              an Atom Feed.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the metadata of rule asset {assetName} of version {version} 
-              contained in package {packageName} as an Atom Entry.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}/source</entry>
-
-              <entry>GET</entry>
-
-              <entry>text/plain</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the source code of rule asset {assetName} of version {version} 
-              contained in package {packageName} as a text file.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}/binary</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/octet-stream</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the binary content of rule asset {assetName} of version {version} 
-              contained in package {packageName}.  If this asset has no binary
-              content, its source content is returned instead.</entry>
-            </row>
-            
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>DELETE</entry>
-
-              <entry>none</entry>
-
-              <entry>none</entry>
-
-              <entry>Deletes the rule asset {assetName} contained in package
-              {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/snapshot/{snapshotName}</entry>
-
-              <entry>POST</entry>
-
-              <entry>none</entry>
-
-              <entry>none</entry>
-
-              <entry>Creates a snapshot {assetName} snapshotName for the package
-              {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>{packageName}/assets</entry>
-
-              <entry>POST</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>multipart/form-data</entry>
-
-              <entry>Creates the asset {assetName} in the {packageName}.</entry>
-            </row>
-
-            <row>
-              <entry>{packageName}/assets/{assetName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>multipart/form-data</entry>
-
-              <entry>Updates the asset {assetName} in the {packageName}.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+         	<title>Accessing Rules by Package</title>
+		<para>
+			Use the URLs listed below to access rules assets by package. The 
+			examples below assume a base URL of <link xlink:href="http://localhost:8080/drools-guvnor/rest/">http://localhost:8080/drools-guvnor/rest/</link>.
+		</para>
+		<formalpara>
+			<title>/packages</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages">http://localhost:8080/drools-guvnor/rest/packages</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+XML
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method return all packages contained in the repository in the 
+			requested format (Atom feed, JSON, or XML).
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+XML
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates a new package from an input stream of DRL, an 
+			Atom feed, JSON, or XML, and returns the newly created package in the 
+			requested format (Atom feed, JSON, or XML).
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}">http://localhost:8080/drools-guvnor/rest/packages/{packageName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of the package {packageName} as 
+			an Atom entry when the MIME-Type is application/atom+xml, and as a 
+			package element when the MIME-Type is application/json or 
+			application/xml.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>		
+		</itemizedlist>
+		<para>
+			The PUT method updates the metadata of package {packageName} with the 
+			provided format (Atom Entry, JSON, or XML).
+		</para>
+		<para>
+			The DELETE method deletes package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/source</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/source">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					text/plain
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of the package {packageName} 
+			as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/binary</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/binary">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the compiled binary of the package 
+			{packageName} as a binary stream. If the package has not been 
+			compiled yet or its binary is not up to date, this will compile the 
+			package first.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of package {packageName} versions as 
+			an Atom Feed.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of package {packageName} and of 
+			version {version} as an Atom Entry.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}/source</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/versions/{version}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/versions/{version}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					text/plain
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of package {packageName} and 
+			of version {version} as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}/binary</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}/binary">http://localhost:8080/drools-guvnor/rest/packages/{packageName}/versions/{version}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary (compiled code) of package 
+			{packageName} and of version {version} as an octet stream. If the 
+			package version has not been built, it returns HTTP code 500 with an 
+			error message.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of rule assets contained in package 
+			{packageName} in the requested format (Atom feed, JSON, or XML).
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates an asset in package {packageName}.
+		</para>
+		<para>
+			When an Atom Entry is provided the following information must be 
+			included in the input: asset name, asset description, asset initial 
+			category, and asset format.
+		</para>
+		<para>
+			When an octet-stream is provided the value of slug header is used to 
+			indicate the name of the asset. If the slug header is missing a HTTP 
+			500 error is returned.
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					multipart/form-data
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates the asset {assetName} for the package 
+			{packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the rule asset {assetName} contained in 
+			package {packageName} in the requested format (Atom feed, JSON, or 
+			XML).
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					multipart/form-data
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the metadata of the rule asset {assetName} 
+			contained in package {packageName} with the provided format (Atom 
+			Entry, JSON, or XML). When Multipart/form-data is supplied the asset 
+			{assetName} in package {packageName} is updated.
+		</para>
+		<para>
+			The DELETE method deletes the rule asset {assetName} contained in 
+			package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/binary</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/binary">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary content of rule asset {assetName} 
+			contained in package {packageName}. If this asset has no binary 
+			content, the source content is returned instead.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the binary content of the rule asset 
+			{assetName} contained in package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/source</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the content of rule asset {assetName} 
+			contained in package {packageName}. If this is a binary asset, the 
+			binary data is returned as a byte array.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the source code of the rule asset {assetName} 
+			contained in package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of rule asset {assetName} versions 
+			contained in package {packageName} as an Atom Feed.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of rule asset {assetName} of 
+			version {version} contained in package {packageName} as an Atom 
+			Entry.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/source</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/source">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of rule asset {assetName} of 
+			version {version} contained in package {packageName} as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/binary</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary">http://localhost:8080/drools-guvnor/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary content of rule asset {assetName} 
+			of version {version} contained in package {packageName}. If this 
+			asset has no binary content, the source content is returned instead.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/snapshot/{snapshotName}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/packages{packageName}/snapshot/{snapshotName}">http://localhost:8080/drools-guvnor/rest/packages{packageName}/snapshot/{snapshotName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The POST method creates a snapshot {snapshotName} for the package 
+			{packageName}.
+		</para>
 
       <figure>
         <title>UML representation of the Package Object</title>
@@ -596,120 +666,143 @@
       
     </section>
     
-    <section>
-      <title>Getting rule Assets by Category</title>
-
-      <para>This part of the API uses as entry point the categories defined
-      for each rule asset when it is created by the user in Guvnor</para>
-
-      <table>
-        <title>Accessing Rule Assets by Category</title>
-
-        <tgroup cols="4">
-          <thead>
-            <row>
-              <entry align="center">URL</entry>
-
-              <entry align="center">Mode</entry>
-
-              <entry align="center">MIME-Type</entry>
-
-              <entry align="center">Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry>/categories/</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Lists all categories</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Returns the info of a single category.</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}/children</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Lists all subcategories under the category {categoryPath}</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}/assets</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom/xml</entry>
-
-              <entry>Retrieves an Atom feed to all Rule assets that have the
-              category {categoryPath}</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}/assets</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryPath}</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}/assets//page/{page}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryPath} and retrieves page
-              {page} with is a numeric (1,2, 3, etc..). A page contains 10
-              elements. If the list contains 20 elements then the list will
-              have 2 pages. You first have to call for page 1 and then call
-              for page 2</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>none</entry>
-
-              <entry>Creates a new category with the category path {categoryPath}.</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryPath}</entry>
-
-              <entry>DELETE</entry>
-
-              <entry>none</entry>
-
-              <entry>Deletes the category with the category path {categoryPath}.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-    </section>
+	<section>
+		<title>Accessing Rules by Category</title>
+		<para>
+			Use the URLs listed below to access rules assets by category. The examples below assume a base URL of <link xlink:href="http://localhost:8080/drools-guvnor/rest/">http://localhost:8080/drools-guvnor/rest/</link>
+		</para>
+		<formalpara>
+			<title>/categories/</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories">http://localhost:8080/drools-guvnor/rest/categories</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method lists all categories.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns information for a single category.
+		</para>
+		<para>
+			The PUT method creates a new category with the supplied category path {categoryPath}.
+		</para>
+		<para>
+			The DELETE method deletes the category with the supplied category path {categoryPath}.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/children</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/children">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/children</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method lists all subcategories under the provided category {categoryPath}.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/assets</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns an Atom feed to all the rule assets that the listed category {category} when the MIME-type is application/atom+xml, and returns a list of asset objects representing rule assets that have the category {categoryPath} when the MIME-Type is either application/json or application/xml.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/assets/page/{page}</title>
+			<para>
+				<link xlink:href="http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets/page/{page}">http://localhost:8080/drools-guvnor/rest/categories/{categoryPath}/assets/page/{page}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns a list of asset objects representing rules assets that have the listed category {categoryPath} and retrieves page {page}, which is a numeric value starting at 1. A page contains 10 elements. If the list contains 20 elements then the list will have 2 pages. Page 1 must be called before page 2 and so on.
+		</para>
+	</section>
 
     
   </section>
