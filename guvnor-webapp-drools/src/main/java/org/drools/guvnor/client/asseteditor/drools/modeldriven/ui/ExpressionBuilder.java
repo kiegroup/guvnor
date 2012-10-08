@@ -90,7 +90,12 @@ public class ExpressionBuilder extends RuleModellerWidget
                eventBus );
         this.expression = expression;
 
-        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+        if ( this.expression.isEmpty() ) {
+            this.isFactTypeKnown = true;
+        } else {
+            this.isFactTypeKnown = getModeller().getSuggestionCompletions().containsFactType( getModeller().getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+        }
+
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
