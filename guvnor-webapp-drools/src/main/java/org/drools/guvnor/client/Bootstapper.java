@@ -9,6 +9,8 @@ import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,6 +20,9 @@ import java.util.Collection;
 @ApplicationScoped
 public class Bootstapper {
 
+    @Inject
+    private WorkbenchMenuBarPresenter menubar;
+    
     @PostConstruct
     public void init() {
         ConfigurationsLoader.loadPreferences(new Command() {
@@ -31,6 +36,13 @@ public class Bootstapper {
             }
         });
 
+        menubar. addMenuItem(new DefaultMenuItemCommand("Test",new org.uberfire.client.mvp.Command() {
+            @Override
+            public void execute() {
+
+            }
+        }));
+        
         hideLoadingPopup();
     }
 
