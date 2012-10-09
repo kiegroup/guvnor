@@ -344,18 +344,6 @@
     <!--</profile>-->
   </profiles>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <type>pom</type>
-        <version>1.0.0.Final</version>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
