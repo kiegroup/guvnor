@@ -6,25 +6,26 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.FileExplorerRootService;
+import org.drools.guvnor.client.resources.*;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
+import org.drools.guvnor.client.simulation.resources.SimulationResources;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Collection;
 
 @ApplicationScoped
 public class Bootstapper {
 
     @Inject
     private WorkbenchMenuBarPresenter menubar;
-    
+
     @PostConstruct
     public void init() {
+        loadStyles();
+
         ConfigurationsLoader.loadPreferences(new Command() {
             public void execute() {
 //                loadUserCapabilities("userName");
@@ -36,19 +37,33 @@ public class Bootstapper {
             }
         });
 
-        menubar. addMenuItem(new DefaultMenuItemCommand("Guvnor",new org.uberfire.client.mvp.Command() {
+        menubar.addMenuItem(new DefaultMenuItemCommand("Guvnor", new org.uberfire.client.mvp.Command() {
             @Override
             public void execute() {
 
             }
         }));
-        
+
         hideLoadingPopup();
     }
 
+    private void loadStyles() {
+        GuvnorResources.INSTANCE.headerCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        DroolsGuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        DroolsGuvnorResources.INSTANCE.droolsGuvnorCss().ensureInjected();
+        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
+        OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
+        WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
+        WizardResources.INSTANCE.style().ensureInjected();
+        DecisionTableResources.INSTANCE.style().ensureInjected();
+        SimulationResources.INSTANCE.style().ensureInjected();
+    }
+
     /*
-     * Fade out the "Loading application" pop-up
-     */
+    * Fade out the "Loading application" pop-up
+    */
     private void hideLoadingPopup() {
         final Element loadingElement = RootPanel.get("loading").getElement();
 
