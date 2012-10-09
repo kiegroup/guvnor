@@ -520,6 +520,26 @@
       <!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
     </dependency>
 
+    <!-- CDI Development Utils -->
+    <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+        <version>${jetty.version}</version>      
+    </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+        <version>${jetty.version}</version>    
+        </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-naming</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
