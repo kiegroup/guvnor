@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation.admin;
 
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
@@ -35,20 +34,20 @@ public class AdminTreeBuilder extends NavigationItemBuilder {
 
     @Inject
     public AdminTreeBuilder(PlaceManager placeManager) {
-        administrationTree = new AdministrationTree( placeManager );
+        administrationTree = new AdministrationTree(placeManager);
     }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN );
+        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN);
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader( view );
-        header.setName( administrationTree.getName() );
-        header.setImageResource( administrationTree.getImage() );
+        StackItemHeader header = new StackItemHeader(view);
+        header.setName(administrationTree.getName());
+        header.setImageResource(administrationTree.getImage());
         return view;
     }
 

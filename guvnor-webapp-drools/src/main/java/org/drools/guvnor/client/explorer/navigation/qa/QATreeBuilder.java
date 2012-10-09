@@ -16,33 +16,36 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.uberfire.client.mvp.PlaceManager;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 public class QATreeBuilder extends NavigationItemBuilder {
 
     private final QATree qaTree;
 
-    public QATreeBuilder(PlaceController placeController) {
-        qaTree = new QATree( placeController );
+    public QATreeBuilder(PlaceManager placeManager) {
+        qaTree = new QATree(null, placeManager);
     }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_QA );
+        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_QA);
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader( view );
-        header.setName( qaTree.getName() );
-        header.setImageResource( qaTree.getImage() );
+        StackItemHeader header = new StackItemHeader(view);
+        header.setName(qaTree.getName());
+        header.setImageResource(qaTree.getImage());
         return view;
     }
 

@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.util.Util;
+import org.uberfire.client.mvp.PlaceManager;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -44,10 +45,12 @@ public class QATree extends NavigationItemBuilderOld
         OpenHandler<TreeItem> {
 
     private final PlaceController placeController;
+    private final PlaceManager placeManager;
 
-    public QATree(PlaceController placeController) {
+    public QATree(PlaceController placeController, PlaceManager placeManager) {
 
         this.placeController = placeController;
+        this.placeManager = placeManager;
 
         //Add Selection listener
         mainTree.addSelectionHandler( this );
@@ -88,7 +91,7 @@ public class QATree extends NavigationItemBuilderOld
 
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
 
-                placeController.goTo( new TestScenarioListPlace( pc.getUuid() ) );
+                placeManager.goTo( new TestScenarioListPlace( pc.getUuid() ) );
 
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
                 placeController.goTo( new VerifierPlace( pc.getUuid() ) );

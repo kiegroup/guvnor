@@ -28,6 +28,7 @@ import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBui
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.perspective.Perspective;
+import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -38,7 +39,10 @@ public class AuthorPerspective implements Perspective {
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
 
     @Inject
-    AdminTreeBuilder adminTreeBuilder;
+    public AdminTreeBuilder adminTreeBuilder;
+
+    @Inject
+    PlaceManager placeManager;
 
     public AuthorPerspective() {
     }
@@ -52,7 +56,7 @@ public class AuthorPerspective implements Perspective {
 
         navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
 
-        navigationItemBuilders.add(new QATreeBuilder(clientFactory.getDeprecatedPlaceController()));
+        navigationItemBuilders.add(new QATreeBuilder(placeManager));
 
         navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getDeprecatedPlaceController()));
 
