@@ -32,7 +32,7 @@ public class QATreeBuilder extends NavigationItemBuilder {
     private final QATree qaTree;
 
     public QATreeBuilder(PlaceManager placeManager) {
-        qaTree = new QATree(null, placeManager);
+        qaTree = new QATree(placeManager);
     }
 
     @Override

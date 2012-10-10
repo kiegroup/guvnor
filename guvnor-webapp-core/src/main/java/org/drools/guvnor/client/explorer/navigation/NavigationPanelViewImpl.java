@@ -26,7 +26,7 @@ public class NavigationPanelViewImpl extends Composite implements NavigationPane
     private StackLayoutPanel layout = new StackLayoutPanel(Style.Unit.EM);
 
     public NavigationPanelViewImpl() {
-        layout.setHeight("600px");
+        layout.setHeight("700px");
         initWidget(layout);
     }
 

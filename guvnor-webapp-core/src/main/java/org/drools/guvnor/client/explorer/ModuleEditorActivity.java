@@ -75,6 +75,6 @@ public class ModuleEditorActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "packageConfigData.getName()"; // TODO : -Rikkola-
+        return "Module Editor"; // TODO : -Rikkola-
     }
 }

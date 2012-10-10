@@ -44,12 +44,9 @@ public class QATree extends NavigationItemBuilderOld
         implements
         OpenHandler<TreeItem> {
 
-    private final PlaceController placeController;
     private final PlaceManager placeManager;
 
-    public QATree(PlaceController placeController, PlaceManager placeManager) {
-
-        this.placeController = placeController;
+    public QATree(PlaceManager placeManager) {
         this.placeManager = placeManager;
 
         //Add Selection listener
@@ -94,7 +91,7 @@ public class QATree extends NavigationItemBuilderOld
                 placeManager.goTo( new TestScenarioListPlace( pc.getUuid() ) );
 
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                placeController.goTo( new VerifierPlace( pc.getUuid() ) );
+                placeManager.goTo( new VerifierPlace( pc.getUuid() ) );
             }
         }
     }

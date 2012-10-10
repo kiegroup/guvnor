@@ -37,7 +37,7 @@ public class TestScenarioListActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.ScenariosForPackage("packageConfigData.getName()");
+        return Constants.INSTANCE.ScenariosForPackage(" "); // TODO : -Rikkola-
     }
 
     @WorkbenchPartView

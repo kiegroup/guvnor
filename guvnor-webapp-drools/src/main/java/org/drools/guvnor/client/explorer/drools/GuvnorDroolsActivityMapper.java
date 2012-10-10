@@ -46,11 +46,7 @@ public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
     }
 
     private Activity tryDroolsGuvnor(Place place) {
-        if (place instanceof VerifierPlace) {
-            return new VerifierActivity(
-                    ((VerifierPlace) place).getModuleUuid(),
-                    clientFactory);
-        } else if (place instanceof SnapshotPlace) {
+        if (place instanceof SnapshotPlace) {
             return new SnapshotActivity(
                     ((SnapshotPlace) place).getModuleName(),
                     ((SnapshotPlace) place).getSnapshotName(),

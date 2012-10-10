@@ -71,7 +71,7 @@ public class AssetEditorActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "ruleAsset.getName()";
+        return "Asset Editor"; // TODO : -Rikkola-
     }
 
     private boolean[] loadingTimer() {
