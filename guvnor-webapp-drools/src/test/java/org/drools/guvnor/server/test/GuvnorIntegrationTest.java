@@ -23,6 +23,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.*;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.repository.TestRepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.utils.IOUtils;
@@ -182,7 +183,7 @@ public abstract class GuvnorIntegrationTest {
 //        // TODO use loadMetadataFromPom instead
 //    }
 
-    @Inject
+    @Inject @Preferred
     protected RulesRepository rulesRepository;
 
     @Inject
