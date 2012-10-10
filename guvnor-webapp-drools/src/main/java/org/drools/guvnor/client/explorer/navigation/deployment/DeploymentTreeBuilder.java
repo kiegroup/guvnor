@@ -23,13 +23,14 @@ import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.uberfire.client.mvp.PlaceManager;
 
 public class DeploymentTreeBuilder extends NavigationItemBuilder {
 
     private final DeploymentTree deploymentTree;
 
-    public DeploymentTreeBuilder(PlaceController placeController) {
-        this.deploymentTree = new DeploymentTree(placeController);
+    public DeploymentTreeBuilder(PlaceManager placeManager) {
+        this.deploymentTree = new DeploymentTree(placeManager);
     }
 
     @Override

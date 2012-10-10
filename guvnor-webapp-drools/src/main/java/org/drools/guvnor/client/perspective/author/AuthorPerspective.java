@@ -58,7 +58,7 @@ public class AuthorPerspective implements Perspective {
 
         navigationItemBuilders.add(new QATreeBuilder(placeManager));
 
-        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory.getDeprecatedPlaceController()));
+        navigationItemBuilders.add(new DeploymentTreeBuilder(placeManager));
 
         navigationItemBuilders.add(adminTreeBuilder);
 

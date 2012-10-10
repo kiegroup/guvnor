@@ -37,16 +37,17 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.uberfire.client.mvp.PlaceManager;
 
 public class DeploymentTree extends NavigationItemBuilderOld
         implements
         OpenHandler<TreeItem> {
 
-    private final PlaceController placeController;
+    private final PlaceManager placeManager;
 
 
-    public DeploymentTree(PlaceController placeController) {
-        this.placeController = placeController;
+    public DeploymentTree(PlaceManager placeManager) {
+        this.placeManager = placeManager;
 
         mainTree.setAnimationEnabled( true );
         ExplorerNodeConfig.setupDeploymentTree( mainTree,
@@ -90,7 +91,7 @@ public class DeploymentTree extends NavigationItemBuilderOld
         TreeItem item = event.getSelectedItem();
 
         if ( item.getUserObject() instanceof SnapshotPlace ) {
-            placeController.goTo( (SnapshotPlace) item.getUserObject() );
+            placeManager.goTo( (SnapshotPlace) item.getUserObject() );
         }
     }
 

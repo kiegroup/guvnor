@@ -34,11 +34,9 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
@@ -46,6 +44,7 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTable;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * This is the new snapshot view.
@@ -244,7 +243,7 @@ public class SnapshotView extends Composite {
                                                                                            public void onSuccess(Void v) {
                                                                                                Window.alert( Constants.INSTANCE.SnapshotWasDeleted() );
 
-                                                                                               eventBus.fireEvent( getCloseEvent( moduleName ) );
+                                                                                               clientFactory.getPlaceManager().closePlace(getPlace(moduleName));
                                                                                            }
                                                                                        } );
                 }
@@ -254,9 +253,9 @@ public class SnapshotView extends Composite {
         return btn;
     }
 
-    private ClosePlaceEvent getCloseEvent(String moduleName) {
-        return new ClosePlaceEvent( new SnapshotPlace( moduleName,
-                                                       snapInfo.getName() ) );
+    private PlaceRequest getPlace(String moduleName) {
+        return new SnapshotPlace(moduleName,
+                snapInfo.getName());
     }
 
     private Button getCopyButton(final String snapshotName,
