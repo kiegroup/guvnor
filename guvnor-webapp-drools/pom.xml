@@ -25,6 +25,8 @@
     <!--<appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${appserver.tomcat6.version}</appserver.tomcat6.home>-->
     <jetty.version>6.1.25</jetty.version>
     <errai.version>2.1.0.Beta1</errai.version>
+    <mvel.version>2.1.1-SNAPSHOT</mvel.version>
+    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
   </properties>
 
   <build>
@@ -66,55 +68,56 @@
       </plugin>
         
       <plugin>
-        <!--use -Dgwt.compiler.skip=true to skip GWT compiler -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <!-- The default profile needs to be fast, so we only build 1 permutation
-            { -->
+          { -->
           <module>org.drools.guvnor.FastCompiledGuvnor</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
+          <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
           </compileSourcesArtifacts>
+          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
+          <soyc>false</soyc>
+          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
+          <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
-          <!-- The GWT compiler must the correct JDT version -->
-          <localWorkers>2</localWorkers>
-          <!-- Using all workers can temporarily hang the mouse and isn't much faster -->
-          <extraJvmArgs>-XX:MaxPermSize=256m -Xmx1024m</extraJvmArgs>
         </configuration>
-        <!--<dependencies> -->
-        <!--&lt;!&ndash; Explicitly declare gwt dependencies to ensure the
-          use of the same GWT version. &ndash;&gt; -->
-        <!--<dependency> -->
-        <!--<groupId>com.google.gwt</groupId> -->
-        <!--<artifactId>gwt-servlet</artifactId> -->
-        <!--<version>${gwt.version}</version> -->
-        <!--</dependency> -->
-        <!--<dependency> -->
-        <!--<groupId>com.google.gwt</groupId> -->
-        <!--<artifactId>gwt-user</artifactId> -->
-        <!--<version>${gwt.version}</version> -->
-        <!--</dependency> -->
-        <!--<dependency> -->
-        <!--<groupId>com.google.gwt</groupId> -->
-        <!--<artifactId>gwt-dev</artifactId> -->
-        <!--<version>${gwt.version}</version> -->
-        <!--</dependency> -->
-        <!--</dependencies> -->
         <executions>
           <execution>
+            <id>gwt-clean</id>
+            <phase>clean</phase>
             <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>gwt-compile</id>
+            <goals>
+              <goal>resources</goal>
               <goal>compile</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <inherited>false</inherited>
@@ -459,7 +462,7 @@
   </profiles>
 
   <dependencies>
-    <!-- Internal dependencies -->
+  
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
@@ -600,49 +603,49 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-server</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-client</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-server</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>backend-server</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>widgets-core</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>widgets-commons</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
@@ -654,62 +657,67 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>vfs-jgit</artifactId>
-      <version>0.1-SNAPSHOT</version>
+                  <version>${uberfire.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>vfs-fs</artifactId>
-      <version>0.1-SNAPSHOT</version>
+            <version>${uberfire.version}</version>
     </dependency>
 
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
-      <version>${errai.version}</version>
+            <version>${errai.version}</version>
     </dependency>
 
     <!-- CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
-      <version>${errai.version}</version>
+            <version>${errai.version}</version>
     </dependency>
 
     <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
-      <version>${errai.version}</version>
+            <version>${errai.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.errai</groupId>-->
+      <!--<artifactId>errai-uibinder</artifactId>-->
+    <!--</dependency>-->
 
     <!-- CDI Development Utils -->
     <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
-      <version>${jetty.version}</version>
+            <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>${jetty.version}</version>
+            <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-naming</artifactId>
-      <version>${jetty.version}</version>
+            <version>${jetty.version}</version>
     </dependency>
 
     <!-- Weld Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-      <version>${errai.version}</version>
+            <version>${errai.version}</version>
     </dependency>
 
     <dependency>
@@ -982,15 +990,127 @@
 
     <dependency>
       <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
-    <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
-    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
-      <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
-      <!-- HACK to remove it from the runtime classpath -->
     </dependency>
+  
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-repository</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>ecj</artifactId>
+      		<groupId>org.eclipse.jdt.core.compiler</groupId>
+      	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-templates</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-simulator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>droolsjbpm-ide-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-webapp-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-webapp-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency><!-- Needed by GWT IDE plugin -->
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <scope>provided</scope>
+      <!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Arquillian container profiles are defined in the profiles -->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api</artifactId>
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>1.1.0-alpha-1</version>
+      <!-- TODO Overwritten from arquillian BOM 1.0.0.Final to use the MavenImporter -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-core</artifactId>
+      <version>1.1.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-client</artifactId>
+      <version>1.1.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
@@ -998,14 +1118,6 @@
       <version>${gwt.version}</version>
       <scope>provided</scope>
       <!-- HACK to remove it from the runtime classpath -->
-    </dependency>
-
-    <!-- GWT 2.5 RC1 bug #7527, moved com/google/gwt/core/client/GWTBridge to com/google/gwt/core/shared/GWTBridge -->
-    <dependency>
-      <groupId>com.google.web.bindery</groupId>
-      <artifactId>requestfactory-server</artifactId>
-      <version>${gwt.version}</version>
-      <scope>runtime</scope>
     </dependency>
 
     <!-- used by service config to generate a war file -->

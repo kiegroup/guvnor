@@ -15,7 +15,153 @@
   <name>Guvnor web application core</name>
   <description>Guvnor web application core for a generic service repository framework</description>
 
+  <properties>
+    <jetty.version>6.1.25</jetty.version>
+    <errai.version>2.1.0.Beta1</errai.version>
+    <mvel.version>2.1.1-SNAPSHOT</mvel.version>
+    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+  </properties>
+    
   <dependencies>
+  
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-server</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-client</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-commons</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+                  <version>${uberfire.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
+            <version>${uberfire.version}</version>
+    </dependency>
+
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+            <version>${errai.version}</version>
+    </dependency>
+
+    <!-- CDI Integration Modules -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+            <version>${errai.version}</version>
+    </dependency>
+
+    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+            <version>${errai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.errai</groupId>-->
+      <!--<artifactId>errai-uibinder</artifactId>-->
+    <!--</dependency>-->
+
+    <!-- CDI Development Utils -->
+    <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-naming</artifactId>
+            <version>${jetty.version}</version>
+    </dependency>
+
+    <!-- Weld Modules -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-weld-integration</artifactId>
+            <version>${errai.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet</artifactId>
+      <version>${weld.version}</version>
+    </dependency>
+
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -86,14 +232,6 @@
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
     
-    <!-- GWT 2.5 RC1 bug #7527, moved com/google/gwt/core/client/GWTBridge to com/google/gwt/core/shared/GWTBridge -->
-    <dependency>
-      <groupId>com.google.web.bindery</groupId>
-      <artifactId>requestfactory-server</artifactId>
-      <version>${gwt.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
     <!--  Drag and Drop support -->    
     <dependency>
       <groupId>com.allen-sauer.gwt.dnd</groupId>
