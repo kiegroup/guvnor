@@ -144,7 +144,7 @@ public class RulesRepository {
         checkForDataMigration(this);
     }
 
-	private synchronized void checkForDataMigration(RulesRepository self) {
+    private synchronized void checkForDataMigration(RulesRepository self) {
         if (initialized) {
             return;
         }
@@ -214,6 +214,7 @@ public class RulesRepository {
         while (folderNode == null && tries < 2) {
             try {
                 tries++;
+                System.out.println("=============== " + this.session);
                 folderNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME + "/" + areaName);
             } catch (PathNotFoundException e) {
                 if (tries == 1) {
