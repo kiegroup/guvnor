@@ -32,10 +32,10 @@ import org.drools.repository.RulesRepositoryException;
  */
 public class PermissionManager {
 
-    private RulesRepository repository;
+    private RulesRepository rulesRepository;
 
     public PermissionManager(RulesRepository repo) {
-        this.repository = repo;
+        this.rulesRepository = repo;
     }
 
     /**
@@ -63,7 +63,7 @@ public class PermissionManager {
                 if (targets == null) targets = new ArrayList<String>();
                 permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
             }
-            this.repository.save();
+            this.rulesRepository.save();
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
@@ -80,7 +80,7 @@ public class PermissionManager {
             Node permsNode = getUserPermissionNode(userName);
             permsNode.remove(); //remove this so we get a fresh set
             permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
-            this.repository.save();
+            this.rulesRepository.save();
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
@@ -88,7 +88,7 @@ public class PermissionManager {
     
     private boolean containsUser(String userName) {
         try {
-            Node userRoot = getUsersRootNode(getRootNode(repository));
+            Node userRoot = getUsersRootNode(getRootNode(rulesRepository));
             if (userRoot.hasNode(userName)) {
                 return true;
             }
@@ -100,7 +100,7 @@ public class PermissionManager {
     
     private Node getUserPermissionNode(String userName)
             throws RepositoryException {
-        Node permsNode = getNode(getUserInfoNode(userName, repository), "permissions", "nt:file");
+        Node permsNode = getNode(getUserInfoNode(userName, rulesRepository), "permissions", "nt:file");
         return permsNode;
     }
 
@@ -193,7 +193,7 @@ public class PermissionManager {
     public Map<String, List<String>> listUsers() {
         try {
             Map<String, List<String>> listing = new HashMap<String, List<String>>();
-            Node root = getRootNode(this.repository);
+            Node root = getRootNode(this.rulesRepository);
             Node usersNode = getUsersRootNode(root);
             NodeIterator users = usersNode.getNodes();
             while (users.hasNext()) {
@@ -223,7 +223,7 @@ public class PermissionManager {
     }
 
     void deleteAllUsers() throws RepositoryException {
-        Node root = getRootNode(this.repository);
+        Node root = getRootNode(this.rulesRepository);
         getUsersRootNode(root).remove();
     }
 

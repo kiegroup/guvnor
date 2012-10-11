@@ -23,10 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
@@ -44,8 +42,9 @@ import javax.inject.Inject;
  * This provides a simple REST style remote friendly API.
  */
 public class RestAPI {
+
     @Inject
-    private RulesRepository repo;
+    private RulesRepository rulesRepository;
 
     @Inject
     private AssetValidator assetValidator;
@@ -56,8 +55,8 @@ public class RestAPI {
     public RestAPI() {
 
     }
-    public RestAPI(RulesRepository repo ) {
-        this.repo = repo;
+    public RestAPI(RulesRepository rulesRepository) {
+        this.rulesRepository = rulesRepository;
     }
 
     private static Properties loadAssetTypes() {
@@ -110,7 +109,7 @@ public class RestAPI {
     }
 
     private Response loadContent(String pkgName, String resourceFile) throws UnsupportedEncodingException {
-        ModuleItem pkg = repo.loadModule(pkgName);
+        ModuleItem pkg = rulesRepository.loadModule(pkgName);
         if (resourceFile.equals(".package")) {
             Text r = new Response.Text();
             r.lastModified = pkg.getLastModified();
@@ -200,7 +199,7 @@ public class RestAPI {
     }
 
     private Response listPackage(String pkgName) throws UnsupportedEncodingException {
-        ModuleItem pkg = repo.loadModule(URLDecoder.decode(pkgName, "UTF-8"));
+        ModuleItem pkg = rulesRepository.loadModule(URLDecoder.decode(pkgName, "UTF-8"));
         StringBuilder sb = new StringBuilder();
         Iterator<AssetItem> it = pkg.getAssets();
         SimpleDateFormat sdf = getISODateFormat();
@@ -244,13 +243,13 @@ public class RestAPI {
             String[] a = fileName.split("\\.");
             if (a[1].equals("package")) {
                 //new package
-                ModuleItem pkg = repo.createModule(bits[1], "<added remotely>");
+                ModuleItem pkg = rulesRepository.createModule(bits[1], "<added remotely>");
                 pkg.updateCheckinComment(comment);
                 pkg.updateStringProperty(readContent(in), ModuleItem.HEADER_PROPERTY_NAME);
-                repo.save();
+                rulesRepository.save();
             } else {
                 //new asset
-                ModuleItem pkg = repo.loadModule(bits[1]);
+                ModuleItem pkg = rulesRepository.loadModule(bits[1]);
                 AssetItem asset;
                 if (pkg.containsAsset(a[0])) {
                     asset = pkg.loadAsset(a[0]);
@@ -303,7 +302,7 @@ public class RestAPI {
         if (bits[0].equals("packages")) {
             String fileName = bits[2];
             String[] a = fileName.split("\\.");
-            ModuleItem pkg = repo.loadModule(bits[1]);
+            ModuleItem pkg = rulesRepository.loadModule(bits[1]);
             if (a[1].equals("package")) {
                 //updating package header
                 if (lastModified != null && pkg.getLastModified().after(lastModified)) {
@@ -311,7 +310,7 @@ public class RestAPI {
                 }
                 pkg.updateStringProperty(readContent(in), ModuleItem.HEADER_PROPERTY_NAME);
                 pkg.checkin(comment);
-                repo.save();
+                rulesRepository.save();
             } else {
                 AssetItem as = pkg.loadAsset(a[0]);
                 if (lastModified != null && as.getLastModified().after(lastModified)) {
@@ -340,7 +339,7 @@ public class RestAPI {
         String[] bits = split(path);
         if (bits[0].equals("packages")) {
             String fileName = bits[2].split("\\.")[0];
-            AssetItem asset = repo.loadModule(bits[1]).loadAsset(fileName);
+            AssetItem asset = rulesRepository.loadModule(bits[1]).loadAsset(fileName);
             asset.archiveItem(true);
             asset.checkin("<removed remotely>");
         }

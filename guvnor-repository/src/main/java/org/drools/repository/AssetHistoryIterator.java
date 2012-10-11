@@ -33,11 +33,11 @@ public class AssetHistoryIterator
 
     private Node head;
     private VersionIterator versionIterator;
-    private RulesRepository repo;
+    private RulesRepository rulesRepository;
 
-    public AssetHistoryIterator(RulesRepository repo, Node head) {
+    public AssetHistoryIterator(RulesRepository rulesRepository, Node head) {
         this.head = head;
-        this.repo = repo;
+        this.rulesRepository = rulesRepository;
         try {
             this.versionIterator =  VersionableItem.getVersionManager(head).getVersionHistory(head.getPath()).getAllVersions();
         } catch ( RepositoryException e ) {
@@ -50,7 +50,7 @@ public class AssetHistoryIterator
     }
 
     public AssetItem next() {
-        return new AssetItem(this.repo, (Version) versionIterator.next());
+        return new AssetItem(this.rulesRepository, (Version) versionIterator.next());
 
     }
 
