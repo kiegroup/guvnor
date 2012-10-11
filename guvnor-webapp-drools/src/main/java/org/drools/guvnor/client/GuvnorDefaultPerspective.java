@@ -25,6 +25,7 @@ public class GuvnorDefaultPerspective {
         definition.getRoot().setChild(Position.WEST, east);
 
         definition.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("search")));
+        definition.setTransient( true );
 
         return definition;
     }
