@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.repository.remoteapi;
+package org.drools.guvnor.server.files;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.drools.repository.remoteapi.Response.Binary;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,7 +28,7 @@ public class ResponseTest {
 
     @Test
     public void testBinary() throws Exception {
-        Binary b = new Response.Binary();
+        Response.Binary b = new Response.Binary();
         ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
         b.stream = in;
         ByteArrayOutputStream out = new ByteArrayOutputStream();

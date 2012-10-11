@@ -16,9 +16,8 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.repository.RulesRepository;
-import org.drools.repository.remoteapi.Response;
-import org.drools.repository.remoteapi.RestAPI;
+import org.drools.guvnor.server.files.Response;
+import org.drools.guvnor.server.files.RestAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

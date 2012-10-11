@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.repository.remoteapi;
+package org.drools.guvnor.server.files;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 
 
+import org.drools.guvnor.server.files.RestAPI;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositorySessionUtil;
@@ -33,8 +34,9 @@ import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.RulesRepositoryTest;
-import org.drools.repository.remoteapi.Response.Binary;
-import org.drools.repository.remoteapi.Response.Text;
+import org.drools.guvnor.server.files.Response;
+import org.drools.guvnor.server.files.Response.Binary;
+import org.drools.guvnor.server.files.Response.Text;
 import org.drools.repository.utils.AssetValidator;
 import org.junit.Test;
 

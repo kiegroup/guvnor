@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.repository.remoteapi;
+package org.drools.guvnor.server.files;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
