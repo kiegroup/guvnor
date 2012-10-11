@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
@@ -44,7 +45,7 @@ import javax.inject.Inject;
  */
 public class RestAPI {
 
-    @Inject
+    @Inject @Preferred
     private RulesRepository rulesRepository;
 
     @Inject
