@@ -16,11 +16,11 @@
 package org.drools.guvnor.client.widgets.drools.wizards.assets;
 
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
-import org.drools.guvnor.client.widgets.wizards.WizardPlace;
+import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
+import java.util.Map;
 
 /**
  * A container for the details required to create a new Guided Decision Table
@@ -31,12 +31,12 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
     private final TableFormat tableFormat;
 
     public NewGuidedDecisionTableAssetWizardContext(NewGuidedDecisionTableAssetConfiguration configuration) {
-        super( configuration.getAssetName(),
-               configuration.getPackageName(),
-               configuration.getPackageUUID(),
-               configuration.getDescription(),
-               configuration.getInitialCategory(),
-               configuration.getFormat() );
+        super(configuration.getAssetName(),
+                configuration.getPackageName(),
+                configuration.getPackageUUID(),
+                configuration.getDescription(),
+                configuration.getInitialCategory(),
+                configuration.getFormat());
         this.tableFormat = configuration.getContent().getTableFormat();
     }
 
@@ -45,118 +45,30 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
     }
 
     @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = hash + 31 * tableFormat.hashCode();
-        return hash;
+    public Map<String, String> getParameters() {
+        Map<String, String> parameters = super.getParameters();
+        parameters.put("TABLE_FORMAT", getTableFormat().toString());
+        return parameters;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if ( !(o instanceof NewGuidedDecisionTableAssetWizardContext) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
-            return false;
-        }
-        NewGuidedDecisionTableAssetWizardContext that = (NewGuidedDecisionTableAssetWizardContext) o;
-        if ( !tableFormat.equals( that.tableFormat ) ) return false;
-        return true;
+    public static boolean isInstance(Map<String,String> parameters) {
+        return parameters.containsKey("TABLE_FORMAT");
     }
 
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<WizardPlace<NewGuidedDecisionTableAssetWizardContext>> {
+    public static WizardContext create(Map<String,String> parameters) {
+        final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+        content.setTableFormat(TableFormat.valueOf(parameters.get("TABLE_FORMAT")));
+        NewGuidedDecisionTableAssetConfiguration configuration = new NewGuidedDecisionTableAssetConfiguration(
+                parameters.get("ASSET_NAME"),
+                parameters.get("PACKAGE_NAME"),
+                parameters.get("PACKAGE_UUID"),
+                parameters.get("DESCRIPTION"),
+                parameters.get("CATEGORY"),
+                parameters.get("FORMAT"),
+                content
+        );
 
-        private final String ASSET_NAME   = "ASSET_NAME=";
-        private final String PACKAGE_NAME = "?PACKAGE_NAME=";
-        private final String PACKAGE_UUID = "?PACKAGE_UUID=";
-        private final String TABLE_FORMAT = "?TABLE_FORMAT=";
-        private final String DESCRIPTION  = "?DESCRIPTION=";
-        private final String CATEGORY     = "?CATEGORY=";
-        private final String FORMAT       = "?FORMAT=";
 
-        public String getToken(WizardPlace<NewGuidedDecisionTableAssetWizardContext> place) {
-            StringBuilder sb = new StringBuilder();
-            sb.append( ASSET_NAME );
-            sb.append( nullSafe( place.getContext().getAssetName() ) );
-            sb.append( PACKAGE_NAME );
-            sb.append( nullSafe( place.getContext().getPackageName() ) );
-            sb.append( PACKAGE_UUID );
-            sb.append( nullSafe( place.getContext().getPackageUUID() ) );
-            sb.append( TABLE_FORMAT );
-            sb.append( place.getContext().getTableFormat().toString() );
-            sb.append( DESCRIPTION );
-            sb.append( nullSafe( place.getContext().getDescription() ) );
-            sb.append( CATEGORY );
-            sb.append( nullSafe( place.getContext().getInitialCategory() ) );
-            sb.append( FORMAT );
-            sb.append( nullSafe( place.getContext().getFormat() ) );
-            return sb.toString();
-        }
-
-        private String nullSafe(String s) {
-            return s == null ? "" : s;
-        }
-
-        public WizardPlace<NewGuidedDecisionTableAssetWizardContext> getPlace(String token) {
-            String assetName = getAssetName( token );
-            String packageName = getPackageName( token );
-            String packageUUID = getPackageUUID( token );
-            TableFormat tableFormat = getTableFormat( token );
-            String description = getDescription( token );
-            String category = getCategory( token );
-            String format = getFormat( token );
-
-            final GuidedDecisionTable52 content = new GuidedDecisionTable52();
-            content.setTableFormat( tableFormat );
-            NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
-                                                                                                            packageName,
-                                                                                                            packageUUID,
-                                                                                                            description,
-                                                                                                            category,
-                                                                                                            format,
-                                                                                                            content );
-
-            NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
-            return new WizardPlace<NewGuidedDecisionTableAssetWizardContext>( context );
-        }
-
-        private String getAssetName(String token) {
-            return token.substring( token.indexOf( ASSET_NAME ) + ASSET_NAME.length(),
-                                    token.indexOf( PACKAGE_NAME ) );
-        }
-
-        private String getPackageName(String token) {
-            return token.substring( token.indexOf( PACKAGE_NAME ) + PACKAGE_NAME.length(),
-                                    token.indexOf( PACKAGE_UUID ) );
-        }
-
-        private String getPackageUUID(String token) {
-            return token.substring( token.indexOf( PACKAGE_UUID ) + PACKAGE_UUID.length(),
-                                    token.indexOf( TABLE_FORMAT ) );
-        }
-
-        private TableFormat getTableFormat(String token) {
-            String tableFormat = token.substring( token.indexOf( TABLE_FORMAT ) + TABLE_FORMAT.length(),
-                                                  token.indexOf( DESCRIPTION ) );
-            return TableFormat.valueOf( tableFormat );
-        }
-
-        private String getDescription(String token) {
-            return token.substring( token.indexOf( DESCRIPTION ) + DESCRIPTION.length(),
-                                    token.indexOf( CATEGORY ) );
-        }
-
-        private String getCategory(String token) {
-            return token.substring( token.indexOf( CATEGORY ) + CATEGORY.length(),
-                                    token.indexOf( FORMAT ) );
-        }
-
-        private String getFormat(String token) {
-            return token.substring( token.indexOf( FORMAT ) + FORMAT.length() );
-        }
-
+        return new NewGuidedDecisionTableAssetWizardContext(configuration);
     }
-
 }

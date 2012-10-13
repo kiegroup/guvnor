@@ -19,6 +19,7 @@ package org.drools.guvnor.client.widgets.wizards;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**

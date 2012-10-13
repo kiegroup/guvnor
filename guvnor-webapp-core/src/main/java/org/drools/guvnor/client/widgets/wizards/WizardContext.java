@@ -15,9 +15,12 @@
  */
 package org.drools.guvnor.client.widgets.wizards;
 
+import java.util.Map;
+
 /**
  * Marker interface
  */
 public interface WizardContext {
 
+    Map<String,String> getParameters();
 }

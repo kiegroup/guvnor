@@ -16,92 +16,116 @@
 
 package org.drools.guvnor.client.widgets.wizards;
 
-import org.drools.guvnor.client.explorer.AcceptItem;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.util.Activity;
-
-import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.GuvnorEventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.uberfire.client.annotations.*;
+import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
  * The generic "Wizard" container, providing a left-hand side list of Page
  * titles, buttons to navigate the Wizard pages and a mechanism to display
  * different pages of the Wizard.
  */
-public class WizardActivity extends Activity
+@Dependent
+@WorkbenchPopup(identifier = "wizardPopup")
+public class WizardActivity
         implements
         WizardActivityView.Presenter,
         WizardPageStatusChangeEvent.Handler,
         WizardPageSelectedEvent.Handler {
 
-    private final WizardActivityView view;
-    private final Wizard             wizard;
-    private final WizardContext      context;
+    private WizardActivityView view;
+    private Wizard wizard;
+    private WizardContext context;
+    private final GuvnorEventBus eventBus;
+    private final ClientFactory clientFactory;
 
-    public WizardActivity(WizardPlace< ? > place,
-                          ClientFactory clientFactory) {
+    @Inject
+    public WizardActivity(ClientFactory clientFactory,
+                          GuvnorEventBus eventBus) {
+        this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
+    }
 
+
+    @OnStart
+    public void init(final PlaceRequest place) {
         //The context of this Wizard instance
-        this.context = place.getContext();
+        this.context = clientFactory.makeContext(place.getParameters());
 
         //The generic view
-        view = clientFactory.getNavigationViewFactory().getWizardView( context );
+        view = clientFactory.getNavigationViewFactory().getWizardView(context);
 
         //The specific "page factory" for a particular Wizard
-        wizard = clientFactory.getWizardFactory().getWizard( place.getContext(),
-                                                             this );
-        view.setPresenter( this );
+        wizard = clientFactory.getWizardFactory().getWizard(context,
+                this);
+        view.setPresenter(this);
+
     }
 
     public void onStatusChange(WizardPageStatusChangeEvent event) {
 
         //The event might not have been raised by a page belonging to this Wizard instance
-        if ( event.getSource() != context ) {
+        if (event.getSource() != context) {
             return;
         }
 
         //Update the status of each belonging to this Wizard
-        for ( WizardPage wp : wizard.getPages() ) {
-            int index = wizard.getPages().indexOf( wp );
-            view.setPageCompletionState( index,
-                                         wp.isComplete() );
+        for (WizardPage wp : wizard.getPages()) {
+            int index = wizard.getPages().indexOf(wp);
+            view.setPageCompletionState(index,
+                    wp.isComplete());
         }
 
         //Update the status of this Wizard
-        view.setCompletionStatus( wizard.isComplete() );
+        view.setCompletionStatus(wizard.isComplete());
     }
 
     public void onPageSelected(WizardPageSelectedEvent event) {
-        if ( event.getSource() != context ) {
+        if (event.getSource() != context) {
             return;
         }
         WizardPage page = event.getSelectedPage();
-        int index = wizard.getPages().indexOf( page );
-        view.selectPage( index );
+        int index = wizard.getPages().indexOf(page);
+        view.selectPage(index);
     }
 
-    @Override
-    public void start(AcceptItem acceptTabItem,
-                      EventBus eventBus) {
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return wizard.getTitle();
+    }
+
+    @WorkbenchPartView
+    public PopupPanel asWidget() {
 
         //Wire-up the events
-        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
-                             this );
-        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
-                             this );
+        eventBus.addHandler(WizardPageStatusChangeEvent.TYPE,
+                this);
+        eventBus.addHandler(WizardPageSelectedEvent.TYPE,
+                this);
 
         //Go, Go gadget Wizard
-        view.setTitle( wizard.getTitle() );
-        view.setPreferredHeight( wizard.getPreferredHeight() );
-        view.setPreferredWidth( wizard.getPreferredWidth() );
-        view.setPageTitles( wizard.getPages() );
-        view.show();
-        view.selectPage( 0 );
+        view.setTitle(wizard.getTitle());
+        view.setPreferredHeight(wizard.getPreferredHeight());
+        view.setPreferredWidth(wizard.getPreferredWidth());
+        view.setPageTitles(wizard.getPages());
+
+        return (PopupPanel) view;
+    }
+
+    @OnReveal
+    public void onReveal() {
+        view.selectPage(0);
     }
 
     public void pageSelected(int pageNumber) {
-        Widget w = wizard.getPageWidget( pageNumber );
-        view.setBodyWidget( w );
+        Widget w = wizard.getPageWidget(pageNumber);
+        view.setBodyWidget(w);
     }
 
     public void complete() {
@@ -125,7 +149,7 @@ public class WizardActivity extends Activity
     }
 
     public void showCheckinError(String message) {
-        view.showCheckinError( message );
+        view.showCheckinError(message);
     }
 
     public void hide() {

@@ -27,6 +27,7 @@ import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.util.ActivityMapper;
+import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
 import com.google.gwt.place.shared.PlaceController;
@@ -38,6 +39,7 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.Map;
 
 public interface ClientFactory {
 
@@ -78,4 +80,6 @@ public interface ClientFactory {
     Event<RefreshAssetEditorEvent> getRefreshAssetEditorEvents();
 
     Event<NotificationEvent> getNotificationEvents();
+
+    WizardContext makeContext(Map<String, String> context);
 }

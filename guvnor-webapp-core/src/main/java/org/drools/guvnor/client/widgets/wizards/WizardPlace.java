@@ -15,36 +15,25 @@
  */
 package org.drools.guvnor.client.widgets.wizards;
 
-import com.google.gwt.place.shared.Place;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import java.util.Map;
 
 /**
  * A request for a specific Wizard
  */
-public class WizardPlace<T extends WizardContext> extends Place {
-
-    private final T context;
+public class WizardPlace<T extends WizardContext>
+        extends DefaultPlaceRequest {
 
     public WizardPlace(T context) {
-        this.context = context;
-    }
+        super("wizardPopup");
 
-    public T getContext() {
-        return context;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( !(o instanceof WizardPlace< ? >) ) {
-            return false;
+        for (Map.Entry<String, String> parameter : context.getParameters().entrySet()) {
+            addParameter(parameter.getKey(), parameter.getValue());
         }
-        WizardPlace< ? > that = (WizardPlace< ? >) o;
-        return this.context.equals( that.context );
     }
 
-    @Override
-    public int hashCode() {
-        return this.context.hashCode();
+    public WizardContext getContext() {
+        return null;  //TODO: -Rikkola-
     }
-
 }

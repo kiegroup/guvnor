@@ -78,10 +78,10 @@ public class GuvnorActivityMapper
             return new MultiAssetActivity(
                     (MultiAssetPlace) place,
                     clientFactory );
-        } else if ( place instanceof WizardPlace ) {
-            return new WizardActivity(
-                    (WizardPlace<?>) place,
-                    clientFactory );
+//        } else if ( place instanceof WizardPlace ) {
+//            return new WizardActivity(
+//                    (WizardPlace<?>) place,
+//                    clientFactory );
         } else {
             return null;
         }

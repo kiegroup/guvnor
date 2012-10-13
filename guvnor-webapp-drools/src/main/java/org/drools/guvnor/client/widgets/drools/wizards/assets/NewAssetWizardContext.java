@@ -15,23 +15,20 @@
  */
 package org.drools.guvnor.client.widgets.drools.wizards.assets;
 
+import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
 
-import com.google.gwt.place.shared.Place;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A container for the details required to create a new Asset on the repository
  */
 public abstract class NewAssetWizardContext extends Place
-    implements
-    WizardContext {
+        implements
+        WizardContext {
 
-    private final String assetName;
-    private final String packageName;
-    private final String packageUUID;
-    private final String description;
-    private final String initialCategory;
-    private final String format;
+    private final Map<String,String> parameters = new HashMap<String, String>();
 
     public NewAssetWizardContext(String assetName,
                                  String packageName,
@@ -39,64 +36,41 @@ public abstract class NewAssetWizardContext extends Place
                                  String description,
                                  String initialCategory,
                                  String format) {
-        this.assetName = assetName;
-        this.packageName = packageName;
-        this.packageUUID = packageUUID;
-        this.description = description;
-        this.initialCategory = initialCategory;
-        this.format = format;
+        parameters.put("ASSET_NAME",assetName);
+        parameters.put("PACKAGE_NAME",packageName);
+        parameters.put("PACKAGE_UUID",packageUUID);
+        parameters.put("DESCRIPTION",description);
+        parameters.put("CATEGORY",initialCategory);
+        parameters.put("FORMAT",format);
     }
 
     public String getAssetName() {
-        return this.assetName;
+        return parameters.get("ASSET_NAME");
     }
 
     public String getPackageName() {
-        return this.packageName;
+        return parameters.get("PACKAGE_NAME");
     }
 
     public String getPackageUUID() {
-        return this.packageUUID;
+        return parameters.get("PACKAGE_UUID");
     }
 
     public String getFormat() {
-        return this.format;
+        return parameters.get("FORMAT");
     }
 
     public String getDescription() {
-        return this.description;
+        return parameters.get("DESCRIPTION");
     }
 
     public String getInitialCategory() {
-        return this.initialCategory;
+        return parameters.get("CATEGORY");
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = hash + 31 * (assetName == null ? 0 : assetName.hashCode());
-        hash = hash + 31 * (packageName == null ? 0 : packageName.hashCode());
-        hash = hash + 31 * (packageUUID == null ? 0 : packageUUID.hashCode());
-        hash = hash + 31 * (format == null ? 0 : format.hashCode());
-        hash = hash + 31 * (description == null ? 0 : description.hashCode());
-        hash = hash + 31 * (initialCategory == null ? 0 : initialCategory.hashCode());
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( !(o instanceof NewAssetWizardContext) ) {
-            return false;
-        }
-        NewAssetWizardContext that = (NewAssetWizardContext) o;
-
-        if ( assetName != null ? !assetName.equals( that.assetName ) : that.assetName != null ) return false;
-        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) return false;
-        if ( packageUUID != null ? !packageUUID.equals( that.packageUUID ) : that.packageUUID != null ) return false;
-        if ( format != null ? !assetName.equals( that.format ) : that.format != null ) return false;
-        if ( description != null ? !description.equals( that.description ) : that.description != null ) return false;
-        if ( initialCategory != null ? !initialCategory.equals( that.initialCategory ) : that.initialCategory != null ) return false;
-        return true;
+    public Map<String, String> getParameters() {
+        return parameters;
     }
 
 }

@@ -400,7 +400,7 @@ public class NewAssetWizard extends FormStylePopup {
                                                                                                                 format,
                                                                                                                 content );
                 final NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
-                clientFactory.getDeprecatedPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
+                clientFactory.getPlaceManager().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
             }
         };
 

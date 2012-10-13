@@ -23,6 +23,8 @@ import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
 import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
 import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
+import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -30,6 +32,7 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.Map;
 
 @ApplicationScoped
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
@@ -109,6 +112,20 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     @Override
     public Event<NotificationEvent> getNotificationEvents() {
         return notifications;
+    }
+
+    @Override
+    public WizardContext makeContext(final Map<String, String> parameters) {
+        if (NewGuidedDecisionTableAssetWizardContext.isInstance(parameters)) {
+            return NewGuidedDecisionTableAssetWizardContext.create(parameters);
+        } else {
+            return new WizardContext() {
+                @Override
+                public Map<String, String> getParameters() {
+                    return parameters;
+                }
+            };
+        }
     }
 
 }
