@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveCommand;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
@@ -173,7 +174,7 @@ public class ServiceConfigEditor extends DirtyableComposite
         });
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         for (int i = 0; i < tabPanel.getWidgetCount(); i++) {
             if (tabPanel.getWidget(i) instanceof KBaseConfigPanel) {
                 final KBaseConfigPanel kbaseEditor = (KBaseConfigPanel) tabPanel.getWidget(i);
@@ -181,6 +182,8 @@ public class ServiceConfigEditor extends DirtyableComposite
             }
         }
         asset.setContent(config);
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {

@@ -19,9 +19,7 @@ import java.util.Set;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.asseteditor.BusinessProcessEditor;
-import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
-import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.asseteditor.*;
 import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;
 import org.drools.guvnor.client.asseteditor.drools.WorkingSetSelectorPopup;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
@@ -59,8 +57,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
-import org.drools.guvnor.client.asseteditor.GuvnorEditor;
 import org.drools.guvnor.shared.api.Valid;
 
 /**
@@ -90,10 +86,10 @@ public class AssetEditorActionToolbar extends Composite {
 
     @UiField
     MenuItem copy;
-    
+
     @UiField
     MenuItem rename;
-    
+
     @UiField
     MenuItem promoteToGlobal;
 
@@ -122,7 +118,7 @@ public class AssetEditorActionToolbar extends Composite {
     MenuItem sourceMenu;
 
     private AssetServiceAsync assetService = GWT.create(AssetService.class);
-    
+
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
     protected Asset asset;
     final Widget editor;
@@ -130,8 +126,8 @@ public class AssetEditorActionToolbar extends Composite {
     private final ClientFactory clientFactory;
     private Command afterCheckinEvent;
     private boolean readOnly;
-    
-    public AssetEditorActionToolbar(Asset asset, 
+
+    public AssetEditorActionToolbar(Asset asset,
                          final Widget editor,
                          ClientFactory clientFactory,
                          EventBus eventBus,
@@ -141,7 +137,7 @@ public class AssetEditorActionToolbar extends Composite {
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
         this.readOnly = readOnly;
-        
+
         actionToolbarButtonsConfigurationProvider = new DefaultActionToolbarButtonsConfigurationProvider(asset);
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -149,7 +145,7 @@ public class AssetEditorActionToolbar extends Composite {
         setValidIndicator(GuvnorImages.INSTANCE.getValidImage(asset.getMetaData().getValid()));
         applyToolBarConfiguration();
         this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
-        
+
         initActionToolBar();
     }
 
@@ -236,11 +232,11 @@ public class AssetEditorActionToolbar extends Composite {
     public void setCopyCommand(Command command) {
         copy.setCommand(command);
     }
-    
+
     public void setRenameCommand(Command command) {
         rename.setCommand(command);
     }
-    
+
     public void setDeleteCommand(final Command deleteCommand) {
         delete.setCommand(new Command() {
 
@@ -255,7 +251,7 @@ public class AssetEditorActionToolbar extends Composite {
     public void setPromtToGlobalCommand(Command command) {
         promoteToGlobal.setCommand(command);
     }
-    
+
     /**
      * This will actually load up the data (this is called by the callback) when
      * we get the data back from the server, also determines what widgets to
@@ -423,11 +419,26 @@ public class AssetEditorActionToolbar extends Composite {
         pop.show();
     }
 
-    public void doCheckin(String comment,
-                          boolean closeAfter) {
+    public void doCheckin(final String comment,
+                          final boolean closeAfter) {
         if ( editor instanceof SaveEventListener ) {
-            ((SaveEventListener) editor).onSave();
+            ((SaveEventListener) editor).onSave(new SaveCommand() {
+                @Override
+                public void save() {
+                   AssetEditorActionToolbar.this.save(comment, closeAfter);
+                }
+
+                @Override
+                public void cancel() {
+                    // Do nothing at this point.
+                }
+            });
+        }else{
+            save(comment, closeAfter);
         }
+    }
+
+    private void save(String comment, boolean closeAfter) {
         performCheckIn( comment,
                 closeAfter );
         if ( closeAfter ) {
@@ -473,7 +484,17 @@ public class AssetEditorActionToolbar extends Composite {
     private void onSave() {
         if ( editor instanceof SaveEventListener ) {
             SaveEventListener el = (SaveEventListener) editor;
-            el.onSave();
+            el.onSave(new SaveCommand() {
+                @Override
+                public void save() {
+                    // No need to do anything.
+                }
+
+                @Override
+                public void cancel() {
+                    // No need to do anything.
+                }
+            });
             // TODO: Use info-area
 
         }
@@ -547,18 +568,18 @@ public class AssetEditorActionToolbar extends Composite {
                         saved[0] = true;
 
                         //showInfoMessage( Constants.INSTANCE.SavedOK() );
-                        
+
                         //fire after check-in event
                         if (editor instanceof GuvnorEditor){
                             eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, (GuvnorEditor) editor));
                         }
-                        
+
                         if ( editor instanceof SaveEventListener ) {
                             ((SaveEventListener) editor).onAfterSave();
                         }
 
                         eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getModuleUUID()));
-                        
+
                         if ( afterCheckinEvent != null ) {
                             afterCheckinEvent.execute();
                         }
@@ -579,7 +600,7 @@ public class AssetEditorActionToolbar extends Composite {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
                             //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
-                            
+
                             //set assetUUID to null means to refresh all asset editors contained by the specified package. 
                             eventBus.fireEvent(new RefreshAssetEditorEvent(moduleName, null));
                             LoadingPopup.close();
@@ -745,5 +766,5 @@ public class AssetEditorActionToolbar extends Composite {
         Window.alert( Constants.INSTANCE.CreatedANewItemSuccess( name,
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
-    }    
+    }
 }

@@ -71,9 +71,11 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
         return null;
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         data.content = text.getText();
         asset.setContent( data );
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {

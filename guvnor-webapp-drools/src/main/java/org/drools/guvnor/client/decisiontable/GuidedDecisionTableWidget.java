@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveCommand;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -1580,8 +1581,8 @@ public class GuidedDecisionTableWidget extends Composite
         refreshActionsWidget();
     }
 
-    public void onSave() {
-        // not needed.
+    public void onSave(SaveCommand saveCommand) {
+        saveCommand.save();
     }
 
     public void onAfterSave() {

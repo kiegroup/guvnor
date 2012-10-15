@@ -19,10 +19,7 @@ package org.drools.guvnor.client.asseteditor.drools;
 import com.google.gwt.event.shared.EventBus;
 
 import com.google.gwt.user.client.ui.Image;
-import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.asseteditor.EditorWidget;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.asseteditor.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
@@ -58,7 +55,8 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
         return "editable-Surface";
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
+        saveCommand.save();
     }
 
     /**

@@ -22,16 +22,11 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.MultiAssetPlace;
-import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
-import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
+import org.drools.guvnor.client.explorer.*;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
@@ -46,7 +41,7 @@ import java.util.*;
 
 public class MultiViewEditor extends GuvnorEditor {
 
-    private ConstantsCore constants = GWT.create( ConstantsCore.class );
+    private ConstantsCore constants = GWT.create(ConstantsCore.class);
 
     private final ClientFactory clientFactory;
     private VerticalPanel viewsPanel = new VerticalPanel();
@@ -63,27 +58,27 @@ public class MultiViewEditor extends GuvnorEditor {
     public MultiViewEditor(MultiViewRow[] rows,
                            ClientFactory clientFactory,
                            EventBus eventBus) {
-        this( rows,
+        this(rows,
                 clientFactory,
                 eventBus,
-                null );
+                null);
     }
 
     public MultiViewEditor(MultiViewRow[] rows,
                            ClientFactory clientFactory,
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this( Arrays.asList( rows ),
+        this(Arrays.asList(rows),
                 clientFactory,
                 eventBus,
-                individualActionToolbarButtonsConfigurationProvider );
+                individualActionToolbarButtonsConfigurationProvider);
     }
 
     public MultiViewEditor(List<MultiViewRow> rows,
                            ClientFactory clientFactory,
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this.rows.addAll( rows );
+        this.rows.addAll(rows);
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -95,11 +90,11 @@ public class MultiViewEditor extends GuvnorEditor {
                            ClientFactory clientFactory,
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this( assets,
+        this(assets,
                 clientFactory,
                 eventBus,
                 individualActionToolbarButtonsConfigurationProvider,
-                null );
+                null);
     }
 
     public MultiViewEditor(Asset[] assets,
@@ -107,19 +102,19 @@ public class MultiViewEditor extends GuvnorEditor {
                            EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
                            MultiViewEditorMenuBarCreator menuBarCreator) {
-        this.rows.addAll( createRows( assets ) );
+        this.rows.addAll(createRows(assets));
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.menuBarCreator = menuBarCreator;
-        addAssets( assets );
+        addAssets(assets);
         init();
     }
 
     private void addAssets(Asset[] assets) {
         for (Asset ruleAsset : assets) {
-            this.assets.put( ruleAsset.getUuid(),
-                    ruleAsset );
+            this.assets.put(ruleAsset.getUuid(),
+                    ruleAsset);
         }
     }
 
@@ -129,8 +124,8 @@ public class MultiViewEditor extends GuvnorEditor {
             MultiViewRow row = new MultiViewRow(
                     ruleAsset.getUuid(),
                     ruleAsset.getName(),
-                    AssetFormats.BUSINESS_RULE );
-            rows.add( row );
+                    AssetFormats.BUSINESS_RULE);
+            rows.add(row);
         }
         return rows;
     }
@@ -138,27 +133,27 @@ public class MultiViewEditor extends GuvnorEditor {
     private void init() {
         VerticalPanel rootPanel = new VerticalPanel();
 
-        rootPanel.setWidth( "100%" );
+        rootPanel.setWidth("100%");
 
-        rootPanel.add( createToolbar() );
+        rootPanel.add(createToolbar());
 
-        viewsPanel.setWidth( "100%" );
-        rootPanel.add( viewsPanel );
+        viewsPanel.setWidth("100%");
+        rootPanel.add(viewsPanel);
 
         doViews();
 
-        initWidget( rootPanel );
+        initWidget(rootPanel);
     }
 
     private MenuBar createToolbar() {
 
         //if no MultiViewEditorMenuBarCreator is set, then use the Default
         //implementation.
-        if ( this.menuBarCreator == null ) {
+        if (this.menuBarCreator == null) {
             this.menuBarCreator = new DefaultMultiViewEditorMenuBarCreator();
         }
 
-        return this.menuBarCreator.createMenuBar( this , eventBus);
+        return this.menuBarCreator.createMenuBar(this, eventBus);
     }
 
     private void doViews() {
@@ -171,133 +166,146 @@ public class MultiViewEditor extends GuvnorEditor {
         int rowNumber = 1;
         for (final MultiViewRow row : rows) {
 
-            panel.add( row.getName(),
+            panel.add(row.getName(),
                     new LoadContentCommand() {
 
                         public Widget load() {
                             final SimplePanel content = new SimplePanel();
 
-                            if ( assets.containsKey( row.getUuid() ) ) {
-                                addRuleViewInToSimplePanel( row,
+                            if (assets.containsKey(row.getUuid())) {
+                                addRuleViewInToSimplePanel(row,
                                         content,
-                                        assets.get( row.getUuid() ) );
+                                        assets.get(row.getUuid()));
                             } else {
                                 AssetServiceAsync assetService = GWT.create(AssetService.class);
-                                assetService.loadRuleAsset( row.getUuid(),
+                                assetService.loadRuleAsset(row.getUuid(),
                                         new GenericCallback<Asset>() {
 
                                             public void onSuccess(final Asset asset) {
-                                                assets.put( asset.getUuid(),
-                                                        asset );
+                                                assets.put(asset.getUuid(),
+                                                        asset);
 
-                                                addRuleViewInToSimplePanel( row,
+                                                addRuleViewInToSimplePanel(row,
                                                         content,
-                                                        asset );
+                                                        asset);
                                             }
 
-                                        } );
+                                        });
 
                             }
                             return content;
                         }
                     },
-                    rowNumber == 1 );
+                    rowNumber == 1);
 
             rowNumber++;
         }
 
-        viewsPanel.add( panel );
+        viewsPanel.add(panel);
 
     }
 
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final Asset asset) {
-    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getModuleName(),
+        eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getModuleName(),
                 new Command() {
 
                     public void execute() {
 
                         RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
-                        ruleViewerSettings.setDocoVisible( false );
-                        ruleViewerSettings.setMetaVisible( false );
-                        ruleViewerSettings.setStandalone( true );
+                        ruleViewerSettings.setDocoVisible(false);
+                        ruleViewerSettings.setMetaVisible(false);
+                        ruleViewerSettings.setStandalone(true);
                         Command closeCommand = new Command() {
                             public void execute() {
                                 // TODO: No handle for this -Rikkola-
-                                ruleViews.remove( row.getUuid() );
-                                rows.remove( row );
+                                ruleViews.remove(row.getUuid());
+                                rows.remove(row);
                                 doViews();
                             }
                         };
-                        final RuleViewer ruleViewer = new RuleViewer( asset,
+                        final RuleViewer ruleViewer = new RuleViewer(asset,
                                 clientFactory,
                                 eventBus,
-                                ruleViewerSettings );
+                                ruleViewerSettings);
                         //ruleViewer.setDocoVisible( showDescription );
                         //ruleViewer.setMetaVisible( showMetadata );
 
-                        content.add( ruleViewer );
-                        ruleViewer.setWidth( "100%" );
-                        ruleViewer.setHeight( "100%" );
-                        ruleViews.put( row.getUuid(),
-                                ruleViewer );
+                        content.add(ruleViewer);
+                        ruleViewer.setWidth("100%");
+                        ruleViewer.setHeight("100%");
+                        ruleViews.put(row.getUuid(),
+                                ruleViewer);
 
                     }
-                } ));
+                }));
     }
 
     public void checkin(final boolean closeAfter) {
-        final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
-        pop.setCommand( new Command() {
+        final CheckinPopup pop = new CheckinPopup(constants.CheckInChanges());
+        pop.setCommand(new Command() {
 
             public void execute() {
                 String comment = pop.getCheckinComment();
                 for (RuleViewer ruleViewer : ruleViews.values()) {
-                	 doCheckin(ruleViewer.getAssetEditor(), ruleViewer.asset, comment, false );
+                    doCheckin(ruleViewer.getAssetEditor(), ruleViewer.asset, comment, false);
                 }
-                if ( closeAfter ) {
+                if (closeAfter) {
                     close();
                 }
             }
-        } );
+        });
         pop.show();
 
     }
 
-	public void doCheckin(Widget editor, Asset asset, String comment, boolean closeAfter) {
-		if (editor instanceof SaveEventListener) {
-			((SaveEventListener) editor).onSave();
-		}
-		performCheckIn(comment, closeAfter, asset);
-		if (editor instanceof SaveEventListener) {
-			((SaveEventListener) editor).onAfterSave();
-		}
+    public void doCheckin(final Widget editor, final Asset asset, final String comment, final boolean closeAfter) {
+        if (editor instanceof SaveEventListener) {
+            ((SaveEventListener) editor).onSave(new SaveCommand() {
+                @Override
+                public void save() {
+                    MultiViewEditor.this.save(comment, closeAfter, asset, editor);
+                }
 
-		eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData()
-				.getModuleUUID()));
-		// lastSaved = System.currentTimeMillis();
-		// resetDirty();
-	}
+                @Override
+                public void cancel() {
+                    //TODO: -Rikkola-
+                }
+            });
+        } else {
+            save(comment, closeAfter, asset, editor);
+        }
+    }
+
+    private void save(String comment, boolean closeAfter, Asset asset, Widget editor) {
+        performCheckIn(comment, closeAfter, asset);
+        if (editor instanceof SaveEventListener) {
+            ((SaveEventListener) editor).onAfterSave();
+        }
+
+        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData()
+                .getModuleUUID()));
+    }
 
     private void performCheckIn(String comment,
                                 final boolean closeAfter, final Asset asset) {
-        asset.setCheckinComment( comment );
+        asset.setCheckinComment(comment);
         final boolean[] saved = {false};
 
-        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+        if (!saved[0]) LoadingPopup.showMessage(constants.SavingPleaseWait());
         AssetServiceAsync assetService = GWT.create(AssetService.class);
-        assetService.checkinVersion( asset,
+        assetService.checkinVersion(asset,
                 new GenericCallback<String>() {
 
                     public void onSuccess(String uuid) {
-                        if ( uuid == null ) {
-                            ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
+                        if (uuid == null) {
+                            ErrorPopup.showMessage(constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator());
                             return;
                         }
 
-                        if ( uuid.startsWith( "ERR" ) ) { // NON-NLS
-                            ErrorPopup.showMessage( uuid.substring( 5 ) );
+                        if (uuid.startsWith("ERR")) { // NON-NLS
+                            ErrorPopup.showMessage(uuid.substring(5));
                             return;
                         }
 
@@ -310,24 +318,24 @@ public class MultiViewEditor extends GuvnorEditor {
                         saved[0] = true;
 
                         //showInfoMessage( constants.SavedOK() );
-                        if ( !closeAfter ) {
-                            eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid ) );
+                        if (!closeAfter) {
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid));
                         }
-                        
+
                         //fire after check-in event
                         eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, MultiViewEditor.this));
                     }
-                } );
+                });
     }
-    
+
     /**
      * In some cases we will want to flush the package dependency stuff for
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
     public void flushSuggestionCompletionCache(final String packageName, Asset asset) {
-        if ( AssetFormats.isPackageDependency( asset.getFormat() ) ) {
-            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+        if (AssetFormats.isPackageDependency(asset.getFormat())) {
+            LoadingPopup.showMessage(constants.RefreshingContentAssistance());
             eventBus.fireEvent(new RefreshModuleDataModelEvent(packageName,
                     new Command() {
                         public void execute() {
@@ -339,9 +347,10 @@ public class MultiViewEditor extends GuvnorEditor {
                     }));
         }
     }
+
     public void close() {
         eventBus.fireEvent(new ClosePlaceEvent(new MultiAssetPlace(rows)));
-        if ( closeCommand != null ) {
+        if (closeCommand != null) {
             closeCommand.execute();
         }
     }

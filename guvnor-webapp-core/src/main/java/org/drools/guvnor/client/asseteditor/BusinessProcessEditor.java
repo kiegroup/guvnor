@@ -88,7 +88,7 @@ public class BusinessProcessEditor extends DirtyableComposite
     	}
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         try {
         	String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
         	String p = callPreprocessingData( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
@@ -103,6 +103,8 @@ public class BusinessProcessEditor extends DirtyableComposite
                      e );
             Window.alert( "JSNI method callSave() threw an exception: " + e );
         }
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {

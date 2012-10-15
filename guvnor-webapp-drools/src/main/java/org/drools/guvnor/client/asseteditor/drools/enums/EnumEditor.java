@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveCommand;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -191,7 +192,7 @@ public class EnumEditor extends DirtyableComposite implements EditorWidget,SaveE
 
 
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         data.content = "";
 
 
@@ -199,6 +200,8 @@ public class EnumEditor extends DirtyableComposite implements EditorWidget,SaveE
                 data.content += enumRow.getText() + "\n";
 
         }
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {

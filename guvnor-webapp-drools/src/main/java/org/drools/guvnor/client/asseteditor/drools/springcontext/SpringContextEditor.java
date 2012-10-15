@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.TextArea;
 
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveCommand;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -159,10 +160,10 @@ public class SpringContextEditor extends DirtyableComposite
     }
 
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         //data.content = text.getText();
         //asset.content = data;
-
+        saveCommand.save();
     }
 
     public void onAfterSave() {

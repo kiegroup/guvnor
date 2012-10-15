@@ -33,6 +33,7 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.util.SaveCommand;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
@@ -104,10 +105,12 @@ public class RuleValidatorWrapper extends DirtyableComposite
         LoadingPopup.close();
     }
 
-    public void onSave() {
+    public void onSave(org.drools.guvnor.client.asseteditor.SaveCommand saveCommand) {
         if (editor instanceof SaveEventListener) {
             SaveEventListener el = (SaveEventListener) editor;
-            el.onSave();
+            el.onSave(saveCommand);
+        } else {
+            saveCommand.save();
         }
     }
 

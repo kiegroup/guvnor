@@ -17,10 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools;
 
 import com.google.gwt.user.client.ui.Image;
-import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.asseteditor.PropertiesHolder;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.asseteditor.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
@@ -72,10 +69,12 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
         return ""; // TODO: set correct style
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         // Scrape changes back into the persistent model
         properties.list = propertiesEditor.getPropertyHolders();
         asset.setContent( properties );
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {
