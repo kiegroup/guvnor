@@ -38,14 +38,8 @@ import java.util.Map;
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
     private WizardFactory wizardFactory;
 
-//    @Inject
+    @Inject
     PlaceManager placeManager;
-
-    @Inject
-    Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
-
-    @Inject
-    Event<NotificationEvent> notifications;
 
     @Inject
     Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
