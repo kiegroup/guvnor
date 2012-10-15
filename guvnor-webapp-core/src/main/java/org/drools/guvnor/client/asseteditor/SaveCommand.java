@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.asseteditor;
 
-/**
- * This is used to notify that a save even is about to occur.
- */
-public interface SaveEventListener {
+public interface SaveCommand {
 
-    void onSave(SaveCommand save);
+    public void save();
 
-    void onAfterSave();
+    public void cancel();
 }

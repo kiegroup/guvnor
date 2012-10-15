@@ -83,7 +83,7 @@ public class FormEditor extends DirtyableComposite implements
         return exportForm;
     }-*/;
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
         try {
             String json = callSave((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement()));
             if (json == null || "".equals(json.trim())) {
@@ -98,6 +98,8 @@ public class FormEditor extends DirtyableComposite implements
                     e);
             Window.alert("JSNI method callSave() threw an exception: " + e);
         }
+
+        saveCommand.save();
     }
 
     public void onAfterSave() {

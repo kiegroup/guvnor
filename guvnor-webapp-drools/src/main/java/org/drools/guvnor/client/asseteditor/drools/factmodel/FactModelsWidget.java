@@ -20,10 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget;
-import org.drools.guvnor.client.asseteditor.EditorWidget;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
-import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.asseteditor.*;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -210,9 +207,8 @@ public class FactModelsWidget extends Composite
                                                              } );*/
     }
 
-    public void onSave() {
-        //not needed.
-
+    public void onSave(SaveCommand saveCommand) {
+        saveCommand.save();
     }
 
 }

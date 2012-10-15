@@ -159,12 +159,13 @@ public class RuleFlowWrapper extends Composite
 
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
 
         RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.getContent();
 
         rfcm.setNodes( ruleFlowViewer.getTransferNodes() );
 
+        saveCommand.save();
     }
 
     public RuleFlowViewer getRuleFlowViewer() {

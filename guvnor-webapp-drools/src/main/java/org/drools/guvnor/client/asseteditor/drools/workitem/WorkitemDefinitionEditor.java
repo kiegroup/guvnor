@@ -17,6 +17,7 @@ package org.drools.guvnor.client.asseteditor.drools.workitem;
 
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveCommand;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -142,7 +143,8 @@ public class WorkitemDefinitionEditor extends DirtyableComposite implements
         text.setCursorPos(cursorPosition);
     }
 
-    public void onSave() {
+    public void onSave(SaveCommand saveCommand) {
+        saveCommand.save();
     }
 
     public void onAfterSave() {
