@@ -1164,12 +1164,14 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
     }
     
     @Test
-    public void testFunctionWithFactType() throws Exception {
+    public void testFunctionWithPOJOFactType() throws Exception {
         RulesRepository repo = rulesRepository;
 
         //first, setup the package correctly:
-        ModuleItem pkg = repo.createModule( "testFunctionWithFactType",
+        ModuleItem pkg = repo.createModule( "testFunctionWithPOJOFactType",
                                             "" );
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+                                         pkg );
 
         AssetItem func = pkg.addAsset( "func",
                                        "" );
@@ -1185,11 +1187,10 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
                                         "" );
         testRule1.updateFormat( AssetFormats.DRL );
         testRule1.updateContent( "dialect 'mvel'\n" +
-                "when\n" +
+                "when \n" +
                 "$p : Person()\n" +
-                "then\n" +
-                "System.out.println(PersonToString($p));\n" +
-                "end");
+                "then \n" +
+                "System.out.println(PersonToString($p));\n" );
         testRule1.checkin( "" );
 
         repo.save();
@@ -1214,7 +1215,73 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
             Package bin = binPkgs[0];
             assertNotNull( bin );
 
-            assertEquals( 2,
+            assertEquals( 1,
+                          bin.getRules().length );
+            assertEquals( 1,
+                          bin.getFunctions().size() );
+        } finally {
+            Thread.currentThread().setContextClassLoader( currentClassLoader );
+        }
+
+    }
+
+    @Test
+    public void testFunctionWithDeclaredFactType() throws Exception {
+        RulesRepository repo = rulesRepository;
+
+        //first, setup the package correctly:
+        ModuleItem pkg = repo.createModule( "testFunctionWithDeclaredFactType",
+                                            "" );
+        
+        AssetItem model = pkg.addAsset( "model",
+                                        "" );
+        model.updateFormat( AssetFormats.DRL_MODEL );
+        model.updateContent( "declare Person\n name: String \n age: int \nend" );
+        model.checkin( "" );
+
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function String PersonToString(Person p) {\n" +
+                "String result = \"\";\n" +
+                "result = p.getName() + \", age: \" + p.getAge();\n" +
+                "return result;\n" +
+                "}\n" );
+        func.checkin( "" );
+
+        AssetItem testRule1 = pkg.addAsset( "testRule1",
+                                        "" );
+        testRule1.updateFormat( AssetFormats.DRL );
+        testRule1.updateContent( "dialect 'mvel'\n" +
+                "when \n" +
+                "$p : Person()\n" +
+                "then \n" +
+                "System.out.println(PersonToString($p));\n" );
+        testRule1.checkin( "" );
+
+        repo.save();
+
+        PackageAssembler asm = new PackageAssembler();
+        asm.init( pkg,
+                  null );
+        asm.compile();
+        assertFalse( asm.hasErrors() );
+        
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+
+            Thread.currentThread().setContextClassLoader( asm.getBuilder().getRootClassLoader() );
+
+            Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
+
+            assertNotNull( binPkgs );
+            assertEquals( 1,
+                          binPkgs.length );
+
+            Package bin = binPkgs[0];
+            assertNotNull( bin );
+
+            assertEquals( 1,
                           bin.getRules().length );
             assertEquals( 1,
                           bin.getFunctions().size() );
