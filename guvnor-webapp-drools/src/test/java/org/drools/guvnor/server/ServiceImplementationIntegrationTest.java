@@ -1072,7 +1072,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         assertFalse( responsePage1.isLastPage() );
 
         PageRequest requestPage2 = new PageRequest( preExistingNumberOfUsers,
-                                                    preExistingNumberOfUsers );
+                                                    3 );
         PageResponse<PermissionsPageRow> responsePage2 = serviceImplementation.listUserPermissions( requestPage2 );
 
         assertNotNull( responsePage2 );
