@@ -181,7 +181,7 @@ profile in pom.xml to use that. -->
 
   <servlet-mapping>
     <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/Login.html</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/xxx.html</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
