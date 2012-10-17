@@ -89,8 +89,6 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
-    <!--module>guvnor-webapp-soa</module-->
-    <!--module>guvnor-webapp-helloworld</module-->
 
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
@@ -109,30 +107,6 @@
         <module>guvnor-docs</module>
         <module>guvnor-distribution-wars</module>
         <module>guvnor-distribution</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>ngsoaProfile</id>
-      <activation>
-        <property>
-          <name>ngsoa</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-webapp-soa</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>ngsoafullProfile</id>
-      <activation>
-        <property>
-          <!-- Warning: if you do -Dngsoafull you should also do -Dngsoa -->
-          <!-- TODO support "-Dfull -Dngsoa" instead when http://jira.codehaus.org/browse/MNG-3328 is fixed -->
-          <name>ngsoafull</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnorsoa-distribution-wars</module>
       </modules>
     </profile>
   </profiles>
