@@ -121,7 +121,6 @@ public class Link extends CommonAttributes
       this.rel = rel;
    }
 
-   @XmlAttribute
    public MediaType getType()
    {
       return type;
