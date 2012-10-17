@@ -17,7 +17,6 @@
 
   <properties>
     <jetty.version>6.1.25</jetty.version>
-    <errai.version>2.1.0.Beta1</errai.version>
     <mvel.version>2.1.1-SNAPSHOT</mvel.version>
     <uberfire.version>0.1-SNAPSHOT</uberfire.version>
   </properties>
@@ -147,12 +146,6 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet</artifactId>
-      <version>${weld.version}</version>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
