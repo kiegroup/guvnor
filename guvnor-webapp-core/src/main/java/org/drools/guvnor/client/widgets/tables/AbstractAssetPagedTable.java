@@ -39,7 +39,6 @@ import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 
@@ -168,7 +167,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
                             selected.getFormat() ) );
         }
 
-        clientFactory.getDeprecatedPlaceController().goTo( new MultiAssetPlace( multiViewRowList ) );
+//        clientFactory.getDeprecatedPlaceController().goTo( new MultiAssetPlace( multiViewRowList ) );
     }
 
     /**

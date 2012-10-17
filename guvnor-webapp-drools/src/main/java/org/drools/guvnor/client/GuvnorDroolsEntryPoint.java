@@ -16,22 +16,6 @@
 
 package org.drools.guvnor.client;
 
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.configurations.UserCapabilities;
-import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.FindPlace;
-import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.*;
-import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
-import org.drools.guvnor.client.rpc.UserSecurityContext;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Element;
@@ -40,8 +24,17 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.Capability;
+import org.drools.guvnor.client.configurations.ConfigurationsLoader;
+import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.*;
+import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
 
 /**
@@ -54,8 +47,6 @@ import org.drools.guvnor.client.simulation.resources.SimulationResources;
 public class GuvnorDroolsEntryPoint
         implements
         EntryPoint {
-
-    private AppController appController;
 
     public void onModuleLoad() {
         loadStyles();
@@ -132,7 +123,6 @@ public class GuvnorDroolsEntryPoint
 
         createMain();
 
-        appController.setUserName(userName);
     }
 
     /**
@@ -150,7 +140,7 @@ public class GuvnorDroolsEntryPoint
 //            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
         } else {
 
-            RootLayoutPanel.get().add(appController.getMainPanel());
+//            RootLayoutPanel.get().add(appController.getMainPanel());
         }
 
         askToInstallSampleRepository();

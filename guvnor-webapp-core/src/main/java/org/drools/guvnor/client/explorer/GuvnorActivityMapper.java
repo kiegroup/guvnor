@@ -16,27 +16,14 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
-import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.InboxActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
-import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
-import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
+import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
-import org.drools.guvnor.client.widgets.wizards.WizardActivity;
-import org.drools.guvnor.client.widgets.wizards.WizardPlace;
-
-import com.google.gwt.place.shared.Place;
 
 public class GuvnorActivityMapper
         implements
         ActivityMapper {
-    protected ClientFactory  clientFactory;
+    protected ClientFactory clientFactory;
 
     public GuvnorActivityMapper(ClientFactory clientFactory) {
         super();
@@ -44,44 +31,11 @@ public class GuvnorActivityMapper
     }
 
     public Activity getActivity(Place place) {
-        if ( place instanceof FindPlace ) {
-            return new FindActivity( clientFactory );
-//        } else if ( place instanceof AssetEditorPlace ) {
-//            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
-//        } else if ( place instanceof ModuleEditorPlace ) {
-//            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
-//                    clientFactory );
-        } else if ( place instanceof AssetViewerPlace ) {
-            return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
-                    clientFactory );
-        } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
+        if (place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) {
             return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace(
                     (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
-                    clientFactory );
-        } else if ( place instanceof ManagerPlace ) {
-            return new ManagerActivity(
-                    ((ManagerPlace) place).getId(),
-                    clientFactory );
-//        } else if ( place instanceof CategoryPlace ) {
-//            return new CategoryActivity(
-//                    ((CategoryPlace) place).getCategoryPath(),
-//                    clientFactory );
-//        } else if ( place instanceof StatePlace ) {
-//            return new StateActivity(
-//                    ((StatePlace) place).getStateName(),
-//                    clientFactory );
-//        } else if ( place instanceof InboxPlace ) {
-//            return new InboxActivity(
-//                    (InboxPlace) place,
-//                    clientFactory );
-        } else if ( place instanceof MultiAssetPlace ) {
-            return new MultiAssetActivity(
-                    (MultiAssetPlace) place,
-                    clientFactory );
-//        } else if ( place instanceof WizardPlace ) {
-//            return new WizardActivity(
-//                    (WizardPlace<?>) place,
-//                    clientFactory );
+                    clientFactory);
+
         } else {
             return null;
         }

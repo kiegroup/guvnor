@@ -16,12 +16,10 @@
 
 package org.drools.guvnor.client.explorer.drools;
 
-import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.asseteditor.RefreshAssetEditorEvent;
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
-import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
 import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
@@ -87,13 +85,6 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
       */
     public GuvnorActivityMapper getActivityMapper() {
         return new GuvnorDroolsActivityMapper(this);
-    }
-
-    public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
-        if (guvnorPlaceHistoryMapper == null) {
-            guvnorPlaceHistoryMapper = GWT.create(GuvnorDroolsPlaceHistoryMapper.class);
-        }
-        return guvnorPlaceHistoryMapper;
     }
 
     public WizardFactory getWizardFactory() {

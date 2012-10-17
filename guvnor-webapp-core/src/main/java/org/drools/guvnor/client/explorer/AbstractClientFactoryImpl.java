@@ -36,7 +36,6 @@ public abstract class AbstractClientFactoryImpl
     protected AssetEditorFactory assetEditorFactory;
     protected PerspectiveFactory perspectiveFactory;
     protected PlaceHistoryHandler placeHistoryHandler;
-    protected GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
     protected final EventBus eventBus;
 
     public AbstractClientFactoryImpl(EventBus eventBus) {
@@ -63,13 +62,6 @@ public abstract class AbstractClientFactoryImpl
     public MultiActivityManager getActivityManager() {
         return new MultiActivityManager(
                 eventBus, this.getActivityMapper());
-    }
-
-    public PlaceHistoryHandler getPlaceHistoryHandler() {
-        if (placeHistoryHandler == null) {
-            placeHistoryHandler = new PlaceHistoryHandler(getPlaceHistoryMapper());
-        }
-        return placeHistoryHandler;
     }
 
     public ModuleServiceAsync getModuleService() {

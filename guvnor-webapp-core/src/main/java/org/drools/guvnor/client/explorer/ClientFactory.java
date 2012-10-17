@@ -51,10 +51,6 @@ public interface ClientFactory {
 
     ActivityMapper getActivityMapper();
 
-    PlaceHistoryHandler getPlaceHistoryHandler();
-
-    PlaceHistoryMapper getPlaceHistoryMapper();
-
     NavigationViewFactory getNavigationViewFactory();
 
     AssetEditorFactory getAssetEditorFactory();
