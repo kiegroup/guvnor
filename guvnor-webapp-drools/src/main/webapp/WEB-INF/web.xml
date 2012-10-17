@@ -9,14 +9,6 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <!--<filter>-->
-  <!--<filter-name>Seam Filter</filter-name>-->
-  <!--<filter-class>org.jboss.seam.web.ContextFilter</filter-class>-->
-  <!--</filter>-->
-  <!--<filter-mapping>-->
-  <!--<filter-name>Seam Filter</filter-name>-->
-  <!--<url-pattern>/*</url-pattern>-->
-  <!--</filter-mapping>-->
   <listener>
     <listener-class>org.drools.guvnor.server.repository.SafeWeldListener</listener-class>
   </listener>
@@ -39,21 +31,16 @@
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
   </context-param>
 
-  <!-- TODO this might be needed due to the migration from seam 2 to seam 3
-    TODO Or instead, all the usages of @WebRemote are dead code (GUVNOR-1520):
-    - there is no SeamResourceServlet to activate them
-    - PackageDeploymentServlet does the old stuff for jbpm-console
-    - jaxrs does the new REST stuff
-  -->
-  <!--<servlet>-->
-  <!--<servlet-name>Remoting Servlet</servlet-name>-->
-  <!--<servlet-class>org.jboss.seam.remoting.Remoting</servlet-class>-->
-  <!--<load-on-startup>1</load-on-startup>-->
-  <!--</servlet>-->
-  <!--<servlet-mapping>-->
-  <!--<servlet-name>Remoting Servlet</servlet-name>-->
-  <!--<url-pattern>/seam/resource/remoting/*</url-pattern>-->
-  <!--</servlet-mapping>-->
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>
+      org.uberfire.security.server.UberFireSecurityFilter
+    </filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <!-- servlets - mostly to do with file management -->
   <servlet>
@@ -185,6 +172,17 @@ profile in pom.xml to use that. -->
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/org.drools.guvnor.Guvnor/Login.html</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>ErraiServlet</servlet-name>

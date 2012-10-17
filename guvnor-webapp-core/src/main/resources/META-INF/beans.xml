@@ -9,4 +9,8 @@
         http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
 
+  <interceptors>
+    <class>org.uberfire.security.server.authz.cdi.RolesInterceptor</class>
+    <class>org.uberfire.security.server.authz.cdi.TraitInterceptor</class>
+  </interceptors>
 </beans>

@@ -746,6 +746,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-api</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
       <classifier>sources</classifier>
       <version>0.1-SNAPSHOT</version>
     </dependency>
