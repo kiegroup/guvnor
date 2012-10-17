@@ -15,105 +15,71 @@
   <name>Guvnor web application core</name>
   <description>Guvnor web application core for a generic service repository framework</description>
 
-  <properties>
-    <jetty.version>6.1.25</jetty.version>
-    <mvel.version>2.1.1-SNAPSHOT</mvel.version>
-    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
-  </properties>
-
   <dependencies>
-
+  
+    <!--  Uberfire -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-server</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-client</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>security-api</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-server</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>backend-server</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>widgets-core</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>widgets-commons</artifactId>
-      <version>${uberfire.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
-      <version>${uberfire.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
     </dependency>
 
+    <!-- Uberfire - Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-jgit</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-fs</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-      <version>${errai.version}</version>
-    </dependency>
-
-    <!-- CDI Integration Modules -->
+    <!-- Uberfire - Errai Core - CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
-      <version>${errai.version}</version>
     </dependency>
 
-    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+    <!-- Uberfire - Errai Core - TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
-      <version>${errai.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -122,33 +88,26 @@
     <!--<artifactId>errai-uibinder</artifactId>-->
     <!--</dependency>-->
 
-    <!-- CDI Development Utils -->
+    <!-- Uberfire - Errai Core - CDI Development Utils -->
     <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-naming</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
 
-    <!-- Weld Modules -->
+    <!-- Uberfire - Errai Core - Weld Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-      <version>${errai.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
@@ -199,6 +158,11 @@
     <dependency>
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
     </dependency>
 
     <dependency>
@@ -255,16 +219,7 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
-
-    <!-- Weld (Context and Dependency Injection) -->
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet-core</artifactId>
-    </dependency>
+    
     <!-- Seam 3 (goodies in weld) -->
     <dependency>
       <groupId>org.jboss.solder</groupId>
