@@ -119,7 +119,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"title", "links", "categories", "updated", "id", "published", "authors", "contributors", "source",
         "rights", "content", "summary", "anyOther"})
-@XmlSeeAlso(AtomAssetMetadata.class) 
 public class Entry extends CommonAttributes
 {
    private List<Person> authors = new ArrayList<Person>();
