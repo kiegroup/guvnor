@@ -145,6 +145,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) {
         /*
          * Passes the DRL to the FileManagerService and has it import the asset as
@@ -179,6 +180,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry createPackageFromAtom(Entry entry) {
         try {
             String checkinComment = "Initial";
@@ -221,6 +223,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
         if (!rulesRepository.containsModule(packageName)) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -355,6 +358,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/versions/{versionNumber}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry getHistoricalPackageAsEntry(@PathParam("packageName") String packageName,
                                              @PathParam("versionNumber") long versionNumber) throws SerializationException {
         return toPackageEntryAbdera(rulesRepository.loadModule(packageName, versionNumber), uriInfo);
@@ -528,6 +532,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         if (!assetExists(packageName, assetName)) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -607,6 +612,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry createAssetFromAtom(@PathParam("packageName") String packageName, Entry entry) {
         try {
             String format = null;
@@ -637,6 +643,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry createAssetFromBinary(@PathParam("packageName") String packageName, InputStream is) {
         try {
             String assetName = getHttpHeader(headers, "slug");
@@ -863,6 +870,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets/{assetName}/versions/{versionNumber}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    @GuvnorDecorators
     public Entry getHistoricalAssetAsEntry(@PathParam("packageName") String packageName,
                                            @PathParam("assetName") String assetName,
                                            @PathParam("versionNumber") long versionNumber) {
