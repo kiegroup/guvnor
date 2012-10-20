@@ -387,6 +387,12 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-scorecards</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+  
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

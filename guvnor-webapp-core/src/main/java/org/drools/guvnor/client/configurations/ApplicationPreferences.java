@@ -37,6 +37,7 @@ public class ApplicationPreferences {
     public static final String           FORMBUILDER_PROFILE = "formbuilder.profile";
 
     public static final String           GUVNOR_URL          = "guvnor.url";
+    public static final String           SCORECARDS_ASSET          = "asset.enabled.scorecards";
 
     public static ApplicationPreferences instance;
     private Map<String, String>          preferences;
