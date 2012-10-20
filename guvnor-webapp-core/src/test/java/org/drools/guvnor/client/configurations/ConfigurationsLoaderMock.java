@@ -25,8 +25,4 @@ public class ConfigurationsLoaderMock {
         ApplicationPreferences.setUp(preferences);
     }
 
-    public static void loadUserCapabilities(List<Capability> capabilities) {
-        UserCapabilities.setUp(capabilities);
-    }
-
 }

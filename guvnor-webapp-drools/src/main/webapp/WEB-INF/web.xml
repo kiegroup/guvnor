@@ -178,7 +178,7 @@
 
   <servlet-mapping>
     <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/xxx.html</url-pattern>
+    <url-pattern>/org.drools.guvnor.Guvnor/Guvnor.html</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

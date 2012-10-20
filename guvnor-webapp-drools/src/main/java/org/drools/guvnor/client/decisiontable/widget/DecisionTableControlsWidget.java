@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import org.uberfire.security.Identity;
 
 /**
  * Simple container for controls to manipulate a Decision Table
@@ -39,7 +40,7 @@ public class DecisionTableControlsWidget extends Composite {
 
     public DecisionTableControlsWidget(final AbstractDecisionTableWidget dtable,
                                        final GuidedDecisionTable52 model,
-                                       final UserSecurityContext userSecurityContext,
+                                       final Identity identity,
                                        final boolean isReadOnly) {
 
         Panel panel = new HorizontalPanel();
@@ -86,7 +87,7 @@ public class DecisionTableControlsWidget extends Composite {
                                          public void onClick(ClickEvent event) {
                                              if ( dtable != null ) {
                                                  AuditLog log = new AuditLog( dtable.model,
-                                                                              userSecurityContext );
+                                                                              identity );
                                                  log.show();
                                              }
                                          }

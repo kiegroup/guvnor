@@ -23,6 +23,7 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -30,14 +31,16 @@ import javax.inject.Inject;
 public class QATreeBuilder extends NavigationItemBuilder {
 
     private final QATree qaTree;
+    private final Identity identity;
 
-    public QATreeBuilder(PlaceManager placeManager) {
-        qaTree = new QATree(placeManager);
+    public QATreeBuilder(PlaceManager placeManager, Identity identity) {
+        qaTree = new QATree(placeManager, identity);
+        this.identity = identity;
     }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_QA);
+        return UserCapabilities.canSeeQA(identity);
     }
 
     @Override

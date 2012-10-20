@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.*;
+import org.uberfire.security.Identity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +35,11 @@ public abstract class NavigationItemBuilderOld extends Composite
     protected final Tree mainTree;
 
     protected Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+    protected final Identity identity;
 
-    public NavigationItemBuilderOld() {
+    public NavigationItemBuilderOld(Identity identity) {
+
+        this.identity = identity;
 
         mainTree = createTree();
         mainTree.setStyleName( "guvnor-Tree" );

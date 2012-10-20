@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.perspective.author;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
@@ -29,9 +26,12 @@ import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.perspective.Perspective;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @ApplicationScoped
 public class AuthorPerspective implements Perspective {
@@ -39,10 +39,10 @@ public class AuthorPerspective implements Perspective {
     public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
 
     @Inject
-    public AdminTreeBuilder adminTreeBuilder;
+    PlaceManager placeManager;
 
     @Inject
-    PlaceManager placeManager;
+    Identity identity;
 
     public AuthorPerspective() {
     }
@@ -52,15 +52,15 @@ public class AuthorPerspective implements Perspective {
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
-        navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory, eventBus));
+        navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory, identity));
 
-        navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
+        navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, identity, AUTHOR_PERSPECTIVE));
 
-        navigationItemBuilders.add(new QATreeBuilder(placeManager));
+        navigationItemBuilders.add(new QATreeBuilder(placeManager, identity));
 
-        navigationItemBuilders.add(new DeploymentTreeBuilder(placeManager));
+        navigationItemBuilders.add(new DeploymentTreeBuilder(placeManager, identity));
 
-        navigationItemBuilders.add(adminTreeBuilder);
+        navigationItemBuilders.add(new AdminTreeBuilder(placeManager, identity));
 
         return navigationItemBuilders;
     }

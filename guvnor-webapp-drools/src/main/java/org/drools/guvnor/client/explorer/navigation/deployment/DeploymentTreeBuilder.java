@@ -16,36 +16,37 @@
 
 package org.drools.guvnor.client.explorer.navigation.deployment;
 
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 public class DeploymentTreeBuilder extends NavigationItemBuilder {
 
     private final DeploymentTree deploymentTree;
+    private final Identity identity;
 
-    public DeploymentTreeBuilder(PlaceManager placeManager) {
-        this.deploymentTree = new DeploymentTree(placeManager);
+    public DeploymentTreeBuilder(PlaceManager placeManager,
+                                 Identity identity) {
+        this.deploymentTree = new DeploymentTree(placeManager, identity);
+        this.identity = identity;
     }
+
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(
-                Capability.SHOW_DEPLOYMENT,
-                Capability.SHOW_DEPLOYMENT_NEW );
+        return UserCapabilities.canSeeDeploymentTree(identity);
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader( view );
-        header.setName( deploymentTree.getName() );
-        header.setImageResource( deploymentTree.getImage() );
+        StackItemHeader header = new StackItemHeader(view);
+        header.setName(deploymentTree.getName());
+        header.setImageResource(deploymentTree.getImage());
         return view;
     }
 

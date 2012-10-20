@@ -22,6 +22,7 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.uberfire.security.Identity;
 
 /**
  * A Vertical Decision Table composed of a VerticalDecoratedGridWidget
@@ -32,12 +33,12 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
     public VerticalDecisionTableWidget(GuidedDecisionTable52 model,
                                        SuggestionCompletionEngine sce,
-                                       UserSecurityContext userSecurityContext,
+                                       Identity identity,
                                        boolean isReadOnly,
                                        EventBus eventBus) {
         super( model,
                sce,
-               userSecurityContext,
+               identity,
                isReadOnly,
                eventBus );
 
@@ -54,7 +55,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         ctrls = new DecisionTableControlsWidget( this,
                                                  model,
-                                                 userSecurityContext,
+                                                 identity,
                                                  isReadOnly );
         vp.add( ctrls );
 

@@ -29,7 +29,7 @@ public class ChangePerspectiveEvent extends GwtEvent<ChangePerspectiveEvent.Hand
 
     public static final Type<ChangePerspectiveEvent.Handler> TYPE = new Type<ChangePerspectiveEvent.Handler>();
 
-    private final Perspective                                perspective;
+    private final Perspective perspective;
 
     public ChangePerspectiveEvent(Perspective perspective) {
         this.perspective = perspective;

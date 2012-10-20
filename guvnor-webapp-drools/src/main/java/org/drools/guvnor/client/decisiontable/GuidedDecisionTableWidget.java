@@ -1458,18 +1458,14 @@ public class GuidedDecisionTableWidget extends Composite
 
         //Get the current user's security context for audit logging. This requires a 
         //call to the server so instantiation of the Decision Table grid is deferred.
-        SecurityServiceAsync.INSTANCE.getCurrentUser( new GenericCallback<UserSecurityContext>() {
-            public void onSuccess(final UserSecurityContext userSecurityContext) {
-                dtable = new VerticalDecisionTableWidget( guidedDecisionTable,
-                                                          getSCE(),
-                                                          userSecurityContext,
-                                                          isReadOnly,
-                                                          eventBus );
-                dtable.setPixelSize( 1000,
-                                     400 );
-                dtableContainer.setWidget( dtable );
-            }
-        } );
+        dtable = new VerticalDecisionTableWidget(guidedDecisionTable,
+                getSCE(),
+                clientFactory.getIdentity(),
+                isReadOnly,
+                eventBus);
+        dtable.setPixelSize(1000,
+                400);
+        dtableContainer.setWidget(dtable);
 
     }
 

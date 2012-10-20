@@ -26,12 +26,15 @@ import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 public class AdministrationTree extends NavigationItemBuilderOld {
 
     private final PlaceManager placeManager;
 
-    public AdministrationTree(PlaceManager placeManager) {
+    public AdministrationTree(PlaceManager placeManager,
+                              Identity identity) {
+        super(identity);
         this.placeManager = placeManager;
         mainTree.addSelectionHandler(this);
     }

@@ -76,7 +76,8 @@ public class ArtifactEditor extends GuvnorEditor {
         boolean readOnly = historicalReadOnly || artifact.isReadonly();
 
         ruleDocumentWidget = new RuleDocumentWidget( this.artifact,
-                                                     readOnly );
+                                                     readOnly,
+                                                     clientFactory);
 
         metaWidget = new MetaDataWidget(
                                          clientFactory,

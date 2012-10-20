@@ -16,21 +16,20 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.uberfire.security.Identity;
 
 public class BrowseTreeBuilder extends NavigationItemBuilder {
 
     private BrowseTree browseTree;
     private final ClientFactory clientFactory;
-    private final EventBus eventBus;
+    private final Identity identity;
 
-    public BrowseTreeBuilder( ClientFactory clientFactory, EventBus eventBus ) {
+    public BrowseTreeBuilder(ClientFactory clientFactory, Identity identity) {
         this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
+        this.identity = identity;
     }
 
     @Override
@@ -49,15 +48,13 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
     }
 
     private BrowseTree getBrowseTree() {
-        if ( browseTree == null ) {
+        if (browseTree == null) {
             createNewBrowseTree();
         }
         return browseTree;
     }
 
     public void createNewBrowseTree() {
-        browseTree = new BrowseTree(
-                clientFactory, eventBus
-        );
+        browseTree = new BrowseTree(clientFactory, identity);
     }
 }

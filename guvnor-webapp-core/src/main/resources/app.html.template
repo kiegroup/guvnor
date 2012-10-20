@@ -25,7 +25,7 @@
 </div>
 
 <!-- The GWT js file generated at run time -->
-<script type="text/javascript" src='org.uberfire.UberfireShowcase.nocache.js'></script>
+<script type="text/javascript" src='org.drools.guvnor.Guvnor.nocache.js'></script>
 
 </body>
 </html>

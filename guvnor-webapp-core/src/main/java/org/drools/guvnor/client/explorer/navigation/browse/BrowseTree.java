@@ -16,14 +16,14 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
+import org.drools.guvnor.shared.security.AppRoles;
+import org.uberfire.security.Identity;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -41,15 +41,15 @@ public class BrowseTree implements Presenter {
     private IsTreeItem inboxRecentlyViewedTreeItem;
     private IsTreeItem root;
     private IsTreeItem categoriesRootItem;
+    private final Identity identity;
 
-    public BrowseTree(ClientFactory clientFactory, EventBus eventBus) {
+    public BrowseTree(ClientFactory clientFactory,
+                      Identity identity) {
         this.view = clientFactory.getNavigationViewFactory().getBrowseTreeView();
         this.clientFactory = clientFactory;
+        this.identity = identity;
         this.view.setPresenter(this);
 
-/*        if ( canShowMenu() ) {
-            this.view.setNewAssetMenu((new RulesNewMenu( clientFactory, eventBus )).asWidget());
-        }*/
         root = this.view.addRootTreeItem();
         addInbox();
         findRootTreeItem = this.view.addFind();
@@ -66,7 +66,7 @@ public class BrowseTree implements Presenter {
     }
 
     private boolean canShowStates() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW);
+        return UserCapabilities.canSeeStatuses(identity) ;
     }
 
     private void addRootCategory() {

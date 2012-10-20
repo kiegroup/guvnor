@@ -20,14 +20,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
@@ -38,6 +36,7 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 public class DeploymentTree extends NavigationItemBuilderOld
         implements
@@ -45,20 +44,21 @@ public class DeploymentTree extends NavigationItemBuilderOld
 
     private final PlaceManager placeManager;
 
-
-    public DeploymentTree(PlaceManager placeManager) {
+    public DeploymentTree(PlaceManager placeManager,
+                          Identity identity) {
+        super(identity);
         this.placeManager = placeManager;
 
-        mainTree.setAnimationEnabled( true );
-        ExplorerNodeConfig.setupDeploymentTree( mainTree,
-                itemWidgets );
-        mainTree.addSelectionHandler( this );
-        mainTree.addOpenHandler( this );
+        mainTree.setAnimationEnabled(true);
+        ExplorerNodeConfig.setupDeploymentTree(mainTree,
+                itemWidgets);
+        mainTree.addSelectionHandler(this);
+        mainTree.addOpenHandler(this);
     }
 
     public MenuBar createMenu() {
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET ) ) {
-            return DeploymentNewMenu.getMenu( this );
+        if (UserCapabilities.canCreateNewAsset(identity)) {
+            return DeploymentNewMenu.getMenu(this);
         } else {
             return null;
         }
@@ -83,24 +83,24 @@ public class DeploymentTree extends NavigationItemBuilderOld
     public void refreshTree() {
         mainTree.clear();
         itemWidgets.clear();
-        ExplorerNodeConfig.setupDeploymentTree( mainTree,
-                itemWidgets );
+        ExplorerNodeConfig.setupDeploymentTree(mainTree,
+                itemWidgets);
     }
 
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
 
-        if ( item.getUserObject() instanceof SnapshotPlace ) {
-            placeManager.goTo( (SnapshotPlace) item.getUserObject() );
+        if (item.getUserObject() instanceof SnapshotPlace) {
+            placeManager.goTo((SnapshotPlace) item.getUserObject());
         }
     }
 
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
-        if ( ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals( itemWidgets.get( node ) ) ) {
+        if (ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals(itemWidgets.get(node))) {
             return;
         }
-        if ( node.getUserObject() instanceof Module ) {
+        if (node.getUserObject() instanceof Module) {
             final Module packageConfigData = (Module) node.getUserObject();
 
 
@@ -111,12 +111,12 @@ public class DeploymentTree extends NavigationItemBuilderOld
                         public void onSuccess(SnapshotInfo[] snaps) {
                             node.removeItems();
                             for (final SnapshotInfo snapInfo : snaps) {
-                                TreeItem snap = new TreeItem( snapInfo.getName() );
-                                snap.setUserObject( new SnapshotPlace( packageConfigData.getName(), snapInfo.getName() ) );
-                                node.addItem( snap );
+                                TreeItem snap = new TreeItem(snapInfo.getName());
+                                snap.setUserObject(new SnapshotPlace(packageConfigData.getName(), snapInfo.getName()));
+                                node.addItem(snap);
                             }
                         }
-                    } );
+                    });
         }
     }
 }

@@ -16,7 +16,8 @@
 
 package org.drools.guvnor.client.configurations;
 
-import java.util.List;
+import org.drools.guvnor.shared.security.AppRoles;
+import org.uberfire.security.Identity;
 
 /**
  * This is used to turn off GUI functionality. The server decides what should be visible
@@ -26,26 +27,33 @@ import java.util.List;
  */
 public class UserCapabilities {
 
-    public static UserCapabilities INSTANCE;
-
-    private final List<Capability> capabilities;
-
-    private UserCapabilities(List<Capability> capabilities) {
-        this.capabilities = capabilities;
-
+    public static boolean canCreateNewAsset(Identity identity) {
+        return identity.hasRole(AppRoles.ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
     }
 
-    static void setUp(List<Capability> capabilities) {
-        INSTANCE = new UserCapabilities(capabilities);
+    public static boolean canSeeModulesTree(Identity identity) {
+        return identity.hasRole(AppRoles.ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER)
+                || identity.hasRole(AppRoles.PACKAGE_READONLY);
     }
 
-    public boolean hasCapability(Capability... capabilities) {
-        for (Capability capability : capabilities) {
-            if (this.capabilities.contains(capability)) {
-                return true;
-            }
-        }
+    public static boolean canSeeStatuses(Identity identity) {
+        return identity.hasRole(AppRoles.ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
+    }
 
-        return false;
+    public static boolean canSeeQA(Identity identity) {
+        return identity.hasRole(AppRoles.ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
+    }
+
+    public static boolean canSeeDeploymentTree(Identity identity) {
+        return identity.hasRole(AppRoles.ADMIN)
+                || identity.hasRole(AppRoles.PACKAGE_ADMIN);
     }
 }

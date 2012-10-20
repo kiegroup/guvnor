@@ -25,7 +25,6 @@ import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
@@ -36,6 +35,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -71,11 +71,11 @@ public interface ClientFactory {
 
     AssetServiceAsync getAssetService();
 
-    SecurityServiceAsync getSecurityService();
-
     Event<RefreshAssetEditorEvent> getRefreshAssetEditorEvents();
 
     Event<NotificationEvent> getNotificationEvents();
 
     WizardContext makeContext(Map<String, String> context);
+
+    Identity getIdentity();
 }

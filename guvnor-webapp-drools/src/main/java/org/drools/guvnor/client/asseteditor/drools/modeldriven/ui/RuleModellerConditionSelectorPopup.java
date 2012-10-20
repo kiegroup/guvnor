@@ -19,6 +19,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
@@ -49,14 +50,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSelectorPopup {
 
+    private final ClientFactory clientFactory;
+
     public RuleModellerConditionSelectorPopup(RuleModel model,
                                               RuleModeller ruleModeller,
                                               String packageName,
-                                              Integer position) {
+                                              Integer position,
+                                              ClientFactory clientFactory) {
         super( model,
                ruleModeller,
                packageName,
                position );
+        this.clientFactory = clientFactory;
     }
 
     @Override
@@ -259,7 +264,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // Free form DRL
     private void addFreeFormDrl() {
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+        if ( UserCapabilities.canSeeModulesTree(clientFactory.getIdentity()) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( Constants.INSTANCE.FreeFormDrl(),
                              "FF" );

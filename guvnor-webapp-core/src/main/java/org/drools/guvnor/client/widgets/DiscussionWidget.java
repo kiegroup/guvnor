@@ -26,12 +26,14 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Util;
+import org.drools.guvnor.shared.security.AppRoles;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +54,7 @@ public class DiscussionWidget extends Composite {
     private ServerPushNotification pushNotify;
     private int lastCount = 0;
     private boolean readOnly;
+    private final ClientFactory clientFactory;
 
     @Override
     protected void onUnload() {
@@ -59,9 +62,10 @@ public class DiscussionWidget extends Composite {
         PushClient.instance().unsubscribe(pushNotify);
     }
 
-    public DiscussionWidget(final Artifact artifact, boolean readOnly) {
+    public DiscussionWidget(final Artifact artifact, boolean readOnly, ClientFactory clientFactory) {
         this.artifact = artifact;
         this.readOnly = readOnly;
+        this.clientFactory = clientFactory;
 
         DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel(constants.Discussion());
         discussionPanel.setWidth("100%");
@@ -153,7 +157,7 @@ public class DiscussionWidget extends Composite {
         createNewComment.setEnabled(!this.readOnly);
         hp.add(createNewComment);
 
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
+        if (clientFactory.getIdentity().hasRole(AppRoles.ADMIN)) {
             Button adminClearAll = new Button(constants.EraseAllComments());
             adminClearAll.setEnabled(!readOnly);
             hp.add(adminClearAll);

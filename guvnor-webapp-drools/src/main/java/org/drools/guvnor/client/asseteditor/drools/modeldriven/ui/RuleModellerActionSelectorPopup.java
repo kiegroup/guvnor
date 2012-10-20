@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
@@ -53,14 +54,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelectorPopup {
 
+    private final ClientFactory clientFactory;
+
     public RuleModellerActionSelectorPopup(RuleModel model,
                                            RuleModeller ruleModeller,
                                            String packageName,
-                                           Integer position) {
+                                           Integer position,
+                                           ClientFactory clientFactory) {
         super( model,
                ruleModeller,
                packageName,
                position );
+        this.clientFactory = clientFactory;
     }
 
     @Override
@@ -380,7 +385,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         List<String> vars2 = model.getRHSBoundFacts();
         String[] globals = completions.getGlobalVariables();
 
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+        if ( UserCapabilities.canSeeModulesTree(clientFactory.getIdentity()) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( Constants.INSTANCE.AddFreeFormDrl(),
                              "FF" );

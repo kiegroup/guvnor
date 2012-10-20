@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -36,6 +35,7 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.util.Util;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -46,12 +46,15 @@ public class QATree extends NavigationItemBuilderOld
 
     private final PlaceManager placeManager;
 
-    public QATree(PlaceManager placeManager) {
+    public QATree(PlaceManager placeManager,
+                  Identity identity) {
+        super(identity);
+
         this.placeManager = placeManager;
 
         //Add Selection listener
-        mainTree.addSelectionHandler( this );
-        mainTree.addOpenHandler( this );
+        mainTree.addSelectionHandler(this);
+        mainTree.addOpenHandler(this);
     }
 
     public MenuBar createMenu() {
@@ -59,7 +62,7 @@ public class QATree extends NavigationItemBuilderOld
     }
 
     public Tree createTree() {
-        return ExplorerNodeConfig.getQAStructure( itemWidgets );
+        return ExplorerNodeConfig.getQAStructure(itemWidgets);
     }
 
     public String getName() {
@@ -81,60 +84,60 @@ public class QATree extends NavigationItemBuilderOld
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
 
-        if ( item.getUserObject() instanceof Module ) {
+        if (item.getUserObject() instanceof Module) {
             Module pc = (Module) item.getUserObject();
-            String id = itemWidgets.get( item );
+            String id = itemWidgets.get(item);
 
 
-            if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
+            if (ExplorerNodeConfig.TEST_SCENARIOS_ID.equals(id)) {
 
-                placeManager.goTo( new TestScenarioListPlace( pc.getUuid() ) );
+                placeManager.goTo(new TestScenarioListPlace(pc.getUuid()));
 
-            } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                placeManager.goTo( new VerifierPlace( pc.getUuid() ) );
+            } else if (ExplorerNodeConfig.ANALYSIS_ID.equals(id)) {
+                placeManager.goTo(new VerifierPlace(pc.getUuid()));
             }
         }
     }
 
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
-        if ( ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
+        if (ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals(itemWidgets.get(node))) {
             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-            moduleService.listModules( new GenericCallback<Module[]>() {
+            moduleService.listModules(new GenericCallback<Module[]>() {
                 public void onSuccess(Module[] conf) {
                     node.removeItems();
-                    removeTestScenarioIDs( itemWidgets );
+                    removeTestScenarioIDs(itemWidgets);
 
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImageResources.INSTANCE.packages(),
-                                c.getName() ) );
+                        TreeItem pkg = new TreeItem(Util.getHeader(DroolsGuvnorImageResources.INSTANCE.packages(),
+                                c.getName()));
 
-                        node.addItem( pkg );
-                        pkg.setUserObject( c );
-                        itemWidgets.put( pkg,
-                                ExplorerNodeConfig.TEST_SCENARIOS_ID );
+                        node.addItem(pkg);
+                        pkg.setUserObject(c);
+                        itemWidgets.put(pkg,
+                                ExplorerNodeConfig.TEST_SCENARIOS_ID);
                     }
                 }
-            } );
-        } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
+            });
+        } else if (ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals(itemWidgets.get(node))) {
             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-            moduleService.listModules( new GenericCallback<Module[]>() {
+            moduleService.listModules(new GenericCallback<Module[]>() {
                 public void onSuccess(Module[] conf) {
                     node.removeItems();
-                    removeAnalysisIDs( itemWidgets );
+                    removeAnalysisIDs(itemWidgets);
                     for (int i = 0; i < conf.length; i++) {
                         final Module c = conf[i];
-                        TreeItem pkg = new TreeItem( Util.getHeader( DroolsGuvnorImageResources.INSTANCE.packages(),
-                                c.getName() ) );
+                        TreeItem pkg = new TreeItem(Util.getHeader(DroolsGuvnorImageResources.INSTANCE.packages(),
+                                c.getName()));
 
-                        node.addItem( pkg );
-                        pkg.setUserObject( c );
-                        itemWidgets.put( pkg,
-                                ExplorerNodeConfig.ANALYSIS_ID );
+                        node.addItem(pkg);
+                        pkg.setUserObject(c);
+                        itemWidgets.put(pkg,
+                                ExplorerNodeConfig.ANALYSIS_ID);
                     }
                 }
-            } );
+            });
         }
     }
 
@@ -142,7 +145,7 @@ public class QATree extends NavigationItemBuilderOld
         for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<TreeItem, String> entry = it.next();
             String id = entry.getValue();
-            if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
+            if (ExplorerNodeConfig.TEST_SCENARIOS_ID.equals(id)) {
                 it.remove();
             }
         }
@@ -152,7 +155,7 @@ public class QATree extends NavigationItemBuilderOld
         for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<TreeItem, String> entry = it.next();
             String id = entry.getValue();
-            if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
+            if (ExplorerNodeConfig.ANALYSIS_ID.equals(id)) {
                 it.remove();
             }
         }

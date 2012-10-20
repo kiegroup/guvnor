@@ -17,9 +17,9 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.uberfire.security.Identity;
 
 public class ModulesTree
         implements
@@ -29,10 +29,15 @@ public class ModulesTree
     private ClientFactory clientFactory;
     private final EventBus eventBus;
     private String perspectiveTypes;
+    private final Identity identity;
 
-    public ModulesTree(ClientFactory clientFactory, EventBus eventBus, String perspectiveTypes) {
+    public ModulesTree(ClientFactory clientFactory,
+                       EventBus eventBus,
+                       Identity identity,
+                       String perspectiveTypes) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
+        this.identity = identity;
         this.perspectiveTypes = perspectiveTypes;
         this.view = clientFactory.getNavigationViewFactory().getModulesTreeView();
         this.view.setPresenter(this);
@@ -44,7 +49,7 @@ public class ModulesTree
 
         view.setModulesTreeItem(new ModulesTreeItem(clientFactory, eventBus, perspectiveTypes));
 
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_CREATE_NEW_ASSET)) {
+        if (UserCapabilities.canCreateNewAsset(identity)) {
             view.setNewAssetMenu(clientFactory.getNavigationViewFactory().getModulesNewAssetMenu(perspectiveTypes));
         }
     }

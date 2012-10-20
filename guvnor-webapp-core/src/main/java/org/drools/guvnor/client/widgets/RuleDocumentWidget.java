@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.widgets;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.Asset;
 
@@ -34,11 +35,14 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
     private final Artifact artifact;
     private boolean         readOnly;
+    private final ClientFactory clientFactory;
 
     public RuleDocumentWidget(final Artifact artifact,
-                              boolean readOnly) {
+                              boolean readOnly,
+                              ClientFactory clientFactory) {
         this.artifact = artifact;
         this.readOnly = readOnly;
+        this.clientFactory = clientFactory;
 
         initWidget( layout );
         initLayout();
@@ -52,7 +56,7 @@ public class RuleDocumentWidget extends DirtyableComposite {
 		if (artifact instanceof Asset) {
 	        Scheduler.get().scheduleDeferred( new Command() {
 	            public void execute() {
-	                layout.add( new DiscussionWidget( artifact, readOnly ) );
+	                layout.add( new DiscussionWidget( artifact, readOnly, clientFactory ) );
 	            }
 	        } );
 		} 

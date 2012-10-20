@@ -92,6 +92,7 @@ public class RuleModeller extends DirtyableComposite
                                                                       verifyRule( null );
                                                                   }
                                                               };
+    private ClientFactory clientFactory;
 
     public RuleModeller(Asset asset,
                         RuleViewer viewer,
@@ -111,6 +112,7 @@ public class RuleModeller extends DirtyableComposite
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();
+        this.clientFactory = clientFactory;
         this.packageName = asset.getMetaData().getModuleName();
         this.eventBus = eventBus;
         this.widgetFactory = widgetFactory;
@@ -305,7 +307,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        if ( !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+        if ( ! UserCapabilities.canSeeModulesTree(clientFactory.getIdentity()) ) {
             return false;
         }
 
@@ -448,7 +450,8 @@ public class RuleModeller extends DirtyableComposite
         RuleModellerConditionSelectorPopup popup = new RuleModellerConditionSelectorPopup( model,
                                                                                            this,
                                                                                            packageName,
-                                                                                           position );
+                                                                                           position,
+                                                                                           clientFactory );
         popup.show();
     }
 
@@ -457,7 +460,8 @@ public class RuleModeller extends DirtyableComposite
         RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model,
                                                                                      this,
                                                                                      packageName,
-                                                                                     position );
+                                                                                     position,
+                                                                                     clientFactory);
         popup.show();
     }
 

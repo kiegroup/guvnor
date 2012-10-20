@@ -19,7 +19,6 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
@@ -35,7 +34,6 @@ public abstract class AbstractClientFactoryImpl
 
     protected AssetEditorFactory assetEditorFactory;
     protected PerspectiveFactory perspectiveFactory;
-    protected PlaceHistoryHandler placeHistoryHandler;
     protected final EventBus eventBus;
 
     public AbstractClientFactoryImpl(EventBus eventBus) {
@@ -96,9 +94,5 @@ public abstract class AbstractClientFactoryImpl
 
     public AssetServiceAsync getAssetService() {
         return GWT.create(AssetService.class);
-    }
-
-    public SecurityServiceAsync getSecurityService() {
-        return GWT.create(SecurityService.class);
     }
 }

@@ -31,14 +31,8 @@ public class FormEditor extends DirtyableComposite implements
     public FormEditor(Asset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus bus) {
         this.asset = asset;
         modelUUID = asset.getUuid();
-        clientFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
-            public void onSuccess(UserSecurityContext result) {
-                username[0] = result.getUserName();
-            }
+        username[0] = clientFactory.getIdentity().getName();
 
-            public void onFailure(Throwable caught) {
-            }
-        });
         this.repoService = clientFactory.getRepositoryService();
         initWidgets();
     }

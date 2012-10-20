@@ -17,25 +17,22 @@
 package org.drools.guvnor.client;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.examples.SampleRepositoryInstaller;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.*;
 import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
-import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.simulation.resources.SimulationResources;
+import org.drools.guvnor.shared.security.AppRoles;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.security.Identity;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  * This is the main launching/entry point for the Guvnor web console. It
@@ -44,14 +41,37 @@ import org.drools.guvnor.client.simulation.resources.SimulationResources;
  * If you hadn't noticed, this is using GWT from google. Refer to GWT docs if
  * GWT is new to you (it is quite a different way of building web apps).
  */
-public class GuvnorDroolsEntryPoint
-        implements
-        EntryPoint {
+@org.jboss.errai.ioc.client.api.EntryPoint
+public class GuvnorDroolsEntryPoint {
 
-    public void onModuleLoad() {
+    @Inject
+    private WorkbenchMenuBarPresenter menubar;
+
+    @Inject
+    Identity identity;
+
+    @PostConstruct
+    public void init() {
         loadStyles();
+
+        ConfigurationsLoader.loadPreferences(new Command() {
+            public void execute() {
+//                loadUserCapabilities("userName");
+            }
+        });
+
+        menubar.addMenuItem(new DefaultMenuItemCommand("Guvnor", new org.uberfire.client.mvp.Command() {
+            @Override
+            public void execute() {
+
+            }
+        }));
+
+        if (identity.hasRole(AppRoles.ADMIN)) {
+            SampleRepositoryInstaller.askToInstall();
+        }
+
         hideLoadingPopup();
-        checkLogIn();
     }
 
     private void loadStyles() {
@@ -68,112 +88,27 @@ public class GuvnorDroolsEntryPoint
         SimulationResources.INSTANCE.style().ensureInjected();
     }
 
-    /**
-     * Check if user is logged in, if not, then show prompt. If it is, then we
-     * show the app, in all its glory !
-     */
-    private void checkLogIn() {
-        SecurityServiceAsync.INSTANCE.getCurrentUser(new GenericCallback<UserSecurityContext>() {
-            public void onSuccess(UserSecurityContext userSecurityContext) {
-                String userName = userSecurityContext.getUserName();
-                if (userName != null) {
-                    showMain(userName);
-                } else {
-                    logIn();
-                }
-            }
-        });
-    }
-
-    private void logIn() {
-        final LoginWidget loginWidget = new LoginWidget();
-        loginWidget.setLoggedInEvent(new Command() {
-            public void execute() {
-                showMain(loginWidget.getUserName());
-            }
-        });
-        loginWidget.show();
-    }
-
-    private void showMain(final String userName) {
-
-        Window.setStatus(Constants.INSTANCE.LoadingUserPermissions());
-
-        loadConfigurations(userName);
-    }
-
-    private void loadConfigurations(final String userName) {
-        ConfigurationsLoader.loadPreferences(new Command() {
-            public void execute() {
-                loadUserCapabilities(userName);
-            }
-        });
-    }
-
-    private void loadUserCapabilities(final String userName) {
-        ConfigurationsLoader.loadUserCapabilities(new Command() {
-            public void execute() {
-                setUpMain(userName);
-            }
-        });
-    }
-
-    private void setUpMain(String userName) {
-        Window.setStatus(" ");
-
-        createMain();
-
-    }
-
-    /**
-     * Creates the main view of Guvnor. The path used to invoke guvnor is used
-     * to identify the view to show: If the path contains
-     * "StandaloneEditor.html" then the StandaloneGuidedEditorManager is used to
-     * render the view. If not, the default view is shown.
-     */
-    private void createMain() {
-        EventBus eventBus = new SimpleEventBus();
-//        ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
-//        appController = new AppControllerImpl(clientFactory,eventBus);
-
-        if (Window.Location.getPath().contains("StandaloneEditor.html")) {
-//            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
-        } else {
-
-//            RootLayoutPanel.get().add(appController.getMainPanel());
-        }
-
-        askToInstallSampleRepository();
-
-        //Have to start the FindPlace as the last thing during the initialization, otherwise we got https://bugzilla.redhat.com/show_bug.cgi?id=790025
-//        clientFactory.getPlaceController().goTo(new FindPlace());
-    }
-
-    private void askToInstallSampleRepository() {
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
-            SampleRepositoryInstaller.askToInstall();
-        }
-    }
-
-    //Fade out the "Loading application" pop-up
+    /*
+    * Fade out the "Loading application" pop-up
+    */
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get("loading").getElement();
+        final Element loadingElement = RootPanel.get("loading").getElement();
 
-        Animation r = new Animation() {
+        Animation animation = new Animation() {
 
             @Override
             protected void onUpdate(double progress) {
-                e.getStyle().setOpacity(1.0 - progress);
+                loadingElement.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility(Visibility.HIDDEN);
+                loadingElement.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
 
         };
 
-        r.run(500);
+        animation.run(500);
 
     }
 

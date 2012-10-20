@@ -19,27 +19,25 @@ package org.drools.guvnor.client.explorer.navigation.admin;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
-import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.drools.guvnor.shared.security.AppRoles;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-@Dependent
 public class AdminTreeBuilder extends NavigationItemBuilder {
 
     private final AdministrationTree administrationTree;
+    private final Identity identity;
 
-    @Inject
-    public AdminTreeBuilder(PlaceManager placeManager) {
-        administrationTree = new AdministrationTree(placeManager);
+    public AdminTreeBuilder(PlaceManager placeManager,
+                            Identity identity) {
+        administrationTree = new AdministrationTree(placeManager, identity);
+        this.identity = identity;
     }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN);
+        return identity.hasRole(AppRoles.ADMIN);
     }
 
     @Override

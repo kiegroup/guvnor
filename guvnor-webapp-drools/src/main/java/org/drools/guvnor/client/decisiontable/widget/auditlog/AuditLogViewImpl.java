@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
+import org.drools.guvnor.shared.security.AppRoles;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLog;
 import org.drools.ide.common.client.modeldriven.auditlog.AuditLogEntry;
 
@@ -53,6 +53,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.uberfire.security.Identity;
 
 /**
  * The AuditLog View implementation
@@ -76,7 +77,7 @@ public class AuditLogViewImpl extends Popup
     private final VerticalPanel       lstEventTypes = new VerticalPanel();
 
     //The current user's security context (admins can see all records)
-    private final UserSecurityContext userSecurityContext;
+    private final Identity identity;
 
     interface AuditLogViewImplBinder
         extends
@@ -86,10 +87,10 @@ public class AuditLogViewImpl extends Popup
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
     public AuditLogViewImpl(final AuditLog auditLog,
-                            final UserSecurityContext userSecurityContext) {
+                            final Identity identity) {
         setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
         this.auditLog = auditLog;
-        this.userSecurityContext = userSecurityContext;
+        this.identity = identity;
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );
@@ -149,7 +150,7 @@ public class AuditLogViewImpl extends Popup
                                Unit.PCT );
 
         //If the current user is not an Administrator include the delete comment column
-        if ( !userSecurityContext.isAdministrator() ) {
+        if ( !identity.hasRole(AppRoles.ADMIN) ) {
 
             AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
             deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, ImageResource>() {
@@ -251,7 +252,7 @@ public class AuditLogViewImpl extends Popup
     }
 
     private List<AuditLogEntry> filterDeletedEntries(final List<AuditLogEntry> entries) {
-        if ( userSecurityContext.isAdministrator() ) {
+        if ( identity.hasRole(AppRoles.ADMIN) ) {
             return entries;
         }
         final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();
