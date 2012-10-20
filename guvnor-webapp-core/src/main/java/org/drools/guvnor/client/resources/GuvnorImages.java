@@ -223,4 +223,16 @@ public class GuvnorImages {
         image.setAltText(ConstantsCore.INSTANCE.Snapshot());
         return image;
     }
+
+    public Image ScorecardSmall(){
+        Image image = new Image(ImagesCore.INSTANCE.scorecardSmall());
+        image.setAltText(ConstantsCore.INSTANCE.Trash());
+        return image;
+    }
+
+    public Image NewCharacteristic(){
+        Image image = new Image(ImagesCore.INSTANCE.newCharacteristic());
+        image.setAltText(ConstantsCore.INSTANCE.Characteristics());
+        return image;
+    }
 }

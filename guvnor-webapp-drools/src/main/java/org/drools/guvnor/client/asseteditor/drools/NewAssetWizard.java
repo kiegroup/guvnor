@@ -16,21 +16,23 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.GlobalAreaAssetSelector;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
@@ -42,15 +44,6 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardCont
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a
@@ -315,6 +308,11 @@ public class NewAssetWizard extends FormStylePopup {
                      AssetFormats.DECISION_SPREADSHEET_XLS );
         box.addItem( Constants.INSTANCE.DecisionTableWebGuidedEditor(),
                      AssetFormats.DECISION_TABLE_GUIDED );
+        //scorecard related
+        if (ApplicationPreferences.getBooleanPref(ApplicationPreferences.SCORECARDS_ASSET)) {
+            box.addItem(Constants.INSTANCE.ScorecardSpreadsheet(), AssetFormats.SCORECARD_SPREADSHEET_XLS);
+            box.addItem(Constants.INSTANCE.ScorecardWebGuidedEditor(), AssetFormats.SCORECARD_GUIDED);
+        }
 
         box.setSelectedIndex( 0 );
 

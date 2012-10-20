@@ -158,4 +158,16 @@ public class DroolsGuvnorImages {
         image.setAltText(Constants.INSTANCE.Trash());
         return image;
     }
+
+    public Image ScorecardSmall(){
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.scorecardSmall());
+        image.setAltText(Constants.INSTANCE.Scorecard());
+        return image;
+    }
+
+    public Image NewCharacteristic(){
+        Image image = new Image(DroolsGuvnorImageResources.INSTANCE.newCharacteristic());
+        image.setAltText(Constants.INSTANCE.Characteristics());
+        return image;
+    }
 }

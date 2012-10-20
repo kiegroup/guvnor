@@ -2661,4 +2661,16 @@ public interface ConstantsCore
     String AssetCategoryEditorAddNewCategory();
     
     String Feed();
+
+    //start of scorecards
+    String ScorecardSpreadsheet();
+
+    String ScorecardWidgetDescription();
+
+    String ScorecardWebGuidedEditor();
+
+    String Scorecard();
+
+    String Characteristics();
+    //end of scorecards
 }

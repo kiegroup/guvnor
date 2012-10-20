@@ -2813,5 +2813,16 @@ public interface Constants
     String Expand();
     
     String InvalidPatternSectionDisabled();
-    
+
+    //start of scorecards
+    String ScorecardSpreadsheet();
+
+    String ScorecardWidgetDescription();
+
+    String ScorecardWebGuidedEditor();
+
+    String Scorecard();
+
+    String Characteristics();
+    //end of scorecards
 }
