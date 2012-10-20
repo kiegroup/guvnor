@@ -39,6 +39,20 @@
         <icon>GuvnorImages.INSTANCE.RuleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
     </asseteditor>
+
+  <asseteditor>
+    <class>org.drools.guvnor.client.scorecards.ScorecardsXLSWidget</class>
+    <format>scxls</format>
+    <icon>GuvnorImages.INSTANCE.SpreadsheetSmall()</icon>
+    <title>constants.BusinessRuleAssets()</title>
+  </asseteditor>
+
+  <asseteditor>
+    <class>org.drools.guvnor.client.scorecards.GuidedScorecardWidget</class>
+    <format>scgd</format>
+    <icon>GuvnorImages.INSTANCE.Gdst()</icon>
+    <title>constants.BusinessRuleAssets()</title>
+  </asseteditor>
     <!--  end of business rules group-->
     
     <asseteditor>

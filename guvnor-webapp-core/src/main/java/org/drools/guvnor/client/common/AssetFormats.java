@@ -68,6 +68,12 @@ public class AssetFormats {
     public static final String DECISION_TABLE_GUIDED = "gdst";
 
     /**
+     * Scorecards
+     */
+    public static final String SCORECARD_SPREADSHEET_XLS = "scxls";
+
+    public static final String SCORECARD_GUIDED = "scgd";
+    /**
      * Use a ruleflow.
      */
     public static final String RULE_FLOW_RF = "rf";
@@ -131,7 +137,7 @@ public class AssetFormats {
     /**
      * The following group the assets together for lists, helpers etc...
      */
-    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE};
+    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE,AssetFormats.SCORECARD_SPREADSHEET_XLS};
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.
      */
@@ -172,6 +178,7 @@ public class AssetFormats {
         if (format.equals(BUSINESS_RULE)
                 || format.equals(DRL)
                 || format.equals(DECISION_TABLE_GUIDED)
+                || format.equals(SCORECARD_SPREADSHEET_XLS)
                 || format.equals(RULE_TEMPLATE)) {
             return "DRL";
         } else if (format.equals(DSL)) {

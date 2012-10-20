@@ -347,4 +347,10 @@ public interface DroolsGuvnorImageResources
     @Source("images/simulation_test_icon.png")
     ImageResource simulationTestIcon();
 
+    // scorecards
+    @Source("images/scorecard.gif")
+    ImageResource scorecardSmall();
+
+    @Source("images/new_characteristic.png")
+    ImageResource newCharacteristic();
 }
