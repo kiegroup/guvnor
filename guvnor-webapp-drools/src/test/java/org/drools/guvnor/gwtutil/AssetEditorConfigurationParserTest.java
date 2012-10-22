@@ -33,7 +33,7 @@ public class AssetEditorConfigurationParserTest {
 		AssetEditorConfigurationParser a = new AssetEditorConfigurationParser();
 		List<AssetEditorConfiguration> configList = a.getAssetEditors();
 
-        assertEquals(26, configList.size());
+        assertEquals(28, configList.size());
         boolean foundPropertiesWidgetForXML = false;
         boolean foundPropertiesWidgetForDocument = false;
         for(AssetEditorConfiguration config:configList) {
