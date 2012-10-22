@@ -10,15 +10,12 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -139,9 +136,7 @@ public class RepositoryPackageOperationsTest {
     }
 
     @Test
-    public void testExportPackages() throws PathNotFoundException,
-            IOException,
-            RepositoryException {
+    public void testExportPackages() throws RulesRepositoryException {
         initSession();
         this.repositoryPackageOperations.exportModules("packageName");
         verify(this.rulesRepository).dumpModuleFromRepositoryXml("packageName");
@@ -439,8 +434,8 @@ public class RepositoryPackageOperationsTest {
     }
 
     private void initSession() {
-        Session session = mock(Session.class);
-        when(this.rulesRepository.getSession()).thenReturn(session);
+/*        Session session = mock(Session.class);
+        when(this.rulesRepository.getSession()).thenReturn(session);*/
     }
 
     private void prepareMockForPackageConfigDataFactory(ModuleItem packageItem) {

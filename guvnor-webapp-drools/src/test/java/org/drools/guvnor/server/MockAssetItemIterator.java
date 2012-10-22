@@ -4,7 +4,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionedAssetItemIterator;
 
-import javax.jcr.NodeIterator;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -15,7 +14,7 @@ public class MockAssetItemIterator extends VersionedAssetItemIterator {
     private Iterator<AssetItem> assetItems;
 
     public MockAssetItemIterator() {
-        super(mock(NodeIterator.class), mock(RulesRepository.class), new String[0]);
+        super(null, mock(RulesRepository.class), new String[0]);
     }
 
     public boolean hasNext() {

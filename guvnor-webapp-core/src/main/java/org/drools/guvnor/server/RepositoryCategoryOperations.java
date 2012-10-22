@@ -78,7 +78,7 @@ public class RepositoryCategoryOperations {
                                      String name,
                                      String description) {
 
-        log.info("USER:" + getCurrentUserName() + " CREATING category: [" + name + "] in path [" + path + "]");
+        log.info("CREATING category: [" + name + "] in path [" + path + "]");
 
         if (path == null || "".equals(path)) {
             path = "/";
@@ -157,7 +157,7 @@ public class RepositoryCategoryOperations {
     }
 
     protected void removeCategory(String categoryPath) throws SerializationException {
-        log.info("USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]");
+        log.info("REMOVING CATEGORY path: [" + categoryPath + "]");
 
         try {
             rulesRepository.loadCategory(categoryPath).remove();
@@ -169,9 +169,4 @@ public class RepositoryCategoryOperations {
                     e.getMessage());
         }
     }
-
-    private String getCurrentUserName() {
-        return rulesRepository.getSession().getUserID();
-    }
-
 }

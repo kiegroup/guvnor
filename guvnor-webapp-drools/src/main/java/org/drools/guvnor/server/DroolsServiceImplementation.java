@@ -60,7 +60,7 @@ public class DroolsServiceImplementation
     @LoggedIn
     public ValidatedResponse validateModule(Module data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
-        log.info( "USER:" + getCurrentUserName() + " validateModule module [" + data.getName() + "]" );
+        log.info("ValidateModule module [" + data.getName() + "]" );
 
         RuleBaseCache.getInstance().remove( data.getUuid() );
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
@@ -87,9 +87,5 @@ public class DroolsServiceImplementation
             res.errorMessage = err;
         }
         return res;
-    }
-
-    private String getCurrentUserName() {
-        return rulesRepository.getSession().getUserID();
     }
 }

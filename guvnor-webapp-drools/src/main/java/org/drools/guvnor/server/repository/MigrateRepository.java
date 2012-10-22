@@ -22,7 +22,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.repository.*;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 
-import javax.jcr.RepositoryException;
 
 
 /**
@@ -56,9 +55,8 @@ public class MigrateRepository {
      * @param repo
      * @return true if the drools system property drools.ruleflow.port is true
      *         indicating that ruleflow migration should be performed.
-     * @throws RepositoryException **********************************************************************
      */
-    public static boolean needsRuleflowMigration(RulesRepository repo) throws RepositoryException {
+    public static boolean needsRuleflowMigration(RulesRepository repo) {
         String portRuleFlow = System.getProperty("drools.ruleflow.port", "false");
         return portRuleFlow.equalsIgnoreCase("true");
     }
@@ -74,7 +72,7 @@ public class MigrateRepository {
      * @param repo
      * @throws RepositoryException **********************************************************************
      */
-    public static void migrateRuleflows(RulesRepository repo) throws RepositoryException {
+    public static void migrateRuleflows(RulesRepository repo) {
         log.debug("AUTO MIGRATION: Performing drools ruleflow migration...");
 
         ModuleIterator pkgs = repo.listModules();

@@ -30,10 +30,7 @@ import java.util.StringTokenizer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 
-import org.drools.RuleBase;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
@@ -44,7 +41,6 @@ import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerConfiguration;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
@@ -209,7 +205,7 @@ public class RepositoryModuleOperations {
                                  String destModuleName) throws SerializationException {
 
         try {
-            log.info( "USER:" + getCurrentUserName() + " COPYING module [" + sourceModuleName + "] to  module [" + destModuleName + "]" );
+            log.info( "COPYING module [" + sourceModuleName + "] to  module [" + destModuleName + "]" );
 
             final String newModuleUUID = rulesRepository.copyModule( sourceModuleName,
                                                                      destModuleName );
@@ -248,7 +244,7 @@ public class RepositoryModuleOperations {
 
         try {
             ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
-            log.info( "USER:" + getCurrentUserName() + " REMOVEING module [" + item.getName() + "]" );
+            log.info( "REMOVEING module [" + item.getName() + "]" );
             item.remove();
             rulesRepository.save();
         } catch (RulesRepositoryException e) {
@@ -260,7 +256,7 @@ public class RepositoryModuleOperations {
 
     protected String renameModule(String uuid,
                                   String newName) {
-        log.info( "USER:" + getCurrentUserName() + " RENAMING module [UUID: " + uuid + "] to module [" + newName + "]" );
+        log.info( "RENAMING module [UUID: " + uuid + "] to module [" + newName + "]" );
 
         rulesRepository.renameModule( uuid,
                                       newName );
@@ -270,18 +266,10 @@ public class RepositoryModuleOperations {
         return uuid;
     }
 
-    protected byte[] exportModules(String moduleName) {
-        log.info( "USER:" + getCurrentUserName() + " export module [name: " + moduleName + "] " );
+    protected byte[] exportModules(String moduleName) throws RulesRepositoryException {
+        log.info("Export module [name: " + moduleName + "] " );
 
-        try {
-            return rulesRepository.dumpModuleFromRepositoryXml( moduleName );
-        } catch (PathNotFoundException e) {
-            throw new RulesRepositoryException( e );
-        } catch (IOException e) {
-            throw new RulesRepositoryException( e );
-        } catch (RepositoryException e) {
-            throw new RulesRepositoryException( e );
-        }
+        return rulesRepository.dumpModuleFromRepositoryXml( moduleName );
     }
 
     // TODO: Not working. GUVNOR-475
@@ -294,7 +282,7 @@ public class RepositoryModuleOperations {
     protected String createModule(String name, String description,
             String format) throws RulesRepositoryException {
 
-        log.info("USER: " + getCurrentUserName() + " CREATING module [" + name
+        log.info("CREATING module [" + name
                 + "]");
         ModuleItem item = rulesRepository.createModule(name,
                 description, format);
@@ -307,7 +295,7 @@ public class RepositoryModuleOperations {
                                    String format,
                                    String[] workspace) throws RulesRepositoryException {
 
-        log.info( "USER: " + getCurrentUserName() + " CREATING module [" + name + "]" );
+        log.info("CREATING module [" + name + "]" );
         ModuleItem item = rulesRepository.createModule( name,
                 description,
                 format,
@@ -320,7 +308,7 @@ public class RepositoryModuleOperations {
     protected String createSubModule(String name,
                                       String description,
                                       String parentNode) throws SerializationException {
-        log.info( "USER: " + getCurrentUserName() + " CREATING subModule [" + name + "], parent [" + parentNode + "]" );
+        log.info("CREATING subModule [" + name + "], parent [" + parentNode + "]" );
         ModuleItem item = rulesRepository.createSubModule( name,
                 description,
                 parentNode );
@@ -336,7 +324,7 @@ public class RepositoryModuleOperations {
     }
 
     public void saveModule(Module data) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " SAVING module [" + data.getName() + "]" );
+        log.info("SAVING module [" + data.getName() + "]" );
 
         ModuleItem moduleItem = rulesRepository.loadModule( data.getName() );
 
@@ -457,7 +445,7 @@ public class RepositoryModuleOperations {
                                          String comment, 
                                          boolean checkIsBinaryUpToDate) throws SerializationException {
 
-        log.info( "USER:" + getCurrentUserName() + " CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
+        log.info("CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
         
         ModuleItem p = rulesRepository.loadModule(moduleName);
         if (checkIsBinaryUpToDate && !p.isBinaryUpToDate()) {
@@ -485,14 +473,14 @@ public class RepositoryModuleOperations {
                                         String newSnapshotName) throws SerializationException {
 
         if ( delete ) {
-            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "]" );
+            log.info("REMOVING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "]" );
             rulesRepository.removeModuleSnapshot( moduleName,
                     snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
                 throw new SerializationException( "Need to have a new snapshot name." );
             }
-            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+            log.info("COPYING SNAPSHOT for module: [" + moduleName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
             rulesRepository.copyModuleSnapshot( moduleName,
                     snapshotName,
@@ -567,10 +555,6 @@ public class RepositoryModuleOperations {
         moduleAssemblerConfiguration.setEnableCategorySelector( enableCategorySelector );
         moduleAssemblerConfiguration.setCustomSelectorConfigName( selectorConfigName );
         return moduleAssemblerConfiguration;
-    }
-
-    private String getCurrentUserName() {
-        return rulesRepository.getSession().getUserID();
     }
 
     protected void buildModuleWithoutErrors(ModuleItem moduleItem, boolean force)

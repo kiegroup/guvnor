@@ -20,10 +20,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.drools.RuntimeDroolsException;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.repository.RulesRepositoryException;
 
 import javax.inject.Inject;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -165,9 +164,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     }
 
     private void processExportRepositoryDownload(HttpServletResponse res)
-            throws PathNotFoundException,
-            IOException,
-            RepositoryException {
+            throws RulesRepositoryException, IOException {
         log.debug("Exporting...");
         res.setContentType("application/zip");
         res.setHeader("Content-Disposition",
@@ -186,9 +183,8 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     private void processExportPackageFromRepositoryDownload(
             HttpServletResponse res,
             String packageName)
-            throws PathNotFoundException,
-            IOException,
-            RepositoryException {
+            throws RulesRepositoryException,
+            IOException {
         res.setContentType("application/zip");
         res.setHeader("Content-Disposition",
                 "inline; filename=" + packageName

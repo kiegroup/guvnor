@@ -27,7 +27,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
-import javax.jcr.RepositoryException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -245,14 +245,8 @@ public class FileManagerService {
 
     }
 
-    public byte[] exportPackageFromRepository(String packageName) {
-        try {
-            return this.repository.exportModuleFromRepository( packageName );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( IOException e ) {
-            throw new RulesRepositoryException( e );
-        }
+    public byte[] exportPackageFromRepository(String packageName) throws RulesRepositoryException {
+        return this.repository.exportModuleFromRepository( packageName );        
     }
 
     public boolean isPackageExist(String packageName) {

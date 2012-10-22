@@ -976,8 +976,9 @@ public class RulesRepository {
                     nodePath,
                     StateItem.STATE_NODE_TYPE_NAME);
             log.debug("Created the status [" + name + "] at [" + nodePath + "]");
-            return new StateItem(this,
-                    stateNode);
+            StateItem stateItem =  new StateItem(this, stateNode);
+            save();
+            return stateItem;
         } catch (Exception e) {
             log.error(e.getMessage(),
                     e);
@@ -1259,30 +1260,38 @@ public class RulesRepository {
     }
 
     //TODO: This does not work.
-    public byte[] exportModuleFromRepository(String moduleName) throws IOException,
-            PathNotFoundException,
-            RepositoryException {
+    public byte[] exportModuleFromRepository(String moduleName) throws RulesRepositoryException {
+		try {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ZipOutputStream zout = new ZipOutputStream(bout);
 
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ZipOutputStream zout = new ZipOutputStream(bout);
-
-        zout.putNextEntry(new ZipEntry("repository_export.xml"));
-        zout.write(dumpModuleFromRepositoryXml(moduleName));
-        zout.closeEntry();
-        zout.finish();
-        return bout.toByteArray();
+			zout.putNextEntry(new ZipEntry("repository_export.xml"));
+			zout.write(dumpModuleFromRepositoryXml(moduleName));
+			zout.closeEntry();
+			zout.finish();
+			return bout.toByteArray();
+		} catch (IOException e) {
+			throw new RulesRepositoryException(e);
+		}
     }
 
-    public byte[] dumpModuleFromRepositoryXml(String moduleName) throws PathNotFoundException,
-            IOException,
-            RepositoryException {
+    public byte[] dumpModuleFromRepositoryXml(String moduleName) throws RulesRepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        session.refresh(false);
-        session.exportSystemView("/" + RULES_REPOSITORY_NAME + "/" + MODULE_AREA + "/" + moduleName,
+        try {
+			session.refresh(false);
+		
+            session.exportSystemView("/" + RULES_REPOSITORY_NAME + "/" + MODULE_AREA + "/" + moduleName,
                 byteOut,
                 false,
                 false);
-        return byteOut.toByteArray();
+            return byteOut.toByteArray();
+        } catch (PathNotFoundException e) {
+            throw new RulesRepositoryException( e );
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException( e );
+		} catch (IOException e) {
+            throw new RulesRepositoryException( e );
+		} 
     }
 
     /**
@@ -1877,17 +1886,29 @@ public class RulesRepository {
         }
     }
     
-    public boolean isDoNotInstallSample()  throws RepositoryException {
-        return containsDoNotInstallSampleNode();
+    public boolean isDoNotInstallSample()  {
+        try {
+			return containsDoNotInstallSampleNode();
+		} catch (RepositoryException e) {
+			 return true;
+		}
     }
     
-    public void setDoNotInstallSample()  throws RepositoryException {
-        Node rootNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME);
-        if (!rootNode.hasNode(DO_NOT_INSTALL_SAMPLE_NODE)) {      
-            rootNode.addNode(DO_NOT_INSTALL_SAMPLE_NODE, "nt:folder");
-            
-            save();
-        } 
+    public void setDoNotInstallSample() {
+        Node rootNode;
+		try {
+			rootNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME);
+
+			if (!rootNode.hasNode(DO_NOT_INSTALL_SAMPLE_NODE)) {
+				rootNode.addNode(DO_NOT_INSTALL_SAMPLE_NODE, "nt:folder");
+
+				save();
+			}
+        } catch (PathNotFoundException e) {
+        	//Ignored
+		} catch (RepositoryException e) {
+			//Ignored
+		}
    }
        
     private boolean containsDoNotInstallSampleNode() throws RepositoryException {

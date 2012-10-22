@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -71,7 +71,7 @@ public class RepositoryModuleService
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    @Inject @Preferred 
+    @Inject @Preferred
     private RulesRepository            rulesRepository;
 
     @Inject
@@ -98,7 +98,6 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public Module[] listModules() {
-        //log.info("----------listModules, jcr sessoin: " + rulesRepository.getSession() + ",rulesRepository: " + rulesRepository + " ,thread: " + Thread.currentThread().getId());
         return listModules( null );
     }
 

@@ -28,8 +28,6 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.jcr.ItemExistsException;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
@@ -211,9 +209,10 @@ public class ServiceImplementation
 
             return asset.getUUID();
         } catch ( RulesRepositoryException e ) {
-            if ( e.getCause() instanceof ItemExistsException ) {
+        	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
+/*            if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
-            }
+            }*/
             log.error( "An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
@@ -291,9 +290,10 @@ public class ServiceImplementation
             return assetItem.getUUID();
 
         } catch ( RulesRepositoryException e ) {
-            if ( e.getCause() instanceof ItemExistsException ) {
+        	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
+/*            if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
-            }
+            }*/
             log.error( "An error occurred creating new asset [" + assetName + "] in package [" + packageName + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
@@ -319,13 +319,13 @@ public class ServiceImplementation
 
             return asset.getUUID();
         } catch ( RulesRepositoryException e ) {
-            if ( e.getCause() instanceof ItemExistsException ) {
+        	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
+/*            if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
-            }
+            }*/
             log.error( "An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
-
         }
 
     }
@@ -458,14 +458,9 @@ public class ServiceImplementation
     @LoggedIn
     public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
-        try {
-            name = HtmlCleaner.cleanHTML( name );
-            String uuid = rulesRepository.createState( name ).getNode().getUUID();
-            rulesRepository.save();
-            return uuid;
-        } catch ( RepositoryException e ) {
-            throw new SerializationException( "Unable to create the status." );
-        }
+        name = HtmlCleaner.cleanHTML( name );
+        String stateName = rulesRepository.createState( name ).getName();
+        return stateName;
     }
 
     @WebRemote
@@ -701,20 +696,12 @@ public class ServiceImplementation
 
     @LoggedIn
     public boolean isDoNotInstallSample() {
-        try {
-            return rulesRepository.isDoNotInstallSample();
-        } catch ( RepositoryException e ) {
-            return true;
-        }
+        return rulesRepository.isDoNotInstallSample();
     }
 
     @LoggedIn
     public void setDoNotInstallSample() {
-        try {
-            rulesRepository.setDoNotInstallSample();
-        } catch ( RepositoryException e ) {
-            //Ignored
-        }
+        rulesRepository.setDoNotInstallSample();
     }
 
     @LoggedIn
