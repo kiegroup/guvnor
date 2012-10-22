@@ -494,8 +494,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void dispose() {
-        // TODO Auto-generated method stub
-		
+    }
+
+    @Override
+    public void retract(FactHandle factHandle,
+                        Rule rule,
+                        Activation activation) throws FactException {
     }
 
 }
