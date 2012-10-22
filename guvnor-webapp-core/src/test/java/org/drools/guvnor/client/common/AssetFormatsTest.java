@@ -39,6 +39,10 @@ public class AssetFormatsTest {
                     fmt.equals(AssetFormats.DECISION_TABLE_GUIDED)
                     ||
                     fmt.equals(AssetFormats.RULE_TEMPLATE)
+                    ||
+                    fmt.equals(AssetFormats.SCORECARD_GUIDED)
+                    ||
+                    fmt.equals(AssetFormats.SCORECARD_SPREADSHEET_XLS)
             )) {
                 fail("Incorrect grouping of business rules. format=" + fmt);
             }
