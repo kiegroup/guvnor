@@ -15,9 +15,23 @@
  */
 package org.drools.guvnor.server.contenthandler.drools;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.dmg.pmml.pmml_4_1.descr.*;
+import org.dmg.pmml_4_1.Attribute;
+import org.dmg.pmml_4_1.Characteristic;
+import org.dmg.pmml_4_1.Characteristics;
+import org.dmg.pmml_4_1.Extension;
+import org.dmg.pmml_4_1.FIELDUSAGETYPE;
+import org.dmg.pmml_4_1.INVALIDVALUETREATMENTMETHOD;
+import org.dmg.pmml_4_1.MiningField;
+import org.dmg.pmml_4_1.MiningSchema;
+import org.dmg.pmml_4_1.Output;
+import org.dmg.pmml_4_1.PMML;
+import org.dmg.pmml_4_1.Scorecard;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
@@ -33,10 +47,7 @@ import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class ScorecardsContentHandler extends ContentHandler
         implements
