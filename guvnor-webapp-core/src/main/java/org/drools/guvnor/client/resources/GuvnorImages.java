@@ -15,9 +15,10 @@
  */
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.user.client.ui.Image;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.shared.api.Valid;
+
+import com.google.gwt.user.client.ui.Image;
 
 public class GuvnorImages {
 
@@ -224,15 +225,4 @@ public class GuvnorImages {
         return image;
     }
 
-    public Image ScorecardSmall(){
-        Image image = new Image(ImagesCore.INSTANCE.scorecardSmall());
-        image.setAltText(ConstantsCore.INSTANCE.Trash());
-        return image;
-    }
-
-    public Image NewCharacteristic(){
-        Image image = new Image(ImagesCore.INSTANCE.newCharacteristic());
-        image.setAltText(ConstantsCore.INSTANCE.Characteristics());
-        return image;
-    }
 }

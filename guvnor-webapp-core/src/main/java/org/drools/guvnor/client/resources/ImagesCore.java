@@ -339,10 +339,4 @@ public interface ImagesCore
     @Source("images/calendar.png")
     ImageResource calendar();
 
-    // scorecards
-    @Source("images/scorecard.gif")
-    ImageResource scorecardSmall();
-
-    @Source("images/new_characteristic.png")
-    ImageResource newCharacteristic();
 }
