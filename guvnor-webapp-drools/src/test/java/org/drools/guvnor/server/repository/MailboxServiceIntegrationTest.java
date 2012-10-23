@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
+import org.drools.repository.GuvnorBootstrapConfiguration;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.junit.Test;
 

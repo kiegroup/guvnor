@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.repository;
+package org.drools.repository;
 
 import java.math.BigInteger;
 import java.util.HashMap;

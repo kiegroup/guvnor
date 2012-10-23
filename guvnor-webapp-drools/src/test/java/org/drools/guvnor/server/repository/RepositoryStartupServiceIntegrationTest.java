@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotSame;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
+import org.drools.repository.RepositoryStartupService;
 import org.junit.Test;
 
 public class RepositoryStartupServiceIntegrationTest extends GuvnorIntegrationTest {

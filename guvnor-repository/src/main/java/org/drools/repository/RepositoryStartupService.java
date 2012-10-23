@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.repository;
+package org.drools.repository;
 
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
@@ -42,11 +40,7 @@ public abstract class RepositoryStartupService {
 
     @Inject
     protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
-
-    @Inject
-    @Any
-    private Event<RepositoryImportedEvent> repositoryImportedEventEvent;
-    
+  
     private RulesRepositoryConfigurator configurator;
 
     protected Repository repository;
@@ -79,11 +73,6 @@ public abstract class RepositoryStartupService {
                 throw new RulesRepositoryException(e);
             }
         }
-
-
-
-        repositoryImportedEventEvent.fire(new RepositoryImportedEvent());
-
     }
 
     @PreDestroy

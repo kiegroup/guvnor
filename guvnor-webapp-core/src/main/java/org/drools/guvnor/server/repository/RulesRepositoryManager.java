@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.repository;
 
+import org.drools.repository.RepositoryStartupService;
 import org.drools.repository.RulesRepository;
 
 import javax.enterprise.context.RequestScoped;

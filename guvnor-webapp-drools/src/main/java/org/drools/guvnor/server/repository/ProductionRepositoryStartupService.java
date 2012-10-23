@@ -18,6 +18,8 @@ package org.drools.guvnor.server.repository;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.repository.RepositoryStartupService;
+
 @ApplicationScoped
 public class ProductionRepositoryStartupService extends RepositoryStartupService {
 
